@@ -10,12 +10,12 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
+  package: 'foam.apps.builder.kiosk',
   name: 'KioskView',
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.apps.builder.KioskChromeView',
+    'foam.apps.builder.kiosk.KioskChromeView',
     'foam.apps.builder.Timeout',
     'foam.apps.builder.TOSData',
     'foam.apps.builder.TOSView',
@@ -31,7 +31,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      view: 'foam.apps.builder.KioskChromeView',
+      view: 'foam.apps.builder.kiosk.KioskChromeView',
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( old ) {

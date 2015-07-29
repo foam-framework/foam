@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
+  package: 'foam.apps.builder.kiosk',
   name: 'KioskAppConfigDetailView',
   extendsModel: 'foam.ui.SimpleView',
 
@@ -18,7 +18,7 @@ CLASS({
     'foam.ui.md.FlatButton',
   ],
   imports: [
-    'kioskExportManager$',
+    'exportManager$',
   ],
 
   properties: [
@@ -34,8 +34,8 @@ CLASS({
     {
       name: 'export',
       action: function() {
-        this.kioskExportManager.config = this.data;
-        this.kioskExportManager.exportKiosk();
+        this.exportManager.config = this.data;
+        this.exportManager.exportApp();
       },
     },
   ],

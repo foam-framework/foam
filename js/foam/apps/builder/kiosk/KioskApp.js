@@ -10,14 +10,14 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
+  package: 'foam.apps.builder.kiosk',
   name: 'KioskApp',
   extendsModel: 'foam.ui.View',
 
   requires: [
     'XHR',
-    'foam.apps.builder.KioskAppConfig',
-    'foam.apps.builder.KioskView',
+    'foam.apps.builder.kiosk.KioskAppConfig',
+    'foam.apps.builder.kiosk.KioskView',
     'foam.graphics.ActionButtonCView',
     'foam.ui.md.SharedStyles',
   ],
@@ -28,7 +28,7 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.KioskAppConfig',
+      type: 'foam.apps.builder.kiosk.KioskAppConfig',
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;

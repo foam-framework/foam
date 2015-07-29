@@ -15,9 +15,10 @@ CLASS({
 
   requires: [
     'foam.apps.builder.BrowserConfig',
-    'foam.apps.builder.KioskApp',
-    'foam.apps.builder.KioskAppConfig',
-    'foam.apps.builder.KioskDesignerView',
+    'foam.apps.builder.ExportManager',
+    'foam.apps.builder.kiosk.KioskApp',
+    'foam.apps.builder.kiosk.KioskAppConfig',
+    'foam.apps.builder.kiosk.KioskDesignerView',
     'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
     'foam.apps.builder.questionnaire.DesignerView as QuestionnaireDesignerView',
     'foam.browser.ui.BrowserView',
@@ -37,7 +38,7 @@ CLASS({
     'gestureManager',
     'menuSelection$',
     'menuDAO$',
-    'kioskExportManager$',
+    'exportManager$',
   ],
 
   properties: [
@@ -65,7 +66,7 @@ CLASS({
             label: 'Kiosk App',
             model: this.KioskAppConfig,
             dao: this.browserDAOFactory(this.KioskAppConfig, 'KioskAppConfigs'),
-            innerDetailView: 'foam.apps.builder.KioskDesignerView'
+            innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView'
           }),
           this.BrowserConfig.create({
             title: 'Questionnaire Apps',
@@ -97,8 +98,11 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.KioskExportManager',
-      name: 'kioskExportManager'
+      type: 'foam.apps.builder.ExportManager',
+      name: 'exportManager',
+      factory: function() {
+        return this.ExportManager.create({}, this.Y);
+      },
     },
     {
       type: 'foam.input.touch.TouchManager',
