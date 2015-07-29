@@ -28,7 +28,12 @@ CLASS({
     'foam.meta.types.FloatPropertyEditView',
     'foam.meta.types.PropertyEditView',
     'foam.meta.types.StringPropertyEditView',
+    'foam.ui.md.UpdateDetailView',
+    'foam.meta.MetaPropertyDescriptor',
   ],
+
+  imports: ['stack'],
+  exports: [' as dao'],
 
   properties: [
     {
@@ -49,12 +54,39 @@ CLASS({
     },
   ],
 
+  actions: [
+    {
+      name: 'createButton',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
+      //isAvailable: function() { return this.data.showAdd; },
+      action: function() {
+        var edit = this.UpdateDetailView.create({
+          data: this.MetaPropertyDescriptor.create(),
+          exitOnSave: true,
+        });
+        this.stack.pushView(edit);
+      }
+    },
+  ],
+
   listeners: [
     {
       name: 'subObjectChange',
       code: function() {
         this.data.propertyChange('properties', null, this.data.properties);
       }
+    },
+  ],
+
+  methods: [
+    function put(o, sink) {
+      var prop = o.model.create({ name: o.name });
+      this.data.properties.put(prop);
+      sink && sink.put(prop);
+      //this.stack.popView();
+    },
+    function remove(o, sink) {
+      this.data.properties.remove(o, sink);
     },
   ],
 
@@ -72,6 +104,19 @@ CLASS({
             $$properties{ model_: 'foam.ui.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }
           </div>
         </div>
+        <div class="floating-action">
+          $$createButton{
+            className: 'createButton',
+            color: 'white',
+            font: '30px Roboto Arial',
+            alpha: 1,
+            width: 44,
+            height: 44,
+            radius: 22,
+            background: '#e51c23'
+          }
+        </div>
+
       </div>
     */},
     function CSS() {/*
