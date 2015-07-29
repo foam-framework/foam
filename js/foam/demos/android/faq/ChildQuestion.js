@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2013 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package foam.core;
-
-public abstract class AbstractIntProperty extends AbstractProperty<Integer> {
-  public int compareValues(Integer i1, Integer i2) {
-    return ComparisonHelpers.compareIntegers(i1, i2);
-  }
-  @Override
-  public int getType() {
-    return Property.TYPE_INTEGER;
-  }
-}
+CLASS({
+  package: 'foam.demos.android.faq',
+  name: 'ChildQuestion',
+  properties: [
+    {
+      model_: 'IntProperty',
+      name: 'id',
+    },
+    {
+      name: 'label',
+    },
+    {
+      model_: 'ReferenceProperty',
+      name: 'question',
+      subType: 'foam.demos.android.faq.Question',
+      subKey: 'ID',
+    },
+  ]
+});

@@ -24,16 +24,18 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <div id="%%id">
-        <h2>String Property</h2>
-        <div>
-          $$name{ model_: 'foam.ui.TextFieldView' }
-        </div>
-        <div>
-          $$defaultValue{ model_: 'foam.ui.TextFieldView' }
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        <div class="md-card">
+          <h2>String Property</h2>
+          <div>
+            $$name{ model_: 'foam.ui.TextFieldView' }
+          </div>
+          <div>
+            $$defaultValue{ model_: 'foam.ui.TextFieldView' }
+          </div>
         </div>
       </div>
-    */},
+*/},
   ]
 
 });

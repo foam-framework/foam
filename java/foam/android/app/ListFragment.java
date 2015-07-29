@@ -27,7 +27,7 @@ public class ListFragment extends FOAMFragment implements View.OnClickListener {
                            Bundle savedInstanceState) {
     X x = findX(container.getContext());
     if (x == null) return null;
-    X(x.put("data", x.get("dao")));
+    X(x.put("data", x.getValue("dao")));
 
     container.removeAllViews();
 
@@ -71,7 +71,7 @@ public class ListFragment extends FOAMFragment implements View.OnClickListener {
   @Override
   public void onClick(View v) {
     DAO dao = (DAO) X().get("dao");
-    Value<FObject> value = (Value<FObject>) X().get("selection");
+    Value<FObject> value = (Value<FObject>) X().getValue("selection");
     FObject newData = dao.getModel().newInstance();
     value.set(newData); // Triggers the fragment swap.
   }

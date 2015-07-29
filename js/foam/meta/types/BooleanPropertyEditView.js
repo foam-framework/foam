@@ -24,19 +24,24 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <div id="%%id">
-        <h2>Boolean Property</h2>
-        <div>
-          $$name{ model_: 'foam.ui.TextFieldView' }
-        </div>
-        <div>
-          $$defaultValue{ model_: 'foam.ui.md.CheckboxView' }
-        </div>
-        <div>
-          $$view{ model_: 'foam.ui.md.PopupChoiceView', choices: [
-            'foam.ui.md.ToggleView',
-            'foam.ui.md.CheckboxView',
-          ]}
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        <div class="md-card">
+          <h2>Boolean Property</h2>
+          <div>
+            $$name{ model_: 'foam.ui.TextFieldView', mode: 'read-only' }
+          </div>
+          <div>
+            $$label{ model_: 'foam.ui.TextFieldView' }
+          </div>
+          <div>
+            $$defaultValue{ model_: 'foam.ui.md.CheckboxView' }
+          </div>
+          <div>
+            $$view{ model_: 'foam.ui.md.PopupChoiceView', choices: [
+              'foam.ui.md.ToggleView',
+              'foam.ui.md.CheckboxView',
+            ]}
+          </div>
         </div>
       </div>
     */},

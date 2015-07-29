@@ -22,11 +22,11 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         $$appName
+        $$model{ model_: 'foam.apps.builder.datamodels.ModelPickerView', baseModel: 'foam.apps.builder.questionnaire.Questionnaire' }
         $$version
         $$termsOfService
         $$rotation
         $$kioskEnabled
-        $$model{ model_: 'foam.apps.builder.datamodels.ModelPickerView', baseModel: 'foam.apps.builder.questionnaire.Questionnaire' }
       </div>
     */},
     function CSS() {/*

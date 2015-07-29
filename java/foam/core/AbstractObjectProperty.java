@@ -18,12 +18,11 @@
 package foam.core;
 
 public abstract class AbstractObjectProperty extends AbstractProperty<Object> {
-
   public int compareValues(Object o1, Object o2) {
-    if (o1 == o2) return 0;
-
-    if (o1 instanceof Comparable) return ((Comparable) o1).compareTo(o2);
-    if (o2 instanceof Comparable) return -((Comparable) o2).compareTo(o1);
-    return 1;
+    return ComparisonHelpers.compareObjects(o1, o2);
+  }
+  @Override
+  public int getType() {
+    return Property.TYPE_OBJECT;
   }
 }

@@ -212,6 +212,14 @@ canvas.createButton {
   width: initial;
 }
 
+.md-heading {
+  background: #fff;
+  display: block;
+  padding: 10px;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.38);
+
+}
+
 .md-style-trait-standard {
   padding: 8px;
   margin: 8px;

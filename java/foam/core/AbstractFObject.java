@@ -17,7 +17,9 @@
 
 package foam.core;
 
-public abstract class AbstractFObject extends PubSubSource implements FObject {
+import java.io.Serializable;
+
+public abstract class AbstractFObject extends PubSubSource implements FObject, Serializable {
   private static final String[] EMPTY_PROPERTY_TOPIC = new String[] { "property", PubSubSource.ANY };
 
   private boolean frozen = false;

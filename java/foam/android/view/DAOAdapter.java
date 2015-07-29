@@ -82,7 +82,7 @@ public class DAOAdapter extends RecyclerView.Adapter<DAOAdapter.DAOViewHolder> i
 
     @Override
     public void onClick(View view) {
-      Value selection = (Value) viewBridge.X().get("selection");
+      Value selection = viewBridge.X().getValue("selection");
       if (selection != null) selection.set(viewBridge.getValue().get());
     }
   }

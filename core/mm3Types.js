@@ -482,7 +482,7 @@ CLASS({
       name: 'javaType',
       type: 'String',
       displayWidth: 10,
-      defaultValueFn: function(p) { return p.subType + '[]'; },
+      defaultValueFn: function(p) { return this.subType + '[]'; },
       help: 'The Java type of this property.'
     },
     {
@@ -920,6 +920,12 @@ CLASS({
     {
       name: 'factory',
       defaultValue: function() { return []; },
+    },
+    {
+      name: 'javaType',
+      defaultValueFn: function() {
+        return this.X.lookup(this.subType).ID.javaType + '[]';
+      }
     },
     {
       name: 'view',

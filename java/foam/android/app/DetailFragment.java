@@ -48,6 +48,7 @@ public class DetailFragment extends FOAMFragment {
     if (x == null) return null;
 
     // Try to fetch the data from the context. Failing that, load from the memento.
+    /*
     Object selection = x.get("selection");
     FObject data = null;
     if (selection != null) {
@@ -58,6 +59,9 @@ public class DetailFragment extends FOAMFragment {
       data = ((Value<FObject>) selection).get();
       if (data == null) selection = null;
     }
+    */
+    Object selection = null;
+    FObject data = null;
 
     // Deliberately not the "else" of the above "if".
     if (selection == null) {
@@ -108,13 +112,7 @@ public class DetailFragment extends FOAMFragment {
       DetailViewBridge bridge = new DetailViewBridge(context);
       bridge.X(X());
 
-      Object raw = X().get("data");
-      Value value = null;
-      if (raw instanceof Value) {
-        value = (Value) raw;
-      } else if (raw instanceof FObject) {
-        value = new SimpleValue<FObject>((FObject) raw);
-      }
+      Value value = X().getValue("data");
       if (value != null) bridge.setValue(value);
 
       layout.addView(bridge.getView());

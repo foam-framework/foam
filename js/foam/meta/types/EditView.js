@@ -19,28 +19,29 @@
 CLASS({
   name: 'EditView',
   package: 'foam.meta.types',
-
   extendsModel: 'foam.ui.md.DetailView',
 
   properties: [
-
-  ],
-
-  methods: [
-
-
+    {
+      name: 'className',
+      defaultValue: 'meta-edit-view',
+    }
   ],
 
   templates: [
     function toHTML() {/*
-      <div id="%%id">
-        <h2>Model</h2>
-        <div>
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        <div class="md-card">
           $$name{ model_: 'foam.ui.TextFieldView' }
         </div>
       </div>
     */},
-
+    function CSS() {/*
+      .meta-edit-view {
+        display: flex;
+        flex-grow: 1;
+      }
+    */},
 
   ]
 

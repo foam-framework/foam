@@ -144,15 +144,9 @@ public class LayoutFactory implements LayoutInflaterFactory {
         return null;
       }
     } else {
-      Object rawObj = x.get(dataName == null ? "data" : dataName);
-      if (rawObj instanceof Value) {
-        value = (Value) rawObj;
-        rawObj = value.get();
-        if (rawObj != null) model = ((FObject) rawObj).model();
-      } else if (rawObj instanceof FObject) {
-        value = new SimpleValue<FObject>((FObject) rawObj);
-        model = ((FObject) value.get()).model();
-      }
+      value = x.getValue(dataName == null ? "data" : dataName);
+      Object rawObj = value.get();
+      if (rawObj != null) model = ((FObject) rawObj).model();
     }
 
     if (model == null) {

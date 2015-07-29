@@ -31,18 +31,9 @@ CLASS({
       name: 'body',
     },
     {
-      model_: 'ReferenceProperty',
-      name: 'parent',
-      subType: 'foam.demos.android.faq.Question',
-      subKey: 'ID',
+      model_: 'ArrayProperty',
+      name: 'questions',
+      subType: 'foam.demos.android.faq.ChildQuestion',
     },
   ],
-
-  relationships: [
-    {
-      name: 'questions',
-      relatedModel: 'foam.demos.android.faq.Question',
-      relatedProperty: 'parent',
-    }
-  ]
 });

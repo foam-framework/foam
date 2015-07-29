@@ -20,10 +20,9 @@ CLASS({
   name: 'ModelEditView',
   package: 'foam.meta.types',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.meta.types.EditView',
 
   requires: [
-    'foam.meta.types.EditView',
     'foam.meta.types.BooleanPropertyEditView',
     'foam.meta.types.IntPropertyEditView',
     'foam.meta.types.FloatPropertyEditView',
@@ -31,20 +30,65 @@ CLASS({
     'foam.meta.types.StringPropertyEditView',
   ],
 
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        // allow direct editing of the properties array by setting up listeners
+        if ( nu && nu.properties ) {
+          nu.properties.forEach(function(p) {
+            p.addListener(this.subObjectChange);
+          }.bind(this));
+        }
+        if ( old && old.properties ) {
+          old.properties.forEach(function(p) {
+            p.removeListener(this.subObjectChange);
+          }.bind(this));
+        }
+      }
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'subObjectChange',
+      code: function() {
+        this.data.propertyChange('properties', null, this.data.properties);
+      }
+    },
+  ],
+
   templates: [
     function toHTML() {/*
-      <div id="%%id">
-        <h2>Model</h2>
-        <div>
-          $$name{ model_: 'foam.ui.TextFieldView' }
-        </div>
-        <div>
-          $$properties{ model_: 'foam.ui.DAOListView', rowView: 'foam.meta.types.EditView' }
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        <div class="md-model-edit-view-container">
+          <div class="md-heading md-model-edit-view-heading">
+            <h2>Model</h2>
+              <div>
+                $$name{ model_: 'foam.ui.TextFieldView' }
+              </div>
+          </div>
+          <div class="model-edit-view-list">
+            $$properties{ model_: 'foam.ui.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }
+          </div>
         </div>
       </div>
     */},
-
-
+    function CSS() {/*
+      .md-model-edit-view-container {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+      .md-model-edit-view-heading {
+        flex-shrink: 0;
+      }
+      .model-edit-view-list {
+        background: grey;
+        overflow-y: scroll;
+        flex-grow: 1;
+      }
+    */}
   ]
 
 });

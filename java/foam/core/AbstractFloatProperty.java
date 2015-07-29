@@ -19,6 +19,10 @@ package foam.core;
 
 public abstract class AbstractFloatProperty extends AbstractProperty<Float> {
   public int compareValues(Float f1, Float f2) {
-    return f1.equals(f2) ? 0 : f1 < f2 ? -1 : 1;
+    return ComparisonHelpers.compareFloats(f1, f2);
+  }
+  @Override
+  public int getType() {
+    return Property.TYPE_FLOAT;
   }
 }

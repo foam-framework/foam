@@ -18,12 +18,12 @@
 package foam.core;
 
 public abstract class AbstractBooleanProperty extends AbstractProperty<Boolean> {
-
   public int compareValues(Boolean b1, Boolean b2) {
-    return b1.equals(b2) ? 0 : b1 ? 1 : -1; // false < true, according to this.
+    return ComparisonHelpers.compareBooleans(b1, b2);
   }
 
-  public boolean toNative(Boolean o) {
-    return o;
+  @Override
+  public int getType() {
+    return Property.TYPE_BOOLEAN;
   }
 }

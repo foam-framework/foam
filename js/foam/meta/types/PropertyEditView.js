@@ -20,7 +20,7 @@ CLASS({
   name: 'PropertyEditView',
   package: 'foam.meta.types',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.meta.types.EditView',
 
   properties: [
 
@@ -32,10 +32,12 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <div id="%%id">
-        <h2>Untyped Property</h2>
-        <div>
-          $$data{ model_: 'foam.ui.TextFieldView' }
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        <div class="md-card">
+          <h2>Untyped Property</h2>
+          <div>
+            $$data{ model_: 'foam.ui.TextFieldView' }
+          </div>
         </div>
       </div>
     */},
