@@ -18,16 +18,23 @@ public class PropertyViewFactory {
   }
 
   public static ViewBridge create(Property prop, Context context, AttributeSet attrs) {
+    return create(prop.getType(), context, attrs);
+  }
+
+  public static ViewBridge create(int type, Context context) {
+    return create(type, context, null);
+  }
+  public static ViewBridge create(int type, Context context, AttributeSet attrs) {
     boolean readOnly = AttributeUtils.findBoolean(attrs, "read_only", false);
-    if (prop.getType() == Property.TYPE_INTEGER) {
+    if (type == Property.TYPE_INTEGER) {
       return readOnly ? new IntViewBridge(context, attrs) : new EditIntBridge(context, attrs);
-    } else if (prop.getType() == Property.TYPE_STRING) {
+    } else if (type == Property.TYPE_STRING) {
       return readOnly ? new TextViewBridge(context, attrs) : new EditTextBridge(context, attrs);
-    } else if (prop.getType() == Property.TYPE_BOOLEAN) {
+    } else if (type == Property.TYPE_BOOLEAN) {
       return new CheckBoxBridge(context, attrs);
-    } else if (prop.isArray()) {
-      // TODO(braden): Assumes the array is of modeled objects.
-      return new DAOListViewBridge(context, attrs);
+    } else if ((type & Property.TYPE_ARRAY) != 0) {
+      // TODO(braden): Assumes FObjects in the array! Handle other types.
+      return new ArrayViewBridge(context, attrs);
     }
     return null;
   }

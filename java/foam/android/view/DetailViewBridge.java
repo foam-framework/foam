@@ -91,6 +91,7 @@ public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
   }
 
   private void tryToInflateView() {
+    if (view != null) return;
     if (X() == null) return;
     if (layout == -1) return;
     if (parentView == null) return;
@@ -176,6 +177,7 @@ public class DetailViewBridge extends OneWayViewBridge<ViewGroup, FObject> {
   public void setData(FObject obj) {
     if (obj == null) return;
     setModel(obj.model());
+    tryToInflateView();
     maybeBuildChildViews();
     if (needChildBinding) bindChildViews();
     bindData(obj);
