@@ -63,7 +63,7 @@ CLASS({
 	  }
 	  if ( IN_CHROME_APP() ) {
 	    aeval("(" + resp + ")")(function(data) {
-	      ret(JSONUtil.parse(this.X, data));
+	      ret(JSONUtil.mapToObj(this.X, data));
 	    }.bind(this));
 	    return;
 	  }

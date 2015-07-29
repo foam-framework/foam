@@ -15,10 +15,15 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.apps.builder.Panel',
+    'foam.apps.builder.KioskAppConfigDetailView',
+    'foam.apps.builder.KioskExportManager',
     'foam.apps.builder.KioskView',
+    'foam.apps.builder.Panel',
   ],
 
+  imports: [
+    'kioskExportManager$',
+  ],
   exports: [
     'url$',
   ],
@@ -39,19 +44,40 @@ CLASS({
         if ( nu ) Events.follow(nu.homepage$, this.url$);
       },
     },
+    {
+      type: 'foam.apps.builder.KioskExportManager',
+      name: 'kioskExportManager',
+      postSet: function(old, nu, prop) { console.log(this.name_, prop.name, old && old.$UID, nu && nu.$UID); },
+    },
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      // The first designer view to appear on the scene should initialize the
+      // context's kioskExportManager.
+      if ( ! this.kioskExportManager ) {
+        this.kioskExportManager = this.KioskExportManager.create({
+          config: this.data
+        });
+      }
+    },
   ],
 
   templates: [
     function toHTML() {/*
       <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
-        $$data{ model_: 'foam.apps.builder.Panel' }
+        $$data{
+          model_: 'foam.apps.builder.Panel',
+          innerView: 'foam.apps.builder.KioskAppConfigDetailView',
+        }
         $$data{ model_: 'foam.apps.builder.KioskView' }
       </kiosk-designer>
     */},
     function CSS() {/*
-      kiosk-designer { 
+      kiosk-designer {
         position: relative;
-        display: flex; 
+        display: flex;
         flex-grow: 1;
       }
       kiosk-designer panel { z-index: 2; }

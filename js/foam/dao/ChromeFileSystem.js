@@ -20,16 +20,13 @@ MODEL({
   name: 'ChromeFileSystem',
 
   requires: [
-    'foam.dao.ChromeFile'
+    'foam.dao.ChromeFile',
+  ],
+  imports: [
+    'console',
   ],
 
   properties: [
-    {
-      name: 'cfs',
-      factory: function() {
-        return chrome.fileSystem;
-      }
-    },
     {
       name: 'root',
       defaultValue: null
@@ -64,6 +61,12 @@ MODEL({
           'read-write'
         ]
       }
+    },
+    {
+      name: 'appWindow',
+      lazyFactory: function() {
+        return this.X.appWindow || window;
+      },
     },
     {
       name: 'getDirectoryConfig',
@@ -107,7 +110,9 @@ MODEL({
     {
       name: 'chooseEntry',
       code: function(config, ret) {
-        this.cfs.chooseEntry(config, ret);
+        with (this.appWindow) {
+          chrome.fileSystem.chooseEntry(config, ret);
+        }
       }
     },
     {
@@ -115,7 +120,9 @@ MODEL({
       code: function(ret, dirEntry) {
         if ( this.checkForError(dirEntry, ret, 'getWritableEntry') )
           return dirEntry;
-        this.cfs.getWritableEntry(dirEntry, ret);
+        with (this.appWindow) {
+          chrome.fileSystem.getWritableEntry(dirEntry, ret);
+        }
         return dirEntry;
       }
     },
@@ -133,6 +140,7 @@ MODEL({
     {
       name: 'awrite',
       code: function(rawPath, data) {
+        if ( ! this.ready ) throw 'Attempt to write before Chrome File System is ready';
         if ( this.mode !== 'read-write' ) throw 'Cannot write to ' +
             'non-read-write Chrome filesystem';
         var path = this.canonicalizePath(rawPath);
@@ -144,6 +152,7 @@ MODEL({
         }
         seq.push(this.getFile.bind(this, writeCtx, path[path.length - 1]));
         seq.push(this.createWriter.bind(this, writeCtx));
+        seq.push(this.truncateFile.bind(this, writeCtx));
         seq.push(this.writeFile.bind(this, writeCtx, data));
         return aseq.apply(null, seq);
       }
@@ -151,6 +160,7 @@ MODEL({
     {
       name: 'aread',
       code: function(rawPath, opt_mimeType) {
+        if ( ! this.ready ) throw 'Attempt to read before Chrome File System is ready';
         console.log('aread', rawPath, opt_mimeType);
         var path = this.canonicalizePath(rawPath);
         if ( path[0] === '..' ) throw 'Cannot read from: ' + path;
@@ -168,6 +178,7 @@ MODEL({
     {
       name: 'aentries',
       code: function(rawPath, sink) {
+        if ( ! this.ready ) throw 'Attempt to get entries before Chrome File System is ready';
         var path = this.canonicalizePath(rawPath);
         if ( path[0] === '..' ) throw 'Cannot get entries from: ' + path;
         var readCtx = { sink: sink, entries: [] };
@@ -355,10 +366,9 @@ MODEL({
       }
     },
     {
-      name: 'writeFile',
-      code: function(X, data, ret, fileWriter) {
-        console.log('writeFile', data.slice(0, 19), fileWriter);
-        if ( this.checkForError(fileWriter, ret, 'writeFile') )
+      name: 'fileWriterOp',
+      code: function(X, data, ret, fileWriter, op) {
+        if ( this.checkForError(fileWriter, ret, 'fileWriterOp') )
           return fileWriter;
         var cbX = Object.create(X);
         cbX.done = false;
@@ -372,12 +382,38 @@ MODEL({
           }
           X.event = e;
           X.done = true;
-          ret && ret.call(this, X);
+          ret && ret.call(this, fileWriter);
         }.bind(this, cbX, ret);
         fileWriter.onwriteend = cb;
         fileWriter.onerror = cb;
-        fileWriter.write(new Blob([data], {type: cbX.mimeType}));
+        op(cbX, data, fileWriter);
         return fileWriter;
+      }
+    },
+    {
+      name: 'truncateFile',
+      code: function(X, ret, fileWriter) {
+        console.log('truncateFile', fileWriter);
+        return this.fileWriterOp(X, '', ret, fileWriter, this.truncateFile_);
+      }
+    },
+    {
+      name: 'truncateFile_',
+      code: function(X, data, fileWriter) {
+        return fileWriter.truncate(0);
+      }
+    },
+    {
+      name: 'writeFile',
+      code: function(X, data, ret, fileWriter) {
+        console.log('writeFile', data.slice(0, 19), fileWriter);
+        return this.fileWriterOp(X, data, ret, fileWriter, this.writeFile_);
+      }
+    },
+    {
+      name: 'writeFile_',
+      code: function(X, data, fileWriter) {
+        return fileWriter.write(new Blob([data], {type: X.mimeType}));
       }
     },
     {
@@ -415,7 +451,7 @@ MODEL({
           };
         }
         if ( this.error ) {
-          ret && ret({ error: this.error });
+          ret ? ret({ error: this.error }) : this.console.error(this.error);
           return true;
         }
         return false;

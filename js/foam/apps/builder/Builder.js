@@ -15,6 +15,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.BrowserConfig',
+    'foam.apps.builder.KioskApp',
     'foam.apps.builder.KioskAppConfig',
     'foam.apps.builder.KioskDesignerView',
     'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
@@ -23,17 +24,20 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.dao.SeqNoDAO',
+    'foam.input.touch.GestureManager',
+    'foam.input.touch.TouchManager',
     'foam.ui.DAOListView',
     'foam.ui.ImageView',
     'foam.ui.md.DetailView',
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.TextFieldView',
-    'foam.input.touch.GestureManager',
-    'foam.input.touch.TouchManager',
   ],
   exports: [
+    'touchManager',
+    'gestureManager',
     'menuSelection$',
     'menuDAO$',
+    'kioskExportManager$',
   ],
 
   properties: [
@@ -92,13 +96,19 @@ CLASS({
             this.menuDAO[0] : '';
       },
     },
-  ],
-
-  methods: [
-    function init() {
-      this.SUPER();
-      this.X.touchManager   = this.TouchManager.create();
-      this.X.gestureManager = this.GestureManager.create();
+    {
+      type: 'foam.apps.builder.KioskExportManager',
+      name: 'kioskExportManager'
+    },
+    {
+      type: 'foam.input.touch.TouchManager',
+      name: 'touchManager',
+      lazyFactory: function() { return this.TouchManager.create(); },
+    },
+    {
+      type: 'foam.input.touch.GestureManager',
+      name: 'gestureManager',
+      lazyFactory: function() { return this.GestureManager.create(); },
     },
   ],
 });

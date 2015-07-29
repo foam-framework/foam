@@ -1,15 +1,7 @@
 // When window loads: Add window to FOAM context.
 function onWindowLoad(window) {
   this.$addWindow(window);
-  var Window = this.X.lookup('foam.ui.Window');
-  var foamWindow = Window.create({
-    name: 'Kiosk Designer Window',
-    window: window,
-  });
-  var Y = foamWindow.Y.sub({
-    appWindow: window,
-  });
-
+  var Y = this.X.subWindow(window, 'Kiosk Window');
   this.DOM.init(Y);
 }
 
@@ -38,9 +30,9 @@ function runApp() {
     chrome.power.requestKeepAwake('display');
   }
   chrome.app.window.create(
-      'designer_view.html',
+      'kiosk_view.html',
       {
-        id: 'KioskDesignerWindow',
+        id: 'KioskWindow',
         width: 1100,
         height: 720,
         minWidth: 800,
