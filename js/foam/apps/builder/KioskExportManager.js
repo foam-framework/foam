@@ -23,17 +23,6 @@ CLASS({
     {
       type: 'foam.apps.builder.KioskAppConfig',
       name: 'config',
-      postSet: function(old, nu) {
-        if ( old === nu || ( old && old.equals(nu) ) ) return;
-        var self = this;
-        self.onState('IDLE', function() {
-          self.state = 'LOADING';
-          self.aloadSources(function() {
-            self.generateSources();
-            self.state = 'IDLE';
-          });
-        });
-      },
       required: true,
     },
     {
@@ -51,113 +40,64 @@ CLASS({
       transient: true,
     },
     {
-      name: 'cachedSources',
-      factory: function() { return {}; },
-    },
-    {
-      model_: 'foam.core.types.StringEnumProperty',
-      name: 'state',
-      defaultValue: 'IDLE',
-      choices: [
-        ['IDLE', 'Idle'],
-        ['LOADING', 'Loading'],
-        ['EXPORTING', 'Exporting'],
-      ],
-      postSet: function(old, nu, prop) { console.log(this.name_, this.$UID, prop.name, old, nu); },
+      model_: 'FunctionProperty',
+      name: 'agetFile',
+      defaultValue: null
     },
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      var fetch = amemo1(this.agetFile_.bind(this));
+      this.agetFile = function(path) {
+        return function(ret) { return fetch(ret, path); };
+      }.bind(this);
+      if ( this.config ) this.aloadSources();
+    },
     function aloadSources(ret) {
-      var self = this;
-      var n = self.config.EXISTING_SOURCES.length;
-      var c = 0;
-      var sources = new Array(n);
-      self.config.EXISTING_SOURCES.forEach(function(path, i) {
-        var file = self.getFile(path);
-        if ( file ) {
-          sources[i] = file;
-          ++c;
-        } else {
-          self.XHR.create().asend(function(data, xhr, status) {
-            ++c;
-            if ( status ) {
-              self.setFile(path, data);
-              sources[i] = self.getFile(path);
-            }
-            if ( c === n ) {
-              self.existingSources = sources;
-              ret && ret(sources);
-            }
-          }, path);
-        }
-        if ( c === n ) {
-          self.existingSources = sources;
-          ret && ret(sources);
-        }
-      });
+      var afuncs = this.config.EXISTING_SOURCES.map(this.agetFile);
+      return apar.apply(null, afuncs)(function() {
+        this.generateSources();
+        ret && ret();
+      }.bind(this));
     },
     function generateSources() {
       var sources = [];
 
       var out = TemplateOutput.create(this.config);
       this.config.toManifest(out);
-      this.setFile('manifest.json', out.toString());
-      sources.push(this.getFile('manifest.json'));
+      sources.push(this.createFile('manifest.json', out.toString()));
 
-      this.setFile('config.json',
-                   JSONUtil.compact.where(NOT_TRANSIENT).stringify(this.config));
-      sources.push(this.getFile('config.json'));
+      sources.push(this.createFile(
+          'config.json',
+          JSONUtil.compact.where(NOT_TRANSIENT).stringify(this.config)));
 
       this.generatedSources = sources;
     },
-    function exportKiosk() {
-      this.onState('IDLE', function() {
-        this.state = 'EXPORTING';
-        var n = this.existingSources.length + this.generatedSources.length;
-        var c = 0;
-        var sink = {
-          put: function() {
-            ++c;
-            if ( c === n ) this.state = 'IDLE';
-          }.bind(this),
-          error: function() {
-            this.state = 'IDLE';
-          }.bind(this),
-        };
-        var dao = this.ChromeFileSystemDAO.create({}, this.Y);
-        this.existingSources.forEach(function(file) {
-          dao.put(file, sink);
-        });
-        this.generatedSources.forEach(function(file) {
-          dao.put(file, sink);
-        });
-      }.bind(this));
+    function agetFile_(ret, path) {
+      this.XHR.create().asend(function(data, xhr, status) {
+        if ( ! status ) ret && ret(data);
+        ret && ret(this.createFile(path, data));
+      }.bind(this), path);
     },
-    function setFile(path, contents) {
-      var file = this.ChromeFile.create({
+    function createFile(path, contents) {
+      return this.ChromeFile.create({
         path: path,
         contents: contents
       });
-      this.cachedSources[path] = file;
-      return file;
     },
-    function getFile(path) {
-      return this.cachedSources[path];
+    function exportKiosk() {
+      this.aloadSources(this.exportKiosk_.bind(this));
     },
-    function onState(state, f) {
-      if ( this.state === state ) {
-        f();
-        return;
-      }
-
-      var listener = function() {
-        if ( this.state === state ) {
-          f();
-          this.state$.removeListener(listener);
-        }
-      }.bind(this);
-      this.state$.addListener(listener);
+    function exportKiosk_() {
+      var dao = this.ChromeFileSystemDAO.create({}, this.Y);
+      this.existingSources.forEach(function(file) {
+        dao.put(file);
+      });
+      this.generatedSources.forEach(function(file) {
+        dao.put(file);
+      });
     },
   ],
 });
