@@ -15,14 +15,14 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
+    'foam.apps.builder.ExportManager',
     'foam.apps.builder.KioskAppConfigDetailView',
-    'foam.apps.builder.KioskExportManager',
     'foam.apps.builder.KioskView',
     'foam.apps.builder.Panel',
   ],
 
   imports: [
-    'kioskExportManager$',
+    'exportManager$',
   ],
   exports: [
     'url$',
@@ -45,22 +45,18 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.KioskExportManager',
-      name: 'kioskExportManager',
-      postSet: function(old, nu, prop) { console.log(this.name_, prop.name, old && old.$UID, nu && nu.$UID); },
+      type: 'foam.apps.builder.ExportManager',
+      name: 'exportManager',
     },
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      // The first designer view to appear on the scene should initialize the
-      // context's kioskExportManager.
-      if ( ! this.kioskExportManager ) {
-        this.kioskExportManager = this.KioskExportManager.create({
-          config: this.data
-        });
-      }
+      // The first designer view to appear on the scene should preload kiosk
+      // sources in the exportManager.
+      this.exportManager.config = this.data;
+      this.exportManager.aloadSources();
     },
   ],
 

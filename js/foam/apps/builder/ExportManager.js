@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'KioskExportManager',
+  name: 'ExportManager',
 
   requires: [
     'XHR',
@@ -21,7 +21,6 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.KioskAppConfig',
       name: 'config',
       required: true,
     },
@@ -56,16 +55,19 @@ CLASS({
       if ( this.config ) this.aloadSources();
     },
     function aloadSources(ret) {
-      var afuncs = this.config.EXISTING_SOURCES.map(this.agetFile);
-      return apar.apply(null, afuncs)(function() {
-        this.generateSources();
-        ret && ret();
-      }.bind(this));
+      return apar.apply(
+          null,
+          this.config.EXISTING_SOURCES.map(this.agetFile))(function() {
+            this.existingSources = argsToArray(arguments);
+            this.generateSources();
+            ret && ret.apply(
+                this, this.existingSources.concat(this.generatedSources));
+          }.bind(this));
     },
     function generateSources() {
       var sources = [];
 
-      var out = TemplateOutput.create(this.config);
+      var out = TemplateOutput.create(this);
       this.config.toManifest(out);
       sources.push(this.createFile('manifest.json', out.toString()));
 
@@ -87,15 +89,13 @@ CLASS({
         contents: contents
       });
     },
-    function exportKiosk() {
-      this.aloadSources(this.exportKiosk_.bind(this));
+    function exportApp() {
+      this.aloadSources(this.exportApp_.bind(this));
     },
-    function exportKiosk_() {
+    function exportApp_() {
+      var sources = argsToArray(arguments);
       var dao = this.ChromeFileSystemDAO.create({}, this.Y);
-      this.existingSources.forEach(function(file) {
-        dao.put(file);
-      });
-      this.generatedSources.forEach(function(file) {
+      sources.forEach(function(file) {
         dao.put(file);
       });
     },

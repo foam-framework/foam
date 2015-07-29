@@ -15,6 +15,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.BrowserConfig',
+    'foam.apps.builder.ExportManager',
     'foam.apps.builder.KioskApp',
     'foam.apps.builder.KioskAppConfig',
     'foam.apps.builder.KioskDesignerView',
@@ -37,7 +38,7 @@ CLASS({
     'gestureManager',
     'menuSelection$',
     'menuDAO$',
-    'kioskExportManager$',
+    'exportManager$',
   ],
 
   properties: [
@@ -97,8 +98,11 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.KioskExportManager',
-      name: 'kioskExportManager'
+      type: 'foam.apps.builder.ExportManager',
+      name: 'exportManager',
+      factory: function() {
+        return this.ExportManager.create({}, this.Y);
+      },
     },
     {
       type: 'foam.input.touch.TouchManager',
