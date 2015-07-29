@@ -381,6 +381,20 @@ MODEL({
       };
     },
 
+    function amemo1(afunc) {
+      var cache = {};
+      return function(ret, arg) {
+        var key = arg ? arg.toString() : '';
+
+        if ( ! cache[key] ) {
+          cache[key] = afuture();
+          afunc(cache[key].set, arg);
+        }
+        
+        cache[key].get(ret)
+      }
+    },
+
     /**
      * Decorates an afunc to merge all calls to one active execution of the
      * delegate.
