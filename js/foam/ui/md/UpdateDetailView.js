@@ -41,7 +41,7 @@ CLASS({
     },
     {
       name: 'originalData',
-      documentation: 'A clone of the input data, for comparison with edits.'
+      documentation: 'A clone of the input data, for comparison with edits.',
     },
     {
       name: 'data',
@@ -70,6 +70,11 @@ CLASS({
       defaultValue: false
     },
     {
+      name: 'liveEdit',
+      documentation: "Propagate edits immediately, and don't show the save button",
+      defaultValue: false
+    },
+    {
       // Version of the data which changes whenever any property of the data is updated.
       // Used to help trigger isEnabled / isAvailable in Actions.
       model_: 'IntProperty',
@@ -87,6 +92,11 @@ CLASS({
       dynamicValue: function() {
         this.version; this.immutable;
         return ! this.immutable && ! this.originalData.equals(this.data);
+      },
+      postSet: function(old,nu) {
+        if (this.liveEdit) {
+          this.save();
+        }
       }
     },
     {
@@ -129,7 +139,7 @@ CLASS({
 
         this.dao.put(obj, {
           put: function() {
-            self.originalData.copyFrom(obj);
+            self.originalData = obj.deepClone();
             self.$title.innerHTML = self.title;
           },
           error: function() {
