@@ -28,16 +28,44 @@ CLASS({
     ],
   },
 
+  listeners: [
+    {
+      name: 'dataChange',
+      code: function() {
+        if (this.instanceView) {
+          // bind this better
+          //this.instanceView.data = this.instance;
+          //this.instanceView.updateHTML();
+          this.data.model.instance_.prototype_ = null;
+          this.instance = this.data.model.create();
+          this.instanceView.updateHTML();
+        }
+      }
+    }
+  ],
+
   properties: [
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if (nu) {
+          nu.addListener(this.dataChange);
+        }
+        if (old) {
+          old.removeListener(this.dataChange);
+        }
+        this.data.model.instance_.prototype_ = null;
+        this.instance = this.data.model.create();
+      }
+    },
     {
       name: 'instance',
       help: 'An example of your questionnaire as a user would see it.',
-      getter: function() {
-        //this.data.model.instance_.prototype_ = undefined;
-        // return this.data.model.getPrototype().create();
-        console.log(this.data.$UID, "data model", this.data.model.$UID);
-        return this.data.model.create();
-      }
+//       getter: function() {
+//         //this.data.model.instance_.prototype_ = undefined;
+//         // return this.data.model.getPrototype().create();
+//         return this.data.model.create();
+//       }
     }
   ],
 

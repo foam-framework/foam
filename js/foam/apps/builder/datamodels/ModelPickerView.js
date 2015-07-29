@@ -61,7 +61,6 @@ CLASS({
       name: 'className',
       defaultValue: 'md-model-picker-view'
     },
-
   ],
 
   actions: [

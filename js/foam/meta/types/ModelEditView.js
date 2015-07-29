@@ -30,7 +30,33 @@ CLASS({
     'foam.meta.types.StringPropertyEditView',
   ],
 
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        // allow direct editing of the properties array by setting up listeners
+        if ( nu && nu.properties ) {
+          nu.properties.forEach(function(p) {
+            p.addListener(this.subObjectChange);
+          }.bind(this));
+        }
+        if ( old && old.properties ) {
+          old.properties.forEach(function(p) {
+            p.removeListener(this.subObjectChange);
+          }.bind(this));
+        }
+      }
+    },
+  ],
 
+  listeners: [
+    {
+      name: 'subObjectChange',
+      code: function() {
+        this.data.propertyChange('properties', null, this.data.properties);
+      }
+    },
+  ],
 
   templates: [
     function toHTML() {/*
@@ -43,7 +69,7 @@ CLASS({
               </div>
           </div>
           <div class="model-edit-view-list">
-            $$properties{ model_: 'foam.ui.DAOListView', rowView: 'foam.meta.types.EditView' }
+            $$properties{ model_: 'foam.ui.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }
           </div>
         </div>
       </div>
