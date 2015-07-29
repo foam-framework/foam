@@ -223,7 +223,7 @@ var JSONUtil = {
     },
 
     outputModel_: function(out, obj) {
-      out('model_:"')
+      out('"model_":"')
       if ( obj.model_.package ) out(obj.model_.package, '.')
       out(obj.model_.name, '"');
     },
@@ -432,7 +432,7 @@ JSONUtil.prettyModel = {
   __proto__: JSONUtil.pretty,
 
   outputModel_: function(out, obj, indent) {
-    out(indent, 'model_: "', obj.model_.id, '"');
+    out(indent, '"model_": "', obj.model_.id, '"');
   },
 
   keys_: {},
