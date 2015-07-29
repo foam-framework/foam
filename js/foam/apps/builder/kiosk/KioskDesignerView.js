@@ -10,14 +10,14 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
+  package: 'foam.apps.builder.kiosk',
   name: 'KioskDesignerView',
   extendsModel: 'foam.ui.View',
 
   requires: [
     'foam.apps.builder.ExportManager',
-    'foam.apps.builder.KioskAppConfigDetailView',
-    'foam.apps.builder.KioskView',
+    'foam.apps.builder.kiosk.KioskAppConfigDetailView',
+    'foam.apps.builder.kiosk.KioskView',
     'foam.apps.builder.Panel',
   ],
 
@@ -65,9 +65,9 @@ CLASS({
       <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
         $$data{
           model_: 'foam.apps.builder.Panel',
-          innerView: 'foam.apps.builder.KioskAppConfigDetailView',
+          innerView: 'foam.apps.builder.kiosk.KioskAppConfigDetailView',
         }
-        $$data{ model_: 'foam.apps.builder.KioskView' }
+        $$data{ model_: 'foam.apps.builder.kiosk.KioskView' }
       </kiosk-designer>
     */},
     function CSS() {/*

@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
+  package: 'foam.apps.builder.kiosk',
   name: 'KioskAppConfigDetailView',
   extendsModel: 'foam.ui.SimpleView',
 
