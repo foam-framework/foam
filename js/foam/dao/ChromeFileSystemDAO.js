@@ -32,15 +32,35 @@ MODEL({
     {
       name: 'cfs',
       factory: function() {
-        return this.ChromeFileSystem.create();
+        return this.ChromeFileSystem.create({}, this.Y);
+      },
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( old ) old.ready$.removeListener(this.onReadyStateChange);
+        if ( nu ) {
+          nu.ready$.addListener(this.onReadyStateChange);
+          if ( nu.ready ) this.onReadyStateChange();
+        }
       }
-    }
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'backlog_',
+      factory: function() { return []; }
+    },
   ],
 
   methods: [
     {
       name: 'put',
       code: function(o, sink) {
+        if ( ! this.cfs.ready ) {
+          this.backlog_.push(['put', arguments]);
+          return;
+        }
+
+        console.log('put', o);
+
         this.cfs.awrite(o.path, o.contents)(function(o, sink, status) {
           if ( status.error ) {
             sink && sink.error && sink.error(status.error);
@@ -55,6 +75,11 @@ MODEL({
     {
       name: 'find',
       code: function(hash, sink) {
+        if ( ! this.cfs.ready ) {
+          this.backlog_.push(['find', arguments]);
+          return;
+        }
+
         this.console.assert(hash.path);
         this.cfs.aread(hash.path)(function(sink, o) {
           if ( o.error ) {
@@ -72,6 +97,20 @@ MODEL({
     //     return this.cfs.aentriesAll(this.decorateSink_(sink, options));
     //   }
     // }
+  ],
+
+  listeners: [
+    {
+      name: 'onReadyStateChange',
+      code: function() {
+        if ( ! this.cfs.ready ) return;
+        var calls = this.backlog_;
+        for ( var i = 0; i < calls.length; ++i ) {
+          this[calls[i][0]].apply(this, calls[i][1]);
+        }
+        this.backlog_ = [];
+      }
+    }
   ],
 
   actions: [
