@@ -25,6 +25,9 @@ abstract class AbstractX implements X {
   public Object get(String name) {
     return get(this, name);
   }
+  public Value getValue(String name) {
+    return getValue(this, name);
+  }
 
   public X put(String name, Object value) {
     return new XI(this, name, value);
@@ -51,16 +54,16 @@ abstract class AbstractX implements X {
 }
 
 
-class XI
-    extends AbstractX {
+class XI extends AbstractX {
   final X parent_;
   final String name_;
-  final Object value_;
+  final Value value_;
 
   XI(X parent, String name, Object value) {
     parent_ = parent;
     name_ = name;
-    value_ = value;
+    if (value instanceof Value) value_ = (Value) value;
+    else value_ = new SimpleValue(value);
   }
 
   X parent() {
@@ -68,7 +71,11 @@ class XI
   }
 
   public Object get(X x, String name) {
-    return name.equals(name_) ? value_ : parent().get(name);
+    return name.equals(name_) ? value_.get() : parent().get(name);
+  }
+
+  public Value getValue(X x, String name) {
+    return name.equals(name_) ? value_ : parent().getValue(name);
   }
 
 }
@@ -95,6 +102,12 @@ class FactoryXI extends AbstractX {
         parent().get(x, name);
   }
 
+  public Value getValue(X x, String name) {
+    return name.equals(name_) ?
+        new SimpleValue(factory_.create(x)) :
+        parent().getValue(x, name);
+  }
+
 }
 
 
@@ -109,6 +122,9 @@ public class EmptyX extends AbstractX {
   }
 
   public Object get(X x, String name) {
+    return null;
+  }
+  public Value getValue(X x, String name) {
     return null;
   }
 }

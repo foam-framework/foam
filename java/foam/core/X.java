@@ -21,11 +21,12 @@ package foam.core;
  * Interface to dependencies.
  * 'X' is pronounced 'Context'.
  **/
-public interface X
-{
-    public Object get(String name);
-    public Object get(X x, String name);
-    public X put(String name, Object value);
-    public X putFactory(String name, XFactory factory);
-    public Object newInstance(String className);
+public interface X {
+    Object get(String name);
+    Object get(X x, String name);
+    Value getValue(String name);
+    Value getValue(X x, String name);
+    X put(String name, Object value);
+    X putFactory(String name, XFactory factory);
+    Object newInstance(String className);
 }

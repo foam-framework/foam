@@ -112,13 +112,7 @@ public class DetailFragment extends FOAMFragment {
       DetailViewBridge bridge = new DetailViewBridge(context);
       bridge.X(X());
 
-      Object raw = X().get("data");
-      Value value = null;
-      if (raw instanceof Value) {
-        value = (Value) raw;
-      } else if (raw instanceof FObject) {
-        value = new SimpleValue<FObject>((FObject) raw);
-      }
+      Value value = X().getValue("data");
       if (value != null) bridge.setValue(value);
 
       layout.addView(bridge.getView());
