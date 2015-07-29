@@ -75,6 +75,7 @@ CLASS({
                 useSimpleSerialization: false,
               })
             }),
+            detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
             innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'
           }),
         ].dao;

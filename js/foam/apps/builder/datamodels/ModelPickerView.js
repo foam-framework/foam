@@ -92,12 +92,12 @@ CLASS({
     }
   ],
 
- templates: [
+  templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-picker-view-title md-style-trait-standard">Questions</div>
         <div class="md-model-picker-view-name">
-          <div class="md-model-picker-view-edit">$$id{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false }</div>
+          <div class="md-model-picker-view-edit">$$id{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false, inlineStyle: true }</div>
           <div class="md-style-trait-standard">
             $$pick
           </div>

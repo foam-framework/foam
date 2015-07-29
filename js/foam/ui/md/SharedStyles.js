@@ -216,8 +216,9 @@ canvas.createButton {
   background: #fff;
   display: block;
   padding: 10px;
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.38);
-
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.38);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  z-index: 4;
 }
 
 .md-style-trait-standard {
