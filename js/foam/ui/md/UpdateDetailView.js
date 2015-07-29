@@ -75,6 +75,11 @@ CLASS({
       defaultValue: false
     },
     {
+      name: 'exitOnSave',
+      documentation: "If true, saving will also exit the view.",
+      defaultValue: false
+    },
+    {
       // Version of the data which changes whenever any property of the data is updated.
       // Used to help trigger isEnabled / isAvailable in Actions.
       model_: 'IntProperty',
@@ -141,6 +146,10 @@ CLASS({
           put: function() {
             self.originalData = obj.deepClone();
             self.$title.innerHTML = self.title;
+
+            if (self.exitOnSave && ! self.liveEdit) {
+              self.stack.popView();
+            }
           },
           error: function() {
             console.error('Error saving', arguments);
