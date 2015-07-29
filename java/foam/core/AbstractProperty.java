@@ -50,4 +50,14 @@ public abstract class AbstractProperty<T> implements Property<T> {
     if (topic == null) topic = new String[] { "property", getName() };
     return topic;
   }
+
+  @Override
+  public int getElementType() {
+    return getType() & ~(Property.TYPE_ARRAY);
+  }
+
+  @Override
+  public boolean isArray() {
+    return (getType() & Property.TYPE_ARRAY) != 0;
+  }
 }

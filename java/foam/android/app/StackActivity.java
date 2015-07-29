@@ -74,19 +74,19 @@ public abstract class StackActivity extends FOAMActionBarActivity implements Sta
   @Override
   public void pushMemento(Bundle newMemento) {
     mementoStack.add(fragment.getMemento()); // Fetch the latest, not the old creation-time one.
-    updateView(newMemento, FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+    updateView(newMemento, FragmentTransaction.TRANSIT_FRAGMENT_FADE);
   }
 
   @Override
   public void replaceMemento(Bundle newMemento) {
-    updateView(newMemento, FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+    updateView(newMemento, FragmentTransaction.TRANSIT_FRAGMENT_FADE);
   }
 
   @Override
   public void popMemento() {
     int index = mementoStack.size() - 1;
     if (index >= 0) {
-      updateView(mementoStack.remove(index), FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+      updateView(mementoStack.remove(index), FragmentTransaction.TRANSIT_FRAGMENT_FADE);
     }
     // TODO(braden): Maybe recreate the defaultMemento here? Probably not.
   }

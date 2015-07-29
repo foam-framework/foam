@@ -41,6 +41,21 @@ public interface Property<T> extends Feature<T>, Comparator<Object>, Expression<
   public boolean isHidden();
   public String getHelp();
   public String[] getPropertyTopic();
+
+  // Enum of the inner field type for this property. This is the fundamental element type; the type
+  // number for an array is the union of the element type and the array type. Therefore arrays can
+  // be checked by masking.
+  int TYPE_STRING = 1;
+  int TYPE_INTEGER = 2;
+  int TYPE_DOUBLE = 3;
+  int TYPE_FLOAT = 4;
+  int TYPE_OBJECT = 5;
+  int TYPE_BOOLEAN = 6;
+  int TYPE_ARRAY = 16384;
+
+  int getType();
+  int getElementType();
+  boolean isArray();
   // public boolean hasDefaultValue();
   //  public Object  createDefaultValue);
 }

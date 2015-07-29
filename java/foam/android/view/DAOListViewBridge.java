@@ -11,20 +11,27 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import java.util.List;
+
+import foam.core.ArrayProperty;
 import foam.android.core.AttributeUtils;
-import foam.dao.DAO;
+import foam.core.Property;
 import foam.core.X;
+import foam.dao.DAO;
 
 /**
  * FOAM wrapper for presenting a DAO's data in a RecyclerView in list mode.
  *
  * The view to use for the row is specified in XML as foam:row_view and its value can either be a
  * <code>@layout/foobar</code> layout reference or a class name.
+ *
+ * Set <code>foam:dividers="false"</code> to disable the row separators.
  */
 public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
   private DAOAdapter adapter;
   private Context context;
   private String rowView;
+  private boolean decorators;
 
   public DAOListViewBridge(Context context) {
     this(context, null);
@@ -35,6 +42,7 @@ public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
 
     // Look in the attrs for a row_view setting.
     rowView = AttributeUtils.find(attrs, "row_view");
+    decorators = AttributeUtils.findBoolean(attrs, "dividers", true);
     tryToBuildView();
   }
 
@@ -58,8 +66,20 @@ public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
     X x = X();
     if (x == null) return;
 
-    DAO dao = (DAO) x.get("dao");
-    if (dao == null) dao = (DAO) x.get("data");
+    DAO dao = null;
+    Object raw = x.get("data");
+    if (raw != null) {
+      if (raw instanceof DAO) {
+        dao = (DAO) raw;
+      } else {
+        if (raw instanceof List && x.get("prop") != null) {
+          Property p = (Property) x.get("prop");
+          if (p.isArray()) dao = ((ArrayProperty) p).getAsDAO(raw);
+        }
+      }
+    } else {
+      dao = (DAO) x.get("dao");
+    }
     if (dao == null) return;
 
     adapter = new DAOAdapter(x, dao, new DetailViewFactory(rowView, dao.getModel()));
@@ -67,7 +87,7 @@ public class DAOListViewBridge extends OneWayViewBridge<RecyclerView, DAO> {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
     view.setLayoutManager(layoutManager);
-    view.addItemDecoration(new RowDecoration(context));
+    if (decorators) view.addItemDecoration(new RowDecoration(context));
   }
 
   @Override
