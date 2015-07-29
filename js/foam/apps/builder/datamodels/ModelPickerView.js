@@ -35,9 +35,9 @@ CLASS({
   methods: [
     function put(o, sink) {
       /* Receive update from our UpdateDetailView */
-      this.data = o;
+      this.data = o.deepClone();
       this.data.instance_.prototype_ = undefined; // reset prototype so changes will be rebuilt
-      sink && sink.put(o);
+      sink && sink.put(this.data);
     },
     function remove(o, sink) {
       /* Receive update from our UpdateDetailView, Nop. */
@@ -73,8 +73,9 @@ CLASS({
         // we export ourself as the dao for the editor, so when it puts the result back
         // we react in our put() method.
         this.stack.pushView(this.UpdateDetailView.create({
-          data: this.data,
+          data$: this.data$,
           innerView: 'foam.meta.types.ModelEditView',
+          liveEdit: true,
         }));
       }
     }
