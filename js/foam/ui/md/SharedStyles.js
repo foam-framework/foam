@@ -184,6 +184,11 @@ input[name=q]::-webkit-input-placeholder {
   z-index: 0;
 }
 
+.md-title {
+  font-size: 120%;
+  color: black;
+}
+
 canvas.createButton {
   position: absolute;
   bottom: 10px;

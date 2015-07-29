@@ -34,13 +34,6 @@ CLASS({
       factory: function() {
         return this.Model.create({
           extendsModel: 'foam.apps.builder.questionnaire.Questionnaire',
-          properties: [
-            this.BooleanProperty.create({ name: 'boolprop' }),
-            this.StringProperty.create({ name: 'stringprop' }),
-            this.IntProperty.create({ name: 'intprop' }),
-            this.FloatProperty.create({ name: 'floatprop' }),
-            this.DateProperty.create({ name: 'dateprop' }),
-          ]
         });
       },
     }

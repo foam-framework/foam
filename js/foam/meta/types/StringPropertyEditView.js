@@ -26,9 +26,12 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-card">
-          <h2>String Property</h2>
+          <div class="md-title md-style-trait-standard">String Property</div>
           <div>
             $$name{ model_: 'foam.ui.TextFieldView' }
+          </div>
+          <div>
+            $$label{ model_: 'foam.ui.TextFieldView' }
           </div>
           <div>
             $$defaultValue{ model_: 'foam.ui.TextFieldView' }

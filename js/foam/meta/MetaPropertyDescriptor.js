@@ -21,10 +21,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'ModelProperty',
+      model_: 'StringProperty',
       label: 'The Type of the property',
       name: 'model',
       documentation: function() {/* The model id of the new property. */},
+      defaultValue: 'StringProperty',
       view: {
          factory_: 'foam.ui.ChoiceView',
          choices: [

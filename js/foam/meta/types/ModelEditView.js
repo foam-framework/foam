@@ -30,12 +30,18 @@ CLASS({
     'foam.meta.types.StringPropertyEditView',
     'foam.ui.md.UpdateDetailView',
     'foam.meta.MetaPropertyDescriptor',
+    'foam.meta.MetaDescriptorView',
+    'foam.ui.md.PopupChoiceView',
   ],
 
   imports: ['stack'],
   exports: [' as dao'],
 
   properties: [
+    {
+      name: 'className',
+      defaultValue: 'md-model-edit-view'
+    },
     {
       name: 'data',
       postSet: function(old, nu) {
@@ -60,9 +66,11 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
       //isAvailable: function() { return this.data.showAdd; },
       action: function() {
+        this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
         var edit = this.UpdateDetailView.create({
           data: this.MetaPropertyDescriptor.create(),
           exitOnSave: true,
+          innerView: 'foam.meta.MetaDescriptorView',
         });
         this.stack.pushView(edit);
       }
@@ -80,7 +88,7 @@ CLASS({
 
   methods: [
     function put(o, sink) {
-      var prop = o.model.create({ name: o.name });
+      var prop = this.X.lookup(o.model).create({ name: o.name });
       this.data.properties.put(prop);
       prop.addListener(this.subObjectChange);
       this.subObjectChange();
@@ -97,7 +105,7 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-edit-view-container">
           <div class="md-heading md-model-edit-view-heading">
-            <h2>Model</h2>
+            <div class="md-title md-style-trait-standard">Model</div>
               <div>
                 $$name{ model_: 'foam.ui.TextFieldView' }
               </div>
@@ -122,6 +130,11 @@ CLASS({
       </div>
     */},
     function CSS() {/*
+      .md-model-edit-view {
+        flex-grow: 1;
+        display: flex;
+        position: relative;
+      }
       .md-model-edit-view-container {
         display: flex;
         flex-direction: column;
@@ -135,6 +148,12 @@ CLASS({
         overflow-y: scroll;
         flex-grow: 1;
       }
+
+      .md-model-edit-view h2 {
+        font-size: 120%;
+        color: #777;
+      }
+
     */}
   ]
 
