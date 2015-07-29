@@ -174,7 +174,9 @@ CLASS({
       name: 'reset',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAdklEQVQ4y+WTuQ3AIBAEaQKK8NN/BEUArmccgGyj43MMIZo5TqtFqbUPJxYtbg2OvS44IJQKhguwdUETSiXjXr77KhGICRjihWKm8Dw3KXP4Z5VZ/Lfw7B5kyD1cy5C7uAx5iJcht6vhRTUi4OrC0Szftvi/vAFNdbZ2Dp661QAAAABJRU5ErkJggg==',
       isAvailable: function() { return this.outstandingChanges; },
-      action: function() { this.data.copyFrom(this.originalData); }
+      action: function() {
+        this.data = this.originalData.deepClone();
+      }
     }
   ],
 
