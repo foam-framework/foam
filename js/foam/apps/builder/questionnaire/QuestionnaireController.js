@@ -18,6 +18,8 @@ CLASS({
   requires: [
     'foam.apps.builder.questionnaire.DetailView',
     'foam.apps.builder.questionnaire.Questionnaire',
+    'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
   ],
 
   exports: [
@@ -33,7 +35,7 @@ CLASS({
       name: 'dao',
       help: 'The store of questionnaires filled in by users.',
       lazyFactory: function() {
-        this.EasyDAO.create({
+        return this.EasyDAO.create({
           model: this.Questionnaire,
           name: 'questionnaires',
           daoType: this.IDBDAO,
@@ -56,7 +58,18 @@ CLASS({
   methods: [
     function reload() {
       this.content = this.appConfig.model.create();
-    }
+    },
+    function home() {
+      this.dao.put(this.content, {
+          put: function() {
+            this.reload();
+            //TODO: save ok notification
+          }.bind(this),
+          error: function() {
+            //TODO: error notification
+          }.bind(this),
+      });
+    },
   ],
 
   templates: [

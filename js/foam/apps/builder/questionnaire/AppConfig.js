@@ -42,6 +42,11 @@ CLASS({
       help: 'Enables the reload button in the toolbar.',
       defaultValue: true,
     },
+    {
+      name: 'enableHomeBttn',
+      help: 'Enables the home(save) button in the toolbar.',
+      defaultValue: true,
+    },
 
   ]
 });

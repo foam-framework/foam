@@ -13,4 +13,18 @@ CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'Questionnaire',
 
+  properties: [
+    {
+      name: 'id',
+      help: 'The unique id for this record.',
+      hidden: true,
+    },
+    {
+      model_: 'DateTimeProperty',
+      name: 'modified',
+      help: 'The last modified time of the record.',
+      hidden: true,
+    }
+  ],
+
 });
