@@ -119,6 +119,9 @@ public abstract class AbstractFObject extends PubSubSource implements FObject, S
     return compareTo(o) == 0;
   }
 
+  @Override
+  public abstract int hashCode();
+
   public abstract StringBuilder append(StringBuilder sb);
 
   public String toString() {
