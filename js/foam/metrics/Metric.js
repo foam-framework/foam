@@ -52,7 +52,8 @@ CLASS({
         'event',
         'count',
         'timing',
-        'error'
+        'error',
+        'pageview'
       ]
     }
   ],

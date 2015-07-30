@@ -82,6 +82,8 @@ CLASS({
       } else if ( o.type === 'error' ) {
         data.push('t=exception');
         data.push('exd=' + o.name);
+      } else if ( o.type === 'pageview' ) {
+        data.push('dl=', encodeURIComponent(o.url));
       } else {
         data.push('t=event');
         data.push('ec=' + encodeURIComponent(o.subType));
