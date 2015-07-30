@@ -161,7 +161,7 @@ MODEL0({
         if ( this[idx].id === id ) {
           var rem = this.splice(idx,1)[0];
           //        this.notify_('remove', rem);
-          sink && sink.remove && sink.remove(rem[0]);
+          sink && sink.remove && sink.remove(rem);
           return;
         }
       }
