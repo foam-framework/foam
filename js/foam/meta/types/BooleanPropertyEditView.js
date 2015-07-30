@@ -20,13 +20,13 @@ CLASS({
   name: 'BooleanPropertyEditView',
   package: 'foam.meta.types',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.meta.types.EditView',
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-card">
-          <div class="md-title md-style-trait-standard">Boolean Property</div>
+          <% this.headerHTML(out); %>
           <div>
             $$name{ model_: 'foam.ui.TextFieldView', mode: 'read-only' }
           </div>

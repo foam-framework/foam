@@ -34,7 +34,7 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-card">
-          <div class="md-title md-style-trait-standard">Untyped Property</div>
+          <% this.headerHTML(out); %>
           <div>
             $$data{ model_: 'foam.ui.md.DetailView' }
           </div>

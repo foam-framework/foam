@@ -20,7 +20,7 @@ CLASS({
   name: 'IntPropertyEditView',
   package: 'foam.meta.types',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.meta.types.EditView',
 
   properties: [
 
@@ -34,7 +34,7 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-card">
-          <div class="md-title md-style-trait-standard">Integer Property</div>
+          <% this.headerHTML(out); %>
           <div>
             $$name{ model_: 'foam.ui.TextFieldView' }
           </div>

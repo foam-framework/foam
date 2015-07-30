@@ -35,7 +35,11 @@ CLASS({
   ],
 
   imports: ['stack'],
-  exports: [' as dao'],
+  exports: [
+    ' as dao',
+    'metaEditModelTitle',
+    'metaEditPropertyTitle',
+  ],
 
   properties: [
     {
@@ -58,6 +62,15 @@ CLASS({
         }
       }
     },
+    {
+      name: 'metaEditModelTitle',
+      defaultValue: 'Edit Model',
+    },
+    {
+      name: 'metaEditPropertyTitle',
+      defaultValue: 'Edit Property',
+    },
+
   ],
 
   actions: [
@@ -96,7 +109,13 @@ CLASS({
       sink && sink.put(prop);
     },
     function remove(o, sink) {
-      this.data.properties.remove(o, sink);
+      this.data.properties.remove(o, {
+        remove: function(p) {
+          p.removeListener(this.subObjectChange);
+          sink && sink.remove(p);
+        }.bind(this)
+      });
+      this.subObjectChange();
     },
   ],
 
@@ -105,10 +124,10 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-edit-view-container">
           <div class="md-heading md-model-edit-view-heading">
-            <div class="md-title md-style-trait-standard">Model</div>
-              <div>
-                $$name{ model_: 'foam.ui.TextFieldView' }
-              </div>
+            <% this.headerHTML(out, this.metaEditModelTitle); %>
+            <div>
+              $$name{ model_: 'foam.ui.TextFieldView' }
+            </div>
           </div>
           <div class="model-edit-view-list">
             $$properties{ model_: 'foam.ui.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }
