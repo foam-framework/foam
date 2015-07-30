@@ -36,6 +36,12 @@ CLASS({
           extendsModel: 'foam.apps.builder.questionnaire.Questionnaire',
         });
       },
-    }
+    },
+    {
+      name: 'enableReloadBttn',
+      help: 'Enables the reload button in the toolbar.',
+      defaultValue: true,
+    },
+
   ]
 });

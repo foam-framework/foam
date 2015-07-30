@@ -15,14 +15,13 @@ CLASS({
   extendsModel: 'foam.ui.md.DetailView',
 
 
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-        $$appName
-        $$model{ model_: 'foam.ui.md.DetailView' }
-      </div>
-    */},
-    function CSS() {/*
-    */},
-  ],
+//  templates: [
+//     function toHTML() {/*
+//       <div id="%%id" <%= this.cssClassAttr() %>>
+//         $$model{ model_: 'foam.ui.md.DetailView' }
+//       </div>
+//     */},
+//     function CSS() {/*
+//     */},
+//  ],
 });
