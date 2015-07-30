@@ -23,6 +23,7 @@ import foam.android.core.FOAMFragment;
  * Subclasses must implement {@link #defaultMemento()} to provide the default, fresh-start state.
  */
 public abstract class StackActivity extends FOAMActionBarActivity implements StackManager {
+  private static final String LOG_TAG = "FOAM StackActivity";
   private FrameLayout frame;
   @IdRes
   private final int frameId = 278;
@@ -123,11 +124,21 @@ public abstract class StackActivity extends FOAMActionBarActivity implements Sta
     FragmentManager manager = getSupportFragmentManager();
     FragmentTransaction trans = manager.beginTransaction();
 
-    fragment = (FOAMFragment) X().newInstance(memento.getString("fragment_"));
-    if (fragment == null) {
-      Log.e("FOAM StackActivity", "Failed to load fragment_ for memento: " + memento.getString("fragment_"));
+    fragment = null;
+    String className = memento.getString("fragment_");
+    try {
+      fragment = (FOAMFragment) X().newInstance(className);
+    } catch(ClassNotFoundException e) {
+      Log.e(LOG_TAG, "Fragment class not found: " + className);
+      return;
+    } catch(InstantiationException e) {
+      Log.e(LOG_TAG, "Error initializing fragment " + className, e);
+      return;
+    } catch(IllegalAccessException e) {
+      Log.e(LOG_TAG, "Could not access default constructor for " + className);
       return;
     }
+
     fragment.setArguments(memento);
     trans.replace(frameId, fragment);
     trans.setTransition(transition);
