@@ -160,7 +160,7 @@ MODEL0({
       for ( var idx = 0 ; idx < this.length; idx++ ) {
         if ( this[idx].id === id ) {
           var rem = this.splice(idx,1)[0];
-          //        this.notify_('remove', rem);
+          this.notify_('remove', [rem]);
           sink && sink.remove && sink.remove(rem);
           return;
         }
@@ -175,7 +175,7 @@ MODEL0({
         var obj = this[i];
         if ( options.query.f(obj) ) {
           var rem = this.splice(i,1)[0];
-          //        this.notify_('remove', [rem]);
+          this.notify_('remove', [rem]);
           sink && sink.remove && sink.remove(rem);
           i--;
         }
