@@ -24,7 +24,7 @@ CLASS({
     'foam.ui.md.PopupChoiceView',
   ],
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.meta.types.EditView',
 
   properties: [
     {
@@ -68,15 +68,12 @@ CLASS({
 
       sink && sink.put(prop);
     },
-    function remove(o, sink) {
-      this.data.properties.remove(o, sink);
-    },
   ],
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-title md-style-trait-standard">New Property</div>
+        <% this.headerHTML(out) %>
         $$name
         $$model
       </div>

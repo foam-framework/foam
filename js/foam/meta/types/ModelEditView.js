@@ -84,7 +84,10 @@ CLASS({
           data: this.MetaPropertyDescriptor.create(),
           exitOnSave: true,
           innerView: 'foam.meta.MetaDescriptorView',
-        });
+        }, this.Y.sub({
+          metaEditPropertyTitle: 'Add New',
+          dao: { put: this.put.bind(this) }
+        }));
         this.stack.pushView(edit);
       }
     },

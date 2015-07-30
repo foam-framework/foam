@@ -14,8 +14,24 @@ CLASS({
   name: 'EditView',
   extendsModel: 'foam.ui.md.DetailView',
 
+  exports: [
+    'metaEditModelTitle',
+    'metaEditPropertyTitle',
+  ],
+
   requires: [
     'foam.apps.builder.datamodels.ModelPickerView'
+  ],
+
+  properties: [
+    {
+      name: 'metaEditModelTitle',
+      defaultValue: 'Edit your Questionnaire',
+    },
+    {
+      name: 'metaEditPropertyTitle',
+      defaultValue: 'Edit Question',
+    },
   ],
 
   templates: [
