@@ -40,7 +40,6 @@ CLASS({
 
   models: [
     {
-      package: 'foam.browser.ui.BrowserView',
       name: 'InnerBrowserView',
       extendsModel: 'foam.ui.DetailView',
       requires: [
