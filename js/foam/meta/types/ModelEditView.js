@@ -86,7 +86,7 @@ CLASS({
           innerView: 'foam.meta.MetaDescriptorView',
         }, this.Y.sub({
           metaEditPropertyTitle: 'Add New',
-          dao: { put: this.put.bind(this) }
+          dao: { put: this.put.bind(this) } // hide remove(), since it's a new property we don't have already
         }));
         this.stack.pushView(edit);
       }
@@ -104,6 +104,7 @@ CLASS({
 
   methods: [
     function put(o, sink) {
+      /* TODO: this is only used by the create action's view */
       var prop = this.X.lookup(o.model).create({ name: o.name });
       this.data.properties.put(prop);
       prop.addListener(this.subObjectChange);
@@ -112,6 +113,7 @@ CLASS({
       sink && sink.put(prop);
     },
     function remove(o, sink) {
+      /* TODO: this is only used by delete actions on property citation views */
       this.data.properties.remove(o, {
         remove: function(p) {
           p.removeListener(this.subObjectChange);

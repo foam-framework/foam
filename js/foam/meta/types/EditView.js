@@ -78,7 +78,7 @@ CLASS({
       }
       .meta-edit-view-right-title-icon {
         flex-shrink: 0;
-        padding: 0px 8px;
+        padding-left: 8px;
       }
       .meta-edit-view .md-card {
         flex-grow: 1;
