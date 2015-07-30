@@ -25,9 +25,9 @@ CLASS({
   ],
 
   methods: {
-    send_: function(o, data, sink) {
+    send_: function(endpoint, o, data, sink) {
       var e = this.document.createElement('img');
-      e.src = this.endpoint + "?" + data;
+      e.src = endpoint + "?" + data;
     }
   }
 });

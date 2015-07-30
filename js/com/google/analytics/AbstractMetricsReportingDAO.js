@@ -49,9 +49,9 @@ CLASS({
       transient: true
     },
     {
-      model_: 'StringProperty',
-      name: 'endpoint',
-      defaultValue: 'http://www.google-analytics.com/collect',
+      model_: 'StringArrayProperty',
+      name: 'endpoints',
+      factory: function() { return [ 'http://www.google-analytics.com/collect' ]; },
       transient: true
     }
   ],
@@ -97,7 +97,9 @@ CLASS({
 
       data = data.join('&');
 
-      this.send_(o, data, sink);
+      for ( var i = 0; i < this.endpoints.length; ++i ) {
+        this.send_(this.endpoints[i], o, data, sink);
+      }
     }
   }
 });

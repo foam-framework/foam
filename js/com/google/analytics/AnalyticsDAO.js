@@ -20,13 +20,29 @@ CLASS({
   package: 'com.google.analytics',
   extendsModel: 'foam.dao.ProxyDAO',
   requires: [
-    'com.google.analytics.WebMetricsReportingDAO',
-    'PersistentContext',
     'Binding',
-    'foam.dao.IDBDAO',
-    'foam.dao.FutureDAO'
+    'PersistentContext',
+    'com.google.analytics.WebMetricsReportingDAO',
+    'com.google.analytics.XHRMetricsReportingDAO',
+    'foam.core.dao.SplitDAO',
+    'foam.dao.FutureDAO',
+    'foam.dao.IDBDAO'
   ],
   properties: [
+    {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'daoType',
+      defaultValue: 'WEB',
+      choices: [
+        ['WEB', 'Web'],
+        ['XHR', 'XHR']
+      ],
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'debug',
+      defaultValue: false
+    },
     {
       model_: 'StringProperty',
       name: 'propertyId'
@@ -47,6 +63,11 @@ CLASS({
       model_: 'StringProperty',
       name: 'endpoint',
       defaultValue: 'http://www.google-analytics.com/collect'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'debugEndpoint',
+      defaultValue: 'https://www.google-analytics.com/debug/collect'
     },
     {
       name: 'persistentContext',
@@ -72,10 +93,25 @@ CLASS({
               appName: this.appName,
               appId: this.appId,
               appVersion: this.appVersion,
-              endpoint: this.endpoint
+              endpoints: this.debug ?
+                  [this.endpoint, this.debugEndpoint] :
+                  [this.endpoint]
             })
         });
       }
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      this.X.dynamic(
+          function() { this.debug; this.endpoint; this.debugEndpoint; }.bind(this),
+          function() {
+            this.delegate.endpoints = this.debug ?
+                [this.endpoint, this.debugEndpoint] :
+                [this.endpoint];
+          }.bind(this));
     }
   ]
 });
