@@ -395,13 +395,19 @@ CLASS({
       for ( var i = 0; i < ids.length; i++ ) {
         var model = models[ids[i]];
         if ( this.precompileTemplates ) {
-          for ( var j = 0 ; j < model.templates.length ; j++ ) {
-            var t = model.templates[j];
-            // It's safe to remove leading and trailing whitespace from CSS.
-            if ( t.name === 'CSS' ) t.template = t.template.split('\n').map(function(s) { return s.trim(); }).join('\n');
-            t.code = TemplateUtil.compile(t);
-            t.clearProperty('template');
+
+          function precompile(model) {
+            for ( var j = 0 ; j < model.templates.length ; j++ ) {
+              var t = model.templates[j];
+              // It's safe to remove leading and trailing whitespace from CSS.
+              if ( t.name === 'CSS' ) t.template = t.template.split('\n').map(function(s) { return s.trim(); }).join('\n');
+              t.code = TemplateUtil.compile(t);
+              t.clearProperty('template');
+            }
+            model.models.forEach(precompile)
           }
+          
+          precompile(model);
         }
         contents += 'CLASS(';
         var formatter = this.precompileTemplates ? this.formatter : JSONUtil.compact;
