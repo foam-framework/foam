@@ -58,7 +58,7 @@ public class TreeIndex implements Index {
   }
 
   public long size(Object state) {
-    return state != null ? ((Map) state).size() : 0l;
+    return state != null ? ((Map) state).size() : 0L;
   }
 
   class TreePlan implements Plan {
