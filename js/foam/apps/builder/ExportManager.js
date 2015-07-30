@@ -17,6 +17,11 @@ CLASS({
     'XHR',
     'foam.dao.ChromeFile',
     'foam.dao.ChromeFileSystemDAO',
+    'foam.metrics.Error',
+    'foam.metrics.Event',
+  ],
+  imports: [
+    'metricsDAO',
   ],
 
   properties: [
@@ -90,14 +95,38 @@ CLASS({
       });
     },
     function exportApp() {
+      this.metricsDAO.put(this.Event.create({
+        name: 'exportAppStart',
+        label: this.config.model_.id || this.config.name_
+      }));
       this.aloadSources(this.exportApp_.bind(this));
     },
     function exportApp_() {
       var sources = argsToArray(arguments);
       var dao = this.ChromeFileSystemDAO.create({}, this.Y);
-      sources.forEach(function(file) {
-        dao.put(file);
-      });
+      apar.apply(
+          null,
+          sources.map(function(file) {
+            return function(ret) {
+              dao.put(file, {
+                put: function() { ret(true); },
+                error: function() { ret(false); },
+              });
+            };
+          }))(this.finalizeExport.bind(this));
+    },
+    function finalizeExport() {
+      if ( argsToArray(arguments).every(function(status) { return status; }) ) {
+        this.metricsDAO.put(this.Event.create({
+          name: 'exportAppFinish',
+          label: this.config.model_.id || this.config.name_
+        }));
+      } else {
+        this.metricsDAO.put(this.Error.create({
+          name: 'exportAppFail:' +
+              (this.config.model_.id || this.config.name),
+        }));
+      }
     },
   ],
 });

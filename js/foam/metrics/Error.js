@@ -11,18 +11,18 @@
 
 CLASS({
   package: 'foam.metrics',
-  name: 'PageView',
+  name: 'Error',
   extendsModel: 'foam.metrics.Metric',
 
   properties: [
     {
       name: 'type',
-      defaultValue: 'pageview',
+      defaultValue: 'error',
     },
     {
-      model_: 'StringProperty',
-      name: 'url',
-      required: true,
+      model_: 'BooleanProperty',
+      name: 'isFatal',
+      defaultValue: false,
     },
   ],
 });

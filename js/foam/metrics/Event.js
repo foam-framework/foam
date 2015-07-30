@@ -11,18 +11,17 @@
 
 CLASS({
   package: 'foam.metrics',
-  name: 'PageView',
+  name: 'Event',
   extendsModel: 'foam.metrics.Metric',
 
   properties: [
     {
       name: 'type',
-      defaultValue: 'pageview',
+      defaultValue: 'event',
     },
     {
       model_: 'StringProperty',
-      name: 'url',
-      required: true,
+      name: 'label',
     },
   ],
 });

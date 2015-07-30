@@ -82,13 +82,16 @@ CLASS({
       } else if ( o.type === 'error' ) {
         data.push('t=exception');
         data.push('exd=' + o.name);
+        data.push('exf=' + (o.isFatal ? '1' : '0'));
       } else if ( o.type === 'pageview' ) {
+        data.push('t=pageview');
         data.push('dl=', encodeURIComponent(o.url));
       } else {
         data.push('t=event');
         data.push('ec=' + encodeURIComponent(o.subType));
         data.push('ea=' + encodeURIComponent(o.name));
         data.push('ev=' + o.value);
+        if  ( o.label ) data.push('el=' + o.label);
       }
 
       if ( ! o.interactive ) {

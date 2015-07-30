@@ -26,7 +26,13 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'name'
+      name: 'name',
+      documentation: function() {/*
+        Meaning varies based on $$DOC{ref:'.type'}.
+        <p>$$DOC{ref:'.type'} = timing => User timing variable name</p>
+        <p>$$DOC{ref:'.type'} = error  => Exception description</p>
+        <p>$$DOC{ref:'.type'} = event  => Event action</p>
+      */},
     },
     {
       model_: 'IntProperty',
