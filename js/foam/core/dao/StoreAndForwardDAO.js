@@ -20,13 +20,18 @@ CLASS({
   package: 'foam.core.dao',
   extendsModel: 'foam.dao.ProxyDAO',
 
+  requires: [
+    'foam.dao.IDBDAO',
+    'foam.dao.SeqNoDAO'
+  ],
+
   models: [
     {
       name: 'StoreAndForwardOperation',
       properties: [
         { model_: 'IntProperty', name: 'id' },
         { model_: 'StringProperty', name: 'method', view: { factory_: 'foam.ui.ChoiceView', choices: ['put', 'remove'] } },
-        { name: 'obj' },
+        { name: 'obj' }
       ]
     }
   ],
@@ -35,20 +40,21 @@ CLASS({
     { name: 'storageName' },
     { name: 'store', required: true, type: 'DAO',
       factory: function() {
-        return SeqNoDAO.create({
-          delegate: IDBDAO.create({
+        // TODO(markdittmer): There should be an easier way to ensure that the
+        // IDBDAO can correctly deserialize inner models.
+        var Y = this.Y.sub();
+        Y.registerModel(this.StoreAndForwardOperation);
+        return this.SeqNoDAO.create({
+          delegate: this.IDBDAO.create({
             model: this.StoreAndForwardOperation,
-            name: this.storageName || ( this.delegate.model ? this.delegate.model.plural - 'operations' : '' ),
+            name: this.storageName || ( this.delegate.model ? this.delegate.model.plural + '-operations' : '' ),
             useSimpleSerialization: false
-          }),
+          }, Y)
         });
       }
     },
     { model_: 'IntProperty', name: 'retryInterval', units: 'ms', defaultValue: 5000 },
     { model_: 'BooleanProperty', name: 'syncing', defaultValue: false }
-  ],
-
-  models: [
   ],
 
   methods: {

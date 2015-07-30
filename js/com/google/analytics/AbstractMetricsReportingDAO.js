@@ -61,7 +61,8 @@ CLASS({
       var data = [
         'v=1',
         'tid=' + this.propertyId,
-        'cid=' + this.clientId
+        'cid=' + this.clientId,
+        'qt=' + (Date.now() - o.created)
       ];
 
       if ( this.appName ) {
@@ -102,8 +103,25 @@ CLASS({
 
       data = data.join('&');
 
-      for ( var i = 0; i < this.endpoints.length; ++i ) {
-        this.send_(this.endpoints[i], o, data, sink);
+      this.send(o, data, sink);
+    },
+    send: function(o, data, sink) {
+      var n = this.endpoints.length;
+      var c = 0;
+      var done = false;
+      var multiSink = {
+        put: function(o) {
+          ++c;
+          if ( c === n && ! done ) sink && sink.put && sink.put(o);
+        },
+        error: function(e) {
+          if ( ! done ) sink && sink.error && sink.error(e);
+          done = true;
+        }
+      };
+
+      for ( var i = 0; i < n; ++i ) {
+        this.send_(this.endpoints[i], o, data, multiSink);
       }
     }
   }

@@ -24,7 +24,7 @@ CLASS({
     'PersistentContext',
     'com.google.analytics.WebMetricsReportingDAO',
     'com.google.analytics.XHRMetricsReportingDAO',
-    'foam.core.dao.SplitDAO',
+    'foam.core.dao.StoreAndForwardDAO',
     'foam.dao.FutureDAO',
     'foam.dao.IDBDAO'
   ],
@@ -84,19 +84,35 @@ CLASS({
       }
     },
     {
-      name: 'delegate',
+      name: 'metricsFutureDAO',
       factory: function() {
         return this.FutureDAO.create({
           future: this.persistentContext.bindObject(
-            'analyticsDAO', this.WebMetricsReportingDAO, {
-              propertyId: this.propertyId,
-              appName: this.appName,
-              appId: this.appId,
-              appVersion: this.appVersion,
-              endpoints: this.debug ?
-                  [this.endpoint, this.debugEndpoint] :
-                  [this.endpoint]
-            })
+              'analyticsDAO',
+              this.daoType === 'XHR' ? this.XHRMetricsReportingDAO :
+                  this.WebMetricsReportingDAO, {
+                    propertyId: this.propertyId,
+                    appName: this.appName,
+                    appId: this.appId,
+                    appVersion: this.appVersion,
+                    endpoints: this.debug ?
+                        [this.endpoint, this.debugEndpoint] :
+                        [this.endpoint]
+                  })
+        });
+      },
+    },
+    {
+      name: 'storageName',
+      transient: true,
+      defaultValue: 'AnalyticsDAO-operations'
+    },
+    {
+      name: 'delegate',
+      factory: function() {
+        return this.StoreAndForwardDAO.create({
+          storageName: this.storageName,
+          delegate: this.metricsFutureDAO
         });
       }
     }
@@ -108,9 +124,11 @@ CLASS({
       this.X.dynamic(
           function() { this.debug; this.endpoint; this.debugEndpoint; }.bind(this),
           function() {
-            this.delegate.endpoints = this.debug ?
+            this.metricsFutureDAO.future(function(metricsDAO) {
+              metricsDAO.endpoints = this.debug ?
                 [this.endpoint, this.debugEndpoint] :
                 [this.endpoint];
+            }.bind(this));
           }.bind(this));
     }
   ]

@@ -61,7 +61,12 @@ CLASS({
         'error',
         'pageview'
       ]
-    }
+    },
+    {
+      model_: 'IntProperty',
+      name: 'created',
+      factory: function() { return Date.now(); }
+    },
   ],
 
   methods: {
