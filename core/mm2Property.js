@@ -50,6 +50,7 @@ var Property = {
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
+      mode: 'read-only', // TODO: this should be 'final' when available
       help: 'The coding identifier for the property.',
       documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
         $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
