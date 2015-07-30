@@ -28,5 +28,5 @@ public interface X {
     Value getValue(X x, String name);
     X put(String name, Object value);
     X putFactory(String name, XFactory factory);
-    Object newInstance(String className);
+    Object newInstance(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 }
