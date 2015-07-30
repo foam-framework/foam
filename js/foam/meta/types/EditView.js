@@ -39,9 +39,9 @@ CLASS({
       name: 'delete',
       help: 'Delete this item.',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAO0lEQVQ4y2NgGPwgUSHxQeJ/KHyQqIBP6X/ckDoayHE/qeaPahjVgEvDK6waXuDW4J/4ElN5ou8gz/MAREwU2Wrzn1YAAAAASUVORK5CYII=',
-      isAvailable: function() { return !!this.dao },
+      isAvailable: function() { return (this.dao && this.dao.remove) },
       action: function() {
-        if (this.dao) {
+        if (this.dao && this.dao.remove) {
           this.dao.remove(this.data);
           // our parent view should now destroy this view
         }
@@ -52,8 +52,8 @@ CLASS({
   templates: [
     function headerHTML(out, title) {/*
       <% viewTitle = title || this.metaEditPropertyTitle; %>
-      <div class="meta-edit-heading">
-        <div class="md-title md-style-trait-standard"><%= viewTitle %></div>
+      <div class="meta-edit-heading md-style-trait-standard">
+        <div class="md-title"><%= viewTitle %></div>
         <div class="meta-edit-view-right-title-icon">$$delete</div>
       </div>
     */},
@@ -71,14 +71,14 @@ CLASS({
       }
       .meta-edit-heading {
         display: flex;
-        align-items: baseline;
+        align-items: center;
       }
       .meta-edit-heading .md-title {
         flex-grow: 1;
       }
       .meta-edit-view-right-title-icon {
         flex-shrink: 0;
-        padding: 8px 0px;
+        padding: 0px 8px;
       }
       .meta-edit-view .md-card {
         flex-grow: 1;

@@ -39,10 +39,6 @@ CLASS({
       this.data.instance_.prototype_ = undefined; // reset prototype so changes will be rebuilt
       sink && sink.put(this.data);
     },
-    function remove(o, sink) {
-      /* Receive update from our UpdateDetailView, Nop. */
-      sink && sink.remove(o);
-    }
   ],
 
   properties: [
