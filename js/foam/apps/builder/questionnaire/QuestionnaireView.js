@@ -10,28 +10,29 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
-  name: 'KioskView',
+  package: 'foam.apps.builder.questionnaire',
+  name: 'QuestionnaireView',
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.apps.builder.KioskChromeView',
+    'foam.apps.builder.kiosk.KioskChromeView',
     'foam.apps.builder.Timeout',
     'foam.apps.builder.TOSData',
     'foam.apps.builder.TOSView',
-    'foam.apps.builder.WebView',
+    'foam.apps.builder.questionnaire.QuestionnaireController',
     'foam.ui.md.PopupView',
   ],
   exports: [
     'as kiosk',
     'url$',
     'webview',
+    'webview as controller',
   ],
 
   properties: [
     {
       name: 'data',
-      view: 'foam.apps.builder.KioskChromeView',
+      view: 'foam.apps.builder.kiosk.KioskChromeView',
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( old ) {
@@ -47,6 +48,12 @@ CLASS({
         }
       },
     },
+//     {
+//       name: 'controller',
+//       lazyFactory: function() {
+//         return this.QuestionnaireController.create({ appConfig$: this.data$ });
+//       }
+//     },
     {
       type: 'foam.apps.builder.TOSData',
       name: 'tosData',
@@ -69,10 +76,7 @@ CLASS({
       type: 'foam.apps.builder.WebView',
       name: 'webview',
       lazyFactory: function() {
-        return this.WebView.create({
-          data$: this.data$,
-          extraClassName: 'kiosk-webview',
-        });
+        return this.QuestionnaireController.create({ appConfig$: this.data$ });
       },
       postSet: function(old, nu) {
         if ( old ) old.unsubscribe(['action'], this.onWebviewAction);

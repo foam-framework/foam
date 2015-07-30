@@ -35,21 +35,21 @@ CLASS({
   methods: [
     function put(o, sink) {
       /* Receive update from our UpdateDetailView */
-      this.data = o;
+      this.data = o.deepClone();
       this.data.instance_.prototype_ = undefined; // reset prototype so changes will be rebuilt
-      sink && sink.put(o);
+      sink && sink.put(this.data);
     },
-    function remove(o, sink) {
-      /* Receive update from our UpdateDetailView, Nop. */
-      sink && sink.remove(o);
-    }
   ],
 
   properties: [
     {
       model_: 'ModelProperty',
       name: 'baseModel',
-      help: 'The list is filtered to only include models that extend baseModel.'
+      help: 'The list is filtered to only include models that extend baseModel.',
+    },
+    {
+      name: 'modelLabel',
+      defaultValueFn: function() { return this.baseModel.label; }
     },
     {
       name: 'action',
@@ -66,15 +66,16 @@ CLASS({
   actions: [
     {
       name: 'pick',
-      label: 'Pick Model',
+      label: 'Edit Model',
       width: 100,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAZ0lEQVR4AdXOrQ2AMBRF4bMc/zOUOSrYoYI5cQQwpAieQDW3qQBO7Xebxx8bWAk5/CASmRHzRHtB+d0Bkw0W5ZiT0SYbFcl6u/2eeJHbxIHOhWO6Er6/y9syXpMul5PLefAGKZ1/rwtTimwbWLpiCgAAAABJRU5ErkJggg==',
       action: function() {
         // we export ourself as the dao for the editor, so when it puts the result back
         // we react in our put() method.
         this.stack.pushView(this.UpdateDetailView.create({
-          data: this.data,
+          data$: this.data$,
           innerView: 'foam.meta.types.ModelEditView',
+          liveEdit: true,
         }));
       }
     }
@@ -91,15 +92,14 @@ CLASS({
     }
   ],
 
- templates: [
+  templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-model-picker-view-title md-style-trait-standard">Questions</div>
         <div class="md-model-picker-view-name">
-          <div class="md-model-picker-view-edit">$$id{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false }</div>
-          <div class="md-style-trait-standard">
-            $$pick
+          <div class="md-model-picker-view-edit md-style-trait-standard">
+            $$modelLabel{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false, inlineStyle: true }
           </div>
+          $$pick{ model_: 'foam.ui.md.FlatButton' }
         </div>
       </div>
     */},
@@ -108,14 +108,15 @@ CLASS({
       }
       .md-model-picker-view-name {
         display: flex;
-        align-items: center;
+        align-items: baseline;
       }
       .md-model-picker-view-title {
         font-size: 120%;
         color: #999;
       }
       .md-model-picker-view-edit {
-        flex-grow: 1;
+        flex-grow: 0;
+        padding-right: 24px;
       }
     */},
   ],

@@ -28,9 +28,24 @@ CLASS({
     'foam.meta.types.FloatPropertyEditView',
     'foam.meta.types.PropertyEditView',
     'foam.meta.types.StringPropertyEditView',
+    'foam.ui.md.UpdateDetailView',
+    'foam.meta.MetaPropertyDescriptor',
+    'foam.meta.MetaDescriptorView',
+    'foam.ui.md.PopupChoiceView',
+  ],
+
+  imports: ['stack'],
+  exports: [
+    ' as dao',
+    'metaEditModelTitle',
+    'metaEditPropertyTitle',
   ],
 
   properties: [
+    {
+      name: 'className',
+      defaultValue: 'md-model-edit-view'
+    },
     {
       name: 'data',
       postSet: function(old, nu) {
@@ -47,6 +62,35 @@ CLASS({
         }
       }
     },
+    {
+      name: 'metaEditModelTitle',
+      defaultValue: 'Edit Model',
+    },
+    {
+      name: 'metaEditPropertyTitle',
+      defaultValue: 'Edit Property',
+    },
+
+  ],
+
+  actions: [
+    {
+      name: 'createButton',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
+      //isAvailable: function() { return this.data.showAdd; },
+      action: function() {
+        this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
+        var edit = this.UpdateDetailView.create({
+          data: this.MetaPropertyDescriptor.create(),
+          exitOnSave: true,
+          innerView: 'foam.meta.MetaDescriptorView',
+        }, this.Y.sub({
+          metaEditPropertyTitle: 'Add New',
+          dao: { put: this.put.bind(this) } // hide remove(), since it's a new property we don't have already
+        }));
+        this.stack.pushView(edit);
+      }
+    },
   ],
 
   listeners: [
@@ -58,23 +102,63 @@ CLASS({
     },
   ],
 
+  methods: [
+    function put(o, sink) {
+      /* TODO: this is only used by the create action's view */
+      var prop = this.X.lookup(o.model).create({ name: o.name });
+      this.data.properties.put(prop);
+      prop.addListener(this.subObjectChange);
+      this.subObjectChange();
+
+      sink && sink.put(prop);
+    },
+    function remove(o, sink) {
+      /* TODO: this is only used by delete actions on property citation views */
+      this.data.properties.remove(o, {
+        remove: function(p) {
+          p.removeListener(this.subObjectChange);
+          sink && sink.remove(p);
+        }.bind(this)
+      });
+      this.subObjectChange();
+    },
+  ],
+
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-edit-view-container">
           <div class="md-heading md-model-edit-view-heading">
-            <h2>Model</h2>
-              <div>
-                $$name{ model_: 'foam.ui.TextFieldView' }
-              </div>
+            <% this.headerHTML(out, this.metaEditModelTitle); %>
+            <div>
+              $$name{ model_: 'foam.ui.TextFieldView' }
+            </div>
           </div>
           <div class="model-edit-view-list">
             $$properties{ model_: 'foam.ui.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }
           </div>
         </div>
+        <div class="floating-action">
+          $$createButton{
+            className: 'createButton',
+            color: 'white',
+            font: '30px Roboto Arial',
+            alpha: 1,
+            width: 44,
+            height: 44,
+            radius: 22,
+            background: '#e51c23'
+          }
+        </div>
+
       </div>
     */},
     function CSS() {/*
+      .md-model-edit-view {
+        flex-grow: 1;
+        display: flex;
+        position: relative;
+      }
       .md-model-edit-view-container {
         display: flex;
         flex-direction: column;
@@ -88,6 +172,12 @@ CLASS({
         overflow-y: scroll;
         flex-grow: 1;
       }
+
+      .md-model-edit-view h2 {
+        font-size: 120%;
+        color: #777;
+      }
+
     */}
   ]
 

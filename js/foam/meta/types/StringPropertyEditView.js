@@ -20,15 +20,18 @@ CLASS({
   name: 'StringPropertyEditView',
   package: 'foam.meta.types',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.meta.types.EditView',
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-card">
-          <h2>String Property</h2>
+          <% this.headerHTML(out); %>
           <div>
             $$name{ model_: 'foam.ui.TextFieldView' }
+          </div>
+          <div>
+            $$label{ model_: 'foam.ui.TextFieldView' }
           </div>
           <div>
             $$defaultValue{ model_: 'foam.ui.TextFieldView' }

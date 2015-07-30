@@ -36,10 +36,6 @@ CLASS({
       name: 'appDefinition'
     },
     {
-      name: 'controller',
-      help: 'Name of the main controller/model to create',
-    },
-    {
       name: 'targetPath',
       help: "Directory to write output files to.  Will be created if it doesn't exist.",
       required: true
@@ -51,10 +47,6 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'version'
-    },
-    {
-      model_: 'StringArrayProperty',
-      name: 'resources'
     },
     {
       model_: 'StringArrayProperty',
@@ -70,8 +62,8 @@ CLASS({
     },
     {
       model_: 'StringArrayProperty',
-      name: 'extraModels',
-      help: 'Extra models to include in the image regardless of if they were arequired or not.',
+      name: 'models',
+      help: 'Models to include and generate code for.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; },
       factory: function() { return []; }
     },
@@ -146,10 +138,6 @@ CLASS({
         this.error("targetPath is required");
         process.exit(1);
       }
-      if ( ! this.controller ) {
-        this.error("controller is required");
-        process.exit(1);
-      }
 
       var extraBuildFiles = this.extraBuildFiles.concat(this.extraFiles);
       for ( var i = 0 ; i < extraBuildFiles.length ; i++ ) {
@@ -158,15 +146,13 @@ CLASS({
       }
 
       var seq = [anop];
-      for ( var i = 0; i < this.extraModels.length ; i++ ) {
-        seq.push(arequire(this.extraModels[i]));
+      for ( var i = 0; i < this.models.length ; i++ ) {
+        seq.push(arequire(this.models[i]));
       }
 
-      aseq(
-        aseq.apply(null, seq),
-        arequire(this.controller))(this.buildModel.bind(this));
+      aseq.apply(null, seq)(this.buildModel.bind(this));
     },
-    buildJavaFiles_: function(ret) {
+    buildJavaFiles_: function() {
       var models = {};
       var visited = {};
       var error = this.error;
@@ -187,11 +173,10 @@ CLASS({
 
         // TODO(braden): Figure out how this should work recursively.
         //model.getAllRequires().forEach(add);
-      };
-      add(this.controller);
+      }
 
-      for ( var i = 0; i < this.extraModels.length ; i++ ) {
-        add(this.extraModels[i]);
+      for ( var i = 0; i < this.models.length ; i++ ) {
+        add(this.models[i]);
       }
 
       var javaSource = this.JavaSource.create();
@@ -204,13 +189,7 @@ CLASS({
       }
     },
     buildModel: function(model) {
-      if ( ! model ) {
-        this.error('Could not find model: ', this.controller);
-      }
-      this.log('Building   ', model.id);
       this.targetPath = this.path.normalize(this.targetPath);
-      this.log('Target is: ', this.targetPath);
-
       this.mkdir(this.targetPath);
 
       this.buildJavaFiles_();

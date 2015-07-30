@@ -56,7 +56,6 @@ CLASS({
       .md-model-citation-view {
         display: flex;
         align-items: center;
-
       }
       .md-model-citation-view-name {
         flex-grow: 1;

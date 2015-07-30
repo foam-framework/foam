@@ -25,17 +25,16 @@ CLASS({
   ],
 
   methods: {
-    send_: function(o, data, sink) {
-      var xhr = this.XHR.create();
-      (function(ret, resp, xhr) {
+    send_: function(endpoint, o, data, sink) {
+      this.XHR.create({
+        contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+      }).asend(function(resp, xhr, status) {
         if ( xhr.status < 200 || xhr.status >= 300 ) {
           sink && sink.error && sink.error(xhr.status);
         } else {
           sink && sink.put && sink.put(o);
         }
-        ret();
-      }).ao(xhr.asend.bind(xhr))(
-        function(){}, this.endpoint, data, undefined, "POST");
+      }, endpoint, data, 'POST');
     }
   }
 });

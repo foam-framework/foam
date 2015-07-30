@@ -390,9 +390,9 @@ MODEL({
           cache[key] = afuture();
           afunc(cache[key].set, arg);
         }
-        
-        cache[key].get(ret)
-      }
+
+        cache[key].get(ret);
+      };
     },
 
     /**

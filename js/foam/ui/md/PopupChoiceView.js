@@ -154,6 +154,7 @@ CLASS({
         mode:'read-only',
         label: this.label,
         inlineStyle: true,
+        floatingLabel: false,
       });
       this.addChild(textView);
       out += '<div class="value">'+textView.toHTML()+'</div>';

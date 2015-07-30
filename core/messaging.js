@@ -22,7 +22,8 @@ CLASS({
     { model_: 'IntProperty', name: 'delay', defaultValue: 0 },
     { model_: 'IntProperty', name: 'retries', defaultValue: 0 },
     { name: 'authAgent' },
-    { name: 'responseType', defaultValue: 'text' }
+    { name: 'responseType', defaultValue: 'text' },
+    { name: 'contentType', defaultValue: 'application/json' }
   ],
 
   methods: {
@@ -44,7 +45,7 @@ CLASS({
 
     configure: function(xhr) {
       xhr.responseType = this.responseType;
-      this.setRequestHeader(xhr, "Content-Type", "application/json");
+      this.setRequestHeader(xhr, "Content-Type", this.contentType);
     },
 
     bindListeners: function(xhr, ret) {

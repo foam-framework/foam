@@ -14,29 +14,51 @@ CLASS({
   name: 'Builder',
 
   requires: [
+    'com.google.analytics.AnalyticsDAO',
     'foam.apps.builder.BrowserConfig',
-    'foam.apps.builder.KioskAppConfig',
-    'foam.apps.builder.KioskDesignerView',
+    'foam.apps.builder.ExportManager',
+    'foam.apps.builder.kiosk.KioskApp',
+    'foam.apps.builder.kiosk.KioskAppConfig',
+    'foam.apps.builder.kiosk.KioskDesignerView',
     'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
     'foam.apps.builder.questionnaire.DesignerView as QuestionnaireDesignerView',
     'foam.browser.ui.BrowserView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.dao.SeqNoDAO',
+    'foam.input.touch.GestureManager',
+    'foam.input.touch.TouchManager',
+    'foam.metrics.Metric',
     'foam.ui.DAOListView',
     'foam.ui.ImageView',
     'foam.ui.md.DetailView',
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.TextFieldView',
-    'foam.input.touch.GestureManager',
-    'foam.input.touch.TouchManager',
   ],
   exports: [
+    'touchManager',
+    'gestureManager',
+    'metricsDAO',
     'menuSelection$',
     'menuDAO$',
+    'exportManager$',
   ],
 
   properties: [
+    {
+      name: 'metricsDAO',
+      factory: function() {
+        return this.AnalyticsDAO.create({
+          daoType: 'XHR',
+          debug: true,
+          propertyId: 'UA-47217230-6',
+          appName: 'AppBuilder',
+          appVersion: '2.0',
+          endpoint: 'https://www.google-analytics.com/collect',
+          debugEndpoint: 'https://www.google-analytics.com/debug/collect',
+        });
+      },
+    },
     {
       model_: 'FunctionProperty',
       name: 'browserDAOFactory',
@@ -61,7 +83,7 @@ CLASS({
             label: 'Kiosk App',
             model: this.KioskAppConfig,
             dao: this.browserDAOFactory(this.KioskAppConfig, 'KioskAppConfigs'),
-            innerDetailView: 'foam.apps.builder.KioskDesignerView'
+            innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView'
           }),
           this.BrowserConfig.create({
             title: 'Questionnaire Apps',
@@ -75,6 +97,7 @@ CLASS({
                 useSimpleSerialization: false,
               })
             }),
+            detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
             innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'
           }),
         ].dao;
@@ -91,13 +114,31 @@ CLASS({
             this.menuDAO[0] : '';
       },
     },
+    {
+      type: 'foam.apps.builder.ExportManager',
+      name: 'exportManager',
+      factory: function() {
+        return this.ExportManager.create({}, this.Y);
+      },
+    },
+    {
+      type: 'foam.input.touch.TouchManager',
+      name: 'touchManager',
+      lazyFactory: function() { return this.TouchManager.create(); },
+    },
+    {
+      type: 'foam.input.touch.GestureManager',
+      name: 'gestureManager',
+      lazyFactory: function() { return this.GestureManager.create(); },
+    },
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.X.touchManager   = this.TouchManager.create();
-      this.X.gestureManager = this.GestureManager.create();
+      this.metricsDAO.put(this.Metric.create({
+        name: 'launchApp',
+      }));
     },
   ],
 });

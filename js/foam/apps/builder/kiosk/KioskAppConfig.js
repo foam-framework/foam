@@ -10,9 +10,17 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
+  package: 'foam.apps.builder.kiosk',
   name: 'KioskAppConfig',
   extendsModel: 'foam.apps.builder.AppConfig',
+
+  constants: {
+    EXISTING_SOURCES: [
+      'foam.js',
+      'kiosk_bg.js',
+      'kiosk_view.html',
+    ],
+  },
 
   properties: [
     {
@@ -80,6 +88,40 @@ CLASS({
       rangeDescription: '1 - 1440 minutes',
       defaultDescription: '0 = unlimited',
       // view: 'RangeDefaultTextFieldView'
+    },
+  ],
+
+  templates: [
+    function toManifest() {/*{
+  "version": "%%version",
+  "manifest_version": 2,
+  "minimum_chrome_version": "43.0.0.0",
+  "name": "%%appName",
+  "app": {
+    "background": {
+      "scripts": [
+        "foam.js",
+        "kiosk_bg.js"
+      ]
     }
-  ]
+  },
+  "permissions": [
+    "webview",
+    "power",
+    "storage",
+    "videoCapture",
+    "geolocation",
+    "pointerLock",
+    "system.display",
+    { "fileSystem": [
+      "write",
+      "retainEntries",
+      "directory"
+    ] },
+    "accessibilityFeatures.read",
+    "accessibilityFeatures.modify"
+  ],
+  "kiosk_enabled": %%kioskEnabled
+}*/}
+  ],
 });

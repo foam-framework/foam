@@ -15,7 +15,6 @@ __DATA({
   controller: 'foam.apps.builder.Builder',
   defaultView: 'foam.apps.builder.BuilderView',
   htmlFileName: 'unused.html',
-  includeFoamCSS: true,
   precompileTemplates: true,
   coreFiles: [
     'funcName',
@@ -29,6 +28,7 @@ __DATA({
     'context',
     'JSONParser',
     'TemplateUtil',
+    'ChromeEval',
     'FOAM',
     'FObject',
     'BootstrapModel',

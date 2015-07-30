@@ -75,6 +75,11 @@ CLASS({
       defaultValue: false
     },
     {
+      name: 'exitOnSave',
+      documentation: "If true, saving will also exit the view.",
+      defaultValue: false
+    },
+    {
       // Version of the data which changes whenever any property of the data is updated.
       // Used to help trigger isEnabled / isAvailable in Actions.
       model_: 'IntProperty',
@@ -141,6 +146,10 @@ CLASS({
           put: function() {
             self.originalData = obj.deepClone();
             self.$title.innerHTML = self.title;
+
+            if (self.exitOnSave && ! self.liveEdit) {
+              self.stack.popView();
+            }
           },
           error: function() {
             console.error('Error saving', arguments);
@@ -165,7 +174,9 @@ CLASS({
       name: 'reset',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAdklEQVQ4y+WTuQ3AIBAEaQKK8NN/BEUArmccgGyj43MMIZo5TqtFqbUPJxYtbg2OvS44IJQKhguwdUETSiXjXr77KhGICRjihWKm8Dw3KXP4Z5VZ/Lfw7B5kyD1cy5C7uAx5iJcht6vhRTUi4OrC0Szftvi/vAFNdbZ2Dp661QAAAABJRU5ErkJggg==',
       isAvailable: function() { return this.outstandingChanges; },
-      action: function() { this.data.copyFrom(this.originalData); }
+      action: function() {
+        this.data = this.originalData.deepClone();
+      }
     }
   ],
 

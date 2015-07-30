@@ -34,15 +34,19 @@ CLASS({
       factory: function() {
         return this.Model.create({
           extendsModel: 'foam.apps.builder.questionnaire.Questionnaire',
-          properties: [
-            this.BooleanProperty.create({ name: 'boolprop' }),
-            this.StringProperty.create({ name: 'stringprop' }),
-            this.IntProperty.create({ name: 'intprop' }),
-            this.FloatProperty.create({ name: 'floatprop' }),
-            this.DateProperty.create({ name: 'dateprop' }),
-          ]
         });
       },
-    }
+    },
+    {
+      name: 'enableReloadBttn',
+      help: 'Enables the reload button in the toolbar.',
+      defaultValue: true,
+    },
+    {
+      name: 'enableHomeBttn',
+      help: 'Enables the home(save) button in the toolbar.',
+      defaultValue: true,
+    },
+
   ]
 });

@@ -96,7 +96,7 @@ CLASS({
           self.action.label = self.action.labelFn.call(self.data, self.action);
         },
         function() {
-          if ( self.$ ) self.$.querySelector('span').innerHTML = self.labelHTML();
+          if ( self.$ ) self.$.getElementById(this.id+'CONTENT').innerHTML = self.labelHTML();
         });
 
       // available enabled etc.
@@ -123,14 +123,31 @@ CLASS({
   templates: [
     function CSS() {/*
       flat-button {
-        padding: 10px 20px;
+        padding: 16px 16px;
+        margin: 0px 0px;
         display: inline-flex;
-        align-items: center;
+        align-items: baseline;
         justify-content: center;
         overflow: hidden;
         position: relative;
         border-radius: 2px;
         cursor: pointer;
+      }
+
+      flat-button.md-style-trait-inline {
+        padding: 16px 16px;
+        margin: -16px -16px;
+      }
+
+      .flat-button-icon-container {
+        padding-right: 12px;
+        width: 36px;
+        height: 0px;
+      }
+      .flat-button-icon {
+        position: absolute;
+        left: 16px;
+        top: 12px;
       }
 
       .hidden {
@@ -146,7 +163,8 @@ CLASS({
     function toHTML() {/*
       <<%= self.tagName %> id="%%id" <%= this.cssClassAttr() %> >
         %%halo
-        <span><% this.labelHTML(out) %></span>
+        <% if ( this.iconUrl ) { %><div class="flat-button-icon-container"><div class="flat-button-icon">$$iconUrl</div></div><% } %>
+        <span id="<%= this.id + "CONTENT" %>"><% this.labelHTML(out) %></span>
       </%%tagName>
       <% this.on('click', function(e) {
         e.preventDefault();
@@ -155,7 +173,6 @@ CLASS({
       }, this.id); %>
     */},
     function labelHTML() {/*
-      <% if ( this.iconUrl ) { %>$$iconUrl<% } %>
       <% if ( this.action ) { %>
         <% if ( this.escapeHtml ) { %>
           {{this.action.label}}
