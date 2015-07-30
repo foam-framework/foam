@@ -14,6 +14,7 @@ CLASS({
   name: 'Builder',
 
   requires: [
+    'com.google.analytics.AnalyticsDAO',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.ExportManager',
     'foam.apps.builder.kiosk.KioskApp',
@@ -27,6 +28,7 @@ CLASS({
     'foam.dao.SeqNoDAO',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
+    'foam.metrics.Metric',
     'foam.ui.DAOListView',
     'foam.ui.ImageView',
     'foam.ui.md.DetailView',
@@ -36,12 +38,27 @@ CLASS({
   exports: [
     'touchManager',
     'gestureManager',
+    'metricsDAO',
     'menuSelection$',
     'menuDAO$',
     'exportManager$',
   ],
 
   properties: [
+    {
+      name: 'metricsDAO',
+      factory: function() {
+        return this.AnalyticsDAO.create({
+          daoType: 'XHR',
+          debug: true,
+          propertyId: 'UA-47217230-6',
+          appName: 'AppBuilder',
+          appVersion: '2.0',
+          endpoint: 'https://www.google-analytics.com/collect',
+          debugEndpoint: 'https://www.google-analytics.com/debug/collect',
+        });
+      },
+    },
     {
       model_: 'FunctionProperty',
       name: 'browserDAOFactory',
@@ -113,6 +130,15 @@ CLASS({
       type: 'foam.input.touch.GestureManager',
       name: 'gestureManager',
       lazyFactory: function() { return this.GestureManager.create(); },
+    },
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      this.metricsDAO.put(this.Metric.create({
+        name: 'launchApp',
+      }));
     },
   ],
 });
