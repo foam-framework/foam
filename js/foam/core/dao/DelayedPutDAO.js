@@ -56,13 +56,11 @@ CLASS({
           }.bind(this));
     },
     function put(o, sink) {
-      console.log('DPD put', o.id);
       this.q.push([o, sink]);
       this.onPut();
     },
     function onPut_() {
       var put = this.q.pop();
-      console.log('DPD delayed put', put[0].id);
       this.delegate && this.delegate.put(put[0], put[1]);
       if ( ! this.q.isEmpty() ) this.onPut();
     },
