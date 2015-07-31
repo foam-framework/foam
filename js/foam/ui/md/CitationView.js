@@ -34,6 +34,37 @@ CLASS({
     },
   ],
 
+  methods: [
+    function pickNameProperty() {
+      var prop;
+      if (this.model.LABEL) {
+        prop = this.model.LABEL;
+      } else if (this.model.NAME) {
+        prop = this.model.NAME;
+      } else {
+        var props = this.model.getRuntimeProperties();
+        var stringProps = [];
+        for (var i = 0; i < props.length; i++) {
+          var p = props[i];
+          if (! p.hidden && p.name !== 'id' && p.model_.id === 'Property' || p.model_.id === 'StringProperty') {
+            stringProps.push(p);
+          }
+        }
+        for (var i = 0; i < stringProps.length; i++) {
+          var p = stringProps[i];
+          var pname = p.name.toLowerCase();
+          if (pname.indexOf('name') > -1 || pname.indexOf('label') > -1) {
+            prop = p;
+            break;
+          }
+        }
+      }
+      if (!prop) prop = this.model.ID;
+      return prop;
+    }
+    
+  ],
+
   templates: [
     function CSS() {/*
       .md-citation-view {
@@ -44,21 +75,8 @@ CLASS({
       }
     */},
     function toHTML() {/*
-      <%
-        var props = this.model.getRuntimeProperties();
-        var prop;
-        for (var i = 0; i < props.length; i++) {
-          var p = props[i];
-          if (! p.hidden && p.name !== 'id' && p.model_.id === 'Property' || p.model_.id === 'StringProperty') {
-            prop = p;
-            break;
-          }
-        }
-
-        if (!prop) prop = this.model.ID;
-      %>
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        <%= this.createTemplateView(prop.name, { mode: 'read-only', floatingLabel: false }) %>
+        <%= this.createTemplateView(this.pickNameProperty().name, { mode: 'read-only', floatingLabel: false }) %>
       </div>
     */},
   ]

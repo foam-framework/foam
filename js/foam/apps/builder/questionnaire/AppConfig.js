@@ -28,12 +28,19 @@ CLASS({
 
   properties: [
     {
+      name: 'appName',
+      postSet: function(old,nu) {
+        this.model.name = nu+'Questionnaire';
+      }
+    },
+    {
       name: 'model',
       label: 'Questions',
       view: 'foam.ui.md.DetailView',
       factory: function() {
         return this.Model.create({
           extendsModel: 'foam.apps.builder.questionnaire.Questionnaire',
+          name: this.appName+'Questionnaire',
         });
       },
     },

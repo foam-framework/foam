@@ -130,9 +130,6 @@ CLASS({
         <div class="md-model-edit-view-container">
           <div class="md-heading md-model-edit-view-heading">
             <% this.headerHTML(out, this.metaEditModelTitle); %>
-            <div>
-              $$name{ model_: 'foam.ui.TextFieldView' }
-            </div>
           </div>
           <div class="model-edit-view-list">
             $$properties{ model_: 'foam.ui.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }

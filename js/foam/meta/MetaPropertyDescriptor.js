@@ -50,6 +50,9 @@ CLASS({
       label: 'The name of the new property',
       name: 'name',
       documentation: function() {/* The name of the new property. */},
+      preSet: function(old,nu) {
+        return camelize(nu);
+      }
     },
   ],
 

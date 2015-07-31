@@ -16,6 +16,8 @@ CLASS({
 
   label: 'Chrome Application Configuration',
 
+  ids: ['appName'],
+
   properties: [
     {
       model_: 'StringProperty',
