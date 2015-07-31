@@ -32,6 +32,7 @@ CLASS({
 
   actions: [
     {
+      model_: 'foam.metrics.TrackedAction',
       name: 'export',
       action: function() {
         this.exportManager.config = this.data;

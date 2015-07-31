@@ -13,6 +13,9 @@ CLASS({
   package: 'foam.apps.builder.kiosk',
   name: 'KioskDesignerView',
   extendsModel: 'foam.ui.View',
+  traits: [
+    'foam.metrics.ScreenViewTrait',
+  ],
 
   requires: [
     'foam.apps.builder.ExportManager',

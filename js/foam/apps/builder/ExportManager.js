@@ -95,10 +95,6 @@ CLASS({
       });
     },
     function exportApp() {
-      this.metricsDAO.put(this.Event.create({
-        name: 'exportAppStart',
-        label: this.config.model_.id || this.config.name_
-      }));
       this.aloadSources(this.exportApp_.bind(this));
     },
     function exportApp_() {
@@ -118,13 +114,13 @@ CLASS({
     function finalizeExport() {
       if ( argsToArray(arguments).every(function(status) { return status; }) ) {
         this.metricsDAO.put(this.Event.create({
-          name: 'exportAppFinish',
-          label: this.config.model_.id || this.config.name_
+          name: this.config.model_.id || this.config.name_,
+          label: 'Action:export:finish',
         }));
       } else {
         this.metricsDAO.put(this.Error.create({
-          name: 'exportAppFail:' +
-              (this.config.model_.id || this.config.name),
+          name: (this.config.model_.id || this.config.name_) +
+              ' - Action:export:fail',
         }));
       }
     },
