@@ -368,6 +368,15 @@ var capitalize = memoize1(function(str) {
   return str[0].toUpperCase() + str.substring(1);
 });
 
+var camelize = memoize1(function (str) {
+  // change css-name-style or 'space separated words' to camelCase
+  var ret = str.replace (/(?:[-\s_])(\w)/g, function (_, a) {
+    return a ? a.toUpperCase () : '';
+  });
+  return ret[0].toLowerCase() + ret.substring(1);
+});
+
+
 
 MODEL({
   extendsProto: 'Object',
