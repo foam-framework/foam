@@ -32,6 +32,7 @@ CLASS({
         <p>$$DOC{ref:'.type'} = timing => User timing variable name</p>
         <p>$$DOC{ref:'.type'} = error  => Exception description</p>
         <p>$$DOC{ref:'.type'} = event  => Event action</p>
+        <p>$$DOC{ref:'.type'} = screenview  => Screen name</p>
       */},
     },
     {
@@ -59,7 +60,8 @@ CLASS({
         'count',
         'timing',
         'error',
-        'pageview'
+        'pageview',
+        'screenview'
       ]
     },
     {
