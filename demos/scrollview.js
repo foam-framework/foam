@@ -26,7 +26,7 @@ addContacts(dao);
 
 // Uncomment this if you'd like to simulate a slow dao.
 /*
-dao = DelayedDAO.create({
+dao = DelayedSelectDAO.create({
   delegate: dao,
   initialDelay: 3000
 });

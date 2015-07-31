@@ -54,7 +54,7 @@ CLASS({
     'foam.dao.SeqNoDAO',
     'GUIDDAO',
     'foam.core.dao.CloningDAO',
-    'foam.core.dao.DelayedDAO',
+    'foam.core.dao.DelayedSelectDAO',
     'foam.core.dao.Sync',
     'foam.core.dao.MergeDAO',
     'foam.core.dao.VersionNoDAO'
@@ -64,7 +64,7 @@ CLASS({
     {
       name: 'localDao',
       factory: function() {
-        return this.DelayedDAO.create({
+        return this.DelayedSelectDAO.create({
           delegate: this.GUIDDAO.create({
             delegate: this.CloningDAO.create({
               onSelect: true,
@@ -97,7 +97,7 @@ CLASS({
             flags: ['FLAG_A', 'FLAG_B']
           })
         ].select(dao);
-        return this.DelayedDAO.create({
+        return this.DelayedSelectDAO.create({
           delegate: dao
         });
       },
