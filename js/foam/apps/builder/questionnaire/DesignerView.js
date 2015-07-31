@@ -13,6 +13,9 @@ CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'DesignerView',
   extendsModel: 'foam.ui.View',
+  traits: [
+    'foam.metrics.ScreenViewTrait',
+  ],
 
   requires: [
     'foam.apps.builder.Panel',
