@@ -201,7 +201,9 @@ CLASS({
       if ( this.isAvailable.call(that, this) && this.isEnabled.call(that, this) ) {
         this.action.call(that, X, this);
         that.publish(['action', this.name], this);
+        return true;
       }
+      return false;
     }
   }
 });
