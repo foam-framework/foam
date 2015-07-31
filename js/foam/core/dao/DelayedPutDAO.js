@@ -14,8 +14,12 @@ CLASS({
   name: 'DelayedPutDAO',
   extendsModel: 'foam.dao.ProxyDAO',
 
-  imports: [
-    'window',
+  help: function() {/*
+   Apply this decorator to a DAO to enforce a delay between put operations.
+  */},
+
+  requires: [
+    'foam.util.Queue',
   ],
 
   properties: [
@@ -25,16 +29,18 @@ CLASS({
       defaultValue: 500,
     },
     {
-      name: 'head_',
-      defaultValue: null,
-    },
-    {
-      name: 'tail_',
-      defaultValue: null,
-    },
-    {
       model_: 'FunctionProperty',
       name: 'onPut',
+      defaultValue: function() {
+        throw 'DelayedPutDAO: Put before merged listener initialized';
+      },
+    },
+    {
+      type: 'foam.util.Queue',
+      name: 'q',
+      lazyFactory: function() {
+        return this.Queue.create();
+      },
     },
   ],
 
@@ -49,41 +55,16 @@ CLASS({
                 this.X);
           }.bind(this));
     },
-    function push(o) {
-      if ( ! this.tail_ ) {
-        this.head_ = this.tail_ = {
-          o: o,
-          prev: null,
-          next: null,
-        };
-      }
-      this.tail_.next = {
-        o: o,
-        prev: this.tail_,
-        next: null,
-      };
-      this.tail_ = this.tail_.next;
-    },
-    function pop() {
-      if ( ! this.head_ ) return null;
-      var o = this.head_.o;
-      if ( this.head_ === this.tail_ ) {
-        this.head_ = this.tail_ = null;
-        return o;
-      }
-      this.head_ = this.head_.next;
-      this.head_.prev = null;
-      return o;
-    },
-    function isEmpty() { return ! this.head_; },
     function put(o, sink) {
-      this.push([o, sink]);
+      console.log('DPD put', o.id);
+      this.q.push([o, sink]);
       this.onPut();
     },
     function onPut_() {
-      var put = this.pop();
+      var put = this.q.pop();
+      console.log('DPD delayed put', put[0].id);
       this.delegate && this.delegate.put(put[0], put[1]);
-      if ( ! this.isEmpty() ) this.onPut();
+      if ( ! this.q.isEmpty() ) this.onPut();
     },
   ],
 });
