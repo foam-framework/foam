@@ -114,13 +114,13 @@ CLASS({
     function finalizeExport() {
       if ( argsToArray(arguments).every(function(status) { return status; }) ) {
         this.metricsDAO.put(this.Event.create({
-          name: this.config.model_.id || this.config.name_,
-          label: 'Action:export:finish',
+          name: 'Action:export:finish',
+          label: this.config.model_.id || this.config.name_,
         }));
       } else {
         this.metricsDAO.put(this.Error.create({
-          name: (this.config.model_.id || this.config.name_) +
-              ' - Action:export:fail',
+          name: 'Action:export:fail - ' +
+              (this.config.model_.id || this.config.name_),
         }));
       }
     },
