@@ -19,6 +19,7 @@ arequire = function(modelName) {
   var THIS = this === GLOBAL ? X : this;
   return function(ret) {
     var m = THIS.lookup(modelName)
+    if ( ! m ) console.warn("Model missing from package:", modelName);
     ret(m);
   };
 };
