@@ -65,10 +65,6 @@ CLASS({
       disabled: true,
       issues: [
         'TODO(markdittmer): Support file upload.',
-        multiline(function() {/*
-          TODO(markdittmer): Implement showing this in lightbox before
-          revealing landing page.
-        */})
       ],
       view: {
         factory_: 'foam.ui.md.TextFieldView',
