@@ -68,14 +68,14 @@ if ( this.implements.length > 0 ) {
     var constant = constantize(name);
     var type = prop.swiftType; %>
     var <%= name %>_: <%= type %>
-    let <%= constant %> = Property(name: "<%= name %>")
+    let <%= constant %> = Property(name: "<%= name %>", label: "<%= prop.label %>")
     var <%= name %>Value_: PropertyValue?
     var <%= name %>$: PropertyValue {
         get {
             if self.<%= name %>Value_ == nil {
                 self.<%= name %>Value_ = PropertyValue(obj: self, prop: "<%= name %>")
             }
-            return self.<%= name %>Value_ as! PropertyValue!
+            return self.<%= name %>Value_!
         }
     }
     var <%= name %> : <%= type %> {
@@ -150,12 +150,13 @@ console.log(this.methods[i]);
     function detailView() {/*
 class Abstract<%= this.name %>DetailView: UIViewController {
     var data: <%= this.name %>!
-    var contentView: UIScrollView = UIScrollView()
 
 <% for ( var i = 0 ; i < this.properties.length ; i++ ) {
   var prop = this.properties[i]; %>
     var <%= prop.name %>View: <%= prop.swiftView %>!<%
 } %>
+
+    var contentView = UIScrollView()
 
     init(data: <%= this.name %>) {
         self.data = data
@@ -173,16 +174,36 @@ class Abstract<%= this.name %>DetailView: UIViewController {
 
 <% for ( var i = 0 ; i < this.properties.length ; i++ ) {
   var prop = this.properties[i]; %>
-        self.<%= prop.name %>View = <%= prop.swiftView %>(data: self.data.<%= prop.name %>$, label: "<%= prop.label %>")
-        self.contentView.addSubview(self.<%= prop.name %>View.view)
-<%
+        self.<%= prop.name %>View = <%= prop.swiftView %>(data: self.data.<%= prop.name %>$, label: self.data.<%= constantize(prop.name) %>.label)
+        self.contentView.addSubview(self.<%= prop.name %>View.view)<%
 } %>
-
-        doLayout()
     }
 
-    func doLayout() {
-        self.contentView.frame = self.view.frame
+    override func viewWillLayoutSubviews() {
+        self.contentView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+
+        var y: CGFloat = 100
+
+<% for ( var i = 0 ; i < this.properties.length ; i++ ) {
+  var prop = this.properties[i]; %>
+        self.<%= prop.name %>View.view.frame = CGRect(x: 16, y: y, width: self.view.bounds.width - 32, height: self.<%= prop.name %>View.preferredHeight)
+        y += <%= prop.name %>View.preferredHeight
+  <%
+} %>
+        super.viewWillLayoutSubviews()
+    }
+
+    override func viewDidLayoutSubviews() {
+
+        var bottom: CGFloat = 0
+        for view in contentView.subviews {
+            if let v = view as? UIView {
+               bottom = max(bottom, v.frame.maxY)
+            }
+        }
+        self.contentView.contentSize = CGSize(width: self.view.bounds.width, height: bottom)
+
+        super.viewDidLayoutSubviews()
     }
 }
 */}
@@ -190,6 +211,43 @@ class Abstract<%= this.name %>DetailView: UIViewController {
 })
 
 /* 
+
+<%  if ( this.properties.length > 0 ) { %>
+        self.<%= this.properties[0].name %>View.view.setTranslatesAutoresizingMaskIntoConstraints(false)
+        self.contentView.addConstraint(
+            NSLayoutConstraint(
+                item: <%= this.properties[0].name %>View.view,
+                attribute: NSLayoutAttribute.Top,
+                relatedBy: NSLayoutRelation.Equal,
+                toItem: self.contentView,
+                attribute: NSLayoutAttribute.Top,
+                multiplier: 1,
+                constant: 100))<%
+} %>
+
+<% for ( var i = 1 ; i < this.properties.length ; i++ ) {
+  var name = this.properties[i].name;
+  var prev = this.properties[i-1].name; %>
+        self.<%= name %>View.view.setTranslatesAutoresizingMaskIntoConstraints(false)
+        self.contentView.addConstraint(
+            NSLayoutConstraint(
+                item: <%= name %>View.view,
+                attribute: NSLayoutAttribute.Top,
+                relatedBy: NSLayoutRelation.Equal,
+                toItem: <%= prev %>View.view,
+                attribute: NSLayoutAttribute.Bottom,
+                multiplier: 1,
+                constant: 16))
+        self.contentView.addConstraint(
+            NSLayoutConstraint(
+                item: <%= name %>View.view,
+                attribute: NSLayoutAttribute.Width,
+                relatedBy: NSLayoutRelation.Equal,
+                toItem: self.contentView,
+                attribute: NSLayoutAttribute.Width,
+                multiplier: 1,
+                constant: -12))<%
+} %>
 
 old constraints based layout
         // Override this to perform your own layout<%
@@ -227,4 +285,16 @@ old constraints based layout
                 multiplier: 1,
                 constant: -12))<%
 } %>
+
+
+old layout
+:        var y: CGFloat = 100
+
+<% for ( var i = 0 ; i < this.properties.length ; i++ ) {
+  var prop = this.properties[i]; %>
+        self.<%= prop.name %>View.view.frame = CGRect(x: 16, y: y, width: self.view.bounds.width - 32, height: self.<%= prop.name %>View.view.intrinsicContentSize().height)
+        y += <%= prop.name %>View.view.intrinsicContentSize().height
+  <%
+} %>
+
 */
