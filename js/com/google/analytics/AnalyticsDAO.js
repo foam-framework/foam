@@ -24,6 +24,8 @@ CLASS({
     'PersistentContext',
     'com.google.analytics.WebMetricsReportingDAO',
     'com.google.analytics.XHRMetricsReportingDAO',
+    'foam.core.dao.DelayedPutDAO',
+    'foam.core.dao.SerialPutDAO',
     'foam.core.dao.StoreAndForwardDAO',
     'foam.dao.FutureDAO',
     'foam.dao.IDBDAO'
@@ -112,7 +114,13 @@ CLASS({
       factory: function() {
         return this.StoreAndForwardDAO.create({
           storageName: this.storageName,
-          delegate: this.metricsFutureDAO
+          delegate:
+          this.SerialPutDAO.create({
+            delegate: this.DelayedPutDAO.create({
+              rowDelay: 500,
+              delegate: this.metricsFutureDAO,
+            }),
+          }),
         });
       }
     }
