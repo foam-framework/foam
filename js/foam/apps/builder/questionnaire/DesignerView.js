@@ -18,6 +18,7 @@ CLASS({
     'foam.apps.builder.Panel',
     'foam.ui.md.DetailView',
     'foam.apps.builder.questionnaire.EditView',
+    'foam.apps.builder.questionnaire.QuestionnaireView',
     'Model',
   ],
 
