@@ -61,7 +61,7 @@ MODEL({
 
         console.log('put', o);
 
-        this.cfs.awrite(o.path, o.contents)(function(o, sink, status) {
+        this.cfs.awrite(o.path, o.contents, o.mimeType)(function(o, sink, status) {
           if ( status.error ) {
             sink && sink.error && sink.error(status.error);
             return status.error;
@@ -117,7 +117,7 @@ MODEL({
     {
       name: 'testWrite',
       action: function() {
-        this.cfs.awrite('test/test.txt', 'Hello world!\n')(function() {
+        this.cfs.awrite('test/test.txt', 'Hello world!\n', 'text/plain')(function() {
           console.log('Write', arguments);
           this.cfs.clearError();
         }.bind(this));

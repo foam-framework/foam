@@ -68,7 +68,6 @@ CLASS({
       defaultValue: ''
     },
     {
-      model_: 'StringProperty',
       name: 'contents',
       defaultValue: ''
     }
