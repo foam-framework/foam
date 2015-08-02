@@ -84,7 +84,7 @@ var CellParser = {
   AZ: function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
   row: function(c) { return parseInt(c); },
   number: function(s) { var f = parseFloat(s); return function() { return f; }; },
-  cell: function(a) { return function(cells) { return cells.cell(a[0], a[1]).value; }; },
+  cell: function(a) { return function(cells) { return cells.cell(a[1], a[0]).value; }; },
   string: function(s) { return function() { return s; }; }
 });
 //});
@@ -95,7 +95,7 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Cell',
   extendsModel: 'foam.ui.View',
-  imports: [ 'cells', 'parser' ],
+  imports: [ 'cells' ],
   properties: [
     {
       name: 'formula',
@@ -124,10 +124,8 @@ MODEL({
 //    'foam.demos.sevenguis.CellParser',
     'foam.demos.sevenguis.Cell'
   ],
-  exports: [
-    'as cells',
-    'parser'
-  ],
+  imports: [ 'dynamic' ],
+  exports: [ 'as cells' ],
   constants: {
     ROWS: 10 /* 99 */
   },
@@ -173,9 +171,19 @@ MODEL({
       t('=add(mul(2,3),div(3,2))');
       t('=A1')
     },
-    function cell(col, row) {
-      var row = this.cells[row] || ( this.cells[row] = {} );
-      return row[col] || ( row[col] = this.Cell.create() );
+    function cell(r, c) {
+      var self = this;
+      var row  = this.cells[r] || ( this.cells[r] = {} );
+      var cell = row[c];
+      if ( ! cell ) {
+        cell = row[c] = this.Cell.create();
+        cell.formula$.addListener(function(_, _, _, formula) {
+          console.log('formula: ', r, c, formula);
+          var f = self.parser.parseString(formula);
+          self.dynamic(f.bind(null, self), function(v) { cell.value = v; console.log('v:', v); });
+        });
+      }
+      return cell;
     }
   ],
   templates: [
@@ -194,7 +202,7 @@ MODEL({
         <% for ( i = 0 ; i <= this.ROWS ; i++ ) { %>
           <tr>
             <th><%= i %></th>
-            <% for ( var j = 65 ; j <= 90 ; j++ ) { %>
+            <% for ( var j = 0 ; j <= 25 ; j++ ) { %>
               <td class="cell"><%= this.cell(i, j) %></td>
             <% } %>
           </tr>
@@ -203,5 +211,3 @@ MODEL({
     */}
   ]
 });
-
-// 9-12
