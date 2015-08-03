@@ -60,8 +60,8 @@ var CellParser = {
   number: str(seq(
     optional('-'),
     str(alt(
-      plus(sym('digit')),
-      seq(repeat(sym('digit')), '.', plus(sym('digit'))))))),
+      seq(str(repeat(sym('digit'))), '.', str(plus(sym('digit')))),
+      plus(sym('digit')))))),
   
   cell: seq(sym('col'), sym('row')),
   
@@ -181,30 +181,21 @@ MODEL({
     function init() {
       this.SUPER();
 
+      // Load a Test Spreadsheet
       var row = 1;
       var self = this;
       function t(s) {
-        var r = row++;
-        self.cell(r, 0).formula = ' ' + s;
-        self.cell(r, 1).formula = s;
-        /*
         try {
-          console.log('parsing: ', s);
-          var ret = self.parser.parseString(s);
-        console.log(ret);
-          console.log(ret(self));
+          var r = row++;
+          self.cell(r, 0).formula = ' ' + s;
+          self.cell(r, 1).formula = s;
         } catch (x) {
         }
-        */
       }
-
-//      this.cell(0,1).value = 42;
-//      this.cell(1,1).value = 1;
-//      this.cell(2,2).value = 2;
 
       t('1');
       t('10');
-      t('10.1');
+      t('10.12');
       t('-10.1');
       t('foobar');
       t('=add(1,2)');
@@ -213,8 +204,8 @@ MODEL({
       t('=div(9,3)');
       t('=mod(8,3)');
       t('=add(mul(2,3),div(3,2))');
-      t('=A1')
-      t('=add(A1,B1)')
+      t('=A1');
+      t('=add(A1,B1)');
     },
     function cell(r, c) {
       var self = this;
@@ -223,9 +214,12 @@ MODEL({
       if ( ! cell ) {
         cell = row[c] = this.Cell.create();
         cell.formula$.addListener(function(_, _, _, formula) {
-          console.log('formula: ', r, c, formula);
+//          console.log('formula: ', r, c, formula);
           var f = self.parser.parseString(formula);
-          self.dynamic(f.bind(null, self), function(v) { cell.value = v; console.log('v:', v); });
+          self.dynamic(f.bind(null, self), function(v) {
+            cell.value = v;
+//            console.log('v:', v);
+          });
         });
       }
       return cell;
@@ -234,10 +228,10 @@ MODEL({
   templates: [
     function CSS() {/*
       .cells { overflow: auto; }
-      .cell { min-width: 60px; }
+      .cell { min-width: 60px;}
     */},
     function toHTML() {/*
-      <table border class="cells">
+      <table border cellspacing="0" class="cells">
         <tr>
           <td></td>
           <% for ( var i = 65 ; i <= 90 ; i++ ) { %>
