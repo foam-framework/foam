@@ -75,13 +75,13 @@ var CellParser = {
   
   string: str(repeat(anyChar))
 }.addActions({
-  add: function(a) { return function(cells) { return a[1](cells) + a[3](cells); }; },
-  sub: function(a) { return function() { return a[1]() - a[3](); }; },
-  mul: function(a) { return function() { return a[1]() * a[3](); }; },
-  div: function(a) { return function() { return a[1]() / a[3](); }; },
-  mod: function(a) { return function() { return a[1]() % a[3](); }; },
-  az: function(c) { return c.charCodeAt(0) - 'a'.charCodeAt(0); },
-  AZ: function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
+  add: function(a) { return function(cs) { return a[1](cs) + a[3](cs); }; },
+  sub: function(a) { return function(cs) { return a[1](cs) - a[3](cs); }; },
+  mul: function(a) { return function(cs) { return a[1](cs) * a[3](cs); }; },
+  div: function(a) { return function(cs) { return a[1](cs) / a[3](cs); }; },
+  mod: function(a) { return function(cs) { return a[1](cs) % a[3](cs); }; },
+  az:  function(c) { return c.charCodeAt(0) - 'a'.charCodeAt(0); },
+  AZ:  function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
   row: function(c) { return parseInt(c); },
   number: function(s) { var f = parseFloat(s); return function() { return f; }; },
   cell: function(a) { return function(cells) { return cells.cell(a[1], a[0]).value; }; },
@@ -119,7 +119,6 @@ MODEL({
     {
       name: 'onClick',
       code: function() {
-        console.log('click');
         DOM.setClass(this.$, 'formula', true);
         this.formulaView.$.focus();
       }
@@ -127,7 +126,6 @@ MODEL({
     {
       name: 'onBlur',
       code: function() {
-        console.log('blur');
         DOM.setClass(this.$, 'formula', false);
       }
     }
@@ -167,7 +165,7 @@ MODEL({
   imports: [ 'dynamic' ],
   exports: [ 'as cells' ],
   constants: {
-    ROWS: 10 /* 99 */
+    ROWS: 20 /* 99 */
   },
   properties: [
     {
@@ -183,8 +181,13 @@ MODEL({
     function init() {
       this.SUPER();
 
+      var row = 1;
       var self = this;
       function t(s) {
+        var r = row++;
+        self.cell(r, 0).formula = ' ' + s;
+        self.cell(r, 1).formula = s;
+        /*
         try {
           console.log('parsing: ', s);
           var ret = self.parser.parseString(s);
@@ -192,11 +195,12 @@ MODEL({
           console.log(ret(self));
         } catch (x) {
         }
+        */
       }
 
-      this.cell(0,1).value = 42;
-      this.cell(1,1).value = 1;
-      this.cell(2,2).value = 2;
+//      this.cell(0,1).value = 42;
+//      this.cell(1,1).value = 1;
+//      this.cell(2,2).value = 2;
 
       t('1');
       t('10');
@@ -210,6 +214,7 @@ MODEL({
       t('=mod(8,3)');
       t('=add(mul(2,3),div(3,2))');
       t('=A1')
+      t('=add(A1,B1)')
     },
     function cell(r, c) {
       var self = this;
