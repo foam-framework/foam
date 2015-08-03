@@ -47,11 +47,11 @@ var CellParser = {
     seq('prod(', sym('range'), ')')
   ),
   
-  add: seq('add(', sym('expr'), ',', sym('expr'), ')'),
-  sub: seq('sub(', sym('expr'), ',', sym('expr'), ')'),
-  mul: seq('mul(', sym('expr'), ',', sym('expr'), ')'),
-  div: seq('div(', sym('expr'), ',', sym('expr'), ')'),
-  mod: seq('mod(', sym('expr'), ',', sym('expr'), ')'),
+  add: seq(literal_ic('add('), sym('expr'), ',', sym('expr'), ')'),
+  sub: seq(literal_ic('sub('), sym('expr'), ',', sym('expr'), ')'),
+  mul: seq(literal_ic('mul('), sym('expr'), ',', sym('expr'), ')'),
+  div: seq(literal_ic('div('), sym('expr'), ',', sym('expr'), ')'),
+  mod: seq(literal_ic('mod('), sym('expr'), ',', sym('expr'), ')'),
 
   range: seq(sym('cell'), ':', sym('cell')),
   
@@ -75,7 +75,7 @@ var CellParser = {
   
   string: str(repeat(anyChar))
 }.addActions({
-  add: function(a) { return function() { return a[1]() + a[3](); }; },
+  add: function(a) { return function(cells) { return a[1](cells) + a[3](cells); }; },
   sub: function(a) { return function() { return a[1]() - a[3](); }; },
   mul: function(a) { return function() { return a[1]() * a[3](); }; },
   div: function(a) { return function() { return a[1]() / a[3](); }; },
@@ -103,14 +103,54 @@ MODEL({
     },
     {
       name: 'value',
+      defaultValue: '&nbsp;',
       displayWidth: 12
     }
   ],
   methods: [
+    function initHTML() {
+      this.SUPER();
+
+      this.valueView.$.addEventListener('click',  this.onClick);
+      this.formulaView.$.addEventListener('blur', this.onBlur);
+    }
+  ],
+  listeners: [
+    {
+      name: 'onClick',
+      code: function() {
+        console.log('click');
+        DOM.setClass(this.$, 'formula', true);
+        this.formulaView.$.focus();
+      }
+    },
+    {
+      name: 'onBlur',
+      code: function() {
+        console.log('blur');
+        DOM.setClass(this.$, 'formula', false);
+      }
+    }
   ],
   templates: [
+    function CSS() {/*
+      .cellView > span {
+        width: 100%;
+        display: block;
+      }
+      .cellView > input {
+        display: none;
+      }
+      .cellView.formula > input {
+        display: inherit;
+        border: 1px blue solid;
+      }
+      .cellView.formula > span {
+        display: none;
+      }
+    */},
     function toHTML() {/*
-      $$formula $$value{mode: 'read-only'}
+      <div id="%%id" class="cellView">$$formula $$value{mode: 'read-only', escapeHTML: false}</div>
     */}
   ]
 });
