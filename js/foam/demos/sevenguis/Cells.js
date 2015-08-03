@@ -43,17 +43,19 @@ var CellParser = {
     sym('mul'),
     sym('div'),
     sym('mod'),
-    seq('sum(',  sym('range'), ')'),
-    seq('prod(', sym('range'), ')')
+    sym('sum'),
+    sym('prod')
   ),
   
-  add: seq(literal_ic('add('), sym('expr'), ',', sym('expr'), ')'),
-  sub: seq(literal_ic('sub('), sym('expr'), ',', sym('expr'), ')'),
-  mul: seq(literal_ic('mul('), sym('expr'), ',', sym('expr'), ')'),
-  div: seq(literal_ic('div('), sym('expr'), ',', sym('expr'), ')'),
-  mod: seq(literal_ic('mod('), sym('expr'), ',', sym('expr'), ')'),
+  add:  seq(literal_ic('add('),  sym('expr'), ',', sym('expr'), ')'),
+  sub:  seq(literal_ic('sub('),  sym('expr'), ',', sym('expr'), ')'),
+  mul:  seq(literal_ic('mul('),  sym('expr'), ',', sym('expr'), ')'),
+  div:  seq(literal_ic('div('),  sym('expr'), ',', sym('expr'), ')'),
+  mod:  seq(literal_ic('mod('),  sym('expr'), ',', sym('expr'), ')'),
+  sum:  seq(literal_ic('sum('),  sym('range'), ')'),
+  prod: seq(literal_ic('prod('), sym('range'), ')'),
 
-  range: seq(sym('cell'), ':', sym('cell')),
+  range: seq(sym('col'), sym('row'), ',', sym('col'), sym('row')),
   
   digit: range('0', '9'),
   
@@ -80,11 +82,36 @@ var CellParser = {
   mul: function(a) { return function(cs) { return a[1](cs) * a[3](cs); }; },
   div: function(a) { return function(cs) { return a[1](cs) / a[3](cs); }; },
   mod: function(a) { return function(cs) { return a[1](cs) % a[3](cs); }; },
+  sum: function(a) { return function(cs) {
+    var arr = a[1](cs);
+    var sum = 0;
+    for ( var i = 0 ; i < arr.length ; i++ ) sum += arr[i];
+    return sum;
+  }; },
+  prod: function(a) { return function(cs) {
+    var arr = a[1](cs);
+    var prod = 1;
+    for ( var i = 0 ; i < arr.length ; i++ ) prod *= arr[i];
+    return prod;
+  }; },
   az:  function(c) { return c.charCodeAt(0) - 'a'.charCodeAt(0); },
   AZ:  function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
   row: function(c) { return parseInt(c); },
   number: function(s) { var f = parseFloat(s); return function() { return f; }; },
-  cell: function(a) { return function(cells) { return cells.cell(a[1], a[0]).value; }; },
+  cell: function(a) { return function(cs) { return cs.cell(a[1], a[0]).value; }; },
+  range: function(a) {
+    var c1 = a[0];
+    var r1 = a[1];
+    var c2 = a[3];
+    var r2 = a[4];
+    return function(cs) {
+      var ret = [];
+      for ( var c = c1 ; c <= c2; c++ )
+        for ( var r = r1 ; r <= r2 ; r++ )
+          ret.push(cs.cell(r, c).value);
+      return ret;
+    }
+  },
   string: function(s) { return function() { return s; }; }
 });
 //});
@@ -206,6 +233,8 @@ MODEL({
       t('=add(mul(2,3),div(3,2))');
       t('=A1');
       t('=add(A1,B1)');
+      t('=sum(B6,B10)');
+      t('=prod(B6,B10)');
     },
     function cell(r, c) {
       var self = this;
