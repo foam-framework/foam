@@ -86,7 +86,7 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      
+
       this.dynamicLOD = 8;
 
       this.background = this.Circle.create({ r$: this.r$, segments$: this.segments$, color: [1,1,1,1], z: -0.9});
@@ -334,6 +334,8 @@ CLASS({
     { name: 'background', defaultValue: '#ccf' },
     { name: 'collider',   factory: function() {
       var c = this.Collider.create();
+      var w = this.width;
+      var h = this.height;
       // Make collision detection much faster by not checking
       // if air bubbles collide with other air bubbles
       c.detectCollisions = function() {
@@ -341,7 +343,15 @@ CLASS({
         for ( var i = 0 ; i < cs.length ; i++ ) {
           var c1 = cs[i];
           this.updateChild(c1);
+
           if ( c1.r !== 5 ) {
+            // Bounce on Walls
+            var r = c1.r * 1.2;
+            if ( c1.x < r     ) { c1.vx += 0.2; c1.vy -= 0.19; }
+            if ( c1.x > w - r ) { c1.vx -= 0.2; c1.vy += 0.19; }
+            if ( c1.y < r     ) { c1.vy += 0.2; c1.vx += 0.19; }
+            if ( c1.y > h - r ) { c1.vy -= 0.2; c1.vx -= 0.19; }
+
             for ( var j = i+1 ; j < cs.length ; j++ ) {
               var c2 = cs[j];
               if ( c1.intersects(c2) ) this.collide(c1, c2);
@@ -433,7 +443,7 @@ CLASS({
         c.mass = c.r/50;
         c.gravity = 0.03 * bubbleScale;
         c.friction = 0.96;
-        this.bounceOnWalls(c, this.width, this.height);
+        //this.bounceOnWalls(c, this.width, this.height);
         this.collider.add(c);
       }
 
@@ -468,14 +478,14 @@ CLASS({
         items: spareBubbles,
         addFunction: function(c) {
           scene.addChild(c);
-          scene.bounceOnWalls(c, scene.width, scene.height);
+          //scene.bounceOnWalls(c, scene.width, scene.height);
           scene.collider.add(c);
           c.x = Math.random() * scene.width;
           c.y = -200;
         },
         removeFunction: function(c) {
           scene.removeChild(c);
-          c.cancelBounce_.destroy();
+          //c.cancelBounce_.destroy();
           scene.collider.remove(c);
         }
       });
@@ -559,15 +569,15 @@ CLASS({
 //       return this.view;
 //     },
 
-    function bounceOnWalls(c, w, h) {
-      c.cancelBounce_ = Events.dynamic(function() { c.x; c.y; }, function() {
-        var r = c.r;
-        if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
-        if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }
-        if ( c.y < r     ) { c.vy += 0.2; c.vx += 0.19; }
-        if ( c.y > h - r ) { c.vy -= 0.2; c.vx -= 0.19; }
-      });
-    },
+//     function bounceOnWalls(c, w, h) {
+//       c.cancelBounce_ = Events.dynamic(function() { c.x; c.y; }, function() {
+//         var r = c.r;
+//         if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
+//         if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }
+//         if ( c.y < r     ) { c.vy += 0.2; c.vx += 0.19; }
+//         if ( c.y > h - r ) { c.vy -= 0.2; c.vx -= 0.19; }
+//       });
+//     },
 
     function destroy() {
       this.SUPER();
