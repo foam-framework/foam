@@ -100,7 +100,7 @@
       var view;
       if ( viewName ) {
         viewParams.data = obj;
-        view = X.lookup(viewName).create(viewParams);
+        view = X.lookup(viewName).create(viewParams, obj.Y);
         // 'CView' refers to old CView
         // TODO(kgr): remove this check when CView's converted to foam.graphics.CView
       } else if (  ( X.lookup('foam.ui.View').isInstance(obj) )

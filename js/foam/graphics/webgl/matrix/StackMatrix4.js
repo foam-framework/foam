@@ -46,6 +46,10 @@ CLASS({
         this.reset_();
       }
     },
+    {
+      name: 'temp_',
+      lazyFactory: function() { return [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]; }
+    },
   ],
 
   methods: [
@@ -54,30 +58,16 @@ CLASS({
       /* Recalculate the matrix, starting from the indicated index */
       if ( this.stack.length < 1 ) { return this.SUPER(); } // the identity matrix
 
-      var result;
-      var i = 0;
-      // find the last cache hit before we miss
-//       for (; i < this.stack.length; ++i) {
-//         var m = this.stack[i];
-//         if ( this.matrixCache_[m] ) {
-//           result = this.matrixCache_[m];
-//         } else {
-//           break;
-//         }
-//       }
-      if ( ! result ) {
-        result = this.stack[0].flat;
-        ++i;
-      }
-      // continue calculating the rest
-      for (; i < this.stack.length; ++i) {
+      var result = this.temp_;
+      this.copyMatrixInto_(this.stack[0].flat, this.instance_.flat);
+
+      for (var i=1; i < this.stack.length; ++i) {
         var m = this.stack[i];
         if ( ! m.identity ) {
-          result = this.multiply(result, m.flat);
+          this.multiply(this.instance_.flat, m.flat, result); // combine into result
+          this.copyMatrixInto_(result, this.instance_.flat); // copy back
         }
-        //this.matrixCache_[m] = result;
       }
-      this.instance_.flat = result;
     },
 
   ],

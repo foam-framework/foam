@@ -16,7 +16,7 @@ CLASS({
   extendsModel: 'foam.ui.md.DetailView',
 
   requires: [
-    'foam.apps.builder.questionnaire.DetailView',
+    'foam.ui.md.DetailView',
     'foam.apps.builder.questionnaire.Questionnaire',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
@@ -48,27 +48,37 @@ CLASS({
     {
       name: 'content',
       help: 'The current questionnaire being edited',
-      view: 'foam.apps.builder.questionnaire.DetailView',
+      view: 'foam.ui.md.DetailView',
       lazyFactory: function() {
         return this.appConfig.model.create();
       }
     },
   ],
 
-  methods: [
-    function reload() {
-      this.content = this.appConfig.model.create();
+  actions: [
+    {
+      name: 'save',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAASUlEQVR4AWPADUaBFmnKQxh+MzSQpvw/Q8PwU87KsIohkBTTI4CSvxiCSHAMUPI/UFEQunLCWoLRlBPWglBOpBaYcqK1YCgfBQDw0y1mS9NLDAAAAABJRU5ErkJggg==',
+      //isAvailable: function() { return this.data.enableHomeBttn; },
+      action: function() {
+        this.dao.put(this.content, {
+            put: function() {
+              this.reload();
+              //TODO: save ok notification
+            }.bind(this),
+            error: function() {
+              //TODO: error notification
+            }.bind(this),
+        });
+      }
     },
-    function home() {
-      this.dao.put(this.content, {
-          put: function() {
-            this.reload();
-            //TODO: save ok notification
-          }.bind(this),
-          error: function() {
-            //TODO: error notification
-          }.bind(this),
-      });
+    {
+      name: 'reload',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVR4Ad3SP04CURDA4a8RlpNYEP5zQbBGIYT4Ck5iZbwEcStj9AQW7JrI2LLxuYmx45tuMr9uXKSJpFT7VErGgIWsnr1ozElSWIr8+ZNwtDLV1TGzUQsvIh/shVd958Y+RD6YCEd9TTciH5CElaal+D0ohalzC9EW1EJXi38Hz8LMH9wLd3K2wq0fRk4qg8y+9uVaRhLeDJ0behfWsgqPQmVtrqcwt1EJD64gnyQnzefb6mg1snNQqR3sDFygb3rVYPgYJpUVAAAAAElFTkSuQmCC',
+      //isAvailable: function() { return this.data.enableReloadBttn; },
+      action: function() {
+        this.content = this.appConfig.model.create();
+      }
     },
   ],
 

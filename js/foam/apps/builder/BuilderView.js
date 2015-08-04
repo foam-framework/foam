@@ -21,21 +21,8 @@ CLASS({
   imports: [
     'setTimeout'
   ],
-  exports: [
-    'gestureManager',
-    'touchManager',
-  ],
 
   properties: [
-    {
-      name: 'data',
-      postSet: function(old,nu) {
-        if (nu) {
-          this.touchManager = nu.touchManager;
-          this.gestureManager = nu.gestureManager;
-        }
-      }
-    },
     {
       model_: 'ViewFactoryProperty',
       name: 'menuSelectionFuture',
@@ -62,14 +49,6 @@ CLASS({
           innerView: this.BrowserView,
         }, this.Y);
       }
-    },
-    {
-      type: 'foam.input.touch.TouchManager',
-      name: 'touchManager',
-    },
-    {
-      type: 'foam.input.touch.GestureManager',
-      name: 'gestureManager',
     },
   ],
 
