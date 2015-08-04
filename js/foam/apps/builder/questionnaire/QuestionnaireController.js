@@ -16,7 +16,7 @@ CLASS({
   extendsModel: 'foam.ui.md.DetailView',
 
   requires: [
-    'foam.apps.builder.questionnaire.DetailView',
+    'foam.ui.md.DetailView',
     'foam.apps.builder.questionnaire.Questionnaire',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
@@ -48,7 +48,6 @@ CLASS({
     {
       name: 'content',
       help: 'The current questionnaire being edited',
-      view: 'foam.apps.builder.questionnaire.DetailView',
       lazyFactory: function() {
         return this.appConfig.model.create();
       }
