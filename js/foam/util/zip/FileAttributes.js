@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.zip',
+  package: 'foam.util.zip',
   name: 'FileAttributes',
 
   imports: [
@@ -20,14 +20,14 @@ CLASS({
 
   properties: [
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'internalAttrs',
       getter: function() {
         return this.type !== 'DIR' && this.encoding !== 'BINARY' ? 0x00 : 0x01;
       },
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'externalAttrs',
       size: 4,
       offset: 2,

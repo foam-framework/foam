@@ -10,15 +10,15 @@
  */
 
 CLASS({
-  package: 'foam.zip',
+  package: 'foam.util.zip',
   name: 'File',
 
   requires: [
-    'foam.zip.Chunk',
-    'foam.zip.DOSDate',
-    'foam.zip.FileAttributes',
-    'foam.zip.LocalFileHeader',
-    'foam.zip.CentralFileHeader',
+    'foam.util.zip.Chunk',
+    'foam.util.zip.DOSDate',
+    'foam.util.zip.FileAttributes',
+    'foam.util.zip.LocalFileHeader',
+    'foam.util.zip.CentralFileHeader',
   ],
   imports: [
     'crc32',
@@ -121,7 +121,7 @@ CLASS({
       name: 'diskNumber',
     },
     {
-      type: 'foam.zip.FileAttributes',
+      type: 'foam.util.zip.FileAttributes',
       name: 'fileAttrs',
       lazyFactory: function() {
         return this.FileAttributes.create({}, this.Y);
@@ -162,19 +162,19 @@ CLASS({
       ],
     },
     {
-      type: 'foam.zip.Chunk',
+      type: 'foam.util.zip.Chunk',
       name: 'fileContents',
       lazyFactory: function() { return this.Chunk.create({}, this.Y); },
     },
     {
-      type: 'foam.zip.LocalFileHeader',
+      type: 'foam.util.zip.LocalFileHeader',
       name: 'localHeader',
       lazyFactory: function() {
         return this.LocalFileHeader.create({}, this.Y);
       },
     },
     {
-      type: 'foam.zip.CentralFileHeader',
+      type: 'foam.util.zip.CentralFileHeader',
       name: 'centralHeader',
       lazyFactory: function() {
         return this.CentralFileHeader.create({}, this.Y);

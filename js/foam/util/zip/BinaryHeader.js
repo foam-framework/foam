@@ -10,12 +10,12 @@
  */
 
 CLASS({
-  package: 'foam.zip',
+  package: 'foam.util.zip',
   name: 'BinaryHeader',
 
   requires: [
-    'foam.zip.BinaryIntProperty',
-    'foam.zip.Chunk',
+    'foam.util.zip.BinaryIntProperty',
+    'foam.util.zip.Chunk',
   ],
 
   methods: [

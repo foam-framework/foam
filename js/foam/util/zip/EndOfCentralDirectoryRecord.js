@@ -10,9 +10,9 @@
  */
 
 CLASS({
-  package: 'foam.zip',
+  package: 'foam.util.zip',
   name: 'EndOfCentralDirectoryRecord',
-  extendsModel: 'foam.zip.BinaryHeader',
+  extendsModel: 'foam.util.zip.BinaryHeader',
 
   imports: [
     'numberOfFiles$',
@@ -24,45 +24,45 @@ CLASS({
 
   properties: [
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'signature',
       size: 4,
       defaultValue: (0x06054b50 | 0),
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'numberOfDisks',
       offset: 4,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'centralDirectoryDiskNumber',
       offset: 6,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'centralDirectoryDiskNumber',
       offset: 8,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'numberOfFiles',
       offset: 10,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'sizeOfCentralDirectory',
       size: 4,
       offset: 12,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'centralDirectoryStartOffset',
       size: 4,
       offset: 16,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'commentLength',
       offset: 20,
     },

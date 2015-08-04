@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.zip',
+  package: 'foam.util.zip',
   name: 'Chunk',
 
   constants: {

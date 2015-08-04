@@ -10,13 +10,13 @@
  */
 
 CLASS({
-  package: 'foam.zip',
+  package: 'foam.util.zip',
   name: 'Archive',
 
   requires: [
-    'foam.zip.CRC32',
-    'foam.zip.Chunk',
-    'foam.zip.EndOfCentralDirectoryRecord',
+    'foam.util.zip.CRC32',
+    'foam.util.zip.Chunk',
+    'foam.util.zip.EndOfCentralDirectoryRecord',
   ],
   exports: [
     'crc32',
@@ -29,7 +29,7 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.zip.CRC32',
+      type: 'foam.util.zip.CRC32',
       name: 'crc32',
       factory: function() {
         return this.CRC32.create({}, this.Y);
@@ -61,11 +61,11 @@ CLASS({
     },
     {
       model_: 'ArrayProperty',
-      subType: 'foam.zip.File',
+      subType: 'foam.util.zip.File',
       name: 'files',
     },
     {
-      type: 'foam.zip.EndOfCentralDirectoryRecord',
+      type: 'foam.util.zip.EndOfCentralDirectoryRecord',
       name: 'endOfCentralDirectoryRecord',
       lazyFactory: function() {
         return this.EndOfCentralDirectoryRecord.create({}, this.Y);

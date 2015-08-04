@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.zip',
+  package: 'foam.util.zip',
   name: 'DOSDate',
 
   // See http://stackoverflow.com/questions/15763259/unix-timestamp-to-fat-timestamp?answertab=votes#tab-top.

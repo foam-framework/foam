@@ -11,7 +11,7 @@
  */
 
 CLASS({
-  package: 'foam.zip',
+  package: 'foam.util.zip',
   name: 'BinaryIntProperty',
   extendsModel: 'IntProperty',
 

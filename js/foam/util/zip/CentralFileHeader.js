@@ -10,9 +10,9 @@
  */
 
 CLASS({
-  package: 'foam.zip',
+  package: 'foam.util.zip',
   name: 'CentralFileHeader',
-  extendsModel: 'foam.zip.BinaryHeader',
+  extendsModel: 'foam.util.zip.BinaryHeader',
 
   imports: [
     'packagedVersion$',
@@ -37,90 +37,90 @@ CLASS({
 
   properties: [
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'signature',
       size: 4,
       defaultValue: (0x02014b50 | 0),
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'packagedVersion',
       offset: 4,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'minimumVersion',
       offset: 6,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'bitFlag',
       offset: 8,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'compressionMethod',
       offset: 10,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'lastModified',
       size: 4,
       offset: 12,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'contentCRC32',
       size: 4,
       offset: 16,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'compressedSize',
       size: 4,
       offset: 20,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'uncompressedSize',
       size: 4,
       offset: 24,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'fileNameLength',
       offset: 28,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'extraFieldLength',
       offset: 30,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'fileCommentLength',
       offset: 32,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'diskNumber',
       offset: 34,
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'internalFileAttrs',
       offset: 36,
       getter: function() { return this.fileAttrs.internalAttrs; },
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'externalFileAttrs',
       size: 4,
       offset: 38,
       getter: function() { return this.fileAttrs.externalAttrs; },
     },
     {
-      model_: 'foam.zip.BinaryIntProperty',
+      model_: 'foam.util.zip.BinaryIntProperty',
       name: 'offsetOnDisk',
       size: 4,
       offset: 42,
