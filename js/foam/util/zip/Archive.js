@@ -101,17 +101,20 @@ CLASS({
       // something changes.
       this.computeProperties();
 
-      var chunk = this.Chunk.create({}, this.Y);
-      // | local header 1 | local file 1 | ... | central header 1 | ...
-      // | end of central directory record |
-      chunk.append.apply(
-          chunk,
-          this.files.map(function(file) {
-            return file.localHeader.toChunk().append(file.fileContents);
-          }.bind(this)).concat(this.files.map(function(file) {
-            return file.centralHeader.toChunk();
-          }.bind(this))).concat([this.endOfCentralDirectoryRecord.toChunk()]));
-      return chunk;
+      return this.Chunk.create({
+          data: [
+            // | local header 1 | local file 1 | ... | local header n | local file n |
+            this.files.map(function(file) {
+              return file.localHeader.toChunk().append(file.fileContents);
+            }.bind(this)),
+            // | central header 1 | ... | central header n |
+            this.files.map(function(file) {
+              return file.centralHeader.toChunk();
+            }),
+            // | end of central directory record |
+            this.endOfCentralDirectoryRecord.toChunk(),
+          ],
+      }, this.Y);
     },
   ],
 });

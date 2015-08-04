@@ -29,24 +29,27 @@ CLASS({
         if ( old === nu ) return nu;
         if ( ! nu ) return [];
         if ( ! Array.isArray(nu) ) return [nu];
-        return nu;
+        return this.append_([], nu);
       },
     },
   ],
 
   methods: [
     function append() {
-      var args = argsToArray(arguments);
+      this.data = this.append_(this.data, argsToArray(arguments));
+      return this;
+    },
+    function append_(data, args) {
       for ( var i = 0; i < args.length; ++i ) {
         if ( this.model_.isInstance(args[i]) ) {
-          this.data = this.data.concat(args[i].data);
+          data = data.concat(args[i].data);
         } else if ( Array.isArray(args[i]) ) {
-          this.data = this.data.concat(args[i]);
+          data = this.append_(data, args[i]);
         } else {
-          this.data.push(args[i]);
+          data = data.concat([args[i]]);
         }
       }
-      return this;
+      return data;
     },
     function size() {
       var propNames = this.LENGTH_PROPS;
