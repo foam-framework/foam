@@ -48,6 +48,7 @@ CLASS({
     {
       name: 'content',
       help: 'The current questionnaire being edited',
+      view: 'foam.ui.md.DetailView',
       lazyFactory: function() {
         return this.appConfig.model.create();
       }

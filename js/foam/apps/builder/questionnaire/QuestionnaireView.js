@@ -209,6 +209,7 @@ CLASS({
       kiosk {
         position: relative;
         flex-direction: column;
+        height: 100%;
       }
       kiosk, kiosk .kiosk-controller {
         display: flex;
