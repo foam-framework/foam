@@ -13,6 +13,10 @@ CLASS({
   package: 'foam.util.zip',
   name: 'File',
 
+  ids: [
+    'fileName',
+  ],
+
   requires: [
     'foam.util.zip.Chunk',
     'foam.util.zip.DOSDate',
