@@ -20,6 +20,7 @@ CLASS({
     'foam.apps.builder.TOSData',
     'foam.apps.builder.TOSView',
     'foam.apps.builder.questionnaire.QuestionnaireController',
+    'foam.apps.builder.questionnaire.AppConfig',
     'foam.ui.md.PopupView',
     'ViewFactoryProperty',
   ],

@@ -20,6 +20,15 @@ CLASS({
     'foam.apps.builder.questionnaire.EditView',
     'foam.apps.builder.questionnaire.QuestionnaireView',
     'Model',
+    'foam.apps.builder.AppConfigDetailView',
+    'foam.ui.StringArrayView',
+    'foam.ui.ArrayView',
+    'foam.ui.TextAreaView',
+    'foam.ui.FunctionView',
+  ],
+
+  imports: [
+    'exportManager$',
   ],
 
   constants: {
@@ -60,20 +69,24 @@ CLASS({
       }
     },
     {
+      type: 'foam.apps.builder.ExportManager',
+      name: 'exportManager',
+    },
+    {
       name: 'instance',
       help: 'An example of your questionnaire as a user would see it.',
-//       getter: function() {
-//         //this.data.model.instance_.prototype_ = undefined;
-//         // return this.data.model.getPrototype().create();
-//         return this.data.model.create();
-//       }
     }
   ],
 
   templates: [
     function toHTML() {/*
       <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
-        $$data{ model_: 'foam.apps.builder.Panel', innerView: 'foam.apps.builder.questionnaire.EditView' }
+        $$data{ model_: 'foam.apps.builder.Panel' }
+        $$data{
+          model_: 'foam.apps.builder.Panel',
+          innerView: { factory_: 'foam.apps.builder.AppConfigDetailView',
+                       innerView: 'foam.apps.builder.questionnaire.EditView' }
+        }
         $$data{ model_: 'foam.apps.builder.questionnaire.QuestionnaireView' }
       </kiosk-designer>
     */},

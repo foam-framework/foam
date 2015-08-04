@@ -14,9 +14,6 @@ CLASS({
   name: 'AppToolbarView',
   extendsModel: 'foam.ui.View',
 
-  imports: [
-  ],
-
   properties: [
     {
       name: 'data',

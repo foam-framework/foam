@@ -26,12 +26,24 @@ CLASS({
     'foam.apps.builder.questionnaire.Questionnaire',
   ],
 
+  constants: {
+    EXISTING_SOURCES: [
+      'foam.js',
+      'questionnaire_bg.js',
+      'kiosk_view.html',
+    ],
+  },
+
   properties: [
     {
       name: 'appName',
       postSet: function(old,nu) {
         this.model.name = nu+'Questionnaire';
       }
+    },
+    {
+      name: 'defaultView',
+      defaultValue: 'foam.apps.builder.questionnaire.QuestionnaireView',
     },
     {
       name: 'model',
@@ -44,16 +56,42 @@ CLASS({
         });
       },
     },
-    {
-      name: 'enableReloadBttn',
-      help: 'Enables the reload button in the toolbar.',
-      defaultValue: true,
-    },
-    {
-      name: 'enableHomeBttn',
-      help: 'Enables the home(save) button in the toolbar.',
-      defaultValue: true,
-    },
 
+  ],
+
+  templates: [
+    function toManifest() {/*{
+  "version": "%%version",
+  "manifest_version": 2,
+  "minimum_chrome_version": "43.0.0.0",
+  "name": "%%appName",
+  "app": {
+    "background": {
+      "scripts": [
+        "foam.js",
+        "questionnaire_bg.js"
+      ]
+    }
+  },
+  "permissions": [
+    "webview",
+    "power",
+    "storage",
+    "videoCapture",
+    "geolocation",
+    "pointerLock",
+    "system.display",
+    { "fileSystem": [
+      "write",
+      "retainEntries",
+      "directory"
+    ] },
+    "accessibilityFeatures.read",
+    "accessibilityFeatures.modify"
   ]
+}*/}
+  ],
+
+
+
 });
