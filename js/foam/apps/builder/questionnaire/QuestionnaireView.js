@@ -15,24 +15,24 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.apps.builder.kiosk.KioskChromeView',
+    'foam.apps.builder.AppToolbarView',
     'foam.apps.builder.Timeout',
     'foam.apps.builder.TOSData',
     'foam.apps.builder.TOSView',
     'foam.apps.builder.questionnaire.QuestionnaireController',
     'foam.ui.md.PopupView',
+    'ViewFactoryProperty',
   ],
   exports: [
     'as kiosk',
     'url$',
-    'webview',
-    'webview as controller',
+    'controller',
+    'controller as controller',
   ],
 
   properties: [
     {
       name: 'data',
-      view: 'foam.apps.builder.kiosk.KioskChromeView',
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( old ) {
@@ -55,6 +55,26 @@ CLASS({
 //       }
 //     },
     {
+      name: 'toolbarItems',
+      lazyFactory: function() {
+        return [
+          function() {
+            return this.controller.createTemplateView('save');
+          }.bind(this),
+          function() {
+            return this.controller.createTemplateView('reload');
+          }.bind(this),
+        ];
+      },
+    },
+    {
+      name: 'toolbarView',
+      lazyFactory: function() {
+        return this.AppToolbarView.create({ data$: this.toolbarItems$ }, this.Y);
+
+      },
+    },
+    {
       type: 'foam.apps.builder.TOSData',
       name: 'tosData',
       lazyFactory: function() {
@@ -73,14 +93,13 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.WebView',
-      name: 'webview',
+      name: 'controller',
       lazyFactory: function() {
         return this.QuestionnaireController.create({ appConfig$: this.data$ });
       },
       postSet: function(old, nu) {
-        if ( old ) old.unsubscribe(['action'], this.onWebviewAction);
-        if ( nu ) nu.subscribe(['action'], this.onWebviewAction);
+        if ( old ) old.unsubscribe(['action'], this.onControllerAction);
+        if ( nu ) nu.subscribe(['action'], this.onControllerAction);
       },
     },
     {
@@ -116,8 +135,8 @@ CLASS({
         this.closeTOS();
     },
     function logout() {
-      this.webview.ahome(function() {
-        this.webview.clearCache();
+      this.controller.ahome(function() {
+        this.controller.clearCache();
         this.openTOS();
       }.bind(this));
     },
@@ -140,7 +159,7 @@ CLASS({
       },
     },
     {
-      name: 'onWebviewAction',
+      name: 'onControllerAction',
       code: function() {
         this.cacheTimeout.restart();
         this.homeTimeout.restart();
@@ -166,7 +185,7 @@ CLASS({
     },
     {
       name: 'onCacheTimeout',
-      code: function() { this.webview.clearCache(); },
+      code: function() { this.controller.clearCache(); },
     },
     {
       name: 'onHomeTimeout',
@@ -181,8 +200,8 @@ CLASS({
     function toHTML() {/*
       <kiosk id="%%id" <%= this.cssClassAttr() %>>
         %%tosView
-        $$data
-        %%webview
+        %%toolbarView
+        %%controller
       </kiosk>
     */},
     function CSS() {/*
@@ -190,14 +209,14 @@ CLASS({
         position: relative;
         flex-direction: column;
       }
-      kiosk, kiosk .kiosk-webview {
+      kiosk, kiosk .kiosk-controller {
         display: flex;
         flex-grow: 1;
       }
       kiosk kiosk-chrome {
         z-index: 2;
       }
-      kiosk .kiosk-webview {
+      kiosk .kiosk-controller {
         z-index: 1;
       }
     */},
