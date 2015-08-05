@@ -30,7 +30,7 @@ CLASS({
     {
       model_: 'foam.core.types.StringEnumProperty',
       name: 'mode',
-      defaultValue: 'IDENTITY',
+      defaultValue: 'CHROME_IDENTITY',
       choices: [
         ['CHROME_IDENTITY', 'Chrome Identity'],
         ['WEB', 'Web'],
