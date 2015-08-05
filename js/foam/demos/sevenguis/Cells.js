@@ -161,14 +161,15 @@ MODEL({
   templates: [
     function CSS() {/*
       .cellView > span {
-        width: 100%;
         display: block;
         padding: 2px;
+        width: 100%;
       }
       .cellView > input {
-        display: none;
-        outline: none;
         border:  none;
+        display: none;
+        margin-left: 2px;
+        outline: none;
       }
       .cellView {
         outline: 1px solid white;
@@ -268,9 +269,9 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
-      .cells * {
-        font: 13px roboto, arial, sans-serif;
+      .cells tr, .cells td, .cells th, .cells input {
         color: #333;
+        font: 13px roboto, arial, sans-serif;
       }
       .cells tr { height: 26px; }
       .cells { overflow: auto; }
@@ -284,8 +285,8 @@ MODEL({
         height: 100%;
       }
       .cells th {
-        color: #333;
         background: #eee;
+        color: #333;
         padding: 2px 18px;
       }
     */},
