@@ -38,7 +38,9 @@ CLASS({
       name: 'resize',
       framed: true,
       code: function() {
-        if ( ! this.$ ) return;
+        if ( ( ! this.$ ) ||
+            ( ! this.$.clientWidth ) ||
+            ( ! this.$.clientHeight ) ) return;
         this.width = this.$.clientWidth;
         this.height = this.$.clientHeight;
         this.$.width = this.canvasWidth();   // tell the DOM to update its style settings
