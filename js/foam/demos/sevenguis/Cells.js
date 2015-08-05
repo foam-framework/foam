@@ -84,14 +84,12 @@ var CellParser = {
   div: function(a) { return function(cs) { return a[1](cs) / a[3](cs); }; },
   mod: function(a) { return function(cs) { return a[1](cs) % a[3](cs); }; },
   sum: function(a) { return function(cs) {
-    var arr = a[1](cs);
-    var sum = 0;
+    var arr = a[1](cs), sum = 0;
     for ( var i = 0 ; i < arr.length ; i++ ) sum += arr[i];
     return sum;
   }; },
   prod: function(a) { return function(cs) {
-    var arr = a[1](cs);
-    var prod = 1;
+    var arr = a[1](cs), prod = 1;
     for ( var i = 0 ; i < arr.length ; i++ ) prod *= arr[i];
     return prod;
   }; },
@@ -101,10 +99,7 @@ var CellParser = {
   number: function(s) { var f = parseFloat(s); return function() { return f; }; },
   cell: function(a) { return function(cs) { return cs.cell(a[1], a[0]).value; }; },
   range: function(a) {
-    var c1 = a[0];
-    var r1 = a[1];
-    var c2 = a[3];
-    var r2 = a[4];
+    var c1 = a[0], r1 = a[1], c2 = a[3], r2 = a[4];
     return function(cs) {
       var ret = [];
       for ( var c = c1 ; c <= c2; c++ )
@@ -201,7 +196,7 @@ MODEL({
     'foam.demos.sevenguis.Cell'
   ],
   imports: [ 'dynamic' ],
-  exports: [ 'as cells' ], // Would 'sheet' be a better name?
+  exports: [ 'as cells' ],
   constants: {
     ROWS: 20 /* 99 */
   },
