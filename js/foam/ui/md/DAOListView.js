@@ -28,6 +28,7 @@ CLASS({
     {
       name: 'orientation',
       view: { factory_: 'foam.ui.ChoiceView', choices: ['vertical', 'horizontal'] },
+      defaultValue: 'vertical',
     },
     {
       name: 'rowCache_',
@@ -126,7 +127,7 @@ CLASS({
       if ( ! this.dao || ! this.$ ) return;
       // build missing views for new items
       var outHTMLs = []; // string contents and existing nodes
-      var toInit = [];
+      var toInit = []; // newly html'd views to init
       var debugCount = 0;
       for (var key in this.rowCache_) {
         var d = this.rowCache_[key];
@@ -185,9 +186,12 @@ CLASS({
       // init the newly inserted views
       for (var i = 0; i < toInit.length; ++i) {
         toInit[i].view.initHTML();
+        toInit[i].view.$.style.position = 'absolute';
       }
 
-      //console.log("daoChange added", debugCount, " of ", this.children.length);
+      this.updatePositions();
+      this.X.setTimeout(this.onPositionUpdate, 1000);
+      console.log("daoChange added", debugCount, " of ", this.children.length);
     },
 
     construct: function() {
@@ -198,17 +202,34 @@ CLASS({
     },
 
     updatePositions: function() {
+
+      if ( this.$ ) this.$.style.position = 'relative';
+
       var rows = [];
       for (var key in this.rowCache_) {
         var d = this.rowCache_[key];
         rows[d.ordering] = d;
       }
+      console.log("updatePositions", rows.length);
 
       var pos = 0;
       for (var i = 0; i < rows.length; ++i) {
         if ( rows[i] && rows[i].view.$ ) {
           rows[i].offset = pos;
-          pos += ( this.orientation == 'vertical' ) ? rows[i].view.$.height : rows[i].view.$.width
+          var rect = rows[i].view.$.getBoundingClientRect();
+          pos += ( this.orientation == 'vertical' ) ? rect.height : rect.width
+
+          //rows[i].view.$.style.position = 'absolute';
+          if (  this.orientation == 'vertical' ) {
+            rows[i].view.$.style.transform = "translate3d(0px, "+rows[i].offset+"px, 0px)";
+            //rows[i].view.$.style.top = rows[i].offset+"px";
+            //rows[i].view.$.style.left = "0px";
+          } else {
+            rows[i].view.$.style.transform = "translate3d("+rows[i].offset+"px, 0px, 0px)";
+            //rows[i].view.$.style.left = rows[i].offset+"px";
+            //rows[i].view.$.style.top = "0px";
+          }
+          //console.log("Position", rows[i].view.id, rows[i].ordering, rows[i].offset);
         }
       }
     },
@@ -240,6 +261,13 @@ CLASS({
       name: 'onDAOUpdate',
       code: function() {
         this.realDAOUpdate();
+      }
+    },
+    {
+      name: 'onPositionUpdate',
+      framed: true,
+      code: function() {
+        this.updatePositions();
       }
     },
     {
