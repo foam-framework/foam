@@ -38,7 +38,7 @@ CLASS({
       postSet: function(old,nu) {
         if ( old ) {
           old.unlisten(this);
-          this.destroy();
+          this.daoRemovalCheck();
         }
         if ( nu ) {
           this.count_ = 0;
@@ -52,6 +52,12 @@ CLASS({
       documentation: 'Internal tracker of insertion order',
       defaultValue: 0,
     },
+    {
+      name: 'removalCheck_',
+      model_: 'BooleanProperty',
+      documentation: 'Internal tracker of removal check sweep.',
+      defaultValue: false,
+    },
   ],
 
   methods: {
@@ -59,7 +65,9 @@ CLASS({
       /* Sink function to receive updates from the dao */
       if ( this.rowCache_[o.id] ) {
         //console.log("put cached", o.id);
-        this.rowCache_[o.id].view.data = o;
+        var d = this.rowCache_[o.id];
+        d.view.data = o;
+        if ( d.ordering < 0 ) d.ordering = this.count_++; // reset on removal check
       } else {
         //console.log("put new", o.id);
 
@@ -79,7 +87,7 @@ CLASS({
         }
         this.addChild(view);
         this.rowCache_[o.id] = { view: view, ordering: this.count_++ };
-        this.onDAOUpdate();
+        //this.onDAOUpdate();
       }
     },
 
@@ -89,15 +97,28 @@ CLASS({
         //console.log("remove", o.id);
         var v = this.rowCache_[o.id].view;
         v.destroy();
+        if ( v.$ ) v.$.outerHTML = "";
         this.removeChild(v);
         delete this.rowCache_[o.id];
-        this.onDAOUpdate();
+        //this.onDAOUpdate();
       }
     },
 
     eof: function() {
       /* Sink function to receive updates from the dao */
       this.count_ = 0;
+
+      // removal check completion...
+      // remove items that were not added back in
+      if ( this.removalCheck_ ) {
+        this.removalCheck_ = false;
+        for (var key in this.rowCache_) {
+          if ( this.rowCache_[key].ordering == -1 ) {
+            this.remove({ id: key });
+          }
+        }
+      }
+
       this.daoChange();
     },
 
@@ -173,7 +194,7 @@ CLASS({
       if ( ! this.dao || ! this.$ ) return;
 
       this.count_ = 0;
-      this.data.pipe(this); // TODO: maybe not?
+      //this.data.pipe(this); // TODO: maybe not?
     },
 
     updatePositions: function() {
@@ -192,11 +213,22 @@ CLASS({
       }
     },
 
+    daoRemovalCheck: function() {
+      // reset ordering
+      for (var key in this.rowCache_) {
+        this.rowCache_[key].ordering = -1;
+      }
+      this.removalCheck_ = true;
+      // have everything put back in
+      this.data.select(this);
+    },
+
     destroy: function(s) {
       this.SUPER(s);
 
-      this.data && this.data.unlisten(this); // TODO: maybe not?
+      //this.data && this.data.unlisten(this); // TODO: maybe not?
       this.rowCache_ = {};
+      this.$.innerHTML = "";
     }
 
 
@@ -214,7 +246,10 @@ CLASS({
       name: 'realDAOUpdate',
       isFramed: true,
       code: function() {
-        if ( ! this.isHidden ) this.daoChange();
+        if ( ! this.isHidden ) {
+          this.daoChange();
+          this.daoRemovalCheck();
+        }
       }
     },
   ]
