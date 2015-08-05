@@ -52,6 +52,10 @@ CLASS({
       defaultValue: '0.1'
     },
     {
+      name: 'defaultView',
+      help: 'The model id of the view to create to display this app.',
+    },
+    {
       model_: 'StringProperty',
       name: 'termsOfService',
       label: 'Terms of Service',
@@ -104,6 +108,28 @@ CLASS({
       postSet: function(oldValue, newValue) {
         // this.setKioskMode(newValue);
       }
-    }
+    },
+        {
+      model_: 'IntProperty',
+      name: 'sessionDataTimeoutTime',
+      label: 'Session idle timeout',
+      help: 'Time (in minutes) the app is idle before clearing browsing data.',
+      rangeDescription: '1 - 1440 minutes',
+      defaultDescription: '0 = unlimited',
+      // view: 'RangeDefaultTextFieldView'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'sessionTimeoutTime',
+      label: 'Timeout to return home',
+      help: multiline(function() {/*
+        Time (in minutes) the app is idle before returning to the homepage.
+        Browsing data is not cleared.
+      */}),
+      rangeDescription: '1 - 1440 minutes',
+      defaultDescription: '0 = unlimited',
+      // view: 'RangeDefaultTextFieldView'
+    },
+
   ]
 });

@@ -17,7 +17,7 @@ CLASS({
     'com.google.analytics.AnalyticsDAO',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.ExportManager',
-    'foam.apps.builder.kiosk.KioskApp',
+    'foam.apps.builder.AppLoader',
     'foam.apps.builder.kiosk.KioskAppConfig',
     'foam.apps.builder.kiosk.KioskDesignerView',
     'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',

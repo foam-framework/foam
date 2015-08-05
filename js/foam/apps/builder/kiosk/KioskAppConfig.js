@@ -39,6 +39,10 @@ CLASS({
       defaultValue: 'http://www.google.com',
     },
     {
+      name: 'defaultView',
+      defaultValue: 'foam.apps.builder.kiosk.KioskView',
+    },
+    {
       model_: 'BooleanProperty',
       name: 'enableNavBttns',
       label: 'Enable back/forward navigation buttons',
@@ -67,27 +71,6 @@ CLASS({
       name: 'enableNavBar',
       label: 'Enable navigation bar',
       defaultValue: false
-    },
-    {
-      model_: 'IntProperty',
-      name: 'sessionDataTimeoutTime',
-      label: 'Session idle timeout',
-      help: 'Time (in minutes) the app is idle before clearing browsing data.',
-      rangeDescription: '1 - 1440 minutes',
-      defaultDescription: '0 = unlimited',
-      // view: 'RangeDefaultTextFieldView'
-    },
-    {
-      model_: 'IntProperty',
-      name: 'sessionTimeoutTime',
-      label: 'Timeout to return home',
-      help: multiline(function() {/*
-        Time (in minutes) the app is idle before returning to the homepage.
-        Browsing data is not cleared.
-      */}),
-      rangeDescription: '1 - 1440 minutes',
-      defaultDescription: '0 = unlimited',
-      // view: 'RangeDefaultTextFieldView'
     },
   ],
 

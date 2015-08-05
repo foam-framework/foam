@@ -96,7 +96,7 @@ CLASS({
           self.action.label = self.action.labelFn.call(self.data, self.action);
         },
         function() {
-          if ( self.$ ) self.$.getElementById(this.id+'CONTENT').innerHTML = self.labelHTML();
+          if ( self.$ ) self.X.document.getElementById(self.id+'CONTENT').innerHTML = self.labelHTML();
         });
 
       // available enabled etc.

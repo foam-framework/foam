@@ -10,14 +10,12 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.kiosk',
-  name: 'KioskApp',
+  package: 'foam.apps.builder',
+  name: 'AppLoader',
   extendsModel: 'foam.ui.View',
 
   requires: [
     'XHR',
-    'foam.apps.builder.kiosk.KioskAppConfig',
-    'foam.apps.builder.kiosk.KioskView',
     'foam.graphics.ActionButtonCView',
     'foam.ui.md.SharedStyles',
   ],
@@ -28,7 +26,6 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.kiosk.KioskAppConfig',
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;
@@ -51,9 +48,9 @@ CLASS({
 
       this.XHR.create().asend(function(str, xhr, status) {
         if ( ! status ) return;
-	aeval('(' + str + ')')(function(data) {
-	  this.data = JSONUtil.mapToObj(this.Y, data);
-	}.bind(this));
+        aeval('(' + str + ')')(function(data) {
+            this.data = JSONUtil.mapToObj(this.Y, data);
+        }.bind(this));
       }.bind(this), this.CONFIG_PATH);
     },
     function initHTML() {
@@ -62,7 +59,7 @@ CLASS({
     },
     function replaceView() {
       if ( ! ( this.$ && this.data ) ) return;
-      var view = this.KioskView.create({ data: this.data }, this.Y);
+      var view = this.X.lookup(this.data.defaultView).create({ data: this.data }, this.Y);
       this.$.outerHTML = view.toHTML();
       view.initHTML();
     },
@@ -70,7 +67,7 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <kiosk id="%%id"></kiosk>
+      <appLoader id="%%id"></appLoader>
     */},
   ]
 });

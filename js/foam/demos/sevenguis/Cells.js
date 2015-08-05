@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// TODO: Create a Range Model?
 /*
 MODEL({
   package: 'foam.demos.sevenguis',
@@ -32,9 +33,9 @@ var CellParser = {
     sym('formula'),
     sym('string')
   ),
-  
+
   formula: seq1(1, '=', sym('expr')),
-  
+
   expr: alt(
     sym('number'),
     sym('cell'),
@@ -46,7 +47,7 @@ var CellParser = {
     sym('sum'),
     sym('prod')
   ),
-  
+
   add:  seq(literal_ic('add('),  sym('expr'), ',', sym('expr'), ')'),
   sub:  seq(literal_ic('sub('),  sym('expr'), ',', sym('expr'), ')'),
   mul:  seq(literal_ic('mul('),  sym('expr'), ',', sym('expr'), ')'),
@@ -56,25 +57,25 @@ var CellParser = {
   prod: seq(literal_ic('prod('), sym('range'), ')'),
 
   range: seq(sym('col'), sym('row'), ',', sym('col'), sym('row')),
-  
+
   digit: range('0', '9'),
-  
+
   number: str(seq(
     optional('-'),
     str(alt(
       seq(str(repeat(sym('digit'))), '.', str(plus(sym('digit')))),
       plus(sym('digit')))))),
-  
+
   cell: seq(sym('col'), sym('row')),
-  
+
   col: alt(sym('az'), sym('AZ')),
-  
+
   az: range('a', 'z'),
-  
+
   AZ: range('A', 'Z'),
-  
+
   row: str(repeat(sym('digit'), null, 1, 2)),
-  
+
   string: str(repeat(anyChar))
 }.addActions({
   add: function(a) { return function(cs) { return a[1](cs) + a[3](cs); }; },
@@ -190,7 +191,7 @@ MODEL({
     'foam.demos.sevenguis.Cell'
   ],
   imports: [ 'dynamic' ],
-  exports: [ 'as cells' ],
+  exports: [ 'as cells' ], // Would 'sheet' be a better name?
   constants: {
     ROWS: 20 /* 99 */
   },
@@ -219,6 +220,9 @@ MODEL({
         } catch (x) {
         }
       }
+
+      this.cell(0,0).formula = '<b>Formulas</b>';
+      this.cell(0,1).formula = '<b>Values</b>';
 
       t('1');
       t('10');
