@@ -262,10 +262,10 @@ MODEL({
     function CSS() {/*
       .cells * {
         font: normal 13px roboto, arial, sans-serif;
-        font-color: #eee;
+        color: #333;
       }
       .cells { overflow: auto; }
-      .cell { min-width: 60px; }
+      .cell { min-width: 100px; }
       table.cells, .cells th, .cells td {
         border: 1px solid #ccc;
       }
@@ -273,7 +273,7 @@ MODEL({
         padding: 2px 4px;
       }
       .cells th {
-        color: black;
+        color: #333;
         background: #eee;
         padding: 2px 18px;
       }
