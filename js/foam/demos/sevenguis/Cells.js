@@ -127,7 +127,7 @@ MODEL({
   properties: [
     {
       name: 'formula',
-      displayWidth: 12
+      displayWidth: 10
     },
     {
       name: 'value',
@@ -163,13 +163,21 @@ MODEL({
       .cellView > span {
         width: 100%;
         display: block;
+        padding: 2px;
       }
       .cellView > input {
         display: none;
+        outline: none;
+        border:  none;
+      }
+      .cellView {
+        outline: 1px solid white;
+      }
+      .cellView.formula {
+        outline: 1px solid blue;
       }
       .cellView.formula > input {
         display: inherit;
-        border: 1px blue solid;
       }
       .cellView.formula > span {
         display: none;
@@ -261,13 +269,20 @@ MODEL({
   templates: [
     function CSS() {/*
       .cells * {
-        font: normal 13px roboto, arial, sans-serif;
+        font: 13px roboto, arial, sans-serif;
         color: #333;
       }
+      .cells tr { height: 26px; }
       .cells { overflow: auto; }
       .cell { min-width: 100px; }
-      table.cells, .cells th, .cells td { border: 1px solid #ccc; }
-      .cells td { padding: 2px 4px; }
+      table.cells, .cells th, .cells td {
+        border: 1px solid #ccc;
+        border-right: none;
+        border-bottom: none;
+      }
+      .cells td {
+        height: 100%;
+      }
       .cells th {
         color: #333;
         background: #eee;
