@@ -141,6 +141,7 @@ MODEL({
 
       this.valueView.$.addEventListener('click',  this.onClick);
       this.formulaView.$.addEventListener('blur', this.onBlur);
+      this.formula$.addListener(this.onBlur);
     }
   ],
   listeners: [
