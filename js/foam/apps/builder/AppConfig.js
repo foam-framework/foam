@@ -105,7 +105,7 @@ CLASS({
         // this.setKioskMode(newValue);
       }
     },
-        {
+    {
       model_: 'IntProperty',
       name: 'sessionDataTimeoutTime',
       label: 'Session idle timeout',
@@ -126,6 +126,10 @@ CLASS({
       defaultDescription: '0 = unlimited',
       // view: 'RangeDefaultTextFieldView'
     },
-
+    {
+      model_: 'StringProperty',
+      name: 'chromeId',
+      hidden: true,
+    },
   ]
 });

@@ -53,16 +53,6 @@ CLASS({
     },
   ],
 
-  methods: [
-    function init() {
-      this.SUPER();
-      // The first designer view to appear on the scene should preload kiosk
-      // sources in the exportManager.
-      this.exportManager.config = this.data;
-      this.exportManager.aloadSources();
-    },
-  ],
-
   templates: [
     function toHTML() {/*
       <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
