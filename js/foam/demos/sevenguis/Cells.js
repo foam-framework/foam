@@ -266,12 +266,8 @@ MODEL({
       }
       .cells { overflow: auto; }
       .cell { min-width: 100px; }
-      table.cells, .cells th, .cells td {
-        border: 1px solid #ccc;
-      }
-      .cells td {
-        padding: 2px 4px;
-      }
+      table.cells, .cells th, .cells td { border: 1px solid #ccc; }
+      .cells td { padding: 2px 4px; }
       .cells th {
         color: #333;
         background: #eee;
