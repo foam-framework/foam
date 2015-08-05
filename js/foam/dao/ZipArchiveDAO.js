@@ -28,7 +28,7 @@ CLASS({
       },
     },
     {
-      model_: 'DAOProperty',
+      model_: 'foam.core.types.DAOProperty',
       name: 'delegate',
       lazyFactory: function() {
         return this.archive.files.dao;
