@@ -29,6 +29,20 @@ CLASS({
 
   properties: [
     {
+      name: 'path',
+      defaultValue: 'archive.zip',
+    },
+    {
+      name: 'contents',
+      getter: function() {
+        return this.toData();
+      },
+    },
+    {
+      name: 'size',
+      getter: function() { return this.toChunk().size(); },
+    },
+    {
       type: 'foam.util.zip.CRC32',
       name: 'crc32',
       factory: function() {
@@ -95,6 +109,15 @@ CLASS({
       this.centralDirectoryStartOffset = cdOffset;
       this.commentLength = this.comment.length;
     },
+    function toBlob() {
+     return new Blob(this.toData(), { type : 'application/zip' });
+    },
+    function toFile() {
+     return new File(this.toData(), this.path);
+    },
+    function toData() {
+      return this.toChunk().data;
+    },
     function toChunk() {
       // TODO(markdittmer): This should probably be reactive instead, but
       // waiting until we store the archive avoids recomputing it every time
@@ -102,18 +125,18 @@ CLASS({
       this.computeProperties();
 
       return this.Chunk.create({
-          data: [
-            // | local header 1 | local file 1 | ... | local header n | local file n |
-            this.files.map(function(file) {
-              return file.localHeader.toChunk().append(file.fileContents);
-            }.bind(this)),
-            // | central header 1 | ... | central header n |
-            this.files.map(function(file) {
-              return file.centralHeader.toChunk();
-            }),
-            // | end of central directory record |
-            this.endOfCentralDirectoryRecord.toChunk(),
-          ],
+        data: [
+          // | local header 1 | local file 1 | ... | local header n | local file n |
+          this.files.map(function(file) {
+            return file.localHeader.toChunk().append(file.fileContents);
+          }.bind(this)),
+          // | central header 1 | ... | central header n |
+          this.files.map(function(file) {
+            return file.centralHeader.toChunk();
+          }),
+          // | end of central directory record |
+          this.endOfCentralDirectoryRecord.toChunk(),
+        ],
       }, this.Y);
     },
   ],
