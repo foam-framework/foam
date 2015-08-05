@@ -256,20 +256,35 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
+      .cells * {
+        font: normal 13px roboto, arial, sans-serif;
+        font-color: #eee;
+      }
       .cells { overflow: auto; }
-      .cell { min-width: 60px;}
+      .cell { min-width: 60px; }
+      table.cells, .cells th, .cells td {
+        border: 1px solid #ccc;
+      }
+      .cells td {
+        padding: 2px 4px;
+      }
+      .cells th {
+        color: black;
+        background: #eee;
+        padding: 2px 18px;
+      }
     */},
     function toHTML() {/*
-      <table border cellspacing="0" class="cells">
+      <table cellspacing="0" class="cells">
         <tr>
-          <td></td>
+          <th></th>
           <% for ( var i = 65 ; i <= 90 ; i++ ) { %>
-            <th><%= String.fromCharCode(i) %></th>
+            <th class="colHeader"><%= String.fromCharCode(i) %></th>
           <% } %>
         </tr>
         <% for ( i = 0 ; i <= this.ROWS ; i++ ) { %>
           <tr>
-            <th><%= i %></th>
+            <th class="rowHeader"><%= i %></th>
             <% for ( var j = 0 ; j <= 25 ; j++ ) { %>
               <td class="cell"><%= this.cell(i, j) %></td>
             <% } %>
