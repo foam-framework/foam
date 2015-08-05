@@ -49,12 +49,6 @@ CLASS({
         }
       },
     },
-//     {
-//       name: 'controller',
-//       lazyFactory: function() {
-//         return this.QuestionnaireController.create({ appConfig$: this.data$ });
-//       }
-//     },
     {
       name: 'toolbarItems',
       lazyFactory: function() {
