@@ -41,28 +41,27 @@ CLASS({
           this.destroy();
         }
         if ( nu ) {
+          this.count_ = 0;
           nu.pipe(this);
         }
       }
+    },
+    {
+      name: 'count_',
+      hidden: true,
+      documentation: 'Internal tracker of insertion order',
+      defaultValue: 0,
+    },
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-
-    },
-
-    initHTML: function() {
-
-
-      this.SUPER();
-    },
-
     put: function(o) {
       /* Sink function to receive updates from the dao */
       if ( this.rowCache_[o.id] ) {
+        //console.log("put cached", o.id);
         this.rowCache_[o.id].view.data = o;
       } else {
+        //console.log("put new", o.id);
 
         if ( this.mode === 'read-write' ) o = o.model_.create(o, this.Y); //.clone();
         var view = this.rowView({data: o, model: o.model_}, this.Y);
@@ -79,22 +78,26 @@ CLASS({
           });
         }
         this.addChild(view);
-        this.rowCache_[o.id] = { view: view, ordering: ++count };
+        this.rowCache_[o.id] = { view: view, ordering: this.count_++ };
+        this.onDAOUpdate();
       }
     },
 
     remove: function(o) {
       /* Sink function to receive updates from the dao */
       if ( this.rowCache_[o.id] ) {
+        //console.log("remove", o.id);
         var v = this.rowCache_[o.id].view;
         v.destroy();
         this.removeChild(v);
-
+        delete this.rowCache_[o.id];
+        this.onDAOUpdate();
       }
     },
 
     eof: function() {
       /* Sink function to receive updates from the dao */
+      this.count_ = 0;
       this.daoChange();
     },
 
@@ -103,6 +106,7 @@ CLASS({
       // build missing views for new items
       var outHTMLs = []; // string contents and existing nodes
       var toInit = [];
+      var debugCount = 0;
       for (var key in this.rowCache_) {
         var d = this.rowCache_[key];
 
@@ -112,6 +116,7 @@ CLASS({
           outHTMLs[d.ordering] = d.view.toHTML();
           toInit.push(d);
           this.addChild(d.view);
+          debugCount++;
         }
       }
 
@@ -119,34 +124,55 @@ CLASS({
       var firstTextItem = -1;
       for (var i = 0; i < outHTMLs.length; ++i) {
         // if text, remember the first one in the range.
-        if ( ! outHTMLs[i].nodeType ) { // outHTMLs[i] is string
-          if ( firstTextItem < 0 ) {
-            firstTextItem = i;
+        if ( outHTMLs[i] ) {
+          if ( ! outHTMLs[i].nodeType ) { // outHTMLs[i] is string
+            if ( firstTextItem < 0 ) {
+              firstTextItem = i;
+            }
+          } else if ( firstTextItem >= 0 ) { // outHTMLs[i] is node
+            // it's a node, so process and insert accumulated text before it
+            // range [ firstTextItem , i-1 ]
+            var node = outHTMLs[i];
+            var html = "";
+            for (var j = firstTextItem; j < i; ++j) {
+              if ( outHTMLs[j] ) {
+                html += outHTMLs[j];
+              }
+            }
+            var el = this.X.document.createElement('div');
+            node.parentNode.insertBefore(el, node);
+            el.outerHTML = html;
+            firstTextItem = -1;
           }
-        } else if ( firstTextItem >= 0 ) { // outHTMLs[i] is node
-          // it's a node, so process and insert accumulated text before it
-          // range [ firstTextItem , i-1 ]
-          var node = outHTMLs[i];
-          var html = "";
-          for (var j = firstTextItem; j < i; ++j) {
+        }
+      }
+
+      if ( firstTextItem >= 0 ) {
+        // no node found, so initialize
+        var html = "";
+        for (var j = firstTextItem; j < outHTMLs.length; ++j) {
+          if ( outHTMLs[j] ) {
             html += outHTMLs[j];
           }
-          var el = this.X.document.createElement('div');
-          el.outerHTML = html;
-          node.parentNode.insertBefore(el, node);
-          firstTextItem = -1;
         }
+        var el = this.X.document.createElement('div');
+        this.$.appendChild(el);
+        el.outerHTML = html;
+        firstTextItem = -1;
       }
 
       // init the newly inserted views
       for (var i = 0; i < toInit.length; ++i) {
         toInit[i].view.initHTML();
       }
+
+      //console.log("daoChange added", debugCount, " of ", this.children.length);
     },
 
     construct: function() {
       if ( ! this.dao || ! this.$ ) return;
 
+      this.count_ = 0;
       this.data.pipe(this); // TODO: maybe not?
     },
 
@@ -178,6 +204,12 @@ CLASS({
   },
 
   listeners: [
+    {
+      name: 'onDAOUpdate',
+      code: function() {
+        this.realDAOUpdate();
+      }
+    },
     {
       name: 'realDAOUpdate',
       isFramed: true,

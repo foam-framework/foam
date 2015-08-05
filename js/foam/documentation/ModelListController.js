@@ -22,7 +22,7 @@ CLASS({
 
   requires:[
     'MDAO',
-    'foam.ui.DAOListView',
+    'foam.ui.md.DAOListView',
     'foam.ui.md.TextFieldView',
     'foam.documentation.ModelDescriptionRowView'
   ],
