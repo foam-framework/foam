@@ -15,7 +15,10 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
 
   requires: [
+    'foam.apps.builder.ExportFlow',
+    'foam.apps.builder.ExportFlowView',
     'foam.ui.md.FlatButton',
+    'foam.ui.md.PopupView',
   ],
   imports: [
     'exportManager$',
