@@ -67,7 +67,7 @@ CLASS({
       if ( this.rowCache_[o.id] ) {
         //console.log("put cached", o.id);
         var d = this.rowCache_[o.id];
-        d.view.data = o;
+        if ( ! equals(d.view.data, o) ) d.view.data = o;
         if ( d.ordering < 0 ) d.ordering = this.count_++; // reset on removal check
       } else {
         //console.log("put new", o.id);
@@ -139,6 +139,10 @@ CLASS({
           toInit.push(d);
           this.addChild(d.view);
           debugCount++;
+//           if (debugCount > 2) {
+//             this.X.setTimeout(this.realDAOUpdate, 16);
+//             break;
+//           }
         }
       }
 
@@ -189,13 +193,22 @@ CLASS({
         toInit[i].view.$.style.position = 'absolute';
       }
 
-      this.updatePositions();
-      this.X.setTimeout(this.onPositionUpdate, 1000);
-      console.log("daoChange added", debugCount, " of ", this.children.length);
+      this.onPositionUpdate();
+      //this.X.setTimeout(this.onPositionUpdate, 1000);
+      //console.log("daoChange added", debugCount, " of ", this.children.length);
     },
 
     construct: function() {
       if ( ! this.dao || ! this.$ ) return;
+
+      if ( this.$ ) {
+        this.$.style.position = 'relative';
+        if ( this.orientation == 'vertical' ) {
+          this.$.style.overflowY = 'scroll';
+        } else {
+          this.$.style.overflowX = 'scroll';
+        }
+      }
 
       this.count_ = 0;
       //this.data.pipe(this); // TODO: maybe not?
@@ -203,33 +216,38 @@ CLASS({
 
     updatePositions: function() {
 
-      if ( this.$ ) this.$.style.position = 'relative';
-
       var rows = [];
       for (var key in this.rowCache_) {
         var d = this.rowCache_[key];
         rows[d.ordering] = d;
       }
-      console.log("updatePositions", rows.length);
+      //console.log("updatePositions", rows.length);
 
       var pos = 0;
       for (var i = 0; i < rows.length; ++i) {
         if ( rows[i] && rows[i].view.$ ) {
-          rows[i].offset = pos;
-          var rect = rows[i].view.$.getBoundingClientRect();
-          pos += ( this.orientation == 'vertical' ) ? rect.height : rect.width
 
-          //rows[i].view.$.style.position = 'absolute';
-          if (  this.orientation == 'vertical' ) {
-            rows[i].view.$.style.transform = "translate3d(0px, "+rows[i].offset+"px, 0px)";
-            //rows[i].view.$.style.top = rows[i].offset+"px";
-            //rows[i].view.$.style.left = "0px";
-          } else {
-            rows[i].view.$.style.transform = "translate3d("+rows[i].offset+"px, 0px, 0px)";
-            //rows[i].view.$.style.left = rows[i].offset+"px";
-            //rows[i].view.$.style.top = "0px";
+          if ( rows[i].offset !== pos ) {
+            rows[i].offset = pos;
+            //rows[i].view.$.style.position = 'absolute';
+            if (  this.orientation == 'vertical' ) {
+              rows[i].view.$.style.transform = "translate3d(0px, "+rows[i].offset+"px, 0px)";
+              //rows[i].view.$.style.top = rows[i].offset+"px";
+              //rows[i].view.$.style.left = "0px";
+            } else {
+              rows[i].view.$.style.transform = "translate3d("+rows[i].offset+"px, 0px, 0px)";
+              //rows[i].view.$.style.left = rows[i].offset+"px";
+              //rows[i].view.$.style.top = "0px";
+            }
+            //console.log("Position", rows[i].view.id, rows[i].ordering, rows[i].offset);
           }
-          //console.log("Position", rows[i].view.id, rows[i].ordering, rows[i].offset);
+          // TODO(jacksonic): the size we cache here could change in the DOM, and we have no way of knowing
+          if ( ! rows[i].size ) {
+            var rect = rows[i].view.$.getBoundingClientRect();
+            rows[i].size = ( this.orientation == 'vertical' ) ? rect.height : rect.width;
+          }
+          pos += rows[i].size;
+
         }
       }
     },
