@@ -51,6 +51,7 @@ CLASS({
       onAddListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
+      onAddChildren: function() { },
       toString:      function() { return 'INITIAL'; }
     },
     OUTPUT: {
@@ -76,6 +77,13 @@ CLASS({
       onSetAttr:     function(key, value) {
         this.id$el[key] = value;
       },
+      onAddChildren: function() {
+        var out = this.createOutputStream();
+        for ( var i = 0 ; i < arguments.length ; i++ ) {
+          out(arguments[i]);
+        }
+        this.id$el.insertAdjacentHTML('beforeend', out);
+      },
       toString:      function() { return 'OUTPUT'; }
     },
     LOADED: {
@@ -95,6 +103,13 @@ CLASS({
       onSetAttr:     function(key, value) {
         this.id$el[key] = value;
       },
+      onAddChildren: function() {
+        var out = this.createOutputStream();
+        for ( var i = 0 ; i < arguments.length ; i++ ) {
+          out(arguments[i]);
+        }
+        this.id$el.insertAdjacentHTML('beforeend', out);
+      },
       toString:      function() { return 'LOADED'; }
     },
     UNLOADED: {
@@ -108,6 +123,7 @@ CLASS({
       onAddListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
+      onAddChildren: function() { },
       toString:      function() { return 'UNLOADED'; }
     },
     DESTROYED: { // Needed?
@@ -119,6 +135,7 @@ CLASS({
       onAddListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
+      onAddChildren: function() { },
       toString:      function() { return 'DESTROYED'; }
     },
 
@@ -227,6 +244,10 @@ CLASS({
       this.state.onSetAttr.call(this, key, value);
     },
 
+    function onAddChildren(/* vargs */) {
+      this.state.onAddChildren.apply(this, arguments);
+    },
+
     function onAddListener(topic, listener) {
       this.state.onAddListener.call(this, topic, listener);
     },
@@ -321,6 +342,7 @@ CLASS({
 
     function c() {
       this.childNodes.push.apply(this.childNodes, arguments);
+      this.onAddChildren.apply(this, arguments);
       return this;
     },
 
