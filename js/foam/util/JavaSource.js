@@ -152,7 +152,12 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
     var extraText = '  ';
     if (prop.hidden) extraText += '  public boolean isHidden() { return true; }\u000a  ';
     if (prop.transient) extraText += '  public boolean isTransient() { return true; }\u000a  ';
-    if (prop.help) extraText += '  public String getHelp() { return "' + prop.help + '"; }\u000a  ';
+    if (prop.help) {
+      var parts = prop.help.split('\n').map(function(s) { return s.trim(); }).filter(function(s) { return s; });
+      extraText += '  public String getHelp() {\u000a  ';
+      extraText += '    return "' + parts.join('\\n" +\n          "') + '";\u000a  ';
+      extraText += '  }\u000a  ';
+    }
 
     var asDAO = false;
 
