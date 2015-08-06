@@ -141,7 +141,6 @@ MODEL({
     },
     {
       name: 'value',
-      defaultValue: '&nbsp;', // Hackish, makes value view fill cell, fix
       adapt: function(_, v) { var ret = parseFloat(v); return isNaN(ret) ? v : ret; },
       displayWidth: 12
     }
@@ -174,6 +173,7 @@ MODEL({
     function CSS() {/*
       .cellView > span {
         display: block;
+        height: 15px;
         padding: 2px;
         width: 100%;
       }
@@ -210,7 +210,7 @@ MODEL({
   requires: [ 'foam.demos.sevenguis.Cell' ],
   imports:  [ 'dynamic' ],
   exports:  [ 'as cells' ],
-  constants: { ROWS: 99 },
+  constants: { ROWS: 20 /*99*/ },
   properties: [
     {
       name: 'cells',
@@ -281,7 +281,7 @@ MODEL({
       }
       .cells tr { height: 26px; }
       .cells { overflow: auto; }
-      .cell { min-width: 100px; }
+      .cell { min-width: 102px; }
       table.cells, .cells th, .cells td {
         border: 1px solid #ccc;
       }
