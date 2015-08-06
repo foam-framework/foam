@@ -41,6 +41,7 @@ CLASS({
     {
       name: 'defaultView',
       defaultValue: 'foam.apps.builder.kiosk.KioskView',
+      hidden: true
     },
     {
       model_: 'BooleanProperty',
