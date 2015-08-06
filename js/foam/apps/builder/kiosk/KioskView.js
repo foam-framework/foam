@@ -114,7 +114,7 @@ CLASS({
     function logout() {
       this.webview.ahome(function() {
         this.webview.clearCache();
-        this.openTOS();
+        if ( this.data.termsOfService ) this.openTOS();
       }.bind(this));
     },
     function openTOS() {
@@ -168,7 +168,7 @@ CLASS({
       name: 'onHomeTimeout',
       code: function() {
         this.url = this.data.homepage;
-        this.openTOS();
+        if ( this.data.termsOfService ) this.openTOS();
       },
     },
   ],
