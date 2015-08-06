@@ -93,7 +93,7 @@ CLASS({
         }
         $$download{
           model_: 'foam.ui.md.FlatButton',
-          iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA1SURBVHjavcwxCgAwEALB6P8ffUUKEbEKOctZ8PwZUJxEcRV3lXQVuZf0fLtqtB5eR1sPWxsHogDjZnwe5wAAAABJRU5ErkJggg==',
+          iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA0SURBVHjazdBBCgAgEMNAs/9/tCAEFoo3FeeY3jpuqOWngWrIxd4RXdgD9oA9wLHLtR9emRVOAOP9ZYAiAAAAAElFTkSuQmCC',
           color: '#4285F4',
         }
         $$upload{
