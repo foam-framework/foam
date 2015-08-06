@@ -18,7 +18,7 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Person',
-  properties: [ 'id', 'name', 'surname' ]
+  properties: [ { name: 'id', hidden: true }, 'name', 'surname' ]
 });
 
 
@@ -52,10 +52,25 @@ MODEL({
       name: 'filteredDAO'
     },
     {
-      name: 'data'
-    },
+      name: 'data',
+      factory: function() { return this.Person.create(); }
+    }
   ],
   methods: [
+  ],
+  templates: [
+    function CSS() {/*
+      body { padding: 10px; }
+    */},
+    function toDetailHTML() {/*
+      Filter prefix: $$prefix
+      <div>
+        <span style="width: 45%; display: inline-block; vertical-align: top;">$$dao{model_: 'foam.ui.TableView', title: '', editColumns: false, hardSelection$: this.data.data$}</span>
+        <span style="width: 45%; display: inline-block; margin-left: 50px;">$$data{model_: 'foam.ui.DetailView', title: ''}</span>
+      </div>
+    */}
+    //      $$filteredDAO{model: 'foam.ui.md.TableView'}
+    //       $$createItem $$updateItem $$deleteItem
   ],
   actions: [
     {
@@ -63,6 +78,8 @@ MODEL({
       label: 'Create',
       action: function() {
         var self = this;
+        self.id = undefined;
+        console.log('create: ', this.data.toJSON());
         this.dao.put(this.data, {
           put: function(data) { self.data = data; }
         });
@@ -81,6 +98,7 @@ MODEL({
       name: 'deleteItem',
       label: 'Delete',
       action: function() {
+        console.log('delete: ', this.data.toJSON());
         this.dao.remove(this.data);
       }
     }
