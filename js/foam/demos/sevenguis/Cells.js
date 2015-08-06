@@ -210,7 +210,7 @@ MODEL({
   requires: [ 'foam.demos.sevenguis.Cell' ],
   imports:  [ 'dynamic' ],
   exports:  [ 'as cells' ],
-  constants: { ROWS: 20 /*99*/ },
+  constants: { ROWS: 99 },
   properties: [
     {
       name: 'cells',
