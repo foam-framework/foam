@@ -176,7 +176,11 @@ CLASS({
       }
 
       for ( var i = 0; i < this.models.length ; i++ ) {
-        add(this.models[i]);
+        var m = this.models[i];
+        while (m) {
+          add(m);
+          m = this.X.lookup(m).extendsModel;
+        }
       }
 
       var javaSource = this.JavaSource.create();
