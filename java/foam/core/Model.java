@@ -19,6 +19,7 @@ package foam.core;
 
 public interface Model
 {
+  public Model      getParent();
   public String     getName();
   public String     getShortName();
   public String     getLabel();
