@@ -100,9 +100,23 @@ CLASS({
       /* Sink function to receive updates from the dao */
       if ( this.rowCache_[o.id] ) {
         //console.log("remove", o.id);
-        var v = this.rowCache_[o.id].view;
+        var r = this.rowCache_[o.id];
+        var v = r.view;
         v.destroy();
-        if ( v.$ ) v.$.outerHTML = "";
+        if ( v.$ ) {
+          //v.$.transition = "opacity: 300ms ease";
+          //v.$.opacity = "0";
+          //var myRect = this.$.getBoundingClientRect();
+          var otherOffset = ( this.orientation == 'vertical' ) ?  -this.$.offsetWidth : -this.$.offsetHeight;
+          if (  this.orientation == 'vertical' ) {
+            v.$.style.transform =
+              "translate3d("+otherOffset+"px, "+r.offset+"px, 0px)";
+          } else {
+            v.$.style.transform =
+              "translate3d("+r.offset+"px, "+otherOffset+"px, 0px)";
+          }
+          this.X.setTimeout(function() { if (v.$) v.$.outerHTML = ""; }, 500);
+        }
         this.removeChild(v);
         delete this.rowCache_[o.id];
         //this.onDAOUpdate();
@@ -195,9 +209,11 @@ CLASS({
       for (var i = 0; i < toInit.length; ++i) {
         toInit[i].view.initHTML();
         toInit[i].view.$.style.position = 'absolute';
+        toInit[i].view.$.style.display = 'none';
       }
 
-      this.onPositionUpdate();
+      this.updatePositions();
+      this.X.setTimeout(this.onPositionUpdate, 100); // for lack of a resize event
       this.X.setTimeout(this.onPositionUpdate, 1000);
       //console.log("daoChange added", debugCount, " of ", this.children.length);
     },
@@ -223,47 +239,64 @@ CLASS({
 
     updatePositions: function() {
 
+      //var myRect = this.$.getBoundingClientRect();
+      var mySize = ( this.orientation == 'vertical' ) ?  this.$.offsetWidth : this.$.offsetHeight;
+      if ( ! mySize ) {
+        this.X.setTimeout(this.onPositionUpdate, 30);
+        return;
+      }
+
       var rows = [];
       for (var key in this.rowCache_) {
         var d = this.rowCache_[key];
         rows[d.ordering] = d;
       }
-      console.log("updatePositions", rows.length);
+      //console.log("updatePositions", rows.length);
 
       var pos = 0;
       for (var i = 0; i < rows.length; ++i) {
         if ( rows[i] && rows[i].view.$ ) {
 
-          if ( rows[i].offset !== pos ) {
-            rows[i].offset = pos;
-            //rows[i].view.$.style.position = 'absolute';
+          var r = rows[i];
+          var v = r.view.$;
+
+          var otherOffset = 0;
+          if ( ! r.placed ) {
+            otherOffset = -mySize; // hasn't been positioned before, so animate in
+          }
+
+          if ( r.offset !== pos ) {
+            r.offset = pos;
             if (  this.orientation == 'vertical' ) {
-              rows[i].view.$.style.transform = "translate3d(0px, "+rows[i].offset+"px, 0px)";
-              //rows[i].view.$.style.top = rows[i].offset+"px";
-              //rows[i].view.$.style.left = "0px";
+              v.style.transform =
+                "translate3d("+otherOffset+"px, "+r.offset+"px, 0px)";
             } else {
-              rows[i].view.$.style.transform = "translate3d("+rows[i].offset+"px, 0px, 0px)";
-              //rows[i].view.$.style.left = rows[i].offset+"px";
-              //rows[i].view.$.style.top = "0px";
+              v.style.transform =
+                "translate3d("+r.offset+"px, "+otherOffset+"px, 0px)";
             }
-            //console.log("Position", rows[i].view.id, rows[i].ordering, rows[i].offset);
+            v.style.display = '';
+
+            //console.log("Position", r.view.id, r.ordering, r.offset);
           }
           // TODO(jacksonic): the size we cache here could change in the DOM, and we have no way of knowing
-          if ( ! rows[i].size ) {
-            var rect = rows[i].view.$.getBoundingClientRect();
-            rows[i].size = ( this.orientation == 'vertical' ) ? rect.height : rect.width;
+          if ( ! r.size ) {
+            //var rect = v.getBoundingClientRect();
+            r.size = ( this.orientation == 'vertical' ) ? v.offsetHeight : v.offsetWidth;
             if ( this.orientation == 'vertical' ) {
-              rows[i].view.$.style.width = "100%";
+              v.style.width = "100%";
             } else {
-              rows[i].view.$.style.height = "100%";
+              v.style.height = "100%";
             }
 
-            console.log(i, "Set row size:", rows[i].size);
+            //console.log(i, "Set row size:", r.size);
           }
-          pos += rows[i].size;
+          pos += r.size;
 
         }
       }
+
+      // come back and transition in the new views
+      this.X.setTimeout(this.finishPositioning, 50);
     },
 
     daoRemovalCheck: function() {
@@ -280,6 +313,7 @@ CLASS({
       this.SUPER(s);
 
       //this.data && this.data.unlisten(this); // TODO: maybe not?
+      //console.log("md.DAOListView clearing cache");
       this.rowCache_ = {};
       this.$.innerHTML = "";
     }
@@ -287,6 +321,33 @@ CLASS({
   },
 
   listeners: [
+    {
+      name: 'finishPositioning',
+      framed: true,
+      code: function() {
+        var rows = [];
+        for (var key in this.rowCache_) {
+          var d = this.rowCache_[key];
+          rows[d.ordering] = d;
+        }
+        for (var i = 0; i < rows.length; ++i) {
+          var r = rows[i];
+          if ( r && r.view.$ && ( ! r.placed ) ) {
+            var v = r.view.$;
+            r.placed = true;
+            v.style.transition = "transform 300ms ease";
+            if (  this.orientation == 'vertical' ) {
+              v.style.transform =
+                "translate3d(0px, "+r.offset+"px, 0px)";
+            } else {
+              v.style.transform =
+                "translate3d("+r.offset+"px, 0px, 0px)";
+            }
+            v.style.display = '';
+          }
+        }
+      }
+    },
     {
       name: 'onDAOUpdate',
       code: function() {

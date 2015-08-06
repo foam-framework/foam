@@ -41,7 +41,7 @@ CLASS({
     },
     {
       name: 'viewState',
-      defaultValue: foam.u2.view.INITIAL
+     // defaultValue: foam.u2.view.INITIAL
     }
   ],
 
