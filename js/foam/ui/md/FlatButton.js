@@ -83,8 +83,6 @@ CLASS({
         if ( self.$ ) self.$.style.color = self.currentColor_;
       });
       if ( self.$ ) self.$.style.color = this.currentColor_;
-
-      this.setClass('hidden', function() { return self.isHidden; }, this.id);
     },
     function bindData() {
       if ( ! this.action || ! this.data ) return;
@@ -167,10 +165,11 @@ CLASS({
         <span id="<%= this.id + "CONTENT" %>"><% this.labelHTML(out) %></span>
       </%%tagName>
       <% this.on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        self.action.maybeCall(self.X, self.data);
-      }, this.id); %>
+           e.preventDefault();
+           e.stopPropagation();
+           self.action.maybeCall(self.X, self.data);
+         }, this.id);
+        this.setClass('hidden', function() { return self.isHidden; }, this.id); %>
     */},
     function labelHTML() {/*
       <% if ( this.action ) { %>

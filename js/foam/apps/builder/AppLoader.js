@@ -48,9 +48,11 @@ CLASS({
 
       this.XHR.create().asend(function(str, xhr, status) {
         if ( ! status ) return;
-        aeval('(' + str + ')')(function(data) {
-            this.data = JSONUtil.mapToObj(this.Y, data);
-        }.bind(this));
+        // TODO(markdittmer): Shouldn't JSONUtil provide a Chrome App-friendly
+        // API for this?
+	aeval('(' + str + ')')(function(data) {
+	  this.data = JSONUtil.mapToObj(this.Y, data);
+	}.bind(this));
       }.bind(this), this.CONFIG_PATH);
     },
     function initHTML() {
@@ -67,7 +69,7 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <appLoader id="%%id"></appLoader>
+      <app-loader id="%%id"></app-loader>
     */},
   ]
 });

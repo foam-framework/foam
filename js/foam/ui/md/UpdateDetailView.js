@@ -29,6 +29,9 @@ CLASS({
     'dao',
     'stack'
   ],
+  exports: [
+    'as updateView',
+  ],
 
   properties: [
     {

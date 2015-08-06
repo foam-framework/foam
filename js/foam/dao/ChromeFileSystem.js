@@ -139,13 +139,16 @@ MODEL({
     },
     {
       name: 'awrite',
-      code: function(rawPath, data) {
+      code: function(rawPath, data, opt_mimeType) {
         if ( ! this.ready ) throw 'Attempt to write before Chrome File System is ready';
         if ( this.mode !== 'read-write' ) throw 'Cannot write to ' +
             'non-read-write Chrome filesystem';
         var path = this.canonicalizePath(rawPath);
         if ( path[0] === '..' ) throw 'Cannot write to path: ' + path;
-        var writeCtx = { path: '/' + path.join('/') };
+        var writeCtx = {
+          path: '/' + path.join('/'),
+          mimeType: opt_mimeType,
+        };
         var seq = [];
         for ( var i = 0; i < path.length - 1; ++i ) {
           seq.push(this.getDirectory.bind(this, writeCtx, path[i]));
@@ -373,7 +376,6 @@ MODEL({
         var cbX = Object.create(X);
         cbX.done = false;
         cbX.contents = data;
-        cbX.mimeType = 'text/plain';
         var cb = function(X, ret, e) {
           if ( X.done ) return;
           if ( this.isFileError(e) ) {
@@ -406,14 +408,18 @@ MODEL({
     {
       name: 'writeFile',
       code: function(X, data, ret, fileWriter) {
-        console.log('writeFile', data.slice(0, 19), fileWriter);
+        console.log('writeFile', fileWriter);
         return this.fileWriterOp(X, data, ret, fileWriter, this.writeFile_);
       }
     },
     {
       name: 'writeFile_',
       code: function(X, data, fileWriter) {
-        return fileWriter.write(new Blob([data], {type: X.mimeType}));
+        var contents;
+        if ( data instanceof Blob )     contents = data;
+        else if ( Array.isArray(data) ) contents = new Blob(data, {type: X.mimeType});
+        else                            contents = new Blob([data], {type: X.mimeType});
+        return fileWriter.write(contents);
       }
     },
     {

@@ -45,7 +45,7 @@ CLASS({
 
     configure: function(xhr) {
       xhr.responseType = this.responseType;
-      this.setRequestHeader(xhr, "Content-Type", this.contentType);
+      if ( this.contentType ) this.setRequestHeader(xhr, "Content-Type", this.contentType);
     },
 
     bindListeners: function(xhr, ret) {
@@ -91,13 +91,13 @@ CLASS({
 
     asend: function(decorator, delegate, args) {
       var ret = args[0];
-      args[0] = function(response, xhr) {
+      args[0] = function(response, xhr, status) {
         if ( xhr.status === 401 ) {
           decorator.authAgent.refresh(function() {
-            ret(response, xhr);
+            ret(response, xhr, status);
           });
         } else {
-          ret(response, xhr);
+          ret(response, xhr, status);
         }
       };
       return delegate.apply(null, args);

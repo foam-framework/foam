@@ -14,14 +14,16 @@ CLASS({
   name: 'ExportManager',
 
   requires: [
-    'XHR',
-    'foam.dao.ChromeFile',
-    'foam.dao.ChromeFileSystemDAO',
-    'foam.metrics.Error',
-    'foam.metrics.Event',
+    'foam.apps.builder.DownloadManager',
+    'foam.apps.builder.IdentityManager',
+    'foam.apps.builder.SourceManager',
+    'foam.apps.builder.UploadManager',
+    'foam.apps.builder.XHRManager',
   ],
-  imports: [
-    'metricsDAO',
+  exports: [
+    'identityManager',
+    'sourceManager',
+    'xhrManager',
   ],
 
   properties: [
@@ -30,99 +32,67 @@ CLASS({
       required: true,
     },
     {
-      model_: 'ArrayProperty',
-      subType: 'foam.dao.ChromeFile',
-      name: 'existingSources',
-      factory: function() { return []; },
-      transient: true,
+      type: 'foam.apps.builder.XHRManager',
+      name: 'xhrManager',
+      factory: function() {
+        return this.XHRManager.create({}, this.Y);
+      },
     },
     {
-      model_: 'ArrayProperty',
-      subType: 'foam.dao.ChromeFile',
-      name: 'generatedSources',
-      factory: function() { return []; },
-      transient: true,
+      type: 'foam.apps.builder.SourceManager',
+      name: 'sourceManager',
+      lazyFactory: function() {
+        return this.SourceManager.create({}, this.Y);
+      },
     },
     {
-      model_: 'FunctionProperty',
-      name: 'agetFile',
-      defaultValue: null
+      type: 'foam.apps.builder.IdentityManager',
+      name: 'identityManager',
+      lazyFactory: function() {
+        return this.IdentityManager.create({}, this.Y);
+      },
     },
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      var fetch = amemo1(this.agetFile_.bind(this));
-      this.agetFile = function(path) {
-        return function(ret) { return fetch(ret, path); };
-      }.bind(this);
-      if ( this.config ) this.aloadSources();
-    },
-    function aloadSources(ret) {
-      return apar.apply(
-          null,
-          this.config.EXISTING_SOURCES.map(this.agetFile))(function() {
-            this.existingSources = argsToArray(arguments);
-            this.generateSources();
-            ret && ret.apply(
-                this, this.existingSources.concat(this.generatedSources));
-          }.bind(this));
-    },
-    function generateSources() {
-      var sources = [];
 
-      var out = TemplateOutput.create(this);
-      this.config.toManifest(out);
-      sources.push(this.createFile('manifest.json', out.toString()));
-
-      sources.push(this.createFile(
-          'config.json',
-          JSONUtil.compact.where(NOT_TRANSIENT).stringify(this.config)));
-
-      this.generatedSources = sources;
+      // Bind any static HEADERS declared by managers to xhrManager.
+      [
+        this.UploadManager,
+        this.DownloadManager,
+        this.SourceManager,
+        this.IdentityManager,
+      ].map(function(manager) {
+        return (manager.constants.filter(function(c) {
+          return c.name === 'HEADERS';
+        }) || []).map(function(c) {
+          return c.value;
+        }).reduce(function(acc, headers) {
+          return acc.concat(headers);
+        }, []);
+      }).reduce(function(acc, headers) {
+        return acc.concat(headers);
+      }, []).forEach(function(headers) {
+        this.xhrManager.bindHeaders.apply(this.xhrManager, headers);
+      }.bind(this));
     },
-    function agetFile_(ret, path) {
-      this.XHR.create().asend(function(data, xhr, status) {
-        if ( ! status ) ret && ret(data);
-        ret && ret(this.createFile(path, data));
-      }.bind(this), path);
+    function downloadPackage(exportFlow) {
+      this.DownloadManager.create({
+        mode: 'PACKAGED',
+        data: exportFlow,
+      }, this.Y).exportApp(exportFlow);
     },
-    function createFile(path, contents) {
-      return this.ChromeFile.create({
-        path: path,
-        contents: contents
-      });
+    function downloadApp(exportFlow) {
+      this.DownloadManager.create({
+        data: exportFlow,
+      }, this.Y).exportApp(exportFlow);
     },
-    function exportApp() {
-      this.aloadSources(this.exportApp_.bind(this));
-    },
-    function exportApp_() {
-      var sources = argsToArray(arguments);
-      var dao = this.ChromeFileSystemDAO.create({}, this.Y);
-      apar.apply(
-          null,
-          sources.map(function(file) {
-            return function(ret) {
-              dao.put(file, {
-                put: function() { ret(true); },
-                error: function() { ret(false); },
-              });
-            };
-          }))(this.finalizeExport.bind(this));
-    },
-    function finalizeExport() {
-      if ( argsToArray(arguments).every(function(status) { return status; }) ) {
-        this.metricsDAO.put(this.Event.create({
-          name: this.config.model_.id || this.config.name_,
-          label: 'Action:export:finish',
-        }));
-      } else {
-        this.metricsDAO.put(this.Error.create({
-          name: (this.config.model_.id || this.config.name_) +
-              ' - Action:export:fail',
-        }));
-      }
+    function uploadApp(exportFlow) {
+      this.UploadManager.create({
+        data: exportFlow,
+      }, this.Y).exportApp(exportFlow);
     },
   ],
 });

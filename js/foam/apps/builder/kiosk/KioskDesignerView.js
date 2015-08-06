@@ -19,7 +19,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.ExportManager',
-    'foam.apps.builder.kiosk.KioskAppConfigDetailView',
+    'foam.apps.builder.AppConfigDetailView',
     'foam.apps.builder.kiosk.KioskView',
     'foam.apps.builder.Panel',
   ],
@@ -53,22 +53,12 @@ CLASS({
     },
   ],
 
-  methods: [
-    function init() {
-      this.SUPER();
-      // The first designer view to appear on the scene should preload kiosk
-      // sources in the exportManager.
-      this.exportManager.config = this.data;
-      this.exportManager.aloadSources();
-    },
-  ],
-
   templates: [
     function toHTML() {/*
       <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
         $$data{
           model_: 'foam.apps.builder.Panel',
-          innerView: 'foam.apps.builder.kiosk.KioskAppConfigDetailView',
+          innerView: 'foam.apps.builder.AppConfigDetailView',
         }
         $$data{ model_: 'foam.apps.builder.kiosk.KioskView' }
       </kiosk-designer>

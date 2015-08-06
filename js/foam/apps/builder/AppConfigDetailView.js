@@ -15,7 +15,10 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
 
   requires: [
+    'foam.apps.builder.ExportFlow',
+    'foam.apps.builder.ExportFlowView',
     'foam.ui.md.FlatButton',
+    'foam.ui.md.PopupView',
   ],
   imports: [
     'exportManager$',
@@ -30,22 +33,70 @@ CLASS({
     },
   ],
 
+  methods: [
+    function setupExportAction(title) {
+      var exportFlow = this.ExportFlow.create({
+        config$: this.data$,
+        title: title,
+      }, this.Y);
+      var popup = this.PopupView.create({
+        blockerMode: 'modal',
+        delegate: 'foam.apps.builder.ExportFlowView',
+        data: exportFlow,
+      }, this.Y);
+      popup.open();
+      return exportFlow;
+    },
+  ],
+
   actions: [
     {
       model_: 'foam.metrics.TrackedAction',
-      name: 'export',
+      name: 'packageDownload',
+      label: 'Package',
+      help: 'Download app as a single archive',
       action: function() {
-        this.exportManager.config = this.data;
-        this.exportManager.exportApp();
+        var exportFlow = this.setupExportAction('Download Package to Disk');
+        this.exportManager.downloadPackage(exportFlow);
+      },
+    },
+    {
+      model_: 'foam.metrics.TrackedAction',
+      name: 'download',
+      label: 'Download',
+      help: 'Download app as a series of individual source files',
+      action: function() {
+        var exportFlow = this.setupExportAction('Download Files to Disk');
+        this.exportManager.downloadApp(exportFlow);
+      },
+    },
+    {
+      model_: 'foam.metrics.TrackedAction',
+      name: 'upload',
+      label: 'Upload',
+      help: 'Upload app to the Chrome Web Store',
+      action: function() {
+        var exportFlow = this.setupExportAction('Upload to Chrome Web Store');
+        this.exportManager.uploadApp(exportFlow);
       },
     },
   ],
 
   templates: [
     function toHTML() {/*
-      <%= this.innerView({ data$: this.data$, }, this.Y) %>
+      <%= this.innerView({ data$: this.data$ }, this.Y) %>
       <app-config-actions>
-        $$export{
+        $$packageDownload{
+          model_: 'foam.ui.md.FlatButton',
+          iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfQAWXGFAAAAFXRSTlMALePhKBXghJvbEray/fwg6uhP6U1pY8wzAAAAWklEQVR4Xq3PORKEMAwFUbGJdcZsvv9VSTr4JRIX5c70XySrXNNmqeuNBh9NmuYFWHNoA34R/kB+9RnkKgdPRskFEHYBhF0AYVdA2AUQL31wj3AA5xX226r2ACkvFWPaNFOcAAAAAElFTkSuQmCC',
+          color: '#4285F4',
+        }
+        $$download{
+          model_: 'foam.ui.md.FlatButton',
+          iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA0SURBVHjazdBBCgAgEMNAs/9/tCAEFoo3FeeY3jpuqOWngWrIxd4RXdgD9oA9wLHLtR9emRVOAOP9ZYAiAAAAAElFTkSuQmCC',
+          color: '#4285F4',
+        }
+        $$upload{
           model_: 'foam.ui.md.FlatButton',
           iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA1SURBVHjavcwxCgAwEALB6P8ffUUKEbEKOctZ8PwZUJxEcRV3lXQVuZf0fLtqtB5eR1sPWxsHogDjZnwe5wAAAABJRU5ErkJggg==',
           color: '#4285F4',

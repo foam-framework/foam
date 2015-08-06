@@ -25,8 +25,8 @@ CLASS({
     function maybeCall(X, that) {
       if ( ! this.SUPER(X, that) ) return false;
       X.metricsDAO && X.metricsDAO.put(this.Event.create({
-        name: (that.model_.id || that.name_),
-        label: 'Action:' + this.name,
+        name: 'Action:' + this.name,
+        label: (that.model_.id || that.name_),
       }));
       return true;
     },

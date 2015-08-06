@@ -65,10 +65,6 @@ CLASS({
       disabled: true,
       issues: [
         'TODO(markdittmer): Support file upload.',
-        multiline(function() {/*
-          TODO(markdittmer): Implement showing this in lightbox before
-          revealing landing page.
-        */})
       ],
       view: {
         factory_: 'foam.ui.md.TextFieldView',
@@ -109,7 +105,7 @@ CLASS({
         // this.setKioskMode(newValue);
       }
     },
-        {
+    {
       model_: 'IntProperty',
       name: 'sessionDataTimeoutTime',
       label: 'Session idle timeout',
@@ -130,6 +126,10 @@ CLASS({
       defaultDescription: '0 = unlimited',
       // view: 'RangeDefaultTextFieldView'
     },
-
+    {
+      model_: 'StringProperty',
+      name: 'chromeId',
+      hidden: true,
+    },
   ]
 });
