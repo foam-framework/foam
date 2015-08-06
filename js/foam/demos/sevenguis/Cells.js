@@ -28,11 +28,7 @@ MODEL({
 var CellParser = {
   __proto__: grammar,
 
-  START: alt(
-    sym('number'),
-    sym('formula'),
-    sym('string')
-  ),
+  START: alt(sym('number'), sym('formula'), sym('string')),
 
   formula: seq1(1, '=', sym('expr')),
 
@@ -60,8 +56,6 @@ var CellParser = {
 
   range: seq(sym('col'), sym('row'), ':', sym('col'), sym('row')),
 
-  digit: range('0', '9'),
-
   number: str(seq(
     optional('-'),
     str(alt(
@@ -71,6 +65,8 @@ var CellParser = {
   cell: seq(sym('col'), sym('row')),
 
   col: alt(sym('az'), sym('AZ')),
+
+  digit: range('0', '9'),
 
   az: range('a', 'z'),
 
