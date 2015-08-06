@@ -53,10 +53,12 @@ var CellParser = {
   mul:  seq(literal_ic('mul('),  sym('expr'), ',', sym('expr'), ')'),
   div:  seq(literal_ic('div('),  sym('expr'), ',', sym('expr'), ')'),
   mod:  seq(literal_ic('mod('),  sym('expr'), ',', sym('expr'), ')'),
-  sum:  seq(literal_ic('sum('),  sym('range'), ')'),
-  prod: seq(literal_ic('prod('), sym('range'), ')'),
+  sum:  seq(literal_ic('sum('),  sym('vargs'), ')'),
+  prod: seq(literal_ic('prod('), sym('vargs'), ')'),
 
-  range: seq(sym('col'), sym('row'), ',', sym('col'), sym('row')),
+  vargs: repeat(alt(sym('range'), sym('expr')), ','),
+
+  range: seq(sym('col'), sym('row'), ':', sym('col'), sym('row')),
 
   digit: range('0', '9'),
 
@@ -98,6 +100,19 @@ var CellParser = {
   row: function(c) { return parseInt(c); },
   number: function(s) { var f = parseFloat(s); return function() { return f; }; },
   cell: function(a) { return function(cs) { return cs.cell(a[1], a[0]).value; }; },
+  vargs: function(a) {
+    return function(cs) {
+      var ret = [];
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        var r = a[i](cs);
+        if ( Array.isArray(r) )
+          ret.pushAll(r);
+        else
+          ret.push(r);
+      }
+      return ret;
+    }
+  },
   range: function(a) {
     var c1 = a[0], r1 = a[1], c2 = a[3], r2 = a[4];
     return function(cs) {
@@ -126,7 +141,8 @@ MODEL({
     },
     {
       name: 'value',
-      defaultValue: '&nbsp;',
+      defaultValue: '&nbsp;', // Hackish, makes value view fill cell, fix
+      adapt: function(_, v) { var ret = parseFloat(v); return isNaN(ret) ? v : ret; },
       displayWidth: 12
     }
   ],
@@ -191,15 +207,10 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Cells',
   extendsModel: 'foam.ui.View',
-  requires: [
-//    'foam.demos.sevenguis.CellParser',
-    'foam.demos.sevenguis.Cell'
-  ],
-  imports: [ 'dynamic' ],
-  exports: [ 'as cells' ],
-  constants: {
-    ROWS: 20 /* 99 */
-  },
+  requires: [ 'foam.demos.sevenguis.Cell' ],
+  imports:  [ 'dynamic' ],
+  exports:  [ 'as cells' ],
+  constants: { ROWS: 99 },
   properties: [
     {
       name: 'cells',
@@ -242,8 +253,9 @@ MODEL({
       t('=add(mul(2,3),div(3,2))');
       t('=A1');
       t('=add(A1,B1)');
-      t('=sum(B6,B10)');
-      t('=prod(B6,B10)');
+      t('=sum(1,2,3,4,5)');
+      t('=sum(B6:B10)');
+      t('=prod(B6:B10)');
     },
     function cell(r, c) {
       var self = this;
@@ -252,11 +264,9 @@ MODEL({
       if ( ! cell ) {
         cell = row[c] = this.Cell.create();
         cell.formula$.addListener(function(_, _, _, formula) {
-//          console.log('formula: ', r, c, formula);
           var f = self.parser.parseString(formula);
           self.dynamic(f.bind(null, self), function(v) {
             cell.value = v;
-//            console.log('v:', v);
           });
         });
       }
@@ -274,8 +284,14 @@ MODEL({
       .cell { min-width: 100px; }
       table.cells, .cells th, .cells td {
         border: 1px solid #ccc;
+      }
+      .cells th, .cells td {
         border-right: none;
         border-bottom: none;
+      }
+      table.cells {
+        border-left: none;
+        border-top: none;
       }
       .cells td {
         height: 100%;
