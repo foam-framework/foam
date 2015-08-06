@@ -78,23 +78,22 @@
       }
     },
 
+    skipKeysFn_hasOwnProperty: function(name) {
+      if ( name == 'factory_' ||
+           name == 'model_' ||
+           name == 'view' ) {
+        return false;
+      }
+      return this.__proto__.hasOwnProperty(name);
+    },
+
     construct: function() { /* Picks the model to create, then passes off to $$DOC{ref:'.finishRender'}. */
       // Decorators to allow us to skip over keys without copying them
       // as create() args
       var skipKeysArgDecorator = {
         __proto__: this.args,
-        __SKD_SKIP_KEYS: {
-          factory_: true,
-          model_: true,
-          view: true
-        },
-        hasOwnProperty: function(name) {
-          if ( ! this.__SKD_SKIP_KEYS[name] ) {
-            return this.__proto__.hasOwnProperty(name);
-          }
-          return false;
-        }
       };
+      skipKeysArgDecorator.hasOwnProperty = this.skipKeysFn_hasOwnProperty;
 
       // HACK to ensure model-for-model works. It requires that 'model', if specified,
       // be present in the create({ args }). Since we set Actions and Properties as
@@ -156,18 +155,9 @@
         // don't copy a few special cases
         var skipKeysCopyFromDecorator = {
           __proto__: this.copyFrom,
-          __SKD_SKIP_KEYS: {
-            factory_: true,
-            model_: true,
-            view: true,
-          },
-          hasOwnProperty: function(name) {
-            if ( ! this.__SKD_SKIP_KEYS[name] ) {
-              return this.__proto__.hasOwnProperty(name);
-            }
-            return false;
-          }
-        }
+        };
+        skipKeysCopyFromDecorator.hasOwnProperty = this.skipKeysFn_hasOwnProperty;
+
         view.copyFrom(skipKeysCopyFromDecorator);
       }
       this.view = view.toView_();
