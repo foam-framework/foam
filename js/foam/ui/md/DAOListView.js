@@ -26,6 +26,10 @@ CLASS({
 
   properties: [
     {
+      name: 'tagName',
+      defaultValue: 'div',
+    },
+    {
       name: 'orientation',
       view: { factory_: 'foam.ui.ChoiceView', choices: ['vertical', 'horizontal'] },
       defaultValue: 'vertical',
@@ -194,7 +198,7 @@ CLASS({
       }
 
       this.onPositionUpdate();
-      //this.X.setTimeout(this.onPositionUpdate, 1000);
+      this.X.setTimeout(this.onPositionUpdate, 1000);
       //console.log("daoChange added", debugCount, " of ", this.children.length);
     },
 
@@ -204,9 +208,12 @@ CLASS({
       if ( this.$ ) {
         this.$.style.position = 'relative';
         if ( this.orientation == 'vertical' ) {
-          this.$.style.overflowY = 'scroll';
+          this.$.style.width = "100%";
+//          this.$.style.overflowY = 'scroll';
         } else {
-          this.$.style.overflowX = 'scroll';
+//          this.$.style.overflowX = 'scroll';
+          this.$.style.height = "100%";
+
         }
       }
 
@@ -221,7 +228,7 @@ CLASS({
         var d = this.rowCache_[key];
         rows[d.ordering] = d;
       }
-      //console.log("updatePositions", rows.length);
+      console.log("updatePositions", rows.length);
 
       var pos = 0;
       for (var i = 0; i < rows.length; ++i) {
@@ -245,6 +252,13 @@ CLASS({
           if ( ! rows[i].size ) {
             var rect = rows[i].view.$.getBoundingClientRect();
             rows[i].size = ( this.orientation == 'vertical' ) ? rect.height : rect.width;
+            if ( this.orientation == 'vertical' ) {
+              rows[i].view.$.style.width = "100%";
+            } else {
+              rows[i].view.$.style.height = "100%";
+            }
+
+            console.log(i, "Set row size:", rows[i].size);
           }
           pos += rows[i].size;
 
@@ -269,8 +283,6 @@ CLASS({
       this.rowCache_ = {};
       this.$.innerHTML = "";
     }
-
-
 
   },
 

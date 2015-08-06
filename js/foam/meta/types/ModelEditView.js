@@ -32,6 +32,7 @@ CLASS({
     'foam.meta.MetaPropertyDescriptor',
     'foam.meta.MetaDescriptorView',
     'foam.ui.md.PopupChoiceView',
+    'foam.ui.md.DAOListView',
   ],
 
   imports: ['stack'],
@@ -132,7 +133,7 @@ CLASS({
             <% this.headerHTML(out, this.metaEditModelTitle); %>
           </div>
           <div class="model-edit-view-list">
-            $$properties{ model_: 'foam.ui.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }
+            $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }
           </div>
         </div>
         <div class="floating-action">
@@ -166,8 +167,9 @@ CLASS({
       }
       .model-edit-view-list {
         background: grey;
-        overflow-y: scroll;
         flex-grow: 1;
+        display: flex;
+        overflow-y: scroll;
       }
 
       .md-model-edit-view h2 {
