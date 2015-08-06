@@ -19,6 +19,10 @@ CLASS({
   package: 'foam.util',
   name: 'JavaSource',
 
+  requires: [
+    'foam.core.types.StringEnumProperty',
+  ],
+
   documentation: function() {/* Generates Java source code from a FOAM
     model. Add a template for each model, named by CONSTANTIZED_MODEL_ID.
   */},
