@@ -27,8 +27,14 @@ public abstract class AbstractModel
   final Relationship[]        relationships_;
   final Map<String, Property> pMap_ = new HashMap<>();
   final Map<String, Relationship> rMap_ = new HashMap<>();
+  final Model parent_;
 
   public AbstractModel(Property[] properties, Relationship[] relationships) {
+    this(null, properties, relationships);
+  }
+
+  public AbstractModel(Model parent, Property[] properties, Relationship[] relationships) {
+    parent_ = parent;
     properties_ = properties;
     relationships_ = relationships;
     for ( Property p : properties ) {
@@ -39,6 +45,10 @@ public abstract class AbstractModel
     }
   }
 
+  public Model getParent() {
+    return parent_;
+  }
+
   public Property[] getProperties()
   {
     return properties_;
@@ -46,7 +56,9 @@ public abstract class AbstractModel
 
   public Property getProperty(String propertyName)
   {
-    return pMap_.get(propertyName);
+    Property p = pMap_.get(propertyName);
+    if (p == null && parent_ != null) p = parent_.getProperty(propertyName);
+    return p;
   }
 
   public Relationship[] getRelationships() {

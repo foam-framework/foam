@@ -71,23 +71,34 @@ CLASS({
     function destroyChildViews_(index) {
       while(this.views_.length > index) {
         var obj = this.views_.pop();
-        obj.view.destroy();
-        obj.hideBinding(); // Destroys the Events.dynamic for the hidden class.
-        this.X.$(obj.id).outerHTML = '';
+        this.X.$(obj.id).style.left = this.$.offsetWidth;
+        this.resize();
+        this.X.setTimeout(function() { // clean up after animation
+          obj.view.destroy();
+          obj.hideBinding(); // Destroys the Events.dynamic for the hidden class.
+          var e = this.X.$(obj.id);
+          if ( e ) e.outerHTML = '';
+        }.bind(this), 1000);
       }
     },
 
     function renderChild(index) {
       var obj = this.views_[index];
       this.$.insertAdjacentHTML('beforeend', this.childHTML(index, this.views_[index]));
+      var style = this.X.$(obj.id).style;
+      style.width = "0px";
+      style.left = this.$.offsetWidth;
+      // not animating width makes a big difference in performance by avoiding layout events
+      style.transition = "left 300ms ease"; // "width 300ms ease, left 300ms ease";
+
       obj.view.initHTML();
     },
     function childHTML(index) {
       var obj = this.views_[index];
       var html = '<div id="' + obj.id + '" class="stackview-panel stackview-hidden">';
       html += obj.view.toHTML();
+      html += '  <div id="' + obj.id + '-edge" class="stackview-edge"></div>';
       html += '</div>';
-      html += '<div id="' + obj.id + '-edge" class="stackview-edge"></div>';
 
       // This is added as an initializer, and when the inner view is inited,
       // the dynamic binding is created. We can't create it directly, or it
@@ -100,14 +111,10 @@ CLASS({
             function() {
               var e = self.X.$(obj.id);
               if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+              // +1/-1 here to avoid hiding the panels animating out to the right
+              // or being overlapped to the left
               DOM.setClass(e, 'stackview-hidden',
-                  index < self.visibleStart_ || index > self.visibleEnd_);
-
-              e = self.X.$(obj.id + '-edge');
-              if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-              // >= visibleEnd here, because the last edge should be hidden.
-              DOM.setClass(e, 'stackview-hidden',
-                  index < self.visibleStart_ || index >= self.visibleEnd_);
+                  index < self.visibleStart_-1 || index > self.visibleEnd_+1);
             }
         ).destroy;
       });
@@ -124,7 +131,7 @@ CLASS({
       }
 
       index = Math.min(index + 1, this.views_.length - 1);
-      this.visibleStart_ = index;
+      this.visibleStart_ = Math.max(index, this.views_.length - 2);
       // Currently visibleEnd_ is always the last view; it exists only to make
       // sure views that are replacing each other come and go lockstep in a
       // single frame.
@@ -158,8 +165,16 @@ CLASS({
         sizes[i] = newSize;
       }
 
-      for (i = this.visibleEnd_; i >= this.visibleStart_; i--) {
-        this.X.$(this.views_[i].id).style.width = sizes[i] + 'px';
+      var pos = this.$.offsetWidth;
+      for (i = this.visibleEnd_; i >= 0; i--) {
+        var size = sizes[i] || 0; // size zero for buried items to the left
+        pos -= size; // left edge
+        var s = this.X.$(this.views_[i].id).style;
+        if (size > 0)  s.width = size + 'px'; // only set size for non-zero, buried panels will be overlapped
+        s.zIndex = i; // z ordering ensures overlap
+        s.left = pos + 'px';
+        s.top = "0px";
+
       }
     },
   ],
@@ -167,23 +182,28 @@ CLASS({
   templates: [
     function CSS() {/*
       .stackview-container {
-        align-items: flex-start;
         background-color: #9e9e9e;
-        display: flex;
         height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+        position: relative;
       }
       .stackview-panel {
         background-color: #fff;
         height: 100%;
-        flex-grow: 1;
+        position: absolute;
+        height: 100%;
       }
 
       .stackview-edge {
         background-color: #000;
         height: 100%;
-        margin-left: -1px;
+        position: absolute;
+        right: 0px;
+        top: 0px;
         opacity: 0.1;
         width: 1px;
+        z-index: 100;
       }
 
       .stackview-hidden {
