@@ -42,7 +42,7 @@ MODEL({
         return foam.dao.EasyDAO.create({
           model: foam.demos.sevenguis.Person,
           daoType: 'IDB',
-          cache: true:
+          cache: true,
           seqNo: true
         });
       }
@@ -81,8 +81,8 @@ MODEL({
       name: 'deleteItem',
       label: 'Delete',
       action: function() {
-        this.dao.remove(this.data));
+        this.dao.remove(this.data);
       }
-    },
+    }
   ]
 });
