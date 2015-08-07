@@ -18,6 +18,7 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Person',
+  tableProperties: [ 'surname', 'name' ],
   properties: [ { name: 'id', hidden: true }, 'name', 'surname' ]
 });
 
@@ -34,7 +35,10 @@ MODEL({
   properties: [
     {
       name: 'prefix',
-      label: 'Filter prefix'
+      label: 'Filter prefix',
+      postSet: function(_, prefix) {
+        this.filteredDAO = this.dao.where(STARTS_WITH_IC(this.Person.SURNAME, prefix));
+      }
     },
     {
       model_: 'foam.core.types.DAOProperty',
@@ -43,7 +47,7 @@ MODEL({
         return foam.dao.EasyDAO.create({
           model: foam.demos.sevenguis.Person,
           daoType: 'IDB',
-          cloning: true,
+          // cloning: true,
           cache: true,
           seqNo: true
         });
@@ -60,28 +64,39 @@ MODEL({
     }
   ],
   methods: [
+    function init() {
+      this.SUPER();
+      this.filteredDAO = this.dao;
+    }
   ],
   templates: [
     function CSS() {/*
-      body { padding: 10px !important; }
-      .tableView { height: 184px; outline: none; }
       .buttons { padding-left: 592px; }
-      .crud span { overflow: hidden !important; }
       .crud .detailView { border: none; background: white; }
+      .crud span { overflow: hidden !important; }
+      .crud { width: 1000px; }
+      .detailPane { width: 45%; display: inline-block; margin-left: 50px; margin-top: 16px; }
       .label { color: #039; font-size: 14px; padding-top: 6px; }
       .prefix { margin-left: 10px; }
       .summaryPane { width: 49%; display: inline-block; vertical-align: top; }
-      .detailPane { width: 45%; display: inline-block; margin-left: 50px; margin-top: 16px; }
+      .tableView { height: 184px; outline: none; }
+      body { padding: 10px !important; }
     */},
     function toHTML() {/*
-      <span class="prefix label">Filter prefix: </span> $$prefix
-      <div class="crud" style="width:1000px;">
-        <span class="summaryPane">$$dao{model_: 'foam.ui.TableView', title: '', scrollEnabled: true, rows: 5, editColumns: false, hardSelection$: this.data$}</span>
+      <span class="prefix label">Filter prefix: </span> $$prefix{onKeyMode: true}
+      <div class="crud">
+        <span class="summaryPane">
+          $$filteredDAO{
+            model_: 'foam.ui.TableView',
+            title: '',
+            scrollEnabled: true,
+            editColumns: false,
+            hardSelection$: this.data$}
+        </span>
         <span class="detailPane">$$data</span>
         <div class="buttons">$$createItem $$updateItem $$deleteItem</div>
       </div>
     */}
-    //      $$filteredDAO{model: 'foam.ui.md.TableView'}
   ],
   actions: [
     {
