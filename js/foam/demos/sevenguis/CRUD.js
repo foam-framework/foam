@@ -26,7 +26,7 @@ MODEL({
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CRUD',
-  extendsModel: 'foam.ui.DetailView',
+  extendsModel: 'foam.ui.View',
   requires: [
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
@@ -105,8 +105,7 @@ MODEL({
       name: 'createItem',
       label: 'Create',
       isEnabled: function() {
-        var n = this.data.name;
-        var s = this.data.surname;
+        var n = this.data.name, s = this.data.surname;
         return n && s;
       },
       action: function() {
