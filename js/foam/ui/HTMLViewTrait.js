@@ -389,8 +389,10 @@ CLASS({
           var e = this.X.$(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
-          if ( newValue == undefined ) e.removeAttribute(attributeName);
-          else e.setAttribute(attributeName, newValue);
+          if ( newValue == undefined )
+            e.removeAttribute(attributeName);
+          else
+            e.setAttribute(attributeName, newValue);
         }.bind(this))
       }.bind(this));
     },
