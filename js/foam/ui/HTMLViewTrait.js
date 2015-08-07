@@ -356,7 +356,8 @@ CLASS({
               return listener({
                 preventDefault: function() { },
                 stopPropagation: function() { },
-                pointMap: pointMap
+                pointMap: pointMap,
+                target: self.X.$(opt_id)
               });
             }
           },
