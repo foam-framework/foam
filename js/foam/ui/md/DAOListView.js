@@ -104,10 +104,7 @@ CLASS({
         var v = r.view;
         v.destroy();
         if ( v.$ ) {
-          //v.$.transition = "opacity: 300ms ease";
-          //v.$.opacity = "0";
-          //var myRect = this.$.getBoundingClientRect();
-          var otherOffset = ( this.orientation == 'vertical' ) ?  -this.$.offsetWidth : -this.$.offsetHeight;
+          var otherOffset = ( this.orientation == 'vertical' ) ?  -v.$.offsetWidth : -v.$.offsetHeight;
           if (  this.orientation == 'vertical' ) {
             v.$.style.transform =
               "translate3d("+otherOffset+"px, "+r.offset+"px, 0px)";
@@ -238,8 +235,8 @@ CLASS({
     },
 
     updatePositions: function() {
-
-      //var myRect = this.$.getBoundingClientRect();
+      if ( ! this.$ ) return;
+      
       var mySize = ( this.orientation == 'vertical' ) ?  this.$.offsetWidth : this.$.offsetHeight;
       if ( ! mySize ) {
         this.X.setTimeout(this.onPositionUpdate, 30);
@@ -315,7 +312,7 @@ CLASS({
       //this.data && this.data.unlisten(this); // TODO: maybe not?
       //console.log("md.DAOListView clearing cache");
       this.rowCache_ = {};
-      this.$.innerHTML = "";
+      if ( this.$ ) this.$.innerHTML = "";
     }
 
   },
