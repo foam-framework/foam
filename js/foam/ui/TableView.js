@@ -357,13 +357,13 @@ CLASS({
     initHTML: function() {
       this.SUPER();
 
-      this.scrollbar.toView_().initHTML();
-
       this.dao && this.onDAOUpdate();
 
       this.$table.onmousemove = this.onMouseMove;
 
       if ( this.scrollEnabled ) {
+        this.scrollbar.toView_().initHTML();
+
         (this.window || window).addEventListener('resize', this.onResize, false);
 
         var sb = this.scrollbar;
