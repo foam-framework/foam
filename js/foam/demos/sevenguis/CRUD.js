@@ -28,9 +28,10 @@ MODEL({
   name: 'CRUD',
   extendsModel: 'foam.ui.DetailView',
   requires: [
-    'foam.demos.sevenguis.Person',
     'foam.dao.EasyDAO',
-    'foam.dao.IDBDAO'
+    'foam.dao.IDBDAO',
+    'foam.demos.sevenguis.Person',
+    'foam.ui.TableView'
   ],
   properties: [
     {
@@ -47,7 +48,6 @@ MODEL({
         return foam.dao.EasyDAO.create({
           model: foam.demos.sevenguis.Person,
           daoType: 'IDB',
-          // cloning: true,
           cache: true,
           seqNo: true
         });
@@ -55,22 +55,32 @@ MODEL({
     },
     {
       model_: 'foam.core.types.DAOProperty',
-      name: 'filteredDAO'
+      name: 'filteredDAO',
+      view: {
+        factory_: 'foam.ui.TableView',
+        title: '',
+        scrollEnabled: true,
+        editColumns: false
+      },
+      factory: function() { return this.dao; }
     },
     {
       name: 'data',
-      view: {factory_: 'foam.ui.DetailView', title: ''},
+      view: { factory_: 'foam.ui.DetailView', title: '' },
       factory: function() { return this.Person.create(); }
     }
   ],
   methods: [
-    function init() {
+    function initHTML() {
       this.SUPER();
-      this.filteredDAO = this.dao;
+      this.filteredDAOView.hardSelection$.addListener(function(_, _, _, selection) {
+        if ( selection ) this.data.copyFrom(selection);
+      }.bind(this));
     }
   ],
   templates: [
     function CSS() {/*
+      body { padding: 10px !important; }
       .buttons { padding-left: 592px; }
       .crud .detailView { border: none; background: white; }
       .crud span { overflow: hidden !important; }
@@ -80,19 +90,11 @@ MODEL({
       .prefix { margin-left: 10px; }
       .summaryPane { width: 49%; display: inline-block; vertical-align: top; }
       .tableView { height: 184px; outline: none; }
-      body { padding: 10px !important; }
     */},
     function toHTML() {/*
-      <span class="prefix label">Filter prefix: </span> $$prefix{onKeyMode: true}
+      <span class="prefix label">Filter prefix: </span> $$prefix{onKeyMode: true, type: 'search'}
       <div class="crud">
-        <span class="summaryPane">
-          $$filteredDAO{
-            model_: 'foam.ui.TableView',
-            title: '',
-            scrollEnabled: true,
-            editColumns: false,
-            hardSelection$: this.data$}
-        </span>
+        <span class="summaryPane">$$filteredDAO</span>
         <span class="detailPane">$$data</span>
         <div class="buttons">$$createItem $$updateItem $$deleteItem</div>
       </div>
@@ -108,21 +110,17 @@ MODEL({
         return n && s;
       },
       action: function() {
-        var self = this;
         var data = this.data.clone();
         data.id = undefined;
-        console.log('create: ', this.data.toJSON());
         this.dao.put(data, {
-          put: function(data) { self.data = data; }
+          put: function(data) { this.data.copyFrom(data); }.bind(this)
         });
       }
     },
     {
       name: 'updateItem',
       label: 'Update',
-      isEnabled: function() {
-        return this.data.id;
-      },
+      isEnabled: function() { return this.data.id; },
       action: function() {
         this.dao.put(this.data.clone(), {
           put: function(data) { self.data = data; }
@@ -132,11 +130,8 @@ MODEL({
     {
       name: 'deleteItem',
       label: 'Delete',
-      isEnabled: function() {
-        return this.data.id;
-      },
+      isEnabled: function() { return this.data.id; },
       action: function() {
-        console.log('delete: ', this.data.toJSON());
         this.dao.remove(this.data.clone());
         this.data.id = this.data.name = this.data.surname = '';
       }
