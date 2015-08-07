@@ -8,6 +8,14 @@ CLASS({
   name: 'Test',
   properties: [
     {
+      name: 'cv1',
+      view: 'foam.ui.ChoiceView'
+    },
+    {
+      name: 'cv2',
+      view: { factory_: 'foam.ui.ChoiceView', size: 4, choices: ['A','B','C'] }
+    },
+    {
       name: 'notReq'
     },
     {
