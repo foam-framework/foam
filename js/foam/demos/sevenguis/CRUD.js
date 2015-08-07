@@ -42,6 +42,7 @@ MODEL({
         return foam.dao.EasyDAO.create({
           model: foam.demos.sevenguis.Person,
           daoType: 'IDB',
+          cloning: true,
           cache: true,
           seqNo: true
         });
@@ -65,7 +66,7 @@ MODEL({
     function toDetailHTML() {/*
       Filter prefix: $$prefix
       <div>
-        <span style="width: 45%; display: inline-block; vertical-align: top;">$$dao{model_: 'foam.ui.TableView', title: '', editColumns: false, hardSelection$: this.data.data$}</span>
+        <span style="width: 45%; display: inline-block; vertical-align: top;">$$dao{model_: 'foam.ui.TableView', title: '', scrollEnabled: true, rows: 5, editColumns: false, hardSelection$: this.data.data$}</span>
         <span style="width: 45%; display: inline-block; margin-left: 50px;">$$data{model_: 'foam.ui.DetailView', title: ''}</span>
       </div>
     */}
@@ -78,9 +79,10 @@ MODEL({
       label: 'Create',
       action: function() {
         var self = this;
-        self.id = undefined;
+        var data = this.data.clone();
+        data.id = undefined;
         console.log('create: ', this.data.toJSON());
-        this.dao.put(this.data, {
+        this.dao.put(data, {
           put: function(data) { self.data = data; }
         });
       }
