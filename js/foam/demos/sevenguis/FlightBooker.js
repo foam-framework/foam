@@ -34,11 +34,13 @@ MODEL({
     },
     {
       model_: 'DateProperty',
-      name: 'departDate'
+      name: 'departDate',
+      factory: function() { return new Date(Date.now()+3600000*24); }
     },
     {
       model_: 'DateProperty',
-      name: 'returnDate'
+      name: 'returnDate',
+      factory: function() { return new Date(Date.now()+2*3600000*24); }
     }
   ],
   methods: [
@@ -51,12 +53,11 @@ MODEL({
   templates: [
     function CSS() {/*
       body { padding: 10px !important; }
+      .error { border: 2px solid red; }
       .title, .flight button, .flight input, .flight select {
         width: 160px; height: 24px; margin: 5px;
       }
-      .title {
-        font-size: 16px;
-      }
+      .title { font-size: 16px; }
     */},
     function toHTML() {/*
       <div class="flight">
@@ -72,7 +73,6 @@ MODEL({
     {
       name: 'onOneWayChange',
       code: function() {
-        console.log(this.oneWay);
         if ( this.oneWay )
           this.returnDateView.$.setAttribute('disabled', '');
         else
@@ -84,14 +84,18 @@ MODEL({
     {
       name: 'book',
       isEnabled: function() {
-        var oneWay = this.oneWay, departDate = this.departDate, returnDate = this.returnDate;
+        var oneWay     = this.oneWay,
+            departDate = this.departDate,
+            returnDate = this.returnDate;
+
         return departDate && ( oneWay || returnDate ) ;
       },
       action: function() {
         var depart = this.departDate.toLocaleDateString();
-        window.alert(this.oneWay ?
-          'You have booked a one-way flight on ' + depart + '.' :
-          'You have booked a flight departing on ' + depart + ' and returning ' + this.returnDate.toLocaleDateString() + '.');
+
+        window.alert('You have booked a ' + (this.oneWay ?
+          'one-way flight on ' + depart :
+          'flight departing on ' + depart + ' and returning ' + this.returnDate.toLocaleDateString() ) + '.');
       }
     }
   ]
