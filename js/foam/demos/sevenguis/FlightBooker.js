@@ -28,19 +28,27 @@ MODEL({
         factory_: 'foam.ui.ChoiceView',
         choices: [
           [ true,  'one-way flight' ],
-          [ false, 'return flight' ]
+          [ false, 'return flight'  ]
         ]
       }
     },
     {
       model_: 'DateProperty',
       name: 'departDate',
-      factory: function() { return new Date(Date.now()+3600000*24); }
+      factory: function() { return new Date(Date.now()+3600000*24); },
+      validate: function(departDate) {
+        var today = new Date();
+        today.setHours(0,0,0,0);
+        if ( departDate.compareTo(today) < 0 ) throw 'Must not be in the past.';
+      }
     },
     {
       model_: 'DateProperty',
       name: 'returnDate',
-      factory: function() { return new Date(Date.now()+2*3600000*24); }
+      factory: function() { return new Date(Date.now()+2*3600000*24); },
+      validate: function(returnDate) {
+        if ( ! this.oneWay && returnDate.compareTo(this.departDate) < 0 ) throw 'Must not be before depart date.';
+      }
     }
   ],
   methods: [
@@ -57,7 +65,7 @@ MODEL({
       .title, .flight button, .flight input, .flight select {
         width: 160px; height: 24px; margin: 5px;
       }
-      .title { font-size: 16px; }
+      .title { font-size: 18px; }
     */},
     function toHTML() {/*
       <div class="flight">
@@ -73,6 +81,7 @@ MODEL({
     {
       name: 'onOneWayChange',
       code: function() {
+        // TODO: Views should have an 'enabled' property
         if ( this.oneWay )
           this.returnDateView.$.setAttribute('disabled', '');
         else
