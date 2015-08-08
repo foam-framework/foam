@@ -39,8 +39,7 @@ MODEL({
     {
       model_: 'DateProperty',
       name: 'returnDate'
-    },
-    'message'
+    }
   ],
   methods: [
     function initHTML() {
@@ -52,23 +51,32 @@ MODEL({
   templates: [
     function CSS() {/*
       body { padding: 10px !important; }
+      .title, .flight button, .flight input, .flight select {
+        width: 160px; height: 24px; margin: 5px;
+      }
+      .title {
+        font-size: 16px;
+      }
     */},
     function toHTML() {/*
-      $$oneWay <br>
-      $$departDate <br>
-      $$returnDate <br>
-      $$book <br>
-      $$message{mode: 'read-only'}
+      <div class="flight">
+        <div class="title">Book Flight</div>
+        $$oneWay <br>
+        $$departDate <br>
+        $$returnDate <br>
+        $$book <br>
+      </div>
     */}
   ],
   listeners: [
     {
       name: 'onOneWayChange',
-      code: function(_, oneWay) {
-        if ( oneWay )
-          this.returnDateView.$.removeAttribute('disabled');
-        else
+      code: function() {
+        console.log(this.oneWay);
+        if ( this.oneWay )
           this.returnDateView.$.setAttribute('disabled', '');
+        else
+          this.returnDateView.$.removeAttribute('disabled');
       }
     }
   ],
@@ -81,9 +89,9 @@ MODEL({
       },
       action: function() {
         var depart = this.departDate.toLocaleDateString();
-        this.message = this.oneWay ?
+        window.alert(this.oneWay ?
           'You have booked a one-way flight on ' + depart + '.' :
-          'You have booked a flight departing on ' + depart + ' and returning ' + this.returnDate.toLocaleDateString() + '.';
+          'You have booked a flight departing on ' + depart + ' and returning ' + this.returnDate.toLocaleDateString() + '.');
       }
     }
   ]
