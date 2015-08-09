@@ -26,11 +26,12 @@ MODEL({
     {
       name: 'duration',
       units: 'ms',
-      defaultValue: 10000,
+      defaultValue: 5000,
     },
     {
       name: 'progress',
-      mode: 'read-only'
+      view: 'foam.ui.RangeView'
+//      mode: 'read-only'
     },
     {
       name: 'lastTick_',
