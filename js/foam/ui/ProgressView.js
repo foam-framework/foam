@@ -29,21 +29,30 @@ CLASS({
     }
   ],
 
-  methods: {
+  templates: [
+    function CSS() {/*
+      .progressView {
+        margin: 2px 0 0 10px;
+        height: 23px;
+        width: 183px;
+      }
+    */},
+  ],
 
-    toHTML: function() {
-      return '<progress value="25" id="' + this.id + '" max="100" >25</progress>';
+  methods: [
+    function toHTML() {
+      return '<progress class="progressView" value="25" id="' + this.id + '" max="100" >25</progress>';
     },
 
-    updateValue: function() {
+    function updateValue() {
       var e = this.$;
       if (!e) return;
 
       e.value = typeof this.data === 'number' ? this.data : parseInt(this.data);
     },
 
-    initHTML: function() {
+    function initHTML() {
       this.updateValue();
     }
-  }
+  ]
 });
