@@ -141,6 +141,6 @@ i.material-icons.actionLabel {
 }
 /* TODO(markdittmer): Currently hiding broken scrollbar view */
 md-table .scrollbar,
-md-table canvas {
+md-table .scrollbar canvas {
   display: none;
 }
