@@ -30,7 +30,7 @@ MODEL({
     },
     {
       name: 'progress',
-      view: 'foam.ui.RangeView'
+      view: 'foam.ui.ProgressView'
 //      mode: 'read-only'
     },
     {
@@ -42,7 +42,7 @@ MODEL({
   methods: [
     function init() {
       this.SUPER();
-      this.X.dynamic(function() { this.progress = Math.min(1, this.elapsedTime / this.duration);  }.bind(this));
+      this.X.dynamic(function() { this.progress = 100 * Math.min(1, this.elapsedTime / this.duration);  }.bind(this));
       this.tick();
     }
   ],
