@@ -15,8 +15,8 @@
  */
 
 html, body {
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -58,7 +58,7 @@ p, h1, form, button {
 
 .stackview-slidearea {
   background: white;
-  box-shadow: 0px 0px 30px black;
+  box-shadow: 0 0 30px black;
   height: 100%;
   position: fixed;
   z-index: 4;
@@ -103,7 +103,7 @@ p, h1, form, button {
   font-size: 12px;
   padding: 4px 2px;
   border: solid 1px #aacfe4;
-  margin: 2px 0 0px 10px;
+  margin: 2px 0 0 10px;
 }
 
 .detailView textarea {
@@ -111,7 +111,7 @@ p, h1, form, button {
   font-size: 12px;
   padding: 4px 2px;
   border: solid 1px #aacfe4;
-  margin: 2px 0 0px 10px;
+  margin: 2px 0 0 10px;
   width: 98%;
   overflow: auto;
 }
@@ -120,7 +120,7 @@ p, h1, form, button {
   font-size: 12px;
   padding: 4px 2px;
   border: solid 1px #aacfe4;
-  margin: 2px 0 0px 10px;
+  margin: 2px 0 0 10px;
 }
 
 .detailView .label {
@@ -165,7 +165,7 @@ p, h1, form, button {
   float: left;
   font-size: 12px;
   padding-left: 8px;
-  margin: 2px 15px 2px 0px;
+  margin: 2px 15px 2px 0;
 }
 
 
@@ -201,7 +201,7 @@ option[selected]{
   width: 100%;
   font-size: 14px;
   padding-left: 8px;
-  margin: 2px 15px 2px 0px;
+  margin: 2px 15px 2px 0;
 }
 
 .actionBorder {
@@ -569,7 +569,7 @@ div.gridViewControl select {
 .arrayTileView {
   margin: 0;
   width: 100%;
-  padding: 0px;
+  padding: 0;
   display: inline-block;
   border-bottom: 2px inset;
 }
@@ -600,7 +600,7 @@ div.gridViewControl select {
 .autocompleteListView {
   position: absolute;
   padding: 8px;
-  margin: 0px;
+  margin: 0;
   width: 300px;
   background: white;
   border-radius: 5px;

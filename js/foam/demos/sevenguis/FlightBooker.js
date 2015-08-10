@@ -18,30 +18,94 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'FlightBooker',
+  extendsModel: 'foam.ui.View',
+  requires: [ 'foam.ui.DateFieldView' ],
   properties: [
     {
       name: 'oneWay',
+      defaultValue: true,
       view: {
-        factory_: 'foam.ui.ChoiceListView',
-        defaultValue: true,
+        factory_: 'foam.ui.ChoiceView',
         choices: [
-          [ true, 'one-way flight' ],
-          [ false, 'return flight' ]
+          [ true,  'one-way flight' ],
+          [ false, 'return flight'  ]
         ]
       }
     },
     {
       model_: 'DateProperty',
-      name: 'departDate'
+      name: 'departDate',
+      factory: function() { return new Date(Date.now()+3600000*24); },
+      validate: function(departDate) {
+        var today = new Date();
+        today.setHours(0,0,0,0);
+        if ( departDate.compareTo(today) < 0 ) throw 'Must not be in the past.';
+      }
     },
     {
       model_: 'DateProperty',
-      name: 'returnDate'
+      name: 'returnDate',
+      factory: function() { return new Date(Date.now()+2*3600000*24); },
+      validate: function(returnDate) {
+        if ( ! this.oneWay && returnDate.compareTo(this.departDate) < 0 ) throw 'Must not be before depart date.';
+      }
     }
   ],
   methods: [
+    function initHTML() {
+      this.SUPER();
+      this.oneWay$.addListener(this.onOneWayChange);
+      this.onOneWayChange();
+    }
+  ],
+  templates: [
+    function CSS() {/*
+      body { padding: 10px !important; }
+      .error { border: 2px solid red; }
+      .title, .flight button, .flight input, .flight select {
+        width: 160px; height: 24px; margin: 5px;
+      }
+      .title { font-size: 18px; }
+    */},
+    function toHTML() {/*
+      <div class="flight">
+        <div class="title">Book Flight</div>
+        $$oneWay <br>
+        $$departDate <br>
+        $$returnDate <br>
+        $$book <br>
+      </div>
+    */}
+  ],
+  listeners: [
+    {
+      name: 'onOneWayChange',
+      code: function() {
+        // TODO: Views should have an 'enabled' property
+        if ( this.oneWay )
+          this.returnDateView.$.setAttribute('disabled', '');
+        else
+          this.returnDateView.$.removeAttribute('disabled');
+      }
+    }
   ],
   actions: [
-    { name: 'book', action: function() { } }
+    {
+      name: 'book',
+      isEnabled: function() {
+        var oneWay     = this.oneWay,
+            departDate = this.departDate,
+            returnDate = this.returnDate;
+
+        return departDate && ( oneWay || returnDate ) ;
+      },
+      action: function() {
+        var depart = this.departDate.toLocaleDateString();
+
+        window.alert('You have booked a ' + (this.oneWay ?
+          'one-way flight on ' + depart :
+          'flight departing on ' + depart + ' and returning ' + this.returnDate.toLocaleDateString() ) + '.');
+      }
+    }
   ]
 });

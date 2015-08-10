@@ -26,11 +26,12 @@ MODEL({
     {
       name: 'duration',
       units: 'ms',
-      defaultValue: 10000,
+      defaultValue: 5000,
     },
     {
       name: 'progress',
-      mode: 'read-only'
+      view: 'foam.ui.ProgressView'
+//      mode: 'read-only'
     },
     {
       name: 'lastTick_',
@@ -41,7 +42,9 @@ MODEL({
   methods: [
     function init() {
       this.SUPER();
-      this.X.dynamic(function() { this.progress = Math.min(1, this.elapsedTime / this.duration);  }.bind(this));
+      this.X.dynamic(function() {
+        this.progress = 100 * Math.min(1, this.elapsedTime / this.duration);
+      }.bind(this));
       this.tick();
     }
   ],
@@ -62,6 +65,7 @@ MODEL({
         if ( this.elapsedTime >= this.duration ) return;
         var now = Date.now();
         if ( this.lastTick_ ) this.elapsedTime += now - this.lastTick_;
+        this.elapsedTime = Math.min(this.duration, this.elapsedTime);
         this.lastTick_ = now;
         this.tick();
       }
