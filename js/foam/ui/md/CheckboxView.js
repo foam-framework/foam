@@ -53,6 +53,12 @@ CLASS({
       defaultValue: 'checkbox-container'
     },
     {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'checkboxPosition',
+      defaultValue: 'right',
+      choices: ['right', 'left']
+    },
+    {
       name: 'halo',
       factory: function() {
         return this.HaloView.create({}, this.Y);
@@ -107,6 +113,15 @@ CLASS({
         fill: rgba(0,0,0,0);
       }
 
+      .checkbox-container.left {
+        flex-direction: row-reverse;
+      }
+
+      .checkbox-container.left .checkbox-label {
+        margin-left: 12px;
+        margin-right: initial;
+      }
+
       .checkbox-container.enabled .checkbox-data-container {
         opacity: 1.0;
       }
@@ -119,6 +134,11 @@ CLASS({
 
       .checkbox-label-ro {
         margin-left: 10px;
+      }
+
+      .checkbox-container.left .checkbox-label-ro {
+        margin-left: 10px;
+        margin-right: initial;
       }
 
       .checkbox-data {
@@ -143,17 +163,14 @@ CLASS({
     */},
 
     function toHTML() {/*
+      <div id="%%id" <%= this.cssClassAttr() %> >
+
       <% if (this.mode === 'read-only') { %>
-        <div id="%%id" <%= this.cssClassAttr() %> >
           <div class="checkbox-data ro">
             <%= this.checkIcon() %>
           </div>
           <div class="checkbox-label-ro"><%= this.label %></div>
-        </div>
-        <% this.setClass('checked', function() { return !!self.data; },
-            this.id); %>
       <% } else { %>
-        <div id="%%id" <%= this.cssClassAttr() %>>
           <span class="checkbox-label noselect"><%# this.label %></span>
           <div class="checkbox-data-outer noselect">
             <div class="checkbox-data-container checkbox-data">
@@ -161,18 +178,24 @@ CLASS({
             </div>
             <div class="checkbox-halo noselect"><%= this.halo %></div>
           </div>
-        </div>
         <%
           this.on('click', function() {
             if (self.enabled) {
               self.data = !self.data;
             }
           }, this.id);
-          this.setClass('checked', function() { return !!self.data; }, this.id);
           this.setClass('enabled', function() { return !!self.enabled; },
               this.id);
         %>
       <% } %>
+      <% this.setClass('checked', function() { return !!self.data; },
+             this.id);
+         this.setClass('left', function() {
+           return this.checkboxPosition === 'left';
+         },this.id); %>
+
+      </div>
+
       <% this.setMDClasses(); %>
     */}
   ]
