@@ -34,16 +34,20 @@ CLASS({
       view: 'foam.apps.builder.kiosk.KioskChromeView',
       postSet: function(old, nu) {
         if ( old === nu ) return;
+        debugger;
         if ( old ) {
           old.termsOfService$.removeListener(this.onTOSChange);
           old.sessionDataTimeoutTime$.removeListener(this.onCacheTimeoutChange);
           old.sessionTimeoutTime$.removeListener(this.onHomeTimeoutChange);
+          old.rotation$.removeListener(this.onRotationChange);
         }
         if ( nu ) {
           this.tosData.tos = this.data.termsOfService;
           nu.termsOfService$.addListener(this.onTOSChange);
           nu.sessionDataTimeoutTime$.addListener(this.onCacheTimeoutChange);
           nu.sessionTimeoutTime$.addListener(this.onHomeTimeoutChange);
+          nu.rotation$.addListener(this.onRotationChange);
+          if ( nu.rotation !== 0 ) this.onRotationChange();
         }
       },
     },
@@ -169,6 +173,26 @@ CLASS({
       code: function() {
         this.url = this.data.homepage;
         if ( this.data.termsOfService ) this.openTOS();
+      },
+    },
+    {
+      name: 'onRotationChange',
+      code: function() {
+        if ( ! ( chrome && chrome.system && chrome.system.display ) ) return;
+        var rotation = this.data.rotation;
+        chrome.system.display.getInfo(function(displays) {
+          if ( displays.every(function(display) {
+            return display.rotation === rotation;
+          }) ) return;
+
+          for ( var i = 0; i < displays.length; ++i ) {
+            var display = displays[i];
+            chrome.system.display.setDisplayProperties(
+                display.id, { rotation: rotation }, function() {
+                  chrome.runtime.lastError && chrome.runtime.lastError.message;
+                });
+          }
+        });
       },
     },
   ],
