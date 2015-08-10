@@ -129,6 +129,7 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Cell',
   extendsModel: 'foam.ui.View',
+  requires: [ 'foam.ui.TextFieldView' ],
   imports: [ 'cells' ],
   properties: [
     {
