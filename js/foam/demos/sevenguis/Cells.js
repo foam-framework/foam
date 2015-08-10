@@ -206,8 +206,15 @@ MODEL({
   requires: [ 'foam.demos.sevenguis.Cell' ],
   imports:  [ 'dynamic' ],
   exports:  [ 'as cells' ],
-  constants: { ROWS: 99 },
   properties: [
+    {
+      name: 'rows',
+      defaultValue: 99
+    },
+    {
+      name: 'columns',
+      defaultValue: 26
+    },
     {
       name: 'cells',
       factory: function() { return {}; }
@@ -302,14 +309,14 @@ MODEL({
       <table cellspacing="0" class="cells">
         <tr>
           <th></th>
-          <% for ( var i = 65 ; i <= 90 ; i++ ) { %>
-            <th class="colHeader"><%= String.fromCharCode(i) %></th>
+          <% debugger; for ( var j = 0 ; j < this.columns ; j++ ) { %>
+            <th class="colHeader"><%= String.fromCharCode(65 + j) %></th>
           <% } %>
         </tr>
-        <% for ( i = 0 ; i <= this.ROWS ; i++ ) { %>
+        <% for ( i = 0 ; i <= this.rows ; i++ ) { %>
           <tr>
             <th class="rowHeader"><%= i %></th>
-            <% for ( var j = 0 ; j <= 25 ; j++ ) { %>
+            <% for ( var j = 0 ; j < this.columns ; j++ ) { %>
               <td class="cell"><%= this.cell(i, j) %></td>
             <% } %>
           </tr>
