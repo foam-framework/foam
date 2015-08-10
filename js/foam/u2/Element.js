@@ -45,7 +45,7 @@ CLASS({
         return out;
       },
       load:          function() { console.error('Must output before loading.'); },
-      unload:        function() { console.error('Must output and load before unloading.');},
+      unload:        function() { console.error('Must output and load before unloading.'); },
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
@@ -127,9 +127,9 @@ CLASS({
       toString:      function() { return 'UNLOADED'; }
     },
     DESTROYED: { // Needed?
-      output:        function() { },
-      load:          function() { },
-      unload:        function() { },
+      output:        function() { throw 'Attempt to output() destroyed Element.'; },
+      load:          function() { throw 'Attempt to load() destroyed Element.'; },
+      unload:        function() { throw 'Attempt to unload() destroyed Element.';},
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
@@ -407,5 +407,5 @@ function E(opt_nodeName) {
 }
 
 /*
-  TODO: compile, deepClone, pass data, don't clone if literal
+  TODO: focus?, compile, deepClone, pass data, don't clone if literal
 */
