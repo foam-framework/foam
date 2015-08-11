@@ -34,7 +34,6 @@ CLASS({
       view: 'foam.apps.builder.kiosk.KioskChromeView',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        debugger;
         if ( old ) {
           old.termsOfService$.removeListener(this.onTOSChange);
           old.sessionDataTimeoutTime$.removeListener(this.onCacheTimeoutChange);
