@@ -73,7 +73,7 @@ CLASS({
 
   methods: {
 
-    init: funciton() {
+    init: function() {
       this.SUPER();
 
       if ( ! this.iconUrl && this.action ) this.iconUrl = this.action.iconUrl;

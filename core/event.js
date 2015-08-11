@@ -526,6 +526,45 @@ var Events = {
   /** Collection of all 'following' listeners. **/
   listeners_: new WeakMap(),
 
+  /** Collection of all source/destination objects, by UID **/
+  objectKeys_ : {},
+  objects_: new WeakMap(),
+
+  srcDestUIDs_: {},
+
+  /** Purge unused listener entries **/
+  purge: function() {
+    for(var key in this.objectKeys_) {
+      //console.log(key, this.srcDestUIDs_[key]);
+
+      var srcObj = this.objects_.get(this.objectKeys_[key]);
+      if ( ! srcObj ) {
+        console.log("Source gone", key);
+        delete this.objectKeys_[key];
+      }
+
+      var srcDests = this.srcDestUIDs_[key];
+      if ( ! srcDests ) continue;
+
+      for (var i = 0; i < srcDests.length; ++i) {
+        var dest = srcDests[i];
+        var dstObj = this.objects_.get(dest);
+        if ( ! dstObj || ! srcObj ) {
+          // clean up
+          console.log("Removing dest", dest);
+          srcDests.splice(i, 1);
+          --i;
+          continue;
+        }
+      }
+      if ( ! srcDests.length ) {
+        console.log("Now empty", key);
+        delete this.srcDestUIDs_[key];
+        srcObj.removeListener(Events.globalListener_);
+      }
+    }
+  },
+
   recordListener: function(src, dst, listener, opt_dontCallListener) {
     var srcMap = this.listeners_.get(src);
     if ( ! srcMap ) {
@@ -534,10 +573,69 @@ var Events = {
     }
     console.assert( ! srcMap.get(dst), 'recordListener: duplicate follow');
     srcMap.set(dst, listener);
-    src.addListener(listener);
-    if ( ! opt_dontCallListener ) listener();
+
+    //console.log("listeners adding: ", src.$UID, dst.$UID);
+    // src for debugging
+    if ( ! this.objectKeys_[src.$UID] ) this.objectKeys_[src.$UID] =  { UID: src.$UID };
+    this.objects_.set(this.objectKeys_[src.$UID], src);
+    // dst for src-to-dst mapping
+    var destKey = this.objectKeys_[dst.$UID];
+    if ( ! destKey ) {
+      destKey = this.objectKeys_[dst.$UID] = { UID: dst.$UID };
+    }
+    this.objects_.set(destKey, dst);
+    var srcDests = this.srcDestUIDs_[src.$UID];
+    if ( ! srcDests ) {
+      srcDests = this.srcDestUIDs_[src.$UID] = [];
+    }
+    var alreadyThere = false;
+    for (var i = 0; i < srcDests.length; ++i) {
+      if ( equals(srcDests[i], destKey) ) { alreadyThere = true; break; }
+    }
+    if ( ! alreadyThere ) { srcDests.push(destKey); }
+
+    src.addListener(this.globalListener_);
+
+    if ( ! opt_dontCallListener ) listener(src, dst);
   },
 
+  globalListener_: function(source, topic) {
+    // check if it's a published object + property change topic
+    var srcObj = source;
+    if ( topic[0] && topic[0] == 'property' ) {
+      srcObj = source[topic[1]+"$"];
+    }
+
+    // find related
+    var srcDests = Events.srcDestUIDs_[srcObj.$UID];
+    if ( ! srcDests || ! srcDests.length ) {
+      // cleanup
+      console.log("No source dests", srcObj.name_, srcObj);
+      srcObj.removeListener(Events.globalListener_);
+      return;
+    }
+
+    // notify all destinations
+    for (var i = 0; i < srcDests.length; ++i) {
+      var dst = Events.objects_.get(srcDests[i]);
+      if ( ! dst ) {
+        // clean up
+        console.log("Dest gone", srcObj.name_, srcDests[i]);
+        srcDests.splice(i, 1);
+        --i;
+        continue;
+      }
+
+      // look up the listener function
+      var srcMap = Events.listeners_.get(srcObj);
+      if ( srcMap ) {
+        var listener = srcMap.get(dst);
+        if ( listener ) {
+          listener.call(null, srcObj, dst);
+        }
+      }
+    }
+  },
 
   identity: function (x) { return x; },
 
@@ -545,11 +643,11 @@ var Events = {
   follow: function (srcValue, dstValue) {
     if ( ! srcValue || ! dstValue ) return;
 
-    this.recordListener(srcValue, dstValue, function () {
-      var sv = srcValue.get();
-      var dv = dstValue.get();
+    this.recordListener(srcValue, dstValue, function (src, dst) {
+      var sv = src.get();
+      var dv = dst.get();
 
-      if ( ! equals(sv, dv) ) dstValue.set(sv);
+      if ( ! equals(sv, dv) ) dst.set(sv);
     });
   },
 
@@ -557,13 +655,34 @@ var Events = {
   /** Have the dstValue stop listening for changes to the srcValue. **/
   unfollow: function (src, dst) {
     if ( ! src || ! dst ) return;
+
     var srcMap = this.listeners_.get(src);
     if ( ! srcMap ) return;
     var listener = srcMap.get(dst);
     if ( listener ) {
       srcMap.delete(dst);
-      src.removeListener(listener);
+      //src.removeListener(listener);
     }
+
+    // unrecord listener
+    var srcDests = Events.srcDestUIDs_[src.$UID];
+    if ( srcDests ) {
+      // notify all destinations
+      for (var i = 0; i < srcDests.length; ++i) {
+        var dest = Events.objects_.get(srcDests[i]);
+        if ( equals( dst, dest ) ) {
+          // clean up
+          srcDests.splice(i, 1);
+          --i;
+          continue;
+        }
+      }
+    }
+
+    if ( ! srcDests.length ) {
+      src.removeListener(Events.globalListener_);
+    }
+
   },
 
 
@@ -574,11 +693,11 @@ var Events = {
   map: function (srcValue, dstValue, f) {
     if ( ! srcValue || ! dstValue ) return;
 
-    this.recordListener(srcValue, dstValue, function () {
-      var s = f(srcValue.get());
-      var d = dstValue.get();
+    this.recordListener(srcValue, dstValue, function (src, dst) {
+      var s = f(src.get());
+      var d = dst.get();
 
-      if ( ! equals(s, d) ) dstValue.set(s);
+      if ( ! equals(s, d) ) dst.set(s);
     });
   },
 
@@ -604,7 +723,7 @@ var Events = {
 
     var feedback = false;
 
-    var l = function(sv, dv, f) { return function () {
+    var funcBody = function (sv, dv, f) {
       if ( removeFeedback && feedback ) return;
       var s = f(sv.get());
       var d = dv.get();
@@ -614,15 +733,19 @@ var Events = {
         dv.set(s);
         feedback = false;
       }
-    }};
+    };
 
-    var l1 = l(srcValue, dstValue, f);
-    var l2 = l(dstValue, srcValue, fprime);
+    var l1 = function(dstValue, srcValue) {
+      return funcBody(dstValue, srcValue, f);
+    };
+    var l2 = function(dstValue, srcValue) {
+      return funcBody(srcValue, dstValue, fprime);
+    };
 
     this.recordListener(srcValue, dstValue, l1, true);
     this.recordListener(dstValue, srcValue, l2, true);
 
-    l1();
+    l1(srcValue, dstValue);
   },
 
   /** Unlink the values of two models by having them no longer follow each other. **/
