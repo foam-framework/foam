@@ -59,6 +59,11 @@ CLASS({
     {
       name: 'mode',
       defaultValue: 'read-write'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'floatingLabel',
+      defaultValue: false
     }
   ],
 
@@ -154,7 +159,7 @@ CLASS({
         mode:'read-only',
         label: this.label,
         inlineStyle: true,
-        floatingLabel: false,
+        floatingLabel$: this.floatingLabel$
       });
       this.addChild(textView);
       out += '<div class="value">'+textView.toHTML()+'</div>';

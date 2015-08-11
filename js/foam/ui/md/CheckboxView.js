@@ -92,15 +92,6 @@ CLASS({
         cursor: pointer;
       }
 
-      .noselect {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
       .checkbox-data-container {
         border-radius: 2px;
         border: solid 2px #5a5a5a;
