@@ -771,7 +771,6 @@ CLASS({
       }.bind(this));
 
       return '<' + tagName + ' id="' + id + '"></' + tagName + '>';
-    },
-
+    }
   }
 });
