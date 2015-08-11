@@ -91,11 +91,11 @@ var CellParser = {
     for ( var i = 0 ; i < arr.length ; i++ ) prod *= arr[i];
     return prod;
   }; },
-  az:  function(c) { return c.charCodeAt(0) - 'a'.charCodeAt(0); },
-  AZ:  function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
+  az:  function(c) { return c.toUpperCase(); },
+  //AZ:  function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
   row: function(c) { return parseInt(c); },
   number: function(s) { var f = parseFloat(s); return function() { return f; }; },
-  cell: function(a) { return function(cs) { return cs.cell(a[1], a[0]).value; }; },
+  cell: function(a) { return function(cs) { return cs.cell(a[0] + a[1]).value; }; },
   vargs: function(a) {
     return function(cs) {
       var ret = [];
@@ -115,7 +115,7 @@ var CellParser = {
       var ret = [];
       for ( var c = c1 ; c <= c2; c++ )
         for ( var r = r1 ; r <= r2 ; r++ )
-          ret.push(cs.cell(r, c).value);
+          ret.push(cs.cell(c + r).value);
       return ret;
     }
   },
@@ -229,44 +229,28 @@ MODEL({
     function init() {
       this.SUPER();
 
-      // Load a Test Spreadsheet
-      var row = 1;
-      var self = this;
-      function t(s) {
-        try {
-          var r = row++;
-          self.cell(r, 0).formula = ' ' + s;
-          self.cell(r, 1).formula = s;
-        } catch (x) {
-        }
-      }
-
-      this.cell(0,0).formula = '<b>Formulas</b>';
-      this.cell(0,1).formula = '<b>Values</b>';
-
-      t('1');
-      t('10');
-      t('10.12');
-      t('-10.1');
-      t('foobar');
-      t('=add(1,2)');
-      t('=sub(2,1)');
-      t('=mul(2,3)');
-      t('=div(9,3)');
-      t('=mod(8,3)');
-      t('=add(mul(2,3),div(3,2))');
-      t('=A1');
-      t('=add(A1,B1)');
-      t('=sum(1,2,3,4,5)');
-      t('=sum(B6:B10)');
-      t('=prod(B6:B10)');
+window.cells = this;
+      this.load({"A0":"<b>Formulas</b>","B0":"<b>Values</b>","A1":" 1","B1":"1","A2":" 10","B2":"10","A3":" 10.12","B3":"10.12","A4":" -10.1","B4":"-10.1","A5":" foobar","B5":"foobar","A6":" =add(1,2)","B6":"=add(1,2)","A7":" =sub(2,1)","B7":"=sub(2,1)","A8":" =mul(2,3)","B8":"=mul(2,3)","A9":" =div(9,3)","B9":"=div(9,3)","A10":" =mod(8,3)","B10":"=mod(8,3)","A11":" =add(mul(2,3),div(3,2))","B11":"=add(mul(2,3),div(3,2))","A12":" =A1","B12":"=A1","A13":" =add(A1,B1)","B13":"=add(A1,B1)","A14":" =sum(1,2,3,4,5)","B14":"=sum(1,2,3,4,5)","A15":" =sum(B6:B10)","B15":"=sum(B6:B10)","A16":" =prod(B6:B10)","B16":"=prod(B6:B10)"});
     },
-    function cell(r, c) {
+    function load(map) {
+      for ( var key in map ) this.cell(key).formula = String(map[key]);
+    },
+    function save() {
+      var map = {};
+      for ( var key in this.cells ) {
+        var cell = this.cells[key];
+        if ( cell.formula !== '' ) map[key] = cell.formula;
+      }
+      return map;
+    },
+    function cellName(c, r) {
+      return String.fromCharCode(65 + c) + r;
+    },
+    function cell(name) {
       var self = this;
-      var row  = this.cells[r] || ( this.cells[r] = {} );
-      var cell = row[c];
+      var cell = this.cells[name];
       if ( ! cell ) {
-        cell = row[c] = this.Cell.create();
+        cell = this.cells[name] = this.Cell.create();
         cell.formula$.addListener(function(_, _, _, formula) {
           var f = self.parser.parseString(formula);
           self.dynamic(f.bind(null, self), function(v) {
@@ -310,7 +294,7 @@ MODEL({
       <table cellspacing="0" class="cells">
         <tr>
           <th></th>
-          <% debugger; for ( var j = 0 ; j < this.columns ; j++ ) { %>
+          <% for ( var j = 0 ; j < this.columns ; j++ ) { %>
             <th class="colHeader"><%= String.fromCharCode(65 + j) %></th>
           <% } %>
         </tr>
@@ -318,7 +302,7 @@ MODEL({
           <tr>
             <th class="rowHeader"><%= i %></th>
             <% for ( var j = 0 ; j < this.columns ; j++ ) { %>
-              <td class="cell"><%= this.cell(i, j) %></td>
+              <td class="cell"><%= this.cell(this.cellName(j, i)) %></td>
             <% } %>
           </tr>
         <% } %>
