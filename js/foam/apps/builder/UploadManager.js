@@ -15,6 +15,8 @@ CLASS({
 
   requires: [
     'foam.apps.builder.PackageManager',
+    'foam.apps.builder.Upload',
+    'foam.dao.EasyDAO',
   ],
   imports: [
     'identityManager',
@@ -43,6 +45,19 @@ CLASS({
       name: 'packageManager',
       lazyFactory: function() {
         return this.PackageManager.create({}, this.Y);
+      },
+    },
+    {
+      model_: 'foam.core.types.DAOProperty',
+      name: 'uploadCache',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          name: 'uploadCache',
+          model: this.Upload,
+          daoType: 'IDB',
+          cache: true,
+          logging: true,
+        }, this.Y);
       },
     },
   ],
@@ -115,6 +130,11 @@ CLASS({
       }
 
       this.data.config.chromeId = data.id;
+      this.uploadCache.put(this.Upload.create({
+        id: data.id,
+        objectHashCode: this.data.config.hashCode(),
+      }, this.Y));
+
       // TODO(markdittmer): This is currently not going through. Perhaps we
       // need to wait for the updateDetailView to receive an event/update?
       this.data.updateView && this.data.updateView.save && this.data.updateView.save();
