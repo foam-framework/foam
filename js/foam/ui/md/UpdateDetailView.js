@@ -29,9 +29,9 @@ CLASS({
     'dao',
     'stack'
   ],
-  exports: [
-    'as updateView',
-  ],
+//   exports: [
+//     'as updateView',
+//   ],
 
   properties: [
     {
@@ -53,17 +53,14 @@ CLASS({
         this.rawData = v;
         return v.deepClone();
       },
-      postSet: function(_, data) {
+      postSet: function(old, data) {
+        if ( old ) old.removePropertyListener(null, this.dataPropertyChange);
+
         if ( ! data ) return;
         this.originalData = data.deepClone();
         if ( data && data.model_ ) this.model = data.model_;
         var self = this;
-        data.addPropertyListener(null, function(o, topic) {
-          var prop = o.model_.getProperty(topic[1]);
-          if ( prop.transient ) return;
-          self.version++;
-          self.rawData = '';
-        });
+        data.addPropertyListener(null, this.dataPropertyChange);
       }
     },
     {
@@ -132,6 +129,23 @@ CLASS({
         // changed anything.
         this.data = this.rawData;
       }
+    },
+    {
+      name: 'dataPropertyChange',
+      code: function(o, topic) {
+        var prop = o.model_.getProperty(topic[1]);
+        if ( prop.transient ) return;
+        this.version++;
+        this.rawData = '';
+      }
+    }
+  ],
+
+  methods: [
+    function destroy(s) {
+      this.rawData && this.rawData.removeListener(this.rawUpdate);
+      this.data && this.data.removePropertyListener(null, this.dataPropertyChange);
+      this.SUPER(s);
     }
   ],
 

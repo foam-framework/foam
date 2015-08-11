@@ -81,6 +81,13 @@ CLASS({
     }
   ],
 
+  methods: [
+    function destroy(s) {
+      this.SUPER(s);
+      if (this.rawData) this.rawData.removeListener(this.rawUpdate)
+    }
+  ],
+
   actions: [
     {
       name:  'save',

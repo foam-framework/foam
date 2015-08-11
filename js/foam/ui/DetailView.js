@@ -28,7 +28,7 @@ CLASS({
     'foam.ui.FloatFieldView',
     'foam.ui.DAOController'
   ],
-  exports: [ 'propertyViewProperty' ],
+  //exports: [ 'propertyViewProperty' ],
 
   documentation: function() {/*
     When a default view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'foam.ui.DetailView'}
@@ -64,7 +64,7 @@ CLASS({
     {
       name: 'data',
       preSet: function(old,nu) {
-        if ( nu.model_ ) {
+        if ( nu && nu.model_ ) {
           this.model = nu.model_;
         }
         return nu;

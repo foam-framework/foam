@@ -56,7 +56,6 @@ CLASS({
     },
     {
       name: 'iconUrl',
-      defaultValueFn: function() { return this.action.iconUrl; }
     },
     {
       name: 'tooltip',
@@ -73,6 +72,12 @@ CLASS({
   ],
 
   methods: {
+
+    init: funciton() {
+      this.SUPER();
+
+      if ( ! this.iconUrl && this.action ) this.iconUrl = this.action.iconUrl;
+    },
 
     toHTML: function() {
       var superResult = this.SUPER(); // get the destructors done before doing our work

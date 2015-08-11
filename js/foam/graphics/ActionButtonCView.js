@@ -58,7 +58,6 @@ CLASS({
     {
       name: 'iconUrl',
       postSet: function(_, v) { this.image_ && (this.image_.src = v); },
-      defaultValueFn: function() { return this.action.iconUrl; }
     },
     {
       name: 'haloColor',
@@ -134,6 +133,9 @@ CLASS({
     {
       name: 'state_',
       defaultValue: 'default' // pressed, released
+    },
+    {
+      name: 'bindCleanup_'
     }
   ],
 
@@ -147,6 +149,8 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
+
+      if ( ! this.iconUrl && this.action ) this.iconUrl = this.action.iconUrl;
 
       this.X.dynamic(function() {
           this.iconUrl; this.iconWidth; this.iconHeight;
@@ -169,8 +173,10 @@ CLASS({
     bindIsAvailableAndEnabled: function() {
       if ( ! this.action || ! this.data ) return;
 
+      if ( this.bindCleanup_ ) this.bindCleanup_.destroy();
+
       var self = this;
-      this.X.dynamic(
+      this.bindCleanup_ = this.X.dynamic(
           function() {
             self.action.isAvailable.call(self.data, self.action);
             self.action.isEnabled.call(self.data, self.action);
@@ -232,6 +238,12 @@ CLASS({
 
     destroy: function( isParentDestroyed ) {
       this.SUPER(isParentDestroyed);
+
+      if ( this.bindCleanup_ ) {
+        this.bindCleanup_.destroy();
+        this.bindCleanup_ = null;
+      }
+
       if ( this.gestureManager ) {
         this.gestureManager.uninstall(this.tapGesture);
       }

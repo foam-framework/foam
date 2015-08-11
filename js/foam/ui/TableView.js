@@ -48,9 +48,9 @@ CLASS({
 
     ROW_SELECTED: ['escape'],
 
-    CLICK: "click", // event topic
+    CLICK: ["click"], // event topic
 
-    DOUBLE_CLICK: "double-click" // event topic
+    DOUBLE_CLICK: ["double-click"] // event topic
   },
 
   properties: [

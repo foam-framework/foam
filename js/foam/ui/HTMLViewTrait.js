@@ -384,13 +384,15 @@ CLASS({
       opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
-        this.X.dynamic(valueFn, function() {
-          var e = this.X.$(opt_id);
-          if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-          var newValue = valueFn(e.getAttribute(attributeName));
-          if ( newValue == undefined ) e.removeAttribute(attributeName);
-          else e.setAttribute(attributeName, newValue);
-        }.bind(this))
+        this.addDestructor(
+          this.X.dynamic(valueFn, function() {
+            var e = this.X.$(opt_id);
+            if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+            var newValue = valueFn(e.getAttribute(attributeName));
+            if ( newValue == undefined ) e.removeAttribute(attributeName);
+            else e.setAttribute(attributeName, newValue);
+          }.bind(this)).destroy
+        );
       }.bind(this));
     },
 
@@ -760,11 +762,15 @@ CLASS({
       var id = this.nextID();
 
       this.addInitializer(function() {
-        this.X.dynamic(function() {
-          var html = f();
-          var e = this.X.$(id);
-          if ( e ) e.innerHTML = html;
-        }.bind(this));
+        var e = this.X.$(id);
+        if ( e ) {
+          this.addDestructor(
+            this.X.dynamic(function() {
+                var html = f();
+                e.innerHTML = html;
+            }.bind(this)).destroy
+          );
+        }
       }.bind(this));
 
       return '<' + tagName + ' id="' + id + '"></' + tagName + '>';

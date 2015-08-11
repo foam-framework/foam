@@ -126,6 +126,14 @@ var FObject = {
 //    log.sum += time;
 //    log.avg = log.sum / log.count;
 
+//     GLOBAL.setTimeout(function() {
+//       console.log("Nuke X on ", o.name_);
+//       o.X = null;
+//       o.Y = null;
+//       o.Y_ = null;
+//     }, 15000);
+
+
     return o;
   },
 

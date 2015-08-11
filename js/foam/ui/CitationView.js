@@ -23,7 +23,7 @@ CLASS({
 
   requires: [ 'Property' ],
 
-  exports: [ 'propertyViewProperty' ],
+  //exports: [ 'propertyViewProperty' ],
 
   properties: [
     {

@@ -26,7 +26,7 @@ CLASS({
   ],
 
   requires: [ 'Property' ],
-  exports: [ 'propertyViewProperty' ],
+  //exports: [ 'propertyViewProperty' ],
 
   documentation: function() {/*
     When a default view based on $$DOC{ref:'Property'} values is desired, $$DOC{ref:'foam.ui.DetailView'}

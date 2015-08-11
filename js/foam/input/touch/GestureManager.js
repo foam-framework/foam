@@ -95,6 +95,7 @@ CLASS({
     },
 
     install: function(target) {
+      //GLOBAL.setTimeout(function() { this.uninstall(target); }.bind(this), 10000);
       if ( target.containerID ) {
         if ( ! this.targets[target.containerID] )
           this.targets[target.containerID] = [];

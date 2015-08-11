@@ -140,6 +140,12 @@ CLASS({
       this.tosView.open(this.$);
     },
     function closeTOS() { this.tosView.close(); },
+
+    function destroy() {
+      this.tosView.destroy();
+      this.toolbarView.destroy();
+      this.controller.destroy();
+    }
   ],
 
   listeners: [

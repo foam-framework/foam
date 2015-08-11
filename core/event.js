@@ -26,6 +26,26 @@
 
 var __ROOT__ = {};
 
+var __DEBUG__listeners = { active: false,
+  destroyListeners: function() {
+    for (var key in this) {
+      var obj = this[key];
+      if (obj) for (var subKey in obj) {
+        var listener = obj[subKey];
+        if (listener && listener.source && listener.source.unsubscribe ) {
+          try {
+            listener.source.unsubscribe.apply(listener.source, listener);
+          } catch (e) {}
+        }
+      }
+    }
+  }
+};
+// GLOBAL.setTimeout(function() {
+//   console.log("Listener recording active...");
+//   __DEBUG__listeners.active = true;
+// }, 10000);
+
 MODEL({
   name: 'EventService',
 
@@ -226,6 +246,17 @@ MODEL({
       if ( ! this.subs_ ) this.subs_ = {};
       //console.log("Sub: ",this, listener);
 
+      // DEBUG
+      if ( __DEBUG__listeners.active ) {
+        var topicKey = topic ? topic.join('.') : '__null__';
+        console.log("listen",this.$UID, this.name_);
+        if ( ! __DEBUG__listeners[this.$UID+this.name_] ) __DEBUG__listeners[this.$UID+this.name_] = {};
+        __DEBUG__listeners[this.$UID+this.name_][topicKey] = arguments;
+        __DEBUG__listeners[this.$UID+this.name_][topicKey].source = this;
+        var err = new Error();
+        __DEBUG__listeners[this.$UID+this.name_][topicKey].stackTrace = err.stack;
+      }
+
       this.sub_(this.subs_, 0, topic, listener);
     },
 
@@ -233,11 +264,25 @@ MODEL({
     unsubscribe: function (topic, listener) {
       if ( ! this.subs_ ) return;
 
+      if ( __DEBUG__listeners.active && __DEBUG__listeners[this.$UID+this.name_] ) {
+        console.log("unlisten",this.$UID, this.name_);
+        var topicKey = topic ? topic.join('.') : '__null__';
+        delete __DEBUG__listeners[this.$UID+this.name_][topicKey];
+        var i = false;
+        for (var keys in  __DEBUG__listeners[this.$UID+this.name_]) {
+          i = true;
+        }
+        if ( ! i ) { delete __DEBUG__listeners[this.$UID+this.name_]; }
+      }
+
       this.unsub_(this.subs_, 0, topic, listener);
     },
 
     /** Unsubscribe all listeners from this service. **/
     unsubscribeAll: function () {
+      if ( __DEBUG__listeners.active ) {
+        delete __DEBUG__listeners[this.$UID+this.name_];
+      }
       this.sub_ = {};
     },
 
