@@ -51,46 +51,16 @@ CLASS({
     function exportApp(data) {
       this.data = data;
       aseq(
-          // NOTE:
-          // We currently currently use the default email from OAuth, so
-          // withEmail is not necessary. Uncomment code below to delegate email
-          // lookup to identity manager.
-          // apar(
-          //     this.identityManager.withEmail.bind(this.identityManager),
-          //     aseq(
-                  this.sourceManager.aloadSources.bind(this.sourceManager, data.config),
-                  this.packageManager.prepareSources.bind(this.packageManager)
-          //     )
-          // )
-          ,
+          this.sourceManager.aloadSources.bind(this.sourceManager, data.config),
+          this.packageManager.prepareSources.bind(this.packageManager),
           apar(
               this.identityManager.withOAuth.bind(this.identityManager),
               this.prepareUpload.bind(this)),
           this.sendUpload.bind(this))
       (this.finalizeUpload.bind(this));
     },
-    function prepareUpload(ret,
-                           // NOTE:
-                           // We currently currently use the default email from
-                           // OAuth, so withEmail is not necessary. Uncomment
-                           // email parameter this changes.
-                           // email,
-                           archive) {
+    function prepareUpload(ret, archive) {
       var indicators = argsToArray(arguments).slice(2);
-
-      // NOTE:
-      // We currently currently use the default email from OAuth, so withEmail
-      // is not necessary. Uncomment code below if this changes.
-      // if ( ! email ) {
-      //   this.data.message = 'Oop! Looks like something went wrong. Did you grant the application the permission it needs to upload your app?';
-      //   this.data.state = 'FAILED';
-      //   this.metricsDAO.put(this.Error.create({
-      //     name: 'Action:upload:fail - ' +
-      //         (this.data.config.model_.id || this.data.config.name_) +
-      //         ' - Access denied',
-      //   }));
-      //   return;
-      // }
 
       if ( ! archive ) {
         this.data.message = 'Oop! Looks like something went wrong packaging your app. Make sure all required fields are filled out.';
@@ -105,10 +75,6 @@ CLASS({
 
       var data = new FormData();
       data.append('uploadType', 'media');
-
-      // We currently currently use the default email from OAuth, so withEmail
-      // is not necessary. Uncomment code below to use injected email instead.
-      // if ( ! this.data.config.chromeId ) data.append('publisherEmail', email);
 
       data.append('fileupload', archive.toBlob());
 
