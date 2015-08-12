@@ -14,20 +14,17 @@ CLASS({
   name: 'AppConfig',
   extendsModel: 'foam.apps.builder.AppConfig',
 
+  traits: [ 'foam.apps.builder.AppConfigModelOwnerTrait' ],
+
   requires: [
     'BooleanProperty',
     'StringProperty',
     'IntProperty',
     'FloatProperty',
     'DateProperty',
-    'Model',
     'foam.ui.md.DetailView',
     'foam.ui.TableView',
     'foam.apps.builder.questionnaire.Questionnaire',
-  ],
-
-  imports: [
-    'modelDAO',
   ],
 
   constants: {
@@ -40,20 +37,12 @@ CLASS({
 
   properties: [
     {
-      name: 'appName',
-      postSet: function(old,nu) {
-        if ( nu && this.defaultModel_ ) {
-          this.model.name = capitalize(camelize(this.appName))+'Questionnaire';
-        }
-      },
-      defaultValue: 'New App'
+      name: 'baseModelId',
+      defaultValue: 'foam.apps.builder.questionnaire.Questionnaire',
     },
     {
-      model_: 'BooleanProperty',
-      name: 'defaultModel_',
-      hidden: true,
-      transient: true,
-      documentation: 'Indicates that .model is still not saved, and the name can be changed.',
+      name: 'appName',
+      defaultValue: 'New Questionnaire App'
     },
     {
       name: 'defaultView',
@@ -62,21 +51,7 @@ CLASS({
     {
       name: 'model',
       label: 'Questions',
-      view: 'foam.ui.md.DetailView',
-      lazyFactory: function() {
-        this.defaultModel_ = true;
-        return this.Model.create({
-          extendsModel: 'foam.apps.builder.questionnaire.Questionnaire',
-          name: capitalize(camelize(this.appName))+'Questionnaire',
-        });
-      },
-      preSet: function(old,nu) {
-        if ( ! nu ) return old;
-        if ( old ) this.defaultModel_ = false; // it's been set at least once
-        return nu;
-      },
-   },
-
+    }
   ],
 
   templates: [
