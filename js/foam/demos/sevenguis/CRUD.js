@@ -19,7 +19,11 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Person',
   tableProperties: [ 'surname', 'name' ],
-  properties: [ { name: 'id', hidden: true }, 'name', 'surname' ]
+  properties: [
+    { name: 'id', hidden: true },
+    { name: 'name',    view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
+    { name: 'surname', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } }
+  ]
 });
 
 
