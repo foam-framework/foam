@@ -26,6 +26,10 @@ CLASS({
     'foam.apps.builder.questionnaire.Questionnaire',
   ],
 
+  imports: [
+    'modelDAO',
+  ],
+
   constants: {
     EXISTING_SOURCES: [
       'foam.js',
@@ -55,7 +59,20 @@ CLASS({
           name: this.appName+'Questionnaire',
         });
       },
-    },
+//       postSet: function(old, nu) {
+//         // first time loading, check the modelDAO for a new copy of the model
+//         if ( ! old && this.modelDAO ) {
+//           this.modelDAO.where(EQ(Model.ID, nu.id)).select({
+//             put: function(m) {
+//               this.model = m;
+//             }.bind(this),
+//             error: function() {
+//               console.log("Model ", nu.id," in AppConfig but not found in modelDAO");
+//             }
+//           });
+//         }
+//       },
+//    },
 
   ],
 

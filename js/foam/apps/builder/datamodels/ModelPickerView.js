@@ -25,7 +25,8 @@ CLASS({
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'modelDAO',
   ],
 
   exports: [
@@ -38,6 +39,9 @@ CLASS({
       this.data = o.deepClone();
       this.data.instance_.prototype_ = undefined; // reset prototype so changes will be rebuilt
       sink && sink.put(this.data);
+
+      // also save to DataModels store. TODO(jacksonic): load changes to model when stored copy changes? (listen to modelDAO?)
+      this.modelDAO && this.modelDAO.put(this.data);
     },
   ],
 
@@ -59,13 +63,28 @@ CLASS({
     },
     {
       name: 'className',
-      defaultValue: 'md-model-picker-view'
+      defaultValue: 'md-model-picker-view',
     },
   ],
 
   actions: [
     {
       name: 'pick',
+      label: 'Edit Model',
+      width: 100,
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAZ0lEQVR4AdXOrQ2AMBRF4bMc/zOUOSrYoYI5cQQwpAieQDW3qQBO7Xebxx8bWAk5/CASmRHzRHtB+d0Bkw0W5ZiT0SYbFcl6u/2eeJHbxIHOhWO6Er6/y9syXpMul5PLefAGKZ1/rwtTimwbWLpiCgAAAABJRU5ErkJggg==',
+      action: function() {
+        // we export ourself as the dao for the editor, so when it puts the result back
+        // we react in our put() method.
+        this.stack.pushView(this.UpdateDetailView.create({
+          data$: this.data$,
+          innerView: 'foam.meta.types.ModelEditView',
+          liveEdit: true,
+        }));
+      }
+    },
+    {
+      name: 'edit',
       label: 'Edit Model',
       width: 100,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAZ0lEQVR4AdXOrQ2AMBRF4bMc/zOUOSrYoYI5cQQwpAieQDW3qQBO7Xebxx8bWAk5/CASmRHzRHtB+d0Bkw0W5ZiT0SYbFcl6u/2eeJHbxIHOhWO6Er6/y9syXpMul5PLefAGKZ1/rwtTimwbWLpiCgAAAABJRU5ErkJggg==',
@@ -100,6 +119,7 @@ CLASS({
             $$modelLabel{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false, inlineStyle: true }
           </div>
           $$pick{ model_: 'foam.ui.md.FlatButton' }
+          $$edit{ model_: 'foam.ui.md.FlatButton' }
         </div>
       </div>
     */},
