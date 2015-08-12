@@ -97,7 +97,8 @@ CLASS({
           descIcon: '<i class="material-icons">keyboard_arrow_down</i>',
           model$: this.model$,
           data$: this.data$,
-          properties$: this.properties$
+          properties$: this.properties$,
+          useInnerContainer: true
         });
       }
     },
