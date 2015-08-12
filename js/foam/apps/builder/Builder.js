@@ -26,6 +26,7 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.dao.SeqNoDAO',
+    'foam.dao.ContextualizingDAO',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.metrics.Metric',
@@ -34,6 +35,7 @@ CLASS({
     'foam.ui.md.DetailView',
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.TextFieldView',
+    'Model',
   ],
   exports: [
     'touchManager',
@@ -42,6 +44,7 @@ CLASS({
     'menuSelection$',
     'menuDAO$',
     'exportManager$',
+    'modelDAO',
   ],
 
   properties: [
@@ -91,10 +94,12 @@ CLASS({
             model: this.QuestionnaireAppConfig,
             dao:
             this.SeqNoDAO.create({ delegate:
-              this.IDBDAO.create({
-                model: this.QuestionnaireAppConfig,
-                name: 'QuestionnaireAppConfigs',
-                useSimpleSerialization: false,
+              this.ContextualizingDAO.create({ delegate:
+                this.IDBDAO.create({
+                  model: this.QuestionnaireAppConfig,
+                  name: 'QuestionnaireAppConfigs',
+                  useSimpleSerialization: false,
+                })
               })
             }),
             detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
@@ -104,6 +109,19 @@ CLASS({
         dao.model = this.BrowserConfig;
         return dao;
       }
+    },
+    {
+      name: 'modelDAO',
+      help: 'The store of models for all apps.',
+      lazyFactory: function() {
+        return this.ContextualizingDAO.create({
+            delegate: this.IDBDAO.create({
+              model: this.Model,
+              name: 'DataModels',
+              useSimpleSerialization: false,
+          }, this.Y)
+        }, this.Y);
+      },
     },
     {
       type: 'foam.apps.builder.BrowserConfig',
