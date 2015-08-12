@@ -41,9 +41,6 @@ CLASS({
   properties: [
     {
       name: 'appName',
-      postSet: function(old,nu) {
-        this.model.name = nu+'Questionnaire';
-      }
     },
     {
       name: 'defaultView',
@@ -53,11 +50,15 @@ CLASS({
       name: 'model',
       label: 'Questions',
       view: 'foam.ui.md.DetailView',
-      factory: function() {
+      lazyFactory: function() {
         return this.Model.create({
           extendsModel: 'foam.apps.builder.questionnaire.Questionnaire',
           name: this.appName+'Questionnaire',
         });
+      },
+      preSet: function(old,nu) {
+        if ( ! nu ) return old;
+        return nu;
       },
 //       postSet: function(old, nu) {
 //         // first time loading, check the modelDAO for a new copy of the model
@@ -72,7 +73,7 @@ CLASS({
 //           });
 //         }
 //       },
-//    },
+   },
 
   ],
 
