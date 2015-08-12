@@ -152,6 +152,7 @@ CLASS({
       this.$input && this.$input.blur();
     },
     destroy: function(s) {
+      this.SUPER(s);
       Events.unlink(this.softValue, this.softData$);
       if ( this.updateMode === this.EACH_KEYSTROKE ) {
         Events.unlink(this.data$, this.softData$);
@@ -159,6 +160,7 @@ CLASS({
         Events.unfollow(this.data$, this.softData$);
       }
       this.softValue = null;
+      this.softData = null;
     },
   },
   templates: [
