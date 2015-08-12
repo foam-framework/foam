@@ -41,6 +41,19 @@ CLASS({
   properties: [
     {
       name: 'appName',
+      postSet: function(old,nu) {
+        if ( nu && this.defaultModel_ ) {
+          this.model.name = capitalize(camelize(this.appName))+'Questionnaire';
+        }
+      },
+      defaultValue: 'New App'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'defaultModel_',
+      hidden: true,
+      transient: true,
+      documentation: 'Indicates that .model is still not saved, and the name can be changed.',
     },
     {
       name: 'defaultView',
@@ -51,28 +64,17 @@ CLASS({
       label: 'Questions',
       view: 'foam.ui.md.DetailView',
       lazyFactory: function() {
+        this.defaultModel_ = true;
         return this.Model.create({
           extendsModel: 'foam.apps.builder.questionnaire.Questionnaire',
-          name: this.appName+'Questionnaire',
+          name: capitalize(camelize(this.appName))+'Questionnaire',
         });
       },
       preSet: function(old,nu) {
         if ( ! nu ) return old;
+        if ( old ) this.defaultModel_ = false; // it's been set at least once
         return nu;
       },
-//       postSet: function(old, nu) {
-//         // first time loading, check the modelDAO for a new copy of the model
-//         if ( ! old && this.modelDAO ) {
-//           this.modelDAO.where(EQ(Model.ID, nu.id)).select({
-//             put: function(m) {
-//               this.model = m;
-//             }.bind(this),
-//             error: function() {
-//               console.log("Model ", nu.id," in AppConfig but not found in modelDAO");
-//             }
-//           });
-//         }
-//       },
    },
 
   ],

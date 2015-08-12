@@ -41,7 +41,7 @@ CLASS({
       this.data.instance_.prototype_ = undefined; // reset prototype so changes will be rebuilt
       sink && sink.put(this.data);
 
-      // also save to DataModels store. TODO(jacksonic): load changes to model when stored copy changes? (listen to modelDAO?)
+      // also save to DataModels store. Setting modelName will cause a load from the store.
       this.modelDAO && this.modelDAO.put(this.data);
     },
   ],
@@ -52,7 +52,9 @@ CLASS({
       name: 'baseModel',
       help: 'The list is filtered to only include models that extend baseModel.',
       postSet: function() {
-        this.model_.MODEL_DAO.onDAOUpdate.call(this);
+        if ( this.modelDAO ) {
+          this.filteredDAO = this.modelDAO.where(EQ(Model.EXTENDS_MODEL, this.baseModel.id));
+        }
       }
     },
     {
@@ -98,25 +100,22 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'modelDAO',
-      onDAOUpdate: function() {
-        if ( ! this.baseModel ) return;
-        var modelList = [];
-        this.modelDAO.where(EQ(Model.EXTENDS_MODEL, this.baseModel.id)).select({
-          put: function(m) {
-            modelList.push([m.id, m.id]);
-          }.bind(this),
-          eof: function() {
-            // no results? Our data must be a new model, not saved yet.
-            if ( ! modelList.length ) {
-              this.modelList.push([this.data.id, this.data.id]);
-            } else {
-              this.modelList = modelList;
-            }
-          }.bind(this)
-        });
-        this.modelName = this.modelName;
+      postSet: function(old,nu) {
+        if ( this.baseModel ) {
+          this.filteredDAO = this.modelDAO.where(EQ(Model.EXTENDS_MODEL, this.baseModel.id));
+        }
+      },
+    },
+    {
+      name: 'filteredDAO'
+    },
+    {
+      name: 'modelToChoice',
+      defaultValue: function(obj) {
+        return [obj.id, obj.id];
       }
-    }
+    },
+
   ],
 
   actions: [
@@ -149,7 +148,7 @@ CLASS({
           liveEdit: true,
         }));
       }
-    }
+    },
   ],
 
   listeners: [
@@ -170,8 +169,17 @@ CLASS({
           <div class="md-model-picker-view-edit md-style-trait-standard">
             $$modelLabel{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false, inlineStyle: true }
           </div>
-          $$modelName{ model_: 'foam.ui.md.PopupChoiceView', choices$: this.modelList$, width: 200 }
-          $$edit{ model_: 'foam.ui.md.FlatButton' }
+          <div class="md-model-picker-view-combo">
+            $$modelName{
+              model_: 'foam.ui.md.PopupChoiceView',
+              objToChoice: this.modelToChoice,
+              dao: this.filteredDAO,
+              autoSetData: false,
+            }
+          </div>
+          <div class="md-model-picker-view-combo">
+            $$edit{ model_: 'foam.ui.md.FlatButton' }
+          </div>
         </div>
       </div>
     */},
@@ -189,6 +197,9 @@ CLASS({
       .md-model-picker-view-edit {
         flex-grow: 0;
         padding-right: 24px;
+      }
+      .md-model-picker-view-combo {
+        min-width: 200px;
       }
     */},
   ],
