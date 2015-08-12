@@ -178,8 +178,16 @@ CLASS({
       defaultValue: false
     },
     {
+      name: 'useInnerContainer',
+      documentation: 'Designed to be overridden by the MD TableView. Changes ' +
+          'the $container defaultValueFn below to use this.$ instead of its parent.',
+      defaultValue: false
+    },
+    {
       name: '$container',
-      defaultValueFn: function() { return this.$ && this.$.parentElement.parentElement; },
+      defaultValueFn: function() {
+        return !this.$ || this.useInnerContainer ? this.$ : this.$.parentElement.parentElement;
+      },
       postSet: function(old, nu) {
         if ( old === nu ) return;
         this.onResize();
@@ -348,6 +356,7 @@ CLASS({
             sb.value++;
           }
           this.touchPrev = y;
+          this.onResize();
         }
       }
     }
