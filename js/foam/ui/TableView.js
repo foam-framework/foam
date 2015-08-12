@@ -258,7 +258,7 @@ CLASS({
           var rowHeight = row.offsetHeight;
           var rows = Math.floor((containerHeight - headHeight) / rowHeight);
           this.rows = rows;
-          this.scrollbar.extent = rows - 1;
+          this.scrollbar.extent = rows;
           this.scrollbar.height = containerHeight - headHeight - 10;
           this.scrollbar.paint();
         }
@@ -704,7 +704,7 @@ CLASS({
           <% this.tableToHTML(out); %>
         </span>
         <%= this.scrollEnabled ?
-            ('<span style="width:19px;flex:none;overflow:hidden;padding-top:48px;" class="scrollbar">' +
+            ('<span style="width:20px;flex:none;overflow:hidden;padding-top:48px;" class="scrollbar">' +
             this.scrollbar.toView_().toHTML() + '</span>') : '' %>
       </div>
     */},
