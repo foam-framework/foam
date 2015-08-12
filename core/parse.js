@@ -468,10 +468,10 @@ var DEBUG_PARSE = false;
 
 var grammar = {
 
-  parseString: function(str) {
+  parseString: function(str, opt_start) {
     var ps = this.stringPS;
     ps.str = str;
-    var res = this.parse(this.START, ps);
+    var res = this.parse(opt_start || this.START, ps);
 
     return res && res.value;
   },

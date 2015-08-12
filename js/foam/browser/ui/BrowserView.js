@@ -43,8 +43,10 @@ CLASS({
       name: 'InnerBrowserView',
       extendsModel: 'foam.ui.DetailView',
       requires: [
+        'foam.graphics.ActionButtonCView',
         'foam.ui.PopupChoiceView',
         'foam.ui.SpinnerView',
+        'foam.ui.md.Halo',
       ],
       imports: [
         'stack',
@@ -373,6 +375,14 @@ CLASS({
             </div>
             <% if (this.data.showAdd) { %>
               <div class="floating-action">
+                <% var createButtonX = this.Y.sub();
+                   createButtonX.registerModel(this.ActionButtonCView.xbind({
+                     haloColor: 'black',
+                   }), 'foam.ui.ActionButton');
+                   createButtonX.registerModel(this.Halo.xbind({
+                     easeInTime: 0,
+                     easeOutTime: 0,
+                   }), 'foam.ui.md.Halo'); %>
                 $$createButton{
                   className: 'createButton',
                   color: 'white',
@@ -381,7 +391,8 @@ CLASS({
                   width: 44,
                   height: 44,
                   radius: 22,
-                  background: '#e51c23'
+                  background: '#e51c23',
+                  X: createButtonX,
                 }
               </div>
             <% } %>
@@ -417,9 +428,9 @@ CLASS({
       this.SUPER(args);
       this.Y.registerModel(this.ActionButtonCView.xbind({
         height: 24,
-        width: 24
+        width: 24,
+        haloColor: 'white'
       }), 'foam.ui.ActionButton');
-
       this.SharedStyles.create();
     },
     function toHTML() {

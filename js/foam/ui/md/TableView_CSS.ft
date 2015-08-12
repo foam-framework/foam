@@ -139,8 +139,3 @@ i.material-icons.actionLabel {
   padding-left: 24px;
   padding-right: 24px;
 }
-/* TODO(markdittmer): Currently hiding broken scrollbar view */
-md-table .scrollbar,
-md-table canvas {
-  display: none;
-}

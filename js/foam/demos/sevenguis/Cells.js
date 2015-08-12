@@ -28,11 +28,7 @@ MODEL({
 var CellParser = {
   __proto__: grammar,
 
-  START: alt(
-    sym('number'),
-    sym('formula'),
-    sym('string')
-  ),
+  START: alt(sym('number'), sym('formula'), sym('string')),
 
   formula: seq1(1, '=', sym('expr')),
 
@@ -60,8 +56,6 @@ var CellParser = {
 
   range: seq(sym('col'), sym('row'), ':', sym('col'), sym('row')),
 
-  digit: range('0', '9'),
-
   number: str(seq(
     optional('-'),
     str(alt(
@@ -71,6 +65,8 @@ var CellParser = {
   cell: seq(sym('col'), sym('row')),
 
   col: alt(sym('az'), sym('AZ')),
+
+  digit: range('0', '9'),
 
   az: range('a', 'z'),
 
@@ -95,11 +91,11 @@ var CellParser = {
     for ( var i = 0 ; i < arr.length ; i++ ) prod *= arr[i];
     return prod;
   }; },
-  az:  function(c) { return c.charCodeAt(0) - 'a'.charCodeAt(0); },
-  AZ:  function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
+  az:  function(c) { return c.toUpperCase(); },
+  //AZ:  function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
   row: function(c) { return parseInt(c); },
   number: function(s) { var f = parseFloat(s); return function() { return f; }; },
-  cell: function(a) { return function(cs) { return cs.cell(a[1], a[0]).value; }; },
+  cell: function(a) { return function(cs) { return cs.cell(a[0] + a[1]).value; }; },
   vargs: function(a) {
     return function(cs) {
       var ret = [];
@@ -119,7 +115,7 @@ var CellParser = {
       var ret = [];
       for ( var c = c1 ; c <= c2; c++ )
         for ( var r = r1 ; r <= r2 ; r++ )
-          ret.push(cs.cell(r, c).value);
+          ret.push(cs.cell(c + r).value);
       return ret;
     }
   },
@@ -133,6 +129,7 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Cell',
   extendsModel: 'foam.ui.View',
+  requires: [ 'foam.ui.TextFieldView' ],
   imports: [ 'cells' ],
   properties: [
     {
@@ -210,8 +207,15 @@ MODEL({
   requires: [ 'foam.demos.sevenguis.Cell' ],
   imports:  [ 'dynamic' ],
   exports:  [ 'as cells' ],
-  constants: { ROWS: 99 },
   properties: [
+    {
+      name: 'rows',
+      defaultValue: 99
+    },
+    {
+      name: 'columns',
+      defaultValue: 26
+    },
     {
       name: 'cells',
       factory: function() { return {}; }
@@ -225,44 +229,31 @@ MODEL({
     function init() {
       this.SUPER();
 
-      // Load a Test Spreadsheet
-      var row = 1;
-      var self = this;
-      function t(s) {
-        try {
-          var r = row++;
-          self.cell(r, 0).formula = ' ' + s;
-          self.cell(r, 1).formula = s;
-        } catch (x) {
-        }
-      }
+window.cells = this;
 
-      this.cell(0,0).formula = '<b>Formulas</b>';
-      this.cell(0,1).formula = '<b>Values</b>';
+this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</u></b>","D0":"<b><u>Cost</u></b>","A1":"Muck Rake","B1":"43","C1":"12.95","D1":"=mul(B1,C1)","A2":"Buzz Cut","B2":"15","C2":"6.76","D2":"=mul(B2,C2)","A3":"Toe Toner","B3":"250","C3":"49.95","D3":"=mul(B3,C3)","A4":"Eye Snuff","B4":"2","C4":"4.95","D4":"=mul(B4,C4)","C5":"Subtoal","D5":"=sum(D1:D4)","B6":"9.75","C6":"Tax","D6":"=div(mul(B6,D5),100)","C7":"<b>Total</b>","D7":"=add(D5,D6)"});
 
-      t('1');
-      t('10');
-      t('10.12');
-      t('-10.1');
-      t('foobar');
-      t('=add(1,2)');
-      t('=sub(2,1)');
-      t('=mul(2,3)');
-      t('=div(9,3)');
-      t('=mod(8,3)');
-      t('=add(mul(2,3),div(3,2))');
-      t('=A1');
-      t('=add(A1,B1)');
-      t('=sum(1,2,3,4,5)');
-      t('=sum(B6:B10)');
-      t('=prod(B6:B10)');
+//      this.load({"A0":"<b>Formulas</b>","B0":"<b>Values</b>","A1":" 1","B1":"1","A2":" 10","B2":"10","A3":" 10.12","B3":"10.12","A4":" -10.1","B4":"-10.1","A5":" foobar","B5":"foobar","A6":" =add(1,2)","B6":"=add(1,2)","A7":" =sub(2,1)","B7":"=sub(2,1)","A8":" =mul(2,3)","B8":"=mul(2,3)","A9":" =div(9,3)","B9":"=div(9,3)","A10":" =mod(8,3)","B10":"=mod(8,3)","A11":" =add(mul(2,3),div(3,2))","B11":"=add(mul(2,3),div(3,2))","A12":" =A1","B12":"=A1","A13":" =add(A1,B1)","B13":"=add(A1,B1)","A14":" =sum(1,2,3,4,5)","B14":"=sum(1,2,3,4,5)","A15":" =sum(B6:B10)","B15":"=sum(B6:B10)","A16":" =prod(B6:B10)","B16":"=prod(B6:B10)"});
     },
-    function cell(r, c) {
+    function load(map) {
+      for ( var key in map ) this.cell(key).formula = String(map[key]);
+    },
+    function save() {
+      var map = {};
+      for ( var key in this.cells ) {
+        var cell = this.cells[key];
+        if ( cell.formula !== '' ) map[key] = cell.formula;
+      }
+      return map;
+    },
+    function cellName(c, r) {
+      return String.fromCharCode(65 + c) + r;
+    },
+    function cell(name) {
       var self = this;
-      var row  = this.cells[r] || ( this.cells[r] = {} );
-      var cell = row[c];
+      var cell = this.cells[name];
       if ( ! cell ) {
-        cell = row[c] = this.Cell.create();
+        cell = this.cells[name] = this.Cell.create();
         cell.formula$.addListener(function(_, _, _, formula) {
           var f = self.parser.parseString(formula);
           self.dynamic(f.bind(null, self), function(v) {
@@ -306,15 +297,15 @@ MODEL({
       <table cellspacing="0" class="cells">
         <tr>
           <th></th>
-          <% for ( var i = 65 ; i <= 90 ; i++ ) { %>
-            <th class="colHeader"><%= String.fromCharCode(i) %></th>
+          <% for ( var j = 0 ; j < this.columns ; j++ ) { %>
+            <th class="colHeader"><%= String.fromCharCode(65 + j) %></th>
           <% } %>
         </tr>
-        <% for ( i = 0 ; i <= this.ROWS ; i++ ) { %>
+        <% for ( i = 0 ; i <= this.rows ; i++ ) { %>
           <tr>
             <th class="rowHeader"><%= i %></th>
-            <% for ( var j = 0 ; j <= 25 ; j++ ) { %>
-              <td class="cell"><%= this.cell(i, j) %></td>
+            <% for ( var j = 0 ; j < this.columns ; j++ ) { %>
+              <td class="cell"><%= this.cell(this.cellName(j, i)) %></td>
             <% } %>
           </tr>
         <% } %>

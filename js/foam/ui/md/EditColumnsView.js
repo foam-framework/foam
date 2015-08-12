@@ -14,6 +14,9 @@ CLASS({
   name: 'EditColumnsView',
   extendsModel: 'foam.ui.SimpleView',
 
+  requires: [
+    'foam.ui.md.CheckboxView'
+  ],
   imports: [
     'document',
     'window'
@@ -34,12 +37,7 @@ CLASS({
     },
     {
       model_: 'StringArrayProperty',
-      name: 'properties',
-      postSet: function() {
-        if ( ! this.$ ) return;
-        this.$.innerHTML = this.toInnerHTML();
-        this.initInnerHTML();
-      }
+      name: 'properties'
     },
     {
       model_: 'ArrayProperty',
@@ -122,21 +120,14 @@ CLASS({
     },
     function getFullHeight() {
       if ( ! this.$ ) return 0;
-      var children = this.$.children;
-      var height = 0;
-      for ( var i = 0; i < children.length; ++i ) {
-        height += children[i].offsetHeight;
-      }
-      return height;
+      var last = this.$.lastElementChild;
+      var margin = parseInt(this.window.getComputedStyle(last)['margin-bottom']);
+      margin = Number.isNaN(margin) ? 0 : margin;
+      return Math.min(last.offsetTop + last.offsetHeight + margin,
+          window.document.body.clientHeight - this.$.getBoundingClientRect().top);
     },
-    function onClick(prop, e) {
-      e.stopPropagation();
-      if ( this.isPropEnabled(prop) ) {
-        // Property being removed.
-        this.properties = this.properties.filter(function(propName) {
-          return propName !== prop.name;
-        });
-      } else {
+    function onPropDataChange(prop, _, __, ___, isEnabled) {
+      if ( isEnabled ) {
         // Property being added. Properties list is now list of every property
         // name where:
         // (1) Property is the one being enabled,
@@ -149,6 +140,11 @@ CLASS({
         }.bind(this)).map(function(p) {
           return p.name;
         });
+      } else {
+        // Property being removed.
+        this.properties = this.properties.filter(function(propName) {
+          return propName !== prop.name;
+        });
       }
     },
     function initHTML() {
@@ -156,6 +152,7 @@ CLASS({
       if ( this.$ ) {
         this.$.addEventListener('transitionend', this.onTransitionEnd);
         this.$.addEventListener('mouseleave', this.onMouseOut);
+        this.$.addEventListener('click', this.onClick);
       }
     }
   ],
@@ -197,6 +194,13 @@ CLASS({
         if ( e.target !== this.$ ) return;
         this.close();
       }
+    },
+    {
+      name: 'onClick',
+      code: function(e) {
+        // Prevent clicks in the popup from closing the popup.
+        e.stopPropagation();
+      }
     }
   ],
 
@@ -210,13 +214,17 @@ CLASS({
     function toInnerHTML() {/*
       <% if ( this.model ) {
            for ( var i = 0; i < this.availableProperties.length; ++i ) {
-             var prop = this.availableProperties[i]; %>
-             <item id="<%= this.on('click', this.onClick.bind(this, prop)) %>"
-                   class="<%= this.getPropClass(prop) %>">
-               {{prop.label}}
-             </item>
-        <% } %>
-      <% } %>
+             var prop = this.availableProperties[i];
+             var checkbox = this.CheckboxView.create({
+               checkboxPosition: 'left',
+               label: prop.label,
+               data: this.isPropEnabled(prop)
+             }, this.Y);
+             checkbox.data$.addListener(this.onPropDataChange.bind(this, prop));
+
+             out(checkbox);
+           }
+         } %>
     */},
     function CSS() {/*
       popup-container {
@@ -229,7 +237,8 @@ CLASS({
         display: block;
         font-size: 13px;
         font-weight: 400;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: scroll;
         position: absolute;
         right: 3px;
         top: 4px;

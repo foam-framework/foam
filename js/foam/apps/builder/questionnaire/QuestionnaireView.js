@@ -15,14 +15,15 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
+    'ViewFactoryProperty',
     'foam.apps.builder.AppToolbarView',
-    'foam.apps.builder.Timeout',
     'foam.apps.builder.TOSData',
     'foam.apps.builder.TOSView',
-    'foam.apps.builder.questionnaire.QuestionnaireController',
+    'foam.apps.builder.Timeout',
     'foam.apps.builder.questionnaire.AppConfig',
+    'foam.apps.builder.questionnaire.QuestionnaireController',
+    'foam.graphics.ActionButtonCView',
     'foam.ui.md.PopupView',
-    'ViewFactoryProperty',
   ],
   exports: [
     'as kiosk',
@@ -122,6 +123,13 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.Y.registerModel(this.ActionButtonCView.xbind({
+        height: 24,
+        width: 24,
+        haloColor: 'black'
+      }), 'foam.ui.ActionButton');
+    },
     function initHTML() {
       this.SUPER();
       if ( this.data.termsOfService )

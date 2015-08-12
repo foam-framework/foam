@@ -45,12 +45,13 @@ CLASS({
         return out;
       },
       load:          function() { console.error('Must output before loading.'); },
-      unload:        function() { console.error('Must output and load before unloading.');},
+      unload:        function() { console.error('Must output and load before unloading.'); },
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
+      onAddChildren: function() { },
       toString:      function() { return 'INITIAL'; }
     },
     OUTPUT: {
@@ -76,6 +77,13 @@ CLASS({
       onSetAttr:     function(key, value) {
         this.id$el[key] = value;
       },
+      onAddChildren: function() {
+        var out = this.createOutputStream();
+        for ( var i = 0 ; i < arguments.length ; i++ ) {
+          out(arguments[i]);
+        }
+        this.id$el.insertAdjacentHTML('beforeend', out);
+      },
       toString:      function() { return 'OUTPUT'; }
     },
     LOADED: {
@@ -95,6 +103,13 @@ CLASS({
       onSetAttr:     function(key, value) {
         this.id$el[key] = value;
       },
+      onAddChildren: function() {
+        var out = this.createOutputStream();
+        for ( var i = 0 ; i < arguments.length ; i++ ) {
+          out(arguments[i]);
+        }
+        this.id$el.insertAdjacentHTML('beforeend', out);
+      },
       toString:      function() { return 'LOADED'; }
     },
     UNLOADED: {
@@ -108,17 +123,19 @@ CLASS({
       onAddListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
+      onAddChildren: function() { },
       toString:      function() { return 'UNLOADED'; }
     },
     DESTROYED: { // Needed?
-      output:        function() { },
-      load:          function() { },
-      unload:        function() { },
+      output:        function() { throw 'Attempt to output() destroyed Element.'; },
+      load:          function() { throw 'Attempt to load() destroyed Element.'; },
+      unload:        function() { throw 'Attempt to unload() destroyed Element.';},
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
+      onAddChildren: function() { },
       toString:      function() { return 'DESTROYED'; }
     },
 
@@ -227,6 +244,10 @@ CLASS({
       this.state.onSetAttr.call(this, key, value);
     },
 
+    function onAddChildren(/* vargs */) {
+      this.state.onAddChildren.apply(this, arguments);
+    },
+
     function onAddListener(topic, listener) {
       this.state.onAddListener.call(this, topic, listener);
     },
@@ -321,6 +342,7 @@ CLASS({
 
     function c() {
       this.childNodes.push.apply(this.childNodes, arguments);
+      this.onAddChildren.apply(this, arguments);
       return this;
     },
 
@@ -385,5 +407,5 @@ function E(opt_nodeName) {
 }
 
 /*
-  TODO: compile, deepClone, pass data, don't clone if literal
+  TODO: focus?, compile, deepClone, pass data, don't clone if literal
 */

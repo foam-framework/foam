@@ -73,17 +73,18 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      model_: 'IntProperty',
       name: 'rotation',
       label:  'Rotation (Chrome OS only)',
       help: 'Measured in degrees.',
       view: {
         factory_: 'foam.ui.md.PopupChoiceView',
+        floatingLabel: true,
         choices: [
-          ['0', '0'],
-          ['90', '90'],
-          ['180', '180'],
-          ['270', '270']
+          [0, '0'],
+          [90, '90'],
+          [180, '180'],
+          [270, '270']
         ]
       }
     },

@@ -2,6 +2,7 @@ md-table {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  max-width: 100%;
 }
 
 md-table table-caption {

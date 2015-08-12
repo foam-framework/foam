@@ -70,7 +70,7 @@ CLASS({
         return this.Halo.create({
           alpha: 0,
           r: 10,
-          color: this.haloColor,
+          color$: this.haloColor$,
           isEnabled: function() {
             return this.action.isEnabled.call(this.data, this.action);
           }.bind(this)
@@ -202,7 +202,7 @@ CLASS({
             } else {
               self.alpha = 0.5;
             }
-            self.view.paint();
+            self.view && self.view.paint();
           });
     },
 

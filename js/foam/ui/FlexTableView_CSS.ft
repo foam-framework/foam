@@ -46,6 +46,8 @@ flex-table-body {
 }
 flex-table {
   width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 flex-table-head {
   flex-shrink: 0;

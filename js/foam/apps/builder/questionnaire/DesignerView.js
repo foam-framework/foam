@@ -84,7 +84,6 @@ CLASS({
   templates: [
     function toHTML() {/*
       <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
-        $$data{ model_: 'foam.apps.builder.Panel' }
         $$data{
           model_: 'foam.apps.builder.Panel',
           innerView: { factory_: 'foam.apps.builder.AppConfigDetailView',

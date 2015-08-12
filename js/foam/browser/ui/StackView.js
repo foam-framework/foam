@@ -73,13 +73,16 @@ CLASS({
         var obj = this.views_.pop();
         this.X.$(obj.id).style.left = this.$.offsetWidth;
         this.resize();
-        this.X.setTimeout(function() { // clean up after animation
-          obj.view.destroy();
-          obj.hideBinding(); // Destroys the Events.dynamic for the hidden class.
-          var e = this.X.$(obj.id);
-          if ( e ) e.outerHTML = '';
-        }.bind(this), 1000);
+        this.finishDestroy(obj);
       }
+    },
+    function finishDestroy(obj) {
+      this.X.setTimeout(function() { // clean up after animation
+        obj.view.destroy();
+        obj.hideBinding(); // Destroys the Events.dynamic for the hidden class.
+        var e = this.X.$(obj.id);
+        if ( e ) e.outerHTML = '';
+      }.bind(this), 1000);
     },
 
     function renderChild(index) {
