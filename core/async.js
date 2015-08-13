@@ -115,7 +115,8 @@ MODEL({
     /** Execute the supplied afunc if cond. */
     function aif(cond, afunc, aelse) {
       return function(ret) {
-        if ( typeof cond === 'function' ? cond() : cond ) {
+        if ( typeof cond === 'function' ?
+            cond.apply(this, argsToArray(arguments).slice(1)) : cond ) {
           afunc.apply(this, arguments);
         } else {
           if ( aelse ) aelse.apply(this, arguments);
