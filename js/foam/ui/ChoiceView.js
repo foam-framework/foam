@@ -54,7 +54,7 @@ CLASS({
 <% for ( var i = 0, choice ; choice = this.choices[i] ; i++ ) { %>
 <option id="<%= this.on('click', this.onClick,
 this.on('mouseover', this.onMouseOver,
-this.on('mouseout', this.onMouseOut))) %>" <% if ( choice[0] === this.data ) { %>selected<% } %> value="<%= i %>"><%= escapeHTML(choice[1].toString()) %></option>
+this.on('mouseout', this.onMouseOut))) %>" <% if ( this.data && choice[0] === this.data ) { %>selected<% } %> value="<%= i %>"><%= escapeHTML(choice[1].toString()) %></option>
 <% } %>
 */}
   ],
