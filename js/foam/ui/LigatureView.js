@@ -69,12 +69,25 @@ CLASS({
       model_: 'IntProperty',
       name: 'fontSize',
       defaultValue: 24,
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.style['font-size'] = nu + 'px';
+      },
+    },
+    {
+      name: 'color',
+      defaultValue: 'black',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.style['color'] = nu;
+      },
     },
   ],
 
   templates: [
     function toHTML() {/*
-      <{{this.tagName}} id="%%id" %%cssClassAttr() style="font-size: {{this.fontSize}}px">%%data</%%tagName>
+      <{{this.tagName}} id="%%id" %%cssClassAttr()
+                        style="font-size: {{this.fontSize}}px; color: %%color">%%data</%%tagName>
     */},
   ]
 });

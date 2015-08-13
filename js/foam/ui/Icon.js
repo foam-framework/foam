@@ -24,12 +24,26 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'url',
-      defaultValue: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAP0lEQVR4AWMYIBDM8IbhNUMA0eqByv8D4SviNbwGa3hJvIYAhldA5X5U9eZ/wpBcDZgAlyLKNYxqAIJRDXQEAMK/cixwO0GPAAAAAElFTkSuQmCC',
     },
     {
       model_: 'StringProperty',
       name: 'ligature',
-      defaultValue: 'accessibility',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( nu ) this.ligatureTester = this.LigatureTester.create({
+          ligature$: this.ligature$,
+          expectedWidth$: this.width$,
+          expectedHeight$: this.height$,
+          ligatureViewFactory: function() {
+            return this.LigatureView.create({
+              data$: this.ligature$,
+              color$: this.color$,
+              fontSize$: this.fontSize$,
+              className$: this.ligatureClassName$,
+            }, this.Y);
+          }.bind(this),
+        }, this.Y);
+      },
     },
     {
       model_: 'IntProperty',
@@ -40,6 +54,10 @@ CLASS({
       model_: 'IntProperty',
       name: 'height',
       defaultValue: 24,
+    },
+    {
+      name: 'color',
+      defaultValue: 'black',
     },
     {
       model_: 'IntProperty',
@@ -90,20 +108,7 @@ CLASS({
     {
       type: 'foam.fonts.LigatureTester',
       name: 'ligatureTester',
-      factory: function() {
-        return this.LigatureTester.create({
-          ligature$: this.ligature$,
-          expectedWidth$: this.width$,
-          expectedHeight$: this.height$,
-          ligatureViewFactory: function() {
-            return this.LigatureView.create({
-              data$: this.ligature$,
-              fontSize$: this.fontSize$,
-              className$: this.ligatureClassName$,
-            }, this.Y);
-          }.bind(this),
-        }, this.Y);
-      },
+      defaultValue: null,
     },
   ],
 

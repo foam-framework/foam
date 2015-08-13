@@ -59,7 +59,8 @@ CLASS({
           this.document.body.removeChild(old);
           old.removeEventListener('scroll', this.onParentScroll);
         }
-        if ( nu && ! this.isLoaded ) {
+        if ( nu ) {
+          this.initParentStyle();
           this.document.body.appendChild(nu);
           nu.addEventListener('scroll', this.onParentScroll);
         }
@@ -81,10 +82,7 @@ CLASS({
       },
       postSet: function(old, nu) {
         if ( old === nu || ! this.$parent ) return;
-        var parent = this.$parent;
-        Object_forEach(this.parentStyle, function(value, key) {
-          parent.style[key] = value;
-        });
+        this.initParentStyle();
       },
     },
     {
@@ -135,19 +133,25 @@ CLASS({
           this.ligatureView = this.$parent = null;
       }.bind(this), this.timeout);
     },
+    function initParentStyle() {
+      var parent = this.$parent;
+      Object_forEach(this.parentStyle, function(value, key) {
+        parent.style[key] = value;
+      });
+    },
   ],
 
   listeners: [
     {
       name: 'onParentScroll',
       code: function() {
-        if ( ! ( this.ligatureView && this.ligatureView.$ ) ) return;
-        if ( this.ligatureView.width === this.expectedWidth &&
-            this.ligatureView.height === this.expectedHeight ) {
-          this.window.clearTimeout(this.timeoutID);
-          this.ligatureViewFuture_.set(this.ligatureView);
-          this.ligatureView = this.$parent = null;
-        }
+        if ( ( ! this.ligatureView ) ||
+            ( ! this.ligatureView.$ ) ||
+            this.ligatureView.width !== this.expectedWidth ||
+            this.ligatureView.height !== this.expectedHeight ) return;
+        this.window.clearTimeout(this.timeoutID);
+        this.ligatureViewFuture_.set(this.ligatureView);
+        this.ligatureView = this.$parent = null;
       },
     },
   ],
