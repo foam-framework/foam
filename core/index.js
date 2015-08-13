@@ -981,9 +981,11 @@ var AltIndex = {
   },
 
   bulkLoad: function(a) {
+    var root = [].sink;
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
-      this.root[i] = this.delegates[i].bulkLoad(a);
+      root[i] = this.delegates[i].bulkLoad(a);
     }
+    return root;
   },
 
   get: function(s, key) {

@@ -119,6 +119,7 @@ CLASS({
         this.dao.where(this.filter).select(GROUP_BY(this.property, COUNT()))(function(groups) {
           var options = [];
           for ( var key in groups.sortedGroups() ) {
+            if (!key) continue;
             var count    = ('(' + groups.groups[key] + ')').intern();
             var subKey   = key.substring(0, self.width-count.length-3);
             var cleanKey = subKey.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
