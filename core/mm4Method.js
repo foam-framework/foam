@@ -143,6 +143,16 @@ CLASS({
                 */}
     },
     {
+      name: 'ligature',
+      type: 'String',
+      defaultValue: undefined,
+      help: 'Provides a ligature for font-based icons for this action',
+      documentation: function() { /*
+            A "ligature" (short text string) a font-based icon to render for
+            this $$DOC{ref:'Action'}.
+        */}
+    },
+    {
       name: 'showLabel',
       type: 'String',
       defaultValue: true,
