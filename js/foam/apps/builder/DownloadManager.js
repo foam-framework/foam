@@ -95,7 +95,9 @@ CLASS({
           label: this.data.config.model_.id || this.data.config.name_,
         }));
       } else {
-        this.data.message = 'Oop! Looks like something went wrong. Did you select a folder for the application to download into?';
+        this.data.message = 'Oop! Looks like something went wrong.',
+        this.data.details =
+            'Did you select a folder for the application to download into?';
         this.data.state = 'FAILED';
         this.metricsDAO.put(this.Error.create({
           name: 'Action:export:fail - ' +

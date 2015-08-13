@@ -71,16 +71,16 @@ CLASS({
 
         oauth.refresh(function(token) {
           if ( token )        ret(oauth);
-          else if ( opt_err ) opt_err();
-          else                ret();
+          else if ( opt_err && typeof opt_err === 'function' ) opt_err();
+          else                                                 ret();
         });
       });
     },
     function withEmail(ret, opt_err) {
       this.emailFuture(function(email) {
         if ( email )        ret(email);
-        else if ( opt_err ) opt_err();
-        else                ret();
+        else if ( opt_err  && typeof opt_err === 'function' ) opt_err();
+        else                                                  ret();
       });
     },
     function init() {

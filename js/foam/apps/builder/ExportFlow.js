@@ -31,6 +31,7 @@ CLASS({
         ['AUTHENTICATING', 'Authenticating'],
         ['UPLOADING', 'Uploading'],
         ['DOWNLOADING', 'Downloading'],
+        ['PUBLISHING', 'Publishing'],
         ['FAILED', 'Failed'],
         ['COMPLETED', 'Completed'],
       ],
@@ -38,6 +39,11 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'message',
+    },
+    {
+      model_: 'StringProperty',
+      name: 'details',
+      defaultValue: 'Still working...',
     },
   ],
 });
