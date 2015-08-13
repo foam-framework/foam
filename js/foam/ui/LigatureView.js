@@ -58,20 +58,12 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'width',
-      getter: function() {
-        var v = this.$ ? this.$.scrollWidth : 0;
-        console.log('width', v);
-        return v;
-      },
+      getter: function() { return this.$ ? this.$.scrollWidth : 0; },
     },
     {
       model_: 'IntProperty',
       name: 'height',
-      getter: function() {
-        var v = this.$ ? this.$.scrollHeight : 0;
-        console.log('height');
-        return v;
-      },
+      getter: function() { return this.$ ? this.$.scrollHeight : 0; },
     },
     {
       model_: 'IntProperty',

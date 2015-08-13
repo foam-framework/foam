@@ -93,6 +93,8 @@ CLASS({
       factory: function() {
         return this.LigatureTester.create({
           ligature$: this.ligature$,
+          expectedWidth$: this.width$,
+          expectedHeight$: this.height$,
           ligatureViewFactory: function() {
             return this.LigatureView.create({
               data$: this.ligature$,

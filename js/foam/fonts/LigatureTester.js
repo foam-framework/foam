@@ -17,6 +17,7 @@ CLASS({
     'foam.ui.LigatureView',
   ],
   imports: [
+    'window',
     'document'
   ],
 
@@ -40,6 +41,12 @@ CLASS({
       name: 'expectedHeight',
       defaultValue: 24,
       required: true,
+    },
+    {
+      model_: 'IntProperty',
+      name: 'timeout',
+      units: 'ms',
+      defaultValue: 1000,
     },
     {
       name: '$parent',
@@ -114,6 +121,20 @@ CLASS({
         return afuture();
       },
     },
+    {
+      model_: 'IntProperty',
+      name: 'timeoutID',
+    },
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      this.timeoutID = this.window.setTimeout(function() {
+          this.ligatureViewFuture_.set(null);
+          this.ligatureView = this.$parent = null;
+      }.bind(this), this.timeout);
+    },
   ],
 
   listeners: [
@@ -123,6 +144,7 @@ CLASS({
         if ( ! ( this.ligatureView && this.ligatureView.$ ) ) return;
         if ( this.ligatureView.width === this.expectedWidth &&
             this.ligatureView.height === this.expectedHeight ) {
+          this.window.clearTimeout(this.timeoutID);
           this.ligatureViewFuture_.set(this.ligatureView);
           this.ligatureView = this.$parent = null;
         }
