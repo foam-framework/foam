@@ -15,7 +15,7 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
-    'foam.ui.ImageView',
+    'foam.ui.Icon',
     'foam.ui.md.HaloView'
   ],
 
@@ -40,8 +40,23 @@ CLASS({
       name: 'iconUrl',
       defaultValueFn: function() {
         return this.action ? this.action.iconUrl : '';
-      },
-      view: 'foam.ui.ImageView'
+      }
+    },
+    {
+      name: 'ligature',
+      defaultValueFn: function() {
+        return this.action ? this.action.ligature : '';
+      }
+    },
+    {
+      name: 'icon',
+      lazyFactory: function() {
+        return this.Icon.create({
+          url$: this.iconUrl$,
+          ligature$: this.ligature$,
+          color$: this.currentColor_$
+        }, this.Y);
+      }
     },
     {
       name: 'halo',
@@ -156,12 +171,19 @@ CLASS({
         position: absolute;
         left: 0;
         top: 0;
+        z-index: 2;
       }
     */},
     function toHTML() {/*
       <<%= self.tagName %> id="%%id" <%= this.cssClassAttr() %> >
         %%halo
-        <% if ( this.iconUrl ) { %><div class="flat-button-icon-container"><div class="flat-button-icon">$$iconUrl</div></div><% } %>
+        <% if ( this.iconUrl || this.ligature ) { %>
+          <div class="flat-button-icon-container">
+            <div class="flat-button-icon">
+              %%icon
+            </div>
+          </div>
+        <% } %>
         <span id="<%= this.id + "CONTENT" %>"><% this.labelHTML(out) %></span>
       </%%tagName>
       <% this.on('click', function(e) {
