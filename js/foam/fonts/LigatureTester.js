@@ -1,0 +1,132 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+CLASS({
+  package: 'foam.fonts',
+  name: 'LigatureTester',
+
+  requires: [
+    'foam.ui.LigatureView',
+  ],
+  imports: [
+    'document'
+  ],
+
+  properties: [
+    {
+      name: 'ligature',
+      defaultValue: 'accessibility',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.ligatureView ) return;
+        this.ligatureView.data = nu;
+      },
+    },
+    {
+      model_: 'IntProperty',
+      name: 'expectedWidth',
+      defaultValue: 24,
+      required: true,
+    },
+    {
+      model_: 'IntProperty',
+      name: 'expectedHeight',
+      defaultValue: 24,
+      required: true,
+    },
+    {
+      name: '$parent',
+      lazyFactory: function() {
+        return this.document.createElement('div');
+      },
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( old ) {
+          this.document.body.removeChild(old);
+          old.removeEventListener('scroll', this.onParentScroll);
+        }
+        if ( nu && ! this.isLoaded ) {
+          this.document.body.appendChild(nu);
+          nu.addEventListener('scroll', this.onParentScroll);
+        }
+      },
+    },
+    {
+      name: 'parentStyle',
+      factory: function() {
+        return {
+          position: 'fixed',
+          bottom: '0',
+          right: '0',
+          visibility: 'hidden',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden',
+          'z-index': '-1000',
+        };
+      },
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$parent ) return;
+        var parent = this.$parent;
+        Object_forEach(this.parentStyle, function(value, key) {
+          parent.style[key] = value;
+        });
+      },
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'ligatureViewFactory',
+      defaultValue: 'foam.ui.LigatureView',
+    },
+    {
+      name: 'ligatureView',
+      factory: function() {
+        return this.ligatureViewFactory({
+          data$: this.ligature$,
+        });
+      },
+      postSet: function(old, nu) {
+        if ( old === nu || ! nu ) return;
+        var out = TemplateOutput.create(nu);
+        nu.toHTML(out);
+        this.$parent.innerHTML = out.toString();
+        nu.initHTML();
+        this.$parent.scrollTop = this.$parent.scrollHeight -
+            this.$parent.clientHeight;
+      },
+    },
+    {
+      name: 'ligatureViewFuture',
+      lazyFactory: function() {
+        return this.ligatureViewFuture_.get;
+      },
+    },
+    {
+      name: 'ligatureViewFuture_',
+      lazyFactory: function() {
+        return afuture();
+      },
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'onParentScroll',
+      code: function() {
+        if ( ! ( this.ligatureView && this.ligatureView.$ ) ) return;
+        if ( this.ligatureView.width === this.expectedWidth &&
+            this.ligatureView.height === this.expectedHeight ) {
+          this.ligatureViewFuture_.set(this.ligatureView);
+          this.ligatureView = this.$parent = null;
+        }
+      },
+    },
+  ],
+});
