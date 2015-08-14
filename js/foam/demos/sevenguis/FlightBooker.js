@@ -1,4 +1,3 @@
-
 /**
  * @license
  * Copyright 2015 Google Inc. All Rights Reserved.
@@ -37,7 +36,7 @@ MODEL({
       model_: 'DateProperty',
       name: 'departDate',
       factory: function() { return new Date(Date.now()+3600000*24); },
-      validate: function(ret, departDate) {
+      validate: function(departDate) {
         var today = new Date();
         today.setHours(0,0,0,0);
         if ( departDate.compareTo(today) < 0 ) ret('Must not be in the past.');
@@ -47,8 +46,8 @@ MODEL({
       model_: 'DateProperty',
       name: 'returnDate',
       factory: function() { return new Date(Date.now()+2*3600000*24); },
-      validate: function(returnDate) {
-        if ( ! this.oneWay && returnDate.compareTo(this.departDate) < 0 ) throw 'Must not be before depart date.';
+      validate: function(oneWay, returnDate, departDate) {
+        if ( ! oneWay && returnDate.compareTo(departDate) < 0 ) throw 'Must not be before depart date.';
       }
     }
   ],
@@ -57,12 +56,6 @@ MODEL({
       this.SUPER();
       this.oneWay$.addListener(this.onOneWayChange);
       this.onOneWayChange();
-    },
-    function validate() {
-      this.SUPER();
-
-      if ( ! this.oneWay && returnDate.compareTo(this.departDate) < 0 )
-        throw 'Must not be before depart date.';
     }
   ],
   templates: [
