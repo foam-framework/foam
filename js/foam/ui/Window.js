@@ -33,7 +33,7 @@ CLASS({
     'framed',
     'dynamic',
     'dynamic2',
-    'dynamic2',
+    'dynamic3',
     'error',
     'info',
     'installedModels',
@@ -109,7 +109,7 @@ CLASS({
       return this.document.getElementsByClassName(cls);
     },
     framed: function(listener) {
-      return Events.dynamic(listener, this);
+      return EventService.framed(listener, this);
     },
     dynamic: function(fn, opt_fn) {
       return Events.dynamic(fn, opt_fn, this.Y);
