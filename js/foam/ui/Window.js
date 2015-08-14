@@ -30,7 +30,10 @@ CLASS({
     'clearTimeout',
     'console',
     'document',
+    'framed',
     'dynamic',
+    'dynamic2',
+    'dynamic2',
     'error',
     'info',
     'installedModels',
@@ -105,8 +108,61 @@ CLASS({
     $$: function(cls) {
       return this.document.getElementsByClassName(cls);
     },
+    framed: function(listener) {
+      return Events.dynamic(listener, this);
+    },
     dynamic: function(fn, opt_fn) {
       return Events.dynamic(fn, opt_fn, this.Y);
+    },
+    // TODO(kgr): experimental, remove if never used
+    dynamic2: function(fn) {
+      var listener = this.framed(fn);
+      var propertyValues = [];
+      fn(); // Call once before capture to pre-latch lazy values
+      Events.onGet.push(function(obj, name, value) {
+        if ( arguments.callee.caller.caller !== fn ) {
+          console.log('false alarm ', fn.toString());
+          return;
+        }
+        var value = obj.propertyValue(name);
+        value.addListener(listener);
+        propertyValues.push(value);
+      });
+      var ret = fn();
+      Events.onGet.pop();
+      var f = function() {
+        propertyValues.forEach(function(p) {
+          p.removeListener(listener);
+        });
+      };
+      f.destroy = f;
+      return f;
+    },
+    // TODO(kgr): experimental, remove if never used
+    dynamic3: function(obj, fn, opt_ret) {
+      var str = fn.toString();
+      var values = str.
+        match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+        split(',').
+        map(function(name) { return obj.propertyValue(name.trim()); });
+
+      var listener = this.framed(function() {
+        var args = [];
+        for ( var i = 0 ; i < values.length ; i++ )
+          args.push(values[i].get());
+        var ret = fn.apply(obj, args);
+        opt_ret && opt_ret(ret);
+      });
+
+      for ( var i = 0 ; i < values.length ; i++ )
+        values[i].addListener(listener);
+
+      var f = function() {
+        for ( var i = 0 ; i < values.length ; i++ )
+          values[i].removeListener(listener);
+      };
+      f.destroy = f;
+      return f;
     },
     animate: function(duration, fn, opt_interp, opt_onEnd) {
       return Movement.animate(duration, fn, opt_interp, opt_onEnd, this.Y);
