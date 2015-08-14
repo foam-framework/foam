@@ -39,7 +39,7 @@ MODEL({
       validate: function(departDate) {
         var today = new Date();
         today.setHours(0,0,0,0);
-        if ( departDate.compareTo(today) < 0 ) ret('Must not be in the past.');
+        if ( departDate.compareTo(today) < 0 ) return 'Must not be in the past.';
       }
     },
     {
@@ -47,7 +47,7 @@ MODEL({
       name: 'returnDate',
       factory: function() { return new Date(Date.now()+2*3600000*24); },
       validate: function(oneWay, returnDate, departDate) {
-        if ( ! oneWay && returnDate.compareTo(departDate) < 0 ) throw 'Must not be before depart date.';
+        if ( ! oneWay && returnDate.compareTo(departDate) < 0 ) return 'Must not be before depart date.';
       }
     }
   ],
