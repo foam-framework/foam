@@ -127,9 +127,9 @@ CLASS({
           'when the user presses enter or blurs the box, or on enter only.',
       defaultValue: 'DONE_EDITING',
       choices: [
-        ['DONE_EDITING', 'Done editing'],
+        ['DONE_EDITING',   'Done editing'],
         ['EACH_KEYSTROKE', 'Every keystroke'],
-        ['ENTER_ONLY', 'Enter only']
+        ['ENTER_ONLY',     'Enter only']
       ]
     },
     {

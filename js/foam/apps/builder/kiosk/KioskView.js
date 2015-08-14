@@ -20,6 +20,7 @@ CLASS({
     'foam.apps.builder.TOSData',
     'foam.apps.builder.TOSView',
     'foam.apps.builder.WebView',
+    'foam.graphics.ActionButtonCView',
     'foam.ui.md.PopupView',
   ],
   exports: [
@@ -107,6 +108,13 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.Y.registerModel(this.ActionButtonCView.xbind({
+        height: 24,
+        width: 24,
+        haloColor: 'black'
+      }), 'foam.ui.ActionButton');
+    },
     function initHTML() {
       this.SUPER();
       if ( this.data.termsOfService )

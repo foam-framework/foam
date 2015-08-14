@@ -123,7 +123,8 @@ CLASS({
       var last = this.$.lastElementChild;
       var margin = parseInt(this.window.getComputedStyle(last)['margin-bottom']);
       margin = Number.isNaN(margin) ? 0 : margin;
-      return last.offsetTop + last.offsetHeight + margin;
+      return Math.min(last.offsetTop + last.offsetHeight + margin,
+          window.document.body.clientHeight - this.$.getBoundingClientRect().top);
     },
     function onPropDataChange(prop, _, __, ___, isEnabled) {
       if ( isEnabled ) {
@@ -236,7 +237,8 @@ CLASS({
         display: block;
         font-size: 13px;
         font-weight: 400;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: scroll;
         position: absolute;
         right: 3px;
         top: 4px;

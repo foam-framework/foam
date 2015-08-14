@@ -450,6 +450,15 @@ var Property = {
       */}
     },
     {
+      name: 'validate',
+      type: 'Function',
+      required: false,
+      view: 'foam.ui.FunctionView',
+      help: 'Function for validating property value.',
+      documentation: function() { /*
+      */}
+    },
+    {
       name: 'getter',
       type: 'Function',
       required: false,

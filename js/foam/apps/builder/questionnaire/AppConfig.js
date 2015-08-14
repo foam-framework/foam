@@ -14,13 +14,14 @@ CLASS({
   name: 'AppConfig',
   extendsModel: 'foam.apps.builder.AppConfig',
 
+  traits: [ 'foam.apps.builder.AppConfigModelOwnerTrait' ],
+
   requires: [
     'BooleanProperty',
     'StringProperty',
     'IntProperty',
     'FloatProperty',
     'DateProperty',
-    'Model',
     'foam.ui.md.DetailView',
     'foam.ui.TableView',
     'foam.apps.builder.questionnaire.Questionnaire',
@@ -36,10 +37,12 @@ CLASS({
 
   properties: [
     {
+      name: 'baseModelId',
+      defaultValue: 'foam.apps.builder.questionnaire.Questionnaire',
+    },
+    {
       name: 'appName',
-      postSet: function(old,nu) {
-        this.model.name = nu+'Questionnaire';
-      }
+      defaultValue: 'New Questionnaire App'
     },
     {
       name: 'defaultView',
@@ -48,15 +51,7 @@ CLASS({
     {
       name: 'model',
       label: 'Questions',
-      view: 'foam.ui.md.DetailView',
-      factory: function() {
-        return this.Model.create({
-          extendsModel: 'foam.apps.builder.questionnaire.Questionnaire',
-          name: this.appName+'Questionnaire',
-        });
-      },
-    },
-
+    }
   ],
 
   templates: [

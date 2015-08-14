@@ -382,38 +382,40 @@ CLASS({
 
     setAttribute: function(attributeName, valueFn, opt_id) {
       /* Set a dynamic attribute on the DOM element. */
+      var self = this;
       opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
-        this.X.dynamic(valueFn, function() {
-          var e = this.X.$(opt_id);
+        self.X.dynamic(valueFn, function() {
+          var e = self.X.$(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
           if ( newValue == undefined )
             e.removeAttribute(attributeName);
           else
             e.setAttribute(attributeName, newValue);
-        }.bind(this))
-      }.bind(this));
+        })
+      });
     },
 
     setClass: function(className, predicate, opt_id) {
+      var self = this;
       /* Set a dynamic CSS class on the DOM element. */
       opt_id = opt_id || this.nextID();
       predicate = predicate.bind(this);
 
       this.addInitializer(function() {
-        this.addDestructor(
-          this.X.dynamic(
+        self.addDestructor(
+          self.X.dynamic(
             predicate,
             function() {
               var e = this.X.$(opt_id);
               if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
               DOM.setClass(e, className, predicate());
-            }.bind(this)
+            }
           ).destroy
         );
-      }.bind(this));
+      });
 
       return opt_id;
     },
@@ -760,18 +762,17 @@ CLASS({
       /*
         Creates a dynamic HTML tag whose content will be automatically updated.
        */
-      var id = this.nextID();
-
+      var id  = this.nextID();
+      var self = this;
       this.addInitializer(function() {
-        this.X.dynamic(function() {
+        self.X.dynamic(function() {
           var html = f();
-          var e = this.X.$(id);
+          var e = self.X.$(id);
           if ( e ) e.innerHTML = html;
-        }.bind(this));
-      }.bind(this));
+        });
+      });
 
       return '<' + tagName + ' id="' + id + '"></' + tagName + '>';
-    },
-
+    }
   }
 });
