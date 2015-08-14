@@ -103,9 +103,17 @@ CLASS({
     },
 
     bindData: function(data) {
+      var self = this;
       if ( this.bound_ || ! data || ! this.prop) return;
       var pValue = data.propertyValue(this.prop.name);
       Events.link(pValue, this.childData$);
+      if ( this.prop.validate ) {
+        this.X.dynamic3(data, this.prop.validate, function(error) {
+          console.log('************************** error, ', self.prop.name, error);
+          if ( ! self.$ ) return;
+          self.$.style.border = error ? '2px solid red' : '';
+        });
+      }
       this.bound_ = true;
     },
 
@@ -124,7 +132,6 @@ CLASS({
       this.SUPER();
     },
 
-
     finishRender: function(view) {
       view.prop = this.prop;
       this.SUPER(view);
@@ -135,5 +142,4 @@ CLASS({
       this.addChild(child);
     }
   }
-
 });
