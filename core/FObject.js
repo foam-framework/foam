@@ -240,6 +240,7 @@ var FObject = {
           keys[prop.name] = keys[prop.name$_] = true;
         }
         this.addInitAgent(0, 'fast copy args', function fastCopyArgs(o, X, m) {
+          if ( ! m ) return;
           if ( m.instance_ ) {
             m = m.instance_;
             for ( var key in m ) o[key] = m[key];
