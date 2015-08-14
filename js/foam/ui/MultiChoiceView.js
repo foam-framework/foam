@@ -100,7 +100,7 @@ CLASS({
       code: function(select) {
         var set = {};
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
-          if ( select.srcElement[i].selected ) set[this.choices[i][0]] = true;
+          if ( this.getTarget(select)[i].selected ) set[this.choices[i][0]] = true;
         }
         this.data = set;
       }
@@ -146,6 +146,11 @@ CLASS({
       this.onDAOUpdate();
       this.$.addEventListener('change', this.onValueChange);
     },
-    function shouldDestroy(old) { return false; }
+    function shouldDestroy(old) { return false; },
+    function getTarget(e) {
+      var t = e.target || e.srcElement;
+      if ( t.nodeType == 3 ) t = t.parentNode; // Opera fix
+      return t;
+    }
   ]
 });
