@@ -26,11 +26,12 @@ MODEL({
     {
       name: 'duration',
       units: 'ms',
+      view: 'foam.ui.RangeView',
       defaultValue: 5000,
     },
     {
       name: 'progress',
-      view: 'foam.ui.ProgressView'
+      view: 'foam.ui.ProgressView',
 //      mode: 'read-only'
     },
     {
@@ -56,6 +57,13 @@ MODEL({
         this.tick();
       }
     }
+  ],
+  templates: [
+    function toDetailHTML() {/*
+      Elapsed Time: $$progress <br>
+      $$elapsedTime{model_: 'foam.ui.TextFieldView', mode: 'read-only'} <br>
+      Duration: $$duration <br>
+    */}
   ],
   listeners: [
     {
