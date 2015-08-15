@@ -105,7 +105,7 @@ CLASS({
       },
       postSet: function(old,nu) {
         if (this.liveEdit) {
-          this.save();
+          this.onCommit();
         }
       }
     },
