@@ -36,10 +36,10 @@ MODEL({
       },
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( old ) old.ready$.removeListener(this.onReadyStateChange);
+        if ( old ) old.readyState$.removeListener(this.onReadyStateChange);
         if ( nu ) {
-          nu.ready$.addListener(this.onReadyStateChange);
-          if ( nu.ready ) this.onReadyStateChange();
+          nu.readyState$.addListener(this.onReadyStateChange);
+          this.onReadyStateChange();
         }
       }
     },
@@ -54,8 +54,12 @@ MODEL({
     {
       name: 'put',
       code: function(o, sink) {
-        if ( ! this.cfs.ready ) {
+        if ( this.cfs.readyState === 'LOADING' ) {
           this.backlog_.push(['put', arguments]);
+          return;
+        }
+        if ( this.cfs.readyState !== 'READY' ) {
+          sink && sink.error && sink.error(this.cfs.error);
           return;
         }
 
@@ -77,6 +81,10 @@ MODEL({
       code: function(hash, sink) {
         if ( ! this.cfs.ready ) {
           this.backlog_.push(['find', arguments]);
+          return;
+        }
+        if ( this.cfs.readyState !== 'READY' ) {
+          sink && sink.error && sink.error(this.cfs.error);
           return;
         }
 
@@ -103,7 +111,7 @@ MODEL({
     {
       name: 'onReadyStateChange',
       code: function() {
-        if ( ! this.cfs.ready ) return;
+        if ( ! this.cfs.readyState === 'LOADING' ) return;
         var calls = this.backlog_;
         for ( var i = 0; i < calls.length; ++i ) {
           this[calls[i][0]].apply(this, calls[i][1]);

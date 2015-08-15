@@ -42,9 +42,14 @@ MODEL({
       defaultValue: ''
     },
     {
-      model_: 'BooleanProperty',
-      name: 'ready',
-      defaultValue: false
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'readyState',
+      defaultValue: 'LOADING',
+      choices: [
+        ['LOADING', 'Loading'],
+        ['CANCELLED', 'Cancelled'],
+        ['READY', 'Ready']
+      ]
     },
     {
       name: 'error',
@@ -104,7 +109,7 @@ MODEL({
         if ( this.mode === 'read-write' )
           seq.push(this.getWritableEntry.bind(this));
         seq.push(this.putRoot.bind(this));
-        return aseq.apply(null, seq)();
+        return aseq.apply(null, seq)(this.updateReadyState.bind(this));
       }
     },
     {
@@ -118,8 +123,9 @@ MODEL({
     {
       name: 'getWritableEntry',
       code: function(ret, dirEntry) {
-        if ( this.checkForError(dirEntry, ret, 'getWritableEntry') )
+        if ( this.checkForError(dirEntry, ret, 'getWritableEntry') ) {
           return dirEntry;
+        }
         with (this.appWindow) {
           chrome.fileSystem.getWritableEntry(dirEntry, ret);
         }
@@ -131,16 +137,24 @@ MODEL({
       code: function(ret, dirEntry) {
         if ( this.checkForError(dirEntry, ret, 'putRoot') ) return dirEntry;
         this.root = dirEntry;
-        this.ready = true;
         this.clearError();
         ret && ret(dirEntry);
         return dirEntry;
       }
     },
     {
+      name: 'updateReadyState',
+      code: function(data) {
+        console.log('ChromeFileSystem update ready state', data,
+                   data.error ? 'CANCELLED' : 'READY');
+        this.readyState = data.error ? 'CANCELLED' : 'READY';
+      }
+    },
+    {
       name: 'awrite',
       code: function(rawPath, data, opt_mimeType) {
-        if ( ! this.ready ) throw 'Attempt to write before Chrome File System is ready';
+        if ( this.readyState !== 'READY' )
+          throw 'Attempt to write before Chrome File System is ready';
         if ( this.mode !== 'read-write' ) throw 'Cannot write to ' +
             'non-read-write Chrome filesystem';
         var path = this.canonicalizePath(rawPath);
@@ -163,7 +177,8 @@ MODEL({
     {
       name: 'aread',
       code: function(rawPath, opt_mimeType) {
-        if ( ! this.ready ) throw 'Attempt to read before Chrome File System is ready';
+        if ( this.readyState !== 'READY' )
+          throw 'Attempt to read before Chrome File System is ready';
         console.log('aread', rawPath, opt_mimeType);
         var path = this.canonicalizePath(rawPath);
         if ( path[0] === '..' ) throw 'Cannot read from: ' + path;
@@ -181,7 +196,8 @@ MODEL({
     {
       name: 'aentries',
       code: function(rawPath, sink) {
-        if ( ! this.ready ) throw 'Attempt to get entries before Chrome File System is ready';
+        if ( this.readyState !== 'READY' )
+          throw 'Attempt to get entries before Chrome File System is ready';
         var path = this.canonicalizePath(rawPath);
         if ( path[0] === '..' ) throw 'Cannot get entries from: ' + path;
         var readCtx = { sink: sink, entries: [] };
