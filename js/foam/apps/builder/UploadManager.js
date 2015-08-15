@@ -154,6 +154,7 @@ CLASS({
       }));
 
       this.data.state = 'COMPLETED';
+      this.data.details = 'App published to the Chrome Web Store.';
 
       ret && ret(this.data.config);
     },
@@ -236,6 +237,7 @@ CLASS({
       // need to wait for the updateDetailView to receive an event/update?
       this.data.updateView && this.data.updateView.save && this.data.updateView.save();
       this.data.state = 'COMPLETED';
+      this.data.details = 'App uploaded to your Chrome Web Store dashboard.';
     },
   ],
 });
