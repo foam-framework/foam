@@ -70,8 +70,12 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'haloColor',
-      hidden: true,
-      defaultValueFn: function() { return this.currentColor_; }
+      defaultValue: '',
+      postSet: function(old, nu) {
+        if ( ! old ) Events.unfollow(this.currentColor_$, this.haloColor_$);
+        if ( ! nu )  Events.follow(this.currentColor_$, this.haloColor_$);
+        else         this.haloColor_ = nu;
+      }
     },
     {
       name: 'action',
@@ -123,7 +127,7 @@ CLASS({
         return this.HaloView.create({
           className: 'halo',
           recentering: false,
-          color$: this.haloColor$,
+          color$: this.haloColor_$,
           pressedAlpha: 0.2,
           startAlpha: 0.2,
           finishAlpha: 0
@@ -137,6 +141,11 @@ CLASS({
       defaultValueFn: function() { return this.color; }
     },
     {
+      model_: 'StringProperty',
+      name: 'haloColor_',
+      hidden: true
+    },
+    {
       model_: 'BooleanProperty',
       name: 'isHidden',
       defaultValue: false
@@ -144,6 +153,10 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      if ( ! this.haloColor ) Events.follow(this.currentColor_$, this.haloColor_$);
+    },
     function initHTML() {
       this.SUPER();
 
