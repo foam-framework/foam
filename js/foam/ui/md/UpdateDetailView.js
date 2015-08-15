@@ -32,7 +32,7 @@ CLASS({
   ],
   exports: [
     'as updateView',
-    'toolbar'
+    'toolbar$'
   ],
 
   properties: [
@@ -119,7 +119,10 @@ CLASS({
       type: 'foam.ui.md.Toolbar',
       name: 'toolbar',
       lazyFactory: function() {
-        return this.Toolbar.create({ title$: this.title$ }, this.Y);
+        return this.Toolbar.create({
+          data$: this.data$,
+          title$: this.title$
+        }, this.Y);
       },
       postSet: function(old, nu) {
         if ( old === nu ) return;

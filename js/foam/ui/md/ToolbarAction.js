@@ -14,6 +14,7 @@ CLASS({
   name: 'ToolbarAction',
   extendsModel: '',
   properties: [
+    'data',
     {
       model_: 'BooleanProperty',
       name: 'available',
