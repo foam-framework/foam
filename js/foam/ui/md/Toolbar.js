@@ -20,7 +20,6 @@ CLASS({
     'foam.ui.md.ToolbarAction',
     'foam.ui.md.FlatButton',
   ],
-  exports: [ 'as toolbar' ],
 
   properties: [
     'data',

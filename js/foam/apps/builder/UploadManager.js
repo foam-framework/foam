@@ -235,7 +235,8 @@ CLASS({
 
       // TODO(markdittmer): This is currently not going through. Perhaps we
       // need to wait for the updateDetailView to receive an event/update?
-      this.data.updateView && this.data.updateView.save && this.data.updateView.save();
+      this.data.toolbar && this.data.toolbar.commitAction &&
+          this.data.toolbar.commitAction();
       this.data.state = 'COMPLETED';
       this.data.details = 'App uploaded to your Chrome Web Store dashboard.';
     },

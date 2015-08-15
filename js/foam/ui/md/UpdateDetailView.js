@@ -31,7 +31,6 @@ CLASS({
     'stack'
   ],
   exports: [
-    'as updateView',
     'toolbar$'
   ],
 

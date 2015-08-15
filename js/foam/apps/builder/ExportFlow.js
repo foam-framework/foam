@@ -14,10 +14,11 @@ CLASS({
   name: 'ExportFlow',
 
   imports: [
-    'updateView',
+    'toolbar$',
   ],
   properties: [
     'config',
+    'toolbar',
     {
       model_: 'StringProperty',
       name: 'title',
