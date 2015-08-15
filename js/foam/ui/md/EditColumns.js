@@ -28,15 +28,11 @@ CLASS({
       subType: 'Property',
       name: 'availableProperties',
       lazyFactory: function() {
-        console.log('EditColumns.availableProperties defaultValueFn');
         if ( ! this.model ) return [];
         var m = this.model;
         return m.tableProperties.map(function(propName) {
           return m.getProperty(propName);
         });
-      },
-      postSet: function(old, nu) {
-        console.log('EditColumns.availableProperties change', old, nu);
       },
     },
   ],
