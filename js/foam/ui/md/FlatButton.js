@@ -37,6 +37,16 @@ CLASS({
       defaultValue: true,
     },
     {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'displayMode',
+      defaultValue: 'ICON_AND_LABEL',
+      choices: [
+        ['ICON_AND_LABEL', 'Icon and Label'],
+        ['ICON_ONLY', 'Icon Only'],
+        ['LABEL_ONLY', 'Label Only']
+      ]
+    },
+    {
       name: 'iconUrl',
       defaultValueFn: function() {
         return this.action ? this.action.iconUrl : '';
@@ -137,9 +147,9 @@ CLASS({
     function CSS() {/*
       flat-button {
         padding: 16px 16px;
-        margin: 0px 0px;
+        margin: 0;
         display: inline-flex;
-        align-items: baseline;
+        align-items: center;
         justify-content: center;
         overflow: hidden;
         position: relative;
@@ -152,22 +162,30 @@ CLASS({
         margin: -16px -16px;
       }
 
-      .flat-button-icon-container {
-        padding-right: 12px;
-        width: 36px;
-        height: 0px;
-      }
-      .flat-button-icon {
-        position: absolute;
-        left: 16px;
-        top: 12px;
+      flat-button .halo {
+        border-radius: inherit;
       }
 
-      .hidden {
+      flat-button spacer {
+        display: block;
+        width: 12px;
+      }
+
+      flat-button.icon-only spacer, flat-button.label-only spacer {
+        width: 0px;
+      }
+
+      flat-button.icon-only {
+        border-radius: 50%;
+      }
+
+      flat-button.hidden,
+      flat-button.label-only .flat-button-icon-container,
+      flat-button.icon-only .flat-button-label-container {
         display: none;
       }
 
-      .halo {
+      flat-button .halo {
         position: absolute;
         left: 0;
         top: 0;
@@ -177,20 +195,31 @@ CLASS({
     function toHTML() {/*
       <<%= self.tagName %> id="%%id" <%= this.cssClassAttr() %> >
         %%halo
-        <% if ( this.iconUrl || this.ligature ) { %>
-          <div class="flat-button-icon-container">
-            <div class="flat-button-icon">
-              %%icon
-            </div>
+        <div class="flat-button-icon-container">
+          <div class="flat-button-icon">
+            %%icon
           </div>
-        <% } %>
-        <span id="<%= this.id + "CONTENT" %>"><% this.labelHTML(out) %></span>
+        </div>
+        <spacer>
+        </spacer>
+        <span id="<%= this.id + "CONTENT" %>" class="flat-button-label-container"><% this.labelHTML(out) %></span>
       </%%tagName>
       <% this.on('click', function(e) {
            e.preventDefault();
            e.stopPropagation();
            self.action.maybeCall(self.X, self.data);
          }, this.id);
+         this.setClass(
+             'icon-only',
+             function() {
+               return this.displayMode === 'ICON_ONLY';
+             }, this.id);
+         this.setClass(
+             'label-only',
+             function() {
+               return this.displayMode === 'LABEL_ONLY' ||
+                   ! ( this.iconUrl || this.ligature );
+             }, this.id);
         this.setClass('hidden', function() { return self.isHidden; }, this.id); %>
     */},
     function labelHTML() {/*
