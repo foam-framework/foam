@@ -189,7 +189,7 @@ input[name=q]::-webkit-input-placeholder {
   color: black;
 }
 
-canvas.createButton {
+.createButton {
   position: absolute;
   bottom: 10px;
   right: 20px;

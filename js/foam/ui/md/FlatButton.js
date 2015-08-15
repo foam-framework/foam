@@ -22,7 +22,56 @@ CLASS({
   properties: [
     {
       name: 'className',
-      defaultValue: 'flatbutton'
+      defaultValue: 'flatbutton noselect',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.className = this.className.split(' ').concat(
+            this.extraClassName.split(' ')).join(' ');
+      }
+    },
+    {
+      name: 'extraClassName',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.className = this.className.split(' ').concat(
+            this.extraClassName.split(' ')).join(' ');
+      }
+    },
+    {
+      name: 'color',
+      help: 'The text and background color to use for the active state',
+      defaultValue: '#02A8F3'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'font',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.style.font = nu;
+      }
+    },
+    {
+      model_: 'FloatProperty',
+      name: 'alpha',
+      defaultValue: 1,
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.style.opacity = nu;
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'background',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.style.background = nu;
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'haloColor',
+      hidden: true,
+      defaultValueFn: function() { return this.currentColor_; }
     },
     {
       name: 'action',
@@ -34,7 +83,7 @@ CLASS({
     },
     {
       name: 'escapeHtml',
-      defaultValue: true,
+      defaultValue: true
     },
     {
       model_: 'foam.core.types.StringEnumProperty',
@@ -74,7 +123,7 @@ CLASS({
         return this.HaloView.create({
           className: 'halo',
           recentering: false,
-          color$: this.currentColor_$,
+          color$: this.haloColor$,
           pressedAlpha: 0.2,
           startAlpha: 0.2,
           finishAlpha: 0
@@ -88,11 +137,6 @@ CLASS({
       defaultValueFn: function() { return this.color; }
     },
     {
-      name: 'color',
-      help: 'The text and background color to use for the active state',
-      defaultValue: '#02A8F3'
-    },
-    {
       model_: 'BooleanProperty',
       name: 'isHidden',
       defaultValue: false
@@ -101,13 +145,15 @@ CLASS({
 
   methods: [
     function initHTML() {
-      var self = this;
       this.SUPER();
 
       this.currentColor_$.addListener(function() {
-        if ( self.$ ) self.$.style.color = self.currentColor_;
-      });
-      if ( self.$ ) self.$.style.color = this.currentColor_;
+        if ( this.$ ) this.$.style.color = this.currentColor_;
+      }.bind(this));
+      this.$.style.color = this.currentColor_;
+      this.$.style.font = this.alpha;
+      this.$.style.opacity = this.alpha;
+      this.$.style.background = this.background;
     },
     function bindData() {
       if ( ! this.action || ! this.data ) return;
@@ -177,6 +223,10 @@ CLASS({
 
       flat-button.icon-only {
         border-radius: 50%;
+      }
+
+      flat-button.createButton {
+        padding: 10px;
       }
 
       flat-button.hidden,
