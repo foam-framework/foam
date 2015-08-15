@@ -245,6 +245,7 @@ CLASS({
       }
       toolbar header {
         margin-left: 12px;
+        flex-grow: 1;
       }
       toolbar actions {
         display: flex;
