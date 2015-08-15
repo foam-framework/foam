@@ -209,14 +209,14 @@ CLASS({
           <%# this.title %>
         </header>
 
+        $$commitAction
+
         <actions id="%%id-actions">
           <% this.actionsInnerHTML(out) %>
         </actions>
         <% this.setClass('hidden',
                function() { return this.showActions }.bind(this),
                this.id + '-actions'); %>
-
-        $$commitAction
 
       </toolbar>
     */},
