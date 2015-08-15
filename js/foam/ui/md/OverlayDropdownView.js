@@ -52,9 +52,20 @@ CLASS({
       ],
     },
     {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'animationState',
+      defaultValue: 'CLOSED',
+      choices: [
+        ['CLOSED', 'Closed'],
+        ['OPEN', 'open'],
+      ],
+    },
+    {
       model_: 'BooleanProperty',
       name: 'showBorder',
-      defaultValue: false,
+      dynamicValue: function() {
+        return this.animationState === 'OPEN';
+      },
       postSet: function(old, nu) {
         if ( ! this.$ || old === nu ) return;
         this.$.style.border = nu ? '1px solid #eee' : 'none';
@@ -118,12 +129,11 @@ CLASS({
     },
     function getFullHeight() {
       if ( ! this.$ ) return 0;
-      console.log('OverlayDropdownView.getFullHeight', this.$);
       var last = this.$.lastElementChild;
       var margin = parseInt(this.window.getComputedStyle(last)['margin-bottom']);
       margin = Number.isNaN(margin) ? 0 : margin;
       return Math.min(last.offsetTop + last.offsetHeight + margin,
-          window.document.body.clientHeight - this.$.getBoundingClientRect().top);
+          this.document.body.clientHeight - this.$.getBoundingClientRect().top);
     },
     function initHTML() {
       this.SUPER();
@@ -158,7 +168,7 @@ CLASS({
     },
     {
       name: 'onTransitionEnd',
-      code: function(e) { this.showBorder = (this.state === 'OPEN'); },
+      code: function(e) { this.animationState = this.state; },
     },
     {
       name: 'onMouseLeave',
@@ -180,6 +190,12 @@ CLASS({
     function toHTML() {/*
       <dropdown-overlay id="%%id-overlay"></dropdown-overlay>
       <dropdown id="%%id" style="%%getPositionStyle()"></dropdown>
+      <% this.setClass(
+             'open',
+             function() {
+               return this.state === 'OPEN' && this.animationState === 'OPEN';
+             }.bind(this),
+             this.id); %>
     */},
     function CSS() {/*
       dropdown-overlay {
@@ -193,12 +209,15 @@ CLASS({
         font-size: 13px;
         font-weight: 400;
         overflow-x: hidden;
-        overflow-y: scroll;
+        overflow-y: hidden;
         position: absolute;
         right: 3px;
         top: 4px;
         transition: height 0.25s cubic-bezier(0,.3,.8,1);
         z-index: 1010;
+      }
+      dropdown.open {
+        overflow-y: auto;
       }
     */}
   ],
