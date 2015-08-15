@@ -13,6 +13,7 @@ CLASS({
   package: 'foam.apps.builder',
   name: 'AppConfigDetailView',
   extendsModel: 'foam.ui.SimpleView',
+  traits: [ 'foam.ui.md.ToolbarViewTrait' ],
 
   requires: [
     'foam.apps.builder.ExportFlow',
@@ -55,6 +56,8 @@ CLASS({
       name: 'packageDownload',
       label: 'Package',
       help: 'Download app as a single archive',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfQAWXGFAAAAFXRSTlMALePhKBXghJvbEray/fwg6uhP6U1pY8wzAAAAWklEQVR4Xq3PORKEMAwFUbGJdcZsvv9VSTr4JRIX5c70XySrXNNmqeuNBh9NmuYFWHNoA34R/kB+9RnkKgdPRskFEHYBhF0AYVdA2AUQL31wj3AA5xX226r2ACkvFWPaNFOcAAAAAElFTkSuQmCC',
+      ligature: 'archive',
       action: function() {
         var exportFlow = this.setupExportAction('Download Package to Disk');
         this.exportManager.downloadPackage(exportFlow);
@@ -65,6 +68,8 @@ CLASS({
       name: 'downloadApp',
       label: 'Download',
       help: 'Download app as a series of individual source files',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA0SURBVHjazdBBCgAgEMNAs/9/tCAEFoo3FeeY3jpuqOWngWrIxd4RXdgD9oA9wLHLtR9emRVOAOP9ZYAiAAAAAElFTkSuQmCC',
+      ligature: 'file_download',
       action: function() {
         var exportFlow = this.setupExportAction('Download Files to Disk');
         this.exportManager.downloadApp(exportFlow);
@@ -75,6 +80,8 @@ CLASS({
       name: 'uploadApp',
       label: 'Upload',
       help: 'Upload app to the Chrome Web Store',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA1SURBVHjavcwxCgAwEALB6P8ffUUKEbEKOctZ8PwZUJxEcRV3lXQVuZf0fLtqtB5eR1sPWxsHogDjZnwe5wAAAABJRU5ErkJggg==',
+      ligature: 'file_upload',
       action: function() {
         var exportFlow = this.setupExportAction('Upload to Chrome Web Store');
         this.exportManager.uploadApp(exportFlow);
@@ -85,6 +92,8 @@ CLASS({
       name: 'publishApp',
       label: 'Publish',
       help: 'Publish app to the Chrome Web Store',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAAySURBVHjaxY+xDQAACINs/z/akRhj3JQRJuIMF9awIw3e1uAp1VO6p+ApgKcAc3/hkgQRygDjNDsCngAAAABJRU5ErkJggg==',
+      ligature: 'publish',
       action: function() {
         var exportFlow = this.setupExportAction('Publish to Chrome Web Store');
         this.exportManager.publishApp(exportFlow);
@@ -95,42 +104,6 @@ CLASS({
   templates: [
     function toHTML() {/*
       <%= this.innerView({ data$: this.data$ }, this.Y) %>
-      <app-config-actions>
-        $$packageDownload{
-          model_: 'foam.ui.md.FlatButton',
-          iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfQAWXGFAAAAFXRSTlMALePhKBXghJvbEray/fwg6uhP6U1pY8wzAAAAWklEQVR4Xq3PORKEMAwFUbGJdcZsvv9VSTr4JRIX5c70XySrXNNmqeuNBh9NmuYFWHNoA34R/kB+9RnkKgdPRskFEHYBhF0AYVdA2AUQL31wj3AA5xX226r2ACkvFWPaNFOcAAAAAElFTkSuQmCC',
-          ligature: 'archive',
-          color: '#4285F4',
-        }
-        $$downloadApp{
-          model_: 'foam.ui.md.FlatButton',
-          iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA0SURBVHjazdBBCgAgEMNAs/9/tCAEFoo3FeeY3jpuqOWngWrIxd4RXdgD9oA9wLHLtR9emRVOAOP9ZYAiAAAAAElFTkSuQmCC',
-          ligature: 'file_download',
-          color: '#4285F4',
-        }
-        $$uploadApp{
-          model_: 'foam.ui.md.FlatButton',
-          iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA1SURBVHjavcwxCgAwEALB6P8ffUUKEbEKOctZ8PwZUJxEcRV3lXQVuZf0fLtqtB5eR1sPWxsHogDjZnwe5wAAAABJRU5ErkJggg==',
-          ligature: 'file_upload',
-          color: '#4285F4',
-        }
-        $$publishApp{
-          model_: 'foam.ui.md.FlatButton',
-          iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAAySURBVHjaxY+xDQAACINs/z/akRhj3JQRJuIMF9awIw3e1uAp1VO6p+ApgKcAc3/hkgQRygDjNDsCngAAAABJRU5ErkJggg==',
-          ligature: 'publish',
-          color: '#4285F4',
-        }
-      </kiosk-config-actions>
-    */},
-    function CSS() {/*
-      app-config-actions {
-        margin: 10px;
-        display: flex;
-        justify-content: flex-end;
-      }
-      app-config-actions canvas {
-        flex-grow: 0;
-      }
     */},
   ]
 });
