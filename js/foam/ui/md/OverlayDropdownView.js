@@ -19,7 +19,7 @@ CLASS({
     'window',
   ],
   exports: [
-    'as popup',
+    'as dropdown',
   ],
 
   properties: [
@@ -180,7 +180,7 @@ CLASS({
     {
       name: 'onClick',
       code: function(e) {
-        // Prevent clicks in the popup from closing the popup.
+        // Prevent clicks in the dropdown from closing the dropdown.
         e.stopPropagation();
       },
     },

@@ -65,22 +65,34 @@ CLASS({
     function withOAuth(ret, opt_err) {
       this.oauthFuture(function(oauth) {
         if ( oauth.accessToken ) {
-          ret(oauth);
+          ret(true, oauth);
           return;
         }
 
         oauth.refresh(function(token) {
-          if ( token )        ret(oauth);
-          else if ( opt_err && typeof opt_err === 'function' ) opt_err();
-          else                                                 ret();
+          if ( token ) {
+            ret(true, oauth);
+            return;
+          }
+          // Convice Chrome Apps that we "checked the error".
+          chrome.runtime.lastError && chrome.runtime.lastError.message;
+          var err = chrome.runtime.lastError;
+          if ( opt_err && typeof opt_err === 'function' ) opt_err(false, err);
+          else                                            ret(false, err);
         });
       });
     },
     function withEmail(ret, opt_err) {
       this.emailFuture(function(email) {
-        if ( email )        ret(email);
-        else if ( opt_err  && typeof opt_err === 'function' ) opt_err();
-        else                                                  ret();
+        if ( email ) {
+          ret(true, email);
+          return;
+        }
+        // Convice Chrome Apps that we "checked the error".
+        chrome.runtime.lastError && chrome.runtime.lastError.message;
+        var err = chrome.runtime.lastError;
+        if ( opt_err  && typeof opt_err === 'function' ) opt_err(false, err);
+        else                                             ret(false, err);
       });
     },
     function init() {
@@ -121,7 +133,8 @@ CLASS({
     function setupEmail() {
       var future = afuture();
 
-      this.withOAuth(function(oauth) {
+      this.withOAuth(function(status, oauth) {
+        if ( ! status ) return;
         this.xhrManager.asend(function(data, xhr, status) {
           if ( ! status ) {
             future.set(null);

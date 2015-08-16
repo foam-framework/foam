@@ -106,11 +106,16 @@ CLASS({
     function needsUpload(hash) {
       return ( ! hash ) || this.data.config.hashCode() !== hash.objectHashCode;
     },
-    function sendPublish(ret, oauth, config) {
-      if ( ! ( oauth && config ) ) {
+    function sendPublish(ret, oauthStatus, oauth, config) {
+      if ( ! oauthStatus ) {
         this.data.message = 'Oops! Looks like something went wrong.';
+        // TODO(markdittmer): Figure out how to use error object (in "oauth"
+        // variable) to determine whether the issue was user denial-of-access or
+        // a connection issue.
         this.data.details =
-            'Did you grant the application the permission it needs to publish your app?';
+            "Authentication failed: Either we couldn't reach the " +
+            "authentication service or you denied the application permission " +
+            "to upload your app.";
         this.data.state = 'FAILED';
         this.metricsDAO.put(this.Error.create({
           name: 'Action:publish:fail - ' +
@@ -134,11 +139,13 @@ CLASS({
     },
     function completePublish(data, xhr, status) {
       if ( ( ! status ) || data.error ) {
-        var errors = (data.error && data.error.errors) || [];
         this.data.message = 'Oops! Something went wrong during your publish request.';
-        this.data.details =
+        this.data.details = (data && data.error && data.error.errors) ?
             // TODO(markdittmer): These may not be internationalized.
-            errors.map(function(err) { return err.message; }).join(' ');
+            data.error.errors.map(function(err) {
+              return err.message;
+            }).join(' ') :
+            'Failed to connect to Chrome Web Store.';
         this.data.state = 'FAILED';
         this.metricsDAO.put(this.Error.create({
           name: 'Action:publish:fail - ' +
@@ -180,13 +187,18 @@ CLASS({
 
       ret(data);
     },
-    function sendUpload(ret, oauth, data) {
+    function sendUpload(ret, oauthStatus, oauth, data) {
       var config = this.data.config;
 
-      if ( ! oauth ) {
+      if ( ! oauthStatus ) {
         this.data.message = 'Oops! Looks like something went wrong.';
+        // TODO(markdittmer): Figure out how to use error object (in "oauth"
+        // variable) to determine whether the issue was user denial-of-access or
+        // a connection issue.
         this.data.details =
-            'Did you grant the application the permission it needs to upload your app?';
+            "Authentication failed: Either we couldn't reach the " +
+            "authentication service or you denied the application permission " +
+            "to upload your app.";
         this.data.state = 'FAILED';
         this.metricsDAO.put(this.Error.create({
           name: 'Action:upload:fail - ' +
@@ -207,9 +219,10 @@ CLASS({
     function finalizeUpload(ret, data, xhr, status) {
       if ( ( ! status ) || data.uploadState !== 'SUCCESS' ) {
         this.data.message = 'Oops! Something went wrong during the file upload.';
-        this.data.details =
+        this.data.details = (data && data.itemError) ?
             // TODO(markdittmer): These may not be internationalized.
-            data.itemError.map(function(err) { return err.itemError; }).join(' ');
+            data.itemError.map(function(err) { return err.itemError; }).join(' ') :
+            'Failed to connect to Chrome Web Store.';
         this.data.state = 'FAILED';
         this.metricsDAO.put(this.Error.create({
           name: 'Action:upload:fail - ' +

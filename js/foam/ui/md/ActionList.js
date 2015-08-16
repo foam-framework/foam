@@ -15,6 +15,7 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
 
   requires: [ 'foam.ui.md.FlatButton' ],
+  imports: [ 'dropdown' ],
 
   properties: [
     'data',
@@ -22,11 +23,42 @@ CLASS({
       model_: 'ArrayProperty',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'actions',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        var i;
+        if ( old && old.length ) {
+          for ( i = 0; i < old.length; ++i ) {
+            old[i].data$.removeListener(this.onActionDataChange);
+          }
+        }
+        if ( nu && nu.length ) {
+          for ( i = 0; i < nu.length; ++i ) {
+            nu[i].data$.addListener(this.onActionDataChange);
+            this.onActionDataChange(nu[i], ['property', 'data'], null, nu[i].data);
+          }
+        }
+      },
     },
     {
       model_: 'ViewFactoryProperty',
       name: 'actionViewFactory',
       defaultValue: 'foam.ui.md.FlatButton',
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'onActionDataChange',
+      code: function(toolbarAction, topic, old, nu) {
+        if ( old && old.unsubscribe )
+          old.unsubscribe(['action', toolbarAction.action.name], this.onAction);
+        if ( nu && nu.subscribe )
+          nu.subscribe(['action', toolbarAction.action.name], this.onAction);
+      },
+    },
+    {
+      name: 'onAction',
+      code: function() { this.dropdown && this.dropdown.close(); },
     },
   ],
 
