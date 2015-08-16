@@ -1,0 +1,46 @@
+/**
+ * @license
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+CLASS({
+  name: 'IDBDAOFactory',
+  package: 'foam.apps.builder.dao',
+  
+  extendsModel: 'foam.apps.builder.dao.DAOFactory',
+  
+  requries: [
+    'foam.dao.IDBDAO',
+    'foam.dao.EasyDAO',
+  ],
+  
+  documentation: "Holds a serializable description of a DAO type.",
+  
+  properties: [
+    {
+      name: 'name',
+    },
+    {
+      name: 'label',
+    },
+    {
+      model_: 'FactoryProperty',
+      hidden: true,
+      name: 'factory',
+      defaultValue: function() {
+        return this.IDBDAO.create({
+          name: this.name,
+          model: this.X.lookup(this.modelName),
+          useSimpleSerialization: false,
+        });
+      },
+    }
+  ],
+  
+});

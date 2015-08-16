@@ -15,6 +15,13 @@ CLASS({
 
   requires: [
     'Model',
+    'BooleanProperty',
+    'StringProperty',
+    'IntProperty',
+    'FloatProperty',
+    'DateProperty',
+    'foam.ui.md.DetailView',
+    'foam.ui.TableView',
   ],
 
   imports: [
