@@ -366,6 +366,15 @@ return JSONUtil.arrayToObjArray(X, [
     image: 'TaskManager.png'
   },
   {
+    name: 'Robot',
+    xxxmodel: 'foam.demos.supersnake.Robot',
+    path: '/index.html?model=foam.demos.supersnake.Robot&x=100&scaleX=3&scaleY=3&width=1000&height=10000',
+    src: '../js/foam/demos/supersnake/Robot.js',
+    description: 'Simple animated robot written by an eleven year old.',
+    keywords: [ 'graphics', 'animation' ],
+    image: 'Robot.png'
+  },
+  {
     name: 'FOAM Demo Catalog',
     path: 'DemoCat.html',
     description: 'A FOAM Demo browser.  The demo you\'re currently running.',
@@ -373,6 +382,8 @@ return JSONUtil.arrayToObjArray(X, [
     src: 'DemoCat.js',
     image: 'DemoCat.png'
   }
+
+
   ], this.Demo).dao;
     } },
     {
