@@ -36,6 +36,7 @@ CLASS({
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.TextFieldView',
     'Model',
+    'foam.apps.builder.dao.DAOFactory',
   ],
   exports: [
     'touchManager',
@@ -45,6 +46,7 @@ CLASS({
     'menuDAO$',
     'exportManager$',
     'modelDAO',
+    'daoConfigDAO',
   ],
 
   properties: [
@@ -121,6 +123,17 @@ CLASS({
               useSimpleSerialization: false,
           }, this.Y)
         }, this.Y);
+      },
+    },
+    {
+      name: 'daoConfigDAO',
+      help: 'The store of DAO configurations for all apps.',
+      lazyFactory: function() {
+        return this.IDBDAO.create({
+              model: this.DAOFactory,
+              name: 'DAOFactories',
+              useSimpleSerialization: false,
+          }, this.Y)
       },
     },
     {
