@@ -90,10 +90,15 @@ CLASS({
       }
     },
     {
+      model_: 'BooleanProperty',
+      name: 'scrollEnabled',
+      defaultValue: false
+    },
+    {
       name: 'table',
       lazyFactory: function() {
         return this.TableView.create({
-          scrollEnabled: true,
+          scrollEnabled: this.scrollEnabled,
           className: 'mdTable',
           ascIcon: '<i class="material-icons">keyboard_arrow_up</i>',
           descIcon: '<i class="material-icons">keyboard_arrow_down</i>',
