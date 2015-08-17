@@ -103,7 +103,7 @@ CLASS({
         return ! this.immutable && ! this.originalData.equals(this.data);
       },
       postSet: function(old,nu) {
-        if (this.liveEdit) {
+        if ( nu && this.liveEdit ) {
           this.onCommit();
         }
       }
