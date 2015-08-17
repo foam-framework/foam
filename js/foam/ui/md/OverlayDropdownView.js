@@ -193,6 +193,7 @@ CLASS({
       <% this.setClass(
              'open',
              function() {
+               this.state; this.animationState;
                return this.state === 'OPEN' && this.animationState === 'OPEN';
              }.bind(this),
              this.id); %>
