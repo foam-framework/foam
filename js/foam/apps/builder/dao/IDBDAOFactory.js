@@ -12,16 +12,16 @@
 CLASS({
   name: 'IDBDAOFactory',
   package: 'foam.apps.builder.dao',
-  
+
   extendsModel: 'foam.apps.builder.dao.DAOFactory',
-  
+
   requries: [
     'foam.dao.IDBDAO',
     'foam.dao.EasyDAO',
   ],
-  
+
   documentation: "Holds a serializable description of a DAO type.",
-  
+
   properties: [
     {
       name: 'name',
@@ -36,11 +36,11 @@ CLASS({
       defaultValue: function() {
         return this.IDBDAO.create({
           name: this.name,
-          model: this.X.lookup(this.modelName),
+          model: this.X.lookup(this.modelType),
           useSimpleSerialization: false,
         });
       },
     }
   ],
-  
+
 });

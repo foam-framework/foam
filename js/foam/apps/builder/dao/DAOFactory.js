@@ -12,9 +12,9 @@
 CLASS({
   name: 'DAOFactory',
   package: 'foam.apps.builder.dao',
-  
+
   documentation: "Holds a serializable description of a DAO type.",
-  
+
   properties: [
     {
       name: 'name',
@@ -27,7 +27,7 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'modelName',
+      name: 'modelType',
       help: 'The model type to store in this DAO.',
       defaultValue: 'Model',
     },
@@ -37,5 +37,5 @@ CLASS({
       name: 'factory',
     }
   ],
-  
+
 });

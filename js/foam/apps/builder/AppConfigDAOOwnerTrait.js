@@ -18,7 +18,7 @@ CLASS({
   ],
 
   imports: [
-    
+
   ],
 
   properties: [
@@ -27,11 +27,15 @@ CLASS({
       view: 'foam.ui.md.DetailView',
       label: 'Data storage',
       lazyFactory: function() {
-        return this.LocalDAOFactory.create({ 
-          name: 'newDAO', 
-          
+        return this.LocalDAOFactory.create({
+          name: 'newDAO',
+          modelType: this.baseModelId,
         });
       },
+   },
+   {
+     name: 'baseModelId',
+     help: 'The model name of the base type for models this trait stores.',
    },
 
   ],
