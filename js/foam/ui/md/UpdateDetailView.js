@@ -23,6 +23,7 @@ CLASS({
 
   requires: [
     'foam.ui.PopupChoiceView',
+    'foam.ui.md.Toolbar'
   ],
 
   imports: [
@@ -30,7 +31,7 @@ CLASS({
     'stack'
   ],
   exports: [
-    'as updateView',
+    'toolbar$'
   ],
 
   properties: [
@@ -44,12 +45,12 @@ CLASS({
     },
     {
       name: 'originalData',
-      documentation: 'A clone of the input data, for comparison with edits.',
+      documentation: 'A clone of the input data, for comparison with edits.'
     },
     {
       name: 'data',
       preSet: function(_, v) {
-        if ( ! v ) return;
+        if ( ! v ) return undefined;
         this.rawData = v;
         return v.deepClone();
       },
@@ -94,7 +95,7 @@ CLASS({
       defaultValue: true
     },
     {
-      model: 'BooleanProperty',
+      model_: 'BooleanProperty',
       name: 'outstandingChanges',
       hidden: true,
       dynamicValue: function() {
@@ -102,10 +103,43 @@ CLASS({
         return ! this.immutable && ! this.originalData.equals(this.data);
       },
       postSet: function(old,nu) {
-        if (this.liveEdit) {
-          this.save();
+        if ( nu && this.liveEdit ) {
+          this.onCommit();
         }
       }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'noChanges',
+      defaultValue: null,
+      dynamicValue: function() { return ! this.outstandingChanges; }
+    },
+    {
+      type: 'foam.ui.md.Toolbar',
+      name: 'toolbar',
+      lazyFactory: function() {
+        return this.Toolbar.create({
+          data$: this.data$,
+          title$: this.title$
+        }, this.Y);
+      },
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( old ) {
+          Events.unfollow(this.noChanges$, old.back.available$);
+          Events.unfollow(this.outstandingChanges$, old.reset.available$);
+          Events.unfollow(this.outstandingChanges$, old.commit.available$);
+        }
+        if ( nu ) {
+          nu.back.code = this.onBack;
+          nu.reset.code = this.onReset;
+          nu.commit.code = this.onCommit;
+          nu.menu.available = false;
+          Events.follow(this.noChanges$, nu.back.available$);
+          Events.follow(this.outstandingChanges$, nu.reset.available$);
+          Events.follow(this.outstandingChanges$, nu.commit.available$);
+        }
+      },
     },
     {
       model_: 'ViewFactoryProperty',
@@ -115,13 +149,7 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'md-update-detail-view'
-    },
-    {
-      name: '$title',
-      getter: function() {
-        return this.X.$(this.id + '-title');
-      }
-    },
+    }
   ],
 
   listeners: [
@@ -132,23 +160,17 @@ CLASS({
         // changed anything.
         this.data = this.rawData;
       }
-    }
-  ],
-
-  actions: [
+    },
     {
-      name:  'save',
+      name:  'onCommit',
       help:  'Save updates.',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAUElEQVQ4jWNgGAW4wH9d0pRH///zv4E05f+J1jB0lP9n+b/0fzgJpv8PBUr++R9BgmP+N4C1RJLgdqiWKBK8CtVCUsiAtBCvHKqFFOUjAwAATIhwjZSqeJcAAAAASUVORK5CYII=',
-      isAvailable: function() { return this.outstandingChanges; },
-      action: function() {
+      code: function() {
         var self = this;
         var obj  = this.data;
 
         this.dao.put(obj, {
           put: function() {
             self.originalData = obj.deepClone();
-            self.$title.innerHTML = self.title;
 
             if (self.exitOnSave && ! self.liveEdit) {
               self.stack.popView();
@@ -161,25 +183,14 @@ CLASS({
       }
     },
     {
-      name:  'cancel',
-      help:  'Cancel update.',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAdklEQVQ4y+WTuQ3AIBAEaQKK8NN/BEUArmccgGyj43MMIZo5TqtFqbUPJxYtbg2OvS44IJQKhguwdUETSiXjXr77KhGICRjihWKm8Dw3KXP4Z5VZ/Lfw7B5kyD1cy5C7uAx5iJcht6vhRTUi4OrC0Szftvi/vAFNdbZ2Dp661QAAAABJRU5ErkJggg==',
-      isAvailable: function() { return this.outstandingChanges; },
-      action: function() { this.stack.popView(); }
+      name:  'onBack',
+      help:  'Go back.',
+      code: function() { this.stack.popView(); }
     },
     {
-      name:  'back',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPUlEQVQ4y2NgGLbgf8P/BtKU////+78WacpDSFMeSlPlYaQo/0OacjyAcg1wJ4WTGmHDS4sWaVrqhm/mBQAoLpX9t+4i2wAAAABJRU5ErkJggg==',
-      isAvailable: function() { return ! this.outstandingChanges; },
-      action: function() { this.stack.popView(); }
-    },
-    {
-      name: 'reset',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAdklEQVQ4y+WTuQ3AIBAEaQKK8NN/BEUArmccgGyj43MMIZo5TqtFqbUPJxYtbg2OvS44IJQKhguwdUETSiXjXr77KhGICRjihWKm8Dw3KXP4Z5VZ/Lfw7B5kyD1cy5C7uAx5iJcht6vhRTUi4OrC0Szftvi/vAFNdbZ2Dp661QAAAABJRU5ErkJggg==',
-      isAvailable: function() { return this.outstandingChanges; },
-      action: function() {
-        this.data = this.originalData.deepClone();
-      }
+      name: 'onReset',
+      help: 'Reset form (cancel update).',
+      code: function() { this.data = this.originalData.deepClone(); }
     }
   ],
 
@@ -191,24 +202,6 @@ CLASS({
         height: 100%;
         width: 100%;
       }
-      .md-update-detail-view-header {
-        align-items: center;
-        background-color: #3e50b4;
-        color: #fff;
-        display: flex;
-        flex-shrink: 0;
-        flex-grow: 0;
-        font-size: 20px;
-        font-weight: 500;
-        height: 56px;
-        padding: 0 12px;
-        width: 100%;
-      }
-
-      .md-update-detail-view-header .title {
-        margin-left: 12px;
-      }
-
       .md-update-detail-view-body {
         overflow-x: hidden;
         overflow-y: auto;
@@ -219,56 +212,11 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        <div class="md-update-detail-view-header browser-header-color">
-          $$back $$reset
-          <span id="<%= this.id %>-title" class="expand title">
-            <%= this.title %>
-          </span>
-          <span id="<%= this.id %>-header-actions" class="md-update-detail-view-header-actions">
-            <%
-              var actions = this.data.model_.actions;
-              if (this.showModelActions && actions && actions.length) {
-                var namedActions = [];
-                for (var i = 0; i < actions.length; i++) {
-                  if (actions[i].iconUrl) {
-                    out(this.createTemplateView(actions[i].name, { X: this.Y }));
-                  } else {
-                    namedActions.push(actions[i]);
-                  }
-                }
-                if (namedActions.length) {
-                  // TODO(braden): HACK We need a generic button-and-popup view.
-                  var choices = [];
-                  var byName = {};
-                  for (var i = 0; i < namedActions.length; i++) {
-                    if (namedActions[i].isAvailable.call(this.data)) {
-                      choices.push([namedActions[i].name, namedActions[i].label]);
-                      byName[namedActions[i].name] = namedActions[i];
-                    }
-                  }
-                  var v = this.PopupChoiceView.create({
-                    autoSetData: false,
-                    choices: choices,
-                    iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAN0lEQVQ4y2NgGKbgf9D/1/9f/fcnXsPr/yDwEpscE3YdSCRRNvj/f/n/xX/f0VAaDaVhGEpUBQDnbkP8bmeeCwAAAABJRU5ErkJggg=='
-                  }, this.X);
-                  v.data$.addListener(function(_, __, old, nu) {
-                    if (nu) {
-                      byName[nu].maybeCall(self.X, self.data);
-                    }
-                  });
-                  out(v);
-                }
-              }
-            %>
-          </span>
-          <% this.setClass('hidden', function() { return self.outstandingChanges },
-              this.id + '-header-actions'); %>
-          $$save
-        </div>
+        %%toolbar
         <div class="md-update-detail-view-body">
           <%= this.innerView({ data$: this.data$ }, this.Y) %>
         </div>
       </div>
-    */},
+    */}
   ]
 });

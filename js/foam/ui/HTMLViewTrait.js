@@ -409,7 +409,7 @@ CLASS({
           self.X.dynamic(
             predicate,
             function() {
-              var e = this.X.$(opt_id);
+              var e = self.X.$(opt_id);
               if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
               DOM.setClass(e, className, predicate());
             }

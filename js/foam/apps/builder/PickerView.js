@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.datamodels',
+  package: 'foam.apps.builder',
   name: 'PickerView',
   extendsModel: 'foam.ui.DetailView',
 
@@ -43,6 +43,18 @@ CLASS({
       // also save to DataModels store. Setting modelName will cause a load from the store.
       this.modelDAO && this.modelDAO.put(this.data);
     },
+
+//     function getModelAncestry(model) {
+//       var ret = [];
+//       var m = model;
+
+//       do {
+//         ret.push(m.id);
+//         m = this.X.lookup(model.extendsModel);
+//       } while (m);
+
+//       return ret;
+//     },
   ],
 
   properties: [

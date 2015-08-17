@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.datamodels',
   name: 'ModelPickerView',
-  extendsModel: 'foam.apps.builder.datamodels.PickerView',
+  extendsModel: 'foam.apps.builder.PickerView',
 
   requires: [
     'foam.meta.types.ModelEditView',
@@ -68,6 +68,6 @@ CLASS({
       label: 'Edit the Questionnaire',
     }
   ],
-  
+
 
 });

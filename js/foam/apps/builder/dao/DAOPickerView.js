@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.dao',
   name: 'DAOPickerView',
-  extendsModel: 'foam.apps.builder.datamodels.PickerView',
+  extendsModel: 'foam.apps.builder.PickerView',
 
   requires: [
     'foam.ui.md.DetailView',
@@ -28,7 +28,7 @@ CLASS({
   properties: [
     {
       name: 'modelLabel',
-      defaultValue: 'DAO'
+      defaultValue: 'Data Storage'
     },
     {
       name: 'daoNameProperty',
@@ -37,7 +37,27 @@ CLASS({
     {
       name: 'editViewType',
       defaultValue: 'foam.ui.md.DetailView',
-    }
+    },
+    {
+      model_: 'ModelProperty',
+      name: 'baseModel',
+      help: 'The list is filtered to only include DAOs that store models extending this base model.',
+      defaultValue: Model,
+      postSet: function() {
+        if ( this.modelDAO ) {
+          this.filteredDAO = this.modelDAO.where(EQ(this.DAOFactory.MODEL_TYPE, this.baseModel.id));
+        }
+      }
+    },
+    {
+      name: 'modelDAO',
+      postSet: function(old,nu) {
+        if ( this.baseModel ) {
+          this.filteredDAO = this.modelDAO.where(EQ(this.DAOFactory.MODEL_TYPE, this.baseModel.id));
+        }
+      },
+    },
+
   ],
 
   actions: [
@@ -46,6 +66,6 @@ CLASS({
       label: 'Edit the Data Source',
     }
   ],
-  
+
 
 });

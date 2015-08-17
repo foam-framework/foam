@@ -17,7 +17,9 @@ CLASS({
   requires: [
     'foam.ui.TableView',
     'foam.ui.md.ActionLabel',
-    'foam.ui.md.EditColumnsView'
+    'foam.ui.md.EditColumns',
+    'foam.ui.md.EditColumnsView',
+    'foam.ui.md.OverlayDropdownView'
   ],
   imports: [ 'hardSelection$' ],
 
@@ -105,9 +107,15 @@ CLASS({
     {
       name: 'columnSelectionView',
       lazyFactory: function() {
-        return this.EditColumnsView.create({
-          model$: this.model$,
-          properties$: this.properties$
+        return this.OverlayDropdownView.create({
+          delegate: function() {
+            return this.EditColumnsView.create({
+              data: this.EditColumns.create({
+                model$: this.model$,
+                properties$: this.properties$
+              }, this.Y)
+            });
+          }.bind(this)
         });
       }
     }
@@ -177,7 +185,7 @@ CLASS({
       name: 'editColumns',
       label: 'more_vert',
       action: function(X, action) {
-        if ( this.columnSelectionView.isOpen ) return;
+        if ( this.columnSelectionView.state === 'OPEN' ) return;
         this.columnSelectionView.open();
       }
     }

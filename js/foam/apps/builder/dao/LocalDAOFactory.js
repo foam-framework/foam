@@ -12,16 +12,16 @@
 CLASS({
   name: 'LocalDAOFactory',
   package: 'foam.apps.builder.dao',
-  
+
   extendsModel: 'foam.apps.builder.dao.DAOFactory',
-  
+
   requries: [
     'foam.dao.IDBDAO',
     'foam.dao.EasyDAO',
   ],
-  
+
   documentation: "Holds a serializable description of a local DAO, typically stored in the web browser.",
-  
+
   properties: [
     {
       name: 'name',
@@ -35,7 +35,7 @@ CLASS({
       name: 'factory', //TODO(jacksonic): Should be named .create, but can't until Model.create is moved
       defaultValue: function() {
         return this.EasyDAO.create({
-          model: this.X.lookup(this.modelName),
+          model: this.X.lookup(this.modelType),
           name: this.name,
           daoType: this.IDBDAO,
           cache: true,
@@ -45,5 +45,5 @@ CLASS({
       },
     }
   ],
-  
+
 });
