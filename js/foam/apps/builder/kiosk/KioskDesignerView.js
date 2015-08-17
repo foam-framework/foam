@@ -12,31 +12,15 @@
 CLASS({
   package: 'foam.apps.builder.kiosk',
   name: 'KioskDesignerView',
-  extendsModel: 'foam.ui.View',
-  traits: [
-    'foam.metrics.ScreenViewTrait',
-  ],
+  extendsModel: 'foam.apps.builder.DesignerView',
 
   requires: [
-    'foam.apps.builder.ExportManager',
-    'foam.apps.builder.AppConfigDetailView',
     'foam.apps.builder.kiosk.KioskView',
-    'foam.apps.builder.Panel',
   ],
 
-  imports: [
-    'exportManager$',
-  ],
   exports: [
     'url$',
   ],
-
-  constants: {
-    AUX_DATA_PROPS: [
-      'config',
-      'chrome',
-    ],
-  },
 
   properties: [
     {
@@ -48,29 +32,13 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.ExportManager',
-      name: 'exportManager',
+      model_: 'StringProperty',
+      name: 'url',
     },
-  ],
-
-  templates: [
-    function toHTML() {/*
-      <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
-        $$data{
-          model_: 'foam.apps.builder.Panel',
-          innerView: 'foam.apps.builder.AppConfigDetailView',
-        }
-        $$data{ model_: 'foam.apps.builder.kiosk.KioskView' }
-      </kiosk-designer>
-    */},
-    function CSS() {/*
-      kiosk-designer {
-        position: relative;
-        display: flex;
-        flex-grow: 1;
-      }
-      kiosk-designer panel { z-index: 2; }
-      kiosk-designer kiosk { z-index: 1; }
-    */},
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'appView',
+      defaultValue: 'foam.apps.builder.kiosk.KioskView',
+    },
   ],
 });
