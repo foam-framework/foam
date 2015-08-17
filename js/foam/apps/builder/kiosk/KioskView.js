@@ -13,6 +13,7 @@ CLASS({
   package: 'foam.apps.builder.kiosk',
   name: 'KioskView',
   extendsModel: 'foam.ui.View',
+  traits: [ 'foam.apps.builder.ZIndexTrait' ],
 
   requires: [
     'foam.apps.builder.kiosk.KioskChromeView',
@@ -50,6 +51,11 @@ CLASS({
           if ( nu.rotation !== 0 ) this.onRotationChange();
         }
       },
+    },
+    {
+      model_: 'IntProperty',
+      name: 'zIndex',
+      defaultValue: 1,
     },
     {
       type: 'foam.apps.builder.TOSData',
@@ -206,7 +212,7 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <kiosk id="%%id" <%= this.cssClassAttr() %>>
+      <kiosk id="%%id" <%= this.cssClassAttr() %> >
         %%tosView
         $$data
         %%webview

@@ -13,8 +13,14 @@ CLASS({
   package: 'foam.apps.builder',
   name: 'Panel',
   extendsModel: 'foam.ui.View',
+  traits: [ 'foam.apps.builder.ZIndexTrait' ],
 
   properties: [
+    {
+      model_: 'IntProperty',
+      name: 'zIndex',
+      defaultValue: 2,
+    },
     {
       model_: 'foam.core.types.StringEnumProperty',
       name: 'pos',
