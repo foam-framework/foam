@@ -138,7 +138,7 @@ MODEL({
     },
     {
       name: 'value',
-      adapt: function(_, v) { var ret = parseFloat(v); return isNaN(ret) ? v : ret; },
+      adapt: function(_, v) { var ret = parseFloat(v); return isNaN(ret) ? v : ret.toFixed(2); },
       displayWidth: 12
     }
   ],
