@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// Run server with: node --harmony tools/foam.js foam.demos.olympics.Server
 CLASS({
   package: 'foam.demos.olympics',
   name: 'Server',
@@ -52,7 +53,7 @@ CLASS({
 	  seqNo: true,
 	  autoIndex: true
 	});
-	
+
 	result.select(dao);
 	return dao;
       }
@@ -69,4 +70,3 @@ CLASS({
     }
   ]
 });
-

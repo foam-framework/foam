@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// Run server with: node --harmony tools/foam.js foam.demos.olympics.Server
 CLASS({
   package: 'foam.demos.olympics',
   name: 'ClientController',
