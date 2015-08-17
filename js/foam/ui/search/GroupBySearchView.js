@@ -71,6 +71,9 @@ CLASS({
       defaultValue: TRUE
     },
     {
+      name: 'memento',
+    },
+    {
       name: 'label',
       type: 'String',
       defaultValueFn: function() { return this.property.label; }
@@ -118,16 +121,23 @@ CLASS({
 
         this.dao.where(this.filter).select(GROUP_BY(this.property, COUNT()))(function(groups) {
           var options = [];
+          var selected;
           for ( var key in groups.sortedGroups() ) {
             if (!key) continue;
             var count    = ('(' + groups.groups[key] + ')').intern();
             var subKey   = key.substring(0, self.width-count.length-3);
             var cleanKey = subKey.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            if (self.memento && self.memento === key) {
+              selected = key;
+            }
             options.push([key, cleanKey + (Array(self.width-subKey.length-count.length).join(/*'&nbsp;'*/' ')).intern() + count]);
-          };
+          }
 
           options.splice(0,0,['','-- CLEAR SELECTION --']);
           self.view.choices = options;
+          if (selected) {
+            self.view.data = selected;
+          }
         });
       }
     },
@@ -136,6 +146,7 @@ CLASS({
 
       code: function(_, _, _, choice) {
         this.predicate = choice ? this.op(this.property, choice) : TRUE ;
+        this.memento = choice ? choice : '';
       }
     }
   ]

@@ -688,7 +688,19 @@ CLASS({
           if ( e.children[i].nodeName === name ) val.push(e.children[i].innerHTML);
         this[p.name] = val;
       }
-    }
+    },
+    {
+      name: 'toMemento',
+      defaultValue: function(o, p) {
+        return o.join(',');
+      }
+    },
+    {
+      name: 'fromMemento',
+      defaultValue: function(s, p) {
+        return s ? s.split(',') : undefined;
+      }
+    },
   ]
 });
 

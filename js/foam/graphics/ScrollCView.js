@@ -87,7 +87,7 @@ CLASS({
     {
       name: 'borderColor',
       type: 'String',
-      defaultValue: '#555'
+      defaultValue: '#999'
     }
   ],
 
@@ -165,6 +165,7 @@ CLASS({
       if ( this.extent >= this.size ) return;
 
       c.strokeStyle = this.borderColor;
+      c.lineWidth = 0.4;
       c.strokeRect(this.x, this.y, this.width-7, this.height);
 
       c.fillStyle = this.handleColor;
@@ -173,8 +174,8 @@ CLASS({
       var handleSize = this.extent / this.size * h;
 
       if ( handleSize < this.minHandleSize ) {
-        handleSize = this.minHandleSize;
         h -= this.minHandleSize - handleSize;
+        handleSize = this.minHandleSize;
       }
 
       c.fillRect(
