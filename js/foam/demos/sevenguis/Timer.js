@@ -23,11 +23,11 @@ MODEL({
     {
       name: 'progress',
       label: 'Elapsed Time',
-      view: 'foam.ui.ProgressView',
-//      mode: 'read-only'
+      view: 'foam.ui.ProgressView'
     },
     {
       name: 'elapsedTime',
+      units: 's',
       label: '',
       mode: 'read-only',
       defaultValue: 0
@@ -50,8 +50,8 @@ MODEL({
       this.X.dynamic(function() {
         this.progress = 100 * Math.min(1, 1000 * this.elapsedTime / this.duration);
       }.bind(this));
-      this.tick();
       this.duration$.addListener(this.tick);
+      this.tick();
     }
   ],
   actions: [
@@ -65,13 +65,13 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
-      body { padding: 10px !important; font-size: 18px !important; }
       .elapsed { margin-top: 10px; }
       .label { display: inline-block; width: 130px; }
-      row { display: block; height: 30px; }
-      input[name="duration"] { width: 182px; }
-      input { margin-left: 12px; }
+      body { padding: 10px !important; font-size: 18px !important; }
       button { width: 332px !important; margin-top: 16px !important; }
+      input { margin-left: 12px; }
+      input[name="duration"] { width: 182px; }
+      row { display: block; height: 30px; }
     */},
     function toHTML() {/*
       <row><span class="label">Elapsed Time:</span> $$progress</row>
