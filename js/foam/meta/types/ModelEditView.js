@@ -139,7 +139,7 @@ CLASS({
         </div>
         <div class="floating-action">
           $$createButton{
-            className: 'createButton',
+            extraClassName: 'createButton',
             color: 'white',
             font: '30px Roboto Arial',
             alpha: 1,

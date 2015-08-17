@@ -208,7 +208,7 @@ CLASS({
         padding: 16px 16px;
         margin: 0;
         display: inline-flex;
-        align-items: center;
+        align-items: baseline;
         justify-content: center;
         overflow: hidden;
         position: relative;
@@ -254,6 +254,19 @@ CLASS({
         top: 0;
         z-index: 2;
       }
+
+      flat-button:not(.icon-only) .flat-button-icon-container {
+         padding-right: 12px;
+         width: 24px;
+         height: 0px;
+      }
+
+      flat-button:not(.icon-only) .flat-button-icon {
+        position: absolute;
+        left: 16px;
+        top: 12px;
+      }
+
     */},
     function toHTML() {/*
       <<%= self.tagName %> id="%%id" <%= this.cssClassAttr() %> >
