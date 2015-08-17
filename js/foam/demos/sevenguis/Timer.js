@@ -18,21 +18,25 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Timer',
+  extendsModel: 'foam.ui.View',
   properties: [
     {
+      name: 'progress',
+      label: 'Elapsed Time',
+      view: 'foam.ui.ProgressView',
+//      mode: 'read-only'
+    },
+    {
       name: 'elapsedTime',
+      label: '',
+      mode: 'read-only',
       defaultValue: 0
     },
     {
       name: 'duration',
       units: 'ms',
-      view: 'foam.ui.RangeView',
-      defaultValue: 5000,
-    },
-    {
-      name: 'progress',
-      view: 'foam.ui.ProgressView',
-//      mode: 'read-only'
+      view: { factory_: 'foam.ui.RangeView', maxValue: 10000 },
+      defaultValue: 5000
     },
     {
       name: 'lastTick_',
@@ -44,9 +48,10 @@ MODEL({
     function init() {
       this.SUPER();
       this.X.dynamic(function() {
-        this.progress = 100 * Math.min(1, this.elapsedTime / this.duration);
+        this.progress = 100 * Math.min(1, 1000 * this.elapsedTime / this.duration);
       }.bind(this));
       this.tick();
+      this.duration$.addListener(this.tick);
     }
   ],
   actions: [
@@ -59,10 +64,20 @@ MODEL({
     }
   ],
   templates: [
-    function toDetailHTML() {/*
-      Elapsed Time: $$progress <br>
-      $$elapsedTime{model_: 'foam.ui.TextFieldView', mode: 'read-only'} <br>
-      Duration: $$duration <br>
+    function CSS() {/*
+      body { padding: 10px !important; font-size: 18px !important; }
+      .elapsed { margin-top: 10px; }
+      .label { display: inline-block; width: 130px; }
+      row { display: block; height: 30px; }
+      input[name="duration"] { width: 182px; }
+      input { margin-left: 12px; }
+      button { width: 332px !important; margin-top: 16px !important; }
+    */},
+    function toHTML() {/*
+      <row><span class="label">Elapsed Time:</span> $$progress</row>
+      <row class="elapsed">$$elapsedTime{model_: 'foam.ui.FloatFieldView', precision: 1, mode: 'read-only'}s</row>
+      <row><span class="label">Duration:</span> $$duration{onKeyMode: true}</row>
+      $$reset
     */}
   ],
   listeners: [
@@ -70,10 +85,10 @@ MODEL({
       name: 'tick',
       isFramed: true,
       code: function() {
-        if ( this.elapsedTime >= this.duration ) return;
+        if ( 1000 * this.elapsedTime >= this.duration ) return;
         var now = Date.now();
-        if ( this.lastTick_ ) this.elapsedTime += now - this.lastTick_;
-        this.elapsedTime = Math.min(this.duration, this.elapsedTime);
+        if ( this.lastTick_ ) this.elapsedTime += (now - this.lastTick_)/1000;
+        this.elapsedTime = Math.min(this.duration/1000, this.elapsedTime);
         this.lastTick_ = now;
         this.tick();
       }
