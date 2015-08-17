@@ -185,12 +185,16 @@ CLASS({
     {
       name:  'onBack',
       help:  'Go back.',
-      code: function() { this.stack.popView(); }
+      code: function() {
+        this.stack.popView();
+      }
     },
     {
       name: 'onReset',
       help: 'Reset form (cancel update).',
-      code: function() { this.data = this.originalData.deepClone(); }
+      code: function() {
+        this.data = this.originalData.deepClone();
+      }
     }
   ],
 

@@ -47,7 +47,7 @@ CLASS({
       },
       postSet: function(old, nu, prop) {
         if ( old === nu || ! nu ) return;
-        nu.action = this.model_.getAction(prop.name + 'Action');
+        nu.action = this.model_.getAction(prop.name + 'Action').deepClone();
       },
     },
     {
@@ -62,7 +62,7 @@ CLASS({
       },
       postSet: function(old, nu, prop) {
         if ( old === nu || ! nu ) return;
-        nu.action = this.model_.getAction(prop.name + 'Action');
+        nu.action = this.model_.getAction(prop.name + 'Action').deepClone();
       },
     },
     {
@@ -77,7 +77,7 @@ CLASS({
       },
       postSet: function(old, nu, prop) {
         if ( old === nu || ! nu ) return;
-        nu.action = this.model_.getAction(prop.name + 'Action');
+        nu.action = this.model_.getAction(prop.name + 'Action').deepClone();
       },
     },
     {
@@ -92,7 +92,7 @@ CLASS({
       },
       postSet: function(old, nu, prop) {
         if ( old === nu || ! nu ) return;
-        nu.action = this.model_.getAction(prop.name + 'Action');
+        nu.action = this.model_.getAction(prop.name + 'Action').deepClone();
       },
     },
     {
@@ -156,8 +156,12 @@ CLASS({
       name: 'backAction',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPUlEQVQ4y2NgGLbgf8P/BtKU////+78WacpDSFMeSlPlYaQo/0OacjyAcg1wJ4WTGmHDS4sWaVrqhm/mBQAoLpX9t+4i2wAAAABJRU5ErkJggg==',
       ligature: 'arrow_back',
-      isAvailable: function() { return this.backAvailable; },
-      isEnabled: function() { return this.backEnabled; },
+      isAvailable: function() {
+        return this.backAvailable;
+      },
+      isEnabled: function() {
+        return this.backEnabled;
+      },
       action: function() {},
     },
     {

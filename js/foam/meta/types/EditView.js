@@ -50,17 +50,20 @@ CLASS({
   ],
 
   templates: [
-    function headerHTML(out, title) {/*
-      <% viewTitle = title || this.metaEditPropertyTitle; %>
+    function headerHTML(out) {/*
       <div class="meta-edit-heading md-style-trait-standard">
-        <div class="md-title"><%= viewTitle %></div>
+        <div class="md-title">$$name{
+          model_: 'foam.ui.md.TextFieldView',
+          inlineStyle: true,
+          floatingLabel: false,
+        }</div>
         <div class="meta-edit-view-right-title-icon">$$delete</div>
       </div>
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-card">
-          $$name{ model_: 'foam.ui.TextFieldView' } $$delete
+          $$label
         </div>
       </div>
     */},
@@ -75,6 +78,7 @@ CLASS({
       }
       .meta-edit-heading .md-title {
         flex-grow: 1;
+        font-weight: bold;
       }
       .meta-edit-view-right-title-icon {
         flex-shrink: 0;

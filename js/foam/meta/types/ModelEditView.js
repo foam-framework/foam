@@ -29,8 +29,8 @@ CLASS({
     'foam.meta.types.PropertyEditView',
     'foam.meta.types.StringPropertyEditView',
     'foam.ui.md.UpdateDetailView',
-    'foam.meta.MetaPropertyDescriptor',
-    'foam.meta.MetaDescriptorView',
+    'foam.meta.descriptor.PropertyMetaDescriptor',
+    'foam.meta.descriptor.MetaDescriptorView',
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.DAOListView',
   ],
@@ -82,11 +82,10 @@ CLASS({
       action: function() {
         this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
         var edit = this.UpdateDetailView.create({
-          data: this.MetaPropertyDescriptor.create(),
+          data: this.PropertyMetaDescriptor.create(),
           exitOnSave: true,
-          innerView: 'foam.meta.MetaDescriptorView',
+          innerView: 'foam.meta.descriptor.MetaDescriptorView',
         }, this.Y.sub({
-          metaEditPropertyTitle: 'Add New',
           dao: { put: this.put.bind(this) } // hide remove(), since it's a new property we don't have already
         }));
         this.stack.pushView(edit);
@@ -130,7 +129,9 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-edit-view-container">
           <div class="md-heading md-model-edit-view-heading">
-            <% this.headerHTML(out, this.metaEditModelTitle); %>
+            <div class="meta-edit-heading md-style-trait-standard">
+              $$metaEditModelTitle{ model_: foam.ui.TextFieldView, mode:'read-only' }
+            </div>
           </div>
           <div class="model-edit-view-list">
             $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }

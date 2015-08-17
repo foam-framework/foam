@@ -36,9 +36,6 @@ CLASS({
         <div class="md-card">
           <% this.headerHTML(out); %>
           <div>
-            $$name{ model_: 'foam.ui.TextFieldView' }
-          </div>
-          <div>
             $$label{ model_: 'foam.ui.TextFieldView' }
           </div>
           <div>

@@ -26,11 +26,11 @@ CLASS({
   properties: [
     {
       name: 'metaEditModelTitle',
-      defaultValue: 'Edit your Questionnaire',
+      defaultValue: 'Edit your Questionnaire: Click the red "+" button below to add a new question.',
     },
     {
       name: 'metaEditPropertyTitle',
-      defaultValue: 'Edit Question',
+      defaultValue: 'Add a new Question: Enter a descriptive name (such as "first name" or "home phone number"), then select the type of input (such as a "StringProperty" for text, or "BooleanProperty" for a yes/no checkbox).',
     },
   ],
 
