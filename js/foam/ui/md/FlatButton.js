@@ -208,8 +208,8 @@ CLASS({
   templates: [
     function CSS() {/*
       flat-button {
-        padding: 16px 16px;
-        margin: 0;
+        padding: 10px;
+        margin: 6px;
         display: inline-flex;
         align-items: baseline;
         justify-content: center;
@@ -220,8 +220,8 @@ CLASS({
       }
 
       flat-button.md-style-trait-inline {
-        padding: 16px 16px;
-        margin: -16px -16px;
+        padding: 8px 8px;
+        margin: -4px -4px;
       }
 
       flat-button .halo {
@@ -251,6 +251,10 @@ CLASS({
         display: none;
       }
 
+      flat-button.label-only .flat-button-label-container {
+        text-transform: uppercase;
+      }
+
       flat-button .halo {
         position: absolute;
         left: 0;
@@ -259,15 +263,15 @@ CLASS({
       }
 
       flat-button:not(.icon-only) .flat-button-icon-container {
-         padding-right: 12px;
          width: 24px;
          height: 0px;
+         position: relative;
       }
 
       flat-button:not(.icon-only) .flat-button-icon {
         position: absolute;
-        left: 16px;
-        top: 12px;
+        left: 0px;
+        bottom: -7px;
       }
 
     */},

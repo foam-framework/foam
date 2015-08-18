@@ -74,7 +74,9 @@ CLASS({
     {
       name: 'openDevDashboard',
       label: 'Dashboard',
-      help: 'Open developer dashboard.',
+      help: 'Open developer dashboard',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAMElEQVRIx2NgGAWkAKfWL//xYVLVjVowagEJGqmdTEdwPhhyQTma0UYtGMB8MLIAACgDuh9v+XUsAAAAAElFTkSuQmCC',
+      ligature: 'dashboard',
       isAvailable: function() {
         return this.data &&
             (this.data.state === 'FAILED' || this.data.state === 'COMPLETED');
@@ -85,6 +87,9 @@ CLASS({
     },
     {
       name: 'close',
+      help: 'Close popup',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAKlBMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfQ4qnXoAAAADXRSTlMALb0VFr4r09XS1Cwq3rqZUAAAAFpJREFUeNrFkEEKwDAIBG3Upk3r/79bD4sseOgxe5wBGZT9O4YKZn6S8JgKfsUgoTMN+K3CZsXSzmGsOM/SdI7zxf8FetDWuKK6cVQ3XtUkPHlVO4mHn/jK9n3dyANYyKnIcwAAAABJRU5ErkJggg==',
+      ligature: 'close',
       isAvailable: function() {
         return this.data &&
             (this.data.state === 'FAILED' || this.data.state === 'COMPLETED');

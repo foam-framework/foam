@@ -205,6 +205,8 @@ CLASS({
       help:  'Save updates',
       priority: 0,
       order: 0,
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAUElEQVQ4jWNgGAW4wH9d0pRH///zv4E05f+J1jB0lP9n+b/0fzgJpv8PBUr++R9BgmP+N4C1RJLgdqiWKBK8CtVCUsiAtBCvHKqFFOUjAwAATIhwjZSqeJcAAAAASUVORK5CYII=',
+      ligature: 'check',
       isAvailable: function() { return this.outstandingChanges; },
       action: function() {
         var self = this;
