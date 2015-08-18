@@ -20,7 +20,8 @@ CLASS({
   ],
 
   requires: [
-    'foam.apps.builder.datamodels.ModelPickerView'
+    'foam.apps.builder.datamodels.ModelPickerView',
+    'foam.apps.builder.dao.DAOPickerView',
   ],
 
   properties: [
