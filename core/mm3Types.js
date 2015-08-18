@@ -902,7 +902,7 @@ CLASS({
             var m = (opt_X || this.X).lookup(f.factory_);
             console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
             return m.create(f, opt_X || this.Y).copyFrom(map);
-          }.bind(this);
+          };
 
           ret.toString = function() { return JSON.stringify(f); };
           return ret;
