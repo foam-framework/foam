@@ -204,6 +204,33 @@ CLASS({
       label: 'Description for Translation',
       type: 'String',
       defaultValue: ''
+    },
+    {
+      name: 'priority',
+      type: 'Int',
+      defaultValue: 5,
+      help: 'Measure of importance of showing this action to the user when it is rendered in a list.',
+      documentation: function() { /*
+            A measure of importance of showing this $$DOC{ref:'Action'} instance
+            in list $$DOC{ref:'foam.ui.View'} of
+            $$DOC{ref:'Action',usePlural:true}; a lower number indicates a
+            higher priority. Lists should determine which actions to make
+            visible by $$DOC{ref:'.priority'}, then sort them by
+            $$DOC{ref:'.order'}.
+        */}
+    },
+    {
+      name: 'order',
+      type: 'Float',
+      defaultValue: 5.0,
+      help: 'Indication of where this action should appear in an ordered list of actions.',
+      documentation: function() { /*
+            Indication of where this $$DOC{ref:'Action'} instance should appear
+            in an ordered list $$DOC{ref:'foam.ui.View'} of
+            $$DOC{ref:'Action',usePlural:true}. Lists should determine which
+            actions to make visible by $$DOC{ref:'.priority'}, then sort them by
+            $$DOC{ref:'.order'}.
+        */}
     }
   ],
   methods: {

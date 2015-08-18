@@ -15,123 +15,100 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
 
   requires: [
+    'foam.ui.ActionButton',
     'foam.ui.md.ActionList',
-    'foam.ui.md.OverlayDropdownView',
-    'foam.ui.md.ToolbarAction',
     'foam.ui.md.FlatButton',
+    'foam.ui.md.OverflowActionList',
+    'foam.ui.md.ToolbarAction',
   ],
 
   properties: [
     'data',
+    'title',
     {
-      model_: 'StringProperty',
-      name: 'title',
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'moreActionsFactory',
-      defaultValue: {
-        factory_: 'foam.ui.md.FlatButton',
-        color: '#4285F4',
-      },
-    },
-    {
-      type: 'foam.ui.md.ToolbarAction',
-      name: 'menu',
+      name: 'leftActionList',
       lazyFactory: function() {
-        return this.ToolbarAction.create({
-          data: this,
-          available: false,
-          enabled: true,
-        }, this.Y);
-      },
-      postSet: function(old, nu, prop) {
-        if ( old === nu || ! nu ) return;
-        nu.action = this.model_.getAction(prop.name + 'Action').deepClone();
-      },
-    },
-    {
-      type: 'foam.ui.md.ToolbarAction',
-      name: 'back',
-      lazyFactory: function() {
-        return this.ToolbarAction.create({
-          data: this,
-          available: true,
-          enabled: true,
-        }, this.Y);
-      },
-      postSet: function(old, nu, prop) {
-        if ( old === nu || ! nu ) return;
-        nu.action = this.model_.getAction(prop.name + 'Action').deepClone();
-      },
-    },
-    {
-      type: 'foam.ui.md.ToolbarAction',
-      name: 'reset',
-      lazyFactory: function() {
-        return this.ToolbarAction.create({
-          data: this,
-          available: false,
-          enabled: true,
-        }, this.Y);
-      },
-      postSet: function(old, nu, prop) {
-        if ( old === nu || ! nu ) return;
-        nu.action = this.model_.getAction(prop.name + 'Action').deepClone();
-      },
-    },
-    {
-      type: 'foam.ui.md.ToolbarAction',
-      name: 'commit',
-      lazyFactory: function() {
-        return this.ToolbarAction.create({
-          data: this,
-          available: false,
-          enabled: true,
-        }, this.Y);
-      },
-      postSet: function(old, nu, prop) {
-        if ( old === nu || ! nu ) return;
-        nu.action = this.model_.getAction(prop.name + 'Action').deepClone();
-      },
-    },
-    {
-      type: 'foam.ui.md.OverlayDropdownView',
-      name: 'moreActionsDropdown',
-      lazyFactory: function() {
-        return this.OverlayDropdownView.create({
-          data$: this.data$,
-          delegate: this.ActionList.xbind({
-            actions$: this.childActions_$,
-            actionViewFactory: this.moreActionsFactory,
+        return this.ActionList.create({
+          data$: this.leftActions$,
+          direction: 'HORIZONTAL',
+          actionViewFactory: this.ActionButton.xbind({
+            displayMode: 'ICON_ONLY',
           }, this.Y),
+        }, this.Y);
+      },
+    },
+    {
+      type: 'foam.ui.md.OverflowActionList',
+      name: 'rightActionList',
+      lazyFactory: function() {
+        return this.OverflowActionList.create({
+          data$: this.rightActions$,
         }, this.Y);
       },
     },
     {
       model_: 'ArrayProperty',
       subType: 'foam.ui.md.ToolbarAction',
-      name: 'childActions_',
+      name: 'leftActions',
+      postSet: function(old, nu) {
+        var actionsElem = this.$leftActions;
+        if ( old === nu || ! actionsElem ) return;
+        var out = TemplateOutput.create(this);
+        this.leftActionsInnerHTML(out);
+        actionsElem.innerHTML = out.toString();
+        this.leftActionList.initHTML();
+      },
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.ui.md.ToolbarAction',
+      name: 'rightActions',
+    },
+    {
+      name: '$leftActions',
+      getter: function() {
+        return this.$ && this.$.querySelector('#' + this.id + '-left-actions');
+      },
     },
   ],
 
   methods: [
-    function addAction(action) {
+    function addLeftAction(action) {
       if ( ! action ) return;
-      this.addActions([action]);
+      this.addLeftActions([action]);
     },
-    function removeAction(action) {
+    function addRightAction(action) {
       if ( ! action ) return;
-      this.removeActions([action]);
+      this.addRightActions('right', [action]);
     },
-    function addActions(actions) {
-      if ( ( ! actions ) || actions.length === 0 ) return;
-      this.childActions_ = this.childActions_.concat(actions);
+    function removeLeftAction(action) {
+      if ( ! action ) return;
+      this.removeActions('left', [action]);
     },
-    function removeActions(actions) {
+    function removeRightAction(action) {
+      if ( ! action ) return;
+      this.removeActions('right', [action]);
+    },
+    function addLeftActions(actions) { return this.addActions('left', actions); },
+    function addRightActions(actions) { return this.addActions('right', actions); },
+    function removeLeftActions(actions) { return this.removeActions('left', actions); },
+    function removeRightActions(actions) { return this.removeActions('right', actions); },
+    function addActions(side, actions) {
       if ( ( ! actions ) || actions.length === 0 ) return;
-      this.childActions_ = this.childActions_.filter(function(action) {
-        return !actions.some(function(a) { return a === action; });
+      this[side + 'Actions'] = this[side + 'Actions'].concat(
+          actions.filter(function(currentActions, newAction) {
+            return ! currentActions.some(function(currentAction) {
+              return currentAction === newAction;
+            });
+          }.bind(this, this[side + 'Actions'])));
+    },
+    function removeActions(side, actions) {
+      if ( ( ! actions ) || actions.length === 0 ) return;
+      this[side + 'Actions'] =
+          this[side + 'Actions'].filter(function(currentAction) {
+            return ! actions.some(function(removeAction) {
+              return removeAction === currentAction;
+            });
       });
     },
     function init() {
@@ -148,36 +125,24 @@ CLASS({
       name: 'menuAction',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAGklEQVQ4y2NgGAVEg/9EAMo0jHp61NOjAAgAUWrXKeQhPE4AAAAASUVORK5CYII=',
       ligature: 'menu',
-      isAvailable: function() { return this.menuAvailable; },
-      isEnabled: function() { return this.menuEnabled; },
       action: function() {},
     },
     {
       name: 'backAction',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPUlEQVQ4y2NgGLbgf8P/BtKU////+78WacpDSFMeSlPlYaQo/0OacjyAcg1wJ4WTGmHDS4sWaVrqhm/mBQAoLpX9t+4i2wAAAABJRU5ErkJggg==',
       ligature: 'arrow_back',
-      isAvailable: function() {
-        return this.backAvailable;
-      },
-      isEnabled: function() {
-        return this.backEnabled;
-      },
       action: function() {},
     },
     {
       name: 'resetAction',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAdklEQVQ4y+WTuQ3AIBAEaQKK8NN/BEUArmccgGyj43MMIZo5TqtFqbUPJxYtbg2OvS44IJQKhguwdUETSiXjXr77KhGICRjihWKm8Dw3KXP4Z5VZ/Lfw7B5kyD1cy5C7uAx5iJcht6vhRTUi4OrC0Szftvi/vAFNdbZ2Dp661QAAAABJRU5ErkJggg==',
       ligature: 'close',
-      isAvailable: function() { return this.resetAvailable; },
-      isEnabled: function() { return this.resetEnabled; },
       action: function() {},
     },
     {
       name: 'commitAction',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAUElEQVQ4jWNgGAW4wH9d0pRH///zv4E05f+J1jB0lP9n+b/0fzgJpv8PBUr++R9BgmP+N4C1RJLgdqiWKBK8CtVCUsiAtBCvHKqFFOUjAwAATIhwjZSqeJcAAAAASUVORK5CYII=',
       ligature: 'check',
-      isAvailable: function() { return this.commitAvailable; },
-      isEnabled: function() { return this.commitEnabled; },
       action: function() {},
     },
     {
@@ -194,10 +159,13 @@ CLASS({
       name: 'areMoreActionsAvailable',
       code: function() {
         var data = this.data;
-        var actions = this.childActions_.slice();
-        return actions.length > 0 &&
-            actions.map(function(action) {
-              return action.isAvailable.call(data, action);
+        var toolbarActions = this.rightActions.slice();
+        return toolbarActions.length > 0 &&
+            toolbarActions.map(function(toolbarAction) {
+              return toolbarAction &&
+                  toolbarAction.action &&
+                  toolbarAction.action.isAvailable.call(
+                      data, toolbarAction.action);
             }).some(function(v) { return v; });
       },
     },
@@ -207,30 +175,23 @@ CLASS({
     function toHTML() {/*
       <toolbar id="%%id" %%cssClassAttr()>
 
-        $$menuAction $$backAction $$resetAction
+        <actions id="%%id-left-actions" class="left">
+          <% this.leftActionsInnerHTML(out) %>
+        </actions>
 
         <header id="%%id-header">
           <%# this.title %>
         </header>
 
-        $$commitAction
-
-        <actions id="%%id-actions">
-          <% this.actionsInnerHTML(out) %>
-        </actions>
+        %%rightActionList
         <% this.setClass('hidden',
                function() { return this.showActions }.bind(this),
-               this.id + '-actions'); %>
+               this.rightActionList.id); %>
 
       </toolbar>
     */},
-    function actionsInnerHTML() {/*
-      %%moreActionsDropdown
-      $$moreActions
-      <% this.on(
-             'click',
-             function() { this.moreActionsDropdown.close(); }.bind(this),
-             this.moreActionsDropdown.id); %>
+    function leftActionsInnerHTML() {/*
+      %%leftActionList
     */},
     function CSS() {/*
       toolbar {
@@ -243,7 +204,7 @@ CLASS({
         font-size: 20px;
         font-weight: 500;
         height: 56px;
-        padding: 0 12px;
+        padding: 0;
         width: 100%;
       }
       toolbar header {
@@ -252,9 +213,14 @@ CLASS({
       }
       toolbar actions {
         display: flex;
-        align-items: flex-end;
         position: relative;
         color: #000;
+      }
+      toolbar actions.left {
+        align-items: flex-start;
+      }
+      toolbar actions.right {
+        align-items: flex-end;
       }
     */},
   ],
