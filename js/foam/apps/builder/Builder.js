@@ -22,6 +22,7 @@ CLASS({
     'foam.apps.builder.kiosk.KioskDesignerView',
     'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
     'foam.apps.builder.questionnaire.DesignerView as QuestionnaireDesignerView',
+    'foam.apps.builder.questionnaire.AppWizard',
     'foam.browser.ui.BrowserView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
@@ -104,8 +105,17 @@ CLASS({
                 })
               })
             }),
+            createView: function(args, X) {
+              var newObj = this.model.create();
+              return this.detailView({
+                data: newObj,
+                innerView: 'foam.apps.builder.questionnaire.AppWizard',
+                }, X);
+            },
             detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
             innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'
+            //detailView: 'foam.apps.builder.questionnaire.AppWizard',
+            //innerDetailView: 'foam.apps.builder.questionnaire.AppWizard',
           }),
         ].dao;
         dao.model = this.BrowserConfig;
