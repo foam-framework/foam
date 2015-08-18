@@ -129,10 +129,20 @@ CLASS({
     },
     function getFullHeight() {
       if ( ! this.$ ) return 0;
+      var getComputedStyle = this.window.getComputedStyle.bind(this.window);
+
+      var myStyle = getComputedStyle(this.$);
+      var border = 0;
+      ['border-top', 'border-bottom'].forEach(function(name) {
+        var match = myStyle[name].match(/^([0-9]+)px/);
+        if ( match ) border += parseInt(match[1]);
+      });
+
       var last = this.$.lastElementChild;
-      var margin = parseInt(this.window.getComputedStyle(last)['margin-bottom']);
+      var margin = parseInt(getComputedStyle(last)['margin-bottom']);
       margin = Number.isNaN(margin) ? 0 : margin;
-      return Math.min(last.offsetTop + last.offsetHeight + margin,
+
+      return Math.min(border + last.offsetTop + last.offsetHeight + margin,
           this.document.body.clientHeight - this.$.getBoundingClientRect().top);
     },
     function initHTML() {
