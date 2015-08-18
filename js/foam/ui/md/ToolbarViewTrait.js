@@ -20,10 +20,10 @@ CLASS({
     {
       name: 'toolbar',
       postSet: function(old, nu) {
-        old && old.removeActions &&
-            old.removeActions(this.toolbarActions_.concat(this.dataToolbarActions_));
-        nu && nu.addActions &&
-            nu.addActions(this.toolbarActions_.concat(this.dataToolbarActions_));
+        old && old.removeRightActions &&
+            old.removeRightActions(this.toolbarActions_.concat(this.dataToolbarActions_));
+        nu && nu.addRightActions &&
+            nu.addRightActions(this.toolbarActions_.concat(this.dataToolbarActions_));
       },
     },
     {
@@ -41,8 +41,8 @@ CLASS({
       name: 'toolbarActions_',
       postSet: function(old, nu) {
         if ( old === nu || ! this.toolbar ) return;
-        if ( old ) this.toolbar.removeActions && this.toolbar.removeActions(old);
-        if ( nu ) this.toolbar.addActions && this.toolbar.addActions(nu);
+        if ( old ) this.toolbar.removeRightActions && this.toolbar.removeRightActions(old);
+        if ( nu ) this.toolbar.addRightActions && this.toolbar.addRightActions(nu);
       },
     },
     {
@@ -51,8 +51,8 @@ CLASS({
       name: 'dataToolbarActions_',
       postSet: function(old, nu) {
         if ( old === nu || ! this.toolbar ) return;
-        if ( old ) this.toolbar.removeActions && this.toolbar.removeActions(old);
-        if ( nu ) this.toolbar.addActions && this.toolbar.addActions(nu);
+        if ( old ) this.toolbar.removeRightActions && this.toolbar.removeRightActions(old);
+        if ( nu ) this.toolbar.addRightActions && this.toolbar.addRightActions(nu);
       },
     },
   ],
@@ -65,7 +65,7 @@ CLASS({
     },
     function removeToolbarActions() {
       if ( ! this.toolbar ) return;
-      this.toolbar.removeActions(this.toolbarActions_.concat(this.dataToolbarActions_));
+      this.toolbar.removeRightActions(this.toolbarActions_.concat(this.dataToolbarActions_));
     },
     function wrapToolbarActions(data, actions) {
       return actions.map(this.wrapToolbarAction.bind(this, data));

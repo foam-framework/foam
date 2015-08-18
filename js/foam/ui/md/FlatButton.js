@@ -79,7 +79,7 @@ CLASS({
     },
     {
       name: 'action',
-      postSet: function() { this.bindData(); }
+      postSet: function(_, nu) { this.bindData(); }
     },
     {
       name: 'data',
@@ -97,19 +97,15 @@ CLASS({
         ['ICON_AND_LABEL', 'Icon and Label'],
         ['ICON_ONLY', 'Icon Only'],
         ['LABEL_ONLY', 'Label Only']
-      ]
+      ],
     },
     {
+      model_: 'StringProperty',
       name: 'iconUrl',
-      defaultValueFn: function() {
-        return this.action ? this.action.iconUrl : '';
-      }
     },
     {
+      model_: 'StringProperty',
       name: 'ligature',
-      defaultValueFn: function() {
-        return this.action ? this.action.ligature : '';
-      }
     },
     {
       name: 'icon',
@@ -133,6 +129,10 @@ CLASS({
           finishAlpha: 0
         }, this.Y);
       }
+    },
+    {
+      name: 'tooltip',
+      defaultValueFn: function() { return this.action && this.action.help; }
     },
     {
       model_: 'StringProperty',
@@ -169,7 +169,10 @@ CLASS({
       this.$.style.background = this.background;
     },
     function bindData() {
-      if ( ! this.action || ! this.data ) return;
+      if ( ( ! this.action ) || ( ! this.data ) ) return;
+
+      if ( ! this.iconUrl ) this.iconUrl = this.action.iconUrl;
+      if ( ! this.ligature ) this.ligature = this.action.ligature;
 
       var self = this;
 
@@ -293,8 +296,7 @@ CLASS({
          this.setClass(
              'label-only',
              function() {
-               return this.displayMode === 'LABEL_ONLY' ||
-                   ! ( this.iconUrl || this.ligature );
+               return this.displayMode === 'LABEL_ONLY';
              }, this.id);
         this.setClass('hidden', function() { return self.isHidden; }, this.id); %>
     */},

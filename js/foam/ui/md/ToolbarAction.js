@@ -16,44 +16,8 @@ CLASS({
   properties: [
     'data',
     {
-      model_: 'BooleanProperty',
-      name: 'available',
-      defaultValue: true,
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'enabled',
-      defaultValue: true,
-    },
-    {
-      model_: 'FunctionProperty',
-      name: 'code',
-      defaultValue: null,
-      postSet: function(old, nu) {
-        if ( old === nu || ! this.action || ! nu ) return;
-        this.action.action = nu;
-      },
-    },
-    {
       type: 'Action',
       name: 'action',
-      postSet: function(old, nu) {
-        if ( old === nu || ! nu ) return;
-        nu.isAvailable = this.isAvailable;
-        nu.isEnabled = this.isEnabled;
-        if ( this.code ) nu.action = this.code;
-      },
-    },
-  ],
-
-  listeners: [
-    {
-      name: 'isAvailable',
-      code: function() { return this.available; },
-    },
-    {
-      name: 'isEnabled',
-      code: function() { return this.enabled; },
     },
   ],
 });
