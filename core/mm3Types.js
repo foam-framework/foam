@@ -688,7 +688,19 @@ CLASS({
           if ( e.children[i].nodeName === name ) val.push(e.children[i].innerHTML);
         this[p.name] = val;
       }
-    }
+    },
+    {
+      name: 'toMemento',
+      defaultValue: function(o, p) {
+        return o.join(',');
+      }
+    },
+    {
+      name: 'fromMemento',
+      defaultValue: function(s, p) {
+        return s ? s.split(',') : undefined;
+      }
+    },
   ]
 });
 
@@ -890,7 +902,7 @@ CLASS({
             var m = (opt_X || this.X).lookup(f.factory_);
             console.assert(m, 'Unknown ViewFactory Model: ' + f.factory_);
             return m.create(f, opt_X || this.Y).copyFrom(map);
-          }.bind(this);
+          };
 
           ret.toString = function() { return JSON.stringify(f); };
           return ret;

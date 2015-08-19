@@ -19,6 +19,7 @@ CLASS({
     'Model',
     'foam.dao.ProxyDAO',
     'foam.apps.builder.dao.DAOFactory',
+    'foam.meta.descriptor.DAOFactoryMetaDescriptor',
   ],
 
   imports: [
@@ -57,14 +58,22 @@ CLASS({
         }
       },
     },
-
+    {
+      model_: 'ModelProperty',
+      name: 'newItemDescriptor',
+      defaultValue: 'foam.meta.descriptor.DAOFactoryMetaDescriptor',
+    },
   ],
 
   actions: [
     {
       name: 'edit',
       label: 'Edit the Data Source',
-    }
+    },
+    {
+      name: 'add',
+      label: 'Create a New Data Source',
+    },
   ],
 
 

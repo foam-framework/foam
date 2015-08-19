@@ -64,7 +64,10 @@ CLASS({
       name: 'label',
       type: 'String',
       defaultValueFn: function() { return this.property.label || 'Search'; }
-    }
+    },
+    {
+      name: 'memento',
+    },
   ],
 
   methods: [
@@ -81,6 +84,9 @@ CLASS({
       this.view.initHTML();
 
       this.view.data$.addListener(this.updateValue);
+      if (this.memento) {
+        this.view.data = this.memento;
+      }
     }
   ],
 
@@ -89,6 +95,7 @@ CLASS({
       name: 'updateValue',
       code: function() {
         var value = this.view.data;
+        this.memento = value;
         this.predicate =
           ! value         ? TRUE :
           this.richSearch ? this.queryParser.parseString(value)

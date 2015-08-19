@@ -10,12 +10,13 @@
  */
 
 CLASS({
-  package: 'foam.meta',
-  name: 'MetaPropertyDescriptor',
+  package: 'foam.meta.descriptor',
+  name: 'PropertyMetaDescriptor',
 
+  label: 'Property',
 
   documentation: function() {/* Describes a type (such as when creating a new
-    property). Instances of $$DOC{ref:'foam.meta.MetaPropertyDescriptor'} may be edited
+    property). Instances of $$DOC{ref:'foam.meta.descriptor.PropertyMetaDescriptor'} may be edited
     and then used to create a corresponding $$DOC{ref:'Property'} instance.
   */},
 

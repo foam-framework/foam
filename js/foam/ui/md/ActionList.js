@@ -18,26 +18,43 @@ CLASS({
   imports: [ 'dropdown' ],
 
   properties: [
-    'data',
     {
       model_: 'ArrayProperty',
       subType: 'foam.ui.md.ToolbarAction',
-      name: 'actions',
-      postSet: function(old, nu) {
-        if ( old === nu ) return;
-        var i;
-        if ( old && old.length ) {
-          for ( i = 0; i < old.length; ++i ) {
-            old[i].data$.removeListener(this.onActionDataChange);
-          }
-        }
-        if ( nu && nu.length ) {
-          for ( i = 0; i < nu.length; ++i ) {
-            nu[i].data$.addListener(this.onActionDataChange);
-            this.onActionDataChange(nu[i], ['property', 'data'], null, nu[i].data);
-          }
-        }
+      name: 'data',
+      preSet: function(old, nu) {
+        if ( ! nu ) return [];
+        var list = nu.sort(this.actionComparator);
+        return this.maxNumActions > 0 ? list.slice(0, this.maxNumActions) :
+            list;
       },
+      postSet: function(old, nu) {
+        this.bindActionListeners(old, nu);
+        this.onDataChange(old, nu);
+      },
+    },
+    {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'direction',
+      defaultValue: 'VERTICAL',
+      choices: [
+        ['VERTICAL', 'Vertical'],
+        ['HORIZONTAL', 'Horizontal'],
+      ],
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.style['flex-direction'] = nu === 'VERTICAL' ?
+            'column' : 'row';
+      },
+    },
+    {
+      model_: 'IntProperty',
+      name: 'maxNumActions',
+      documentation: function() {/*
+        Maximum number of $$DOC{ref:'Action',usePlural:true} to render. Value
+        less than or equal to zero indicates "render all actions".
+      */},
+      defaultValue: 0,
     },
     {
       model_: 'ViewFactoryProperty',
@@ -46,7 +63,58 @@ CLASS({
     },
   ],
 
+  methods: [
+    function initHTML() {
+      this.SUPER();
+      this.$.style['flex-direction'] = this.direction === 'VERTICAL' ?
+          'column' : 'row';
+    },
+    function bindActionListeners(old, nu) {
+      if ( old === nu ) return;
+      var i;
+      if ( old && old.length ) {
+        for ( i = 0; i < old.length; ++i ) {
+          old[i].data$.removeListener(this.onActionDataChange);
+        }
+      }
+      if ( nu && nu.length ) {
+        for ( i = 0; i < nu.length; ++i ) {
+          nu[i].data$.addListener(this.onActionDataChange);
+          this.onActionDataChange(nu[i], ['property', 'data'], null, nu[i].data);
+        }
+      }
+    },
+    function actionComparator(a, b) {
+      var aPriority = (a && a.action) ? a.action.priority : 10;
+      var bPriority = (b && b.action) ? b.action.priority : 10;
+      var priorityCmp = aPriority - bPriority;
+      if ( priorityCmp !== 0 ) return priorityCmp;
+
+      var aOrder = (a && a.action) ? a.action.order : 100.0;
+      var bOrder = (b && b.action) ? b.action.order : 100.0;
+      var orderCmp = aOrder - bOrder;
+      return orderCmp;
+    },
+  ],
+
   listeners: [
+    {
+      name: 'onDataChange',
+      isFramed: true,
+      code: function(old, nu) {
+        if ( ! this.$ ) return;
+        if ( this.children.length !== 0 ) {
+          var children = this.children.slice();
+          for ( var i = 0; i < children.length; ++i ) {
+            this.removeChild(children[i]);
+          }
+        }
+        var out = TemplateOutput.create(this);
+        this.toInnerHTML(out);
+        this.$.innerHTML = out.toString();
+        this.initInnerHTML();
+      },
+    },
     {
       name: 'onActionDataChange',
       code: function(toolbarAction, topic, old, nu) {
@@ -65,20 +133,43 @@ CLASS({
   templates: [
     function toHTML() {/*
       <action-list id="%%id" %%cssClassAttr()>
-        <% for ( var i = 0; i < this.actions.length; ++i ) {
-          var actionView = this.actionViewFactory({
-            data$: this.actions[i].data$,
-            action$: this.actions[i].action$,
-          }, this.Y);
-          out(actionView);
-          this.addChild(actionView);
-        } %>
+        <% this.toInnerHTML(out); %>
       </action-list>
+      <% this.setClass('vertical',
+             function() { this.direction === 'VERTICAL'; }.bind(this),
+             this.id);
+         this.setClass('horizontal',
+             function() { this.direction === 'HORIZONTAL'; }.bind(this),
+             this.id); %>
+    */},
+    function toInnerHTML() {/*
+      <% var actions = this.data;
+         for ( var i = 0; i < actions.length; ++i ) {
+           var actionView = this.actionViewFactory({
+             data$: actions[i].data$,
+             action$: actions[i].action$,
+           }, this.Y);
+           out(actionView);
+           this.addChild(actionView);
+         } %>
     */},
     function CSS() {/*
       action-list {
         display: flex;
+      }
+      action-list.vertical {
         flex-direction: column;
+      }
+      action-list.horizontal {
+        flex-direction: row;
+      }
+      action-list.vertical flat-button {
+        padding: 16px;
+        margin: 0;
+        border-radius: 0;
+      }
+      action-list.vertical .flat-button-label-container {
+        text-transform: none;
       }
     */},
   ],

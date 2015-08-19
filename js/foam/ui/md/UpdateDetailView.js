@@ -23,7 +23,8 @@ CLASS({
 
   requires: [
     'foam.ui.PopupChoiceView',
-    'foam.ui.md.Toolbar'
+    'foam.ui.md.Toolbar',
+    'foam.ui.md.ToolbarAction'
   ],
 
   imports: [
@@ -35,6 +36,13 @@ CLASS({
   ],
 
   properties: [
+    {
+      name: 'title',
+      dynamicValue: function() {
+        return (this.data && this.data.id ? 'Edit' : 'New') +
+            (this.model ? ' ' + this.model.label : '');
+      }
+    },
     {
       name: 'rawData',
       documentation: 'The uncloned original input data.',
@@ -104,15 +112,9 @@ CLASS({
       },
       postSet: function(old,nu) {
         if ( nu && this.liveEdit ) {
-          this.onCommit();
+          this.save();
         }
       }
-    },
-    {
-      model_: 'FunctionProperty',
-      name: 'noChanges',
-      defaultValue: null,
-      dynamicValue: function() { return ! this.outstandingChanges; }
     },
     {
       type: 'foam.ui.md.Toolbar',
@@ -126,20 +128,14 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( old ) {
-          Events.unfollow(this.noChanges$, old.back.available$);
-          Events.unfollow(this.outstandingChanges$, old.reset.available$);
-          Events.unfollow(this.outstandingChanges$, old.commit.available$);
+          old.removeLeftActions(this.leftActions_);
+          old.removeRightActions(this.rightActions_);
         }
         if ( nu ) {
-          nu.back.code = this.onBack;
-          nu.reset.code = this.onReset;
-          nu.commit.code = this.onCommit;
-          nu.menu.available = false;
-          Events.follow(this.noChanges$, nu.back.available$);
-          Events.follow(this.outstandingChanges$, nu.reset.available$);
-          Events.follow(this.outstandingChanges$, nu.commit.available$);
+          nu.addLeftActions(this.leftActions_);
+          nu.addRightActions(this.rightActions_);
         }
-      },
+      }
     },
     {
       model_: 'ViewFactoryProperty',
@@ -149,22 +145,70 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'md-update-detail-view'
-    }
-  ],
-
-  listeners: [
+    },
     {
-      name: 'rawUpdate',
-      code: function() {
-        // If this listener fires, the raw data updated and the user hasn't
-        // changed anything.
-        this.data = this.rawData;
+      model_: 'ArrayProperty',
+      name: 'leftActions_',
+      lazyFactory: function() {
+        var myModel = this.model_;
+        return [
+          this.ToolbarAction.create({
+            data: this,
+            action: myModel.getAction('back')
+          }, this.Y),
+          this.ToolbarAction.create({
+            data: this,
+            action: myModel.getAction('reset')
+          }, this.Y)
+        ];
+      },
+      postSet: function(old, nu) {
+        var toolbar = this.toolbar;
+        if ( old === nu || ! toolbar ) return;
+        if ( old ) toolbar.removeLeftActions(old);
+        if ( nu ) toolbar.addLeftActions(nu);
       }
     },
     {
-      name:  'onCommit',
-      help:  'Save updates.',
-      code: function() {
+      model_: 'ArrayProperty',
+      name: 'rightActions_',
+      lazyFactory: function() {
+        return [
+          this.ToolbarAction.create({
+            data: this,
+            action: this.model_.getAction('save')
+          }, this.Y)
+        ];
+      },
+      postSet: function(old, nu) {
+        var toolbar = this.toolbar;
+        if ( old === nu || ! toolbar ) return;
+        if ( old ) toolbar.removeRightActions(old);
+        if ( nu ) toolbar.addRightActions(nu);
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'back',
+      help:  'Go back',
+      priority: 0,
+      order: 0.0,
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPUlEQVQ4y2NgGLbgf8P/BtKU////+78WacpDSFMeSlPlYaQo/0OacjyAcg1wJ4WTGmHDS4sWaVrqhm/mBQAoLpX9t+4i2wAAAABJRU5ErkJggg==',
+      ligature: 'arrow_back',
+      isAvailable: function() { return ! this.outstandingChanges; },
+      action: function() { this.stack.popView(); }
+    },
+    {
+      name: 'save',
+      help:  'Save updates',
+      priority: 0,
+      order: 0,
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAUElEQVQ4jWNgGAW4wH9d0pRH///zv4E05f+J1jB0lP9n+b/0fzgJpv8PBUr++R9BgmP+N4C1RJLgdqiWKBK8CtVCUsiAtBCvHKqFFOUjAwAATIhwjZSqeJcAAAAASUVORK5CYII=',
+      ligature: 'check',
+      isAvailable: function() { return this.outstandingChanges; },
+      action: function() {
         var self = this;
         var obj  = this.data;
 
@@ -183,14 +227,25 @@ CLASS({
       }
     },
     {
-      name:  'onBack',
-      help:  'Go back.',
-      code: function() { this.stack.popView(); }
-    },
+      name: 'reset',
+      priority: 0,
+      order: 1.0,
+      help: 'Reset form (cancel update)',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAdklEQVQ4y+WTuQ3AIBAEaQKK8NN/BEUArmccgGyj43MMIZo5TqtFqbUPJxYtbg2OvS44IJQKhguwdUETSiXjXr77KhGICRjihWKm8Dw3KXP4Z5VZ/Lfw7B5kyD1cy5C7uAx5iJcht6vhRTUi4OrC0Szftvi/vAFNdbZ2Dp661QAAAABJRU5ErkJggg==',
+      ligature: 'close',
+      isAvailable: function() { return this.outstandingChanges; },
+      action: function() { this.data = this.originalData.deepClone(); }
+    }
+  ],
+
+  listeners: [
     {
-      name: 'onReset',
-      help: 'Reset form (cancel update).',
-      code: function() { this.data = this.originalData.deepClone(); }
+      name: 'rawUpdate',
+      code: function() {
+        // If this listener fires, the raw data updated and the user hasn't
+        // changed anything.
+        this.data = this.rawData;
+      }
     }
   ],
 

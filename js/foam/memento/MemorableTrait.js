@@ -33,7 +33,8 @@ CLASS({
       for ( var i = 0, prop ; prop = properties[i] ; i++ ) {
         if ( ! prop.memorable ) continue;
         this.addPropertyListener(prop.name, this.updateMemento);
-        if ( this[prop.name] != null && this[prop.name].model_ && this[prop.name].memento ) {
+        if ( this[prop.name] != null && this[prop.name].model_ &&
+            typeof this[prop.name].memento !== 'undefined' ) {
           this[prop.name].addPropertyListener('memento', this.updateMemento);
         }
       }
@@ -54,9 +55,15 @@ CLASS({
       for ( var i = 0, prop ; prop = properties[i] ; i ++ ) {
         if ( ! prop.memorable ) continue;
         if ( this[prop.name] != null ) {
+          var key = typeof prop.memorable === 'string' ? prop.memorable : prop.name;
           var value = this[prop.name];
-          memento[prop.name] = value.memento || (value.toMemento ?
-              value.toMemento() : value.toString());
+          if (prop.toMemento) {
+            memento[key] = prop.toMemento(value);
+          } else {
+            memento[key] = typeof value.memento !== 'undefined' ?
+                value.memento :
+                (value.toMemento ? value.toMemento() : value.toString());
+          }
         }
       }
       return memento;
@@ -74,10 +81,13 @@ CLASS({
         var properties = this.model_.getRuntimeProperties();
         for ( var i = 0, prop ; prop = properties[i] ; i++ ) {
           if (prop.memorable) {
-            if (this[prop.name].memento) {
-              this[prop.name].memento = memento[prop.name];
+            var key = typeof prop.memorable === 'string' ? prop.memorable : prop.name;
+            if (prop.fromMemento) {
+              this[prop.name] = prop.fromMemento(memento[key]);
+            } else if (typeof this[prop.name].memento !== 'undefined') {
+              this[prop.name].memento = memento[key];
             } else {
-              this[prop.name] = memento[prop.name];
+              this[prop.name] = memento[key];
             }
           }
         }

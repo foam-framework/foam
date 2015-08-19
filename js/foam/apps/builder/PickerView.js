@@ -23,6 +23,8 @@ CLASS({
     'foam.apps.builder.datamodels.ModelCitationView',
     'foam.ui.md.UpdateDetailView',
     'foam.ui.md.PopupChoiceView',
+    'foam.meta.descriptor.MetaDescriptor',
+    'foam.meta.descriptor.MetaDescriptorView',
   ],
 
   imports: [
@@ -37,6 +39,16 @@ CLASS({
     function put(o, sink) {
       /* Receive update from our UpdateDetailView */
       this.data = o.deepClone();
+      this.data.instance_.prototype_ = undefined; // reset prototype so changes will be rebuilt
+      sink && sink.put(this.data);
+
+      // also save to DataModels store. Setting modelName will cause a load from the store.
+      this.modelDAO && this.modelDAO.put(this.data);
+    },
+
+    function putNew(o, sink) {
+      /* Receive update from our MetaDescriptorView */
+      this.data = this.X.lookup(o.model).create({ name: o.name });
       this.data.instance_.prototype_ = undefined; // reset prototype so changes will be rebuilt
       sink && sink.put(this.data);
 
@@ -100,6 +112,11 @@ CLASS({
       defaultValueFn: function() { return this.Model.ID; }
     },
     {
+      model_: 'ModelProperty',
+      name: 'newItemDescriptor',
+      documentation: 'If not specified, no "new" option is displayed.',
+    },
+    {
       name: 'filteredDAO',
       defaultValueFn: function() { return this.modelDAO; }
     },
@@ -119,7 +136,7 @@ CLASS({
   actions: [
     {
       name: 'edit',
-      label: 'Edit the model',
+      label: 'Edit',
       width: 100,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAZ0lEQVR4AdXOrQ2AMBRF4bMc/zOUOSrYoYI5cQQwpAieQDW3qQBO7Xebxx8bWAk5/CASmRHzRHtB+d0Bkw0W5ZiT0SYbFcl6u/2eeJHbxIHOhWO6Er6/y9syXpMul5PLefAGKZ1/rwtTimwbWLpiCgAAAABJRU5ErkJggg==',
       action: function() {
@@ -130,6 +147,25 @@ CLASS({
           innerView: this.editViewType,
           liveEdit: true,
         }));
+      }
+    },
+    {
+      name: 'add',
+      label: 'Create New',
+      //iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
+      isAvailable: function() {
+        return !! this.newItemDescriptor;
+      },
+      action: function() {
+        this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
+        var edit = this.UpdateDetailView.create({
+          data: this.newItemDescriptor.create(),
+          exitOnSave: true,
+          innerView: 'foam.meta.descriptor.MetaDescriptorView',
+        }, this.Y.sub({
+          dao: { put: this.putNew.bind(this) }
+        }));
+        this.stack.pushView(edit);
       }
     },
   ],
@@ -162,6 +198,9 @@ CLASS({
           </div>
           <div class="md-model-picker-view-combo">
             $$edit{ model_: 'foam.ui.md.FlatButton' }
+          </div>
+          <div class="md-model-picker-view-combo">
+            $$add{ model_: 'foam.ui.md.FlatButton' }
           </div>
         </div>
       </div>

@@ -60,6 +60,7 @@ CLASS({
         }
       },
     },
+
   ],
 
   actions: [

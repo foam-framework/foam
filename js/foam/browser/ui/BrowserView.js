@@ -229,7 +229,7 @@ CLASS({
             flex-grow: 0;
             flex-shrink: 0;
             height: 56px;
-            padding: 0 12px;
+            padding: 0;
           }
           .browser-header .title {
             font-size: 20px;
@@ -260,10 +260,6 @@ CLASS({
                 color: #ccc;
               }
           <% } %>
-
-          .browser-header flat-button {
-            margin: 8px;
-          }
 
           <% var ANIMATION_TIME = '0.4s'; %>
 
@@ -429,7 +425,6 @@ CLASS({
       this.SUPER(args);
       this.Y.registerModel(this.FlatButton.xbind({
         displayMode: 'ICON_ONLY',
-        extraClassName: 'md-style-trait-inline',
         height: 24,
         width: 24,
         color: 'white'

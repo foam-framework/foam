@@ -18,7 +18,7 @@
 
 CLASS({
   name: 'MetaDescriptorView',
-  package: 'foam.meta',
+  package: 'foam.meta.descriptor',
 
   requires: [
     'foam.ui.md.PopupChoiceView',
@@ -41,9 +41,9 @@ CLASS({
       action: function() {
         this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceListView');
         var edit = this.UpdateDetailView.create({
-          data: this.MetaPropertyDescriptor.create(),
+          data: this.PropertyMetaDescriptor.create(),
           exitOnSave: true,
-          innerView: 'foam.meta.MetaDescriptorView',
+          innerView: 'foam.meta.descriptor.MetaDescriptorView',
         });
         this.stack.pushView(edit);
       }
@@ -73,7 +73,9 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <% this.headerHTML(out) %>
+        <div class="meta-edit-heading md-style-trait-standard">
+          $$metaEditPropertyTitle{ model_: foam.ui.TextFieldView, mode:'read-only' }
+        </div>
         $$name
         $$model
       </div>
