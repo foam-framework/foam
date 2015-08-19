@@ -35,7 +35,7 @@ CLASS({
             data: this.data,
             innerView: {
               factory_: 'foam.apps.builder.questionnaire.DAOWizard',
-              data: this.data,
+              //data: this.data,
             }
           })
         );
