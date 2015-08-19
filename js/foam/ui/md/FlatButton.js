@@ -164,7 +164,7 @@ CLASS({
         if ( this.$ ) this.$.style.color = this.currentColor_;
       }.bind(this));
       this.$.style.color = this.currentColor_;
-      this.$.style.font = this.alpha;
+      this.$.style.font = this.font;
       this.$.style.opacity = this.alpha;
       this.$.style.background = this.background;
     },

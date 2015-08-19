@@ -83,6 +83,7 @@ CLASS({
               seqNo: true,
               logging: true,
             }),
+            detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
             innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView',
           }),
           this.BrowserConfig.create({

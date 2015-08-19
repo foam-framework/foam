@@ -92,13 +92,7 @@ MODEL({
   actions: [
     {
       name: 'book',
-      isEnabled: function() {
-        var oneWay     = this.oneWay,
-            departDate = this.departDate,
-            returnDate = this.returnDate;
-
-        return departDate && ( oneWay || returnDate ) ;
-      },
+      isEnabled: function() { return this.isValid(); },
       code: function() {
         var depart = this.departDate.toLocaleDateString();
 

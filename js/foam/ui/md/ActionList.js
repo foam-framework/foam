@@ -59,7 +59,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'actionViewFactory',
-      defaultValue: 'foam.ui.md.FlatButton',
+      defaultValue: 'foam.ui.ActionButton',
     },
   ],
 
@@ -136,10 +136,10 @@ CLASS({
         <% this.toInnerHTML(out); %>
       </action-list>
       <% this.setClass('vertical',
-             function() { this.direction === 'VERTICAL'; }.bind(this),
+             function() { return this.direction === 'VERTICAL'; }.bind(this),
              this.id);
          this.setClass('horizontal',
-             function() { this.direction === 'HORIZONTAL'; }.bind(this),
+             function() { return this.direction === 'HORIZONTAL'; }.bind(this),
              this.id); %>
     */},
     function toInnerHTML() {/*
@@ -162,14 +162,6 @@ CLASS({
       }
       action-list.horizontal {
         flex-direction: row;
-      }
-      action-list.vertical flat-button {
-        padding: 16px;
-        margin: 0;
-        border-radius: 0;
-      }
-      action-list.vertical .flat-button-label-container {
-        text-transform: none;
       }
     */},
   ],
