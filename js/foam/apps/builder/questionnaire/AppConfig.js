@@ -14,16 +14,12 @@ CLASS({
   name: 'AppConfig',
   extendsModel: 'foam.apps.builder.AppConfig',
 
-  traits: [ 'foam.apps.builder.AppConfigModelOwnerTrait' ],
+  traits: [
+    'foam.apps.builder.AppConfigModelOwnerTrait',
+    'foam.apps.builder.AppConfigDAOOwnerTrait',
+  ],
 
   requires: [
-    'BooleanProperty',
-    'StringProperty',
-    'IntProperty',
-    'FloatProperty',
-    'DateProperty',
-    'foam.ui.md.DetailView',
-    'foam.ui.TableView',
     'foam.apps.builder.questionnaire.Questionnaire',
   ],
 

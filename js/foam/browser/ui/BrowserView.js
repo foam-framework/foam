@@ -21,7 +21,7 @@ CLASS({
   requires: [
     'foam.browser.BrowserConfig',
     'foam.browser.ui.StackView',
-    'foam.graphics.ActionButtonCView',
+    'foam.ui.md.FlatButton',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.ui.DAOListView',
@@ -43,10 +43,10 @@ CLASS({
       name: 'InnerBrowserView',
       extendsModel: 'foam.ui.DetailView',
       requires: [
-        'foam.graphics.ActionButtonCView',
+        'foam.ui.md.FlatButton',
         'foam.ui.PopupChoiceView',
         'foam.ui.SpinnerView',
-        'foam.ui.md.Halo',
+        'foam.ui.md.HaloView',
       ],
       imports: [
         'stack',
@@ -229,7 +229,7 @@ CLASS({
             flex-grow: 0;
             flex-shrink: 0;
             height: 56px;
-            padding: 0 12px;
+            padding: 0;
           }
           .browser-header .title {
             font-size: 20px;
@@ -260,10 +260,6 @@ CLASS({
                 color: #ccc;
               }
           <% } %>
-
-          .browser-header .actionButtonCView {
-            margin: 8px;
-          }
 
           <% var ANIMATION_TIME = '0.4s'; %>
 
@@ -376,15 +372,16 @@ CLASS({
             <% if (this.data.showAdd) { %>
               <div class="floating-action">
                 <% var createButtonX = this.Y.sub();
-                   createButtonX.registerModel(this.ActionButtonCView.xbind({
+                   createButtonX.registerModel(this.FlatButton.xbind({
                      haloColor: 'black',
+                     displayMode: 'ICON_ONLY',
                    }), 'foam.ui.ActionButton');
-                   createButtonX.registerModel(this.Halo.xbind({
+                   createButtonX.registerModel(this.HaloView.xbind({
                      easeInTime: 0,
                      easeOutTime: 0,
-                   }), 'foam.ui.md.Halo'); %>
+                   }), 'foam.ui.md.HaloView'); %>
                 $$createButton{
-                  className: 'createButton',
+                  extraClassName: 'createButton',
                   color: 'white',
                   font: '30px Roboto Arial',
                   alpha: 1,
@@ -426,10 +423,11 @@ CLASS({
   methods: [
     function init(args) {
       this.SUPER(args);
-      this.Y.registerModel(this.ActionButtonCView.xbind({
+      this.Y.registerModel(this.FlatButton.xbind({
+        displayMode: 'ICON_ONLY',
         height: 24,
         width: 24,
-        haloColor: 'white'
+        color: 'white'
       }), 'foam.ui.ActionButton');
       this.SharedStyles.create();
     },

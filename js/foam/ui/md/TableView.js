@@ -17,7 +17,9 @@ CLASS({
   requires: [
     'foam.ui.TableView',
     'foam.ui.md.ActionLabel',
-    'foam.ui.md.EditColumnsView'
+    'foam.ui.md.EditColumns',
+    'foam.ui.md.EditColumnsView',
+    'foam.ui.md.OverlayDropdownView'
   ],
   imports: [ 'hardSelection$' ],
 
@@ -88,10 +90,15 @@ CLASS({
       }
     },
     {
+      model_: 'BooleanProperty',
+      name: 'scrollEnabled',
+      defaultValue: false
+    },
+    {
       name: 'table',
       lazyFactory: function() {
         return this.TableView.create({
-          scrollEnabled: true,
+          scrollEnabled: this.scrollEnabled,
           className: 'mdTable',
           ascIcon: '<i class="material-icons">keyboard_arrow_up</i>',
           descIcon: '<i class="material-icons">keyboard_arrow_down</i>',
@@ -105,9 +112,15 @@ CLASS({
     {
       name: 'columnSelectionView',
       lazyFactory: function() {
-        return this.EditColumnsView.create({
-          model$: this.model$,
-          properties$: this.properties$
+        return this.OverlayDropdownView.create({
+          delegate: function() {
+            return this.EditColumnsView.create({
+              data: this.EditColumns.create({
+                model$: this.model$,
+                properties$: this.properties$
+              }, this.Y)
+            });
+          }.bind(this)
         });
       }
     }
@@ -177,7 +190,7 @@ CLASS({
       name: 'editColumns',
       label: 'more_vert',
       action: function(X, action) {
-        if ( this.columnSelectionView.isOpen ) return;
+        if ( this.columnSelectionView.state === 'OPEN' ) return;
         this.columnSelectionView.open();
       }
     }

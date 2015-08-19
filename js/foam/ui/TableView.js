@@ -278,6 +278,7 @@ CLASS({
       code: function() {
         this.dao.select(COUNT())(function(c) {
           this.scrollbar.size = c.count;
+          this.onResize();
           this.paintData();
         }.bind(this));
       }
@@ -713,7 +714,7 @@ CLASS({
           <% this.tableToHTML(out); %>
         </span>
         <%= this.scrollEnabled ?
-            ('<span style="width:20px;flex:none;overflow:hidden;padding-top:48px;" class="scrollbar">' +
+            ('<span style="margin-left:2px;margin-right:2px;width:20px;flex:none;overflow:hidden;padding-top:48px;" class="scrollbar">' +
             this.scrollbar.toView_().toHTML() + '</span>') : '' %>
       </div>
     */},

@@ -13,14 +13,15 @@ CLASS({
   package: 'foam.apps.builder.kiosk',
   name: 'KioskView',
   extendsModel: 'foam.ui.View',
+  traits: [ 'foam.apps.builder.ZIndexTrait' ],
 
   requires: [
-    'foam.apps.builder.kiosk.KioskChromeView',
-    'foam.apps.builder.Timeout',
     'foam.apps.builder.TOSData',
     'foam.apps.builder.TOSView',
+    'foam.apps.builder.Timeout',
     'foam.apps.builder.WebView',
-    'foam.graphics.ActionButtonCView',
+    'foam.apps.builder.kiosk.KioskChromeView',
+    'foam.ui.md.FlatButton',
     'foam.ui.md.PopupView',
   ],
   exports: [
@@ -50,6 +51,11 @@ CLASS({
           if ( nu.rotation !== 0 ) this.onRotationChange();
         }
       },
+    },
+    {
+      model_: 'IntProperty',
+      name: 'zIndex',
+      defaultValue: 1,
     },
     {
       type: 'foam.apps.builder.TOSData',
@@ -109,10 +115,11 @@ CLASS({
 
   methods: [
     function init() {
-      this.Y.registerModel(this.ActionButtonCView.xbind({
+      this.Y.registerModel(this.FlatButton.xbind({
+        displayMode: 'ICON_ONLY',
         height: 24,
         width: 24,
-        haloColor: 'black'
+        color: 'black'
       }), 'foam.ui.ActionButton');
     },
     function initHTML() {
@@ -206,7 +213,7 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <kiosk id="%%id" <%= this.cssClassAttr() %>>
+      <kiosk id="%%id" <%= this.cssClassAttr() %> >
         %%tosView
         $$data
         %%webview

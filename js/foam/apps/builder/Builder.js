@@ -14,19 +14,22 @@ CLASS({
   name: 'Builder',
 
   requires: [
+    'Model',
     'com.google.analytics.AnalyticsDAO',
+    'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.ExportManager',
-    'foam.apps.builder.AppLoader',
+    'foam.apps.builder.browser.AppConfig as BrowserAppConfig',
+    'foam.apps.builder.browser.DesignerView as BrowserDesignerView',
     'foam.apps.builder.kiosk.KioskAppConfig',
     'foam.apps.builder.kiosk.KioskDesignerView',
     'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
     'foam.apps.builder.questionnaire.DesignerView as QuestionnaireDesignerView',
     'foam.browser.ui.BrowserView',
+    'foam.dao.ContextualizingDAO',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.dao.SeqNoDAO',
-    'foam.dao.ContextualizingDAO',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.metrics.Metric',
@@ -36,6 +39,7 @@ CLASS({
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.TextFieldView',
     'Model',
+    'foam.apps.builder.dao.DAOFactory',
   ],
   exports: [
     'touchManager',
@@ -45,6 +49,7 @@ CLASS({
     'menuDAO$',
     'exportManager$',
     'modelDAO',
+    'daoConfigDAO',
   ],
 
   properties: [
@@ -63,20 +68,6 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
-      name: 'browserDAOFactory',
-      defaultValue: function(model, name) {
-        return this.EasyDAO.create({
-          model: model,
-          name: name,
-          daoType: this.IDBDAO,
-          cache: true,
-          seqNo: true,
-          logging: true,
-        });
-      }
-    },
-    {
       model_: 'foam.core.types.DAOProperty',
       name: 'menuDAO',
       factory: function() {
@@ -85,8 +76,15 @@ CLASS({
             title: 'Kiosk Apps',
             label: 'Kiosk App',
             model: this.KioskAppConfig,
-            dao: this.browserDAOFactory(this.KioskAppConfig, 'KioskAppConfigs'),
-            innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView'
+            dao: this.EasyDAO.create({
+              model: this.KioskAppConfig,
+              name: 'KioskAppConfigs',
+              daoType: this.IDBDAO,
+              cache: true,
+              seqNo: true,
+              logging: true,
+            }),
+            innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView',
           }),
           this.BrowserConfig.create({
             title: 'Questionnaire Apps',
@@ -103,7 +101,24 @@ CLASS({
               })
             }),
             detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
-            innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'
+            innerDetailView: 'foam.apps.builder.questionnaire.DesignerView',
+          }),
+          this.BrowserConfig.create({
+            title: 'Browser Apps',
+            label: 'Browser App',
+            model: this.BrowserAppConfig,
+            dao:
+            this.SeqNoDAO.create({ delegate:
+              this.ContextualizingDAO.create({ delegate:
+                this.IDBDAO.create({
+                  model: this.BrowserAppConfig,
+                  name: 'BrowserAppConfigs',
+                  useSimpleSerialization: false,
+                })
+              })
+            }),
+            detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
+            innerDetailView: 'foam.apps.builder.browser.DesignerView',
           }),
         ].dao;
         dao.model = this.BrowserConfig;
@@ -121,6 +136,17 @@ CLASS({
               useSimpleSerialization: false,
           }, this.Y)
         }, this.Y);
+      },
+    },
+    {
+      name: 'daoConfigDAO',
+      help: 'The store of DAO configurations for all apps.',
+      lazyFactory: function() {
+        return this.IDBDAO.create({
+              model: this.DAOFactory,
+              name: 'DAOFactories',
+              useSimpleSerialization: false,
+          }, this.Y)
       },
     },
     {

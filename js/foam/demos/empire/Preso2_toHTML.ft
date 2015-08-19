@@ -167,9 +167,10 @@ CLASS({
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
-      <iframe style="width:60%;height:70%;" src="http://todomvc.com/examples/foam/" xxxsrc="./apps/todo/index.html"></iframe>
+      <iframe style="width:60%;height:70%;" xxxsrc="http://todomvc.com/examples/foam/" src="./apps/todo/index.html"></iframe>
       <div>
-        <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="https://github.com/foam-framework/foam/tree/master/apps/todo">Source</a>
+<!--        <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="https://github.com/foam-framework/foam/tree/master/apps/todo">Source</a> -->
+        <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="/apps/todo/index.html">Source</a>
       </div>
     </div>
   </slide>

@@ -20,17 +20,18 @@ CLASS({
   ],
 
   requires: [
-    'foam.apps.builder.datamodels.ModelPickerView'
+    'foam.apps.builder.datamodels.ModelPickerView',
+    'foam.apps.builder.dao.DAOPickerView',
   ],
 
   properties: [
     {
       name: 'metaEditModelTitle',
-      defaultValue: 'Edit your Questionnaire',
+      defaultValue: 'Edit your Questionnaire: Click the red "+" button below to add a new question.',
     },
     {
       name: 'metaEditPropertyTitle',
-      defaultValue: 'Edit Question',
+      defaultValue: 'Add a new Question: Enter a descriptive name (such as "first name" or "home phone number"), then select the type of input (such as a "StringProperty" for text, or "BooleanProperty" for a yes/no checkbox).',
     },
   ],
 
@@ -38,7 +39,8 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         $$appName
-        $$model{ model_: 'foam.apps.builder.datamodels.ModelPickerView', baseModel: 'foam.apps.builder.questionnaire.Questionnaire' }
+        $$model{ model_: 'foam.apps.builder.datamodels.ModelPickerView', baseModel: this.data.baseModelId }
+        $$dao{ model_: 'foam.apps.builder.dao.DAOPickerView', baseModel: this.data.baseModelId }
         $$version
         $$termsOfService
         $$rotation

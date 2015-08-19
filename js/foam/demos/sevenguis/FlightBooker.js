@@ -99,7 +99,7 @@ MODEL({
 
         return departDate && ( oneWay || returnDate ) ;
       },
-      action: function() {
+      code: function() {
         var depart = this.departDate.toLocaleDateString();
 
         window.alert('You have booked a ' + (this.oneWay ?

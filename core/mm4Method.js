@@ -143,6 +143,16 @@ CLASS({
                 */}
     },
     {
+      name: 'ligature',
+      type: 'String',
+      defaultValue: undefined,
+      help: 'Provides a ligature for font-based icons for this action',
+      documentation: function() { /*
+            A "ligature" (short text string) a font-based icon to render for
+            this $$DOC{ref:'Action'}.
+        */}
+    },
+    {
       name: 'showLabel',
       type: 'String',
       defaultValue: true,
@@ -173,7 +183,7 @@ CLASS({
     },
     {
       model_: 'FunctionProperty',
-      name: 'action',
+      name: 'code',
       displayWidth: 80,
       displayHeight: 20,
       defaultValue: '',
@@ -181,6 +191,21 @@ CLASS({
       documentation: function() { /*
             This function supplies the execution of the $$DOC{ref:'Action'} when triggered.
         */}
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'action',
+      displayWidth: 80,
+      displayHeight: 20,
+      defaultValue: '',
+      getter: function() {
+        console.log('deprecated use of Action.action');
+        return this.code;
+      },
+      setter: function(code) {
+        console.log('deprecated use of Action.action');
+        return this.code = code;
+      }
     },
     {
       model_: 'StringArrayProperty',
@@ -194,12 +219,39 @@ CLASS({
       label: 'Description for Translation',
       type: 'String',
       defaultValue: ''
+    },
+    {
+      name: 'priority',
+      type: 'Int',
+      defaultValue: 5,
+      help: 'Measure of importance of showing this action to the user when it is rendered in a list.',
+      documentation: function() { /*
+            A measure of importance of showing this $$DOC{ref:'Action'} instance
+            in list $$DOC{ref:'foam.ui.View'} of
+            $$DOC{ref:'Action',usePlural:true}; a lower number indicates a
+            higher priority. Lists should determine which actions to make
+            visible by $$DOC{ref:'.priority'}, then sort them by
+            $$DOC{ref:'.order'}.
+        */}
+    },
+    {
+      name: 'order',
+      type: 'Float',
+      defaultValue: 5.0,
+      help: 'Indication of where this action should appear in an ordered list of actions.',
+      documentation: function() { /*
+            Indication of where this $$DOC{ref:'Action'} instance should appear
+            in an ordered list $$DOC{ref:'foam.ui.View'} of
+            $$DOC{ref:'Action',usePlural:true}. Lists should determine which
+            actions to make visible by $$DOC{ref:'.priority'}, then sort them by
+            $$DOC{ref:'.order'}.
+        */}
     }
   ],
   methods: {
     maybeCall: function(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
       if ( this.isAvailable.call(that, this) && this.isEnabled.call(that, this) ) {
-        this.action.call(that, X, this);
+        this.code.call(that, X, this);
         that.publish(['action', this.name], this);
         return true;
       }
@@ -207,10 +259,6 @@ CLASS({
     }
   }
 });
-
-//Action.getPrototype().maybeCall = function(X, that) {
-//  if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
-//};
 
 
 /* Not used yet

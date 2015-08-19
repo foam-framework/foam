@@ -94,5 +94,10 @@ CLASS({
         data: exportFlow,
       }, this.Y).exportApp(exportFlow);
     },
+    function publishApp(exportFlow) {
+      this.UploadManager.create({
+        data: exportFlow,
+      }, this.Y).publishApp(exportFlow);
+    },
   ],
 });

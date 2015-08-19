@@ -15,18 +15,71 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
-    'foam.ui.ImageView',
+    'foam.ui.Icon',
     'foam.ui.md.HaloView'
   ],
 
   properties: [
     {
       name: 'className',
-      defaultValue: 'flatbutton'
+      defaultValue: 'flatbutton noselect',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.className = this.className.split(' ').concat(
+            this.extraClassName.split(' ')).join(' ');
+      }
+    },
+    {
+      name: 'extraClassName',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.className = this.className.split(' ').concat(
+            this.extraClassName.split(' ')).join(' ');
+      }
+    },
+    {
+      name: 'color',
+      help: 'The text and background color to use for the active state',
+      defaultValue: '#02A8F3'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'font',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.style.font = nu;
+      }
+    },
+    {
+      model_: 'FloatProperty',
+      name: 'alpha',
+      defaultValue: 1,
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.style.opacity = nu;
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'background',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$ ) return;
+        this.$.style.background = nu;
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'haloColor',
+      defaultValue: '',
+      postSet: function(old, nu) {
+        if ( ! old ) Events.unfollow(this.currentColor_$, this.haloColor_$);
+        if ( ! nu )  Events.follow(this.currentColor_$, this.haloColor_$);
+        else         this.haloColor_ = nu;
+      }
     },
     {
       name: 'action',
-      postSet: function() { this.bindData(); }
+      postSet: function(_, nu) { this.bindData(); }
     },
     {
       name: 'data',
@@ -34,14 +87,35 @@ CLASS({
     },
     {
       name: 'escapeHtml',
-      defaultValue: true,
+      defaultValue: true
     },
     {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'displayMode',
+      defaultValue: 'ICON_AND_LABEL',
+      choices: [
+        ['ICON_AND_LABEL', 'Icon and Label'],
+        ['ICON_ONLY', 'Icon Only'],
+        ['LABEL_ONLY', 'Label Only']
+      ],
+    },
+    {
+      model_: 'StringProperty',
       name: 'iconUrl',
-      defaultValueFn: function() {
-        return this.action ? this.action.iconUrl : '';
-      },
-      view: 'foam.ui.ImageView'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'ligature',
+    },
+    {
+      name: 'icon',
+      lazyFactory: function() {
+        return this.Icon.create({
+          url$: this.iconUrl$,
+          ligature$: this.ligature$,
+          color$: this.currentColor_$
+        }, this.Y);
+      }
     },
     {
       name: 'halo',
@@ -49,12 +123,16 @@ CLASS({
         return this.HaloView.create({
           className: 'halo',
           recentering: false,
-          color$: this.currentColor_$,
+          color$: this.haloColor_$,
           pressedAlpha: 0.2,
           startAlpha: 0.2,
           finishAlpha: 0
         }, this.Y);
       }
+    },
+    {
+      name: 'tooltip',
+      defaultValueFn: function() { return this.action && this.action.help; }
     },
     {
       model_: 'StringProperty',
@@ -63,9 +141,9 @@ CLASS({
       defaultValueFn: function() { return this.color; }
     },
     {
-      name: 'color',
-      help: 'The text and background color to use for the active state',
-      defaultValue: '#02A8F3'
+      model_: 'StringProperty',
+      name: 'haloColor_',
+      hidden: true
     },
     {
       model_: 'BooleanProperty',
@@ -75,17 +153,26 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      if ( ! this.haloColor ) Events.follow(this.currentColor_$, this.haloColor_$);
+    },
     function initHTML() {
-      var self = this;
       this.SUPER();
 
       this.currentColor_$.addListener(function() {
-        if ( self.$ ) self.$.style.color = self.currentColor_;
-      });
-      if ( self.$ ) self.$.style.color = this.currentColor_;
+        if ( this.$ ) this.$.style.color = this.currentColor_;
+      }.bind(this));
+      this.$.style.color = this.currentColor_;
+      this.$.style.font = this.alpha;
+      this.$.style.opacity = this.alpha;
+      this.$.style.background = this.background;
     },
     function bindData() {
-      if ( ! this.action || ! this.data ) return;
+      if ( ( ! this.action ) || ( ! this.data ) ) return;
+
+      if ( ! this.iconUrl ) this.iconUrl = this.action.iconUrl;
+      if ( ! this.ligature ) this.ligature = this.action.ligature;
 
       var self = this;
 
@@ -121,8 +208,8 @@ CLASS({
   templates: [
     function CSS() {/*
       flat-button {
-        padding: 16px 16px;
-        margin: 0px 0px;
+        padding: 10px;
+        margin: 6px;
         display: inline-flex;
         align-items: baseline;
         justify-content: center;
@@ -133,42 +220,88 @@ CLASS({
       }
 
       flat-button.md-style-trait-inline {
-        padding: 16px 16px;
-        margin: -16px -16px;
+        padding: 8px 8px;
+        margin: -4px -4px;
       }
 
-      .flat-button-icon-container {
-        padding-right: 12px;
-        width: 36px;
-        height: 0px;
-      }
-      .flat-button-icon {
-        position: absolute;
-        left: 16px;
-        top: 12px;
+      flat-button .halo {
+        border-radius: inherit;
       }
 
-      .hidden {
+      flat-button spacer {
+        display: block;
+        width: 12px;
+      }
+
+      flat-button.icon-only spacer, flat-button.label-only spacer {
+        width: 0px;
+      }
+
+      flat-button.icon-only {
+        border-radius: 50%;
+      }
+
+      flat-button.createButton {
+        padding: 10px;
+      }
+
+      flat-button.hidden,
+      flat-button.label-only .flat-button-icon-container,
+      flat-button.icon-only .flat-button-label-container {
         display: none;
       }
 
-      .halo {
+      flat-button.label-only .flat-button-label-container {
+        text-transform: uppercase;
+      }
+
+      flat-button .halo {
         position: absolute;
         left: 0;
         top: 0;
+        z-index: 2;
       }
+
+      flat-button:not(.icon-only) .flat-button-icon-container {
+         width: 24px;
+         height: 0px;
+         position: relative;
+      }
+
+      flat-button:not(.icon-only) .flat-button-icon {
+        position: absolute;
+        left: 0px;
+        bottom: -7px;
+      }
+
     */},
     function toHTML() {/*
       <<%= self.tagName %> id="%%id" <%= this.cssClassAttr() %> >
         %%halo
-        <% if ( this.iconUrl ) { %><div class="flat-button-icon-container"><div class="flat-button-icon">$$iconUrl</div></div><% } %>
-        <span id="<%= this.id + "CONTENT" %>"><% this.labelHTML(out) %></span>
+        <div class="flat-button-icon-container">
+          <div class="flat-button-icon">
+            %%icon
+          </div>
+        </div>
+        <spacer>
+        </spacer>
+        <span id="<%= this.id + "CONTENT" %>" class="flat-button-label-container"><% this.labelHTML(out) %></span>
       </%%tagName>
       <% this.on('click', function(e) {
            e.preventDefault();
            e.stopPropagation();
            self.action.maybeCall(self.X, self.data);
          }, this.id);
+         this.setClass(
+             'icon-only',
+             function() {
+               return this.displayMode === 'ICON_ONLY';
+             }, this.id);
+         this.setClass(
+             'label-only',
+             function() {
+               return this.displayMode === 'LABEL_ONLY';
+             }, this.id);
         this.setClass('hidden', function() { return self.isHidden; }, this.id); %>
     */},
     function labelHTML() {/*

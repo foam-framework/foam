@@ -12,10 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'DesignerView',
-  extendsModel: 'foam.ui.View',
-  traits: [
-    'foam.metrics.ScreenViewTrait',
-  ],
+  extendsModel: 'foam.apps.builder.DesignerView',
 
   requires: [
     'foam.apps.builder.Panel',
@@ -29,17 +26,6 @@ CLASS({
     'foam.ui.TextAreaView',
     'foam.ui.FunctionView',
   ],
-
-  imports: [
-    'exportManager$',
-  ],
-
-  constants: {
-    AUX_DATA_PROPS: [
-      'config',
-      'chrome',
-    ],
-  },
 
   listeners: [
     {
@@ -69,7 +55,7 @@ CLASS({
         }
         this.data.model.instance_.prototype_ = null;
         this.instance = this.data.model.create();
-      }
+      },
     },
     {
       type: 'foam.apps.builder.ExportManager',
@@ -78,28 +64,22 @@ CLASS({
     {
       name: 'instance',
       help: 'An example of your questionnaire as a user would see it.',
-    }
-  ],
-
-  templates: [
-    function toHTML() {/*
-      <kiosk-designer id="%%id" <%= this.cssClassAttr() %>>
-        $$data{
-          model_: 'foam.apps.builder.Panel',
-          innerView: { factory_: 'foam.apps.builder.AppConfigDetailView',
-                       innerView: 'foam.apps.builder.questionnaire.EditView' }
-        }
-        $$data{ model_: 'foam.apps.builder.questionnaire.QuestionnaireView' }
-      </kiosk-designer>
-    */},
-    function CSS() {/*
-      kiosk-designer {
-        position: relative;
-        display: flex;
-        flex-grow: 1;
-      }
-      kiosk-designer panel { z-index: 2; }
-      kiosk-designer kiosk { z-index: 1; }
-    */},
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'panelView',
+      defaultValue: {
+        factory_: 'foam.apps.builder.Panel',
+        innerView: {
+          factory_: 'foam.apps.builder.AppConfigDetailView',
+          innerView: 'foam.apps.builder.questionnaire.EditView',
+        },
+      },
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'appView',
+      defaultValue: 'foam.apps.builder.questionnaire.QuestionnaireView',
+    },
   ],
 });
