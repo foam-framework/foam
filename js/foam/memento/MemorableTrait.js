@@ -82,12 +82,11 @@ CLASS({
         for ( var i = 0, prop ; prop = properties[i] ; i++ ) {
           if (prop.memorable) {
             var key = typeof prop.memorable === 'string' ? prop.memorable : prop.name;
-            if (prop.fromMemento) {
-              this[prop.name] = prop.fromMemento(memento[key]);
-            } else if (typeof this[prop.name].memento !== 'undefined') {
-              this[prop.name].memento = memento[key];
+            var value = prop.fromMemento ? prop.fromMemento(memento[key]) : memento[key];
+            if (this[prop.name].memento$) {
+              this[prop.name].memento = value;
             } else {
-              this[prop.name] = memento[key];
+              this[prop.name] = value;
             }
           }
         }
