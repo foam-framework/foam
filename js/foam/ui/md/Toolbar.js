@@ -28,13 +28,14 @@ CLASS({
     {
       name: 'leftActionList',
       lazyFactory: function() {
+        var Y = this.Y.sub();
+        Y.registerModel(this.ActionButton.xbind({
+            displayMode: 'ICON_ONLY',
+        }), 'foam.ui.ActionButton');
         return this.ActionList.create({
           data$: this.leftActions$,
           direction: 'HORIZONTAL',
-          actionViewFactory: this.ActionButton.xbind({
-            displayMode: 'ICON_ONLY',
-          }, this.Y),
-        }, this.Y);
+        }, Y);
       },
     },
     {
