@@ -134,6 +134,13 @@ CLASS({
           }
 
           options.splice(0,0,['','-- CLEAR SELECTION --']);
+
+          if (!selected && self.memento) {
+            // If we were provided with a memento, but couldn't find that key,
+            // we inject it as a new key and filter on it.
+            options.splice(1, 0, [self.memento, self.memento + '(0)']);
+            selected = self.memento;
+          }
           self.view.choices = options;
           if (selected) {
             self.view.data = selected;
