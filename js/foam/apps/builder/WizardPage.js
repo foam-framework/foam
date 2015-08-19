@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.questionnaire',
+  package: 'foam.apps.builder',
   name: 'WizardPage',
   extendsModel: 'foam.ui.md.DetailView',
 
