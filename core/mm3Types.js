@@ -20,6 +20,7 @@ CLASS({
   extendsModel: 'Property',
 
   help: 'Describes a properties of type String.',
+  label: 'Text, including letters, numbers, or symbols',
 
   properties: [
     {
@@ -74,6 +75,7 @@ CLASS({
   extendsModel: 'Property',
 
   help: 'Describes a properties of type Boolean.',
+  label: 'True/false, yes/no, or on/off',
 
   properties: [
     {
@@ -136,6 +138,7 @@ CLASS({
   extendsModel: 'Property',
 
   help:  'Describes a properties of type Date.',
+  label: 'Date, including year, month, and day',
 
   properties: [
     {
@@ -197,6 +200,7 @@ CLASS({
   extendsModel: 'DateProperty',
 
   help: 'Describes a properties of type DateTime.',
+  label: 'Date and time, including year, month, day, hour, minute and second',
 
   properties: [
     {
@@ -225,7 +229,9 @@ CLASS({
 CLASS({
   name:  'IntProperty',
   extendsModel: 'Property',
+
   help:  'Describes a properties of type Int.',
+  label: 'Round numbers such as 1, 0, or -245',
 
   properties: [
     {
@@ -294,7 +300,9 @@ CLASS({
 CLASS({
   name:  'FloatProperty',
   extendsModel: 'Property',
+
   help:  'Describes a properties of type Float.',
+  label: 'Decimal numbers such as 1.34 or -0.00345',
 
   properties: [
     {
@@ -357,7 +365,9 @@ CLASS({
 CLASS({
   name:  'FunctionProperty',
   extendsModel: 'Property',
+
   help:  'Describes a properties of type Function.',
+  label: 'Code that can be run',
 
   properties: [
     {
@@ -414,7 +424,9 @@ CLASS({
 CLASS({
   name: 'ArrayProperty',
   extendsModel: 'Property',
-  help: 'Describes a property of type Array.',
+
+  help:  'Describes a property of type Array.',
+  label: 'List of items',
 
   properties: [
     {
@@ -551,7 +563,9 @@ CLASS({
 CLASS({
   name:  'ReferenceProperty',
   extendsModel: 'Property',
+
   help:  'A foreign key reference to another Entity.',
+  label: 'Reference to another object',
 
   properties: [
     {
@@ -604,7 +618,9 @@ CLASS({
 CLASS({
   name: 'StringArrayProperty',
   extendsModel: 'Property',
+
   help: 'An array of String values.',
+  label: 'List of text strings',
 
   properties: [
     {
@@ -708,7 +724,9 @@ CLASS({
 CLASS({
   name: 'ModelProperty',
   extendsModel: 'Property',
+
   help: 'Describes a Model property.',
+  label: 'Data Model definition',
 
   properties: [
     {
@@ -950,28 +968,40 @@ CLASS({
 
 CLASS({
   name: 'EMailProperty',
-  extendsModel: 'StringProperty'
+  extendsModel: 'StringProperty',
+  label: 'Email address',
 });
 
 CLASS({
   name: 'ImageProperty',
-  extendsModel: 'StringProperty'
+  extendsModel: 'StringProperty',
+  label: 'Image data or link',
 });
 
 CLASS({
   name: 'URLProperty',
-  extendsModel: 'StringProperty'
+  extendsModel: 'StringProperty',
+  label: 'Web link (URL or internet address)',
 });
 
 CLASS({
   name: 'ColorProperty',
-  extendsModel: 'StringProperty'
+  extendsModel: 'StringProperty',
+  label: 'Color',
 });
 
 CLASS({
   name: 'PasswordProperty',
-  extendsModel: 'StringProperty'
+  extendsModel: 'StringProperty',
+  label: 'Password that displays protected or hidden text',
 });
+
+CLASS({
+  name: 'PhoneNumberProperty',
+  extendsModel: 'StringProperty',
+  label: 'Phone number',
+});
+
 
 if ( DEBUG ) CLASS({
   name: 'DocumentationProperty',

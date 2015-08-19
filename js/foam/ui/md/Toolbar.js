@@ -181,7 +181,7 @@ CLASS({
         </actions>
 
         <header id="%%id-header">
-          <%# this.title %>
+          <div class="toolbar-title-text"><%# this.title %></div>
         </header>
 
         %%rightActionList
@@ -211,6 +211,8 @@ CLASS({
       toolbar header {
         margin-left: 12px;
         flex-grow: 1;
+        display: flex;
+        overflow-x: hidden;
       }
       toolbar actions {
         display: flex;
@@ -222,6 +224,9 @@ CLASS({
       }
       toolbar actions.right {
         align-items: flex-end;
+      }
+      toolbar header .toolbar-title-text {
+        flex-shrink: 0;
       }
     */},
   ],

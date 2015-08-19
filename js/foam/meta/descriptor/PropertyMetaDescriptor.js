@@ -29,20 +29,21 @@ CLASS({
       defaultValue: 'StringProperty',
       view: {
          factory_: 'foam.ui.ChoiceView',
-         choices: [
-           'StringProperty',
-           'BooleanProperty',
-           'DateProperty',
-           'DateTimeProperty',
-           'IntProperty',
-           'FloatProperty',
-           'StringArrayProperty',
-           'EMailProperty',
-           'URLProperty',
-           'ImageProperty',
-           'ColorProperty',
-           'PasswordProperty',
-           'PhoneNumberProperty',
+         objToChoice: function(obj) { return [obj.id, obj.label]; },
+         dao: [
+           StringProperty,
+           BooleanProperty,
+           DateProperty,
+           DateTimeProperty,
+           IntProperty,
+           FloatProperty,
+           StringArrayProperty,
+           EMailProperty,
+           URLProperty,
+           ImageProperty,
+           ColorProperty,
+           PasswordProperty,
+           PhoneNumberProperty,
          ]
        },
     },
@@ -51,9 +52,14 @@ CLASS({
       label: 'The name of the new property',
       name: 'name',
       documentation: function() {/* The name of the new property. */},
-      preSet: function(old,nu) {
+      preSet: function(old, nu, prop) {
+        if ( ! nu ) return old || prop.defaultValue;
         return camelize(nu);
-      }
+      },
+      postSet: function(old,nu) {
+        this.propertyChange('name', null, nu);
+      },
+      defaultValue: 'name',
     },
   ],
 
