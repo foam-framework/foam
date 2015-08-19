@@ -478,7 +478,7 @@ CLASS({
         <div class="flex-grow content small-heading">Live-Coding</div>
       </div>
     </div>
-    <div class="card flex-col flex-grow" style="overflow: hidden">
+    <div class="card flex-col flex-grow" style="overflow: scroll">
       <foam model="foam.demos.DragonLiveCoding" />
     </div>
   </slide>
