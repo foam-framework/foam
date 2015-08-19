@@ -148,9 +148,10 @@ function recopyModelFeatures(m) {
   }
 
   // check for old bootstrap Property instances
-  if ( m.properties && m.properties[0] && ! Property.isInstance(m.properties[0]) ) {
+  if ( m.properties && m.properties[0] &&
+       m.properties[0].__proto__.model_.name_ !== 'Model' ) {
     m.properties.forEach(function(p) {
-      if ( p.model_.name === 'Property' ) p.model_ = Property;
+      if ( p.__proto__.model_.name === 'Property' ) p.__proto__ = Property.getPrototype();
     });
   }
 

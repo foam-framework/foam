@@ -129,8 +129,8 @@ CLASS({
     function init() {
       this.SUPER();
       this.timeoutID = this.window.setTimeout(function() {
-          this.ligatureViewFuture_.set(null);
-          this.ligatureView = this.$parent = null;
+        this.ligatureViewFuture_.set(null);
+        this.ligatureView = this.$parent = null;
       }.bind(this), this.timeout);
     },
     function initParentStyle() {

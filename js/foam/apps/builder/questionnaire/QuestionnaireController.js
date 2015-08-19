@@ -35,14 +35,15 @@ CLASS({
       name: 'dao',
       help: 'The store of questionnaires filled in by users.',
       lazyFactory: function() {
-        return this.EasyDAO.create({
-          model: this.Questionnaire,
-          name: 'questionnaires',
-          daoType: this.IDBDAO,
-          cache: true,
-          seqNo: true,
-          logging: true,
-        });
+        return this.appConfig.dao.factory(this.Y);
+//         return this.EasyDAO.create({
+//           model: this.Questionnaire,
+//           name: 'questionnaires',
+//           daoType: this.IDBDAO,
+//           cache: true,
+//           seqNo: true,
+//           logging: true,
+//         });
       }
     },
     {
@@ -50,7 +51,7 @@ CLASS({
       help: 'The current questionnaire being edited',
       view: 'foam.ui.md.DetailView',
       lazyFactory: function() {
-        return this.appConfig.model.create();
+        return this.appConfig.model.create({}, this.Y);
       }
     },
   ],
