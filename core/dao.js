@@ -385,7 +385,8 @@ CLASS({
       name: 'daoListeners_',
       transient: true,
       hidden: true,
-      factory: function() { return []; }
+      factory: function() { return []; },
+      compareProperty: function() { return 0; },
     }
   ],
 
@@ -538,7 +539,8 @@ CLASS({
           }
         }
       }
-    }
+    },
+
   }
 });
 
