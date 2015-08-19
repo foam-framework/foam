@@ -104,7 +104,7 @@ CLASS({
               return this.detailView({
                 data: newObj,
                 innerView: 'foam.apps.builder.questionnaire.AppWizard',
-                }, X);
+                }, X.sub({ dao: this.dao }));
             },
             detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
             innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'

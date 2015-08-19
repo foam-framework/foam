@@ -12,41 +12,33 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'DAOWizard',
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.apps.builder.questionnaire.WizardPage',
 
   requires: [
     'foam.apps.builder.questionnaire.ModelWizard',
-    'foam.ui.md.UpdateDetailView',
   ],
 
-  imports: [ 'stack' ],
+  properties: [
+    {
+      name: 'nextViewFactory',
+      defaultValue: {
+        factory_: 'foam.apps.builder.questionnaire.ModelWizard',
+      },
+    },
+  ],
 
   actions: [
     {
       name: 'next',
       label: 'Next: Create the Questions',
-      action: function() {
-        this.stack.replaceView(
-          this.ModelWizard.create({ data: this.data })
-        );
-      }
     }
   ],
 
   templates: [
-    function toHTML() {/*
-      <wizard id="%%id" <%= this.cssClassAttr() %>>
-      <div class="wizard-content">
+    function contentHTML() {/*
         <p class="md-style-trait-standard">Choose a data source, where your App will store its data.
         </p>
         $$dao{ model_: 'foam.apps.builder.dao.DAOPickerView', baseModel: this.data.baseModelId }
-        </div>
-        <div class="wizard-footer">
-          $$next{ model_: 'foam.ui.md.FlatButton' }
-        </div>
-    </wizard>
-    */},
-    function CSS() {/*
     */},
   ],
 
