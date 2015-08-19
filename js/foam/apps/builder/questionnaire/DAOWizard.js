@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.questionnaire.ModelWizard',
+    'foam.ui.md.UpdateDetailView',
   ],
 
   imports: [ 'stack' ],

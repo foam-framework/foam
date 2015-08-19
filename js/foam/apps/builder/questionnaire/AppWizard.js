@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.questionnaire.DAOWizard',
+    'foam.ui.md.UpdateDetailView',
   ],
 
   imports: [ 'stack' ],
@@ -30,7 +31,13 @@ CLASS({
       label: 'Next: Choose Data Source',
       action: function() {
         this.stack.replaceView(
-          this.DAOWizard.create({ data: this.data })
+          this.UpdateDetailView.create({
+            data: this.data,
+            innerView: {
+              factory_: 'foam.apps.builder.questionnaire.DAOWizard',
+              data: this.data,
+            }
+          })
         );
       }
     }

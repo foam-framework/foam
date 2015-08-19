@@ -14,7 +14,6 @@ CLASS({
   name: 'ModelWizard',
   extendsModel: 'foam.ui.md.DetailView',
 
-
   imports: [ 'stack' ],
 
   actions: [

@@ -19,8 +19,6 @@ CLASS({
     'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.ExportManager',
-    'foam.apps.builder.browser.AppConfig as BrowserAppConfig',
-    'foam.apps.builder.browser.DesignerView as BrowserDesignerView',
     'foam.apps.builder.kiosk.KioskAppConfig',
     'foam.apps.builder.kiosk.KioskDesignerView',
     'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
