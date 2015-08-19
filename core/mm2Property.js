@@ -455,6 +455,25 @@ var Property = {
       required: false,
       view: 'foam.ui.FunctionView',
       help: 'Function for validating property value.',
+      preSet: function(_, f) {
+        var str = f.toString();
+        var deps = str.
+          match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+          split(',').
+          map(function(name) { return name.trim(); });
+
+        var f2 = function() {
+          var args = [];
+          for ( var i = 0 ; i < deps.length ; i++ )
+            args.push(this[deps[i]]);
+          return f.apply(this, args);
+        };
+
+        f2.dependencies = deps;
+        f2.toString = function() { return f.toString(); };
+
+        return f2;
+      },
       documentation: function() { /*
       */}
     },

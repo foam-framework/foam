@@ -138,19 +138,13 @@ CLASS({
       f.destroy = f;
       return f;
     },
-    // TODO(kgr): experimental, remove if never used
+    // TODO(kgr): experimental, remove if never used,
+    // TODO(kgr): Move to a 'global' context above Window
     dynamic3: function(obj, fn, opt_ret) {
-      var str = fn.toString();
-      var values = str.
-        match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-        split(',').
-        map(function(name) { return obj.propertyValue(name.trim()); });
+      var values = fn.dependencies.map(function(name) { return obj.propertyValue(name); });
 
       var listener = this.framed(function() {
-        var args = [];
-        for ( var i = 0 ; i < values.length ; i++ )
-          args.push(values[i].get());
-        var ret = fn.apply(obj, args);
+        var ret = fn.call(obj);
         opt_ret && opt_ret(ret);
       });
 

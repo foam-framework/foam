@@ -183,7 +183,7 @@ CLASS({
     },
     {
       model_: 'FunctionProperty',
-      name: 'action',
+      name: 'code',
       displayWidth: 80,
       displayHeight: 20,
       defaultValue: '',
@@ -191,6 +191,21 @@ CLASS({
       documentation: function() { /*
             This function supplies the execution of the $$DOC{ref:'Action'} when triggered.
         */}
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'action',
+      displayWidth: 80,
+      displayHeight: 20,
+      defaultValue: '',
+      getter: function() {
+        console.log('deprecated use of Action.action');
+        return this.code;
+      },
+      setter: function(code) {
+        console.log('deprecated use of Action.action');
+        return this.code = code;
+      }
     },
     {
       model_: 'StringArrayProperty',
@@ -236,7 +251,7 @@ CLASS({
   methods: {
     maybeCall: function(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
       if ( this.isAvailable.call(that, this) && this.isEnabled.call(that, this) ) {
-        this.action.call(that, X, this);
+        this.code.call(that, X, this);
         that.publish(['action', this.name], this);
         return true;
       }
@@ -244,10 +259,6 @@ CLASS({
     }
   }
 });
-
-//Action.getPrototype().maybeCall = function(X, that) {
-//  if ( this.isEnabled.call(that, this) ) this.action.call(that, X, this);
-//};
 
 
 /* Not used yet

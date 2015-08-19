@@ -109,9 +109,9 @@ CLASS({
       Events.link(pValue, this.childData$);
       if ( this.prop.validate ) {
         this.X.dynamic3(data, this.prop.validate, function(error) {
-          console.log('************************** error, ', self.prop.name, error);
-          if ( ! self.$ ) return;
-          self.$.style.border = error ? '2px solid red' : '';
+          console.log('************************** error, ', self.prop.name, error, self.view.$);
+          if ( ! self.view ) return;
+          self.view.$.style.border = error ? '2px solid red' : '';
         });
       }
       this.bound_ = true;
