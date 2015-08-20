@@ -245,6 +245,10 @@ CLASS({
         padding: 10px;
       }
 
+      flat-button .md-button-label {
+        color: inherit;
+      }
+
       flat-button.hidden,
       flat-button.label-only .flat-button-icon-container,
       flat-button.icon-only .md-button-label {
