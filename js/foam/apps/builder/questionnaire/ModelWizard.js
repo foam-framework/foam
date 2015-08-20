@@ -30,7 +30,8 @@ CLASS({
 
   templates: [
     function contentHTML() {/*
-        <p class="md-style-trait-standard">Choose a your questions. You can create a new set, or re-use an existing
+        <p class="md-style-trait-standard md-title">Choose a your questions</p>
+        <p class="md-style-trait-standard">You can create a new set, or re-use an existing
         set of questions.
         </p>
         $$model{ model_: 'foam.apps.builder.datamodels.ModelPickerView', baseModel: this.data.baseModelId }

@@ -40,7 +40,7 @@ CLASS({
       help: 'Delete this item.',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAO0lEQVQ4y2NgGPwgUSHxQeJ/KHyQqIBP6X/ckDoayHE/qeaPahjVgEvDK6waXuDW4J/4ElN5ou8gz/MAREwU2Wrzn1YAAAAASUVORK5CYII=',
       isAvailable: function() { return (this.dao && this.dao.remove) },
-      action: function() {
+      code: function() {
         if (this.dao && this.dao.remove) {
           this.dao.remove(this.data);
           // our parent view should now destroy this view

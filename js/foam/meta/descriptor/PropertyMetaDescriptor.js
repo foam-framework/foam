@@ -45,7 +45,7 @@ CLASS({
            PasswordProperty,
            PhoneNumberProperty,
          ]
-       },
+      },
     },
     {
       model_: 'StringProperty',

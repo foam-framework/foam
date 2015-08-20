@@ -36,6 +36,7 @@ CLASS({
 
   templates: [
     function contentHTML() {/*
+      <p class="md-style-trait-standard md-title">Name your Questionnaire</p>
       <p class="md-style-trait-standard">Choose a name for your new Questionnaire. The name should
         be a few words to indicate the purpose, such as &quot;new patient&quot;
         or &quot;customer service survey&quot;
