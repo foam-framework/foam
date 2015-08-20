@@ -232,9 +232,10 @@ CLASS({
             padding: 0;
           }
           .browser-header .title {
-            font-size: 20px;
-            font-weight: 500;
             margin-left: 12px;
+          }
+          .browser-header .md-title {
+            color: #fff;
           }
 
           .browser-header .browser-spinner {
@@ -342,7 +343,7 @@ CLASS({
 
             <div id="<%= this.id %>-header" class="browser-header browser-header-color">
               $$menuButton
-              $$title{ mode: 'read-only', extraClassName: 'expand title' }
+              $$title{ mode: 'read-only', extraClassName: 'md-title expand title' }
               <% if ( this.spinner ) { %>
                 <span class="browser-spinner">%%spinner</span>
               <% } %>

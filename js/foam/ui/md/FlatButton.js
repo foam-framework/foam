@@ -247,12 +247,12 @@ CLASS({
 
       flat-button.hidden,
       flat-button.label-only .flat-button-icon-container,
-      flat-button.icon-only .flat-button-label-container {
+      flat-button.icon-only .md-button-label {
         display: none;
       }
 
-      flat-button.label-only .flat-button-label-container {
-        text-transform: uppercase;
+      flat-button:not(.label-only) .md-button-label {
+        text-transform: none;
       }
 
       flat-button .halo {
@@ -285,7 +285,7 @@ CLASS({
         </div>
         <spacer>
         </spacer>
-        <span id="<%= this.id + "CONTENT" %>" class="flat-button-label-container"><% this.labelHTML(out) %></span>
+        <span id="<%= this.id + "CONTENT" %>" class="md-button-label"><% this.labelHTML(out) %></span>
       </%%tagName>
       <% this.on('click', function(e) {
            e.preventDefault();
