@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// Inspired by: https://jsfiddle.net/gg19b2do/4/
 CLASS({
   package: 'foam.demos.graphics',
   name: 'Spin',
