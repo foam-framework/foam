@@ -57,7 +57,8 @@ these, with names like `Email`, `Contact`, `Label` and `Attachment`.
 Second, "model" as the M in "MVC". This is the high-level component of an app
 responsible for feeding data to the app. In FOAM, this MVC Model generally takes
 the form of a DAO for each model in the first sense. (A DAO is a Data Access
-Object, a universal interface for data access, see [TODO: FILL IN THIS REFERENCE]().)
+Object, a universal interface for data access, see the
+[DAO User Guide]({{ site.baseurl }}/guides/dao).)
 
 ## Next
 
