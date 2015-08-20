@@ -122,12 +122,15 @@ CLASS({
         this.dao.where(this.filter).select(GROUP_BY(this.property, COUNT()))(function(groups) {
           var options = [];
           var selected;
-          for ( var key in groups.sortedGroups() ) {
-            if (!key) continue;
+          var sortedKeys = groups.sortedKeys();
+          for (var i = 0 ; i < sortedKeys.length; i++) {
+            var key = sortedKeys[i];
+            if (typeof key === 'undefined') continue;
+            if (key === '') continue;
             var count    = ('(' + groups.groups[key] + ')').intern();
-            var subKey   = key.substring(0, self.width-count.length-3);
+            var subKey   = ('' + key).substring(0, self.width-count.length-3);
             var cleanKey = subKey.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-            if (self.memento && self.memento === key) {
+            if (self.memento && self.memento === '' + key) {
               selected = key;
             }
             options.push([key, cleanKey + (Array(self.width-subKey.length-count.length).join(/*'&nbsp;'*/' ')).intern() + count]);
@@ -135,14 +138,14 @@ CLASS({
 
           options.splice(0,0,['','-- CLEAR SELECTION --']);
 
-          if (!selected && self.memento) {
+          if (typeof selected === 'undefined' && self.memento) {
             // If we were provided with a memento, but couldn't find that key,
             // we inject it as a new key and filter on it.
             options.splice(1, 0, [self.memento, self.memento + '(0)']);
-            selected = self.memento;
+            selected = self.property.adapt.call(this.property, '', self.memento);
           }
           self.view.choices = options;
-          if (selected) {
+          if (typeof selected !== 'undefined') {
             self.view.data = selected;
           }
         });
@@ -152,8 +155,9 @@ CLASS({
       name: 'updatePredicate',
 
       code: function(_, _, _, choice) {
-        this.predicate = choice ? this.op(this.property, choice) : TRUE ;
-        this.memento = choice ? choice : '';
+        var exists = typeof choice !== 'undefined' && choice !== '';
+        this.predicate = exists ? this.op(this.property, choice) : TRUE ;
+        this.memento = exists ? '' + choice : '';
       }
     }
   ]

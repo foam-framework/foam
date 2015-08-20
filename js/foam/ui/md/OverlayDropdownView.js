@@ -14,6 +14,9 @@ CLASS({
   name: 'OverlayDropdownView',
   extendsModel: 'foam.ui.SimpleView',
 
+  requires: [
+    'foam.ui.md.FlatButton',
+  ],
   imports: [
     'document',
     'window',
@@ -150,6 +153,13 @@ CLASS({
       this.$.addEventListener('transitionend', this.onTransitionEnd);
       this.$.addEventListener('mouseleave', this.onMouseLeave);
       this.$.addEventListener('click', this.onClick);
+    },
+    function init() {
+      this.SUPER();
+      this.Y.registerModel(this.FlatButton.xbind({
+        displayMode: 'LABEL_ONLY',
+        color: 'black',
+      }), 'foam.ui.ActionButton');
     },
   ],
 
