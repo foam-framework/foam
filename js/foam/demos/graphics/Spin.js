@@ -38,7 +38,7 @@ CLASS({
     function initCView() {
       this.width = this.height = 500;
       for ( var a = 0 ; a < 20 ; a++ ) this.addArc(a, this.Arc.create({
-        x: this.width / 2, y: this.height / 2, r: a * 12, arcWidth: 10,
+        x: this.width / 2, y: this.height / 2, r: 5+a * 12, arcWidth: 10,
         color: 'hsl(' + 18*a + ', 90%, 60%)'
       }));
 
