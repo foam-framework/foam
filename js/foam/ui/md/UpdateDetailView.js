@@ -260,9 +260,8 @@ CLASS({
       .md-update-detail-view-body {
         overflow-x: hidden;
         overflow-y: auto;
-        //width: 100%;
         display: flex;
-
+        flex-direction: column;
       }
     */},
     function toHTML() {/*
