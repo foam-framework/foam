@@ -130,8 +130,8 @@ Then update the `data` `factory`:
 }
 {% endhighlight %}
 
-This `factory_` syntax is commonly used in FOAM, for specifying a model and some
-default values to give to its properties.
+This `factory_` syntax is commonly used in FOAM, for declaratively specifying a
+model and some default values to give to its properties.
 
 We're configuring our browser, by overriding its default `listView` with a new
 one: a `DAOListView` of `TodoCitationView`s.
@@ -148,7 +148,7 @@ an edit and blur the view, but that's not really what we were going for.
 ### Further customizing our template
 
 Most views in FOAM understand the `mode` property, which can be set to
-`'read-write'` (the default), `'read-only'`, or `'final'`. Most views render
+`'read-write'` (the default), `'read-only'`, or `'final'`. Many views render
 differently when their `mode` is `'read-only'`. We can specify extra values by
 changing the `TodoCitationView`'s template to read
 

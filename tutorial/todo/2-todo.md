@@ -87,6 +87,7 @@ replace it with one of your own. Every component can be replaced, and any
 components you write will still fit together neatly with other built-in
 components.
 
+FOAM's goal is to make many things much easier, but also to make nothing harder.
 
 
 ## Next

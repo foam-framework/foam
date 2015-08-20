@@ -51,7 +51,7 @@ CLASS({
           'AAABgAAAAYCAQAAABKfvVzAAAAOklEQVQ4y2NgGPzgv8L/B/' +
           '9h4MF/BXxK8QDqaCDH/aSaP6phVAMuDa+wqn+BW4P//5eYy' +
           'v/7DvI8DwBDJ5LB6mdU8gAAAABJRU5ErkJggg==',
-      action: function(X) {
+      code: function(X) {
         X.dao.remove(this.id);
         X.stack.popView();
       }
@@ -124,7 +124,7 @@ We'll add `isAvailable` to our action, as follows:
       'AAABgAAAAYCAQAAABKfvVzAAAAOklEQVQ4y2NgGPzgv8L/B/' +
       '9h4MF/BXxK8QDqaCDH/aSaP6phVAMuDa+wqn+BW4P//5eYy' +
       'v/7DvI8DwBDJ5LB6mdU8gAAAABJRU5ErkJggg==',
-  action: function(X) {
+  code: function(X) {
     X.dao.remove(this.id);
     X.stack.popView();
   }
