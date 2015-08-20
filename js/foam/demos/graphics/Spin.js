@@ -30,7 +30,7 @@ CLASS({
   methods: [
     function addArc(a, arc) {
       this.timer.time$.addListener(function(_, _, _, time) {
-        arc.startAngle += Math.sin(time / 4000) * (a+1)/100;
+        arc.startAngle += Math.cos(time / 4000) * (a+1)/100;
         arc.endAngle    = arc.startAngle + Math.PI;
       });
       this.addChild(arc);
