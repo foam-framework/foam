@@ -36,7 +36,7 @@ CLASS({
 
   templates: [
     function contentHTML() {/*
-        <p class="md-style-trait-standard md-title">Choose a your Questions</p>
+        <p class="md-style-trait-standard md-title">Choose a your Data Source</p>
         <p class="md-style-trait-standard">The data source is where your App will store its data.
         This could be inside the device where it is running, in the cloud with Google Drive, or
         on another device on your network.
