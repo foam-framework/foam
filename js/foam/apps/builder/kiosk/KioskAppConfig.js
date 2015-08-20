@@ -41,37 +41,48 @@ CLASS({
     {
       name: 'defaultView',
       defaultValue: 'foam.apps.builder.kiosk.KioskView',
-      hidden: true
+      hidden: true,
     },
     {
       model_: 'BooleanProperty',
       name: 'enableNavBttns',
       label: 'Enable back/forward navigation buttons',
-      defaultValue: true
+      defaultValue: true,
     },
     {
       model_: 'BooleanProperty',
       name: 'enableHomeBttn',
       label: 'Enable home button',
-      defaultValue: true
+      defaultValue: true,
     },
     {
       model_: 'BooleanProperty',
       name: 'enableReloadBttn',
       label: 'Enable reload button',
-      defaultValue: true
+      defaultValue: true,
     },
     {
       model_: 'BooleanProperty',
       name: 'enableLogoutBttn',
       label: 'Enable restart session button',
-      defaultValue: true
+      defaultValue: true,
     },
     {
       model_: 'BooleanProperty',
       name: 'enableNavBar',
       label: 'Enable navigation bar',
-      defaultValue: false
+      defaultValue: false,
+    },
+  ],
+
+  methods: [
+    function getChromePermissions() {
+      return this.SUPER().concat([
+        'webview',      // To show the <webview>.
+        'videoCapture', // To enable <webview> to perform this function.
+        'geolocation',  // To enable <webview> to perform this function.
+        'pointerLock',  // To enable <webview> to perform this function.
+      ]);
     },
   ],
 
@@ -89,22 +100,7 @@ CLASS({
       ]
     }
   },
-  "permissions": [
-    "webview",
-    "power",
-    "storage",
-    "videoCapture",
-    "geolocation",
-    "pointerLock",
-    "system.display",
-    { "fileSystem": [
-      "write",
-      "retainEntries",
-      "directory"
-    ] },
-    "accessibilityFeatures.read",
-    "accessibilityFeatures.modify"
-  ],
+  "permissions": <%= JSON.stringify(this.chromePermissions) %>,
   "kiosk_enabled": %%kioskEnabled
 }*/}
   ],

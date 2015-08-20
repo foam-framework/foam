@@ -49,10 +49,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'moreActionsFactory',
-      defaultValue: {
-        factory_: 'foam.ui.ActionButton',
-        color: '#4285F4',
-      },
+      defaultValue: 'foam.ui.ActionButton',
     },
     {
       type: 'foam.ui.md.OverlayDropdownView',

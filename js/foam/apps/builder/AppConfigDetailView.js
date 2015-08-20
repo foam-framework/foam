@@ -16,6 +16,7 @@ CLASS({
   traits: [ 'foam.ui.md.ToolbarViewTrait' ],
 
   requires: [
+    'foam.apps.builder.ExportConfirmView',
     'foam.apps.builder.ExportFlow',
     'foam.apps.builder.ExportFlowView',
     'foam.ui.md.FlatButton',
@@ -35,7 +36,26 @@ CLASS({
   ],
 
   methods: [
-    function setupExportAction(title) {
+    function doExportAction(name, title) {
+      var confirm = this.aconfirmExportAction.bind(this, title);
+      var setup = this.asetupExportAction.bind(this, title);
+      aaif(confirm, aseq(setup, function(ret, exportFlow) {
+        this.exportManager[name](exportFlow);
+        ret();
+      }.bind(this)))(nop);
+    },
+    function aconfirmExportAction(title, ret) {
+      var confirmPopup = this.PopupView.create({
+        data: this.data,
+        blockerMode: 'modal',
+        delegate: this.ExportConfirmView.xbind({
+          title: title,
+        }, this.Y),
+      }, this.Y);
+      confirmPopup.open();
+      confirmPopup.delegateView.result(ret);
+    },
+    function asetupExportAction(title, ret) {
       var exportFlow = this.ExportFlow.create({
         config$: this.data$,
         title: title,
@@ -46,7 +66,7 @@ CLASS({
         data: exportFlow,
       }, this.Y);
       popup.open();
-      return exportFlow;
+      ret(exportFlow);
     },
   ],
 
@@ -61,8 +81,7 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfQAWXGFAAAAFXRSTlMALePhKBXghJvbEray/fwg6uhP6U1pY8wzAAAAWklEQVR4Xq3PORKEMAwFUbGJdcZsvv9VSTr4JRIX5c70XySrXNNmqeuNBh9NmuYFWHNoA34R/kB+9RnkKgdPRskFEHYBhF0AYVdA2AUQL31wj3AA5xX226r2ACkvFWPaNFOcAAAAAElFTkSuQmCC',
       ligature: 'archive',
       action: function() {
-        var exportFlow = this.setupExportAction('Download Package to Disk');
-        this.exportManager.downloadPackage(exportFlow);
+        this.doExportAction('downloadPackage', 'Download Package to Disk');
       },
     },
     {
@@ -75,8 +94,7 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA0SURBVHjazdBBCgAgEMNAs/9/tCAEFoo3FeeY3jpuqOWngWrIxd4RXdgD9oA9wLHLtR9emRVOAOP9ZYAiAAAAAElFTkSuQmCC',
       ligature: 'file_download',
       action: function() {
-        var exportFlow = this.setupExportAction('Download Files to Disk');
-        this.exportManager.downloadApp(exportFlow);
+        this.doExportAction('downloadApp', 'Download Files to Disk');
       },
     },
     {
@@ -89,8 +107,7 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA1SURBVHjavcwxCgAwEALB6P8ffUUKEbEKOctZ8PwZUJxEcRV3lXQVuZf0fLtqtB5eR1sPWxsHogDjZnwe5wAAAABJRU5ErkJggg==',
       ligature: 'file_upload',
       action: function() {
-        var exportFlow = this.setupExportAction('Upload to Chrome Web Store');
-        this.exportManager.uploadApp(exportFlow);
+        this.doExportAction('uploadApp', 'Upload to Chrome Web Store');
       },
     },
     {
@@ -103,8 +120,7 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAAySURBVHjaxY+xDQAACINs/z/akRhj3JQRJuIMF9awIw3e1uAp1VO6p+ApgKcAc3/hkgQRygDjNDsCngAAAABJRU5ErkJggg==',
       ligature: 'publish',
       action: function() {
-        var exportFlow = this.setupExportAction('Publish to Chrome Web Store');
-        this.exportManager.publishApp(exportFlow);
+        this.doExportAction('publishApp', 'Publish to Chrome Web Store');
       },
     },
   ],
