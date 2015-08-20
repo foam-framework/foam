@@ -734,16 +734,30 @@ CLASS({
       defaultValue: 'Model'
     },
     {
-      name: 'adapt',
-      defaultValue: function(_, v) {
-        if  ( typeof v === 'undefined' ) return '';
-        if ( typeof v === 'string' ) {
-          v = this.X.lookup(v);
-          return v ? v : '';
+      name: 'getter',
+      defaultValue: function(name) {
+        var value = this.instance_[name];
+        if ( typeof value === 'undefined' ) {
+          var prop = this.model_.getProperty(name);
+          if ( prop ) {
+            if ( prop.factory ) {
+              value = prop.lazyFactory.call(this, prop);
+            } else if ( prop.lazyFactory ) {
+              value = prop.factory.call(this, prop);
+            } else if ( prop.defaultValueFn ) {
+              value = prop.defaultValueFn.call(this, prop);
+            } else if ( typeof prop.defaultValue !== undefined ) {
+              value = prop.defaultValue;
+            } else {
+              value = '';
+            }
+          } else {
+            value = '';
+          }
         }
-        if ( this.X.Model.isInstance(v) ) return v;
-
-        return '';
+        if ( typeof value === 'string' ) return this.X.lookup(value);
+        else if  ( Model.isInstance(value) ) return value;
+        else return '';
       }
     },
     {
