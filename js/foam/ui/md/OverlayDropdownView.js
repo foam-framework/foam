@@ -245,16 +245,13 @@ CLASS({
         margin: 0;
         border-radius: 0;
       }
-      dropdown action-list.vertical .flat-button-label-container {
+      dropdown action-list.vertical .md-button-label {
         text-transform: none;
       }
       dropdown action-list.vertical flat-button {
         padding: 16px;
         margin: 0;
         border-radius: 0;
-      }
-      dropdown action-list.vertical .flat-button-label-container {
-        text-transform: none;
       }
     */}
   ],

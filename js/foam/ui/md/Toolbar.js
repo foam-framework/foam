@@ -156,7 +156,7 @@ CLASS({
           <% this.leftActionsInnerHTML(out) %>
         </actions>
 
-        <header id="%%id-header">
+        <header id="%%id-header" class="md-title">
           <div class="toolbar-title-text"><%# this.title %></div>
         </header>
 
@@ -189,6 +189,9 @@ CLASS({
         flex-grow: 1;
         display: flex;
         overflow-x: hidden;
+      }
+      toolbar header.md-title {
+        color: #fff;
       }
       toolbar actions {
         display: flex;

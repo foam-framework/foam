@@ -49,6 +49,7 @@ CLASS({
         'foam.ui.md.HaloView',
       ],
       imports: [
+        'document',
         'stack',
       ],
       exports: [
@@ -164,6 +165,15 @@ CLASS({
         },
       ],
 
+      methods: [
+        function initHTML() {
+          var out = TemplateOutput.create(this);
+          this.menuHTML(out);
+          this.document.body.insertAdjacentHTML('afterbegin', out.toString());
+          this.SUPER();
+        }
+      ],
+
       actions: [
         {
           name: 'menuButton',
@@ -232,9 +242,10 @@ CLASS({
             padding: 0;
           }
           .browser-header .title {
-            font-size: 20px;
-            font-weight: 500;
             margin-left: 12px;
+          }
+          .browser-header .md-title {
+            color: #fff;
           }
 
           .browser-header .browser-spinner {
@@ -327,22 +338,10 @@ CLASS({
             <style>
               .browser-header-color { background-color: <%= this.data.headerColor %>; }
             </style>
-            <div id="<%= this.id %>-menu-container" class="browser-menu-container">
-              <div class="browser-menu-inner">
-                <div id="<%= this.id %>-menu-overlay" class="browser-menu-overlay"></div>
-                <div id="<%= this.id %>-menu-body" class="browser-menu"></div>
-              </div>
-            </div>
-            <%
-              this.setClass('menu-open', function() { return self.menuOpen; },
-                  this.id + '-menu-container');
-                  this.on('click', this.onMenuTouch, this.id + '-menu-overlay');
-            %>
-
 
             <div id="<%= this.id %>-header" class="browser-header browser-header-color">
               $$menuButton
-              $$title{ mode: 'read-only', extraClassName: 'expand title' }
+              $$title{ mode: 'read-only', extraClassName: 'md-title expand title' }
               <% if ( this.spinner ) { %>
                 <span class="browser-spinner">%%spinner</span>
               <% } %>
@@ -394,6 +393,19 @@ CLASS({
               </div>
             <% } %>
           </div>
+        */},
+        function menuHTML() {/*
+          <div id="<%= this.id %>-menu-container" class="browser-menu-container">
+            <div class="browser-menu-inner">
+              <div id="<%= this.id %>-menu-overlay" class="browser-menu-overlay"></div>
+              <div id="<%= this.id %>-menu-body" class="browser-menu"></div>
+            </div>
+          </div>
+          <%
+            this.setClass('menu-open', function() { return self.menuOpen; },
+                this.id + '-menu-container');
+                this.on('click', this.onMenuTouch, this.id + '-menu-overlay');
+          %>
         */},
       ],
     },

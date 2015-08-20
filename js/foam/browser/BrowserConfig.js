@@ -54,6 +54,7 @@ CLASS({
       }
     },
     {
+      model_: 'ModelProperty',
       name: 'model',
       required: true,
       factory: function() { return this.dao.model; }
