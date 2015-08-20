@@ -740,9 +740,9 @@ CLASS({
         if ( typeof value === 'undefined' ) {
           var prop = this.model_.getProperty(name);
           if ( prop ) {
-            if ( prop.factory ) {
+            if ( prop.lazyFactory ) {
               value = prop.lazyFactory.call(this, prop);
-            } else if ( prop.lazyFactory ) {
+            } else if ( prop.factory ) {
               value = prop.factory.call(this, prop);
             } else if ( prop.defaultValueFn ) {
               value = prop.defaultValueFn.call(this, prop);
