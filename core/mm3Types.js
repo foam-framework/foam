@@ -734,17 +734,16 @@ CLASS({
       defaultValue: 'Model'
     },
     {
-      name: 'getter',
-      defaultValue: function(name) {
-        var value = this.instance_[name];
-        if ( typeof value === 'undefined' ) {
-          var prop = this.model_.getProperty(name);
-          if ( prop && prop.defaultValueFn )
-            value = prop.defaultValueFn.call(this, prop);
-          else
-            value = prop.defaultValue;
+      name: 'adapt',
+      defaultValue: function(_, v) {
+        if  ( typeof v === 'undefined' ) return '';
+        if ( typeof v === 'string' ) {
+          v = this.X.lookup(v);
+          return v ? v : '';
         }
-        return this.X.lookup(value);
+        if ( this.X.Model.isInstance(v) ) return v;
+
+        return '';
       }
     },
     {
