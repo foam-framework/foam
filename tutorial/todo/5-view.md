@@ -115,6 +115,7 @@ Then update the `data` `factory`:
   name: 'data',
   factory: function() {
     return this.BrowserConfig.create({
+      model: this.Todo,
       dao: this.EasyDAO.create({
         model: this.Todo,
         daoType: 'LOCAL',
