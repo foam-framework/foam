@@ -197,7 +197,7 @@ CLASS({
       order: 0.0,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPUlEQVQ4y2NgGLbgf8P/BtKU////+78WacpDSFMeSlPlYaQo/0OacjyAcg1wJ4WTGmHDS4sWaVrqhm/mBQAoLpX9t+4i2wAAAABJRU5ErkJggg==',
       ligature: 'arrow_back',
-      isAvailable: function() { return ! this.outstandingChanges; },
+      isAvailable: function() { return this.liveEdit || ! this.outstandingChanges; },
       action: function() { this.stack.popView(); }
     },
     {
@@ -207,7 +207,7 @@ CLASS({
       order: 0,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAUElEQVQ4jWNgGAW4wH9d0pRH///zv4E05f+J1jB0lP9n+b/0fzgJpv8PBUr++R9BgmP+N4C1RJLgdqiWKBK8CtVCUsiAtBCvHKqFFOUjAwAATIhwjZSqeJcAAAAASUVORK5CYII=',
       ligature: 'check',
-      isAvailable: function() { return this.outstandingChanges; },
+      isAvailable: function() { return  ! this.liveEdit && this.outstandingChanges; },
       action: function() {
         var self = this;
         var obj  = this.data;
@@ -233,7 +233,7 @@ CLASS({
       help: 'Reset form (cancel update)',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAdklEQVQ4y+WTuQ3AIBAEaQKK8NN/BEUArmccgGyj43MMIZo5TqtFqbUPJxYtbg2OvS44IJQKhguwdUETSiXjXr77KhGICRjihWKm8Dw3KXP4Z5VZ/Lfw7B5kyD1cy5C7uAx5iJcht6vhRTUi4OrC0Szftvi/vAFNdbZ2Dp661QAAAABJRU5ErkJggg==',
       ligature: 'close',
-      isAvailable: function() { return this.outstandingChanges; },
+      isAvailable: function() { return  ! this.liveEdit && this.outstandingChanges; },
       action: function() { this.data = this.originalData.deepClone(); }
     }
   ],
