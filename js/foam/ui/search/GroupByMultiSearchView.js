@@ -50,11 +50,16 @@ CLASS({
       code: function() {
         var self = this;
 
+        // TODO(braden): Add memento support to these multi-select views.
         this.dao.where(this.filter).select(GROUP_BY(this.property, COUNT()))(function(groups) {
           var options = [];
-          for ( var key in groups.sortedGroups() ) {
+          var sortedKeys = groups.sortedKeys();
+          for (var i = 0 ; i < sortedKeys.length; i++) {
+            var key = sortedKeys[i];
+            if (typeof key === 'undefined') continue;
+            if (key === '') continue;
             var count    = ('(' + groups.groups[key] + ')').intern();
-            var subKey   = key.substring(0, self.width-count.length-3);
+            var subKey   = ('' + key).substring(0, self.width-count.length-3);
             var cleanKey = subKey.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
             options.push([key, cleanKey + (Array(self.width-subKey.length-count.length).join(/*'&nbsp;'*/' ')).intern() + count]);
           };

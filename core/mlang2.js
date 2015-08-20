@@ -641,14 +641,10 @@ CLASS({
   ],
 
   methods: {
-    sortedGroups: function(opt_comparator) {
+    sortedKeys: function(opt_comparator) {
       var c = opt_comparator || this.arg1.compareProperty;
       this.groupKeys.sort(c);
-      var ret = {};
-      for ( var i = 0 ; i < this.groupKeys.length ; i++ ) {
-        ret[this.groupKeys[i]] = this.groups[i];
-      }
-      return ret;
+      return this.groupKeys;
     },
     reduce: function(other) {
       // TODO:
