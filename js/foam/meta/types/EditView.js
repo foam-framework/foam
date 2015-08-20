@@ -78,7 +78,6 @@ CLASS({
       }
       .meta-edit-heading .md-title {
         flex-grow: 1;
-        font-weight: bold;
       }
       .meta-edit-view-right-title-icon {
         flex-shrink: 0;

@@ -35,16 +35,24 @@ CLASS({
         this.dao && this.dao.put(this.data);
         if ( this.nextViewFactory ) {
           this.stack.replaceView(
-            this.UpdateDetailView.create({
-              data: this.data,
-              innerView: this.nextViewFactory,
-              immutable: true,
-            })
+            this.nextViewFactory({ data: this.data })
+//             this.UpdateDetailView.create({
+//               data: this.data,
+//               innerView: this.nextViewFactory,
+//               immutable: true,
+//             })
           );
         } else {
           // no next view, so we're finished
           this.stack.popView();
         }
+      }
+    },
+    {
+      name: 'exit',
+      label: 'Cancel',
+      action: function() {
+        this.stack.popView();
       }
     }
   ],
@@ -59,6 +67,10 @@ CLASS({
           <% this.contentHTML(out); %>
         </div>
         <div class="wizard-footer">
+          <div class="wizard-footer-items">
+            $$exit{ model_: 'foam.ui.md.FlatButton' }
+          </div>
+          <div class="spacer">&nbsp;</div>
           <div class="wizard-footer-items">
             $$next{ model_: 'foam.ui.md.FlatButton' }
           </div>
@@ -86,6 +98,9 @@ CLASS({
       }
       wizard .wizard-footer-items {
         flex-grow: 0;
+      }
+      wizard .spacer {
+        flex-grow: 1;
       }
 
     */},

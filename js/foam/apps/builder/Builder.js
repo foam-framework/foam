@@ -102,10 +102,13 @@ CLASS({
             }),
             createView: function(args, X) {
               var newObj = this.model.create();
-              return this.detailView({
-                data: newObj,
-                innerView: 'foam.apps.builder.questionnaire.AppWizard',
-                }, X.sub({ dao: this.dao }));
+              return this.X.lookup('foam.apps.builder.questionnaire.AppWizard').create({
+                data: newObj
+              }, X.sub({ dao: this.dao }));
+//               return this.detailView({
+//                 data: newObj,
+//                 innerView: 'foam.apps.builder.questionnaire.AppWizard',
+//                 }, X.sub({ dao: this.dao }));
             },
             detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
             innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'
