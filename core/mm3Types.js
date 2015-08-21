@@ -741,9 +741,9 @@ CLASS({
           var prop = this.model_.getProperty(name);
           if ( prop ) {
             if ( prop.lazyFactory ) {
-              value = prop.lazyFactory.call(this, prop);
+              value = this.instance_[prop.name] = prop.lazyFactory.call(this, prop);
             } else if ( prop.factory ) {
-              value = prop.factory.call(this, prop);
+              value = this.instance_[prop.name] = prop.factory.call(this, prop);
             } else if ( prop.defaultValueFn ) {
               value = prop.defaultValueFn.call(this, prop);
             } else if ( typeof prop.defaultValue !== undefined ) {
