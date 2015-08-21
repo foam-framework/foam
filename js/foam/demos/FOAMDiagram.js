@@ -66,6 +66,8 @@ CLASS({
         }
       }
 
+      this.x = this.y = 50;
+
       var foam = box({text: 'FOAM', font: 60, width: 1200, height: 800, x: 0, y: 0, alpha: 1});
         var modeler        = box({text: 'Modeler', font: 36});
           var ani          = box({text: 'Animations'});
