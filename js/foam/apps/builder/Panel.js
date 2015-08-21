@@ -110,24 +110,20 @@ CLASS({
       panel.bottom {
         bottom: 0px;
         top: 70%;
-        box-shadow: -1px 0px 4px rgba(0, 0, 0, 0.48);
-        border-top: 2px solid black;
+        box-shadow: 0px -2px 7px rgba(0, 0, 0, 0.48);
       }
       panel.right {
         right: 0px;
-        box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.48);
-        border-left: 2px solid black;
+        box-shadow: -2px 0px 7px rgba(0, 0, 0, 0.48);
       }
       panel.top {
         top: 0px;
         bottom: 70%;
-        box-shadow: 1px 0px 4px rgba(0, 0, 0, 0.48);
-        border-bottom: 2px solid black;
+        box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.48);
       }
       panel.left {
         left: 0px;
-        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.48);
-        border-right: 2px solid black;
+        box-shadow: 2px 0px 7px rgba(0, 0, 0, 0.48);
       }
       panel.hidden {
         top: 0px;
