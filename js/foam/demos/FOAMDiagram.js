@@ -38,10 +38,10 @@ CLASS({
     initCView: function() {
       var self = this;
       function box(m) {
-        m.color = 'white';
+        m.color = 'white'; m.background = '#aaa';
+//        m.color = '#333'; m.background = '#fff';
         m.font = m.font || '22pt Arial';
         m.alpha = 0;
-        m.background = '#aaa';
 
         var b = self.Box.create(m);
         self.addChild(b);
@@ -65,37 +65,43 @@ CLASS({
         }
       }
 
-      var foam    = box({text: 'FOAM', font: '60pt Arial', width: 1000, height: 800, x: 0, y: 0});
-        var modeler = box({text: 'Modeler', font: '36pt Arial'});
-          var ani       = box({text: 'Animations'});
-          var parse     = box({text: 'Parsers'});
-          var query     = box({text: 'Queries'});
-          var concur    = box({text: 'Concurrency'});
-          var doc       = box({text: 'Live Documents'});
-          var otherm    = box({text: '...'});
-          var models    = box({text: 'Models'});
-            var mp = box({text: 'Classes', font: '16pt Arial'});
-            var mm = box({text: 'Dependencies', font: '16pt Arial'});
-            var ma = box({text: 'Type-Checking', font: '16pt Arial'});
-            var ml = box({text: 'Reflection', font: '16pt Arial'});
-            var mt = box({text: 'Packages', font: '16pt Arial'});
-            var md = box({text: '...'});
-//            var mr = box({text: 'Relationships'});
-        var lib     = box({text: 'Library', font: '36pt Arial'});
-          var c       = box({text: 'Client'});
-            var android = box({text: 'Android'});
-            var web     = box({text: 'Web'});
-            var ios     = box({text: 'iOS'});
-          var s       = box({text: 'Server'});
-          var model       = box({text: 'Model'});
+      var foam = box({text: 'FOAM', font: '60pt Arial', width: 1000, height: 800, x: 0, y: 0});
+        var modeler        = box({text: 'Modeler', font: '36pt Arial'});
+          var ani          = box({text: 'Animations'});
+          var parse        = box({text: 'Parsers'});
+          var query        = box({text: 'Queries'});
+          var concur       = box({text: 'Concurrency'});
+          var doc          = box({text: 'Live Documents'});
+          var models       = box({text: 'Models'});
+          var otherm       = box({text: '...'});
+            var mp         = box({text: 'Classes', font: '16pt Arial'});
+            var mm         = box({text: 'Dependencies', font: '16pt Arial'});
+            var ma         = box({text: 'Type-Checking', font: '16pt Arial'});
+            var ml         = box({text: 'Reflection', font: '16pt Arial'});
+            var mt         = box({text: 'Packages', font: '16pt Arial'});
+            var md         = box({text: '...'});
+        var lib            = box({text: 'Library', font: '36pt Arial'});
+          var c            = box({text: 'Client'});
+            var android    = box({text: 'Android'});
+            var web        = box({text: 'Web'});
+              var model    = box({text: 'Model'});
+                var m1     = box({text: 'Local'});
+                var m2     = box({text: 'REST'});
+                var m3     = box({text: 'Offline'});
+                var m4     = box({text: 'Query'});
+              var view     = box({text: 'View'});
+                var dom    = box({text: 'DOM'});
+                var canvas = box({text: 'Canvas'});
+                var webgl  = box({text: 'WebGL'});
+                var v1     = box({text: 'Reactivity'});
+                var v2     = box({text: 'Animation'});
+                var v3     = box({text: 'Physics'});
+              var ctrl     = box({text: 'Controller'});
+            var ios        = box({text: 'iOS'});
+          var s            = box({text: 'Server'});
             var node       = box({text: 'Node.js'});
             var java       = box({text: 'Java'});
             var other      = box({text: '...'});
-          var view       = box({text: 'View'});
-            var dom       = box({text: 'DOM'});
-            var canvas    = box({text: 'Canvas'});
-            var webgl    = box({text: 'WebGL'});
-          var ctrl       = box({text: 'Controller'});
 
 
       children(foam, [modeler, lib], true);
@@ -105,7 +111,9 @@ CLASS({
       children(s, [node, java, other], false);
       children(web, [model, view, ctrl], false);
       children(view, [canvas, dom, webgl], true);
+      children(view, [v1, v2, v3], true);
       children(otherm, [mt, mp, mm, ma, ml, md]);
+      children(model, [m1,m2,m3,m4], true);
 
       var M = Movement;
       var B = M.bounce(0.2, 0.08, 3);
@@ -126,7 +134,18 @@ CLASS({
         [0],
         [500, function() { model.alpha = view.alpha = ctrl.alpha = 1; }],
         [0],
+        [500, function() { m1.alpha = m2.alpha = m3.alpha = m4.alpha = 1; }],
+        [0],
         [500, function() { dom.alpha = canvas.alpha = webgl.alpha = 1; }],
+        [0],
+        [500, function() { v1.alpha = v2.alpha = v3.alpha = 1; }],
+        [0],
+        [500, function() {
+          v1.scaleX = v2.scaleX = v3.scaleX = dom.scaleX = canvas.scaleX = webgl.scaleX = 0.5;
+          v1.x += v1.width/2;
+          v2.x += v2.width/2;
+          v3.x += v3.width/2;
+        }],
         [0],
         [500, function() { mp.alpha = mm.alpha = ma.alpha = ml.alpha = mt.alpha = md.alpha = 1; }],
         [0],
