@@ -44,22 +44,26 @@ CLASS({
           return out;
         }
 
-        a = a.clone();
-        // Upgrade single values to [value, value]
-        for ( var i = 0 ; i < a.length ; i++ )
-          if ( ! Array.isArray(a[i]) )
-            a[i] = [a[i], a[i]];
-        return a;
+        if (a && a.clone) {
+          a = a.clone();
+          // Upgrade single values to [value, value]
+          for ( var i = 0 ; i < a.length ; i++ )
+            if ( ! Array.isArray(a[i]) )
+              a[i] = [a[i], a[i]];
+          return a;
+        }
       },
 
       postSet: function(_, choices) {
         var set = this.data;
         var newSet = {};
 
-        for ( var i = 0 ; i < choices.length ; i++ ) {
-          var key = choices[i][0];
+        if (choices) {
+          for ( var i = 0 ; i < choices.length ; i++ ) {
+            var key = choices[i][0];
 
-          if ( set[key] ) newSet[key] = set[key];
+            if ( set[key] ) newSet[key] = set[key];
+          }
         }
 
         if ( Object.keys(set).toString() !== Object.keys(newSet).toString() ) this.data = newSet;
