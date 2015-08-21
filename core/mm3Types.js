@@ -739,12 +739,25 @@ CLASS({
         var value = this.instance_[name];
         if ( typeof value === 'undefined' ) {
           var prop = this.model_.getProperty(name);
-          if ( prop && prop.defaultValueFn )
-            value = prop.defaultValueFn.call(this, prop);
-          else
-            value = prop.defaultValue;
+          if ( prop ) {
+            if ( prop.lazyFactory ) {
+              value = this.instance_[prop.name] = prop.lazyFactory.call(this, prop);
+            } else if ( prop.factory ) {
+              value = this.instance_[prop.name] = prop.factory.call(this, prop);
+            } else if ( prop.defaultValueFn ) {
+              value = prop.defaultValueFn.call(this, prop);
+            } else if ( typeof prop.defaultValue !== undefined ) {
+              value = prop.defaultValue;
+            } else {
+              value = '';
+            }
+          } else {
+            value = '';
+          }
         }
-        return this.X.lookup(value);
+        if ( typeof value === 'string' ) return this.X.lookup(value);
+        else if  ( Model.isInstance(value) ) return value;
+        else return '';
       }
     },
     {

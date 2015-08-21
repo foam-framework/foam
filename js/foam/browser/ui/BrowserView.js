@@ -171,6 +171,12 @@ CLASS({
           this.menuHTML(out);
           this.document.body.insertAdjacentHTML('afterbegin', out.toString());
           this.SUPER();
+        },
+        function destroy(s) {
+          this.SUPER(s);
+
+          var menuElem = this.X.document.getElementById(this.id +"-menu-container");
+          if ( menuElem ) menuElem.outerHTML = "";
         }
       ],
 
@@ -453,6 +459,6 @@ CLASS({
         parent: this,
         data$: this.data$
       }, this.Y));
-    }
+    },
   ],
 });
