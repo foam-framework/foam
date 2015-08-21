@@ -29,7 +29,7 @@ CLASS({
   ],
 
   properties: [
-    { name: 'width',      defaultValue: 1010    },
+    { name: 'width',      defaultValue: 1210    },
     { name: 'height',     defaultValue: 810     },
     { name: 'background', defaultValue: 'black' }
   ],
@@ -38,8 +38,8 @@ CLASS({
     initCView: function() {
       var self = this;
       function box(m) {
-        m.color = 'white'; m.background = '#aaa';
-//        m.color = '#333'; m.background = '#fff';
+        m.color = m.color || 'white';
+        m.background = m.background || '#aaa';
         m.font = m.font || '22pt Arial';
         m.alpha = 0;
 
@@ -65,7 +65,7 @@ CLASS({
         }
       }
 
-      var foam = box({text: 'FOAM', font: '60pt Arial', width: 1000, height: 800, x: 0, y: 0});
+      var foam = box({text: 'FOAM', font: '60pt Arial', width: 1200, height: 800, x: 0, y: 0});
         var modeler        = box({text: 'Modeler', font: '36pt Arial'});
           var ani          = box({text: 'Animations'});
           var parse        = box({text: 'Parsers'});
@@ -74,12 +74,12 @@ CLASS({
           var doc          = box({text: 'Live Documents'});
           var models       = box({text: 'Models'});
           var otherm       = box({text: '...'});
-            var mp         = box({text: 'Classes', font: '16pt Arial'});
-            var mm         = box({text: 'Dependencies', font: '16pt Arial'});
-            var ma         = box({text: 'Type-Checking', font: '16pt Arial'});
-            var ml         = box({text: 'Reflection', font: '16pt Arial'});
-            var mt         = box({text: 'Packages', font: '16pt Arial'});
-            var md         = box({text: '...'});
+            var mp         = box({text: 'Classes',       font: '16pt Arial', background: 'lightblue'});
+            var mm         = box({text: 'Dependencies',  font: '16pt Arial', background: 'lightblue'});
+            var ma         = box({text: 'Type-Checking', font: '16pt Arial', background: 'lightblue'});
+            var ml         = box({text: 'Reflection',    font: '16pt Arial', background: 'lightblue'});
+            var mt         = box({text: 'Packages',      font: '16pt Arial', background: 'lightblue'});
+            var md         = box({text: '...',                               background: 'lightblue'});
         var lib            = box({text: 'Library', font: '36pt Arial'});
           var c            = box({text: 'Client'});
             var android    = box({text: 'Android'});
@@ -149,7 +149,7 @@ CLASS({
         [0],
         [500, function() { mp.alpha = mm.alpha = ma.alpha = ml.alpha = mt.alpha = md.alpha = 1; }],
         [0],
-        function() { dom.background = 'red'; },
+        function() { dom.background = 'red'; }
       ])();
     }
   }
