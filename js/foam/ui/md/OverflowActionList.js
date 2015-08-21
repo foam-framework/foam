@@ -58,6 +58,7 @@ CLASS({
         return this.OverlayDropdownView.create({
           data$: this.moreActions_$,
           delegate: this.ActionList.xbind({
+            direction: 'VERTICAL',
             actionViewFactory: this.moreActionsFactory,
           }, this.Y),
         }, this.Y);

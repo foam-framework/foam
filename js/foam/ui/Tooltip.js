@@ -60,7 +60,7 @@ CLASS({
         position: absolute;
         top: 0;
         visibility: hidden;
-        z-index: 999;
+        z-index: 2000;
         -webkit-transform: translate3d(0, 0, 2px);
       }
       .tooltip.animated {

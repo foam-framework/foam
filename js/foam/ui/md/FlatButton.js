@@ -22,7 +22,7 @@ CLASS({
   properties: [
     {
       name: 'className',
-      defaultValue: 'flatbutton noselect',
+      defaultValue: 'md-button flatbutton noselect',
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
         this.$.className = this.className.split(' ').concat(
@@ -216,8 +216,6 @@ CLASS({
   templates: [
     function CSS() {/*
       flat-button {
-        padding: 10px;
-        margin: 6px;
         display: inline-flex;
         align-items: baseline;
         justify-content: center;
@@ -253,7 +251,7 @@ CLASS({
         padding: 10px;
       }
 
-      flat-button .md-button-label {
+      flat-button.md-button .md-button-label {
         color: inherit;
       }
 

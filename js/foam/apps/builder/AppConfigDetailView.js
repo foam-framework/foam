@@ -51,7 +51,7 @@ CLASS({
         data: this.data,
         blockerMode: 'modal',
         delegate: this.ExportConfirmView.xbind({
-          title: title,
+          title: title + '?',
         }, this.Y),
       }, this.Y);
       confirmPopup.open();

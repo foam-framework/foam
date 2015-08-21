@@ -19,6 +19,11 @@ CLASS({
 
   properties: [
     {
+      model_: 'StringProperty',
+      name: 'className',
+      defaultValue: 'md-actions',
+    },
+    {
       model_: 'ArrayProperty',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'data',
@@ -36,10 +41,10 @@ CLASS({
     {
       model_: 'foam.core.types.StringEnumProperty',
       name: 'direction',
-      defaultValue: 'VERTICAL',
+      defaultValue: 'HORIZONTAL',
       choices: [
-        ['VERTICAL', 'Vertical'],
         ['HORIZONTAL', 'Horizontal'],
+        ['VERTICAL', 'Vertical'],
       ],
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
@@ -64,11 +69,6 @@ CLASS({
   ],
 
   methods: [
-    function initHTML() {
-      this.SUPER();
-      this.$.style['flex-direction'] = this.direction === 'VERTICAL' ?
-          'column' : 'row';
-    },
     function bindActionListeners(old, nu) {
       if ( old === nu ) return;
       var i;

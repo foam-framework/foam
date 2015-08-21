@@ -14,9 +14,6 @@ CLASS({
   name: 'ExportFlowView',
   extendsModel: 'foam.ui.SimpleView',
 
-  requires: [
-    'foam.ui.SpinnerView'
-  ],
   imports: [
     'popup',
     'window',
@@ -53,7 +50,7 @@ CLASS({
     },
     {
       name: '$message',
-      defaultValueFn: function() { return this.$ && this.$.querySelector('message'); }
+      defaultValueFn: function() { return this.$ && this.$.querySelector('#' + this.id + '-message'); }
     },
     {
       name: '$details',
@@ -73,8 +70,7 @@ CLASS({
   actions: [
     {
       name: 'openDevDashboard',
-      label: 'Dashboard',
-      help: 'Open developer dashboard',
+      label: 'Open Developer Dashboard',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAMElEQVRIx2NgGAWkAKfWL//xYVLVjVowagEJGqmdTEdwPhhyQTma0UYtGMB8MLIAACgDuh9v+XUsAAAAAElFTkSuQmCC',
       ligature: 'dashboard',
       isAvailable: function() {
@@ -83,11 +79,12 @@ CLASS({
       },
       code: function() {
         this.window.open('https://chrome.google.com/webstore/developer/dashboard');
+        this.popup.close();
       },
     },
     {
       name: 'close',
-      help: 'Close popup',
+      label: 'Return to App Builder',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAKlBMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfQ4qnXoAAAADXRSTlMALb0VFr4r09XS1Cwq3rqZUAAAAFpJREFUeNrFkEEKwDAIBG3Upk3r/79bD4sseOgxe5wBGZT9O4YKZn6S8JgKfsUgoTMN+K3CZsXSzmGsOM/SdI7zxf8FetDWuKK6cVQ3XtUkPHlVO4mHn/jK9n3dyANYyKnIcwAAAABJRU5ErkJggg==',
       ligature: 'close',
       isAvailable: function() {
@@ -114,26 +111,31 @@ CLASS({
   templates: [
     function toHTML() {/*
       <export-flow id="%%id">
-        <heading>{{this.data.title}}</heading>
-        <flow-state>
+        <p class="md-headline">{{this.data.title}}</p>
+        <flow-state class="md-subhead">
           <img id="%%id-icon" src="{{this.STATE_ICONS[this.data.state]}}">
-          <state-label>{{this.stateLabel()}}</state-label>
+          <state-label class="md-grey">{{this.stateLabel()}}</state-label>
         </flow-state>
-        <message>{{this.data.message}}</message>
-        <details>{{this.data.details}}</details>
-        <actions>
+        <p id="%%id-message" class="md-subhead md-grey">{{this.data.message}}</p>
+        <details class="md-subhead md-grey">{{this.data.details}}</details>
+        <actions class="md-actions vertical">
           $$openDevDashboard{
-            model_: 'foam.ui.md.FlatButton'
+            model_: 'foam.ui.md.FlatButton',
+            displayMode: 'LABEL_ONLY',
           }
           $$close{
-            model_: 'foam.ui.md.FlatButton'
+            model_: 'foam.ui.md.FlatButton',
+            displayMode: 'LABEL_ONLY',
           }
         </actions>
       </export-flow>
       <% this.setClass('processing', function() {
            return this.data && this.data.state !== 'FAILED' &&
                this.data.state !== 'COMPLETED';
-         }.bind(this), this.id + '-icon'); %>
+         }.bind(this), this.id + '-icon');
+         this.setClass('hidden', function() {
+           return ( ! this.data ) || ( ! this.data.message );
+         }.bind(this), this.id + '-message'); %>
     */},
     function CSS() {/*
       @keyframes pulseopacity {
@@ -145,21 +147,17 @@ CLASS({
         }
       }
       export-flow {
-        max-width: 600px;
-      }
-      export-flow heading {
-        font-size: 150%;
-        font-weight: bold;
-      }
-      export-flow message {
-        font-weight: bold;
+        width: 600px;
       }
       export-flow, export-flow flow-state, export-flow actions {
         display: flex;
-        align-items: center;
       }
       export-flow {
         flex-direction: column;
+      }
+      export-flow flow-state {
+        align-items: center;
+        justify-content: center;
       }
       export-flow flow-state img {
         flex-grow: 0;
@@ -175,15 +173,13 @@ CLASS({
         animation-fill-mode: none;
         animation-play-state: running;
       }
+      export-flow flow-state img, export-flow flow-state state-label {
+        margin: 0;
+      }
       export-flow flow-state state-label {
-        font-size: 120%;
+        margin-left: 12px;
       }
-      export-flow.done .spinner-container {
-        display: none;
-      }
-      export-flow heading, export-flow flow-state, export-flow message, export-flow details, export-flow actions {
-        margin: 6px;
-      }
+      export-flow .hidden { display: none; }
     */},
   ],
 });
