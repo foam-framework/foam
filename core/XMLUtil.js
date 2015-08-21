@@ -180,8 +180,9 @@ var XMLUtil = {
     outputObject_: function(out, obj) {
       out('<object model="', XMLUtil.escapeAttr(obj.model_.name), '">');
 
-      for ( var key in obj.model_.properties ) {
-        var prop = obj.model_.properties[key];
+      var properties = obj.model_.getRuntimeProperties();
+      for ( var key in properties ) {
+        var prop = properties[key];
 
         if ( prop.name === 'parent' ) continue;
         if ( obj.instance_ && prop.name in obj.instance_ ) {
@@ -275,8 +276,9 @@ var XMLUtil = {
 
       out(indent, '<object model="', XMLUtil.escapeAttr(obj.model_.name), '">');
 
-      for ( var key in obj.model_.properties ) {
-        var prop = obj.model_.properties[key];
+      var properties = obj.model_.getRuntimeProperties();
+      for ( var key in properties ) {
+        var prop = properties[key];
 
         if ( prop.name === 'parent' ) continue;
         if ( obj.instance_ && prop.name in obj.instance_ ) {

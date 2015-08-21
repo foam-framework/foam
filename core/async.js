@@ -55,7 +55,7 @@ MODEL({
       var args = arguments;
       return function (ret) {
         console.log.apply(console, args);
-        ret && ret.apply(this, [].shift.call(arguments));
+        ret && ret.apply(this, [].slice.call(arguments, 1));
       };
     },
 
@@ -63,7 +63,7 @@ MODEL({
     function aprofile(afunc) {
       return function(ret) {
         var a = argsToArray(arguments);
-        console.profile();
+        console.profile('aprofile');
         var ret2 = function () {
           console.profileEnd();
           ret && ret(arguments);
@@ -115,13 +115,28 @@ MODEL({
     /** Execute the supplied afunc if cond. */
     function aif(cond, afunc, aelse) {
       return function(ret) {
-        if ( typeof cond === 'function' ? cond() : cond ) {
+        if ( typeof cond === 'function' ?
+            cond.apply(this, argsToArray(arguments).slice(1)) : cond ) {
           afunc.apply(this, arguments);
         } else {
           if ( aelse ) aelse.apply(this, arguments);
           else ret();
         }
       };
+    },
+
+    /** Execute afunc if the acond returns true */
+    function aaif(acond, afunc, aelse) {
+      return function(ret) {
+        var args = argsToArray(arguments);
+        args[0] = function(c) {
+          args[0] = ret;
+          if ( c ) afunc.apply(null, args);
+          else if ( aelse ) aelse.apply(null, args);
+          else ret();
+        };
+        acond.apply(null, args);
+      }
     },
 
     /** Time an afunc. **/
@@ -131,28 +146,32 @@ MODEL({
       var id = 1;
       var activeOps = {};
       return function atime(str, afunc, opt_endCallback, opt_startCallback) {
-        return function(ret) {
-          var name = str;
-          if ( activeOps[str] ) {
-            name += '-' + id++;
-            activeOps[str]++;
-          } else {
-            activeOps[str] = 1;
-          }
-          var start = performance.now();
-          if ( opt_startCallback ) opt_startCallback(name);
-          if ( ! opt_endCallback ) console.time(name);
-          var a = arguments;
-          var args = [function() {
+        var name = str;
+        return aseq(
+          function(ret) {
+            if ( activeOps[str] ) {
+              name += '-' + id++;
+              activeOps[str]++;
+            } else {
+              activeOps[str] = 1;
+            }
+            var start = performance.now();
+            if ( opt_startCallback ) opt_startCallback(name);
+            if ( ! opt_endCallback ) console.time(name);
+            ret.apply(null, [].slice.call(arguments, 1));
+          },
+          afunc,
+          function(ret) {
             activeOps[str]--;
-            var end = performance.now();
-            if ( opt_endCallback ) opt_endCallback(name, end - start);
-            else console.timeEnd(name);
-            ret && ret.apply(this, [].shift.call(a));
-          }];
-          for ( var i = 1 ; i < a.length ; i++ ) args[i] = a[i];
-          afunc.apply(this, args);
-        };
+            if ( opt_endCallback ) {
+              var end = performance.now();
+              opt_endCallback(name, end - start);
+            } else {
+              console.timeEnd(name);
+            }
+            ret && ret.apply(null, [].slice.call(arguments, 1));
+          }
+        );
       };
     })(),
 
@@ -181,6 +200,7 @@ MODEL({
       var waiters = [];
 
       return {
+        isSet: function() { return set; },
         set: function() {
           if ( set ) {
             console.log('ERROR: redundant set on future');
@@ -192,6 +212,7 @@ MODEL({
             waiters[i].apply(null, values);
           }
           waiters = undefined;
+          return this;
         },
 
         get: function(ret) {
@@ -361,6 +382,20 @@ MODEL({
       };
     },
 
+    function amemo1(afunc) {
+      var cache = {};
+      return function(ret, arg) {
+        var key = arg ? arg.toString() : '';
+
+        if ( ! cache[key] ) {
+          cache[key] = afuture();
+          afunc(cache[key].set, arg);
+        }
+
+        cache[key].get(ret);
+      };
+    },
+
     /**
      * Decorates an afunc to merge all calls to one active execution of the
      * delegate.
@@ -450,6 +485,8 @@ MODEL({
 
     /** Compose a variable number of async functions. **/
     function aseq(/* ... afuncs */) {
+      if ( arguments.lenth == 0 ) return anop;
+
       var f = arguments[arguments.length-1];
 
       for ( var i = arguments.length-2 ; i >= 0 ; i-- ) {
@@ -478,7 +515,7 @@ MODEL({
           return;
         }
         var opt_args = Array.prototype.splice.call(arguments, 1);
-        var join = function (i) {
+        var ajoin = function (i) {
           aargs[i] = Array.prototype.splice.call(arguments, 1);
           if ( ++count == fs.length ) {
             var a = [];
@@ -490,7 +527,7 @@ MODEL({
         };
 
         for ( var i = 0 ; i < fs.length ; i++ )
-          fs[i].apply(null, [join.bind(null, i)].concat(opt_args));
+          fs[i].apply(null, [ajoin.bind(null, i)].concat(opt_args));
       };
     },
 
@@ -527,7 +564,7 @@ MODEL({
         var count = 0;
 
         var opt_args = Array.prototype.splice.call(arguments, 1);
-        var join = function (i) {
+        var ajoin = function (i) {
           // aargs[i] = Array.prototype.splice.call(arguments, 1);
           if ( ++count == n ) {
             var a = [];
@@ -541,7 +578,7 @@ MODEL({
         };
 
         for ( var i = 0 ; i < n ; i++ ) {
-          afunc.apply(null, [join.bind(null, i)].concat([i, n]).concat(opt_args));
+          afunc.apply(null, [ajoin.bind(null, i)].concat([i, n]).concat(opt_args));
         }
       };
     },
@@ -565,15 +602,15 @@ MODEL({
         });
       };
     },
-    
+
     function adelay(afunc, delay) {
       var queue = [];
       var timeout;
-      
+
       function pump() {
         if ( timeout ) return;
         if ( ! queue.length ) return;
-        
+
         var top = queue.shift();
         var f = top[0];
         var args = top[1];
@@ -582,22 +619,29 @@ MODEL({
           ret.apply(null, arguments);
           pump();
         };
-        
+
         timeout = setTimeout(function() {
           timeout = 0;
           f.apply(null, args);
         }, delay)
       }
-      
+
       return function() {
         var args = arguments;
-        
+
         queue.push([
           afunc,
           args
         ]);
-        
+
         pump();
+      };
+    },
+
+    function adebugger(fn) {
+      return function(ret) {
+        debugger
+        fn.apply(null, arguments);
       };
     }
   ]

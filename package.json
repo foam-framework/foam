@@ -1,6 +1,6 @@
 {
-  "name": "foam",
-  "version": "0.2.0",
+  "name": "foam-framework",
+  "version": "0.4.3",
   "description": "MVC metaprogramming framework",
   "main": "core/bootFOAM.js",
   "devDependencies": {

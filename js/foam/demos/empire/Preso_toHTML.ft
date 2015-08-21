@@ -1,0 +1,481 @@
+<slides style="width: 100%;height:100%;" oninit="this.X.foam.memento.FragmentMementoMgr.create({ mementoValue: this.memento$ }, this.Y)">
+  <slide>
+  <center style="font-size: 32px;">
+    <br>
+    Introducing <!-- <img width="120" height="40" style="vertical-align: text-top;" src="js/foam/demos/empire/google.png">--><br>
+    <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
+    <font size="220%"><font color="#33f">F</font>eature <font color="#f00">O</font>riented <font color="#fc0">A</font>ctive <font color="#3c0">M</font>odeller</font><font>
+    <br>
+    <br>
+    <font size="60px">Fast Apps Fast</font><br>
+    (25 Demos in 25 Minutes)
+    <br>
+    <a href="http://foamdev.com/">http://foamdev.com/</a>
+    <br>
+    <br>
+    Kevin Greer, <a href="mailto:kgr@chromium.org">kgr@google.com</a><br>
+    <br>
+    April 26, 2015<br>
+    </center>
+  </slide>
+
+  <slide>
+    <foam model="foam.demos.FOAMComponents"/>
+  </slide>
+
+  <slide>
+    <h1>History Lesson</h1>
+    <iframe style="transform: scale(1.32);transform-origin:0 0;width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
+  </slide>
+
+  <slide>
+    <h1>Holistic</h1>
+    <br>
+    <center>
+      <iframe style="width:95%;height:90%;border:none;" src="./demos/demo10b2.html"></iframe>
+    </center>
+  </slide>
+
+  <slide>
+    <h1>Language-Like Features</h1>
+    <div style="display: block;">
+      <foam model="foam.demos.pong.Pong"/><br>
+      <foam model="foam.flow.Pong"/>
+    </div>
+  </slide>
+
+  <slide>
+    <h1>Dependency Injection</h1>
+    <div style="display:flex;">
+      <pre style="border:1px solid;margin-left:50px;padding:10px;width:45%;">
+<a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Game.js">com.google.sweeper.Game</a>
+
+<a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Board.js">com.google.sweeper.Board</a>
+CLASS({
+  package: 'com.google.sweeper',
+  name: 'Board',
+
+  extendsModel: 'foam.ui.View',
+
+  requires: [ 'com.google.sweeper.Cell' ],
+  <b>exports: [ 'as board' ],</b>
+  ...
+
+<a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Cell.js">com.google.sweeper.Cell</a>
+CLASS({
+  package: 'com.google.sweeper',
+  name: 'Cell',
+
+  extendsModel: 'foam.ui.View',
+
+  <b>imports: [ 'board' ],</b>
+  ...
+      </pre>
+      <div style="width:50%">
+        <center class="sweeper-models">
+        <foam model="com.google.sweeper.Game"/><br>
+            <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Game}) %>
+    <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Board}) %>
+    <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Cell}) %>
+
+       </center>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <h1>Model Types</h1>
+    <div style="display:flex;">
+      <div style="width: 1000px;margin-left:32px;font-size: 40px;">
+        <ul style="color:gray;">
+          <li>Entities (default)</li>
+          <li>Animations</li>
+          <li>Queries (mLang)</li>
+          <li>Parsers</li>
+          <li>Interactive Documents (FLOW)</li>
+          <li>...</li>
+        </ul>
+      </div>
+     <div>
+    <center>
+      <br>
+      <a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome App Builder</a><br>
+      <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw" style="border: 1px solid;"><br>
+      <font size="-1">(20k 1-week active users)</font>
+   </center>
+     </div>
+    </div>
+  </slide>
+
+  <slide>
+    <h1>Architecture</h1>
+    <div style="transform:scale(0.85);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
+  </slide>
+
+  <slide>
+    <h1>TodoMVC</h1>
+    <br>
+    <center>
+      <iframe style="width:60%;height:70%;" src="./apps/todo/index.html"></iframe><br>
+      <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="https://github.com/foam-framework/foam/tree/master/apps/todo">Source</a>
+    </center>
+  </slide>
+
+  <slide>
+    <h1>Data Access Objects (DAO's)</h1>
+    <div style="display:flex;">
+      <pre style="border:1px solid;margin-left:50px;padding:10px;">
+<pre class="theme-light prettyprint prettyprinted"><span class="kwd">interface</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">void</span><span class="pln"> put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
+  </span><span class="kwd">void</span><span class="pln"> remove</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
+  </span><span class="kwd">void</span><span class="pln"> eof</span><span class="pun">();</span><span class="pln">
+  </span><span class="kwd">void</span><span class="pln"> error</span><span class="pun">(</span><span class="pln">msg</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">interface</span><span class="pln"> DAO </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">void</span><span class="pln">   put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
+  </span><span class="kwd">void</span><span class="pln">   remove</span><span class="pun">(</span><span class="pln">id</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
+  </span><span class="kwd">void</span><span class="pln">   find</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
+  </span><span class="typ">Future</span><span class="pln"> </span><span class="kwd">select</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+  </span><span class="typ">Future</span><span class="pln"> removeAll</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
+  </span><span class="typ">Future</span><span class="pln"> update</span><span class="pun">(</span><span class="pln">expression</span><span class="pun">);</span><span class="pln">
+  </span><span class="kwd">void</span><span class="pln">   listen</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+  </span><span class="kwd">void</span><span class="pln">   pipe</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">):</span><span class="pln">  </span><span class="com">// select() + listen()</span><span class="pln">
+  </span><span class="kwd">void</span><span class="pln">   unlisten</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+  DAO    </span><span class="kwd">where</span><span class="pun">(</span><span class="pln">query</span><span class="pun">);</span><span class="pln">
+  DAO    limit</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
+  DAO    skip</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
+  DAO    orderBy</span><span class="pun">(</span><span class="pln">comparators</span><span class="pun">...);</span><span class="pln">
+</span><span class="pun">}</span></pre>
+      </pre>
+      <pre style="border:1px solid;margin-left:50px;padding:10px;">
+<pre class="theme-dark prettyprint prettyprinted"><span class="pln">dao
+  </span><span class="pun">.</span><span class="pln">skip</span><span class="pun">(</span><span class="lit">200</span><span class="pun">)</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">limit</span><span class="pun">(</span><span class="lit">50</span><span class="pun">)</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">orderBy</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">)</span><span class="pln">
+  </span><span class="pun">.</span><span class="kwd">where</span><span class="pun">(</span><span class="pln">
+    AND</span><span class="pun">(</span><span class="pln">
+      EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TO</span><span class="pun">,</span><span class="pln">        </span><span class="str">'kgr@google.com'</span><span class="pun">),</span><span class="pln">
+      EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">FROM</span><span class="pun">,</span><span class="pln">      </span><span class="str">'mymom@gmail.com'</span><span class="pun">),</span><span class="pln">
+      GT</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">,</span><span class="pln"> startOfYear</span><span class="pun">)))</span><span class="pln">
+  </span><span class="pun">.</span><span class="kwd">select</span><span class="pun">(</span><span class="pln">
+    GROUP_BY</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">SUBJECT</span><span class="pun">,</span><span class="pln"> COUNT</span><span class="pun">()));</span></pre>
+      </pre>
+    </div>
+    <a style="margin-left:50px;" href="./demos/dao.html">DAO Examples</a>
+  </slide>
+
+  <slide>
+    <h1>DAO Strategies & Decorators</h1>
+    <foam model="foam.demos.DAOStrategies"/>
+  </slide>
+
+  <slide>
+    <h1>Query-Optimizing Cache</h1>
+    <br>
+    <br>
+    <center>
+      <img style="margin-left:150px;margin-top:-40px;" src="js/foam/demos/empire/benchmarks.png">
+    </center>
+  </slide>
+
+  <slide>
+    <h1>Canvas Views</h1>
+    <foam model="foam.ui.md.TwoPaneView">
+<!--  <foam model="foam.ui.SwipeAltView">   -->
+      <views>
+        <viewChoice>
+          <label>Data-Binding</label>
+          <p:view><div id="%%id" style="transform:scale(1.2);transform-origin: 0 0;width:367px;margin-left:64px;">
+            <%
+              CLASS({
+                name: 'DataBindingDemo',
+                properties: [
+                  { name: 'value' },
+                ],
+                actions: [
+                  { name: 'minus', action: function() { this.value--; } },
+                  { name: 'plus',  action: function() { this.value++; } },
+                ]
+              });
+              var value = DataBindingDemo.create({value:5});
+              var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
+              out(foam.ui.DetailView.create({data:value, showActions: true}), '<br>', gauge);
+            %>
+          </div></p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Event Handling</label>
+          <p:view>
+            <%
+              CLASS({
+                name: 'test',
+                properties: [ 'set' ],
+                actions: [
+                  {
+                    name: 'tick',
+                    isAvailable: function() { return this.set; },
+                    action: function() { this.set = false; }
+                  },
+                  {
+                    name: 'tock',
+                    isAvailable: function() { return ! this.set; },
+                    action: function() { this.set = true; }
+                  }
+                ],
+                templates: [ function toDetailHTML() { /*
+                  $$tick{model_: 'foam.graphics.ActionButtonCView', color: 'white', width: 90, height: 90, radius: 40, background: '#aaa', font: '300 18px Arial'}$$tock{model_: 'foam.graphics.ActionButtonCView', color: 'white', width: 90, height: 90, radius: 40, background: '#aaa', font: '300 18px Arial'}*/ } ]
+              });
+              out(foam.ui.DetailView.create({data:test.create()}));
+            %>
+          </p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Configuration</label>
+          <p:view><div id="%%id" style="width:500px;margin-left:64px;display: flex;">
+            <%
+              var circle = foam.graphics.Circle.create({x:400, y:300});
+              circle.addListener(function() { circle.view.paint(); });
+              out(foam.ui.DetailView.create({data:circle}), circle);
+            %>
+          </div></p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Composition</label>
+          <p:view>
+            <foam model="foam.demos.graphics.EyeCView" color="white"/>
+            <foam model="foam.demos.graphics.EyeCView" pupilColor="white"/>
+            <span style="width:200px;display:inline-block;"></span>
+            <foam model="foam.demos.graphics.EyeCView" color="red"/>
+            <foam model="foam.demos.graphics.EyeCView" color="yellow"/>
+            <span style="width:200px;display:inline-block;"></span>
+            <foam model="foam.demos.graphics.EyesCView"/>
+            <%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.6, scaleY: 0.6, timer: foam.util.Timer.create(), blowBubbles: false}) %>
+          </p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Reaction</label>
+          <p:view>
+            <%
+              var eyes = foam.demos.graphics.EyesCView.create({x:400, y:250, width: 800, height: 800, scaleX: 2, scaleY: 2});
+              var mouse = foam.input.Mouse.create();
+              eyes.watch(mouse);
+              this.addInitializer(function() { mouse.connect(eyes.view.$); });
+              Events.dynamic(function() { mouse.x; mouse.y; }, function() { if ( eyes.view ) eyes.view.paint(); });
+              out(eyes);
+            %>
+          </p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Animation</label>
+          <p:view><foam model="foam.demos.graphics.Dragon" timer=""/></p:view>
+        </viewChoice>
+        <viewChoice>
+          <label>Interpolation</label>
+          <p:view><foam model="foam.demos.InterpolatedEyes"/></p:view>
+        </viewChoice>
+      </views>
+    </foam>
+  </slide>
+
+  <slide>
+    <h1>Reactive Programming</h1>
+    <!-- <foam model="foam.demos.ReactiveClocks"/> -->
+          <code-sample>
+            <title><!--Reactive Programming--></title>
+            <source>
+              <code-snippet>
+                <title>HTML</title>
+                <src language="html" maxLines="10">
+                  <code><%
+                      var canvas  = foam.graphics.CView.create({width: 1900, height: 1000});
+                      var mouse   = foam.input.Mouse.create();
+                      var clock1  = foam.demos.ClockView.create({r: 60});
+                      var clock2  = foam.demos.ClockView.create({r: 60, color: '#3c0'});
+                      var timer   = foam.util.Timer.create();
+
+                      timer.start();
+                      canvas.addChildren(clock1, clock2);
+
+                      // Part 1
+                      clock1.x$ = mouse.x$;
+                      clock1.y$ = mouse.y$;
+
+                      // Part 2
+                      Events.dynamic(function() {
+                      //   clock2.x = clock1.x + 200;
+                      //   clock2.y = clock1.y + 200;
+                      });
+
+                      // Part 3
+                      Events.dynamic(function() {
+                      //   clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
+                      //   clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
+                      });
+
+                      this.addInitializer(function() { mouse.connect(canvas.view.$); });
+                    %>
+                    <%= canvas %>
+                  </code>
+                </src>
+              </code-snippet>
+            </source>
+          </code-sample>
+  </slide>
+
+  <slide>
+    <h1>Reactive Animation</h1>
+    <foam model="foam.demos.SolarSystem"/>
+  </slide>
+
+  <slide>
+    <h1>Physics</h1>
+    <% X.timer = undefined; %>
+    <%=
+      foam.ui.md.TwoPaneView.create({views: [
+        {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
+        {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
+        {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
+        {label: 'Gravity&nbsp;+&nbsp;Friction', view: { factory_: 'foam.demos.physics.Bubbles', height: 1000, width: 1200, scaleX: 1.5, scaleY: 1.5}},
+        {label: 'Baloons',                      view: 'foam.demos.physics.Baloons'}
+      ]})
+    %>
+  </slide>
+
+  <slide>
+    <h1>Live-Coding</h1>
+    <div style="transform: scale(1); transform-origin: 0 0;">
+      <foam model="foam.demos.DragonLiveCoding"/>
+    </div>
+  </slide>
+
+  <slide>
+    <h1>Reusable Controllers</h1>
+    <br>
+    <center style="margin-top:25px;">
+    <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;max-height:530px" src="./demos/democat/MBug.png"></a>
+    <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/GMail.png"></a>
+    </center>
+  </slide>
+
+  <slide>
+    <h1>Toolability (meta-programming)</h1>
+      <div style="display:flex;margin-left:64px;color:gray;">
+        <div>
+        <ul>
+          <li><a href="./apps/docs/docbrowser.html">API Browsers</a></li>
+          <li>Code Generators</li>
+          <li>Type Checking</li>
+          <li>Linting</li>
+          <li>Refactoring</li>
+          <li>Templates</li>
+          <li>Syntax Highlighting</li>
+          <li>Beautifiers</li>
+          <li>Minifiers</li>
+          <li>Code Coverage</li>
+          <li>Unit Tests</li>
+          <li>Editing</li>
+          <li>Code Visualization</li>
+        </ul>
+        <!--
+        <br>
+        Ex.:
+        <%
+        var models = []; for ( var key in USED_MODELS ) models.push(X.lookup(key));
+        var v = GROUP_BY(Model.PACKAGE, COUNT());
+        models.select(v);
+        out(v);
+        %>
+        -->
+        </div>
+      <div style="margin-left:250px;">
+        <%= foam.documentation.diagram.DocDiagramView.create({data: foam.documentation.diagram.ModelDocDiagram}) %>
+      </div>
+      </div>
+  </slide>
+
+  <slide>
+    <h1>Tutorial</h1>
+      <iframe style="width:50%;height:80%;" src="./index.html?model=foam.tutorials.phonecat.Controller"></iframe>
+      <iframe style="width:45%;height:80%;" src="http://foam-framework.github.io/foam/tutorial/0-intro/"></iframe>
+    <!--
+    <foam model="foam.tutorials.phonecat.Controller"/>
+    <h1>Learning FOAM</h1>
+    <h2>Tutorial</h2>
+    <h2>DemoCat</h2>
+    -->
+  </slide>
+
+  <slide>
+    <div style="height:10px;"></div>
+    This slide intentionally left blank.
+    <!--
+    <foam model="foam.demos.MDFieldGuide"/>
+    -->
+  </slide>
+
+  <slide>
+    <h1>Calculator</h1>
+    <br>
+    <center>
+      <iframe style="width:80%;height:70%;" src="./apps/acalc/Calc.html"></iframe><br>
+    <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>, <a href="./apps/pcalc/Calc.html">Polymer Version</a>, <a href="./apps/calc/RawCalc.html">Raw Version</a>, <a href="./demos/DemoCat.html?q=calc">Other Versions</a>
+    </center>
+  </slide>
+
+  <slide>
+    <div style="overflow:scroll;height:97%;">
+      <foam model="foam.demos.Flow"/>
+    </div>
+  </slide>
+
+  <slide>
+        <h1>Summary</h1>
+        <div style="display:flex;">
+          <div style="width:800px;color:gray;">
+            <ul>
+              <li style="color:#33f;">Model-Oriented</li>
+                <li class="d1">Models are Modelled</li>
+                <li class="d1">Language-Like Features</li>
+                <li class="d1">Better Toolability</li>
+                <li class="d1">Cross-Language D.R.Y.-ness</li>
+              <li style="color:#33f;">Feature-Oriented</li>
+                <li class="d1">Reactive MVC</li>
+                  <li class="d2">Reactive</li>
+                    <li class="d3">Observerless</li>
+                    <li class="d3">Animation</li>
+                    <li class="d3">Physics</li>
+                    <li class="d3">Live-Coding</li>
+                  <li class="d2">Models</li>
+                    <li class="d3">DAO's</li>
+                      <li class="d4">Technology Independent</li>
+                      <li class="d4">Offline</li>
+                  <li class="d2">Views</li>
+                    <li class="d3">Technology Independent</li>
+                    <!-- <li class="d3">Material Design</li> -->
+                    <li class="d3">Mobile</li>
+                  <li class="d2">Reusable Controllers</li>
+                <li class="d1">Cross-Platform/Tier</li>
+                  <li class="d2">Node.js</li>
+                  <li class="d2">Java</li>
+              <li><i style="color:#f00;">An OS for Information</i></li>
+            </ul>
+          </div>
+          <iframe style="margin-left:100px;border:none;width:90%;height:100%;" src="./demos/GoogleSimulator.html"></iframe>
+        </div>
+  </slide>
+
+  <slide>
+    <br><br>
+    <center>
+      <div style="font-size:48px;color:gray;">
+        <i style="color:red;">Efficiency</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br><br>
+        Application <font color="red">Performance</font><br>
+        Developer <font color="red">Efficiency</font><br>
+        <br>
+        <i style="color:#3c0;font-size:50px;">"Fast Apps Fast"</i><br>
+      </div>
+    </center>
+  </slide>
+
+</slides>

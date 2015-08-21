@@ -1,7 +1,7 @@
 CLASS({
   name: 'OrbitingLayout',
-  extendsModel: 'View',
-  traits: ['PositionedDOMViewTrait'],
+  extendsModel: 'foam.ui.View',
+  traits: ['foam.ui.layout.PositionedDOMViewTrait'],
   properties: [
     { name: 'view' },
     { name: 'views', factory: function() { return []; } },

@@ -46,7 +46,7 @@ CLASS({
            type: 'String',
            required: true,
            view: {
-             factory_: 'ChoiceView',
+             factory_: 'foam.ui.ChoiceView',
              choices: [
                'Property',
                'Method',
@@ -71,8 +71,16 @@ CLASS({
     ]
 });
 
-for ( var id in   USED_MODELS ) { var m = FOAM.lookup(id); if ( m.getPrototype ) m.getPrototype(); }
-for ( var id in UNUSED_MODELS ) { var m = FOAM.lookup(id); if ( m.getPrototype ) m.getPrototype(); }
+for ( var id in USED_MODELS ) {
+  var m = lookup(id);
+  if ( m.getPrototype ) m.getPrototype();
+}
+for ( var id in UNUSED_MODELS ) {
+  if ( UNUSED_MODELS[id] ) {
+    var m = lookup(id);
+    if ( m.getPrototype ) m.getPrototype();
+  }
+}
 
 var header = $('header');
 var footer = $('footer');
@@ -143,7 +151,7 @@ layout();
       }
     }
     for ( var id in USED_MODELS ) {
-      var m = FOAM.lookup(id);
+      var m = lookup(id);
       if ( ! m.getPrototype ) continue;
       m.getPrototype();
 
@@ -263,4 +271,3 @@ layout();
 dao.dao;
 //    var stack = StackView.create();
 //    stack.write(document);
-

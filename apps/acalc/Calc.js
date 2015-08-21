@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
- // This accounts for binary-decimal conversion rounding (infinite 0.99999999)
- // 12 places is just short of what javascript gives you, so it forces
- // the number to round, which elimitates the spurious 9's.
- var DECIMAL_PLACES_PRECISION = 12;
+if ( ! 'log10' in Math ) Math.log10 = function(a) { return Math.log(a) / Math.LN10; };
+
+function gamma(z) {
+  return Math.sqrt(2 * Math.PI / z) * Math.pow((1 / Math.E) * (z + 1 / (12 * z - 1 / (10 * z))), z);
+}
 
 function trigFn(f) {
   return function(a) {
@@ -31,15 +32,29 @@ function invTrigFn(f) {
     return this.degreesMode ? f(a) / Math.PI * 180 : f(a);
   };
 }
+
+function createTranslatedAction(action, opt_longName) {
+  if ( opt_longName ) action.translationHint =
+      'short form for mathematical function: "' + opt_longName + '"';
+  return Action.create(action);
+}
+
+// TODO(kgr): model binaryOp and unaryOp as new types of Actions
+// this will allow the model to be serialized and edited in a FOAM IDE
 /** Make a Binary Action. **/
-function binaryOp(name, keys, f, sym) {
-  f.toString = function() { return sym; };
-  return {
+function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
+  var longName = opt_longName || name;
+  var speechLabel = opt_speechLabel || sym;
+  f.binary = true;
+  f.speechLabel = speechLabel;
+  var action = createTranslatedAction({
     name: name,
     label: sym,
+    translationHint: 'binary operator: ' + longName,
+    speechLabel: speechLabel,
     keyboardShortcuts: keys,
     action: function() {
-      if ( ! this.a2 ) {
+      if ( this.a2 == '' ) {
         // the previous operation should be replaced, since we can't
         // finish this one without a second arg. The user probably hit one
         // binay op, followed by another.
@@ -50,36 +65,45 @@ function binaryOp(name, keys, f, sym) {
         this.editable = true;
       }
     }
-  };
+  }, opt_longName);
+  f.toString = function() { return '<span aria-label="' + action.speechLabel + '">' + action.label + '</span>'; };
+  return action;
 }
 
-function unaryOp(name, keys, f, opt_sym) {
+function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
   var sym = opt_sym || name;
-  f.toString = function() { return sym; };
-
-  return {
+  var longName = opt_longName || name;
+  var speechLabel = opt_speechLabel || sym;
+  f.unary = true;
+  f.speechLabel = speechLabel;
+  var action = createTranslatedAction({
     name: name,
     label: sym,
+    translationHint: 'short form for mathematical function: "' + longName + '"',
+    speechLabel: speechLabel,
     keyboardShortcuts: keys,
     action: function() {
       this.op = f;
       this.push(f.call(this, this.a2));
       this.editable = false;
     }
-  };
+  }, opt_longName);
+  f.toString = function() { return action.label; };
+  return action;
 }
 
 /** Make a 0-9 Number Action. **/
 function num(n) {
   return {
     name: n.toString(),
-    keyboardShortcuts: [48+n /* 0 */ , 96+n /* keypad-0 */],
+    keyboardShortcuts: [ n + '' ],
     action: function() {
       if ( ! this.editable ) {
         this.push(n);
         this.editable = true;
       } else {
         if ( this.a2 == '0' && ! n ) return;
+        if ( this.a2.length >= 18 ) return;
         this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
       }
     }
@@ -90,41 +114,22 @@ function num(n) {
 var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.toString = function() { return ''; };
 
-function formatNumber(n) {
-  // the regex below removes extra zeros from the end, or middle of exponentials
-  return typeof n === 'string' ? n :
-         Number.isNaN(n)       ? 'Not a number' :
-         ! Number.isFinite(n)  ? '∞' :
-                 parseFloat(n).toPrecision(DECIMAL_PLACES_PRECISION)
-                    .replace( /(?:(\d+\.\d*[1-9])|(\d+)(?:\.))(?:(?:0+)$|(?:0*)(e.*)$|$)/ ,"$1$2$3");
-}
-
-CLASS({
-  name: 'History',
-  properties: [
-    'op',
-    {
-      name: 'a2',
-      preSet: function(_, n) { return this.formatNumber(n); }
-    }
-  ],
-  methods: {
-    formatNumber: function(n) {
-      var nu = formatNumber(n) || '0';
-      // strip off trailing "."
-      return nu.replace(/(.+?)(?:\.$|$)/, "$1");
-    }
-  }
-});
-
-
 CLASS({
   name: 'Calc',
+  translationHint: 'Calculator',
 
   requires: [
-    'CalcView',
-    'GestureManager',
-    'TouchManager'
+    'foam.apps.calc.CalcView',
+    'foam.apps.calc.History',
+    'foam.apps.calc.NumberFormatter',
+    'foam.graphics.ActionButtonCView',
+    'foam.graphics.CViewView',
+    'foam.input.touch.GestureManager',
+    'foam.input.touch.TouchManager',
+    'foam.ui.animated.Label',
+    'foam.ui.md.Flare',
+    'foam.ui.DAOListView',
+    'AbstractDAO'
   ],
 
   exports: [
@@ -132,184 +137,25 @@ CLASS({
     'touchManager'
   ],
 
-  templates: [ function CSS() {/*
-    * {
-      box-sizing: border-box;
-    }
+  constants: {
+    MAX_HISTORY: 30
+  },
 
-    html {
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-      padding: 0;
-      width: 100%;
+  messages: [
+    {
+      name: 'CalcName',
+      value: 'Calculator',
+      translationHint: 'name of application for performing simple calculations'
     }
-
-    body {
-      -webkit-user-select: none;
-      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
-      font-size: 28px;
-      font-weight: 300;
-      height: 100%;
-      margin: 0;
-      margin: 0px;
-      overflow: hidden;
-      padding: 0px;
-      width: 100%;
-    }
-
-    ::-webkit-scrollbar {
-      display: none;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      display: none;
-    }
-
-    .calc {
-      background-color: #eee;
-      border: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      margin: 0;
-      padding: 0px;
-    }
-
-    .deg, .rad {
-      color: #b3b3b3;
-      font-size: 18px;
-      opacity: 0;
-      padding-left: 12px;
-      transition: opacity 0.8s;
-    }
-
-    .active {
-      opacity: 1;
-    }
-
-    .calc-display, .calc-display:focus {
-      border: none;
-      letter-spacing: 1px;
-      line-height: 36px;
-      margin: 0;
-      min-width: 204px;
-      padding: 0 25pt 2pt 25pt;
-      text-align: right;
-    }
-
-    .edge {
-      background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,
-                                             rgba(240,240,240,0) 100%);
-      height: 20px;
-      position: absolute;
-      top: 0;
-      width: 100%;
-      z-index: 1;
-    }
-
-    .edge2 {
-      margin-top: -12px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,
-                                             rgba(0,0,0,0) 100%);
-      top: 12px;
-      height: 12px;
-      position: relative;
-      width: 100%;
-      z-index: 99;
-    }
-
-    .calc .buttons {
-      flex: 1 1 100%;
-      width: 100%;
-      height: 350px;
-    }
-
-    .button-row {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      flex: 1 1 100%;
-      justify-content: space-between;
-      align-items: stretch;
-    }
-
-    .button {
-      flex-grow: 1;
-      justify-content: center;
-      display: flex;
-      align-items: center;
-      background-color: #4b4b4b;
-    }
-
-    .rhs-ops {
-      border-left-width: 1px;
-      border-left-style: solid;
-      border-left-color: rgb(68, 68, 68);
-      background: #777;
-    }
-
-    .rhs-ops .button {
-      background-color: #777;
-    }
-
-    .button-column {
-      display: flex;
-      flex-direction: column;
-      flex-wrap: nowrap;
-    }
-
-    .inner-calc-display {
-      position: absolute;
-      right: 20pt;
-      top: 100%;
-      transition: top 0.3s ease;
-      width: 100%;
-      padding-left: 140px;
-    }
-
-    .calc-display {
-      flex-grow: 5;
-      position: relative;
-    }
-
-    .secondaryButtons {
-      padding-left: 10px;
-      background: rgb(64, 189, 158);
-    }
-
-    .secondaryButtons .button {
-      background: rgb(64, 189, 158);
-    }
-
-    .tertiaryButtons {
-      padding-left: 10px;
-      background: rgb(29, 233, 182);
-    }
-
-    .tertiaryButtons .button {
-      background: rgb(29, 233, 182);
-    }
-
-    .keypad {
-      flex-grow: 0;
-      flex-shrink: 0;
-      margin-bottom: -4px;
-      z-index: 5;
-    }
-
-    .history {
-      color: #b3b3b3
-    }
-
-    .alabel {
-      font-size: 44px;
-      color: #b3b3b3
-    }
-  */}],
+  ],
 
   properties: [
+    {
+      name: 'numberFormatter',
+      factory: function() { return this.NumberFormatter.create(); }
+    },
     { name: 'degreesMode', defaultValue: false },
+    { name: 'memory', defaultValue: 0 },
     { name: 'a1', defaultValue: 0 },
     { name: 'a2', defaultValue: '' },
     { name: 'editable', defaultValue: true },
@@ -320,13 +166,13 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'history',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return [].sink; }
     },
     {
       model_: 'StringProperty',
       name: 'row1',
-      view: 'ALabel'
+      view: 'foam.ui.animated.Label'
     },
     {
       name: 'touchManager',
@@ -355,6 +201,8 @@ CLASS({
         this.error();
         return 1/0;
       }
+      n = parseFloat(n);
+      if ( ! Number.isInteger(n) ) return gamma(n+1);
       var r = 1;
       while ( n > 0 ) r *= n--;
       return r;
@@ -362,22 +210,36 @@ CLASS({
     permutation: function(n, r) { return this.factorial(n) / this.factorial(n-r); },
     combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
     error: function() {
-      setTimeout(function() { flare($$('calc-display')[0], '#f44336' /* red */); }, 100);
+      // TODO(kgr): Move to CalcView
+      if ( this.X.$$('calc-display')[0] ) setTimeout(this.Flare.create({
+        element: this.X.$$('calc-display')[0],
+        color: '#f44336' /* red */
+      }).fire, 100);
+      this.history.put(this.History.create(this));
+      this.a1   = 0;
+      this.a2   = '';
+      this.op   = DEFAULT_OP;
+      this.row1 = '';
+      this.editable = true;
     },
     init: function() {
       this.SUPER();
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         if ( Number.isNaN(this.a2) ) this.error();
-        var a2 = formatNumber(this.a2);
+        var a2 = this.numberFormatter.formatNumber(this.a2);
         this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
     push: function(a2, opt_op) {
-      this.history.put(History.create(this));
+      if ( a2 != this.a2 ||
+           ( opt_op || DEFAULT_OP ) != this.op )
+        this.row1 = '';
+      this.history.put(this.History.create(this));
+      while ( this.history.length > this.MAX_HISTORY ) this.history.shift();
       this.a1 = this.a2;
-      this.a2 = a2;
       this.op = opt_op || DEFAULT_OP;
+      this.a2 = a2;
     },
     replace: function(op) {
       this.op = op || DEFAULT_OP;
@@ -385,42 +247,58 @@ CLASS({
   },
 
   actions: [
-    num(1), num(2), num(3),
-    num(4), num(5), num(6),
-    num(7), num(8), num(9), num(0),
-    binaryOp('div',   [111, 191],         function(a1, a2) { return a1 / a2; }, '\u00F7'),
-    binaryOp('mult',  [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }, '\u00D7'),
-    binaryOp('plus',  [107, 'shift-187'], function(a1, a2) { return a1 + a2; }, '+'),
-    binaryOp('minus', [109, 189],         function(a1, a2) { return a1 - a2; }, '–'),
-    binaryOp('pow',   [],                 Math.pow,                             'yⁿ'),
-    binaryOp('p',     [],                 function(n,r) { return this.permutation(n,r); }, 'nPr'),
-    binaryOp('c',     [],                 function(n,r) { return this.combination(n,r); }, 'nCr'),
-    binaryOp('root',  [],                 function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY'),
+    num(1), num(2), num(3), num(4), num(5), num(6), num(7), num(8), num(9), num(0),
+    binaryOp('div',   ['/'], function(a1, a2) { return a1 / a2; }, '\u00F7', 'divide', 'divide'),
+    binaryOp('mult',  ['*'], function(a1, a2) { return a1 * a2; }, '\u00D7', 'multiply', 'multiply'),
+    binaryOp('plus',  ['+'], function(a1, a2) { return a1 + a2; }, '+', 'plus', 'plus'),
+    binaryOp('minus', ['-'], function(a1, a2) { return a1 - a2; }, '–', 'minus', 'minus'),
     {
       name: 'ac',
       label: 'AC',
+      speechLabel: 'all clear',
+      translationHint: 'all clear (calculator button label)',
       // help: 'All Clear.',
-      keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
+
+      keyboardShortcuts: [ 'a', 'c' ],
       action: function() {
-        this.a2 = '';
+        this.row1     = '';
+        this.a1       = '0';
+        this.a2       = '';
         this.editable = true;
-        this.op = DEFAULT_OP;
+        this.op       = DEFAULT_OP;
         this.history = [].sink;
-        flare($$('calc-display')[0], '#2196F3' /* blue */);
+        // TODO(kgr): Move to CalcView
+        if ( this.X.$$('calc-display')[0] ) {
+          var now = Date.now();
+          if ( this.lastFlare_ && now-this.lastFlare_ < 1000 ) return;
+          this.lastFlare_ = now;
+          this.Flare.create({
+            element: this.X.$$('calc-display')[0],
+            color: '#2196F3' /* blue */
+          }).fire();
+          this.X.window.getSelection().removeAllRanges();
+        }
       }
     },
     {
       name: 'sign',
       label: '+/-',
-      keyboardShortcuts: [ 78 /* n */ , 83 /* s */],
+      speechLabel: 'negate',
+      keyboardShortcuts: [ 'n' ],
+      translationHint: 'switch positive/negative sign of number',
       action: function() { this.a2 = - this.a2; }
     },
     {
       name: 'point',
-      label: '.',
-      keyboardShortcuts: [ 110, 190 ],
+      labelFn: function() { return this.numberFormatter.useComma ? ',' : '.'; },
+      speechLabel: 'point',
+      keyboardShortcuts: [ '.', ',' ],
+      translationHint: 'decimal point',
       action: function() {
-        if ( this.a2.toString().indexOf('.') == -1 ) {
+        if ( ! this.editable ) {
+          this.push('0.');
+          this.editable = true;
+        } else if ( this.a2.toString().indexOf('.') == -1 ) {
           this.a2 = (this.a2 ? this.a2 : '0') + '.';
           this.editable = true;
         }
@@ -429,254 +307,126 @@ CLASS({
     {
       name: 'equals',
       label: '=',
-      keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
+      speechLabel: 'equals',
+      keyboardShortcuts: [ '=', 13 /* <enter> */ ],
+      translationHint: 'compute operation and display result',
       action: function() {
-        if ( ! this.a2 ) return; // do nothing if the user hits '=' prematurely
+        if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
+        if ( this.op == DEFAULT_OP ) {
+          var last = this.history[this.history.length-1];
+          if ( ! last || last.op === DEFAULT_OP ) return;
+          if ( last.op.binary ) {
+            this.push(this.a2);
+            this.a2 = last.a2;
+          } else {
+            this.a1 = this.a2;
+          }
+          this.op = last.op;
+        }
         this.push(this.op(parseFloat(this.a1), parseFloat(this.a2)));
         this.editable = false;
       }
     },
     {
       name: 'backspace',
+      label: '⌫',
+      speechLabel: 'backspace',
+      translationHint: 'delete one input character',
       keyboardShortcuts: [ 8 /* backspace */ ],
       action: function() {
-        this.a2 = this.a2.toString.length == 1 ?
-          '0' :
-          this.a2.toString().substring(0, this.a2.length-1) ;
+        // This block will make backspace act like all-clear if the user has done a ctrl-A
+        // to select all of the text.
+        var selection = this.X.window.getSelection().toString();
+        if ( selection && selection.split('\n').length == this.history.length + 1 ) {
+          this.ac();
+          return;
+        }
+
+        if ( ! this.editable ) return;
+
+        if ( this.a2.toString().length ) {
+          this.a2 = this.a2.toString().substring(0, this.a2.length-1);
+        } else {
+          this.op = DEFAULT_OP;
+        }
       }
     },
     {
       name: 'pi',
       label: 'π',
-      keyboardShortcuts: [80 /* p */],
+      keyboardShortcuts: ['p'],
+      translationHint: 'mathematical constant, pi',
       action: function() { this.a2 = Math.PI; }
     },
     {
       name: 'e',
-      label: 'E',
-      keyboardShortcuts: [69 /* e */],
+      label: 'e',
+      keyboardShortcuts: ['e'],
+      translationHint: 'mathematical constant, e',
       action: function() { this.a2 = Math.E; }
     },
     {
       name: 'percent',
       label: '%',
-      keyboardShortcuts: [ 'shift-53' /* % */ ],
+      speechLabel: 'percent',
+      keyboardShortcuts: [ '%' ],
+      translationHint: 'convert number to percentage',
       action: function() { this.a2 /= 100.0; }
     },
+
+    unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse', 'inverse'),
+    unaryOp('sqroot', [], Math.sqrt, '√', 'square root', 'square root'),
+    unaryOp('square', ['@'], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
+    unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
+    unaryOp('exp',    [], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
+    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
+    binaryOp('root',  [], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
+    binaryOp('pow',   ['^'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
+
+    unaryOp('sin',    [], trigFn(Math.sin), 'sin', 'sine',    'sine'),
+    unaryOp('cos',    [], trigFn(Math.cos), 'cos', 'cosine',  'cosine'),
+    unaryOp('tan',    [], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
+
     {
       name: 'deg',
+      speechLabel: 'switch to degrees',
+      keyboardShortcuts: [],
+      translationHint: 'short form for "degrees" calculator mode',
       action: function() { this.degreesMode = true; }
     },
     {
       name: 'rad',
+      speechLabel: 'switch to radians',
+      keyboardShortcuts: [],
+      translationHint: 'short form for "radians" calculator mode',
       action: function() { this.degreesMode = false; }
     },
-    unaryOp('fact',   ['shift-49' /* ! */], function(n) { return this.factorial(n); }, 'x!'),
-    unaryOp('inv',    [73 /* i */], function(a) { return 1.0/a; }, '1/x'),
-    unaryOp('sin',    [], trigFn(Math.sin)),
-    unaryOp('cos',    [], trigFn(Math.cos)),
-    unaryOp('tan',    [], trigFn(Math.tan)),
-    unaryOp('asin',   [], invTrigFn(Math.asin)),
-    unaryOp('acos',   [], invTrigFn(Math.acos)),
-    unaryOp('atan',   [], invTrigFn(Math.atan)),
-    unaryOp('square', [], function(a) { return a*a; }, 'x²'),
-    unaryOp('sqroot', [82 /* r */], Math.sqrt, '√'),
-    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }),
-    unaryOp('ln',     [], Math.log),
-    unaryOp('exp',    [], Math.exp, 'eⁿ'),
-  ]
-});
 
-// HACK: The buttons don't draw using the Roboto font because it isn't loaded yet.
-// So we wait a second, to give the font time to load, then redraw all the buttons.
-// TODO: Something better.
-CLASS({
-  name: 'ActionButtonCView2',
-  extendsModel: 'foam.graphics.ActionButtonCView',
-  methods: {
-    init: function() {
-      this.SUPER();
-      setTimeout(function() { this.view.paint(); }.bind(this), 1000);
+    unaryOp('asin',   [], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arcsine'),
+    unaryOp('acos',   [], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arccosine'),
+    unaryOp('atan',   [], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
+
+    unaryOp('fact',   ['!'], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
+    binaryOp('mod',   [],    function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
+    binaryOp('p',     [],    function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
+    binaryOp('c',     [],    function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
+    unaryOp('round',  [], Math.round, 'rnd', 'round', 'round'),
+    {
+      name: 'rand',
+      label: 'rand',
+      speechLabel: 'random',
+      keyboardShortcuts: [],
+      translationHint: 'generate random number',
+      action: function() { this.a2 = Math.random(); }
+    },
+    unaryOp('store',   [], function(n) { this.memory = n; return n; }, 'a=', 'store in memory', 'store in memory'),
+    {
+      name: 'fetch',
+      label: 'a',
+      speechLabel: 'fetch from memory',
+      keyboardShortcuts: [],
+      translationHint: 'load memorized number',
+      action: function() { this.a2 = this.memory; }
     }
-  }
-});
-
-var CalcButton = ActionButtonCView2.xbind({
-  color:      'white',
-  background: '#4b4b4b',
-  width:      95,
-  height:     85,
-  font:       '300 32px RobotoDraft'
-});
-X.registerModel(CalcButton, 'ActionButton');
-
-CLASS({
-  name: 'CalcView',
-  requires: [
-    'HistoryCitationView',
-    'SlidePanelView',
-    'MainButtonsView',
-    'SecondaryButtonsView',
-    'TertiaryButtonsView'
-  ],
-  exports: [
-    'data'
-  ],
-  properties: [
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'mainButtons',
-      defaultValue: 'MainButtonsView'
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'basicOperations',
-      defaultValue: 'BasicOperationsButtonView'
-    },
-  ],
-  extendsModel: 'DetailView',
-  templates: [ { name: 'toHTML' } ]
-});
-
-CLASS({
-  name: 'MainButtonsView',
-  extendsModel: 'DetailView',
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" class="buttons button-row" style="background:#4b4b4b;">
-        <div class="button-column" style="flex-grow: 3">
-          <div class="button-row">
-            <div class="button">$$7</div><div class="button">$$8</div><div class="button">$$9</div>
-          </div>
-          <div class="button-row">
-            <div class="button">$$4</div><div class="button">$$5</div><div class="button">$$6</div>
-         </div>
-          <div class="button-row">
-            <div class="button">$$1</div><div class="button">$$2</div><div class="button">$$3</div>
-          </div>
-          <div class="button-row">
-            <div class="button">$$point</div><div class="button">$$0</div><div class="button">$$equals</div>
-          </div>
-        </div>
-      <%
-      this.X.registerModel(CalcButton.xbind({
-        background: '#777', width: 100, height: 70
-      }), 'ActionButton');
-      %>
-        <div class="button-column rhs-ops" style="flex-grow: 1">
-          <div class="button">$$ac</div>
-          <div class="button">$$plus</div>
-          <div class="button">$$minus</div>
-          <div class="button">$$div</div>
-          <div class="button">$$mult</div>
-        </div>
-      </div>
-    */}
   ]
 });
-
-CLASS({
-  name: 'SecondaryButtonsView',
-  extendsModel: 'DetailView',
-  templates: [
-    function toHTML() {/*
-          <%
-          this.X.registerModel(CalcButton.xbind({
-            background: 'rgb(64, 189, 158)',
-            width:  60,
-            height: 58,
-            font:   '300 20px RobotoDraft'
-          }), 'ActionButton');
-          %>
-          <div id="%%id" class="buttons button-row secondaryButtons">
-            <div class="button-column" style="flex-grow: 1;">
-              <div class="button-row">
-                <div class="button">$$inv</div><div class="button">$$square</div><div class="button">$$sqroot</div>
-              </div>
-              <div class="button-row">
-                <div class="button">$$log</div><div class="button">$$pow</div><div class="button">$$root</div>
-              </div>
-              <div class="button-row">
-                <div class="button">$$ln</div><div class="button">$$exp</div><div class="button">$$e</div>
-              </div>
-              <div class="button-row">
-                <div class="button">$$sin </div><div class="button">$$cos</div><div class="button">$$tan</div>
-              </div>
-              <div class="button-row">
-                <div class="button">$$asin</div><div class="button">$$acos</div><div class="button">$$atan</div>
-              </div>
-              <div class="button-row">
-                <div class="button">$$sign</div><div class="button">$$percent</div><div class="button">$$pi</div>
-              </div>
-            </div>
-          </div>
-    */}
-  ]
-});
-
-CLASS({
-  name: 'TertiaryButtonsView',
-  extendsModel: 'DetailView',
-  templates: [
-    function toHTML() {/*
-          <%
-          this.X.registerModel(this.X.ActionButton.xbind({
-            width: 70,
-            height: 70,
-            color:      'rgb(119, 119, 119)',
-            background: 'rgb(29, 233, 182)',
-            font:       '300 20px RobotoDraft'
-          }), 'ActionButton');
-          %>
-          <div id="%%id" class="buttons button-row tertiaryButtons">
-            <div class="button-column" style="flex-grow: 1">
-              <div class="button-row"><div class="button">$$rad</div></div>
-              <div class="button-row"><div class="button">$$deg</div></div>
-              <div class="button-row"><div class="button">$$fact</div></div>
-              <div class="button-row"><div class="button">$$p</div></div>
-              <div class="button-row"><div class="button">$$c</div></div>
-            </div>
-          </div>
-    */}
-  ]
-});
-
-CLASS({
-  name: 'HistoryCitationView',
-  extendsModel: 'DetailView',
-  templates: [
-    function toHTML() {/*
-      <div class="history">
-        {{this.data.op}} {{this.data.a2}}
-        <% if ( this.data.op.toString() ) { %><hr><% } %>
-      </div>
-    */}
-  ]
-});
-
-// TODO(kgr): move to core when done.
-function flare(e, color) {
-  var w = e.clientWidth;
-  var h = e.clientHeight;
-  var c = foam.graphics.Circle.create({r: 0, width: w, height: h, x: w, y: h, color: color});
-  var view = c.toView_();
-  var div = document.createElement('div');
-  var dStyle = div.style;
-  dStyle.position = 'absolute';
-  dStyle.left = 0;
-  dStyle.zIndex = 4;
-
-  var id = View.getPrototype().nextID();
-  div.id = id;
-  div.innerHTML = view.toHTML();
-  e.appendChild(div);
-  view.initHTML();
-  Movement.compile([
-    // MYSTERY(kgr): I don't know why the 1.3 is needed.
-    [500, function() { c.r = 1.3 * Math.sqrt(w*w, h*h); }],
-    [200, function() { c.alpha = 0; }],
-    function() { div.remove(); }
-  ])();
-c.r$.addListener(EventService.framed(view.paint.bind(view)));
-c.alpha$.addListener(EventService.framed(view.paint.bind(view)));
-}

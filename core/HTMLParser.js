@@ -71,6 +71,7 @@ CLASS({
     },
     {
       name: 'attributeMap_',
+      transient: true,
       factory: function() { return {}; }
     },
     {
@@ -87,17 +88,23 @@ CLASS({
     },
     {
       name: 'children',
+      transient: true,
       getter: function() {
         return this.childNodes.filter(function(c) { return typeof c !== 'string'; });
       }
     },
     {
       name: 'outerHTML',
+      transient: true,
       getter: function() {
         var out = '<' + this.nodeName;
         if ( this.id ) out += ' id="' + this.id + '"';
         for ( key in this.attributeMap_ ) {
-          out += ' ' + key + '="' + this.attributeMap_[key].value + '"';
+          var value = this.attributeMap_[key].value;
+
+          out += value == undefined ?
+            ' ' + key :
+            ' ' + key + '="' + this.attributeMap_[key].value + '"';
         }
         if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
              ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
@@ -111,6 +118,7 @@ CLASS({
     },
     {
       name: 'innerHTML',
+      transient: true,
       getter: function() {
         var out = '';
         for ( var i = 0 ; i < this.childNodes.length ; i++ )
@@ -138,6 +146,14 @@ CLASS({
       return attr && attr.value;
     },
     appendChild: function(c) { this.childNodes.push(c); },
+    removeChild: function(c) {
+      for ( var i = 0; i < this.childNodes.length; ++i ) {
+        if ( this.childNodes[i] === c ) {
+          this.childNodes.splice(i, 1);
+          break;
+        }
+      }
+    },
     toString: function() { return this.outerHTML; }
   }
 });
@@ -157,11 +173,24 @@ var HTMLParser = {
 
   START: sym('html'),
 
-// TODO(kgr): replace with repeat0
-  html: repeat(alt(
+  // Use simpleAlt() because endTag() doesn't always look ahead and will
+  // break the regular alt().
+  html: repeat0(sym('htmlPart')),
+
+  htmlPart: simpleAlt(
+    sym('cdata'),
+    sym('comment'),
     sym('text'),
     sym('endTag'),
-    sym('startTag'))),
+    sym('startTag')),
+
+  tag: seq(
+    sym('startTag'),
+    repeat(seq1(1, sym('matchingHTML'), sym('htmlPart')))),
+
+  matchingHTML: function(ps) {
+    return this.stack.length > 1 ? ps : null;
+  },
 
   startTag: seq(
     '<',
@@ -181,29 +210,41 @@ var HTMLParser = {
 
   endTag_: seq1(1, '</', sym('tagName'), '>'),
 
+  cdata: seq1(1, '<![CDATA[', str(repeat(not(']]>', anyChar))), ']]>'),
+
+  comment: seq('<!--', repeat0(not('-->', anyChar)), '-->'),
+
   attributes: repeat(sym('attribute'), sym('whitespace')),
 
-  label: str(plus(notChars(' =/\t\r\n<>\'"'))),
+  label: str(plus(notChars(' %=/\t\r\n<>\'"'))),
 
   tagName: sym('label'),
 
   text: str(plus(alt('<%', notChar('<')))),
 
-  attribute: seq(sym('label'), '=', sym('value')),
+  attribute: seq(sym('label'), optional(seq1(1, '=', sym('value')))),
 
   value: str(alt(
     plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
     seq1(1, '"', repeat(notChar('"')), '"')
   )),
 
-  whitespace: repeat(alt(' ', '\t', '\r', '\n'))
+  whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
 }.addActions({
   START: function(xs) {
+    // TODO(kgr): I think that this might be a bug if we get a failed compile then
+    // we might not reset state properly.
     var ret = this.stack[0];
     this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
     return ret;
   },
-  attribute: function(xs) { return { name: xs[0], value: xs[2] }; },
+  tag: function(xs) {
+    var ret = this.stack[0];
+    this.stack = [ X.foam.html.Element.create({nodeName: 'html'}) ];
+    return ret.childNodes[0];
+  },
+  attribute: function(xs) { return { name: xs[0], value: xs[1] }; },
+  cdata: function(xs) { this.peek() && this.peek().appendChild(xs); },
   text: function(xs) { this.peek() && this.peek().appendChild(xs); },
   startTag: function(xs) {
     var tag = xs[1];
@@ -252,4 +293,39 @@ test('<pA a="1">foo</pA>');
 test('<pA a="1" b="2">foo<b>bold</b></pA>');
 */
 
-TemplateParser.foamTag_ = FOAMTagParser.create().export('START');
+(function() {
+  var registry = { };
+
+  X.registerElement = function(name, model) {
+//    console.log('registerElement: ', name);
+    registry[name] = model;
+
+    TemplateParser.foamTag_ = (function() {
+      var start = seq(
+        '<',
+        simpleAlt.apply(null,
+          Object.keys(registry).
+            sort(function(o1, o2) { return o2.compareTo(o1); }).
+            map(function(k) { return literal_ic(k); })),
+        alt('/', ' ', '>'));
+
+      var html = HTMLParser.create().export('tag');
+
+      return function(ps) {
+        var res = this.parse(start, ps) && this.parse(html, ps);
+        if ( ! res ) return null;
+        var elem  = res.value;
+        var model = registry[elem.nodeName];
+        if ( model ) elem.setAttribute('model', model);
+        return res.setValue(elem);
+      };
+    })();
+    invalidateParsers();
+  };
+
+  X.elementModel = function(name) {
+    return registry[name];
+  };
+})();
+
+X.registerElement('foam', null);

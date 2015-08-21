@@ -16,15 +16,85 @@
  */
 
 // TODO: standardize on either get()/set() or .value
-var SimpleValue = Model.create({
+CLASS({
   name: 'SimpleValue',
 
   properties: [ { name: 'value' } ],
 
   methods: {
-    init: function(value) { this.value = value || ""; },
+    init: function(value) { this.value = value || ''; },
     get: function() { return this.value; },
     set: function(val) { this.value = val; },
-    toString: function() { return "SimpleValue(" + this.value + ")"; }
+    toString: function() { return 'SimpleValue(' + this.value + ')'; }
+  }
+});
+
+// TODO(kgr): Experimental. Remove in future if not used.
+CLASS({
+  name: 'OrValue',
+  extendsModel: 'SimpleValue',
+
+  properties: [
+    { name: 'values' },
+    { name: 'valueFactory', defaultValue: function() { return arguments; } }
+  ],
+
+  methods: {
+    init: function() {
+      this.SUPER();
+      for ( var i = 0 ; i < this.values.length ; i++ )
+        this.values[i].addListener(this.onSubValueChange);
+      this.value = this.valueFactory();
+    },
+    get: function() { return this.value; },
+    set: function(val) { },
+    toString: function() { return 'OrValue(' + this.value + ')'; }
+  },
+
+  listeners: [
+    {
+      name: 'onSubValueChange',
+      isFramed: true,
+      code: function() {
+        var args = new Array(this.values.length);
+        for ( var i = 0 ; i < this.values.length ; i++ )
+          args[i] = this.values[i].get();
+        this.value = this.valueFactory.apply(this, args);
+      }
+    }
+  ]
+});
+
+function or$(values, factory, opt_X) {
+  return OrValue.create({
+    values: values,
+    valueFactory: factory, 
+  }, opt_X);
+}
+
+
+CLASS({
+  name: 'SimpleReadOnlyValue',
+  extendsModel: 'SimpleValue',
+
+  documentation: 'A simple value that can only be set during initialization.',
+  
+  properties: [
+    { 
+      name: 'value',
+      preSet: function(old, nu) {
+        return ( typeof this.instance_.value == 'undefined' ) ? nu : old ;
+      }
+    } 
+  ],
+  
+  methods: {
+    set: function(val) {
+      /* Only allow set once. The first initialized value is the only one. */
+      if ( typeof this.instance_.value == 'undefined' ) {
+        this.SUPER(val);
+      }
+    },
+    toString: function() { return 'SimpleReadOnlyValue(' + this.value + ')'; }
   }
 });

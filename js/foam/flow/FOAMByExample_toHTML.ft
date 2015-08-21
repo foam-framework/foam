@@ -1,0 +1,17 @@
+<book-container id="%%id">
+  <book>
+
+    <title-page>
+      <book-title>FOAM By Example</book-title>
+    </title-page>
+
+    <toc />
+
+    <fbe-models />
+
+    <fbe-views />
+
+    <fbe-daos />
+
+  </book>
+</book-container>

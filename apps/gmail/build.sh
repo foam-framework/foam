@@ -2,7 +2,6 @@ export BUILD_DIR=~/Downloads/mgmail
 rm -rf $BUILD_DIR
 cp -r . $BUILD_DIR
 cp ../../core/foam.css $BUILD_DIR
-cp ../../lib/mdui/style.css $BUILD_DIR/mdui.css
 cat \
   ../../core/stdlib.js \
   ../../core/WeakMap.js \
@@ -26,14 +25,11 @@ cat \
   ../../core/mm2Property.js \
   ../../core/mm3Types.js \
   ../../core/mm4Method.js \
-  ../../core/mm5Misc.js \
+  ../../core/mm6Misc.js \
+  ../../js/foam/ui/Window.js \
   ../../core/value.js \
   ../../core/view.js \
   ../../core/layout.js \
-  ../../core/daoView.js \
-  ../../core/ChoiceView.js \
-  ../../core/DetailView.js \
-  ../../core/TableView.js \
   ../../core/cview.js \
   ../../core/cview2.js \
   ../../core/RichTextView.js \
@@ -68,8 +64,11 @@ cat \
   ../../core/../lib/email/email.js \
   ../../core/turntable.js \
   ../../core/CORE.js \
+  ../../js/foam/lib/bookmarks/Bookmark.js \
+  ../../js/foam/lib/bookmarks/AddBookmarksDialog.js \
   ../../lib/bookmarks/bookmark.js \
-  ../../lib/mdui/AppController.js \
+  ../../js/foam/ui/md/AppController.js \
+  ../../js/foam/ui/md/SharedStyles.js \
   ../../lib/mdui/view.js \
   ../../lib/gmail/ImportedModels.js \
   ../../lib/gmail/dao.js \

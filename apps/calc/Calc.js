@@ -30,7 +30,7 @@ function makeOp(name, sym, keys, f) {
 function makeNum(n) {
   return {
     name: n.toString(),
-    keyboardShortcuts: [48+n /* 0 */ , 96+n /* keypad-0 */],
+    keyboardShortcuts: [ n + '' ],
     action: function() { this.a2 = this.a2 == 0 ? n : this.a2.toString() + n; }
   };
 }
@@ -38,10 +38,10 @@ function makeNum(n) {
 var DEFAULT_OP = function(a1) { return a1; };
 DEFAULT_OP.toString = function() { return ''; };
 
-/** A subclass of FloatFieldView which doesn't display 0 values. **/
+/** A subclass of  which doesn't display 0 values. **/
 CLASS({
   name:  'CalcFloatFieldView',
-  extendsModel: 'FloatFieldView',
+  extendsModel: 'foam.ui.FloatFieldView',
   methods: { valueToText: function(v) { return v == 0 ? '' : v.toString(); } }
 });
 
@@ -49,6 +49,8 @@ CLASS({ name: 'History', properties: [ 'op', 'a2' ] });
 
 CLASS({
   name: 'Calc',
+
+  requires: ['History'],
 
   properties: [
     { name: 'a1', defaultValue: '0' },
@@ -58,12 +60,12 @@ CLASS({
       preSet: function(oldOp, newOp) {
         if ( newOp !== DEFAULT_OP && oldOp !== DEFAULT_OP ) {
           var a3 = this.op(parseFloat(this.a1), parseFloat(this.a2));
-          this.history.put(History.create(this));
-          this.history.put(History.create({a2: a3}));
+          this.history.put(this.History.create(this));
+          this.history.put(this.History.create({a2: a3}));
           this.a1 = a3;
           this.a2 = 0;
         } else if ( this.a2 ) {
-          this.history.put(History.create({a2: this.a2}));
+          this.history.put(this.History.create({a2: this.a2}));
           this.a1 = this.a2;
           this.a2 = 0;
         }
@@ -78,7 +80,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'history',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return [].sink; }
     }
   ],
@@ -97,27 +99,27 @@ CLASS({
     makeNum(1), makeNum(2), makeNum(3),
     makeNum(4), makeNum(5), makeNum(6),
     makeNum(7), makeNum(8), makeNum(9), makeNum(0),
-    makeOp('div',   '\u00F7', [111, 191],         function(a1, a2) { return a1 / a2; }),
-    makeOp('mult',  '\u00D7', [106, 'shift-56'],  function(a1, a2) { return a1 * a2; }),
-    makeOp('plus',  '+',      [107, 'shift-187'], function(a1, a2) { return a1 + a2; }),
-    makeOp('minus', '&#150;', [109, 189],         function(a1, a2) { return a1 - a2; }),
+    makeOp('div',   '\u00F7', ['/'], function(a1, a2) { return a1 / a2; }),
+    makeOp('mult',  '\u00D7', ['*'], function(a1, a2) { return a1 * a2; }),
+    makeOp('plus',  '+',      ['+'], function(a1, a2) { return a1 + a2; }),
+    makeOp('minus', '–',      ['-'], function(a1, a2) { return a1 - a2; }),
     {
       name: 'ac',
       label: 'AC',
       help: 'All Clear.',
-      keyboardShortcuts: [ 65 /* a */, 67 /* c */ ],
+      keyboardShortcuts: [ 'a', 'c' ],
       action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = [].sink; }
     },
     {
       name: 'sign',
       label: '+/-',
-      keyboardShortcuts: [ 78 /* n */ , 83 /* s */],
+      keyboardShortcuts: [ 'n', 's'],
       action: function() { this.a2 = - this.a2; }
     },
     {
       name: 'point',
       label: '.',
-      keyboardShortcuts: [ 110, 190 ],
+      keyboardShortcuts: [ '.' ],
       action: function() {
         if ( this.a2.toString().indexOf('.') == -1 ) this.a2 = this.a2 + '.';
       }
@@ -125,12 +127,12 @@ CLASS({
     {
       name: 'equals',
       label: '=',
-      keyboardShortcuts: [ 187 /* '=' */, 13 /* <enter> */ ],
+      keyboardShortcuts: [ '=', 13 /* <enter> */ ],
       action: function() {
         var a1 = this.a1;
         var a2 = this.a2;
         this.a1 = a2;
-        this.history.put(History.create(this));
+        this.history.put(this.History.create(this));
         this.a2 = this.op(parseFloat(a1), parseFloat(a2));
         this.op = DEFAULT_OP;
       }
@@ -145,4 +147,9 @@ CLASS({
   ]
 });
 
-CLASS({ name: 'CalcView', extendsModel: 'DetailView', templates: [ { name: 'toHTML' } ] });
+CLASS({ 
+  name: 'CalcView',
+  extendsModel: 'foam.ui.DetailView',
+  requires: ['foam.ui.DAOListView'],
+  templates: [ { name: 'toHTML' } ] 
+});

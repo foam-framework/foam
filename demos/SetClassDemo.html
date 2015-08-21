@@ -2,7 +2,6 @@
  <head>
   <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
   <script language="javascript" src="../core/bootFOAM.js"></script>
-  <script language="javascript" src="dragon.js"></script>
   <title>FOAM DOM Objects</title>
   <style>
     .code {width:700px; white-space: pre; border: 1px solid; padding: 5px; font-family: monospace;}
@@ -16,7 +15,7 @@
 <script language="javascript">
 MODEL({
   name: 'DemoView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [ { name: 'toHTML' } ]
 });
 </script>

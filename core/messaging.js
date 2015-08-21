@@ -22,7 +22,8 @@ CLASS({
     { model_: 'IntProperty', name: 'delay', defaultValue: 0 },
     { model_: 'IntProperty', name: 'retries', defaultValue: 0 },
     { name: 'authAgent' },
-    { name: 'responseType', defaultValue: 'text' }
+    { name: 'responseType', defaultValue: 'text' },
+    { name: 'contentType', defaultValue: 'application/json' }
   ],
 
   methods: {
@@ -44,7 +45,7 @@ CLASS({
 
     configure: function(xhr) {
       xhr.responseType = this.responseType;
-      this.setRequestHeader(xhr, "Content-Type", "application/json");
+      if ( this.contentType ) this.setRequestHeader(xhr, "Content-Type", this.contentType);
     },
 
     bindListeners: function(xhr, ret) {
@@ -54,7 +55,7 @@ CLASS({
           if ( self.responseType === "json" && typeof xhr.response == "string" )
             var response = JSON.parse(xhr.response);
           else response = xhr.response;
-          ret(response, xhr);
+          ret(response, xhr, (xhr.status >= 200 && xhr.status < 300));
         }
       }
     },
@@ -90,13 +91,13 @@ CLASS({
 
     asend: function(decorator, delegate, args) {
       var ret = args[0];
-      args[0] = function(response, xhr) {
+      args[0] = function(response, xhr, status) {
         if ( xhr.status === 401 ) {
           decorator.authAgent.refresh(function() {
-            ret(response, xhr);
+            ret(response, xhr, status);
           });
         } else {
-          ret(response, xhr);
+          ret(response, xhr, status);
         }
       };
       return delegate.apply(null, args);
@@ -168,7 +169,7 @@ CLASS({
 
   methods: {
     put: function(obj, sink) {
-      var xhr = this.X.XHR.create();
+      var xhr = this.Y.XHR.create();
       xhr.asend(function(response, xhr) {
         if ( xhr.status >= 200 && xhr.status < 300 ) {
           sink && sink.put && sink.put(response);

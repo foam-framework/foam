@@ -15,7 +15,7 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'cs',
       subType: 'C',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return [C.create({id: 1, c:'c1'})]; }
     }
   ]
@@ -29,21 +29,21 @@ CLASS({
     {
       name: 'b',
       subType: 'B',
-      view: { factory_: 'DetailView', model: B },
+      view: { factory_: 'foam.ui.DetailView', model: B },
       factory: function() { return B.create({id: 1, b:'nested B'}); }
     },
     {
       model_: 'ArrayProperty',
       name: 'bs',
       subType: 'B',
-      view: 'DAOListView',
+      view: 'foam.ui.DAOListView',
       factory: function() { return [B.create({id: 1, b:'b1'})]; }
     }
   ]
 });
 
 
-var dao = EasyDAO.create({model: 'A', daoType: 'MDAO', seqNo: true});
+var dao = X.lookup('foam.dao.EasyDAO').create({model: 'A', daoType: 'MDAO', seqNo: true});
 
 dao.put(A.create({a: 'a1'}));
 //dao.put(A.create({a: 'a2'}));

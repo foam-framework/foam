@@ -1,0 +1,141 @@
+md-table {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+md-table table-caption {
+  display: block;
+  font-size: 20px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+md-table table-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: relative;
+}
+
+md-table table-header.selection {
+  background: rgb(232,240,253);
+}
+
+md-table table-header table-caption {
+  padding-left: 24px;
+}
+
+md-table table-header.selection table-caption {
+  color: rgb(72,131,239);
+}
+
+md-table table-header table-actions {
+  display: block;
+  padding-right: 14px;
+}
+
+md-table table-header table-actions i {
+  cursor: pointer;
+  display: block;
+  margin-left: 24px;
+  font-size: 24px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.mdTable {
+  border-collapse: collapse;
+  font-family: 'Roboto', sans-serif;
+  table-layout:fixed;
+  text-align: left;
+  width: 100%;
+}
+
+.mdTable thead {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.mdTable tbody {
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.mdTable tbody {
+  border-top: solid 1px #DDDDDD;
+}
+
+.mdTable tbody tr {
+  border-bottom: solid 1px #DDDDDD;
+  cursor: pointer;
+}
+
+tr:first-child {
+  padding-left: 24px;
+}
+
+.mdTable thead tr th {
+  cursor: pointer;
+}
+
+.mdTable tbody tr:hover,
+.mdTable tbody tr.rowSoftSelected {
+  background: #EEEEEE;
+}
+
+.mdTable tr.rowSelected {
+  background: #F5F5F5;
+}
+
+.mdTable .numeric {
+  text-align: right;
+}
+
+.mdTable thead th {
+  height: 64px;
+}
+
+.mdTable thead th .indicator {
+  flex-shrink: 0;
+}
+
+.mdTable tbody tr td {
+  height: 48px;
+}
+
+.mdTable thead th,
+.mdTable thead th *,
+.mdTable tbody td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mdTable .sort {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.mdTable .sort .material-icons {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.26);
+}
+
+i.material-icons.actionLabel.available {
+  display: inline-block;
+}
+
+i.material-icons.actionLabel {
+  display: none;
+}
+
+.mdTable thead tr th,
+.mdTable tbody tr td {
+  padding-left: 24px;
+  padding-right: 24px;
+}

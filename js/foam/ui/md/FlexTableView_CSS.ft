@@ -1,0 +1,144 @@
+md-table {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+
+md-table table-caption {
+  display: block;
+  font-size: 20px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+md-table table-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: relative;
+}
+
+md-table table-header.selection {
+  background: rgb(232,240,253);
+}
+
+md-table table-header table-caption {
+  padding-left: 24px;
+}
+
+md-table table-header.selection table-caption {
+  color: rgb(72,131,239);
+}
+
+md-table table-header table-actions {
+  display: block;
+  padding-right: 14px;
+}
+
+md-table table-header table-actions i {
+  cursor: pointer;
+  display: block;
+  margin-left: 24px;
+  font-size: 24px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.mdTable {
+  font-family: 'Roboto', sans-serif;
+}
+
+.mdTable flex-table-head {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.mdTable flex-table-body {
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 13px;
+  font-weight: 400;
+  border-top: solid 1px #DDDDDD;
+}
+.mdTable flex-table-body flex-table-row {
+  border-bottom: solid 1px #DDDDDD;
+  cursor: pointer;
+}
+
+.mdTable flex-table-head flex-table-cell {
+  height: 64px;
+}
+
+.mdTable flex-table-head flex-table-cell,
+.mdTable flex-table-head flex-table-cell :not(flex-col-resize-handle) {
+  cursor: pointer;
+}
+
+.mdTable flex-table-head flex-table-cell:hover flex-col-resize-handle {
+  background: #F5F5F5;
+}
+
+.mdTable flex-table-head flex-table-cell flex-col-resize-handle:hover,
+body.flex-table-view-col-resize .mdTable flex-col-resize-handle {
+  background: #EEEEEE;
+}
+
+.mdTable flex-table-body flex-table-row:hover,
+.mdTable flex-table-body flex-table-row.rowSoftSelected {
+  background: #EEEEEE;
+}
+
+.mdTable flex-table-row.rowSelected {
+  background: #F5F5F5;
+}
+
+.mdTable flex-table-body flex-table-cell {
+  height: 48px;
+}
+
+.mdTable .sort {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.mdTable .sort .material-icons {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.26);
+}
+
+i.material-icons.actionLabel.available {
+  display: inline-block;
+}
+
+i.material-icons.actionLabel {
+  display: none;
+}
+
+.mdTable flex-table-row {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.mdTable flex-table-cell:first-child {
+  padding-left: 12px;
+}
+
+.mdTable flex-table-cell:last-child,
+.mdTable flex-table-cell.numeric:last-child,
+.mdTable flex-table-cell.sort:last-child,
+.mdTable flex-table-cell.numeric.sort:last-child {
+  margin-right: 0px;
+}
+
+.mdTable flex-table-cell {
+  padding-right: 12px;
+  margin-right: 12px;
+}
+
+.mdTable flex-table-cell.numeric {
+  padding-right: 28px;
+  margin-right: 28px;
+}

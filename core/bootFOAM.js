@@ -35,5 +35,10 @@ if ( ! this.FOAM_BOOT_DIR ) {
   FOAM_BOOT_DIR = path;
 }
 
-document.writeln('<script type="text/javascript" src="' + FOAM_BOOT_DIR + 'FOAMmodels.js"></script>\n');
-document.writeln('<script type="text/javascript" src="' + FOAM_BOOT_DIR + 'bootFOAMMain.js"></script>\n');
+function loadScript_(filename) {
+  document.writeln(
+    '<script type="text/javascript" src="' + FOAM_BOOT_DIR + filename + '"></script>\n');
+}
+
+loadScript_('FOAMmodels.js');
+loadScript_('bootFOAMMain.js');

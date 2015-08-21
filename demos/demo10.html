@@ -2,11 +2,15 @@
  <head>
   <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
   <script language="javascript" src="../core/bootFOAM.js"></script>
-  <title>FOAM Diagram </title>
+  <title>FOAM Diagram</title>
  </head>
  <body>
   <script language="javascript">
-    var timer = Timer.create({});
+    apar(
+      arequire('foam.ui.View'),
+      arequire('foam.util.Timer')
+    )(function() {
+    var timer = foam.util.Timer.create();
     var space = Canvas.create({width: 2000, height: 1200, background: 'white'});
 
     space.write(document);
@@ -58,6 +62,7 @@
        [1000, function() { css.y = 400;   }, B],
        [1000, function() { ui_tm.y = 500; ui_table.y = 600; ui_detail.y = 700; ui_ctrl.y = 800; ui_model.y = 900;  }, B],
     ])();
+    });
   </script>
  </body>
 </html>

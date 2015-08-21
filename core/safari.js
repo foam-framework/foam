@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-if (navigator && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+if (navigator && navigator.userAgent.indexOf('AppleWebKit') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
   console.log('Loading Safari Support.');
 
   (function(){
@@ -54,5 +54,17 @@ if (navigator && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAg
       return true;
     };
   }
-}
 
+  if ( typeof Number.isNaN !== 'function' ) {
+    Number.isNaN = function(value) {
+      return typeof value === "number" && value !== value;
+    };
+  }
+
+  if ( typeof Number.isInteger !== 'function' ) {
+    Number.isInteger = function(value) {
+      return (typeof value === 'number' &&
+          Math.round(value) === value);
+    };
+  }
+}

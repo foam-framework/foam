@@ -20,23 +20,23 @@
 // todo: generateTopic()
 // todo: cleanup empty topics after subscriptions removed
 
-// http://www.republicofcode.com/tutorials/flash/as3tweenclass/
-// http://mootools.net/docs/core/Fx/Fx.Transitions
-// http://jquery.malsup.com/cycle/adv.html
-
 /** Publish and Subscribe Event Notification Service. **/
 // ??? Whould 'Observable' be a better name?
 // TODO(kgr): Model or just make part of FObject?
 
+var __ROOT__ = {};
+
 MODEL({
   name: 'EventService',
+
+  extendsModel: '__ROOT__',
 
   constants: {
     /** If listener thows this exception, it will be removed. **/
     UNSUBSCRIBE_EXCEPTION: 'unsubscribe',
 
     /** Used as topic suffix to specify broadcast to all sub-topics. **/
-    WILDCARD: "*"
+    WILDCARD: '*'
   },
 
   methods: {
@@ -67,6 +67,7 @@ MODEL({
      *        the smallest delay that humans aren't able to perceive.
      **/
     merged: function(listener, opt_delay, opt_X) {
+      var setTimeoutX = ( opt_X && opt_X.setTimeout ) || setTimeout;
       var delay = opt_delay || 16;
 
       return function() {
@@ -82,7 +83,7 @@ MODEL({
           if ( ! triggered ) {
             triggered = true;
             try {
-              ((opt_X && opt_X.setTimeout) || setTimeout)(
+              setTimeoutX(
                 function() {
                   triggered = false;
                   var args = argsToArray(lastArgs);
@@ -100,7 +101,7 @@ MODEL({
           }
         };
 
-        f.toString = function() {
+        if ( DEBUG ) f.toString = function() {
           return 'MERGED(' + delay + ', ' + listener.$UID + ', ' + listener + ')';
         };
 
@@ -115,8 +116,7 @@ MODEL({
     // TODO: execute immediately from within a requestAnimationFrame
     framed: function(listener, opt_X) {
       opt_X = opt_X || this.X;
-      //    if ( ! opt_X ) debugger;
-      //    if ( opt_X.isBackground ) debugger;
+      var requestAnimationFrameX = ( opt_X && opt_X.requestAnimationFrame ) || requestAnimationFrame;
 
       return function() {
         var triggered    = false;
@@ -130,7 +130,7 @@ MODEL({
 
           if ( ! triggered ) {
             triggered = true;
-            ((opt_X && opt_X.requestAnimationFrame) || requestAnimationFrame)(
+            requestAnimationFrameX(
               function() {
                 triggered = false;
                 var args = argsToArray(lastArgs);
@@ -144,7 +144,7 @@ MODEL({
           }
         };
 
-        f.toString = function() {
+        if ( DEBUG ) f.toString = function() {
           return 'ANIMATE(' + listener.$UID + ', ' + listener + ')';
         };
 
@@ -153,8 +153,8 @@ MODEL({
     },
 
     /** Decroate a listener so that the event is delivered asynchronously. **/
-    async: function(listener) {
-      return this.delay(0, listener);
+    async: function(listener, opt_X) {
+      return this.delay(0, listener, opt_X);
     },
 
     delay: function(delay, listener, opt_X) {
@@ -167,7 +167,9 @@ MODEL({
       };
     },
 
-    hasListeners: function (topic) {
+    hasListeners: function (opt_topic) {
+      if ( ! opt_topic ) return !! this.subs_;
+
       console.log('TODO: haslisteners');
       // TODO:
       return true;
@@ -308,7 +310,7 @@ MODEL({
         if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
           console.error('Error delivering event (removing listener): ', topic.join('.'), err);
         } else {
-          console.warn('Unsubscribing listener: ', topic.join('.'));
+          // console.warn('Unsubscribing listener: ', topic.join('.'));
         }
 
         return false;
@@ -364,9 +366,9 @@ MODEL({
 
   methods: {
     /** Create a topic for the specified property name. **/
-    propertyTopic: function (property) {
+    propertyTopic: memoize1(function (property) {
       return [ this.PROPERTY_TOPIC, property ];
-    },
+    }),
 
     /** Indicate that a specific property has changed. **/
     propertyChange: function (property, oldValue, newValue) {
@@ -419,12 +421,13 @@ MODEL({
     /** Create a Value for the specified property. **/
     propertyValue: function(prop) {
       if ( ! prop ) throw 'Property Name required for propertyValue().';
-      var name = prop + 'Value___';
-      return Object.hasOwnProperty.call(this, name) ? this[name] : ( this[name] = PropertyValue.create(this, prop) );
+      var props = this.props_ || ( this.props_ = {} );
+      return Object.hasOwnProperty.call(props, prop) ?
+        props[prop] :
+        ( props[prop] = PropertyValue.create(this, prop) );
     }
   }
 });
-
 
 var FunctionStack = {
   create: function() {
@@ -440,21 +443,25 @@ var FunctionStack = {
 
 var PropertyValue = {
   create: function(obj, prop) {
-    return { __proto__: this, $UID: obj.$UID + '.' + prop, obj: obj, prop: prop };
+    var o = Object.create(this);
+    o.$UID = obj.$UID + '.' + prop;
+    o.obj  = obj;
+    o.prop = prop;
+    return o;
   },
 
   get: function() { return this.obj[this.prop]; },
 
   set: function(val) { this.obj[this.prop] = val; },
 
-  asDAO: function() {
-    console.warn('ProperytValue.asDAO() deprecated.  Use property$Proxy instead.');
-    if ( ! this.proxy ) {
-      this.proxy = ProxyDAO.create({delegate: this.get()});
-      this.addListener(function() { proxy.delegate = this.get(); }.bind(this));
-    }
-    return this.proxy;
-  },
+  // asDAO: function() {
+  //   console.warn('ProperytValue.asDAO() deprecated.  Use property$Proxy instead.');
+  //   if ( ! this.proxy ) {
+  //     this.proxy = this.X.lookup('foam.dao.ProxyDAO').create({delegate: this.get()});
+  //     this.addListener(function() { proxy.delegate = this.get(); }.bind(this));
+  //   }
+  //   return this.proxy;
+  // },
 
   get value() { return this.get(); },
 
@@ -497,7 +504,7 @@ var Events = {
       var sv = srcValue.get();
       var dv = dstValue.get();
 
-      if ( sv !== dv ) dstValue.set(sv);
+      if ( ! equals(sv, dv) ) dstValue.set(sv);
     });
   },
 
@@ -526,7 +533,7 @@ var Events = {
       var s = f(srcValue.get());
       var d = dstValue.get();
 
-      if ( s !== d ) dstValue.set(s);
+      if ( ! equals(s, d) ) dstValue.set(s);
     });
   },
 
@@ -557,7 +564,7 @@ var Events = {
       var s = f(sv.get());
       var d = dv.get();
 
-      if ( s !== d ) {
+      if ( ! equals(s, d) ) {
         feedback = true;
         dv.set(s);
         feedback = false;
@@ -596,25 +603,24 @@ var Events = {
   dynamic: function(fn, opt_fn, opt_X) {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
     var listener = EventService.framed(fn2, opt_X);
-    var destroyHelper = {
-      listener: listener,
-      propertyValues: [].clone(),
-      destroy: function() {
-        this.propertyValues.forEach(function(p) {
-          p.removeListener(this.listener);
-        }.bind(this))
-      }
-    };
+    var propertyValues = [];
+    fn(); // Call once before capture to pre-latch lazy values
     Events.onGet.push(function(obj, name, value) {
       // Uncomment next line to debug.
       // obj.propertyValue(name).addListener(function() { console.log('name: ', name, ' listener: ', listener); });
       obj.propertyValue(name).addListener(listener);
-      destroyHelper.propertyValues.push(obj.propertyValue(name));
+      propertyValues.push(obj.propertyValue(name));
     });
     var ret = fn();
     Events.onGet.pop();
     opt_fn && opt_fn(ret);
-    return destroyHelper;
+    return {
+      destroy: function() { // TODO(jacksonic): just return the function?
+        propertyValues.forEach(function(p) {
+          p.removeListener(listener);
+        });
+      }
+    };
   },
 
   onSet: FunctionStack.create(),
@@ -634,7 +640,6 @@ var Events = {
 */
 
 
-// TODO(kgr): Model
 MODEL({
   name: 'Movement',
 
@@ -728,10 +733,11 @@ MODEL({
         : f2 ;
     },
 
+    liveAnimations_: 0,
+
     /** @return a latch function which can be called to stop the animation. **/
     animate: function(duration, fn, opt_interp, opt_onEnd, opt_X) {
       var requestAnimationFrameX = ( opt_X && opt_X.requestAnimationFrame ) || requestAnimationFrame;
-      var stopped = false;
 
       // console.assert( opt_X && opt_X.requestAnimationFrame, 'opt_X or opt_X.requestAnimationFrame not available');
 
@@ -740,11 +746,34 @@ MODEL({
 
       return function() {
         var ranges    = [];
+        var stopped = false;
 
         function stop() {
-          stopped = true;
-          opt_onEnd && opt_onEnd();
-          opt_onEnd = null;
+          var onEnd = opt_onEnd;
+          if ( ! stopped ) {
+            Movement.liveAnimations_--;
+            stopped = true;
+            onEnd && onEnd();
+            onEnd = null;
+
+            if ( Movement.liveAnimations_ === 0 ) {
+              var tasks = Movement.idleTasks_;
+              if ( tasks && tasks.length > 0 ) {
+                Movement.idleTasks_ = [];
+                setTimeout(function() {
+                  // Since this is called asynchronously, there might be a new
+                  // animation. If so, queue up the tasks again.
+                  var i;
+                  if (Movement.liveAnimations_ > 0) {
+                    for ( i = 0 ; i < tasks.length ; i++ )
+                      Movement.idleTasks_.push(tasks[i]);
+                  } else {
+                    for ( i = 0 ; i < tasks.length ; i++ ) tasks[i]();
+                  }
+                }, 20);
+              }
+            }
+          }
         }
 
         if ( fn ) {
@@ -773,9 +802,28 @@ MODEL({
           if ( last ) stop(); else requestAnimationFrameX(go);
         }
 
-        requestAnimationFrameX(ranges.length > 0 ? go : stop);
+        if ( ranges.length > 0 ) {
+          Movement.liveAnimations_++;
+          requestAnimationFrameX(go);
+        } else {
+          var setTimeoutX = ( opt_X && opt_X.setTimeout ) || setTimeout;
+          setTimeoutX(stop, duration);
+        }
 
         return stop;
+      };
+    },
+
+    whenIdle: function(fn) {
+      // Decorate a function to defer execution until no animations are running
+      return function() {
+        if ( Movement.liveAnimations_ > 0 ) {
+          if ( ! Movement.idleTasks_ ) Movement.idleTasks_ = [];
+          var args = arguments;
+          Movement.idleTasks_.push(function() { fn.apply(fn, args); });
+        } else {
+          fn.apply(fn, arguments);
+        }
       };
     },
 
@@ -961,38 +1009,59 @@ MODEL({
       });
     },
 
+    gravity: function(c, opt_a, opt_theta) {
+      // TODO(kgr): implement opt_theta, the ability to control the direction
+      var a = opt_a || 1;
+      var theta = opt_theta || Math.PI * 1.5;
+      Events.dynamic(function() { c.vx; c.vy; }, function() {
+        c.vy += a;
+      });
+    },
+
     friction: function(c, opt_coef) {
       var coef = opt_coef || 0.9;
       Events.dynamic(function() { c.vx; c.vy; }, function() {
-        c.vx *= coef;
-        c.vy *= coef;
+        c.vx = Math.abs(c.vx) < 0.001 ? 0 : c.vx * coef;
+        c.vy = Math.abs(c.vy) < 0.001 ? 0 : c.vy * coef;
       });
     },
 
     inertia: function(c) {
+      var last = Date.now();
+
       Events.dynamic(function() { c.vx; c.vy; c.x; c.y; }, function() {
+        // Take into account duration since last run
+        // Don't skip more than 4 frames because it can cause
+        // collisions to be missed.
+        var now = Date.now();
+        var time = Math.min(Math.max(16, now-last), 64)/16;
+
         // Dynamic Friction
-        c.x += c.vx;
-        c.y += c.vy;
+        if ( Math.abs(c.vx) > 0.001 ) c.x += c.vx * time;
+        if ( Math.abs(c.vy) > 0.001 ) c.y += c.vy * time;
+
         // StaticFriction
-        if ( c.x < 0.1 ) c.x = 0;
-        if ( c.y < 0.1 ) c.y = 0;
+//        if ( Math.abs(c.vx) < 0.001 ) c.vx = 0;
+//        if ( Math.abs(c.vy) < 0.001 ) c.vy = 0;
+
+        last = now;
       });
     },
 
     spring: function(mouse, c, dx, dy, opt_strength) {
-      var strength = opt_strength || 8;
-      Events.dynamic(function() { mouse.x; mouse.y; c.x; c.y; }, function() {
+      var strength = opt_strength || 6;
+      var d        = Movement.distance(dx, dy);
+      Events.dynamic(function() { mouse.x; mouse.y; c.x; c.y; c.vx; c.vy; }, function() {
         if ( dx === 0 && dy === 0 ) {
           c.x = mouse.x;
           c.y = mouse.y;
         } else {
-          var d   = Movement.distance(dx, dy);
           var dx2 = mouse.x + dx - c.x;
           var dy2 = mouse.y + dy - c.y;
           var d2  = Movement.distance(dx2, dy2);
           var dv  = strength * d2/d;
-          var a   = Math.atan2(dy2, dx2);
+          if ( Math.abs(dv) < 0.01 ) return;
+          var a = Math.atan2(dy2, dx2);
           c.vx += dv * Math.cos(a);
           c.vy += dv * Math.sin(a);
         }
@@ -1013,6 +1082,58 @@ MODEL({
           c2.applyMomentum( strength * (length/d-1), a);
         }
       });
+    },
+
+    createAnimatedPropertyInstallFn: function(duration, interpolation) {
+      /* Returns a function that can be assigned as a $$DOC{ref:'Property'}
+      $$DOC{ref:'Property.install'} function. Any assignments to the property
+      will be automatically animated.</p>
+      <p><code>
+      properties: [
+      &nbsp;&nbsp;  { name: 'myProperty',
+      &nbsp;&nbsp;&nbsp;&nbsp;    install: createAnimatedPropertyInstallFn(500, Movement.ease(0.2, 0.2)),
+      &nbsp;&nbsp;&nbsp;&nbsp;    ...
+      &nbsp;&nbsp;  }]
+      </code>*/
+      return function(prop) {
+        this.defineProperty(
+          {
+            name: prop.name+"$AnimationLatch",
+            defaultValue: 0,
+            hidden: true,
+            documentation: function() { /* The animation controller. */ },
+          }
+        );
+
+        var actualSetter = this.__lookupSetter__(prop.name);
+        this.defineProperty(
+          {
+            name: prop.name+"$AnimationSetValue",
+            defaultValue: 0,
+            hidden: true,
+            documentation: function() { /* The animation value setter. */ },
+            postSet: function(_, nu) {
+              actualSetter.call(this, nu);
+            }
+          }
+        );
+
+        // replace setter with animater
+        this.__defineSetter__(prop.name, function(nu) {
+          // setter will be called on the instance, so "this" is an instance now
+          var latch = this[prop.name+"$AnimationLatch"] ;
+          latch && latch();
+
+          var anim = Movement.animate(
+            duration,
+            function() {
+              this[prop.name+"$AnimationSetValue"] = nu;
+            }.bind(this),
+            interpolation
+          );
+          this[prop.name+"$AnimationLatch"] = anim();
+        });
+      };
     }
   }
 });

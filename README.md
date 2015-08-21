@@ -1,5 +1,13 @@
 # FOAM
 
+Build fully featured high performance apps in less time using FOAM.
+
+  * Application Efficiency
+
+  * Developer Efficiency
+
+"Fast apps Fast"
+
 [http://foamdev.com](http://foamdev.com)
 
 ## Feature Oriented Active Modeller

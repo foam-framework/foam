@@ -1,0 +1,19 @@
+{
+  "version": "<%= this.data.version %>",
+  "manifest_version": <%= this.data.manifestVersion %>,
+  "minimum_chrome_version": "<%= this.data.minimumChromeVersion %>",
+  "name": "<%= this.data.appConfig.name %>",
+  "offline_enabled": true,
+  "app": {
+    "background": {
+      "scripts": [
+        "foam.js",
+        <% this.data.appConfig.sources.forEach(function(source) { %>
+        "<%= source %>",
+        <% }); %>
+        "<%= this.data.appConfig.backgroundSource %>"
+      ]
+    }
+  },
+  "permissions": <%= JSONUtil.stringify(this.data.permissions) %>
+}

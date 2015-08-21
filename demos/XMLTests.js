@@ -1,6 +1,6 @@
 CLASS({
   name: 'DemoView',
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
   templates: [ { name: 'toHTML' } ]
 });
 

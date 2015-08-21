@@ -1,0 +1,242 @@
+<p>
+  Let's look at the source to
+  the <a href="http://foam-framework.github.io/foam/foam/index.html?model=foam.demos.pong.Pong">Pong
+    game</a>
+  (<a href="https://github.com/foam-framework/foam/blob/master/js/foam/demos/pong/Pong.js">source</a>),
+  to see how it uses many FOAM features:
+</p>
+
+<expandable-section expanded="false" heading="Classes">
+  <content>
+    <p>
+      Conventional classes are defined with the <code>CLASS</code>
+      function.
+    </p>
+  </content>
+</expandable-section>
+<quote-code>
+  <code>CLASS({ ... });</code>
+</quote-code>
+<expandable-section expanded="false" heading="Packages">
+  <content>
+    <p>
+      The <code>Ball</code> class is in the <code>foam.demos.pong</code>
+      package. Dependency on other classes is declared using
+      the <code>requires:</code> list.
+    </p>
+  </content>
+</expandable-section>
+<quote-code>
+  <code>package: 'foam.demos.pong'</code>
+</quote-code>
+<quote-code>
+  <code>requires: [
+    'foam.demos.pong.Ball',
+    'foam.demos.pong.Paddle',
+    'foam.graphics.CView',
+    'foam.graphics.Rectangle',
+    'foam.physics.Collider'
+    ]</code>
+</quote-code>
+<expandable-section expanded="false" heading="Classical Inheritance">
+  <content>
+    <p>
+      The <code>Pong</code> class extends the <code>foam.ui.View</code>
+      class. In its <code>init</code> method, which it overrides, it
+      calls its super-class's method with <code>this.SUPER()</code>.
+    </p>
+  </content>
+</expandable-section>
+<quote-code>
+  <code>extendsModel: 'foam.ui.View'</code>
+</quote-code>
+<quote-code>
+  <code>this.SUPER();</code>
+</quote-code>
+<expandable-section expanded="false" heading="Traits">
+  <content>
+    <p>
+      There's support for multiple-inheritance
+      without <a href="http://en.wikipedia.org/wiki/Multiple_inheritance#The_diamond_problem">the
+        diamond problem</a>, through the use of <code>traits</code>. Notice
+      how the <code>Ball</code> class has two traits.  The Physical trait
+      gives the ball mass, velocity and direction so that it can be used
+      by the Collider, and the MotionBlur trait adds a motion-blur effect
+      when the ball is draw.  Similarly, the paddles add the Shadow trait
+      to get drop-shadows.
+    </p>
+  </content>
+</expandable-section>
+<quote-code>
+  <code>traits: ['foam.physics.Physical', 'foam.graphics.MotionBlur']</code>
+</quote-code>
+<expandable-section expanded="false" heading="Constants">
+  <content>
+    Constants are accessed on an object the same as any property or
+    method. By conventions, constants are named
+    with <code>UPPER_CASE</code>.
+  </content>
+</expandable-section>
+<quote-code>
+  <code>constants: {
+    PADDLE_SPEED: 10
+    }</code>
+</quote-code>
+<expandable-section expanded="false" heading="Properties">
+  <content>
+    <p>
+      Notice that each class defines a <code>properties:</code> list which
+      defines high-level first-class properties.  Properties have support for
+      many features including: <code>preSet</code>, <code>postSet</code>, <code>defaultValue</code>, <code>factory</code>,
+      <code>getter</code>, <code>setter</code>, <code>units</code>, <code>label</code>, <code>help</code>
+      text, etc.
+    </p>
+  </content>
+</expandable-section>
+<quote-code>
+  <code>properties: [
+    {
+    name: 'ball',
+    view: 'foam.ui.DetailView',
+    factory: function() { return this.Ball.create({color: 'white', r: 20}); }
+    },
+    ...
+    ]</code>
+</quote-code>
+<expandable-section expanded="false" heading="Methods">
+  <content>
+    <p>
+      Conventional object-oriented methods, defined with
+      a <code>methods:</code> list or map.
+    </p>
+  </content>
+</expandable-section>
+<quote-code>
+  <code>methods: {
+    init: function() {
+    this.SUPER();
+    ...
+    }
+    }</code>
+</quote-code>
+<expandable-section expanded="false" heading="Listeners">
+  <content>
+    <p>
+      When using Javascript to programming DOM/HTML, you typically see a
+      form of impedance mismatch because JS is object-oriented but DOM
+      callbacks are procedural and lose context (i.e., <code>this</code>)
+      when called.  FOAM introduces the notion of <code>listeners</code>,
+      which are like methods but are pre-bound to <code>this</code> so
+      they can be used as callbacks without loosing their
+      object-orientedness.
+    </p>
+    <p>
+      The example below also demonstrates the <code>isFramed</code>
+      feature for listeners. This feature merges multiple calls to this
+      listener until the next animation frame. There are other features
+      for time-bound merging and delaying expensive operations until when
+      no animations are running. This features help to produce efficient
+      and <i>jank-free</i> UIs.
+    </p>
+  </content>
+</expandable-section>
+<quote-code>
+  <code>listeners: [
+    {
+    name: 'onBallMove',
+    isFramed: true,
+    code: function() { ... }
+    },
+    ...
+    ]</code>
+</quote-code>
+<expandable-section expanded="false" heading="Actions">
+  <content>
+    <p>
+      Actions are methods that are triggered by a user action; the contain
+      extra information which makes them easier to use in GUIs, such as with
+      buttons or menu-items. Extra information includes text labels, help
+      text, speech labels, keyboard shortcuts, predicates for when the
+      feature should be shown and enabled. The Pong game is not the best
+      example of actions, as it doesn't use most of the features.
+    </p>
+  </content>
+</expandable-section>
+<quote-code>
+  <code>actions: [
+    {
+    name: 'lUp',
+    keyboardShortcuts: [ 'q' ],
+    action: function() { this.lPaddle.y -= this.PADDLE_SPEED; }
+    },
+    ...
+    ]</code>
+</quote-code>
+<expandable-section expanded="false" heading="Templates">
+  <content>
+    <p>
+      Templates are added using the <code>templates:</code> list. They
+      are denoted using named functions that contain multiline comments
+      that are interpreted as multiline strings in the target language.
+    </p>
+    <p>
+      The default template for rendering an HTML view
+      is <code>toHTML</code>. If you have a template
+      named <code>CSS</code>, it automatically gets installed into your
+      HTML document when the first instance of your class is
+      used. Templates can also be stored in external files. One of the
+      nice things about this approach to templating is that it is still
+      object-oriented. The templates are regular methods on the object so
+      you still have encapsulation, sub-classing, polymorphism,
+      etc. Invoking <code>this.toHTML()</code> on an object with an HTML
+      template simply returns a string containing the object's HTML
+      representation.
+    </p>
+    <p>
+      You can read more about FOAM's templates
+      at <a href="https://github.com/foam-framework/foam/wiki/Templates">the
+        Templates wiki page</a>.
+    </p>
+  </content>
+</expandable-section>
+<quote-code>
+  <code>templates: [
+    function CSS() {/*
+    span[name="lScore"] {
+    color: white;
+    position: relative;
+    top: 80;
+    left: 300;
+    font-family: sans-serif;
+    font-size: 70px;
+    }
+    span[name="rScore"] {
+    color: white;
+    position: relative;
+    top: 80;
+    left: 420;
+    font-family: sans-serif;
+    font-size: 70px;
+    }
+    */},
+    function toHTML() {/*
+    <div id="%%id">$$lScore{mode: 'read-only'} $$rScore{mode: 'read-only'} <br> %%table</div>
+    */}
+    ]</code>
+</quote-code>
+<expandable-section expanded="false" heading="Property Change Events">
+  <content>
+    <p>
+      FOAM objects (those defined with <code>CLASS({ ... })</code>) also
+      support JavaBeans style property change support. The example below
+      adds a listener to be notified when the ball's <code>x</code>
+      property changes.  The <code>x$</code> value is a "Value", which is
+      effectively an object-oriented pointer.  It can be passed around as
+      a first-class value and used to make data-binding easier or for
+      reactive programming.
+    </p>
+  </content>
+</expandable-section>
+<quote-code>
+  <code>this.ball.x$.addListener(this.onBallMove);</code>
+</quote-code>

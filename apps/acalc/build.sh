@@ -1,47 +1,26 @@
+BASEDIR=$(readlink -f "$(dirname "$0")")
+cd "$BASEDIR"
+
+#   Templates.js \
+
+pushd .
+
 export BUILD_DIR=~/Downloads/acalc
 rm -rf $BUILD_DIR
-cp -r . $BUILD_DIR
-cat \
-  ../../core/stdlib.js \
-  ../../core/io.js \
-  ../../core/async.js \
-  ../../core/parse.js \
-  ../../core/event.js \
-  ../../core/JSONUtil.js \
-  ../../core/XMLUtil.js \
-  ../../core/context.js \
-  ../../core/JSONParser.js \
-  ../../core/TemplateUtil.js \
-  ../../core/FOAM.js \
-  ../../core/FObject.js \
-  ../../core/BootstrapModel.js \
-  ../../core/mm1Model.js \
-  ../../core/mm2Property.js \
-  ../../core/mm3Types.js \
-  ../../core/mm4Method.js \
-  ../../core/mm5Misc.js \
-  ../../core/LayoutTraits.js \
-  ../../core/value.js \
-  ../../core/view.js \
-  ../../core/daoView.js \
-  ../../core/DetailView.js \
-  ../../core/cview2.js \
-  ../../core/CViewPrimitives.js \
-  ../../core/Diagramming.js \
-  ../../core/HTMLParser.js \
-  ../../core/mlang.js \
-  ../../core/visitor.js \
-  ../../core/dao.js \
-  ../../core/arrayDAO.js \
-  ../../core/index.js \
-  ../../core/touch.js \
-  ../../core/ChromeApp.js \
-  ../../core/experimental/aview.js \
-  > "$BUILD_DIR/foam.js"
+mkdir $BUILD_DIR
 
-# For code compression, uncomment the following line:
-# ~/node_modules/uglify-js/bin/uglifyjs --overwrite "$BUILD_DIR/foam.js"
+cp manifest.json "$BUILD_DIR"
+cp -r _locales "$BUILD_DIR"
+cp -r icons "$BUILD_DIR"
+cp bg.js "$BUILD_DIR"
 
-#  ../../core/ChromeStorage.js \
-#  ../../demos/benchmark_data.json \
-#  ../../demos/photo.js \
+cd ../../
+node --harmony tools/foam.js foam.build.BuildApp controller=Calc defaultView=foam.apps.calc.CalcView coreFiles=stdlib,async,parse,event,JSONUtil,XMLUtil,context,JSONParser,TemplateUtil,../apps/acalc/Opt,FOAM,FObject,BootstrapModel,mm1Model,mm2Property,mm3Types,mm4Method,mm6Misc,value,view,../js/foam/ui/AbstractDAOView,../js/foam/ui/DAOListView,../js/foam/ui/DetailView,../js/foam/grammars/CSS3,HTMLParser,visitor,dao,arrayDAO,../js/foam/ui/Window,../js/foam/i18n/IdGenerator,../js/foam/i18n/Visitor,../js/foam/i18n/MessagesExtractor,../js/foam/i18n/ChromeMessagesInjector,../js/foam/i18n/GlobalController extraFiles=../apps/acalc/Calc "targetPath=$BUILD_DIR" precompileTemplates
+
+cd "$BUILD_DIR"
+# Code compression.
+uglifyjs -b semicolons=false,beautify=false foam.js -c unused=false > foam-min.js
+mv foam-min.js foam.js
+
+mv main.html AppCalc.html
+popd

@@ -1,6 +1,20 @@
+apar(
+  arequire('foam.util.Timer'),
+  arequire('foam.ui.DetailView'),
+  arequire('foam.ui.TableView')
+)(function() {
+
 CLASS({
   name: 'Test',
   properties: [
+    {
+      name: 'cv1',
+      view: 'foam.ui.ChoiceView'
+    },
+    {
+      name: 'cv2',
+      view: { factory_: 'foam.ui.ChoiceView', size: 4, choices: ['A','B','C'] }
+    },
     {
       name: 'notReq'
     },
@@ -10,7 +24,7 @@ CLASS({
     },
     {
       name: 'reqView',
-      view: { factory_: 'TextFieldView', required: true }
+      view: { factory_: 'foam.ui.TextFieldView', required: true }
     },
     {
       model_: 'StringProperty',
@@ -19,24 +33,30 @@ CLASS({
     },
     {
       name: 'patternView',
-      view: { factory_: 'TextFieldView', pattern: '###' }
+      view: { factory_: 'foam.ui.TextFieldView', pattern: '###' }
     },
     {
       model_: 'IntProperty',
       name: 'intStepView',
-      view: { factory_: 'IntFieldView', step: 10 }
+      view: { factory_: 'foam.ui.IntFieldView', step: 10 }
     },
     {
       model_: 'FloatProperty',
       name: 'floatStepView',
-      view: { factory_: 'FloatFieldView', step: .1 }
+      view: { factory_: 'foam.ui.FloatFieldView', step: .1 }
+    },
+    {
+      name: 'setProperty',
+      view: { factory_: 'foam.ui.MultiChoiceView', choices: ['foo','bar','baz','moo'], size: 4 }
     }
   ]
 });
 
-var t = Test.create();
+var t = GLOBAL.t = Test.create();
+t.write(document);
 t.write(document);
 
+var Bookmark = X.foam.lib.bookmarks.Bookmark;
 
 var aDAO = [].dao;
 
@@ -58,7 +78,7 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'p2',
       subType: 'Bookmark',
-      view: { factory_: 'ArrayView', model: 'Bookmark', daoView: 'DAOListView' }
+      view: { factory_: 'foam.ui.ArrayView', model: 'Bookmark', daoView: 'foam.ui.DAOListView' }
     }
   ]
 });
@@ -99,10 +119,10 @@ console.log(p2.toJSON());
 
 p2.write(document);
 
-var dv = DetailView.create({data: p2});
+var dv = foam.ui.DetailView.create({data: p2});
 dv.write(document);
 
-var dv2 = DetailView.create({model: Point3D});
+var dv2 = foam.ui.DetailView.create({model: Point3D});
 dv2.write(document);
 
 
@@ -120,13 +140,12 @@ var models = [
   Circle,
   Canvas,
   Rectangle,
-  DAOController,
-  Timer,
-  Mouse,
-  EyeCView,
-  EyesCView,
-  ClockView,
-  TextFieldView,
+  foam.util.Timer,
+//  foam.input.Mouse,
+//  EyeCView,
+//  EyesCView,
+//  ClockView,
+//  TextFieldView,
   Bookmark
 ];
 
@@ -141,12 +160,12 @@ document.write("<br/>");
 document.writeln("=======================================");
 
 document.writeln("<table><tr><td valign=top>");
-var tv1 = TableView.create({model: Model, dao: models});
+var tv1 = foam.ui.TableView.create({model: Model, dao: models});
 document.writeln(tv1.toHTML());
 tv1.initHTML();
 
 document.writeln("</td><td><font size=-1>");
-var dv = DetailView.create({model: Model});
+var dv = foam.ui.DetailView.create({model: Model});
 document.writeln(dv.toHTML());
 dv.initHTML();
 document.writeln("</font></td></tr></table>");
@@ -395,7 +414,7 @@ document.writeln("<td valign=top>");
 space.write(document);
 document.writeln("</td>");
 
-var timer = Timer.create({});
+var timer = foam.util.Timer.create({});
 // timer.start();
 
 var sun    = Planet.create({r:30,x:400,y:300,color:'yellow'});
@@ -450,7 +469,7 @@ var dragon = Dragon.create({
   timer: timer
 });
 
-var tt = Turntable.create();
+var tt = foam.graphics.Turntable.create();
 //    space.addChild(tt);
 tt.write(document);
 tt.paint();
@@ -558,3 +577,4 @@ var stack = StackView.create();
 stack.write(document);
 ctrl.__proto__.stackView = stack;
 stack.pushView(ctrl, "Browse Models");
+});

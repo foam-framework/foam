@@ -25,7 +25,7 @@
  <script>
 MODEL({
   name: 'PinchGestureBlock',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -64,7 +64,7 @@ MODEL({
     },
     initHTML: function() {
       this.updatePosition();
-      this.X.gestureManager.install(this.X.GestureTarget.create({
+      this.X.gestureManager.install(this.X.foam.input.touch.GestureTarget.create({
         containerID: this.id,
         handler: this,
         gesture: 'pinchTwist'
@@ -82,9 +82,9 @@ MODEL({
 });
 
 var Y = this.X.subWindow(window);
-Y.touchManager = Y.TouchManager.create({});
+Y.touchManager = Y.foam.input.touch.TouchManager.create({});
 Y.touchManager.install(document);
-Y.gestureManager = Y.GestureManager.create();
+Y.gestureManager = Y.foam.input.touch.GestureManager.create();
 
 var view = Y.PinchGestureBlock.create();
 view.write(document);

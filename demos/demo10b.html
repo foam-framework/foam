@@ -6,7 +6,8 @@
  </head>
  <body>
   <script language="javascript">
-    var timer = Timer.create({});
+    apar(arequire('foam.ui.View'), arequire('foam.util.Timer'))(function() {
+    var timer = foam.util.Timer.create({});
     var space = Canvas.create({width: 2000, height: 1200, background: 'white'});
 
     space.write(document);
@@ -137,6 +138,7 @@ var d = 10;
        addPlatform
 
     ])();
+    });
   </script>
  </body>
 </html>

@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
+// TODO: move to package
+
 /**
- * Generic Mustang-like query-language parser generator.
+ * Generic Google-like query-language parser generator.
  *
  * key:value                  key contains "value"
  * key=value                  key exactly matches "value"
@@ -24,6 +26,7 @@
  * key:(value1|value2)        "
  * key1:value key2:value      key1 contains value AND key2 contains "value"
  * key1:value AND key2:value  "
+ * key1:value and key2:value  "
  * key1:value OR key2:value   key1 contains value OR key2 contains "value"
  * key1:value or key2:value   "
  * key:(-value)               key does not contain "value"
@@ -49,7 +52,7 @@
  * YYYY-MM-DDTHH
  * YYYY-MM-DDTHH:MM
  */
-var QueryParserFactory = function(model) {
+var QueryParserFactory = function(model, opt_enableKeyword) {
   var g = {
     __proto__: grammar,
 
@@ -72,7 +75,8 @@ var QueryParserFactory = function(model) {
       sym('equals'),
       sym('before'),
       sym('after'),
-      sym('id')
+      sym('id'),
+      sym('keyword')
     ),
 
     paren: seq1(1, '(', sym('query'), ')'),
@@ -121,6 +125,15 @@ var QueryParserFactory = function(model) {
 
     valueList: alt(sym('compoundValue'), repeat(sym('value'), ',', 1)),
 
+    keyword: (function() {
+      var keyword_ = sym('keyword_');
+      return function(ps) {
+        return opt_enableKeyword && this.parse(keyword_, ps);
+      }
+    })(),
+
+    keyword_: str(plus(notChar(' '))),
+
     me: seq(literal_ic('me'), lookahead(not(sym('char')))),
 
     date: alt(
@@ -161,22 +174,13 @@ var QueryParserFactory = function(model) {
 
   var fields = [];
 
-  for ( var i = 0 ; i < model.properties.length ; i++ ) {
-    var prop = model.properties[i];
+  var properties = model.getRuntimeProperties()
+  for ( var i = 0 ; i < properties.length ; i++ ) {
+    var prop = properties[i];
     fields.push(literal_ic(prop.name, prop));
-  }
-
-  // Aliases
-  for ( var i = 0 ; i < model.properties.length ; i++ ) {
-    var prop = model.properties[i];
 
     for ( var j = 0 ; j < prop.aliases.length ; j++ )
       if ( prop.aliases[j] ) fields.push(literal_ic(prop.aliases[j], prop));
-  }
-
-  // ShortNames
-  for ( var i = 0 ; i < model.properties.length ; i++ ) {
-    var prop = model.properties[i];
 
     if ( prop.shortName ) fields.push(literal_ic(prop.shortName, prop));
   }
@@ -252,14 +256,19 @@ var QueryParserFactory = function(model) {
         return q;
       }
 
+      var expr;
+
       if ( isNum ) {
         for ( var i = 0 ; i < values.length ; i++ )
           values[i] = isInt ? parseInt(values[i]) : parseFloat(values[i]);
+
+        expr = IN(v[0], values);
+      } else {
+        expr = ( v[1] === '=' ) ?
+          IN_IC(v[0], values) :
+          ContainedInICExpr.create({arg1: compile_(prop), arg2: values}) ;
       }
 
-      var expr = ( v[1] === '=' || isNum ) ?
-        IN(v[0], values) :
-        ContainedInICExpr.create({arg1: compile_(prop), arg2: values}) ;
       if ( values.negated ) {
         return NOT(expr);
       } else if ( values.and ) {
@@ -272,6 +281,8 @@ var QueryParserFactory = function(model) {
         return expr;
       }
     },
+
+    keyword: function(v) { return KEYWORD(v); },
 
     negateValue: function(v) {
       v.negated = true;

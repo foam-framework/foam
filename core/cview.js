@@ -19,7 +19,7 @@
 // TODO: add a 'mouse' property which creates and connects a Mouse model.
 CLASS({
   name: 'Canvas',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -116,25 +116,25 @@ CLASS({
     {
       name:  'x',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
       name:  'y',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
       name:  'width',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
       name:  'height',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 10
     },
     {
@@ -171,11 +171,12 @@ CLASS({
   ],
 
   methods: {
+    toView_: function() { return this; },
     toHTML: function() {
       // If being added to HTML directly, then needs to create own Canvas as parent.
       // Calling addChild() will set this.parent = canvas.
       if ( ! this.parent ) {
-        this.parent = this.X.Canvas.create();
+        this.parent = this.X.Canvas.create(undefined, this.Y);
 
         this.x$.addListener(this.resizeParent);
         this.y$.addListener(this.resizeParent);
@@ -610,11 +611,14 @@ CLASS({
     }
   ],
 
-  listeners: {
-    updateValue: function() {
-      this.paint();
+  listeners:  [
+    {
+      name: 'updateValue',
+      code: function() {
+        this.paint();
+      }
     }
-  },
+  ],
 
   methods: {
 
@@ -630,8 +634,8 @@ CLASS({
       c.fillRect(2, 2, parseInt(this.value.get()), 16);
     },
 
-    destroy: function() {
-      this.SUPER();
+    destroy: function( isParentDestroyed ) {
+      this.SUPER(isParentDestroyed);
       this.value.removeListener(this.listener_);
     }
   }
@@ -649,7 +653,7 @@ CLASS({
       defaultValue: 'Line',
       // TODO: fix the view, it's not storabe
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Bar',
           'Line',
@@ -660,13 +664,13 @@ CLASS({
     {
       name:  'width',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 5
     },
     {
       name:  'height',
       type:  'int',
-      view:  'IntFieldView',
+      view:  'foam.ui.IntFieldView',
       defaultValue: 5
     },
     {
@@ -737,7 +741,7 @@ CLASS({
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: function (x) { return x; },
       help: 'The graph\'s data function.'
     }
@@ -1024,6 +1028,8 @@ CLASS({
   extendsModel: 'CView',
   label: 'GridCView',
 
+  requires: ['foam.input.Mouse'],
+  
   properties: [
     {
       name: 'grid',
@@ -1041,7 +1047,7 @@ CLASS({
     },
     {
       name: 'mouse',
-      factory: function() { return this.X.Mouse.create(); }
+      factory: function() { return this.Mouse.create(); }
     }
   ],
 

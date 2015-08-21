@@ -23,7 +23,7 @@ CLASS({
 CLASS({
   name: 'PersonView',
 
-  extendsModel: 'DetailView',
+  extendsModel: 'foam.ui.DetailView',
 
   templates: [
     {

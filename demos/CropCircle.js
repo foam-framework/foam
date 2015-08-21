@@ -1,3 +1,5 @@
+arequire('foam.graphics.CView')(function() {
+
 CLASS({
   name:  'CropCircle',
   extendsModel: 'foam.graphics.CView',
@@ -214,3 +216,5 @@ for ( var i = 0 ; i < fs.length  ; i++ ) {
   var cs = CropCircle.create({f: fs[i]});
   cs.write(document);
 }
+
+});

@@ -34,9 +34,13 @@ var JSONParser = SkipGrammar.create({
 
         symbol: noskip(str(seq(sym('char'), str(repeat(sym('alpha')))))),
           char: alt(range('a','z'), range('A','Z'), '_', '$'),
-          alpha: alt(sym('char'), range('0', '9')),
+          // Slightly faster to inline sym('char') until AltParser does it automatically
+          alpha: alt(range('a','z'), range('A','Z'), '_', '$', /* sym('char') */ range('0', '9')),
 
-  value: alt(
+  // TODO(kgr): This should just be 'alt' but that isn't working for some
+  // unknown reason. Probably related to SkipGrammar.  Fix and change to 
+  // just 'alt'.
+  value: simpleAlt(
     sym('function literal'),
     sym('expr'),
     sym('number'),

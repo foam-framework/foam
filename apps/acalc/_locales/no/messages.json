@@ -1,0 +1,298 @@
+{
+  "NumberFormatter_Message_NaN": {
+    "message": "Ikke noe tall",
+    "description": "NumberFormatter description of a value that isn't a number"
+  },
+  "Calc_Message_CalcName": {
+    "message": "Kalkulator",
+    "description": "Calculator name of application for performing simple calculations"
+  },
+  "Calc_ActionLabel_div": {
+    "message": "÷",
+    "description": "Calculator short form for mathematical function: \"divide\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_div": {
+    "message": "divider",
+    "description": "Calculator short form for mathematical function: \"divide\" (speech label)"
+  },
+  "Calc_ActionLabel_mult": {
+    "message": "×",
+    "description": "Calculator short form for mathematical function: \"multiply\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_mult": {
+    "message": "multipliser",
+    "description": "Calculator short form for mathematical function: \"multiply\" (speech label)"
+  },
+  "Calc_ActionLabel_plus": {
+    "message": "+",
+    "description": "Calculator short form for mathematical function: \"plus\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_plus": {
+    "message": "pluss",
+    "description": "Calculator short form for mathematical function: \"plus\" (speech label)"
+  },
+  "Calc_ActionLabel_minus": {
+    "message": "–",
+    "description": "Calculator short form for mathematical function: \"minus\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_minus": {
+    "message": "minus",
+    "description": "Calculator short form for mathematical function: \"minus\" (speech label)"
+  },
+  "Calc_ActionLabel_ac": {
+    "message": "AC",
+    "description": "Calculator all clear (calculator button label) (text label)"
+  },
+  "Calc_ActionSpeechLabel_ac": {
+    "message": "fjern alt",
+    "description": "Calculator all clear (calculator button label) (speech label)"
+  },
+  "Calc_ActionLabel_sign": {
+    "message": "+/-",
+    "description": "Calculator switch positive/negative sign of number (text label)"
+  },
+  "Calc_ActionSpeechLabel_sign": {
+    "message": "negasjon",
+    "description": "Calculator switch positive/negative sign of number (speech label)"
+  },
+  "Calc_ActionLabel_point": {
+    "message": "Komma",
+    "description": "Calculator decimal point (text label)"
+  },
+  "Calc_ActionSpeechLabel_point": {
+    "message": "komma",
+    "description": "Calculator decimal point (speech label)"
+  },
+  "Calc_ActionLabel_equals": {
+    "message": "=",
+    "description": "Calculator compute operation and display result (text label)"
+  },
+  "Calc_ActionSpeechLabel_equals": {
+    "message": "er lik",
+    "description": "Calculator compute operation and display result (speech label)"
+  },
+  "Calc_ActionLabel_backspace": {
+    "message": "⌫",
+    "description": "Calculator delete one input character (text label)"
+  },
+  "Calc_ActionSpeechLabel_backspace": {
+    "message": "tilbake",
+    "description": "Calculator delete one input character (speech label)"
+  },
+  "Calc_ActionLabel_pi": {
+    "message": "π",
+    "description": "Calculator mathematical constant, pi (text label)"
+  },
+  "Calc_ActionSpeechLabel_pi": {
+    "message": "π",
+    "description": "Calculator mathematical constant, pi (speech label)"
+  },
+  "Calc_ActionLabel_e": {
+    "message": "e",
+    "description": "Calculator mathematical constant, e (text label)"
+  },
+  "Calc_ActionSpeechLabel_e": {
+    "message": "e",
+    "description": "Calculator mathematical constant, e (speech label)"
+  },
+  "Calc_ActionLabel_percent": {
+    "message": "%",
+    "description": "Calculator convert number to percentage (text label)"
+  },
+  "Calc_ActionSpeechLabel_percent": {
+    "message": "prosent",
+    "description": "Calculator convert number to percentage (speech label)"
+  },
+  "Calc_ActionLabel_inv": {
+    "message": "1/x",
+    "description": "Calculator short form for mathematical function: \"inv\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_inv": {
+    "message": "invers",
+    "description": "Calculator short form for mathematical function: \"inv\" (speech label)"
+  },
+  "Calc_ActionLabel_sqroot": {
+    "message": "√",
+    "description": "Calculator short form for mathematical function: \"square root\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_sqroot": {
+    "message": "kvadratrot",
+    "description": "Calculator short form for mathematical function: \"square root\" (speech label)"
+  },
+  "Calc_ActionLabel_square": {
+    "message": "x²",
+    "description": "Calculator short form for mathematical function: \"x squared\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_square": {
+    "message": "x i andre",
+    "description": "Calculator short form for mathematical function: \"x squared\" (speech label)"
+  },
+  "Calc_ActionLabel_ln": {
+    "message": "ln",
+    "description": "Calculator short form for mathematical function: \"natural logarithm\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_ln": {
+    "message": "naturlig logaritme",
+    "description": "Calculator short form for mathematical function: \"natural logarithm\" (speech label)"
+  },
+  "Calc_ActionLabel_exp": {
+    "message": "eⁿ",
+    "description": "Calculator short form for mathematical function: \"exp\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_exp": {
+    "message": "e opphøyd i n",
+    "description": "Calculator short form for mathematical function: \"exp\" (speech label)"
+  },
+  "Calc_ActionLabel_log": {
+    "message": "log",
+    "description": "Calculator short form for mathematical function: \"logarithm\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_log": {
+    "message": "logaritme med grunntall 10",
+    "description": "Calculator short form for mathematical function: \"logarithm\" (speech label)"
+  },
+  "Calc_ActionLabel_root": {
+    "message": "ⁿ √Y",
+    "description": "Calculator binary operator: root (text label)"
+  },
+  "Calc_ActionSpeechLabel_root": {
+    "message": "ente-roten av y",
+    "description": "Calculator binary operator: root (speech label)"
+  },
+  "Calc_ActionLabel_pow": {
+    "message": "yⁿ",
+    "description": "Calculator binary operator: pow (text label)"
+  },
+  "Calc_ActionSpeechLabel_pow": {
+    "message": "y opphøyd i n",
+    "description": "Calculator binary operator: pow (speech label)"
+  },
+  "Calc_ActionLabel_sin": {
+    "message": "sin",
+    "description": "Calculator short form for mathematical function: \"sine\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_sin": {
+    "message": "sinus",
+    "description": "Calculator short form for mathematical function: \"sine\" (speech label)"
+  },
+  "Calc_ActionLabel_cos": {
+    "message": "cos",
+    "description": "Calculator short form for mathematical function: \"cosine\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_cos": {
+    "message": "cosinus",
+    "description": "Calculator short form for mathematical function: \"cosine\" (speech label)"
+  },
+  "Calc_ActionLabel_tan": {
+    "message": "tan",
+    "description": "Calculator short form for mathematical function: \"tangent\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_tan": {
+    "message": "tangens",
+    "description": "Calculator short form for mathematical function: \"tangent\" (speech label)"
+  },
+  "Calc_ActionLabel_deg": {
+    "message": "Deg",
+    "description": "Calculator short form for \"degrees\" calculator mode (text label)"
+  },
+  "Calc_ActionSpeechLabel_deg": {
+    "message": "bytt til grader",
+    "description": "Calculator short form for \"degrees\" calculator mode (speech label)"
+  },
+  "Calc_ActionLabel_rad": {
+    "message": "Rad",
+    "description": "Calculator short form for \"radians\" calculator mode (text label)"
+  },
+  "Calc_ActionSpeechLabel_rad": {
+    "message": "bytt til radianer",
+    "description": "Calculator short form for \"radians\" calculator mode (speech label)"
+  },
+  "Calc_ActionLabel_asin": {
+    "message": "asin",
+    "description": "Calculator short form for mathematical function: \"inverse-sine\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_asin": {
+    "message": "invers sinus",
+    "description": "Calculator short form for mathematical function: \"inverse-sine\" (speech label)"
+  },
+  "Calc_ActionLabel_acos": {
+    "message": "acos",
+    "description": "Calculator short form for mathematical function: \"inverse-cosine\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_acos": {
+    "message": "invers cosinus",
+    "description": "Calculator short form for mathematical function: \"inverse-cosine\" (speech label)"
+  },
+  "Calc_ActionLabel_atan": {
+    "message": "atan",
+    "description": "Calculator short form for mathematical function: \"inverse-tangent\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_atan": {
+    "message": "invers tangens",
+    "description": "Calculator short form for mathematical function: \"inverse-tangent\" (speech label)"
+  },
+  "Calc_ActionLabel_fact": {
+    "message": "x!",
+    "description": "Calculator short form for mathematical function: \"factorial\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_fact": {
+    "message": "fakultet",
+    "description": "Calculator short form for mathematical function: \"factorial\" (speech label)"
+  },
+  "Calc_ActionLabel_mod": {
+    "message": "mod",
+    "description": "Calculator short form for mathematical function: \"modulo\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_mod": {
+    "message": "modulo",
+    "description": "Calculator short form for mathematical function: \"modulo\" (speech label)"
+  },
+  "Calc_ActionLabel_p": {
+    "message": "nPr",
+    "description": "Calculator short form for mathematical function: \"permutations (n permute r)\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_p": {
+    "message": "permutasjon",
+    "description": "Calculator short form for mathematical function: \"permutations (n permute r)\" (speech label)"
+  },
+  "Calc_ActionLabel_c": {
+    "message": "nCr",
+    "description": "Calculator short form for mathematical function: \"combinations (n combine r))\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_c": {
+    "message": "kombinasjon",
+    "description": "Calculator short form for mathematical function: \"combinations (n combine r))\" (speech label)"
+  },
+  "Calc_ActionLabel_round": {
+    "message": "rnd",
+    "description": "Calculator short form for mathematical function: \"round\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_round": {
+    "message": "avrund",
+    "description": "Calculator short form for mathematical function: \"round\" (speech label)"
+  },
+  "Calc_ActionLabel_rand": {
+    "message": "rand",
+    "description": "Calculator generate random number (text label)"
+  },
+  "Calc_ActionSpeechLabel_rand": {
+    "message": "tilfeldig tall",
+    "description": "Calculator generate random number (speech label)"
+  },
+  "Calc_ActionLabel_store": {
+    "message": "a=",
+    "description": "Calculator short form for mathematical function: \"store in memory\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_store": {
+    "message": "lagre i minnet",
+    "description": "Calculator short form for mathematical function: \"store in memory\" (speech label)"
+  },
+  "Calc_ActionLabel_fetch": {
+    "message": "a",
+    "description": "Calculator load memorized number (text label)"
+  },
+  "Calc_ActionSpeechLabel_fetch": {
+    "message": "hent fra minnet",
+    "description": "Calculator load memorized number (speech label)"
+  }
+}

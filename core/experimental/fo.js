@@ -900,7 +900,7 @@ var featureDAO = [
   }],
   ['Property', 'Property', {
     name: 'view',
-    defaultValue: 'TextFieldView'
+    defaultValue: 'foam.ui.TextFieldView'
   }],
   ['Property', 'Property', {
     name: 'detailViewPreRow',
@@ -1026,7 +1026,7 @@ var featureDAO = [
   }],
   ['BooleanProperty', 'StringProperty', {
     name: 'view',
-    defaultValue: 'BooleanView'
+    defaultValue: 'foam.ui.BooleanView'
   }],
   ['Property', 'BooleanProperty', {
     name: 'required',
@@ -1049,7 +1049,7 @@ var featureDAO = [
   }],
   ['FunctionProperty', 'StringProperty', {
     name: 'view',
-    defaultValue: 'FunctionView'
+    defaultValue: 'foam.ui.FunctionView'
   }],
 
   ['Property', 'FunctionProperty', {
@@ -1110,7 +1110,7 @@ var featureDAO = [
   }],
   ['ArrayProperty', 'StringProperty', {
     name: 'view',
-    defaultvlaue: 'ArrayView'
+    defaultvlaue: 'foam.ui.ArrayView'
   }],
   ['ArrayProperty', 'FunctionProperty', {
     name: 'factory',
@@ -1134,7 +1134,7 @@ var featureDAO = [
   ['ReferenceProperty', 'StringProperty', {
     name: 'view',
     // TODO: should be 'KeyView'
-    defaultValue: 'TextFieldView'
+    defaultValue: 'foam.ui.TextFieldView'
   }],
 
   [null, 'Model', {
@@ -1148,7 +1148,7 @@ var featureDAO = [
   }],
   ['StringArrayProperty', 'StringProperty', {
     name: 'view',
-    defaultValue: 'StringArrayView'
+    defaultValue: 'foam.ui.StringArrayView'
   }],
   [null, 'Model', { name: 'DateProperty' }],
   ['DateProperty', 'Extends', 'Property'],
@@ -1207,7 +1207,7 @@ var featureDAO = [
   }],
   ['DateTimeProperty', 'StringProperty', {
     name: 'view',
-    defaultValue: 'DateTimeFieldView'
+    defaultValue: 'foam.ui.DateTimeFieldView'
   }],
 
   [null, 'Model', { name: 'FloatProperty' }],
@@ -1320,13 +1320,13 @@ var featureDAO = [
     displayHeight: 20,
     help: 'Function to implement action.',
   }],
-  ['Action', 'Method', function callIfEnabled(that) {
+  ['Action', 'Method', function maybeCall(that) {
     if ( this.isEnabled.call(that) ) this.action.call(that, this);
   }],
   ['Action', 'Method', function install(model, proto) {
     var a = this;
     proto.define(this.name, {
-      value: function() { a.callIfEnabled(this); },
+      value: function() { a.maybeCall(this); },
       writable: true
     });
     model.define(this.name.constantize(), {
@@ -1485,15 +1485,14 @@ var featureDAO = [
     displayHeight: 30,
     rows: 30, cols: 80,
     defaultValue: '',
-    view: 'TextAreaView',
+    view: 'foam.ui.TextAreaView',
     help: 'Template text. <%= expr %> or <% out(...); %>'
   }],
   /*['Template', 'Property', {
     name: 'templates',
     type: 'Array[Template]',
     subType: 'Template',
-    view: 'ArrayView',
-    defaultValue: [],
+    view: 'foam.ui.ArrayView',
     help: 'Sub-templates of this template.'
     }]*/
   ['Template', 'Method', function install(model, proto, prototype) {
@@ -1664,7 +1663,7 @@ var featureDAO = [
   ['Model', 'ArrayProperty', {
     name: 'templates',
     subType: 'Template',
-    view: 'ArrayView',
+    view: 'foam.ui.ArrayView',
     getter: function() {
       var ret = [];
       // TODO sould this be a local forEach?

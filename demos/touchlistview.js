@@ -24,7 +24,7 @@ CLASS({
   ]
 });
 
-var dao = EasyDAO.create({
+var dao = X.lookup('foam.dao.EasyDAO').create({
   model: Contact,
   seqNo: true,
   seqProperty: Contact.ID,
@@ -85,7 +85,7 @@ dao.put(Contact.create({ first: "Zachary", last:   "Hayes", email: "Zachary@Haye
 
 CLASS({
   name: 'ContactRowView',
-  extendsModel: 'View',
+  extendsModel: 'foam.ui.View',
 
   properties: [
     {
@@ -169,7 +169,7 @@ var Y = this.X.subWindow(window);
 Y.registerModel(MomentumTouch, 'FOAMTouch');
 Y.registerModel(MomentumTouchManager, 'TouchManager');
 
-var touch = Y.TouchManager.create({});
+var touch = Y.foam.input.touch.TouchManager.create({});
 touch.install(document);
 
 touch.subscribe(touch.TOUCH_START, function(_, _, t) {

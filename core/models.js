@@ -16,136 +16,6 @@
  */
 
 /**
- * Only completely modelled models here.
- * All models in this file can be stored and loaded in a DAO.
- **/
-CLASS({
-  name: 'Timer',
-
-  properties: [
-    {
-      model_: 'IntProperty',
-      name:  'interval',
-      help:  'Interval of time between updating time.',
-      units: 'ms',
-      defaultValue: 10
-    },
-    {
-      model_: 'IntProperty',
-      name:  'i',
-      defaultValue: 0
-    },
-    {
-      model_: 'FloatProperty',
-      name:  'timeWarp',
-      defaultValue: 1.0
-    },
-    {
-      model_: 'IntProperty',
-      name:  'duration',
-      units: 'ms',
-      defaultValue: -1
-    },
-    {
-      model_: 'FloatProperty',
-      name: 'percent',
-      defaultValue: 0
-    },
-    {
-      model_: 'IntProperty',
-      name:  'startTime',
-      defaultValue: 0
-    },
-    {
-      model_: 'IntProperty',
-      name:  'time',
-      help:  'The current time in milliseconds since epoch.',
-      preSet: function(_, t) { return Math.ceil(t); },
-      defaultValue: 0
-    },
-    {
-      model_: 'IntProperty',
-      name:  'second',
-      help:  'The second of the current minute.',
-      defaultValue: 0
-    },
-    {
-      model_: 'IntProperty',
-      name:  'minute',
-      help:  'The minute of the current hour.',
-      defaultValue: 0
-    },
-    {
-      model_: 'IntProperty',
-      name:  'hour',
-      help:  'The hour of the current day.',
-      defaultValue: 0
-    },
-    {
-      name: 'isStarted',
-      defaultValue: false,
-      hidden: true
-    }
-  ],
-
-  actions: [
-    {
-      name:  'start',
-      help:  'Start the timer.',
-
-      isAvailable: function() { return true; },
-      isEnabled:   function() { return ! this.isStarted; },
-      action:      function() { this.isStarted = true; this.tick(); }
-    },
-    {
-      name:  'step',
-      help:  'Step the timer.',
-
-      isAvailable: function() { return true; },
-      action: function()      {
-        this.i++;
-        this.time  += this.interval * this.timeWarp;
-        this.second = this.time /    1000 % 60 << 0;
-        this.minute = this.time /   60000 % 60 << 0;
-        this.hour   = this.time / 3600000 % 24 << 0;
-      }
-    },
-    {
-      name:  'stop',
-      help:  'Stop the timer.',
-
-      isAvailable: function() { return true; },
-      isEnabled: function() { return this.isStarted; },
-      action: function() {
-        this.isStarted = false;
-        if ( this.timeout ) {
-          clearTimeout(this.timeout);
-          this.timeout = undefined;
-        }
-      }
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'tick',
-      isFramed: true,
-      code: function(e) {
-        this.timeout = undefined;
-        if ( ! this.isStarted ) return;
-
-        var prevTime = this.startTime_ || 0;
-        this.startTime_ = Date.now();
-        this.interval = Math.min(100, this.startTime_ - prevTime);
-        this.step();
-        this.tick();
-      }
-    }
-  ]
-});
-
-
-/**
  * Used when creating PersistentContext's.
  * Ex.
  * var persistentContext = PersistentContext.create({
@@ -224,18 +94,21 @@ CLASS({
   methods: {
 
     manage: function(name, obj, version) {
+      var write = EventService.merged((function() {
+        console.log('PersistentContext', 'updating', name);
+        this.dao.put(this.Y.Binding.create({
+          id:    name,
+          value: JSONUtil.where(this.predicate).stringify(obj),
+          version: version
+        }));
+      }).bind(this), undefined, this.Y);
+
       /*
        <p>Manage persistence for an object. Resave it in
        the DAO whenever it fires propertyChange events.</p>
        */
-      obj.addListener(EventService.merged((function() {
-        console.log('PersistentContext', 'updating', name);
-        this.dao.put(this.X.Binding.create({
-          id:    name,
-          value: JSONUtil.compact.where(this.predicate).stringify(obj),
-          version: version
-        }));
-      }).bind(this), undefined, this.X));
+      obj.addListener(write);
+      write();
     },
     bindObjects: function(a) {
       // TODO: implement
@@ -258,7 +131,7 @@ CLASS({
           var obj = factory.create();
           obj.copyFrom(transientValues);
           this.context[name] = obj;
-          this.manage(name, obj);
+          this.manage(name, obj, version);
           future.set(obj);
         }).bind(this);
 
@@ -272,12 +145,17 @@ CLASS({
             console.log('PersistentContext', 'existingInit', name);
             //                  var obj = JSONUtil.parse(binding.value);
             //                  var obj = JSON.parse(binding.value);
-            var json = JSON.parse(binding.value);
-            var obj = JSONUtil.mapToObj(this.X, json);
-            obj.copyFrom(transientValues);
-            this.context[name] = obj;
-            this.manage(name, obj, version);
-            future.set(obj);
+            try {
+              var json = JSON.parse(binding.value);
+              var obj = JSONUtil.mapToObj(this.Y, json);
+              obj.copyFrom(transientValues);
+              this.context[name] = obj;
+              this.manage(name, obj, version);
+              future.set(obj);
+            } catch(e) {
+              console.log('PersistentContext', 'existingInit serialization error', name);
+              newinit();
+            }
           }.bind(this),
           error: newinit
         });

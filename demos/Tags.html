@@ -1,27 +1,27 @@
 <html>
  <head>
-  <link rel="stylesheet" type="text/css" href="../core/foam.css" />
   <script language="javascript" src="../core/bootFOAM.js"></script>
   <script language="javascript" src="demos.js"></script>
-  <script language="javascript" src="dragon.js"></script>
   <title>FOAM Tags</title>
  </head>
  <body>
    <table><tr>
        <td valign=top>
-         <foam id="timer" model="Timer" onInit="this.start()"></foam>
-         <foam id="tt" model="Turntable" onInit="this.time$ = $('timer').time$"></foam>
+         <foam id="timer" model="foam.util.Timer" onInit="this.start()"></foam>
+         <foam id="tt" model="foam.graphics.Turntable" onInit="this.time$ = $('timer').time$"></foam>
        </td>
        <td>
-         <foam id="dragon" model="Dragon" timer="#timer" width="950" height="1000"></foam>
+         <foam id="dragon" model="foam.demos.graphics.Dragon" timer="#timer" width="950" height="1000"></foam>
        </td>
    </tr></table>
+<!--
    <h2>Test</h2>
-   <foam id="test1" model="UnitTest" view="DetailView" description="A UnitTest embedded in DOM" onInit='this.test()'>
+   <foam id="test1" model="UnitTest" description="A UnitTest embedded in DOM" onInit="this.test()">
      <code>this.log('Here I am');</code>
      <tests>
        <foam model="UnitTest" description="A test"><code>this.log('Here again.');</code></foam>
      </tests>
    </foam>
+-->
  </body>
 </html>

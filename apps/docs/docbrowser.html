@@ -3,22 +3,9 @@
     <script src="debugMode.js"></script>
     <script language="javascript" src="../../core/bootFOAM.js"></script>
     <title>FOAM Documentation Browser</title>
-    <link rel="stylesheet" type="text/css" href="../../core/foam.css" />
     <!-- <link rel="stylesheet" type="text/css" href="docbrowser.css" /> -->
-    <script src="docfeatureviews.js"></script>
-    <script src="docviews.js"></script>
-    <script src="docbrowser.js"></script>
-    <script src="developerDocs.js"></script>
-    <script src="../../lib/mdui/DetailView.js"></script>
-    <script src="../../core/CViewPrimitives.js"></script>
   </head>
   <body>
-    <script>
-      Y = X.sub({}, 'baseX');
-
-      var controller = Y.DocBrowserController.create();
-      var view = Y.DocBrowserView.create({ data: controller });
-      view.write(document);
-    </script>
+    <foam id="docbrowser" model="foam.documentation.DocBrowserController" view="foam.documentation.DocBrowserView">
   </body>
 </html>

@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../core/foam.css" />
+    <link rel="icon" type="image/png" href="1x_web_ic_search_black_18dp.png" />
+    <script src="../../core/bootFOAM.js"></script>
+    <script src="../../apps/phonecat/Phone.js"></script>
+    <script src="../../apps/phonecat/phones.js"></script>
+    <script src="data/TodoData.js"></script>
+    <script src="data/AudioData.js"></script>
+  </head>
+  <body>
+    <script>
+      // Read the query parameters and instantiate the "main" model.
+      (function() {
+        var search = /([^&=]+)=?([^&]*)/g;
+        var query = window.location.search.substring(1);
+        var decode = function(s) {
+          return decodeURIComponent(s.replace(/\+/g, ' '));
+        };
+        var params = {};
+        var match;
+        while (match = search.exec(query)) {
+          params[decode(match[1])] = decode(match[2]);
+        }
+
+        var main = params.main || 'foam.navigator.Controller';
+        delete params.main;
+        (function(ret, name) {
+          if (X[name] && X[name].model_ && X[name].model_.name === 'Model') {
+            ret(X[name]);
+          } else {
+            arequire(name)(ret);
+          }
+        })(function(model) {
+          var browser = model.create(params, X);
+          var view = browser.toView_();
+          document.body.innerHTML += view.toHTML();
+          view.initHTML();
+        }, main);
+      })();
+    </script>
+  </body>
+</html>

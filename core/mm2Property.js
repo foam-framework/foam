@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 var Property = {
   __proto__: BootstrapModel,
   instance_: {},
@@ -49,12 +50,12 @@ var Property = {
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: '',
+      mode: 'read-only', // TODO: this should be 'final' when available
       help: 'The coding identifier for the property.',
       documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
         $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
         $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
          */}
-
     },
     {
       name: 'label',
@@ -62,10 +63,21 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
+      defaultValueFn: function() { return labelize(this.name); },
       help: 'The display label for the property.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'.'}. May
         contain spaces or other odd characters.
+         */}
+    },
+    {
+      name: 'speechLabel',
+      type: 'String',
+      required: false,
+      displayWidth: 70,
+      displayHeight: 1,
+      defaultValueFn: function() { return this.label; },
+      help: 'The speech label for the property.',
+      documentation: function() { /* A speakable label for the $$DOC{ref:'.'}. Used for accesibility.
          */}
     },
     {
@@ -73,12 +85,11 @@ var Property = {
       type: 'String',
       displayWidth: 70,
       displayHeight: 1,
-      defaultValueFn: function() { return this.name.labelize(); },
+      defaultValueFn: function() { return this.label; },
       help: 'The table display label for the entity.',
       documentation: function() { /* A human readable label for the $$DOC{ref:'Model'} for use in tables. May
         contain spaces or other odd characters.
          */}
-
     },
     {
       name: 'type',
@@ -86,7 +97,7 @@ var Property = {
       required: true,
       // todo: curry arguments
       view: {
-        factory_: 'ChoiceView',
+        factory_: 'foam.ui.ChoiceView',
         choices: [
           'Array',
           'Boolean',
@@ -131,6 +142,17 @@ var Property = {
          */}
     },
     {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() {
+        switch(typeof this.defaultValue) {
+        case "string":
+          return '"' + this.defaultValue + '"';
+        default:
+          return this.defaultValue;
+        }
+      }
+    },
+    {
       name: 'protobufType',
       type: 'String',
       required: false,
@@ -157,6 +179,13 @@ var Property = {
          type to use. */}
     },
     {
+      name: 'swiftType',
+      type: 'String',
+      required: false,
+      defaultValueFn: function() { return this.type; },
+      help: 'The Swift type that represents this type of property.',
+    },
+    {
       name: 'shortName',
       type: 'String',
       required: true,
@@ -167,10 +196,16 @@ var Property = {
       documentation: "A short alternate $$DOC{ref:'.name'} to be used for compact encoding."
     },
     {
+      name: 'singular',
+      type: 'String',
+      required: false,
+      displayWidth: 70
+    },
+    {
       name: 'aliases',
       type: 'Array[String]',
-      view: 'StringArrayView',
-      defaultValue: [],
+      view: 'foam.ui.StringArrayView',
+      factory: function() { return []; },
       help: 'Alternate names for this property.',
       documentation: function() { /*
         Aliases can be used as synonyms for this $$DOC{ref:'Property'} in code or to look it up by name.
@@ -180,7 +215,7 @@ var Property = {
       name: 'mode',
       type: 'String',
       defaultValue: 'read-write',
-      view: { factory_: 'ChoiceView', choices: ['read-only', 'read-write', 'final'] },
+      view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] },
       documentation: function() { /*
         To restrict modification to a $$DOC{ref:'Property'}, the $$DOC{ref:'.mode'} can be set to read-only
         to block changes, or to final to block overriding this $$DOC{ref:'Property'} in descendents of
@@ -213,7 +248,7 @@ var Property = {
     {
       name: 'required',
       type: 'Boolean',
-      view: 'BooleanView',
+      view: 'foam.ui.BooleanView',
       defaultValue: true,
       help: 'Indicates if the property is a required field.',
       documentation: function() { /*
@@ -224,7 +259,7 @@ var Property = {
     {
       name: 'hidden',
       type: 'Boolean',
-      view: 'BooleanView',
+      view: 'foam.ui.BooleanView',
       defaultValue: false,
       help: 'Indicates if the property is hidden.',
       documentation: function() { /*
@@ -236,13 +271,20 @@ var Property = {
     {
       name: 'transient',
       type: 'Boolean',
-      view: 'BooleanView',
+      view: 'foam.ui.BooleanView',
       defaultValue: false,
       help: 'Indicates if the property is transient.',
       documentation: function() { /*
         Indicates whether the $$DOC{ref:'Property'} is transient, and should not be saved permanently
         or serialized.
       */}
+    },
+    {
+      name: 'modelId',
+      type: 'String',
+      view: 'foam.ui.TextFieldView',
+      help: 'Id of the model that this is a property of',
+      transient: true
     },
     {
       name: 'displayWidth',
@@ -267,15 +309,45 @@ var Property = {
       */}
     },
     {
-      model_: 'ViewFactoryProperty',
+//      model_: 'ViewFactoryProperty',
       name: 'view',
       type: 'view',
-      defaultValue: 'TextFieldView',
+      defaultValue: 'foam.ui.TextFieldView',
       help: 'View component for the property.',
       documentation: function() { /*
-        The default $$DOC{ref:'View'} to use when rendering the $$DOC{ref:'Property'}.
+        The default $$DOC{ref:'foam.ui.View'} to use when rendering the $$DOC{ref:'Property'}.
         Specify a string or an object with factory_ and other properties specified.
       */}
+    },
+    {
+//      model_: 'ViewFactoryProperty',
+      name: 'detailView',
+      type: 'view',
+      defaultValueFn: function() { return this.view; },
+      help: 'View component for the property when rendering within a DetailView.',
+      documentation: function() { /*
+        The default $$DOC{ref:'foam.ui.View'} to use when rendering the $$DOC{ref:'Property'}
+        as a part of a $$DOC{ref:'foam.ui.DetailView'}. Specify a string or an object with
+        factory_ and other properties specified.
+      */}
+    },
+    {
+//      model_: 'ViewFactoryProperty',
+      name: 'citationView',
+      type: 'view',
+      defaultValueFn: function() { return this.view; },
+      help: 'View component for the property when rendering within a CitationView.',
+      documentation: function() { /*
+        The default $$DOC{ref:'foam.ui.View'} to use when rendering the $$DOC{ref:'Property'}
+        as a part of a $$DOC{ref:'CitationView'}. Specify a string or an object with
+        factory_ and other properties specified.
+      */}
+    },
+    {
+      name: 'swiftView',
+      type: 'String',
+      defaultValueFn: function() { return this.view.substring(this.view.lastIndexOf('.')+1); },
+      help: 'The default view name for this property in swift.'
     },
     {
 //      model_: 'FunctionProperty',
@@ -284,7 +356,7 @@ var Property = {
       help: 'Inject HTML before row in DetailView.',
       documentation: function() { /*
         An optional function to
-        inject HTML before the row in $$DOC{ref:'DetailView'}.
+        inject HTML before the row in $$DOC{ref:'foam.ui.DetailView'}.
       */}
     },
     {
@@ -294,7 +366,7 @@ var Property = {
       help: 'Inject HTML before row in DetailView.',
       documentation: function() { /*
         An optional function to
-        inject HTML after the row in $$DOC{ref:'DetailView'}.
+        inject HTML after the row in $$DOC{ref:'foam.ui.DetailView'}.
       */}
     },
     {
@@ -310,7 +382,7 @@ var Property = {
       help: 'The property\'s default value.',
       documentation: function() { /*
         An optional function to
-        inject HTML before the row in $$DOC{ref:'DetailView'}.
+        inject HTML before the row in $$DOC{ref:'foam.ui.DetailView'}.
       */}
     },
     {
@@ -321,7 +393,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       postSet: function(old, nu) {
         if ( nu && this.defaultValue ) this.defaultValue = undefined;
@@ -340,7 +412,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: "A dynamic function which computes the property's value.",
       documentation: function() { /*
@@ -357,7 +429,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory for creating initial value when new object instantiated.',
       documentation: function() { /*
@@ -370,11 +442,39 @@ var Property = {
       name: 'lazyFactory',
       type: 'Function',
       required: false,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       help: 'Factory for creating the initial value. Only called when the property is accessed for the first time.',
       documentation: function() { /*
         Like the $$DOC{ref:'.factory'} function, but only evaulated when this $$DOC{ref:'Property'} is
         accessed for the first time.
+      */}
+    },
+    {
+      name: 'validate',
+      type: 'Function',
+      required: false,
+      view: 'foam.ui.FunctionView',
+      help: 'Function for validating property value.',
+      preSet: function(_, f) {
+        var str = f.toString();
+        var deps = str.
+          match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+          split(',').
+          map(function(name) { return name.trim(); });
+
+        var f2 = function() {
+          var args = [];
+          for ( var i = 0 ; i < deps.length ; i++ )
+            args.push(this[deps[i]]);
+          return f.apply(this, args);
+        };
+
+        f2.dependencies = deps;
+        f2.toString = function() { return f.toString(); };
+
+        return f2;
+      },
+      documentation: function() { /*
       */}
     },
     {
@@ -383,7 +483,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'The property\'s default value function.',
       documentation: function() { /*
@@ -393,12 +493,26 @@ var Property = {
       */}
     },
     {
+      name: 'adapt',
+      type: 'Function',
+      required: false,
+      displayWidth: 70,
+      displayHeight: 3,
+      view: 'foam.ui.FunctionView',
+      defaultValue: '',
+      help: 'An adapter function called before preSet.',
+      documentation: function() { /*
+        Allows you to modify the incoming value before it is set. Parameters <code>(old, nu)</code> are
+        supplied with the old and new value. Return the value you want to be set.
+      */}
+    },
+    {
       name: 'preSet',
       type: 'Function',
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'An adapter function called before normal setter logic.',
       documentation: function() { /*
@@ -412,7 +526,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'A function called after normal setter logic, but before property change event fired.',
       documentation: function() { /*
@@ -427,7 +541,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'The property\'s default value function.',
       documentation: function() { /*
@@ -444,10 +558,10 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Function to format value for display in TableView.',
-      documentation: "A function to format the value for display in a $$DOC{ref:'TableView'}."
+      documentation: "A function to format the value for display in a $$DOC{ref:'foam.ui.TableView'}."
     },
     {
       name: 'summaryFormatter',
@@ -457,7 +571,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Function to format value for display in SummaryView.',
       documentation: "A function to format the value for display in a $$DOC{ref:'SummaryView'}."
@@ -468,7 +582,7 @@ var Property = {
       required: false,
       defaultValue: '',
       help: 'Table View Column Width.',
-      documentation: "A Suggestion for $$DOC{ref:'TableView'} column width."
+      documentation: "A Suggestion for $$DOC{ref:'foam.ui.TableView'} column width."
     },
     {
       name: 'help',
@@ -477,7 +591,7 @@ var Property = {
       required: false,
       displayWidth: 70,
       displayHeight: 6,
-      view: 'TextAreaView',
+      view: 'foam.ui.TextAreaView',
       defaultValue: '',
       help: 'Help text associated with the property.',
       documentation: function() { /*
@@ -501,7 +615,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: 'Factory to create the action objects for taking this property from value A to value B',
       documentation: "Factory to create the $$DOC{ref:'Action'} objects for taking this $$DOC{ref:'Property'} from value A to value B"
@@ -509,11 +623,17 @@ var Property = {
     {
       name: 'compareProperty',
       type: 'Function',
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       displayWidth: 70,
       displayHeight: 5,
       defaultValue: function(o1, o2) {
-        return (o1.localeCompare || o1.compareTo).call(o1, o2);
+        if ( o1 === o2 ) return 0;
+        if ( ! o1 && ! o2 ) return 0;
+        if ( ! o1 ) return -1;
+        if ( ! o2 ) return  1;
+        if ( o1.localeCompare ) return o1.localeCompare(o2);
+        if ( o1.compareTo ) return o1.compareTo(o2);
+        return o1.$UID.compareTo(o2.$UID);
       },
       help: 'Comparator function.',
       documentation: "A comparator function two compare two instances of this $$DOC{ref:'Property'}."
@@ -525,7 +645,31 @@ var Property = {
     },
     {
       name: 'fromElement',
-      defaultValue: function(e, p) { p.fromString.call(this, e.innerHTML, p); },
+      defaultValue: function propertyFromElement(e, p) {
+        if ( ! p.type || ! this.X.lookup || p.type === 'String' ) {
+          p.fromString.call(this, e.innerHTML, p);
+          return;
+        }
+        var model = this.X.lookup(p.type);
+        if ( ! model ) {
+          p.fromString.call(this, e.innerHTML, p);
+          return;
+        }
+        var o = model.create();
+        if ( ! o.fromElement ){
+          p.fromString.call(this, e.innerHTML, p);
+          return;
+        }
+        this[p.name] = o.fromElement(e);
+      },
+      help: 'Function to extract from a DOM Element.',
+      documentation: "Function to extract a value from a DOM Element."
+    },
+    {
+      name: 'propertyToJSON',
+      defaultValue: function(visitor, output, o) {
+        if ( ! this.transient ) output[this.name] = visitor.visit(o[this.name]);
+      },
       help: 'Function to extract from a DOM Element.',
       documentation: "Function to extract a value from a DOM Element."
     },
@@ -544,7 +688,7 @@ var Property = {
       displayWidth: 70,
       displayHeight: 3,
       rows:3,
-      view: 'FunctionView',
+      view: 'foam.ui.FunctionView',
       defaultValue: '',
       help: "A function which installs additional features into the Model's prototype.",
       documentation: function() { /*
@@ -556,13 +700,19 @@ var Property = {
     {
       name: 'exclusive',
       type: 'Boolean',
-      view: 'BooleanView',
+      view: 'foam.ui.BooleanView',
       defaultValue: true,
       help: 'Indicates if the property can only have a single value.',
       documentation: function() { /*
         Indicates if the $$DOC{ref:'Property'} can only have a single value.
       */}
-    }
+    },
+    {
+      name: 'memorable',
+      type: 'Boolean',
+      help: 'True if this value should be included in a memento for this object.',
+      defaultValue: false
+    },
   ],
 
   methods: {
@@ -571,64 +721,100 @@ var Property = {
     compare: function(o1, o2) {
       return this.compareProperty(this.f(o1), this.f(o2));
     },
+    readResolve: function() {
+      return this.modelId ?
+        this.X.lookup(this.modelId)[constantize(this.name)] : this;
+    },
     toSQL: function() { return this.name; },
     toMQL: function() { return this.name; },
     toBQL: function() { return this.name; },
-    initPropertyAgents: function(proto) {
-      var prop = this;
+    cloneProperty: function(/* this=prop, */ value) {
+      return ( value && value.clone ) ? value.clone() : value;
+    },
+    deepCloneProperty: function(/* this=prop, */ value) {
+      return ( value && value.deepClone ) ? value.deepClone() : value;
+    },
+    initPropertyAgents: function(proto, fastInit) {
+      var prop   = this;
+      var name   = prop.name;
+      var name$_ = prop.name$_;
 
-      /* Is handled by copyFrom(), but could be done here instead. */
-      proto.addInitAgent((this.postSet || this.setter) ? 9 : 0, this.name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'), function(o, X, m) {
-        if ( ! m ) return;
-        if ( m.hasOwnProperty(prop.name)   ) o[prop.name]   = m[prop.name];
-        if ( m.hasOwnProperty(prop.name$_) ) o[prop.name$_] = m[prop.name$_];
-      });
+      if ( ! fastInit ) proto.addInitAgent(
+        (this.postSet || this.setter) ? 9 : 0,
+        name + ': ' + (this.postSet || this.setter ? 'copy arg (postSet)' : 'copy arg'),
+        function(o, X, m) {
+          if ( ! m ) return;
+          if ( m.hasOwnProperty(name)   ) o[name]   = m[name];
+          if ( m.hasOwnProperty(name$_) ) o[name$_] = m[name$_];
+        }
+      );
 
       if ( this.dynamicValue ) {
-        proto.addInitAgent(10, prop.name + ': dynamicValue', function(o, X) {
-          var name = prop.name;
-          var dynamicValue = prop.dynamicValue;
-
-          Events.dynamic(
-            dynamicValue.bind(o),
-            function(value) { o[name] = value; });
-        });
+        var dynamicValue = prop.dynamicValue;
+        if ( Array.isArray(dynamicValue) ) {
+          proto.addInitAgent(10, name + ': dynamicValue', function(o, X) {
+            Events.dynamic(
+                dynamicValue[0].bind(o),
+                function() { o[name] = dynamicValue[1].call(o); },
+                X || this.X);
+          });
+        } else {
+          proto.addInitAgent(10, name + ': dynamicValue', function(o, X) {
+            Events.dynamic(
+                dynamicValue.bind(o),
+                function(value) { o[name] = value; },
+                X || this.X);
+          });
+        }
       }
 
       if ( this.factory ) {
-        proto.addInitAgent(11, prop.name + ': factory', function(o, X) {
-          if ( ! o.hasOwnProperty(this.name) ) o[prop.name];
+        proto.addInitAgent(11, name + ': factory', function(o, X) {
+          if ( ! o.hasOwnProperty(name) ) o[name];
         });
       }
     }
   },
 
-  templates: [
-    {
-      model_: 'Template',
-      name: 'closureSource',
-      description: 'Closure Externs JavaScript Source',
-      template:
-      '/**\n' +
-        ' * @type {<%= this.javascriptType %>}\n' +
-        ' */\n' +
-        '<%= arguments[1] %>.prototype.<%= this.name %> = undefined;'
-    }
-  ],
+  //templates: [
+  //  {
+  //    model_: 'Template',
+  //    name: 'closureSource',
+  //    description: 'Closure Externs JavaScript Source',
+  //    template:
+  //    '/**\n' +
+  //      ' * @type {<%= this.javascriptType %>}\n' +
+  //      ' */\n' +
+  //      '<%= arguments[1] %>.prototype.<%= this.name %> = undefined;'
+  //  }
+  //],
 
   toString: function() { return "Property"; }
 };
 
 
 Model.methods = {
-  getPropertyWithoutCache_: BootstrapModel.getPropertyWithoutCache_,
   getProperty:              BootstrapModel.getProperty,
   getAction:                BootstrapModel.getAction,
   hashCode:                 BootstrapModel.hashCode,
   buildPrototype:           BootstrapModel.buildPrototype,
+  addTraitToModel_:         BootstrapModel.addTraitToModel_,
+  buildProtoImports_:       BootstrapModel.buildProtoImports_,
+  buildProtoProperties_:    BootstrapModel.buildProtoProperties_,
+  buildProtoMethods_:       BootstrapModel.buildProtoMethods_,
   getPrototype:             BootstrapModel.getPrototype,
   isSubModel:               BootstrapModel.isSubModel,
-  isInstance:               BootstrapModel.isInstance
+  isInstance:               BootstrapModel.isInstance,
+  getAllRequires:           BootstrapModel.getAllRequires,
+  arequire:                 BootstrapModel.arequire,
+  getMyFeature:             BootstrapModel.getMyFeature,
+  getRawFeature:            BootstrapModel.getRawFeature,
+  getAllMyRawFeatures:      BootstrapModel.getAllMyRawFeatures,
+  getFeature:               BootstrapModel.getFeature,
+  getAllRawFeatures:        BootstrapModel.getAllRawFeatures,
+  atest:                    BootstrapModel.atest,
+  getRuntimeProperties:     BootstrapModel.getRuntimeProperties,
+  create:                   BootstrapModel.create
 };
 
 // This is the coolest line of code that I've ever written
@@ -640,9 +826,10 @@ Model.create = BootstrapModel.create;
 Property = Model.create(Property);
 
 // Property properties are still Bootstrap Models, so upgrade them.
-for ( var i = 0 ; i < Property.properties.length ; i++ )
-  Property[Property.properties[i].name.constantize()] =
-    Property.properties[i] = Property.create(Property.properties[i]);
+var ps = Property.getRuntimeProperties();
+for ( var i = 0 ; i < ps.length ; i++ ) {
+  Property[constantize(ps[i].name)] = ps[i] = Property.create(ps[i]);
+}
 
-USED_MODELS.Property = Property;
-USED_MODELS.Model = Model;
+USED_MODELS.Property = true;
+USED_MODELS.Model = true;
