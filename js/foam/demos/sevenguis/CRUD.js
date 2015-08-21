@@ -112,7 +112,7 @@ MODEL({
         var n = this.data.name, s = this.data.surname;
         return n && s;
       },
-      action: function() {
+      code: function() {
         var data = this.data.clone();
         data.id = undefined;
         this.dao.put(data, {
@@ -124,7 +124,7 @@ MODEL({
       name: 'updateItem',
       label: 'Update',
       isEnabled: function() { return this.data.id; },
-      action: function() {
+      code: function() {
         this.dao.put(this.data.clone(), {
           put: function(data) { self.data = data; }
         });
@@ -134,7 +134,7 @@ MODEL({
       name: 'deleteItem',
       label: 'Delete',
       isEnabled: function() { return this.data.id; },
-      action: function() {
+      code: function() {
         this.dao.remove(this.data.clone());
         this.data.id = this.data.name = this.data.surname = '';
       }
