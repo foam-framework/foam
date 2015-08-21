@@ -19,6 +19,7 @@
 //  (type-checking is a subset of partial-eval)
 
 function compile_(a) {
+    if (! a) return a;
   return /*Expr.isInstance(a) || Property.isInstance(a)*/ a.f ? a :
     a === true  ? TRUE        :
     a === false ? FALSE       :
