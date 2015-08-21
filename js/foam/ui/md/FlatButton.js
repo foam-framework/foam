@@ -100,6 +100,14 @@ CLASS({
       ],
     },
     {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'displayMode_',
+      getter: function() {
+        if ( ! ( this.iconUrl || this.ligature ) ) return 'LABEL_ONLY';
+        return this.displayMode;
+      },
+    },
+    {
       model_: 'StringProperty',
       name: 'iconUrl',
     },
@@ -299,12 +307,14 @@ CLASS({
          this.setClass(
              'icon-only',
              function() {
-               return this.displayMode === 'ICON_ONLY';
+               this.iconUrl; this.ligature; this.displayMode;
+               return this.displayMode_ === 'ICON_ONLY';
              }, this.id);
          this.setClass(
              'label-only',
              function() {
-               return this.displayMode === 'LABEL_ONLY';
+               this.iconUrl; this.ligature; this.displayMode;
+               return this.displayMode_ === 'LABEL_ONLY';
              }, this.id);
         this.setClass('hidden', function() { return self.isHidden; }, this.id); %>
     */},
