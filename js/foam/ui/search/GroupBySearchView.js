@@ -29,7 +29,7 @@ CLASS({
       name: 'view',
       type: 'view',
       factory: function() {
-        return foam.ui.ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'});
+        return this.ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'});
       }
     },
     {
@@ -85,7 +85,7 @@ CLASS({
       this.view.data = '';
     },
     function toHTML() {
-      return '<div class="foamSearchView">' +
+      return '<div class="foamSearchView foamSearchGroupView">' +
         '<div class="foamSearchViewLabel">' +
         this.label +
         '</div>' +
