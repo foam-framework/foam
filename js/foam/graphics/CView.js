@@ -253,7 +253,8 @@ CLASS({
     erase: function() { /* Wipes the canvas area of this $$DOC{ref:'.'}. Primarily used
                           by the root node to clear the entire canvas, but an opaque child
                           may choose to erase its own area, if required. */
-      this.canvas.clearRect(0, 0, this.width, this.height);
+// Why do we do a clearRect()?  It causes problems when opacity isn't 1.
+//      this.canvas.clearRect(0, 0, this.width, this.height);
       this.canvas.fillStyle = this.background;
       this.canvas.fillRect(0, 0, this.width, this.height);
     },
