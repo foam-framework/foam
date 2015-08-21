@@ -32,7 +32,7 @@ require('../core/bootFOAMnode.js');
     for ( var i = 0 ; i < cp.length ; i++ ) {
       X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
         delegate: X.node.dao.ModelFileDAO.create({
-          classpath: cp
+          classpath: cp[i]
         }),
         primary: X.ModelDAO
       });
