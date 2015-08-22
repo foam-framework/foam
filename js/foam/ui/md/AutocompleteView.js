@@ -78,6 +78,7 @@ CLASS({
     },
 
     function makeView() {
+      console.log('CLV model: ' + this.ChoiceListView.id);
       return this.ChoiceListView.create({
         dao: this.autocompleter.autocompleteDAO$Proxy,
         rowView: this.acRowView,
@@ -94,9 +95,10 @@ CLASS({
       this.subscribe('blur', this.onBlur);
     },
     function open(e, opt_delay) {
+      console.log('open');
       if ( this.closeTimeout_ ) {
         this.X.clearTimeout(this.closeTimeout_);
-        this.closeTimeout = 0;
+        this.closeTimeout_ = 0;
       }
 
       if ( this.$ ) {
@@ -117,6 +119,7 @@ CLASS({
       this.initHTML();
     },
     function close(opt_now) {
+      console.log('close(' + (opt_now ? 'now' : 'later') + ')');
       if ( opt_now ) {
         if ( this.closeTimeout_ ) {
           this.X.clearTimeout(this.closeTimeout_);
@@ -131,25 +134,25 @@ CLASS({
       this.closeTimeout_ = this.X.setTimeout(function() {
         this.closeTimeout_ = 0;
         this.$ && this.$.remove();
-      }, this.closeTime);
+      }.bind(this), this.closeTime);
     },
     function position(div, parentNode) {
       var document = parentNode.ownerDocument;
 
       var pos = findPageXY(parentNode);
       var pageWH = [document.firstElementChild.offsetWidth, document.firstElementChild.offsetHeight];
+      // TODO(braden): I think this is better just reducing the maxHeight than
+      // setting bottom?
       if ( pageWH[1] - (pos[1] + parentNode.offsetHeight) < (this.height || this.maxHeight || 400) ) {
         div.style.bottom = parentNode.offsetHeight;
-        //document.defaultView.innerHeight - pos[1];
       }
 
-      if ( pos[2].offsetWidth - pos[0] < 600 )
-        div.style.left = 600 - pos[2].offsetWidth;
-      else
-        div.style.left = -parentNode.offsetWidth;
+      // We base our size off the focused element's size.
+      var focusedRect = document.activeElement.getBoundingClientRect();
+      var parentRect = parentNode.getBoundingClientRect();
+      div.style.width = (this.width || focusedRect.width) + 'px';
+      div.style.left = focusedRect.left - parentRect.left;
 
-      if ( this.width ) div.style.width = this.width + 'px';
-      if ( this.height ) div.style.height = this.height + 'px';
       if ( this.maxWidth ) {
         div.style.maxWidth = this.maxWidth + 'px';
         div.style.overflowX = 'auto';
@@ -213,8 +216,13 @@ CLASS({
       .md-autocomplete-container {
         position: relative;
       }
-      .md-autocomplete {
+      .md-autocomplete-popup {
+        background: #fff;
+        border-radius: 3px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+        margin: -4px 8px 8px 8px;
         position: absolute;
+        z-index: 2000;
       }
     */},
     function toHTML() {/*

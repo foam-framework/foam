@@ -109,15 +109,8 @@ CLASS({
       defaultValue: false
     },
     {
-      name: 'darkBackground',
-      defaultValue: false
-    },
-    {
       name: 'clearIcon',
-      defaultValueFn: function() {
-        return this.darkBackground ? 'images/ic_cancel_24dp.png' :
-            'images/ic_cancel_black_24dp.png';
-      }
+      defaultValue: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAABAUlEQVQ4y72Syw2CQBCGiQfpBbAILMFEIpHQxd+HJib2oIFifFwxG/EAHegFRx77BLmxc9nH98HM7ljWxAM2YqRg+FAwJIhg/8M3eKHSIkfQD89wNOAuDpiZwjBeK2Yy1Uis1VK73C/wUXKooNWtnT8xF0LMEZ9WXqsUcGi15GdbIaR8s4RHa5fgBl9I/zsLgUm5lnBrRccrPITwUcorfoqBV3gPC0696w0LTMfp656hZEJIDLyUyu/OTkKIlGvtcm/K9/lZKD9c3m5e6d7Vh7u3cyY9HCnBaGus9G46/MX3fe09rOx62ruW1tRiOsyMZBRlji3OeOBNkeGEUCl1kvEFpNGiJ85Uf0MAAAAASUVORK5CYII=',
     },
     {
       name: 'underline',
@@ -198,7 +191,7 @@ CLASS({
     },
 
     onAutocomplete: function(data) {
-      this.softData = data;
+      this.data = this.softData = data;
       this.onChange();
     },
 
@@ -331,7 +324,7 @@ CLASS({
               class="md-text-field-input <%= this.underline ? '' : 'md-text-field-borderless' %>"
               <%= this.floatingLabel ? '' : 'placeholder="' + this.label + '"' %><%= this.mode == 'read-only' ? ' disabled' : '' %> />
           <% if ( this.clearAction ) { %>
-            $$clear{ iconUrl: this.clearIcon }
+            $$clear{ iconUrl: this.clearIcon, ligature: 'cancel' }
           <% } %>
         <% } %>
       </div>
@@ -342,10 +335,9 @@ CLASS({
     {
       name: 'clear',
       label: '',
-      iconUrl: 'images/ic_cancel_24dp.png',
       isAvailable: function() { return !! this.softData.length; },
       code: function() {
-        this.softData = '';
+        this.data = this.softData = '';
       }
     }
   ],

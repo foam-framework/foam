@@ -29,7 +29,12 @@ CLASS({
       name: 'view',
       type: 'view',
       factory: function() {
-        return this.ChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'});
+        return this.ChoiceView.create({
+          label: this.label,
+          floatingLabel: true,
+          size: this.size,
+          cssClass: 'foamSearchChoiceView'
+        });
       }
     },
     {
@@ -85,6 +90,10 @@ CLASS({
       this.view.data = '';
     },
     function toHTML() {
+      if (this.view.floatingLabel$) {
+        return this.view.toHTML();
+      }
+
       return '<div class="foamSearchView foamSearchGroupView">' +
         '<div class="foamSearchViewLabel">' +
         this.label +
@@ -136,7 +145,7 @@ CLASS({
             options.push([key, cleanKey + (Array(self.width-subKey.length-count.length).join(/*'&nbsp;'*/' ')).intern() + count]);
           }
 
-          options.splice(0,0,['','-- CLEAR SELECTION --']);
+          options.splice(0,0,['','--']);
 
           if (typeof selected === 'undefined' && self.memento) {
             // If we were provided with a memento, but couldn't find that key,
