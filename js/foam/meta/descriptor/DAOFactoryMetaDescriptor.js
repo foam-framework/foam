@@ -27,7 +27,7 @@ CLASS({
       label: 'The Type of the DAO',
       name: 'model',
       documentation: function() {/* The model id of the new property. */},
-      defaultValue: 'StringProperty',
+      defaultValue: 'foam.apps.builder.dao.LocalDAOFactory',
       view: {
          factory_: 'foam.ui.ChoiceView',
          choices: [

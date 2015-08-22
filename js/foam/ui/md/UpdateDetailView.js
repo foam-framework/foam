@@ -112,7 +112,7 @@ CLASS({
       },
       postSet: function(old,nu) {
         if ( nu && this.liveEdit ) {
-          this.save();
+          this.commit_();
         }
       }
     },
@@ -209,21 +209,7 @@ CLASS({
       ligature: 'check',
       isAvailable: function() { return  ! this.liveEdit && this.outstandingChanges; },
       action: function() {
-        var self = this;
-        var obj  = this.data;
-
-        this.dao.put(obj, {
-          put: function() {
-            self.originalData = obj.deepClone();
-
-            if (self.exitOnSave && ! self.liveEdit) {
-              self.stack.popView();
-            }
-          },
-          error: function() {
-            console.error('Error saving', arguments);
-          }
-        });
+        this.commit_();
       }
     },
     {
@@ -235,6 +221,26 @@ CLASS({
       ligature: 'close',
       isAvailable: function() { return  ! this.liveEdit && this.outstandingChanges; },
       action: function() { this.data = this.originalData.deepClone(); }
+    }
+  ],
+
+  methods: [
+    function commit_() {
+      var self = this;
+      var obj  = this.data;
+
+      this.dao.put(obj, {
+        put: function() {
+          self.originalData = obj.deepClone();
+
+          if (self.exitOnSave && ! self.liveEdit) {
+            self.stack.popView();
+          }
+        },
+        error: function() {
+          console.error('Error saving', arguments);
+        }
+      });
     }
   ],
 

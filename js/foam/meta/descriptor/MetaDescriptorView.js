@@ -33,42 +33,42 @@ CLASS({
     },
   ],
 
-  actions: [
-    {
-      name: 'createButton',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
-      //isAvailable: function() { return this.data.showAdd; },
-      code: function() {
-        this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceListView');
-        var edit = this.UpdateDetailView.create({
-          data: this.PropertyMetaDescriptor.create(),
-          exitOnSave: true,
-          innerView: 'foam.meta.descriptor.MetaDescriptorView',
-        });
-        this.stack.pushView(edit);
-      }
-    },
-  ],
-
-  listeners: [
-    {
-      name: 'subObjectChange',
-      code: function() {
-        this.data.propertyChange('properties', null, this.data.properties);
-      }
-    },
-  ],
-
-  methods: [
-    function put(o, sink) {
-      var prop = o.model.create({ name: o.name });
-      this.data.properties.put(prop);
-      prop.addListener(this.subObjectChange);
-      this.subObjectChange();
-
-      sink && sink.put(prop);
-    },
-  ],
+  // actions: [
+  //   {
+  //     name: 'createButton',
+  //     iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
+  //     //isAvailable: function() { return this.data.showAdd; },
+  //     code: function() {
+  //       this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceListView');
+  //       var edit = this.UpdateDetailView.create({
+  //         data: this.PropertyMetaDescriptor.create(),
+  //         exitOnSave: true,
+  //         innerView: 'foam.meta.descriptor.MetaDescriptorView',
+  //       });
+  //       this.stack.pushView(edit);
+  //     }
+  //   },
+  // ],
+  //
+  // listeners: [
+  //   {
+  //     name: 'subObjectChange',
+  //     code: function() {
+  //       this.data.propertyChange('properties', null, this.data.properties);
+  //     }
+  //   },
+  // ],
+  //
+  // methods: [
+  //   function put(o, sink) {
+  //     var prop = o.model.create({ name: o.name });
+  //     this.data.properties.put(prop);
+  //     prop.addListener(this.subObjectChange);
+  //     this.subObjectChange();
+  //
+  //     sink && sink.put(prop);
+  //   },
+  // ],
 
   templates: [
     function toHTML() {/*

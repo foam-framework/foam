@@ -41,7 +41,7 @@ CLASS({
         This could be inside the device where it is running, in the cloud with Google Drive, or
         on another device on your network.
         </p>
-        $$dao{ model_: 'foam.apps.builder.dao.DAOPickerView', baseModel: this.data.baseModelId }
+        $$dao{ model_: 'foam.apps.builder.dao.DAOPickerView' }
     */},
   ],
 
