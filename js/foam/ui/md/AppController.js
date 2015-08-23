@@ -178,7 +178,7 @@ CLASS({
       name: 'menu',
       iconUrl: 'images/ic_menu_24dp.png',
       label: '',
-      action: function() {
+      code: function() {
         this.X.stack.slideView(this.menuFactory());
       }
     },
@@ -189,7 +189,7 @@ CLASS({
       name: 'enterSearchMode',
       iconUrl: 'images/ic_search_24dp.png',
       label: '',
-      action: function() {
+      code: function() {
         this.previousQuery = this.q;
         this.searchMode = true;
       }
@@ -198,7 +198,7 @@ CLASS({
       name: 'leaveSearchMode',
       iconUrl: 'images/ic_arrow_back_24dp.png',
       label: '',
-      action: function() {
+      code: function() {
         this.q = this.previousQuery;
         this.searchMode = false;
       }

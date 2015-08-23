@@ -22,7 +22,7 @@ function makeOp(name, sym, keys, f) {
     name: name,
     label: sym,
     keyboardShortcuts: keys,
-    action: function() { this.op = f; }
+    code: function() { this.op = f; }
   };
 }
 
@@ -31,7 +31,7 @@ function makeNum(n) {
   return {
     name: n.toString(),
     keyboardShortcuts: [ n + '' ],
-    action: function() { this.a2 = this.a2 == 0 ? n : this.a2.toString() + n; }
+    code: function() { this.a2 = this.a2 == 0 ? n : this.a2.toString() + n; }
   };
 }
 
@@ -108,19 +108,19 @@ CLASS({
       label: 'AC',
       help: 'All Clear.',
       keyboardShortcuts: [ 'a', 'c' ],
-      action: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = [].sink; }
+      code: function() { this.op = DEFAULT_OP; this.a1 = 0; this.history = [].sink; }
     },
     {
       name: 'sign',
       label: '+/-',
       keyboardShortcuts: [ 'n', 's'],
-      action: function() { this.a2 = - this.a2; }
+      code: function() { this.a2 = - this.a2; }
     },
     {
       name: 'point',
       label: '.',
       keyboardShortcuts: [ '.' ],
-      action: function() {
+      code: function() {
         if ( this.a2.toString().indexOf('.') == -1 ) this.a2 = this.a2 + '.';
       }
     },
@@ -128,7 +128,7 @@ CLASS({
       name: 'equals',
       label: '=',
       keyboardShortcuts: [ '=', 13 /* <enter> */ ],
-      action: function() {
+      code: function() {
         var a1 = this.a1;
         var a2 = this.a2;
         this.a1 = a2;
@@ -140,7 +140,7 @@ CLASS({
     {
       name: 'backspace',
       keyboardShortcuts: [ 8 /* backspace */ ],
-      action: function() {
+      code: function() {
         this.a2 = this.a2 == 0 ? this.a2 : this.a2.toString().substring(0, this.a2.length-1);
       }
     }

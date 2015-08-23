@@ -61,7 +61,7 @@ CLASS({
       name: 'removeRow',
       label: '',
       iconUrl: 'images/ic_clear_black_24dp.png',
-      action: function() { this.removeRowFromList(this.data); }
+      code: function() { this.removeRowFromList(this.data); }
     }
   ]
 

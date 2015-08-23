@@ -31,7 +31,7 @@ CLASS({
     {
       name: 'next',
       label: 'Next',
-      action: function() {
+      code: function() {
         this.dao && this.dao.put(this.data);
         this.onNext();
         if ( this.nextViewFactory ) {
@@ -52,7 +52,7 @@ CLASS({
     {
       name: 'exit',
       label: 'Cancel',
-      action: function() {
+      code: function() {
         this.stack.popView();
       }
     }

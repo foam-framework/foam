@@ -287,7 +287,7 @@ CLASS({
       label: '',
       iconUrl: 'images/ic_cancel_24dp.png',
       isAvailable: function() { return !! this.softData.length; },
-      action: function() {
+      code: function() {
         this.softData = '';
       }
     }

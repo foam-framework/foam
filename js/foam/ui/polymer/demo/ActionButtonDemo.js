@@ -39,7 +39,7 @@ CLASS({
       factory: function() {
         return this.Action.create({
           label: 'Main Action',
-          action: function() {
+          code: function() {
             this.log('Main action committed');
           }.bind(this),
           isAvailable: function() {
@@ -58,7 +58,7 @@ CLASS({
         return this.Action.create({
           label: 'Toggle Available',
           help: 'Make the "Main Action" button appear or disappear',
-          action: function() {
+          code: function() {
             this.available = !this.available;
           }
         });
@@ -71,7 +71,7 @@ CLASS({
         return this.Action.create({
           label: 'Toggle Enabled',
           help: 'Enable or disable the "Main Action" button',
-          action: function() {
+          code: function() {
             this.enabled = !this.enabled;
           }
         });
@@ -89,7 +89,7 @@ CLASS({
       factory: function() {
         return this.Action.create({
           label: 'Raised',
-          action: function() {
+          code: function() {
             this.log('Raised action committed');
           }.bind(this)
         });

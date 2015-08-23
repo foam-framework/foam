@@ -155,7 +155,7 @@ CLASS({
         var enabled = this.enabled;
         return ! this.enabled;
       },
-      action: function() { this.enabled = true; this.sync(); }
+      code: function() { this.enabled = true; this.sync(); }
     },
     {
       name:  'forceSync',
@@ -166,7 +166,7 @@ CLASS({
 
         return ! isSyncing;
       },
-      action: function() {
+      code: function() {
         clearTimeout(this.timer);
         this.sync();
       }
@@ -182,7 +182,7 @@ CLASS({
 
         return enabled || isSyncing;
       },
-      action: function() {
+      code: function() {
         this.enabled = false;
         this.abortRequest_ = true;
         clearTimeout(this.timer);
@@ -193,7 +193,7 @@ CLASS({
       help:  'Reset the Sync Manager to force a re-sync of all data.',
 
       isEnabled: function() { return ! this.enabled; },
-      action: function(ret) {
+      code: function(ret) {
         this.itemsSynced = 0;
         this.timesSynced = 0;
         this.lastSyncDuration = 0;
