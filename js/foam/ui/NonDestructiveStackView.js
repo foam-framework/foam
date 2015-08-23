@@ -193,7 +193,7 @@ CLASS({
       help:  'Go to previous view',
 
       isEnabled: function() { return this.currentView > 0 || this.sliderOpen; },
-      code: action() {
+      code: function() {
         if ( this.sliderOpen ) {
           if ( this.slideLatch ) {
             this.slideLatch();
@@ -221,7 +221,7 @@ CLASS({
       label: '>',
       help:  'Undo the previous back.',
       isEnabled: function() { return this.currentView < this.stack.length - 1; },
-      code: action() {
+      code: function() {
         throw new Error("Unimplemented");
         this.currentView += 1;
         Movement.animate(
