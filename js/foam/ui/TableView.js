@@ -391,8 +391,8 @@ CLASS({
           this.X.gestureManager.install(this.GestureTarget.create({
             containerID: this.id,
             handler: this,
-            getElement: function() { return this.container.$.parentElement; },
-            gesture: 'verticalScroll'
+            getElement: function() { return this.$container; }.bind(this),
+            gesture: 'verticalScrollMomentum'
           }));
         }
 
