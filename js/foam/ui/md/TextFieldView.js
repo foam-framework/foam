@@ -69,7 +69,7 @@ CLASS({
       documentation: 'Set this to true to enable autocomplete. Off by ' +
           'default, unless the $$DOC{ref:".prop", label: "property"} has an ' +
           '$$DOC{ref:"Property.autocompleter"} set.',
-      defaultValueFn: function() { return !! this.prop.autocompleter; }
+      defaultValueFn: function() { return !! (this.prop && this.prop.autocompleter); }
     },
     {
       model_: 'FactoryProperty',
