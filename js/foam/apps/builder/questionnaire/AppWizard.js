@@ -15,14 +15,14 @@ CLASS({
   extendsModel: 'foam.apps.builder.WizardPage',
 
   requires: [
-    'foam.apps.builder.questionnaire.DAOWizard',
+    'foam.apps.builder.questionnaire.NewDAOWizard',
   ],
 
   properties: [
     {
       name: 'nextViewFactory',
       defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.DAOWizard',
+        factory_: 'foam.apps.builder.questionnaire.NewDAOWizard',
       },
     },
   ],

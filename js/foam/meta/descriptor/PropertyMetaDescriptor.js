@@ -12,7 +12,8 @@
 CLASS({
   package: 'foam.meta.descriptor',
   name: 'PropertyMetaDescriptor',
-
+  extendsModel: 'foam.meta.descriptor.MetaDescriptor',
+  
   label: 'Property',
 
   documentation: function() {/* Describes a type (such as when creating a new
@@ -22,10 +23,8 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
       label: 'The Type of the property',
       name: 'model',
-      documentation: function() {/* The model id of the new property. */},
       defaultValue: 'StringProperty',
       view: {
          factory_: 'foam.ui.ChoiceView',
@@ -48,15 +47,14 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
       label: 'The name of the new property',
       name: 'name',
-      documentation: function() {/* The name of the new property. */},
       preSet: function(old, nu, prop) {
         if ( ! nu ) return old || prop.defaultValue;
         return camelize(nu);
       },
       postSet: function(old,nu) {
+        // HACK for textfieldview to ensure it gets the reset value if preSet reverts it
         this.propertyChange('name', null, nu);
       },
       defaultValue: 'name',

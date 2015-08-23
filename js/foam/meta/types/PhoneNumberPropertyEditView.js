@@ -17,7 +17,7 @@
 
 
 CLASS({
-  name: 'FloatPropertyEditView',
+  name: 'PhoneNumberPropertyEditView',
   package: 'foam.meta.types',
 
   extendsModel: 'foam.meta.types.EditView',
@@ -29,12 +29,6 @@ CLASS({
           <% this.headerHTML(out); %>
           <div>
             $$label{ model_: 'foam.ui.TextFieldView' }
-          </div>
-          <div>
-            $$defaultValue{ model_: 'foam.ui.TextFieldView' }
-          </div>
-          <div>
-            $$minValue{ model_: 'foam.ui.TextFieldView' } $$maxValue{ model_: 'foam.ui.TextFieldView' }
           </div>
         </div>
       </div>
