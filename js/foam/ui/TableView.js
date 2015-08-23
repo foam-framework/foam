@@ -211,7 +211,7 @@ CLASS({
     {
       name: 'selectRow',
       keyboardShortcuts: [ 13 /* enter */ ],
-      action: function() {
+      code: action() {
         if ( this.selection ) this.hardSelection = this.selection;
         this.publish(this.CLICK, this.selection);
       }
@@ -219,7 +219,7 @@ CLASS({
     {
       name: 'prevRow',
       keyboardShortcuts: [ 38 /* up arrow */, 75 /* k */ ],
-      action: function() {
+      code: action() {
         if ( ! this. objs || ! this.objs.length ) return;
         if ( ! this.selection && this.hardSelection ) this.selection = this.hardSelection;
         if ( this.selection ) {
@@ -235,7 +235,7 @@ CLASS({
     {
       name: 'nextRow',
       keyboardShortcuts: [ 40 /* down arrow */, 74 /* j */ ],
-      action: function() {
+      code: action() {
         if ( ! this. objs || ! this.objs.length ) return;
         if ( ! this.selection && this.hardSelection ) this.selection = this.hardSelection;
         if ( this.selection ) {

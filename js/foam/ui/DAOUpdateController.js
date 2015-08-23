@@ -43,7 +43,7 @@ CLASS({
       name:  'save',
       help:  'Save updates.',
 
-      action: function() {
+      code: action() {
         var self = this;
         this.dao.put(this.data, {
           put: function(value) {
@@ -60,14 +60,14 @@ CLASS({
       name:  'copy',
       help:  'Create a new object which is a copy of this one.',
 
-      action: function() {
+      code: action() {
       }
     },
     {
       name:  'cancel',
       help:  'Cancel update.',
 
-      action: function() {
+      code: action() {
         this.X.stack.back();
       }
     },
@@ -75,7 +75,7 @@ CLASS({
       name:  'help',
       help:  'View help.',
 
-      action: function() {
+      code: action() {
         var model = this.data.model_;
         var helpView = this.X.HelpView.create(model);
         this.X.stack.pushView(helpView);
