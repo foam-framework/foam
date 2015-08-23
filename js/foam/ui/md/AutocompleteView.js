@@ -78,7 +78,6 @@ CLASS({
     },
 
     function makeView() {
-      console.log('CLV model: ' + this.ChoiceListView.id);
       return this.ChoiceListView.create({
         dao: this.autocompleter.autocompleteDAO$Proxy,
         rowView: this.acRowView,
@@ -95,7 +94,6 @@ CLASS({
       this.subscribe('blur', this.onBlur);
     },
     function open(e, opt_delay) {
-      console.log('open');
       if ( this.closeTimeout_ ) {
         this.X.clearTimeout(this.closeTimeout_);
         this.closeTimeout_ = 0;
@@ -119,7 +117,6 @@ CLASS({
       this.initHTML();
     },
     function close(opt_now) {
-      console.log('close(' + (opt_now ? 'now' : 'later') + ')');
       if ( opt_now ) {
         if ( this.closeTimeout_ ) {
           this.X.clearTimeout(this.closeTimeout_);
@@ -155,11 +152,9 @@ CLASS({
 
       if ( this.maxWidth ) {
         div.style.maxWidth = this.maxWidth + 'px';
-        div.style.overflowX = 'auto';
       }
       if ( this.maxHeight ) {
         div.style.maxHeight = this.maxHeight + 'px';
-        div.style.overflowY = 'auto';
       }
     },
   ],
@@ -221,8 +216,15 @@ CLASS({
         border-radius: 3px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
         margin: -4px 8px 8px 8px;
+        overflow-y: auto;
+        overflow-x: hidden;
         position: absolute;
         z-index: 2000;
+      }
+      .md-autocomplete-popup .autocomplete .choice {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
       }
     */},
     function toHTML() {/*
