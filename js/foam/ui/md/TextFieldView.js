@@ -376,7 +376,12 @@ CLASS({
       code: function(e) {
         if ( this.autocompleter ) {
           this.publish(['keydown'], e);
-          return;
+          // Special case: For normal keys, stop here. For Enter, allow the
+          // other case below to execute. When the autocompleter has selected
+          // an entry, this is a redundant set of this.data; when the
+          // autocomplete if empty this allows the normal Enter behavior for
+          // text fields.
+          if (e.keyCode !== 13) return;
         }
 
         // Do not update-on-enter when growable and/or displayHeight > 1.
