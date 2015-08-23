@@ -33,6 +33,7 @@ CLASS({
       label: 'Next',
       action: function() {
         this.dao && this.dao.put(this.data);
+        this.onNext();
         if ( this.nextViewFactory ) {
           this.stack.replaceView(
             this.nextViewFactory({ data: this.data })
@@ -55,6 +56,16 @@ CLASS({
         this.stack.popView();
       }
     }
+  ],
+
+  methods: [
+    function onNext() {
+      /* if you need to do anything when the user picks the 'next' action, implement this method */
+    },
+    function onCancel() {
+      /* if you need to do anything when the user picks the 'cancel' action, implement this method */
+    }
+    
   ],
 
   templates: [

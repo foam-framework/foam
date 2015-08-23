@@ -17,7 +17,7 @@
 
 
 CLASS({
-  name: 'FloatPropertyEditView',
+  name: 'ImagePropertyEditView',
   package: 'foam.meta.types',
 
   extendsModel: 'foam.meta.types.EditView',

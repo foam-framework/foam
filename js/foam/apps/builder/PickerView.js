@@ -147,7 +147,7 @@ CLASS({
           innerView: this.editViewType,
           liveEdit: true,
         }));
-      }
+      } 
     },
     {
       name: 'add',
