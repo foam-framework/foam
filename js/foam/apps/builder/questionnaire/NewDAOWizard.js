@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.questionnaire.ModelWizard',
+    'foam.apps.builder.questionnaire.DAOWizard',
     'foam.meta.descriptor.DAOFactoryMetaDescriptor',
     'foam.meta.descriptor.MetaDescriptorView',
   ],
@@ -35,17 +36,48 @@ CLASS({
       name: 'daoDescriptor',
       view: 'foam.meta.descriptor.MetaDescriptorView',
       help: 'The type of DAOFactory to create',
-      lazyFactory: function() { return this.DAOFactoryMetaDescriptor.create(); }
-      
+      lazyFactory: function() {
+         var ret = this.DAOFactoryMetaDescriptor.create();
+         if ( this.data.dao ) {
+           ret.name = this.data.dao.name;
+           ret.modelType = this.data.dao.model_.id;
+         }
+         return ret;
+       },
+       postSet: function(old, nu) {
+         this.daoDescriptorChange();
+         if ( old ) old.removeListener(this.daoDescriptorChange);
+         if ( nu ) nu.addListener(this.daoDescriptorChange);
+       }
+    },
+    {
+      name: 'daoFactory',
+      postSet: function() {
+        if ( this.daoFactory.requiresUserConfiguration ) {
+          this.nextViewFactory = { factory_: 'foam.apps.builder.questionnaire.DAOWizard' };
+        } else {
+          this.nextViewFactory = { factory_: 'foam.apps.builder.questionnaire.ModelWizard' };          
+        }
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'daoDescriptorChange',
+      code: function() {
+        this.daoFactory = this.daoDescriptor.createModel();
+      }
     }
   ],
 
   methods: [
     function onNext() {
-      this.SUPER();
-      this.data.dao = this.daoDescriptor.createModel();
+      this.data.dao = this.daoFactory;
       this.data.dao.modelType = this.data.baseModelId;
       this.daoConfigDAO.put(this.data.dao);
+
+      this.SUPER();
     },
     
   ],
@@ -53,7 +85,11 @@ CLASS({
   actions: [
     {
       name: 'next',
-      label: 'Next: Create the Questions',
+      labelFn: function() {
+        if ( this.daoFactory && this.daoFactory.requiresUserConfiguration )
+          return 'Next: Data Source Settings';
+        return 'Next: Create the Questions';
+      },
     }
   ],
 
