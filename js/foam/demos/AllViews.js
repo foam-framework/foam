@@ -81,7 +81,7 @@ CLASS({
   actions: [
     {
       name: 'simpleAction',
-      action: function(){}
+      code: function() {}
     },
     {
       name: 'disabledAction',
