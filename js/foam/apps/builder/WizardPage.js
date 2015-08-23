@@ -32,7 +32,6 @@ CLASS({
       name: 'next',
       label: 'Next',
       action: function() {
-        this.dao && this.dao.put(this.data);
         this.onNext();
         if ( this.nextViewFactory ) {
           this.stack.replaceView(
@@ -60,7 +59,10 @@ CLASS({
 
   methods: [
     function onNext() {
-      /* if you need to do anything when the user picks the 'next' action, implement this method */
+      /* if you need to do anything when the user picks the 'next' action, 
+        implement this method. Remember to call this.SUPER() at the end of your
+        implementation, or handle saving this.data yourself. */
+      this.dao && this.dao.put(this.data);
     },
     function onCancel() {
       /* if you need to do anything when the user picks the 'cancel' action, implement this method */
