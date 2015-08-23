@@ -87,7 +87,7 @@ CLASS({
       help:  'Save updates.',
 
       isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
-      action: function() {
+      code: action() {
         var self = this;
         var obj  = this.data;
         this.stack.back();
@@ -107,17 +107,17 @@ CLASS({
       name:  'cancel',
       help:  'Cancel update.',
       isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
-      action: function() { this.stack.back(); }
+      code: action() { this.stack.back(); }
     },
     {
       name:  'back',
       isAvailable: function() { this.version; return this.originalData.equals(this.data); },
-      action: function() { this.stack.back(); }
+      code: action() { this.stack.back(); }
     },
     {
       name: 'reset',
       isAvailable: function() { this.version; return ! this.originalData.equals(this.data); },
-      action: function() { this.data.copyFrom(this.originalData); }
+      code: action() { this.data.copyFrom(this.originalData); }
     }
   ]
 });

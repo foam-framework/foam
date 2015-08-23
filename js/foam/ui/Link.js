@@ -57,7 +57,7 @@ CLASS({
       label: 'Apply',
       help:  'Insert this link into the document.',
 
-      action: function() {
+      code: action() {
         var a   = document.createElement('a');
         var txt = document.createTextNode(this.label);
         a.href = this.link;

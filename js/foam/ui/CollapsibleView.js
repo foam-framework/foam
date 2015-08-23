@@ -100,7 +100,7 @@ CLASS({
       isEnabled: function() {
         return true;//this.collapsedView.toHTML && this.fullView.toHTML;
       },
-      action: function() {
+      code: action() {
         this.collapsed = !this.collapsed;
       }
     },
