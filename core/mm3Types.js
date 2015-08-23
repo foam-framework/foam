@@ -814,21 +814,7 @@ CLASS({
 
   properties: [
     {
-      name: 'defaultValue',
-      preSet: function(_, f) { return FactoryProperty.ADAPT.defaultValue.call(this, null, f); }
-    },
-    {
-      name: 'defaultValueFn',
-      preSet: function(_, f) {
-        // return a function that will adapt the given f's return
-        return function(prop) {
-          // call the defaultValue function, adapt the result, return it
-          return FactoryProperty.ADAPT.defaultValue.call(this, null, f.call(this, prop));
-        };
-      }
-    },
-    {
-      name: 'adapt',
+      name: 'preSet',
       doc: "Can be specified as either a function, a Model, a Model path, or a JSON object.",
       defaultValue: function(_, f) {
         // A Factory Function
