@@ -46,7 +46,7 @@ CLASS({
           self.filesApi.list(ret, "'appfolder' in parents and title contains '" + self.model.id + "-" + obj.id + "'");
         },
         function(ret, data) {
-          if ( data && data.items.length ) {
+          if ( data && data.items && data.items.length ) {
             file.id = data.items[data.items.length-1].id;
           }
           self.filesApi.upload(ret, file);
@@ -82,12 +82,7 @@ CLASS({
             "'appfolder' in parents and title contains '" + self.model.id + "-" + id + "'")
         },
         function(ret, data) {
-          if ( ! data ) {
-            sink && sink.error && sink.error();
-            return;
-          }
-
-          if ( ! data.items || data.items.length < 1 ) {
+          if ( ! data || ! data.items || data.items.length < 1) {
             sink && sink.error && sink.error();
             return;
           }
