@@ -70,7 +70,7 @@ CLASS({
     {
       name: 'open',
       labelFn: function() { return this.linkLabel; },
-      action: function() {
+      code: function() {
         if ( this.opened ) return;
 
         var self = this;

@@ -57,7 +57,7 @@ MODEL({
   actions: [
     {
       name: 'reset',
-      action: function() {
+      code: function() {
         this.elapsedTime = this.lastTick_ = 0;
         this.tick();
       }

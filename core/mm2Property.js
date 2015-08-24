@@ -234,6 +234,19 @@ var Property = {
       */}
     },
     {
+      name: 'subKey',
+      type: 'EXPR',
+      displayWidth: 20,
+      defaultValue: 'ID',
+      help: 'The foreign key that this property references.',
+      documentation: function() {/*
+        Used to project whole objects of $$DOC{ref:'.subType'} into the value
+        of this Property. For foreign key properties, this is the foreign property.
+        For eg. an email property, when the subType is a whole Contact object,
+        subKey will be EMAIL.
+      */}
+    },
+    {
       name: 'units',
       type: 'String',
       required: true,

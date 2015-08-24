@@ -211,7 +211,7 @@ CLASS({
     {
       name: 'selectRow',
       keyboardShortcuts: [ 13 /* enter */ ],
-      action: function() {
+      code: function() {
         if ( this.selection ) this.hardSelection = this.selection;
         this.publish(this.CLICK, this.selection);
       }
@@ -219,7 +219,7 @@ CLASS({
     {
       name: 'prevRow',
       keyboardShortcuts: [ 38 /* up arrow */, 75 /* k */ ],
-      action: function() {
+      code: function() {
         if ( ! this. objs || ! this.objs.length ) return;
         if ( ! this.selection && this.hardSelection ) this.selection = this.hardSelection;
         if ( this.selection ) {
@@ -235,7 +235,7 @@ CLASS({
     {
       name: 'nextRow',
       keyboardShortcuts: [ 40 /* down arrow */, 74 /* j */ ],
-      action: function() {
+      code: function() {
         if ( ! this. objs || ! this.objs.length ) return;
         if ( ! this.selection && this.hardSelection ) this.selection = this.hardSelection;
         if ( this.selection ) {
@@ -269,6 +269,13 @@ CLASS({
           this.scrollbar.extent = rows;
           this.scrollbar.height = containerHeight - headHeight - 10;
           this.scrollbar.paint();
+        } else {
+          if (this.scrollbar.size > 0) {
+            // If the scrollbar.size is nonzero, there are rows to show but none
+            // are currently visible. Reset rows to the default.
+            this.rows = this.model_.ROWS.defaultValue;
+            this.repaintTableData();
+          }
         }
       }
     },
@@ -391,8 +398,8 @@ CLASS({
           this.X.gestureManager.install(this.GestureTarget.create({
             containerID: this.id,
             handler: this,
-            getElement: function() { return this.container.$.parentElement; },
-            gesture: 'verticalScroll'
+            getElement: function() { return this.$container; }.bind(this),
+            gesture: 'verticalScrollMomentum'
           }));
         }
 

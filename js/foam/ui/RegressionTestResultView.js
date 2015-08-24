@@ -48,7 +48,7 @@ CLASS({
       label: 'Update Master',
       documentation: 'Overwrite the old master output with the new. Be careful that the new result is legit!',
       isEnabled: function() { return this.test.regression; },
-      action: function() {
+      code: function() {
         this.test.master = this.test.results;
         this.test.regression = false;
         if ( this.X.testUpdateListener ) this.X.testUpdateListener();

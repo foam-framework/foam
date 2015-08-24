@@ -64,6 +64,11 @@ CLASS({
         return this.HaloView.create({}, this.Y);
       }
     },
+    {
+      model_: 'BooleanProperty',
+      name: 'showBorder',
+      defaultValue: false,
+    }
   ],
   templates: [
     function CSS() {/*
@@ -144,6 +149,9 @@ CLASS({
       .checked .checkbox-data.ro {
         visibility: visible;
       }
+      .checkbox-data.border {
+        border: solid 2px #5a5a5a;
+      }
     */},
 
     function checkIcon() {/*
@@ -157,11 +165,17 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %> >
 
       <% if (this.mode === 'read-only') { %>
-          <div class="checkbox-data ro">
-            <%= this.checkIcon() %>
+          <div id="<%= this.id %>-border" class="checkbox-data border">
+            <div class="checkbox-data ro">
+              <%= this.checkIcon() %>
+            </div>
           </div>
           <div class="checkbox-label-ro"><%= this.label %></div>
-      <% } else { %>
+      <%  this.setClass('border', function() {
+            return this.showBorder;
+          },this.id+'-border');
+
+          } else { %>
           <span class="checkbox-label noselect"><%# this.label %></span>
           <div class="checkbox-data-outer noselect">
             <div class="checkbox-data-container checkbox-data">
@@ -183,7 +197,8 @@ CLASS({
              this.id);
          this.setClass('left', function() {
            return this.checkboxPosition === 'left';
-         },this.id); %>
+         },this.id);
+         %>
 
       </div>
 

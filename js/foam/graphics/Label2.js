@@ -57,6 +57,7 @@ CLASS({
       var c = this.canvas;
       if ( ! c ) return;
 
+      c.globalAlpha = this.alpha;
       this.erase();
 
       if ( this.font ) c.font = this.font;
@@ -70,7 +71,7 @@ CLASS({
 
       if ( this.border ) {
         c.strokeStyle = this.border;
-        c.strokeRect(0, 0, this.width, this.height);
+        c.strokeRect(0, 0, this.width-1, this.height-1);
       }
     }
   }

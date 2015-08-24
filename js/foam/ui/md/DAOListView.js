@@ -22,9 +22,26 @@ CLASS({
 
   requires: ['SimpleValue'],
 
-  extendsModel: 'foam.ui.DAOListView',
+  extendsModel: 'foam.ui.SimpleView',
+  traits: ['foam.ui.DAODataViewTrait'],
+
+  constants: {
+    ROW_CLICK: ['row-click']
+  },
+
+  imports: [
+    'selection$'
+  ],
 
   properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'isHidden',
+      defaultValue: false,
+      postSet: function(_, isHidden) {
+        if ( this.dao && ! isHidden ) this.onDAOUpdate();
+      }
+    },
     {
       name: 'tagName',
       defaultValue: 'div',
@@ -63,9 +80,23 @@ CLASS({
       documentation: 'Internal tracker of removal check sweep.',
       defaultValue: false,
     },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'rowView',
+      defaultValue: 'foam.ui.DetailView'
+    },
+
   ],
 
   methods: {
+
+    init: function() {
+      this.SUPER();
+
+      // reset selection$ in case of nested list views
+      this.Y.set('selection$', undefined);
+    },
+
     put: function(o) {
       /* Sink function to receive updates from the dao */
       if ( this.rowCache_[o.id] ) {
@@ -138,6 +169,17 @@ CLASS({
       this.daoChange();
     },
 
+
+    bindSelection: function(d) {
+      d.view.on('click', (function() {
+        this.selection = d.view.data;
+        this.publish(this.ROW_CLICK);
+      }).bind(this), d.view.id);
+       d.view.setClass('dao-selected', function() {
+        return equals(this.selection.id, d.view.data.id);
+      }.bind(this), d.view.id);
+    },
+
     daoChange: function() {
       if ( ! this.dao || ! this.$ ) return;
       // build missing views for new items
@@ -151,6 +193,11 @@ CLASS({
           outHTMLs[d.ordering] = d.view.$;
         } else {
           outHTMLs[d.ordering] = d.view.toHTML();
+
+          if ( this.X.selection$ ) {
+            this.bindSelection(d);
+          }
+
           toInit.push(d);
           this.addChild(d.view);
           debugCount++;
@@ -236,7 +283,19 @@ CLASS({
 
     updatePositions: function() {
       if ( ! this.$ ) return;
-      
+
+      if ( this.$ ) {
+        this.$.style.position = 'relative';
+        if ( this.orientation == 'vertical' ) {
+          this.$.style.width = "100%";
+//          this.$.style.overflowY = 'scroll';
+        } else {
+//          this.$.style.overflowX = 'scroll';
+          this.$.style.height = "100%";
+
+        }
+      }
+
       var mySize = ( this.orientation == 'vertical' ) ?  this.$.offsetWidth : this.$.offsetHeight;
       if ( ! mySize ) {
         this.X.setTimeout(this.onPositionUpdate, 30);

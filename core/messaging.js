@@ -20,7 +20,14 @@ CLASS({
 
   properties: [
     { model_: 'IntProperty', name: 'delay', defaultValue: 0 },
-    { model_: 'IntProperty', name: 'retries', defaultValue: 0 },
+    {
+      model_: 'IntProperty',
+      name: 'retries',
+      defaultValueFn: function() {
+        if ( this.authAgent ) return 2;
+        return 0;
+      }
+    },
     { name: 'authAgent' },
     { name: 'responseType', defaultValue: 'text' },
     { name: 'contentType', defaultValue: 'application/json' }

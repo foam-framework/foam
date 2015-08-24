@@ -293,7 +293,7 @@ CLASS({
           return true;
         }
       },
-      action: function() {
+      code: function() {
         this.emailDao.sync && this.emailDao.sync.sync();
       }
     },

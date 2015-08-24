@@ -144,7 +144,7 @@ CLASS({
   actions: [
     {
       name: 'toggle',
-      action: function() { this.expanded = ! this.expanded; }
+      code: function() { this.expanded = ! this.expanded; }
     }
   ]
 });

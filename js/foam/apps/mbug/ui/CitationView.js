@@ -34,7 +34,7 @@ CLASS({
       name: 'clear',
       label: '',
       iconUrl: 'images/ic_clear_black_24dp.png',
-      action: function() { 
+      code: function() { 
         this.data = ""; // buganizer api doesn't support resetting owner 
       }
     }

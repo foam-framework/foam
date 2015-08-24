@@ -411,7 +411,7 @@ CLASS({
     {
       name: 'approve',
       isEnabled: function() { return this.hasRun },
-      action: function() {
+      code: function() {
         this.regression = this.results;
       }
     }

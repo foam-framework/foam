@@ -160,13 +160,13 @@ CLASS({
   actions: [
     {
       name: 'doSync',
-      action: function() {
+      code: function() {
         this.syncManager.sync();
       }
     },
     {
       name: 'addRemoteObject',
-      action: function() {
+      code: function() {
         this.writeRemoteDao.put(
           this.Abc.create({
             data: 'Remote object created at ' + new Date(),
@@ -176,14 +176,14 @@ CLASS({
     },
     {
       name: 'mutateRemoteObject',
-      action: function() {
+      code: function() {
         this.writeRemoteDao.limit(1).update(
           SET(this.Abc.DATA, 'Remote object modified at ' + new Date()));
       }
     },
     {
       name: 'mutateLocalObject',
-      action: function() {
+      code: function() {
         this.writeLocalDao.limit(1).update(
           SET(this.Abc.DATA, 'Local object modified at ' + new Date()));
       }

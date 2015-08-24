@@ -159,21 +159,21 @@ CLASS({
     {
       name: 'back',
       isAvailable: function() { return this.inChromeApp(); },
-      action: function() { this.$.back(); },
+      code: function() { this.$.back(); },
     },
     {
       name: 'forward',
       isAvailable: function() { return this.inChromeApp(); },
-      action: function() { this.$.forward(); },
+      code: function() { this.$.forward(); },
     },
     {
       name: 'home',
-      action: function() { this.$.setAttribute('src', this.data.homepage); },
+      code: function() { this.$.setAttribute('src', this.data.homepage); },
     },
     {
       name: 'reload',
       isAvailable: function() { return this.inChromeApp(); },
-      action: function() { this.$.reload(); },
+      code: function() { this.$.reload(); },
     },
   ],
 

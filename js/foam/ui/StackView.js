@@ -158,7 +158,7 @@ CLASS({
       help:  'Go to previous view',
 
       isEnabled: function() { return this.stack.length > 1 || this.sliderOpen; },
-      action: function() {
+      code: function() {
         if ( this.sliderOpen ) {
           if ( this.slideLatch ) {
             this.slideLatch();
@@ -189,7 +189,7 @@ CLASS({
       label: '>',
       help:  'Undo the previous back.',
       isEnabled: function() { return this.redo.length > 0; },
-      action: function() {
+      code: function() {
         this.pushView(this.redo.pop());
         this.propertyChange('stack', this.redo, this.redo);
       }

@@ -22,27 +22,20 @@ CLASS({
 
   extendsModel: 'foam.meta.types.EditView',
 
-  properties: [
-
-  ],
-
-  methods: [
-
-  ],
-
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-card">
           <% this.headerHTML(out); %>
           <div>
-            $$label{ model_: 'foam.ui.TextFieldView' }
+            $$label{ model_: 'foam.ui.TextFieldView', mode: this.mode }
           </div>
           <div>
-            $$defaultValue{ model_: 'foam.ui.TextFieldView' }
+            $$defaultValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
           </div>
           <div>
-            $$minValue{ model_: 'foam.ui.TextFieldView' } $$maxValue{ model_: 'foam.ui.TextFieldView' }
+            $$minValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
+            $$maxValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
           </div>
         </div>
       </div>

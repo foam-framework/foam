@@ -48,6 +48,10 @@ CLASS({
 
       var M = Movement;
       var is = [
+        ['black',      M.easy, 'easy'],
+        ['black',      M.spline(constantFn(0), M.linear), 'spline(constantFn(0), linear)'],
+        ['black',      M.spline(M.linear, constantFn(1)), 'spline(linear, constantFn(1))'],
+        ['pink',       M.avg(M.easeIn(1.0),M.easeIn(1.0)), 'ease(0.25,0.25)'],
         ['red',        M.linear, 'linear'],
         ['green',      M.accelerate, 'accelerate'],
         ['brown',      M.avg(M.linear, M.accelerate), 'avg(linear, accelerate)'],

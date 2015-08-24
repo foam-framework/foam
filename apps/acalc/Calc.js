@@ -53,7 +53,7 @@ function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
     translationHint: 'binary operator: ' + longName,
     speechLabel: speechLabel,
     keyboardShortcuts: keys,
-    action: function() {
+    code: function() {
       if ( this.a2 == '' ) {
         // the previous operation should be replaced, since we can't
         // finish this one without a second arg. The user probably hit one
@@ -82,7 +82,7 @@ function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
     translationHint: 'short form for mathematical function: "' + longName + '"',
     speechLabel: speechLabel,
     keyboardShortcuts: keys,
-    action: function() {
+    code: function() {
       this.op = f;
       this.push(f.call(this, this.a2));
       this.editable = false;
@@ -97,7 +97,7 @@ function num(n) {
   return {
     name: n.toString(),
     keyboardShortcuts: [ n + '' ],
-    action: function() {
+    code: function() {
       if ( ! this.editable ) {
         this.push(n);
         this.editable = true;
@@ -260,7 +260,7 @@ CLASS({
       // help: 'All Clear.',
 
       keyboardShortcuts: [ 'a', 'c' ],
-      action: function() {
+      code: function() {
         this.row1     = '';
         this.a1       = '0';
         this.a2       = '';
@@ -286,7 +286,7 @@ CLASS({
       speechLabel: 'negate',
       keyboardShortcuts: [ 'n' ],
       translationHint: 'switch positive/negative sign of number',
-      action: function() { this.a2 = - this.a2; }
+      code: function() { this.a2 = - this.a2; }
     },
     {
       name: 'point',
@@ -294,7 +294,7 @@ CLASS({
       speechLabel: 'point',
       keyboardShortcuts: [ '.', ',' ],
       translationHint: 'decimal point',
-      action: function() {
+      code: function() {
         if ( ! this.editable ) {
           this.push('0.');
           this.editable = true;
@@ -310,7 +310,7 @@ CLASS({
       speechLabel: 'equals',
       keyboardShortcuts: [ '=', 13 /* <enter> */ ],
       translationHint: 'compute operation and display result',
-      action: function() {
+      code: function() {
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
         if ( this.op == DEFAULT_OP ) {
           var last = this.history[this.history.length-1];
@@ -333,7 +333,7 @@ CLASS({
       speechLabel: 'backspace',
       translationHint: 'delete one input character',
       keyboardShortcuts: [ 8 /* backspace */ ],
-      action: function() {
+      code: function() {
         // This block will make backspace act like all-clear if the user has done a ctrl-A
         // to select all of the text.
         var selection = this.X.window.getSelection().toString();
@@ -356,14 +356,14 @@ CLASS({
       label: 'π',
       keyboardShortcuts: ['p'],
       translationHint: 'mathematical constant, pi',
-      action: function() { this.a2 = Math.PI; }
+      code: function() { this.a2 = Math.PI; }
     },
     {
       name: 'e',
       label: 'e',
       keyboardShortcuts: ['e'],
       translationHint: 'mathematical constant, e',
-      action: function() { this.a2 = Math.E; }
+      code: function() { this.a2 = Math.E; }
     },
     {
       name: 'percent',
@@ -371,7 +371,7 @@ CLASS({
       speechLabel: 'percent',
       keyboardShortcuts: [ '%' ],
       translationHint: 'convert number to percentage',
-      action: function() { this.a2 /= 100.0; }
+      code: function() { this.a2 /= 100.0; }
     },
 
     unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse', 'inverse'),
@@ -392,14 +392,14 @@ CLASS({
       speechLabel: 'switch to degrees',
       keyboardShortcuts: [],
       translationHint: 'short form for "degrees" calculator mode',
-      action: function() { this.degreesMode = true; }
+      code: function() { this.degreesMode = true; }
     },
     {
       name: 'rad',
       speechLabel: 'switch to radians',
       keyboardShortcuts: [],
       translationHint: 'short form for "radians" calculator mode',
-      action: function() { this.degreesMode = false; }
+      code: function() { this.degreesMode = false; }
     },
 
     unaryOp('asin',   [], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arcsine'),
@@ -417,7 +417,7 @@ CLASS({
       speechLabel: 'random',
       keyboardShortcuts: [],
       translationHint: 'generate random number',
-      action: function() { this.a2 = Math.random(); }
+      code: function() { this.a2 = Math.random(); }
     },
     unaryOp('store',   [], function(n) { this.memory = n; return n; }, 'a=', 'store in memory', 'store in memory'),
     {
@@ -426,7 +426,7 @@ CLASS({
       speechLabel: 'fetch from memory',
       keyboardShortcuts: [],
       translationHint: 'load memorized number',
-      action: function() { this.a2 = this.memory; }
+      code: function() { this.a2 = this.memory; }
     }
   ]
 });

@@ -83,7 +83,7 @@ CLASS({
   // actions: [
   //   {
   //     name: 'expand',
-  //     action: function() {
+  //     code: function() {
   //       if ( ! this.isDirectory ) return false;
   //       this.loadEntries();
   //       return true;

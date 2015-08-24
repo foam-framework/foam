@@ -124,7 +124,7 @@ MODEL({
   actions: [
     {
       name: 'testWrite',
-      action: function() {
+      code: function() {
         this.cfs.awrite('test/test.txt', 'Hello world!\n', 'text/plain')(function() {
           console.log('Write', arguments);
           this.cfs.clearError();
@@ -133,7 +133,7 @@ MODEL({
     },
     {
       name: 'testRead',
-      action: function() {
+      code: function() {
         this.cfs.aread('test/test.txt')(function() {
           console.log('Read', arguments);
           this.cfs.clearError();
@@ -142,7 +142,7 @@ MODEL({
     },
     {
       name: 'testEntries',
-      action: function() {
+      code: function() {
         this.cfs.aentries(
             '/test',
             {
@@ -157,7 +157,7 @@ MODEL({
     },
     {
       name: 'testEntriesAll',
-      action: function() {
+      code: function() {
         this.cfs.aentriesAll(
             '/',
             {

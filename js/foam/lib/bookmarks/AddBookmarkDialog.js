@@ -33,7 +33,7 @@ CLASS({
       name: 'add',
       help: 'Add Bookmark (Ctrl-A)',
       isEnabled: function() { return this.data.title; },
-      action: function () {
+      code: function () {
         this.$.remove();
         this.dao.put(this.data);
       }
@@ -41,7 +41,7 @@ CLASS({
     {
       name: 'cancel',
       help: 'Cancel (Ctrl-C)',
-      action: function () { this.$.remove(); }
+      code: function () { this.$.remove(); }
     }
   ],
 

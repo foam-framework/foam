@@ -563,7 +563,7 @@ CLASS({
   actions: [
     {
       name: 'loadLinks',
-      action: function() {
+      code: function() {
         var linksHTML = '';
         this.linksToLoad.forEach(function(linkToLoad) {
           var link = document.createElement('link');
@@ -581,7 +581,7 @@ CLASS({
         this.xhrCount;
         return this.xhrCount <= 0;
       },
-      action: function() {
+      code: function() {
         this.components.forEach(function(comp) {
           try {
             CLASS(comp);

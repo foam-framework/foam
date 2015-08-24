@@ -15,14 +15,21 @@ CLASS({
   extendsModel: 'foam.apps.builder.WizardPage',
 
   requires: [
-    'foam.apps.builder.questionnaire.ModelWizard',
+    'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+    'foam.apps.builder.dao.DAOFactoryEditView',
+    'foam.apps.builder.dao.IDBDAOFactoryEditView',
+  ],
+
+  imports: [
+    'daoConfigDAO',
   ],
 
   properties: [
     {
       name: 'nextViewFactory',
       defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.ModelWizard',
+        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+        baseModel: 'foam.apps.builder.questionnaire.Questionnaire',
       },
     },
   ],
@@ -30,18 +37,23 @@ CLASS({
   actions: [
     {
       name: 'next',
-      label: 'Next: Create the Questions',
+      label: 'Next: The Questions',
+    }
+  ],
+
+  methods: [
+    function onNext() {
+      this.daoConfigDAO && this.daoConfigDAO.put(this.data.dao);
+      this.SUPER();
     }
   ],
 
   templates: [
     function contentHTML() {/*
-        <p class="md-style-trait-standard md-title">Choose a your Data Source</p>
-        <p class="md-style-trait-standard">The data source is where your App will store its data.
-        This could be inside the device where it is running, in the cloud with Google Drive, or
-        on another device on your network.
+        <p class="md-style-trait-standard md-title">Data Source Settings</p>
+        <p class="md-style-trait-standard">Set the following options for your Data Source.
         </p>
-        $$dao{ model_: 'foam.apps.builder.dao.DAOPickerView' }
+        $$dao{ model_: 'foam.apps.builder.dao.EditView', model: this.data.dao.model_ }
     */},
   ],
 
