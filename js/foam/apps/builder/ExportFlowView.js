@@ -81,7 +81,7 @@ CLASS({
         return this.data &&
             (this.data.state === 'FAILED' || this.data.state === 'COMPLETED');
       },
-      action: function() {
+      code: function() {
         this.window.open('https://chrome.google.com/webstore/developer/dashboard');
       },
     },
@@ -94,7 +94,7 @@ CLASS({
         return this.data &&
             (this.data.state === 'FAILED' || this.data.state === 'COMPLETED');
       },
-      action: function() { this.popup.close(); },
+      code: function() { this.popup.close(); },
     },
   ],
 

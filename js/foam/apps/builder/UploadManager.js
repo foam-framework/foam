@@ -109,13 +109,7 @@ CLASS({
     function sendPublish(ret, oauthStatus, oauth, config) {
       if ( ! oauthStatus ) {
         this.data.message = 'Oops! Looks like something went wrong.';
-        // TODO(markdittmer): Figure out how to use error object (in "oauth"
-        // variable) to determine whether the issue was user denial-of-access or
-        // a connection issue.
-        this.data.details =
-            "Authentication failed: Either we couldn't reach the " +
-            "authentication service or you denied the application permission " +
-            "to upload your app.";
+        this.data.details = this.getOAuthErrorDetails(oauth);
         this.data.state = 'FAILED';
         this.metricsDAO.put(this.Error.create({
           name: 'Action:publish:fail - ' +
@@ -192,13 +186,7 @@ CLASS({
 
       if ( ! oauthStatus ) {
         this.data.message = 'Oops! Looks like something went wrong.';
-        // TODO(markdittmer): Figure out how to use error object (in "oauth"
-        // variable) to determine whether the issue was user denial-of-access or
-        // a connection issue.
-        this.data.details =
-            "Authentication failed: Either we couldn't reach the " +
-            "authentication service or you denied the application permission " +
-            "to upload your app.";
+        this.data.details = this.getOAuthErrorDetails(oauth);
         this.data.state = 'FAILED';
         this.metricsDAO.put(this.Error.create({
           name: 'Action:upload:fail - ' +
@@ -246,12 +234,28 @@ CLASS({
         label: this.data.config.model_.id || this.data.config.name_,
       }));
 
-      // TODO(markdittmer): This is currently not going through. Perhaps we
-      // need to wait for the updateDetailView to receive an event/update?
-      this.data.toolbar && this.data.toolbar.commitAction &&
-          this.data.toolbar.commitAction();
       this.data.state = 'COMPLETED';
       this.data.details = 'App uploaded to your Chrome Web Store dashboard.';
+    },
+    function getOAuthErrorDetails(err) {
+      if ( ! err || ! err.message ) {
+        return "Authentication failed: Either we couldn't reach the " +
+            "authentication service or you denied the application permission " +
+            "to upload your app.";
+      }
+
+      if ( err.message.indexOf('request failed') >= 0 ) {
+        return "Authentication failed: We couldn't reach the authentication " +
+            "service.";
+
+      } else if ( err.message.indexOf('not approve') >= 0 ) {
+        return "Authentication failed: You denied the application permission " +
+            "to upload your app.";
+      } else {
+        return "Authentication failed: Either we couldn't reach the " +
+            "authentication service or you denied the application permission " +
+            "to upload your app.";
+      }
     },
   ],
 });

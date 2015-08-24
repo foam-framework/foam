@@ -608,7 +608,7 @@ CLASS({
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Summary<sup>2</sup>: Efficiency</div>
+        <div class="flex-grow content small-heading">Summary: Efficiency</div>
       </div>
     </div>
     <div class="flex-row">
@@ -616,10 +616,9 @@ CLASS({
         <span class="flex-col" style="font-size: 32px;">
           <div style="font-size:48px;color:gray;">
             <i style="color:red;">Efficiency</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
-            <br>
             Application <font color="red">Performance</font><br>
-            Developer <font color="red">Efficiency</font><br>
-            <br>
+            Application <font color="red">Size</font><br>
+            Developer <font color="red">Efficiency</font><br><br>
             <i style="color:#3c0;font-size:50px;">"Fast Apps Fast"</i><br>
           </div>
         </span>

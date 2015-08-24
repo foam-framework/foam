@@ -285,7 +285,7 @@ CLASS({
       label: '',
       iconUrl: 'images/ic_clear_black_24dp.png',
       isAvailable: function() { return !this.q; },
-      action: function() {
+      code: function() {
         this.doClose();
       }
     }

@@ -228,27 +228,27 @@ CLASS({
     {
       name: 'up',
       keyboardShortcuts: [ 38 /* up arrow */, 'w' ],
-      action: function() { this.snake.up(); }
+      code: function() { this.snake.up(); }
     },
     {
       name: 'down',
       keyboardShortcuts: [ 40 /* down arrow */, 's' ],
-      action: function() { this.snake.down(); }
+      code: function() { this.snake.down(); }
     },
     {
       name: 'left',
       keyboardShortcuts: [ 37 /* left arrow */, 'a' ],
-      action: function() { this.snake.left(); }
+      code: function() { this.snake.left(); }
     },
     {
       name: 'right',
       keyboardShortcuts: [ 39 /* right arrow */, 'd' ],
-      action: function() { this.snake.right(); }
+      cod: function() { this.snake.right(); }
     },
     {
       name: 'fire',
       keyboardShortcuts: [ ' ', 'x' ],
-      action: function() { this.snake.fire(); }
+      code: function() { this.snake.fire(); }
     }
   ],
 

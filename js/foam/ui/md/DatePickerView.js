@@ -299,14 +299,14 @@ CLASS({
     {
       name: 'cancel',
       label: 'CANCEL',
-      action: function() {
+      code: function() {
         this.popup.close();
       }
     },
     {
       name: 'ok',
       label: 'OK',
-      action: function() {
+      code: function() {
         this.data = this.softData;
         this.popup.close();
       }
@@ -314,14 +314,14 @@ CLASS({
     {
       name: 'left',
       label: '<',
-      action: function() {
+      code: function() {
         this.snapToView(-1);
       }
     },
     {
       name: 'right',
       label: '>',
-      action: function() {
+      code: function() {
         this.snapToView(1);
       }
     },

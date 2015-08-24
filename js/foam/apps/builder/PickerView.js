@@ -139,7 +139,7 @@ CLASS({
       label: 'Edit',
       width: 100,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAZ0lEQVR4AdXOrQ2AMBRF4bMc/zOUOSrYoYI5cQQwpAieQDW3qQBO7Xebxx8bWAk5/CASmRHzRHtB+d0Bkw0W5ZiT0SYbFcl6u/2eeJHbxIHOhWO6Er6/y9syXpMul5PLefAGKZ1/rwtTimwbWLpiCgAAAABJRU5ErkJggg==',
-      action: function() {
+      code: function() {
         // we export ourself as the dao for the editor, so when it puts the result back
         // we react in our put() method.
         this.stack.pushView(this.UpdateDetailView.create({
@@ -147,7 +147,7 @@ CLASS({
           innerView: this.editViewType,
           liveEdit: true,
         }));
-      }
+      } 
     },
     {
       name: 'add',
@@ -156,7 +156,7 @@ CLASS({
       isAvailable: function() {
         return !! this.newItemDescriptor;
       },
-      action: function() {
+      code: function() {
         this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
         var edit = this.UpdateDetailView.create({
           data: this.newItemDescriptor.create(),

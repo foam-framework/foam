@@ -185,7 +185,7 @@ CLASS({
   actions: [
     {
       name: 'test',
-      action: function() {
+      code: function() {
         var dao = this.strategy === 'FOAM' ? this.dao : this.dao2;
         var startTime = Date.now();
         for ( var i = 0 ; i < 1000 ; i++ ) {
@@ -200,11 +200,5 @@ CLASS({
         this.X.setTimeout(this.test.bind(this), 0);
       }
     }
-  ],
-
-  methods: {
-    init: function() {
-      this.SUPER();
-    }
-  }
+  ]
 });

@@ -21,6 +21,11 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
   traits: ['foam.ui.md.MDStyleTrait'],
 
+  requires: [
+    'foam.ui.QueryParserAutocompleter',
+    'foam.ui.md.AutocompleteView',
+  ],
+
   properties: [
     {
       name: 'className',
@@ -59,6 +64,26 @@ CLASS({
         ['ENTER_ONLY', 'Enter only']
       ]
     },
+    {
+      name: 'autocomplete',
+      documentation: 'Set this to true to enable autocomplete. Off by ' +
+          'default, unless the $$DOC{ref:".prop", label: "property"} has an ' +
+          '$$DOC{ref:"Property.autocompleter"} set.',
+      defaultValueFn: function() { return !! (this.prop && this.prop.autocompleter); }
+    },
+    {
+      model_: 'FactoryProperty',
+      name: 'autocompleter',
+      defaultValue: 'foam.ui.QueryParserAutocompleter',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'acRowView',
+      defaultValue: 'foam.ui.md.DetailView'
+    },
+    {
+      name: 'autocompleteView',
+    },
     { model_: 'IntProperty', name: 'displayHeight' },
     { model_: 'IntProperty', name: 'displayWidth' },
     {
@@ -84,15 +109,8 @@ CLASS({
       defaultValue: false
     },
     {
-      name: 'darkBackground',
-      defaultValue: false
-    },
-    {
       name: 'clearIcon',
-      defaultValueFn: function() {
-        return this.darkBackground ? 'images/ic_cancel_24dp.png' :
-            'images/ic_cancel_black_24dp.png';
-      }
+      defaultValue: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAABAUlEQVQ4y72Syw2CQBCGiQfpBbAILMFEIpHQxd+HJib2oIFifFwxG/EAHegFRx77BLmxc9nH98HM7ljWxAM2YqRg+FAwJIhg/8M3eKHSIkfQD89wNOAuDpiZwjBeK2Yy1Uis1VK73C/wUXKooNWtnT8xF0LMEZ9WXqsUcGi15GdbIaR8s4RHa5fgBl9I/zsLgUm5lnBrRccrPITwUcorfoqBV3gPC0696w0LTMfp656hZEJIDLyUyu/OTkKIlGvtcm/K9/lZKD9c3m5e6d7Vh7u3cyY9HCnBaGus9G46/MX3fe09rOx62ruW1tRiOsyMZBRlji3OeOBNkeGEUCl1kvEFpNGiJ85Uf0MAAAAASUVORK5CYII=',
     },
     {
       name: 'underline',
@@ -144,7 +162,39 @@ CLASS({
       } else {
         Events.follow(this.data$, this.softData$);
       }
+
+      this.setupAutocomplete();
     },
+
+    setupAutocomplete: function() {
+      if ( ! this.autocomplete ) return;
+      var view = this.autocompleteView = this.AutocompleteView.create({
+        autocompleter: this.autocompleter({
+          prop: this.prop
+        }, this.Y),
+        target: this
+      });
+
+      this.bindAutocompleteEvents(view);
+    },
+
+    bindAutocompleteEvents: function(view) {
+      this.$input.addEventListener('blur', function() {
+        view.publish('blur');
+      });
+      this.$input.addEventListener('input', function() {
+        view.autocomplete(this.softData);
+      }.bind(this));
+      this.$input.addEventListener('focus', function() {
+        view.autocomplete(this.softData);
+      }.bind(this));
+    },
+
+    onAutocomplete: function(data) {
+      this.data = this.softData = data;
+      this.onChange();
+    },
+
     focus: function() {
       this.$input.focus();
     },
@@ -274,7 +324,7 @@ CLASS({
               class="md-text-field-input <%= this.underline ? '' : 'md-text-field-borderless' %>"
               <%= this.floatingLabel ? '' : 'placeholder="' + this.label + '"' %><%= this.mode == 'read-only' ? ' disabled' : '' %> />
           <% if ( this.clearAction ) { %>
-            $$clear{ iconUrl: this.clearIcon }
+            $$clear{ iconUrl: this.clearIcon, ligature: 'cancel' }
           <% } %>
         <% } %>
       </div>
@@ -285,10 +335,9 @@ CLASS({
     {
       name: 'clear',
       label: '',
-      iconUrl: 'images/ic_cancel_24dp.png',
       isAvailable: function() { return !! this.softData.length; },
-      action: function() {
-        this.softData = '';
+      code: function() {
+        this.data = this.softData = '';
       }
     }
   ],
@@ -325,6 +374,16 @@ CLASS({
     {
       name: 'onKeyDown',
       code: function(e) {
+        if ( this.autocompleter ) {
+          this.publish(['keydown'], e);
+          // Special case: For normal keys, stop here. For Enter, allow the
+          // other case below to execute. When the autocompleter has selected
+          // an entry, this is a redundant set of this.data; when the
+          // autocomplete if empty this allows the normal Enter behavior for
+          // text fields.
+          if (e.keyCode !== 13) return;
+        }
+
         // Do not update-on-enter when growable and/or displayHeight > 1.
         if ( e.keyCode === 13 && ! this.growable && this.displayHeight <= 1 )
           this.data = this.softData;

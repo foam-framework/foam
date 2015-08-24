@@ -405,6 +405,25 @@ var FObject = {
     }
   },
 
+  validate: function() {
+    var ret = null;
+
+    var ps = this.model_.getRuntimeProperties();
+
+    // TODO: cache properties with validate defined
+    for ( var i = 0 ; i < ps.length ; i++ ) {
+      var p = ps[i];
+      if ( p.validate ) {
+        var e = p.validate.call(this);
+        if ( e ) (ret || (ret = [])).push([p,e]);
+      }
+    }
+
+    return ret;
+  },
+
+  isValid: function() { return ! this.validate(); },
+
   equals: function(other) { return this.compareTo(other) == 0; },
 
   compareTo: function(other) {

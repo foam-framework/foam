@@ -90,7 +90,7 @@ CLASS({
     {
       name: 'open',
       label: 'open_in_browser',
-      action: function() {
+      code: function() {
         // TODO(markdittmer): Implement this.
         console.log('Open process', this.id);
       }
@@ -98,7 +98,7 @@ CLASS({
     {
       name: 'kill',
       label: 'delete',
-      action: function() {
+      code: function() {
         // TODO(markdittmer): Implement this.
         console.log('Kill process', this.id);
       }

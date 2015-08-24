@@ -47,14 +47,12 @@ CLASS({
       name: 'togglePanel',
       label: '',
       iconUrl: 'https://www.google.com/images/icons/material/system/2x/menu_white_24dp.png',
-      action: function() {
+      code: function() {
         console.log('Thanks for clicking.');
       },
     },
   ],
   templates: [
-    function toHTML() {/*
-      %%topToolbar
-    */},
+    function toHTML() {/* %%topToolbar */},
   ]
 });

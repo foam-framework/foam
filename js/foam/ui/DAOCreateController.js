@@ -44,7 +44,7 @@ CLASS({
       label: 'Create',
       help:  'Create a new record.',
 
-      action: function() {
+      code: function() {
         var self = this;
         this.dao.put(this.data, {
           put: function(value) {
@@ -61,13 +61,13 @@ CLASS({
       name:  'cancel',
       help:  'Cancel creation.',
 
-      action: function() { this.X.stack.back(); }
+      code: function() { this.X.stack.back(); }
     },
     {
       name:  'help',
       help:  'View help.',
 
-      action: function() {
+      code: function() {
         var model = this.data.model_;
         var helpView = this.X.HelpView.create(model);
         this.X.stack.pushView(helpView);

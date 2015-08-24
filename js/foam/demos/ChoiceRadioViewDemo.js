@@ -81,34 +81,24 @@ CLASS({
     {
       name: 'oneAction',
       label: 'one',
-      action: function() {
+      code: function() {
         console.log("one action opened");
         this.popupView.open();
         this.X.setTimeout(this.popupView.close.bind(this.popupView), 3000);
       },
-      isEnabled: function(action) {
-        return this.enabledButton;
-      },
-      isAvailable: function(action) {
-        return this.showButton;
-      }
+      isEnabled: function(action) { return this.enabledButton; },
+      isAvailable: function(action) { return this.showButton; }
     },
     {
       name: 'closeAction',
       label: 'Close',
-      action: function() {
+      code: function() {
         console.log("action close");
         this.popupView.close();
       },
-      isEnabled: function(action) {
-        return this.enabledButton;
-      },
-      isAvailable: function(action) {
-        return this.showButton;
-      }
+      isEnabled: function(action) { return this.enabledButton; },
+      isAvailable: function(action) { return this.showButton; }
     }
-
-
   ],
 
   methods: {
@@ -120,12 +110,10 @@ CLASS({
       this.SUPER();
       this.X.touchManager   = this.TouchManager.create();
       this.X.gestureManager = this.GestureManager.create();
-
     }
   },
 
-  templates:
-  [
+  templates: [
     function CSS() {/*
       body {
         font-family: Roboto, RobotoDraft;
@@ -171,5 +159,4 @@ CLASS({
         $$enabledButton{model_:'foam.ui.md.CheckboxView', label: 'Button Enabled', mode:'read-only'}
     */}
   ]
-
 });

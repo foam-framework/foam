@@ -35,6 +35,12 @@ CLASS({
       model_: 'FactoryProperty',
       hidden: true,
       name: 'factory',
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'requiresUserConfiguration',
+      help: 'True if the user should be shown an EditView to configure this DAOFactory',
+      defaultValue: false,
     }
   ],
 

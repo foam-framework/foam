@@ -61,7 +61,7 @@ CLASS({
       name:  'visit',
       help:  'Visit Bookmark.',
 
-      action: function()      {
+      code: function()      {
         window.location = this.url;
         /*
           chrome.send('navigateToUrl', [

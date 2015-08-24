@@ -234,6 +234,19 @@ var Property = {
       */}
     },
     {
+      name: 'subKey',
+      type: 'EXPR',
+      displayWidth: 20,
+      defaultValue: 'ID',
+      help: 'The foreign key that this property references.',
+      documentation: function() {/*
+        Used to project whole objects of $$DOC{ref:'.subType'} into the value
+        of this Property. For foreign key properties, this is the foreign property.
+        For eg. an email property, when the subType is a whole Contact object,
+        subKey will be EMAIL.
+      */}
+    },
+    {
       name: 'units',
       type: 'String',
       required: true,
@@ -455,6 +468,25 @@ var Property = {
       required: false,
       view: 'foam.ui.FunctionView',
       help: 'Function for validating property value.',
+      preSet: function(_, f) {
+        var str = f.toString();
+        var deps = str.
+          match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+          split(',').
+          map(function(name) { return name.trim(); });
+
+        var f2 = function() {
+          var args = [];
+          for ( var i = 0 ; i < deps.length ; i++ )
+            args.push(this[deps[i]]);
+          return f.apply(this, args);
+        };
+
+        f2.dependencies = deps;
+        f2.toString = function() { return f.toString(); };
+
+        return f2;
+      },
       documentation: function() { /*
       */}
     },

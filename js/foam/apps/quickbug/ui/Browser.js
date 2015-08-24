@@ -363,22 +363,22 @@ CLASS({
     // TODO: register keyboard bindings for actions
     {
       name:  'zoomIn',
-      action: function() { this.zoom *= 1.1; }
+      code: function() { this.zoom *= 1.1; }
     },
     {
       name:  'zoomOut',
-      action: function() { this.zoom *= 0.9; }
+      code: function() { this.zoom *= 0.9; }
     },
     {
       name: 'zoomReset',
-      action: function() { this.zoom = 1.0; }
+      code: function() { this.zoom = 1.0; }
     },
     {
       name: 'link',
       label: '',
       iconUrl: 'images/link.svg',
       help:  'Link to code.google.com',
-      action: function() {
+      code: function() {
         var url = this.legacyUrl;
         console.log(url);
         this.openURL(url);
@@ -386,17 +386,17 @@ CLASS({
     },
     {
       name: 'launchBrowser',
-      action: function() { this.project.launchBrowser(); }
+      code: function() { this.project.launchBrowser(); }
     },
     {
       name:  'launchSync',
       label: 'Sync Status',
-      action: function() { this.project.launchSync(); }
+      code: function() { this.project.launchSync(); }
     },
     {
       name: 'favourites',
       label: 'Projects &#x25BE;',
-      action: function() {
+      code: function() {
         if ( this.favouritesMenu ) {
           this.favouritesMenu.close();
           return;
@@ -412,7 +412,7 @@ CLASS({
           this.project.user.preferredProjects.map(function(p) {
             return Action.create({
               name: p,
-              action: function() {
+              code: function() {
                 this.qbug.launchBrowser(p);
               }
             });
@@ -440,24 +440,24 @@ CLASS({
     {
       name: 'findProjects',
       label: 'Find open source projects...',
-      action: function() { this.openURL('https://code.google.com/hosting/'); }
+      code: function() { this.openURL('https://code.google.com/hosting/'); }
     },
     {
       name: 'createProject',
       label: 'Create a project...',
-      action: function() { this.openURL('https://code.google.com/hosting/createProject'); }
+      code: function() { this.openURL('https://code.google.com/hosting/createProject'); }
     },
     {
       name: 'configProjects',
       label: 'Configure projects...',
-      action: function() { this.project.launchConfigProjects(); }
+      code: function() { this.project.launchConfigProjects(); }
     },
     {
       name: 'addBookmark',
       iconUrl: 'images/star_off.gif',
       label: '',
       help: 'Create Bookmark',
-      action: function() {
+      code: function() {
         var anchor = this.addBookmarkView.$;
         var view   = this.AddBookmarkDialog.create({
           dao: this.bookmarkDAO,
@@ -474,7 +474,7 @@ CLASS({
       name: 'changeUser',
       help: 'Change the current user.',
       labelFn: function() { return XMLUtil.escape(this.project.user.email); },
-      action: function() {
+      code: function() {
         var self = this;
         this.qbug.authAgent2.refresh(function() {
           self.qbug.refreshUser();
@@ -485,7 +485,7 @@ CLASS({
     {
       name: 'newIssue',
       label: 'New issue &#x25BE;',
-      action: function() {
+      code: function() {
         if ( this.createMenu ) {
           this.createMenu.close();
           return;
@@ -503,7 +503,7 @@ CLASS({
           this.project.project.issuesConfig.prompts.map(function(c) {
             return self.Action.create({
               name: c.name,
-              action: function() {
+              code: function() {
                 self.location.createIssueTemplate = c.name;
                 self.location.createMode = true;
               }

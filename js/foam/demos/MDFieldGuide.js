@@ -76,8 +76,7 @@ CLASS({
         {
           name: 'basicAction',
           label: 'Basic Actions',
-          action: function() {
-          }
+          code: function() {}
         }
       ]
     }
@@ -114,7 +113,7 @@ CLASS({
   actions: [
     {
       name: 'popupAction',
-      action: function() {
+      code: function() {
         var popup = this.PopupView.create({
           delegate: Model.create({
             extendsModel: 'foam.ui.SimpleView',
@@ -124,7 +123,7 @@ CLASS({
             actions: [
               {
                 name: 'done',
-                action: function() { this.popup.close(); }
+                code: function() { this.popup.close(); }
               }
             ],
             templates: [

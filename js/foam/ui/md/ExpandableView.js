@@ -152,7 +152,7 @@ CLASS({
   actions: [
     {
       name: 'toggleExpanded',
-      action: function() {
+      code: function() {
         if ( this.expanded ) this.collapse();
         else                 this.expand();
         this.toggleExpandedIcon();

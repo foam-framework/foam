@@ -185,8 +185,26 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .md-title {
-  font-size: 120%;
-  color: black;
+  color: rgba(0,0,0,0.87);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+
+.md-headline {
+  color: rgba(0,0,0,0.87);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+}
+
+.md-button-label {
+  color: rgba(0,0,0,0.87);
+  tex-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
 }
 
 .createButton {

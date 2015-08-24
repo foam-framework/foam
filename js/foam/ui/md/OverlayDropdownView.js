@@ -14,6 +14,9 @@ CLASS({
   name: 'OverlayDropdownView',
   extendsModel: 'foam.ui.SimpleView',
 
+  requires: [
+    'foam.ui.md.FlatButton',
+  ],
   imports: [
     'document',
     'window',
@@ -151,6 +154,13 @@ CLASS({
       this.$.addEventListener('mouseleave', this.onMouseLeave);
       this.$.addEventListener('click', this.onClick);
     },
+    function init() {
+      this.SUPER();
+      this.Y.registerModel(this.FlatButton.xbind({
+        displayMode: 'LABEL_ONLY',
+        color: 'black',
+      }), 'foam.ui.ActionButton');
+    },
   ],
 
   listeners: [
@@ -229,6 +239,19 @@ CLASS({
       }
       dropdown.open {
         overflow-y: auto;
+      }
+      dropdown action-list.vertical flat-button {
+        padding: 16px;
+        margin: 0;
+        border-radius: 0;
+      }
+      dropdown action-list.vertical .md-button-label {
+        text-transform: none;
+      }
+      dropdown action-list.vertical flat-button {
+        padding: 16px;
+        margin: 0;
+        border-radius: 0;
       }
     */}
   ],

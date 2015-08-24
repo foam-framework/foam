@@ -40,21 +40,10 @@ CLASS({
       defaultValue: 'foam.ui.md.DetailView',
     },
     {
-      model_: 'ModelProperty',
-      name: 'baseModel',
-      help: 'The list is filtered to only include DAOs that store models extending this base model.',
-      defaultValue: Model,
-      postSet: function() {
-        if ( this.modelDAO ) {
-          this.filteredDAO = this.modelDAO.where(EQ(this.DAOFactory.MODEL_TYPE, this.baseModel.id));
-        }
-      }
-    },
-    {
       name: 'modelDAO',
       postSet: function(old,nu) {
         if ( this.baseModel ) {
-          this.filteredDAO = this.modelDAO.where(EQ(this.DAOFactory.MODEL_TYPE, this.baseModel.id));
+          this.filteredDAO = this.modelDAO.where(EQ(this.DAOFactory.MODEL_TYPE, 'foam.apps.builder.dao.DAOFactory'));
         }
       },
     },

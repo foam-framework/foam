@@ -100,6 +100,14 @@ CLASS({
       ],
     },
     {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'displayMode_',
+      getter: function() {
+        if ( ! ( this.iconUrl || this.ligature ) ) return 'LABEL_ONLY';
+        return this.displayMode;
+      },
+    },
+    {
       model_: 'StringProperty',
       name: 'iconUrl',
     },
@@ -164,7 +172,7 @@ CLASS({
         if ( this.$ ) this.$.style.color = this.currentColor_;
       }.bind(this));
       this.$.style.color = this.currentColor_;
-      this.$.style.font = this.alpha;
+      this.$.style.font = this.font;
       this.$.style.opacity = this.alpha;
       this.$.style.background = this.background;
     },
@@ -245,14 +253,18 @@ CLASS({
         padding: 10px;
       }
 
+      flat-button .md-button-label {
+        color: inherit;
+      }
+
       flat-button.hidden,
       flat-button.label-only .flat-button-icon-container,
-      flat-button.icon-only .flat-button-label-container {
+      flat-button.icon-only .md-button-label {
         display: none;
       }
 
-      flat-button.label-only .flat-button-label-container {
-        text-transform: uppercase;
+      flat-button:not(.label-only) .md-button-label {
+        text-transform: none;
       }
 
       flat-button .halo {
@@ -285,7 +297,7 @@ CLASS({
         </div>
         <spacer>
         </spacer>
-        <span id="<%= this.id + "CONTENT" %>" class="flat-button-label-container"><% this.labelHTML(out) %></span>
+        <span id="<%= this.id + "CONTENT" %>" class="md-button-label"><% this.labelHTML(out) %></span>
       </%%tagName>
       <% this.on('click', function(e) {
            e.preventDefault();
@@ -295,12 +307,14 @@ CLASS({
          this.setClass(
              'icon-only',
              function() {
-               return this.displayMode === 'ICON_ONLY';
+               this.iconUrl; this.ligature; this.displayMode;
+               return this.displayMode_ === 'ICON_ONLY';
              }, this.id);
          this.setClass(
              'label-only',
              function() {
-               return this.displayMode === 'LABEL_ONLY';
+               this.iconUrl; this.ligature; this.displayMode;
+               return this.displayMode_ === 'LABEL_ONLY';
              }, this.id);
         this.setClass('hidden', function() { return self.isHidden; }, this.id); %>
     */},

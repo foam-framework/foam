@@ -40,7 +40,7 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         $$appName
         $$model{ model_: 'foam.apps.builder.datamodels.ModelPickerView', baseModel: this.data.baseModelId }
-        $$dao{ model_: 'foam.apps.builder.dao.DAOPickerView', baseModel: this.data.baseModelId }
+        $$dao{ model_: 'foam.apps.builder.dao.DAOPickerView' }
         $$version
         $$termsOfService
         $$rotation

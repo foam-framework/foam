@@ -42,7 +42,7 @@ CLASS({
   actions: [
     {
       name: 'test',
-      action: function() {
+      code: function() {
         var dao = this.ScriptTagDAO.create();
         dao.find(this.objId, {
           put: function(obj) {

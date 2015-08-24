@@ -47,7 +47,7 @@ CLASS({
     {
       name: 'zoomIn',
       keyboardShortcuts: [ 'ctrl-shift-187', 'ctrl-187' ],
-      action: function() {
+      code: function() {
         this.resizeBy(this.document.body.clientWidth/10, this.document.body.clientHeight/10);
         this.zoom *= 1.1;
       }
@@ -55,14 +55,14 @@ CLASS({
     {
       name: 'zoomOut',
       keyboardShortcuts: [ 'ctrl-shift-189', 'ctrl-189' ],
-      action: function() {
+      code: function() {
         this.resizeBy(-this.document.body.clientWidth/10, -this.document.body.clientHeight/10);
         this.zoom /= 1.1;
       }
     },
     {
       name: 'zoomReset',
-      action: function() { this.zoom = 1.0; }
+      code: function() { this.zoom = 1.0; }
     }
   ]
 });

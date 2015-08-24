@@ -19,12 +19,11 @@ CLASS({
     'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.ExportManager',
-    'foam.apps.builder.browser.AppConfig as BrowserAppConfig',
-    'foam.apps.builder.browser.DesignerView as BrowserDesignerView',
     'foam.apps.builder.kiosk.KioskAppConfig',
     'foam.apps.builder.kiosk.KioskDesignerView',
     'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
     'foam.apps.builder.questionnaire.DesignerView as QuestionnaireDesignerView',
+    'foam.apps.builder.questionnaire.AppWizard',
     'foam.browser.ui.BrowserView',
     'foam.dao.ContextualizingDAO',
     'foam.dao.EasyDAO',
@@ -84,6 +83,7 @@ CLASS({
               seqNo: true,
               logging: true,
             }),
+            detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
             innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView',
           }),
           this.BrowserConfig.create({
@@ -100,25 +100,20 @@ CLASS({
                 })
               })
             }),
+            createView: function(args, X) {
+              var newObj = this.model.create();
+              return this.X.lookup('foam.apps.builder.questionnaire.AppWizard').create({
+                data: newObj
+              }, X.sub({ dao: this.dao }));
+//               return this.detailView({
+//                 data: newObj,
+//                 innerView: 'foam.apps.builder.questionnaire.AppWizard',
+//                 }, X.sub({ dao: this.dao }));
+            },
             detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
-            innerDetailView: 'foam.apps.builder.questionnaire.DesignerView',
-          }),
-          this.BrowserConfig.create({
-            title: 'Browser Apps',
-            label: 'Browser App',
-            model: this.BrowserAppConfig,
-            dao:
-            this.SeqNoDAO.create({ delegate:
-              this.ContextualizingDAO.create({ delegate:
-                this.IDBDAO.create({
-                  model: this.BrowserAppConfig,
-                  name: 'BrowserAppConfigs',
-                  useSimpleSerialization: false,
-                })
-              })
-            }),
-            detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
-            innerDetailView: 'foam.apps.builder.browser.DesignerView',
+            innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'
+            //detailView: 'foam.apps.builder.questionnaire.AppWizard',
+            //innerDetailView: 'foam.apps.builder.questionnaire.AppWizard',
           }),
         ].dao;
         dao.model = this.BrowserConfig;
