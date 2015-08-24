@@ -44,7 +44,7 @@ CLASS({
     { name: 'topic' },
     { name: 'image' },
     { name: 'roundImage' },
-    { name: 'borderWidth', defaultValue: 6 },
+    { name: 'borderWidth', defaultValue: 8 },
     { name: 'color',       defaultValue: 'white' }
   ],
 
@@ -75,19 +75,18 @@ CLASS({
           this.r = Math.min(width, height)/2.3;
           this.x = width/2;
           this.y = height/2;
-        }.bind(this), Movement.ease(0.4,0.2))();
+        }.bind(this), Movement.easy)();
       } else {
         this.mass = this.oldMass_;
         this.cancel_ = Movement.animate(1000, function() {
           this.r = this.oldR_;
-        }.bind(this), Movement.ease(0.4,0.2))();
+        }.bind(this), Movement.easy)();
       }
     },
     function paintSelf() {
       if ( this.image ) {
         var d, s;
         if ( this.roundImage ) {
-          this.borderWidth = 0;
           d = 2 * this.r;
           s = -this.r;
         } else {
@@ -221,7 +220,7 @@ CLASS({
 
         var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: this.lobby.width, height: this.lobby.height});
         this.lobby.addChild(r);
-        Movement.animate(1000, function() { r.alpha = 0.7; })();
+        Movement.animate(1000, function() { r.alpha = 0.7; }, Movement.easy)();
 
         this.children_.push(r);
 
@@ -253,7 +252,6 @@ CLASS({
       if ( this.image ) {
         var d, s;
         if ( this.roundImage ) {
-          this.borderWidth = 0;
           d = 2 * this.r;
           s = -this.r;
         } else {
@@ -289,7 +287,12 @@ CLASS({
   exports: [ 'as lobby' ],
 
   constants: {
-    COLOURS: ['#33f','#f00','#fc0', '#3c0']
+//    COLOURS: ['#33f','#f00','#fc0', '#3c0']
+    RED:    'rgb(219,68,55)',
+    GREEN:  'rgb(15,157,88)',
+    BLUE:   'rgb(66,133,244)',
+    YELLOW: 'rgb(244,180,0)',
+    COLOURS: ['rgb(66,133,244)','rgb(219,68,55)','rgb(244,180,0)', 'rgb(15,157,88)']
   },
 
   properties: [
@@ -330,13 +333,13 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: 'red' },
-        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: 'red' },
+        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: this.RED },
+        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: this.RED },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
-        { topic: 'inbox',        image: 'inbox.png',        r: 160 },
-        { topic: 'android',      image: 'android.png',      r: 90, colour: '#3c0' },
+        { topic: 'inbox',        image: 'inbox.png',        r: 160, colour: this.BLUE },
+        { topic: 'android',      image: 'android.png',      r: 90, colour: this.GREEN },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
-        { topic: 'fiber',        image: 'fiber.jpg',        r: 180 },
+        { topic: 'fiber',        image: 'fiber.jpg',        r: 180, colour: this.BLUE },
         { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: 'darkblue' },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100, model: 'com.google.watlobby.VideoBubble' },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
@@ -407,7 +410,6 @@ CLASS({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          borderWidth: 6,
           color: 'white',
           border: colour
         });
@@ -421,7 +423,7 @@ CLASS({
 
       for ( var i = 0 ; i < 200 ; i++ ) {
         var b = this.PhysicalCircle.create({
-          r: 5,
+          r: 6,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           borderWidth: 0.5,

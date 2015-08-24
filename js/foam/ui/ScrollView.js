@@ -102,12 +102,15 @@ CLASS({
       documentation: 'If the <tt>rowHeight</tt> is not set, a <tt>rowView</tt> will be constructed and its height checked. This property holds that view so it can be destroyed properly.'
     },
     {
+      model_: 'ViewFactoryProperty',
       name: 'rowView',
       documentation: 'The view for each row. Can specify a <tt>preferredHeight</tt>, which will become the <tt>rowHeight</tt> for the <tt>ScrollView</tt> if <tt>rowHeight</tt> is not set explicitly.',
       postSet: function(_, nu) {
-        var view = this.Y.lookup(nu);
-        if ( view.PREFERRED_HEIGHT && this.rowHeight < 0 )
-          this.rowHeight = view.create({ model: this.dao.model }).preferredHeight;
+        if (typeof nu === 'string' && this.rowHeight < 0) {
+          var view = this.Y.lookup(nu);
+          if ( view.PREFERRED_HEIGHT )
+            this.rowHeight = view.create({ model: this.dao.model }).preferredHeight;
+        }
       }
     },
     {
@@ -273,7 +276,6 @@ CLASS({
       if ( homeless.length ) {
         var html = [];
         var newViews = [];
-        var rowView = this.Y.lookup(this.rowView);
         for ( var i = 0 ; i < homeless.length ; i++ ) {
           var h = homeless[i];
           var x = self.cache[h];
@@ -285,7 +287,7 @@ CLASS({
             r.data = x;
             r.y = h * self.rowHeight;
           } else {
-            var v = rowView.create({ model: x.model_, data: x }, this.Y);
+            var v = this.rowView({ model: x.model_, data: x }, this.Y);
             var svr = self.ScrollViewRow.create({ data: x, id: v.nextID() });
             self.visibleRows[h] = svr;
 
@@ -319,9 +321,19 @@ CLASS({
       this.oldVisibleBottom = this.visibleBottom;
     },
 
-    // Clears all caches and saved rows and everything.
+    // Strongest cleanup: Clears all caches, saved rows, etc. as well as the
+    // usual View cleanup of listeners.
     destroy: function( isParentDestroyed ) {
       this.SUPER(isParentDestroyed);
+      this.softDestroy();
+      this.removeScrollListener();
+    },
+
+    // Cleans up all internal state in the ScrollView, but doesn't run the
+    // general View destroy() logic.
+    // softDestroy() destroy()s and removes all the ScrollViewRows.
+    // Use softDestroy() when you essentially want a new ScrollView.
+    softDestroy: function() {
       var keys = Object.keys(this.visibleRows);
       for ( var i = 0; i < keys.length; i++ ) {
         this.visibleRows[keys[i]].destroy();
@@ -333,17 +345,18 @@ CLASS({
       }
       this.extraRows = [];
 
+      var container = this.container$();
+      if (container) container.innerHTML = '';
+
       this.cache = [];
       this.loadedTop = -1;
       this.loadedBottom = -1;
       this.oldVisibleBottom = -1;
       this.oldVisibleTop = -1;
-
-      this.removeScrollListener();
     },
 
-    // Clears all cached data, when the DAO changes.
-    // Allows reuse of the rows.
+    // Softest kind of ScrollView invalidation - cleans up cached data but
+    // will reuse the rows. Generally you want this on a DAO change.
     invalidate: function() {
       if ( this.visibleRows ) {
         var keys = Object.keys(this.visibleRows);
@@ -527,7 +540,7 @@ CLASS({
         <% if ( this.rowHeight < 0 ) { %>
           <div id="<%= this.id + '-rowsize' %>" style="visibility: hidden">
             <%
-              this.rowSizeView = this.Y.lookup(this.rowView).create({ data: this.dao.model.create() }, this.Y);
+              this.rowSizeView = this.rowView({ data: this.dao.model.create() }, this.Y);
               out(this.rowSizeView.toHTML());
               this.addChild(this.rowSizeView);
             %>

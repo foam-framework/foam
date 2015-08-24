@@ -11,14 +11,16 @@
 
 CLASS({
   package: 'foam.apps.builder.questionnaire',
-  name: 'ModelWizard',
+  name: 'ModelPreviewWizard',
   extendsModel: 'foam.apps.builder.WizardPage',
 
-  imports: [
-    'modelDAO',
-  ],
-
   properties: [
+    {
+      name: 'data',
+      adapt: function(old,nu) {
+        return nu.deepClone();
+      }
+    },
     {
       name: 'nextViewFactory',
       defaultValue: null,
@@ -28,24 +30,27 @@ CLASS({
   actions: [
     {
       name: 'next',
-      label: 'Finish',
+      label: 'Done with Preview',
+    },
+    {
+      name: 'exit',
+      isAvailable: function() { return false; }
     }
   ],
 
-
   methods: [
     function onNext() {
-      this.modelDAO && this.modelDAO.put(this.data.model);
-      this.SUPER();
+      // skip SUPER(), we don't want to save
     }
   ],
 
   templates: [
     function contentHTML() {/*
-        <p class="md-style-trait-standard md-title">Create your Questions</p>
-        <p class="md-style-trait-standard">Add questions with the large '+' button at the bottom.
+        <p class="md-style-trait-standard md-title">Preview</p>
+        <p class="md-style-trait-standard">Here is a preview of
+        <%= this.data.name %>
         </p>
-        $$model{ model_: 'foam.meta.types.ModelEditView' }
+        $$data{ model_: 'foam.meta.types.ModelEditView', mode: 'read-only' }
     */},
   ],
 

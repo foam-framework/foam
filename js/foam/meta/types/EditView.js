@@ -24,13 +24,18 @@ CLASS({
   imports: [
     'dao',
     'metaEditModelTitle',
-    'metaEditPropertyTitle'
+    'metaEditPropertyTitle',
+    'mode',
   ],
 
   properties: [
     {
       name: 'className',
       defaultValue: 'meta-edit-view',
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
     }
   ],
 
@@ -39,7 +44,7 @@ CLASS({
       name: 'delete',
       help: 'Delete this item.',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAO0lEQVQ4y2NgGPwgUSHxQeJ/KHyQqIBP6X/ckDoayHE/qeaPahjVgEvDK6waXuDW4J/4ElN5ou8gz/MAREwU2Wrzn1YAAAAASUVORK5CYII=',
-      isAvailable: function() { return (this.dao && this.dao.remove) },
+      isAvailable: function() { return (this.mode == 'read-write') && (this.dao && this.dao.remove) },
       code: function() {
         if (this.dao && this.dao.remove) {
           this.dao.remove(this.data);
@@ -63,7 +68,7 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-card">
-          $$label
+          $$label{ mode: this.mode }
         </div>
       </div>
     */},

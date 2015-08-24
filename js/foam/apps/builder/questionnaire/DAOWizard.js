@@ -15,16 +15,21 @@ CLASS({
   extendsModel: 'foam.apps.builder.WizardPage',
 
   requires: [
-    'foam.apps.builder.questionnaire.ModelWizard',
+    'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
     'foam.apps.builder.dao.DAOFactoryEditView',
     'foam.apps.builder.dao.IDBDAOFactoryEditView',
+  ],
+
+  imports: [
+    'daoConfigDAO',
   ],
 
   properties: [
     {
       name: 'nextViewFactory',
       defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.ModelWizard',
+        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+        baseModel: 'foam.apps.builder.questionnaire.Questionnaire',
       },
     },
   ],
@@ -32,7 +37,14 @@ CLASS({
   actions: [
     {
       name: 'next',
-      label: 'Next: Create the Questions',
+      label: 'Next: The Questions',
+    }
+  ],
+
+  methods: [
+    function onNext() {
+      this.daoConfigDAO && this.daoConfigDAO.put(this.data.dao);
+      this.SUPER();
     }
   ],
 

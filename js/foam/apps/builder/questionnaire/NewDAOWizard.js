@@ -15,7 +15,7 @@ CLASS({
   extendsModel: 'foam.apps.builder.WizardPage',
 
   requires: [
-    'foam.apps.builder.questionnaire.ModelWizard',
+    'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
     'foam.apps.builder.questionnaire.DAOWizard',
     'foam.meta.descriptor.DAOFactoryMetaDescriptor',
     'foam.meta.descriptor.MetaDescriptorView',
@@ -29,7 +29,8 @@ CLASS({
     {
       name: 'nextViewFactory',
       defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.ModelWizard',
+        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+        baseModel: 'foam.apps.builder.questionnaire.Questionnaire',
       },
     },
     {
@@ -56,7 +57,10 @@ CLASS({
         if ( this.daoFactory.requiresUserConfiguration ) {
           this.nextViewFactory = { factory_: 'foam.apps.builder.questionnaire.DAOWizard' };
         } else {
-          this.nextViewFactory = { factory_: 'foam.apps.builder.questionnaire.ModelWizard' };          
+          this.nextViewFactory = {
+            factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+             baseModel: 'foam.apps.builder.questionnaire.Questionnaire',
+          };
         }
       }
     }
@@ -79,7 +83,7 @@ CLASS({
 
       this.SUPER();
     },
-    
+
   ],
 
   actions: [

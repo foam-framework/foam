@@ -14,6 +14,11 @@ CLASS({
   name: 'NewOrExistingDAOWizard',
   extendsModel: 'foam.apps.builder.NewOrExistingWizard',
 
+  requires: [
+    'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+    'foam.apps.builder.questionnaire.NewDAOWizard',
+  ],
+
   imports: [
     'daoConfigDAO as existingDAO',
   ],
@@ -31,7 +36,10 @@ CLASS({
     {
       name: 'existingViewFactory',
       label: 'Use an existing Data Source',
-      defaultValue: { factory_: 'foam.apps.builder.questionnaire.ModelWizard' },
+      defaultValue: {
+        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+        baseModel: 'foam.apps.builder.questionnaire.Questionnaire',
+      },
     },
     {
       name: 'nextViewFactory',
