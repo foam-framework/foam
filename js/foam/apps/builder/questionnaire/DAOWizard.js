@@ -20,6 +20,10 @@ CLASS({
     'foam.apps.builder.dao.IDBDAOFactoryEditView',
   ],
 
+  imports: [
+    'daoConfigDAO',
+  ],
+
   properties: [
     {
       name: 'nextViewFactory',
@@ -34,6 +38,13 @@ CLASS({
     {
       name: 'next',
       label: 'Next: The Questions',
+    }
+  ],
+
+  methods: [
+    function onNext() {
+      this.daoConfigDAO && this.daoConfigDAO.put(this.data.dao);
+      this.SUPER();
     }
   ],
 

@@ -14,6 +14,10 @@ CLASS({
   name: 'ModelWizard',
   extendsModel: 'foam.apps.builder.WizardPage',
 
+  imports: [
+    'modelDAO',
+  ],
+
   properties: [
     {
       name: 'nextViewFactory',
@@ -28,13 +32,20 @@ CLASS({
     }
   ],
 
+
+  methods: [
+    function onNext() {
+      this.modelDAO && this.modelDAO.put(this.data.model);
+      this.SUPER();
+    }
+  ],
+
   templates: [
     function contentHTML() {/*
-        <p class="md-style-trait-standard md-title">Choose a your questions</p>
-        <p class="md-style-trait-standard">You can create a new set, or re-use an existing
-        set of questions.
+        <p class="md-style-trait-standard md-title">Create your Questions</p>
+        <p class="md-style-trait-standard">Add questions with the large '+' button at the bottom.
         </p>
-        $$model{ model_: 'foam.apps.builder.datamodels.ModelPickerView', baseModel: this.data.baseModelId }
+        $$model{ model_: 'foam.meta.types.ModelEditView' }
     */},
   ],
 

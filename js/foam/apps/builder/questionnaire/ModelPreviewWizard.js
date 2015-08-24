@@ -38,6 +38,12 @@ CLASS({
     }
   ],
 
+  methods: [
+    function onNext() {
+      // skip SUPER(), we don't want to save
+    }
+  ],
+
   templates: [
     function contentHTML() {/*
         <p class="md-style-trait-standard md-title">Preview</p>
