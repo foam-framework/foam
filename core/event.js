@@ -1140,3 +1140,7 @@ MODEL({
     }
   }
 });
+
+Movement.easy = Movement.spline(
+  Movement.spline(constantFn(0), Movement.linear),
+  Movement.spline(Movement.linear, constantFn(1)));
