@@ -42,6 +42,7 @@ CLASS({
     ' as dao',
     'metaEditModelTitle',
     'metaEditPropertyTitle',
+    'mode',
   ],
 
   properties: [
@@ -80,7 +81,7 @@ CLASS({
     {
       name: 'createButton',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
-      //isAvailable: function() { return this.data.showAdd; },
+      isAvailable: function() { return this.mode == 'read-write'; },
       code: function() {
         this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
         var edit = this.UpdateDetailView.create({

@@ -16,8 +16,8 @@ CLASS({
 
   imports: [
     'stack',
-    'editView$',
-    'innerEditView$',
+    'editView',
+    'innerEditView',
   ],
 
   properties: [

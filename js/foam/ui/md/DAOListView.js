@@ -89,6 +89,14 @@ CLASS({
   ],
 
   methods: {
+
+    init: function() {
+      this.SUPER();
+
+      // reset selection$ in case of nested list views
+      this.Y.set('selection$', undefined);
+    },
+
     put: function(o) {
       /* Sink function to receive updates from the dao */
       if ( this.rowCache_[o.id] ) {
