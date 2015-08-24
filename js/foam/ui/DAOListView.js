@@ -170,10 +170,13 @@ CLASS({
         }
 
         if ( this.X.selection$ ) {
-          out.push('<div class="' + this.className + '-row' + '" id="' + this.on('click', (function() {
+          var itemId = this.on('click', (function() {
             this.selection = o;
             this.publish(this.ROW_CLICK);
-          }).bind(this)) + '">');
+          }).bind(this))
+          this.setClass('dao-selected', function() { return equals(this.selection, o); }.bind(this), itemId);
+          this.setClass(this.className + '-row', function() { return true; }, itemId);
+          out.push('<div id="' + itemId + '">');
         }
         out.push(view.toHTML());
         if ( this.X.selection$ ) {

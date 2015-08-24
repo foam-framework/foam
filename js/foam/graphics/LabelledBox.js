@@ -56,7 +56,7 @@ CLASS({
       grad.addColorStop(  1, 'rgba(255,255,255,0.45)');
 
       c.fillStyle = grad;
-      c.fillRect(0, 0, this.width, this.height);
+      c.fillRect(1, 1, this.width-2, this.height-2);
     }
   }
 });

@@ -182,14 +182,14 @@ CLASS({
       isAvailable: function() {
         return !!this.hardSelection;
       },
-      action: function(X, action, e) {
+      code: function(X, action, e) {
         this.hardSelection = null;
       }
     },
     {
       name: 'editColumns',
       label: 'more_vert',
-      action: function(X, action) {
+      code: function(X, action) {
         if ( this.columnSelectionView.state === 'OPEN' ) return;
         this.columnSelectionView.open();
       }

@@ -31,8 +31,8 @@ CLASS({
     {
       name: 'next',
       label: 'Next',
-      action: function() {
-        this.dao && this.dao.put(this.data);
+      code: function() {
+        this.onNext();
         if ( this.nextViewFactory ) {
           this.stack.replaceView(
             this.nextViewFactory({ data: this.data })
@@ -51,10 +51,23 @@ CLASS({
     {
       name: 'exit',
       label: 'Cancel',
-      action: function() {
+      code: function() {
         this.stack.popView();
       }
     }
+  ],
+
+  methods: [
+    function onNext() {
+      /* if you need to do anything when the user picks the 'next' action,
+        implement this method. Remember to call this.SUPER() at the end of your
+        implementation, or handle saving this.data yourself. */
+      this.dao && this.dao.put(this.data);
+    },
+    function onCancel() {
+      /* if you need to do anything when the user picks the 'cancel' action, implement this method */
+    }
+
   ],
 
   templates: [
@@ -82,11 +95,13 @@ CLASS({
         padding: 8px;
         display: flex;
         flex-direction: column;
-        flex-grow: 1;
+        height: 100%
       }
 
       wizard .wizard-content {
         flex-grow: 1;
+        display: flex;
+        flex-direction: column;
       }
       wizard .wizard-footer {
         flex-grow: 0;

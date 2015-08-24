@@ -37,7 +37,7 @@ menu.addActions(FOAM([
       model_: 'Action',
       name: 'newWindow',
       help: 'Open a new Saturn Mail client.',
-      action: function () {
+      code: function () {
          launchController();
       }
    },
@@ -45,7 +45,7 @@ menu.addActions(FOAM([
       model_: 'Action',
       name: 'syncConfig',
       help: 'View and/or update configuration.',
-      action: function () {
+      code: function () {
          openSettings();
       }
    },
@@ -53,7 +53,7 @@ menu.addActions(FOAM([
       model_: 'Action',
       name: 'contacts',
       help: 'Manage contacts.',
-      action: function () {
+      code: function () {
          console.log('contacts');
          launchContactController();
       }
@@ -62,7 +62,7 @@ menu.addActions(FOAM([
       model_: 'Action',
       name: 'labels',
       help: 'Manage labels.',
-      action: function () {
+      code: function () {
          console.log('labels');
       }
    }
@@ -90,7 +90,7 @@ var actions = FOAM([
       name: 'compose',
       label: '',
       help: 'Compose a new email.',
-      action: function (X) {
+      code: function (X) {
         var id = Math.floor(Math.random() * 0xffffff).toVarintString();
         var email = EMail.create({
           from: userInfo.email,

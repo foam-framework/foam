@@ -59,7 +59,7 @@ CLASS({
       label: 'Create',
       // TODO(braden): Make this toggle enabled based on required fields and
       // form validation.
-      action: function() {
+      code: function() {
         this.dao.put(
           this.model.create({ data: this.innerView.data }),
           {

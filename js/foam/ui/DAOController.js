@@ -70,7 +70,7 @@ CLASS({
     {
       name:  'new',
       help:  'Create a new record.',
-      action: function() {
+      code: function() {
         var createView = this.X.DAOCreateController.create({
           model: this.model,
           dao:   this.dao,
@@ -87,7 +87,7 @@ CLASS({
       help:  'Edit the current record.',
       default: 'true',
 
-      action: function() {
+      code: function() {
         // Todo: fix, should already be connected
         this.selection = this.daoView.selection;
 
@@ -123,7 +123,7 @@ CLASS({
       help:  'Delete the current record.',
 
 //      isEnabled: function()   { return this.selection; },
-      action: function()      {
+      code: function()      {
         // Todo: fix, should already be connected
         this.selection = this.daoView.selection;
         var self = this;

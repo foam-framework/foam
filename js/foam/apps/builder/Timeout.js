@@ -63,14 +63,14 @@ CLASS({
     {
       name: 'start',
       isEnabled: function() { return this.id === null; },
-      action: function() {
+      code: function() {
         this.id = this.setTimeout(this.callback, this.milliseconds);
       },
     },
     {
       name: 'cancel',
       isEnabled: function() { return this.id !== null; },
-      action: function() {
+      code: function() {
         this.clearTimeout(this.id);
         this.id = null;
       },
@@ -78,7 +78,7 @@ CLASS({
     {
       name: 'restart',
       isEnabled: function() { return this.id !== null; },
-      action: function() {
+      code: function() {
         this.cancel();
         this.start();
       },

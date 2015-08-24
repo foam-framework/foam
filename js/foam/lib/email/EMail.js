@@ -487,11 +487,5 @@ CLASS({
     },
          "args": []
       }
-   ],
-   "listeners": [],
-   "templates": [],
-   "models": [],
-   "tests": [],
-   "relationships": [],
-   "issues": []
+   ]
 });

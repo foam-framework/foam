@@ -16,6 +16,8 @@ CLASS({
 
   requires: [
     'foam.apps.builder.questionnaire.ModelWizard',
+    'foam.apps.builder.dao.DAOFactoryEditView',
+    'foam.apps.builder.dao.IDBDAOFactoryEditView',
   ],
 
   properties: [
@@ -36,12 +38,10 @@ CLASS({
 
   templates: [
     function contentHTML() {/*
-        <p class="md-style-trait-standard md-title">Choose a your Data Source</p>
-        <p class="md-style-trait-standard">The data source is where your App will store its data.
-        This could be inside the device where it is running, in the cloud with Google Drive, or
-        on another device on your network.
+        <p class="md-style-trait-standard md-title">Data Source Settings</p>
+        <p class="md-style-trait-standard">Set the following options for your Data Source.
         </p>
-        $$dao{ model_: 'foam.apps.builder.dao.DAOPickerView' }
+        $$dao{ model_: 'foam.apps.builder.dao.EditView', model: this.data.dao.model_ }
     */},
   ],
 

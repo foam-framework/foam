@@ -28,6 +28,8 @@ CLASS({
     'foam.meta.types.FloatPropertyEditView',
     'foam.meta.types.PropertyEditView',
     'foam.meta.types.StringPropertyEditView',
+    'foam.meta.types.PhoneNumberPropertyEditView',
+    'foam.meta.types.ImagePropertyEditView',
     'foam.ui.md.UpdateDetailView',
     'foam.meta.descriptor.PropertyMetaDescriptor',
     'foam.meta.descriptor.MetaDescriptorView',

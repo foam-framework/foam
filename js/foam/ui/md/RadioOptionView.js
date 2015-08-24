@@ -28,7 +28,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      documentation: "The selected value from the radio button group. If it equals $$DOC{ref:'.value'}, this is selected."
+      documentation: "The selected value from the radio button group. If it equals $$DOC{ref:'.value'}, this is selected.",
     },
     {
       name: 'value',

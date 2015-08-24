@@ -12,6 +12,12 @@
 CLASS({
   package: 'foam.meta.descriptor',
   name: 'DAOFactoryMetaDescriptor',
+  extendsModel: 'foam.meta.descriptor.MetaDescriptor',
+
+  requires: [
+    'foam.apps.builder.dao.LocalDAOFactory',
+    'foam.apps.builder.dao.IDBDAOFactory',
+  ],
 
   label: 'Data Store',
 
@@ -23,10 +29,8 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
       label: 'The Type of the DAO',
       name: 'model',
-      documentation: function() {/* The model id of the new property. */},
       defaultValue: 'foam.apps.builder.dao.LocalDAOFactory',
       view: {
          factory_: 'foam.ui.ChoiceView',
@@ -37,10 +41,8 @@ CLASS({
        },
     },
     {
-      model_: 'StringProperty',
       label: 'The name of the new DAO',
       name: 'name',
-      documentation: function() {/* The name of the new property. */},
       preSet: function(old,nu) {
         return capitalize(camelize(nu));
       }

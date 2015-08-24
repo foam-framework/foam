@@ -34,7 +34,7 @@ CLASS({
       label: '',
       isEnabled: function() { return true; },
       iconUrl: 'icons/ic_more_horiz_white_24dp.png',
-      action: function() {
+      code: function() {
         var actionSheet = this.ActionSheetView.create({
           data: this.data,
           actions: this.data.model_.actions,

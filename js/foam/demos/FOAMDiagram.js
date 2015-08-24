@@ -25,11 +25,12 @@ CLASS({
     'foam.ui.DetailView',
     'foam.graphics.CView',
     'foam.graphics.LabelledBox as Box',
+    'foam.graphics.Label2 as Label',
     'foam.graphics.Circle'
   ],
 
   properties: [
-    { name: 'width',      defaultValue: 1010    },
+    { name: 'width',      defaultValue: 1210    },
     { name: 'height',     defaultValue: 810     },
     { name: 'background', defaultValue: 'black' }
   ],
@@ -38,10 +39,10 @@ CLASS({
     initCView: function() {
       var self = this;
       function box(m) {
-        m.color = 'white'; m.background = '#aaa';
-//        m.color = '#333'; m.background = '#fff';
-        m.font = m.font || '22pt Arial';
-        m.alpha = 0;
+        m.color = m.color || 'white';
+        m.background = m.background || '#aaa';
+        m.font = (m.font || 22 ) + 'pt Arial';
+        m.alpha = m.alpha || 0;
 
         var b = self.Box.create(m);
         self.addChild(b);
@@ -65,8 +66,10 @@ CLASS({
         }
       }
 
-      var foam = box({text: 'FOAM', font: '60pt Arial', width: 1000, height: 800, x: 0, y: 0});
-        var modeler        = box({text: 'Modeler', font: '36pt Arial'});
+      this.x = this.y = 50;
+
+      var foam = box({text: 'FOAM', font: 60, width: 1200, height: 800, x: 0, y: 0, alpha: 1});
+        var modeler        = box({text: 'Modeler', font: 36});
           var ani          = box({text: 'Animations'});
           var parse        = box({text: 'Parsers'});
           var query        = box({text: 'Queries'});
@@ -74,13 +77,13 @@ CLASS({
           var doc          = box({text: 'Live Documents'});
           var models       = box({text: 'Models'});
           var otherm       = box({text: '...'});
-            var mp         = box({text: 'Classes', font: '16pt Arial'});
-            var mm         = box({text: 'Dependencies', font: '16pt Arial'});
-            var ma         = box({text: 'Type-Checking', font: '16pt Arial'});
-            var ml         = box({text: 'Reflection', font: '16pt Arial'});
-            var mt         = box({text: 'Packages', font: '16pt Arial'});
-            var md         = box({text: '...'});
-        var lib            = box({text: 'Library', font: '36pt Arial'});
+            var mp         = box({text: 'Classes',       font: 16, background: 'lightblue'});
+            var mm         = box({text: 'Dependencies',  font: 16, background: 'lightblue'});
+            var ma         = box({text: 'Type-Checking', font: 16, background: 'lightblue'});
+            var ml         = box({text: 'Reflection',    font: 16, background: 'lightblue'});
+            var mt         = box({text: 'Packages',      font: 16, background: 'lightblue'});
+            var md         = box({text: '...',                     background: 'lightblue'});
+        var lib            = box({text: 'Library', font: 36});
           var c            = box({text: 'Client'});
             var android    = box({text: 'Android'});
             var web        = box({text: 'Web'});
@@ -103,6 +106,8 @@ CLASS({
             var java       = box({text: 'Java'});
             var other      = box({text: '...'});
 
+      var click = this.Label.create({text: '(keep clicking)', background: null, align: 'center', color: 'white', font: '20pt Arial', width: 1200, height: 100, y: 420});
+      this.addChild(click);
 
       children(foam, [modeler, lib], true);
       children(modeler, [ani, parse, query, concur, doc, models, otherm], true);
@@ -118,10 +123,9 @@ CLASS({
       var M = Movement;
       var B = M.bounce(0.2, 0.08, 3);
 
-      foam.alpha = 1;
-
       M.compile([
         [0],
+        function () { click.width = 0; },
         [500, function() { modeler.alpha = lib.alpha = 1; }],
         [0],
         [500, function() { ani.alpha = parse.alpha = query.alpha = concur.alpha = doc.alpha = models.alpha = otherm.alpha = 1; }],
@@ -149,7 +153,7 @@ CLASS({
         [0],
         [500, function() { mp.alpha = mm.alpha = ma.alpha = ml.alpha = mt.alpha = md.alpha = 1; }],
         [0],
-        function() { dom.background = 'red'; },
+        function() { dom.background = 'red'; }
       ])();
     }
   }

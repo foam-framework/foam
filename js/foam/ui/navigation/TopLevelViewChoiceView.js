@@ -139,7 +139,7 @@ CLASS({
         return this.view.state == this.SlidePanel.OPEN ||
             this.view.state == this.SlidePanel.CLOSED;
       },
-      action: function() {
+      code: function() {
         this.view.state = this.view.state == this.SlidePanel.OPEN ?
             this.SlidePanel.CLOSED :
             this.SlidePanel.OPEN;

@@ -42,12 +42,12 @@ CLASS({
     {
       name: 'repeat',
       keyboardShortcuts: [ 'r' ],
-      action: function() { this.say(this.lastSaid); }
+      code: function() { this.say(this.lastSaid); }
     },
     {
       name: 'sayState',
       keyboardShortcuts: [ 's' ],
-      action: function() {
+      code: function() {
         var last  = this.calc.history[this.calc.history.length-1];
         if ( ! last ) {
           this.say(this.calc.a2);
@@ -70,7 +70,7 @@ CLASS({
     {
       name: 'sayModeState',
       keyboardShortcuts: [ 't' ],
-      action: function() { this.say(this.calc.degreesMode ? 'degrees' : 'radians'); }
+      code: function() { this.say(this.calc.degreesMode ? 'degrees' : 'radians'); }
     }
   ],
   methods: {

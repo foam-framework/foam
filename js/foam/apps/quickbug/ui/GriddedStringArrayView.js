@@ -191,7 +191,7 @@ CLASS({
     {
       name: 'add',
       label: 'Add a row',
-      action: function() {
+      code: function() {
         this.addRow();
       }
     }

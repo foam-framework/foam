@@ -148,7 +148,7 @@ CLASS({
   actions: [
     {
       name: 'back',
-      action: function() {
+      code: function() {
         if ( this.sliderOpen ) {
           this.overlaySlider.close();
           this.sliderOpen = false;
