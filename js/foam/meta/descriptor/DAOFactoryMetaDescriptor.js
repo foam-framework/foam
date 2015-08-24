@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.dao.LocalDAOFactory',
+    'foam.apps.builder.dao.GoogleDriveDAOFactory',
     'foam.apps.builder.dao.IDBDAOFactory',
   ],
 
@@ -37,6 +38,7 @@ CLASS({
          choices: [
            ['foam.apps.builder.dao.LocalDAOFactory', 'Local IDB Data Store'],
            ['foam.apps.builder.dao.IDBDAOFactory', 'Specialized IDB Store'],
+           ['foam.apps.builder.dao.GoogleDriveDAOFactory', 'Google Drive']
          ]
        },
     },
