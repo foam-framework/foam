@@ -171,7 +171,11 @@ CLASS({
             </div>
           </div>
           <div class="checkbox-label-ro"><%= this.label %></div>
-      <% } else { %>
+      <%  this.setClass('border', function() {
+            return this.showBorder;
+          },this.id+'-border');
+
+          } else { %>
           <span class="checkbox-label noselect"><%# this.label %></span>
           <div class="checkbox-data-outer noselect">
             <div class="checkbox-data-container checkbox-data">
@@ -194,9 +198,7 @@ CLASS({
          this.setClass('left', function() {
            return this.checkboxPosition === 'left';
          },this.id);
-         this.setClass('border', function() {
-           return this.showBorder;
-         },this.id+'-border');%>
+         %>
 
       </div>
 

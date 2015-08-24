@@ -19,6 +19,10 @@ CLASS({
     'foam.apps.builder.dao.DAOFactoryView',
   ],
 
+  exports: [
+    'selection$'
+  ],
+
   properties: [
     {
       model_: 'ViewFactoryProperty',
@@ -34,7 +38,17 @@ CLASS({
     },
     {
       name: 'existingDAO',
-      documentation: 'The list of existing options to display',
+      documentation: 'The list of existing options to display. If this DAO is empty, the next(new) option will immediately be executed.',
+      postSet: function(old,nu) {
+        if ( nu ) {
+          nu.select(COUNT())(function(c) {
+            if ( ! c.count ) {
+              this.next();
+            }
+          }.bind(this));
+
+        }
+      }
     },
   ],
 

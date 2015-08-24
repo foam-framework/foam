@@ -35,7 +35,7 @@ CLASS({
         this.onNext();
         if ( this.nextViewFactory ) {
           this.stack.replaceView(
-            this.nextViewFactory({ data: this.data })
+            this.nextViewFactory({ data: this.data }, this.X)
 //             this.UpdateDetailView.create({
 //               data: this.data,
 //               innerView: this.nextViewFactory,
@@ -67,7 +67,6 @@ CLASS({
     function onCancel() {
       /* if you need to do anything when the user picks the 'cancel' action, implement this method */
     }
-
   ],
 
   templates: [
