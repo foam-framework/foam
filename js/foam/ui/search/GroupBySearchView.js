@@ -103,20 +103,9 @@ CLASS({
     },
     function initHTML() {
       this.view.initHTML();
-
-      //       Events.dynamic(function() { this.view.value; }, console.log.bind(console));
       this.dao.listen(this.updateDAO);
       this.propertyValue('filter').addListener(this.updateDAO);
-      /*
-        this.propertyValue('filter').addListener((function(a,b,oldValue,newValue) {
-        this.updateDAO();
-        }).bind(this));
-      */
       this.view.data$.addListener(this.updatePredicate);
-
-      //       this.updateDAO();
-      //       this.view.addListener(console.log.bind(console));
-      //       this.view.value.addListener(console.log.bind(console));
     }
   ],
 
