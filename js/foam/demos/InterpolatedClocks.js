@@ -48,6 +48,7 @@ CLASS({
 
       var M = Movement;
       var is = [
+        ['black',      M.spline(M.linear, function(x) { return 1; }), 'spline(linear, function() { return 1; })'],
         ['red',        M.linear, 'linear'],
         ['green',      M.accelerate, 'accelerate'],
         ['brown',      M.avg(M.linear, M.accelerate), 'avg(linear, accelerate)'],
