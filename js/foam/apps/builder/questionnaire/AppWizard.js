@@ -16,13 +16,14 @@ CLASS({
 
   requires: [
     'foam.apps.builder.questionnaire.NewDAOWizard',
+    'foam.apps.builder.questionnaire.NewOrExistingDAOWizard',
   ],
 
   properties: [
     {
       name: 'nextViewFactory',
       defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.NewDAOWizard',
+        factory_: 'foam.apps.builder.questionnaire.NewOrExistingDAOWizard',
       },
     },
   ],

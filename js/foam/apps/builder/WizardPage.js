@@ -95,11 +95,13 @@ CLASS({
         padding: 8px;
         display: flex;
         flex-direction: column;
-        flex-grow: 1;
+        height: 100%
       }
 
       wizard .wizard-content {
         flex-grow: 1;
+        display: flex;
+        flex-direction: column;
       }
       wizard .wizard-footer {
         flex-grow: 0;
