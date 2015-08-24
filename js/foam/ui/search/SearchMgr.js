@@ -72,9 +72,9 @@ CLASS({
     },
     function add(view) {
       this.views.push(view);
+      view.predicate$.addListener(this.onViewUpdate);
       if (this.memento && this.memento[this.views.length - 1])
         view.memento = this.memento[this.views.length - 1];
-      view.predicate$.addListener(this.onViewUpdate);
       return view;
     },
     function clear() {

@@ -14,6 +14,9 @@ CLASS({
   name: 'FlexTableView',
   extendsModel: 'foam.ui.AbstractDAOView',
 
+  requires: [
+    'foam.ui.ScrollView',
+  ],
   imports: [
     'document',
     'hardSelection$',
@@ -65,18 +68,9 @@ CLASS({
       },
       postSet: function() {
         this.updateHead();
-        this.updateBody();
-        this.initHTML();
-      }
-    },
-    {
-      model_: 'ArrayProperty',
-      name: 'objs',
-      lazyFactory: function() { return []; },
-      postSet: function(old, nu) {
-        if ( old === nu ) return;
-        this.updateBody();
-        this.initHTML();
+        // Eliminates all caches and rebuilds the rows.
+        this.scrollView.softDestroy();
+        if (this.$) this.initHTML();
       }
     },
     {
@@ -85,7 +79,6 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu ) return;
         this.updateHead();
-        this.onDataUpdate();
       },
       defaultValue: undefined
     },
@@ -109,31 +102,6 @@ CLASS({
       name:  'softSelection'
     },
     {
-      model_: 'ArrayProperty',
-      name: 'softSelectionListeners_',
-      lazyFactory: function() { return []; }
-    },
-    {
-      model_: 'ArrayProperty',
-      name: 'hardSelectionListeners_',
-      lazyFactory: function() { return []; }
-    },
-    {
-      model_: 'IntProperty',
-      name: 'mouseX',
-      defaultValue: 0
-    },
-    {
-      model_: 'IntProperty',
-      name: 'mouseY',
-      defaultValue: 0
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'mouseOverRow',
-      defaultValue: false
-    },
-    {
       name: '$head',
       defaultValueFn: function() {
         return this.$ && this.$.querySelector('flex-table-head');
@@ -143,6 +111,22 @@ CLASS({
       name: '$body',
       defaultValueFn: function() {
         return this.$ && this.$.querySelector('flex-table-body');
+      }
+    },
+    {
+      name: 'filteredDAO',
+      dynamicValue: function() {
+        return this.data.orderBy(this.sortOrder);
+      }
+    },
+    {
+      name: 'scrollView',
+      factory: function() {
+        return this.ScrollView.create({
+          dao$: this.filteredDAO$,
+          rowHeight: 70,
+          rowView: this.makeRow,
+        });
       }
     },
     {
@@ -164,48 +148,7 @@ CLASS({
   methods: [
     function initHTML() {
       this.SUPER();
-
-      if ( this.$body ) this.$body.onmousemove = this.onMouseMove;
-
       this.initColWidths();
-      this.initDataRowHTML();
-    },
-    function initDataRowHTML() {
-      var body = this.$body;
-      if ( ! body ) return;
-
-      var self = this;
-      var trs = argsToArray(body.children);
-      this.resetRowListeners_(trs);
-
-      trs.forEach(function(e, i) {
-        var obj = self.objs[i];
-
-        e.onmouseover = function() {
-          self.mouseOverRow = true;
-          self.softSelection = obj;
-        };
-        e.onmouseout = function() {
-          self.mouseOverRow = false;
-          self.softSelection = '';
-        };
-        e.onclick = function(evt) {
-          self.hardSelection = self.softSelection = obj;
-        };
-
-        // Adjust soft selection according to last known mouse location.
-        if ( self.mouseOverRow ) {
-          var left = e.offsetLeft;
-          var right = left + e.offsetWidth;
-          var top = e.offsetTop;
-          var bottom = top + e.offsetHeight;
-          var x = self.mouseX;
-          var y = self.mouseY;
-          if ( left <= x && right >= x && top <= y && bottom >= y ) {
-            self.softSelection = obj;
-          }
-        }
-      });
     },
     function initGlobalState() {
       var body = this.document.body;
@@ -213,11 +156,6 @@ CLASS({
       this.setClass('flex-table-view-col-resize', function() {
         return this.isResizing;
       }.bind(this), id);
-    },
-    function onDataUpdate() {
-      var dao = this.dao;
-      if ( this.sortOrder ) dao = dao.orderBy(this.sortOrder);
-      dao.select()(this.onDataReady);
     },
     function getModel() {
       return this.X.model ||
@@ -246,13 +184,6 @@ CLASS({
       var out = TemplateOutput.create(this);
       this.headHTML(out);
       head.innerHTML = out.toString();
-    },
-    function updateBody() {
-      var body = this.$body;
-      if ( ! body ) return;
-      var out = TemplateOutput.create(this);
-      this.bodyHTML(out);
-      body.innerHTML = out.toString();
     },
     function initColWidths() {
       var head = this.$head;
@@ -314,18 +245,6 @@ CLASS({
         cssClasses.push('sort');
       return cssClasses.join(' ');
     },
-    function getBodyRowClass(i) {
-      var cssClasses = [];
-      if ( this.objs[i] === this.hardSelection ) cssClasses.push('rowSelected');
-      if ( this.objs[i] === this.softSelection ) cssClasses.push('rowSoftSelected');
-      return cssClasses.join(' ');
-    },
-    function getBodyCellClass(prop, i) {
-      var cssClasses = ['col-' + i];
-      if ( this.isPropNumeric(prop) )
-        cssClasses.push('numeric');
-      return cssClasses.join(' ');
-    },
     function isSortedByProp(prop) {
       return this.sortProp === prop;
     },
@@ -345,6 +264,7 @@ CLASS({
       // Prevent the column sort-order listener from firing.
       this.on('click', function(e) { e.stopPropagation(); }, id);
 
+      // TODO(braden): Replace the mouse-specific things here with DragGesture.
       this.on('mousedown', function(e) {
         var self   = this;
         var startX = e.x;
@@ -392,63 +312,72 @@ CLASS({
 
       return id;
     },
-    function resetRowListeners_(trs) {
-      var self = this;
-      self.softSelectionListeners_.forEach(function(listener) {
-        self.softSelection$.removeListener(listener);
-      });
-      self.hardSelectionListeners_.forEach(function(listener) {
-        self.hardSelection$.removeListener(listener);
-      });
+  ],
 
-      self.softSelectionListeners_ = [];
-      self.hardSelectionListeners_ = [];
-
-      trs.forEach(function(e, i) {
-        var obj = self.objs[i];
-        var sListener = function() {
-          DOM.setClass(e, 'rowSoftSelected', self.softSelection === obj);
-        };
-        var hsListener = function() {
-          DOM.setClass(e, 'rowSelected', self.hardSelection === obj);
-        };
-
-        self.softSelection$.addListener(sListener);
-        self.softSelectionListeners_.push(sListener);
-
-        self.hardSelection$.addListener(hsListener);
-        self.hardSelectionListeners_.push(hsListener);
-      });
+  models: [
+    {
+      name: 'RowView',
+      extendsModel: 'foam.ui.View',
+      imports: ['hardSelection$'],
+      properties: [
+        {
+          name: 'properties',
+        },
+      ],
+      methods: [
+        function isPropNumeric(prop) {
+          return IntProperty.isInstance(prop) || FloatProperty.isInstance(prop);
+        },
+        function getBodyCellClass(prop, i) {
+          var cssClasses = ['col-' + i];
+          if ( this.isPropNumeric(prop) )
+            cssClasses.push('numeric');
+          return cssClasses.join(' ');
+        },
+      ],
+      listeners: [
+        {
+          name: 'onClick',
+          code: function() {
+            this.hardSelection = this.data;
+          }
+        },
+      ],
+      templates: [
+        function toHTML() {/*
+          <% var props = this.properties; %>
+          <flex-table-row id="<%= this.id %>">
+            <% for (var i = 0; i < props.length; i++) { %>
+              <flex-table-cell class="<%= this.getBodyCellClass(props[i], i) %>">
+                <% this.bodyCellHTML(out, props[i]); %>
+              </flex-table-cell>
+            <% } %>
+          </flex-table-row>
+          <%
+            this.on('click', this.onClick, this.id);
+            this.setClass('rowSelected',
+                function() { return self.hardSelection === self.data; },
+                this.id);
+          %>
+        */},
+        function bodyCellHTML(out, prop) {/*
+          <%= prop.tableFormatter ?
+              prop.tableFormatter(this.data[prop.name], this.data, this) :
+              this.data[prop.name] %>
+        */},
+      ]
     }
   ],
 
   listeners: [
     {
-      name: 'onDAOUpdate',
-      isFramed: true,
-      code: function() { this.onDataUpdate(); }
-    },
-    {
-      name: 'onDataReady',
-      code: function(objs) { this.objs = objs; }
-    },
-    {
-      name: 'onMouseMove',
-      isFramed: true,
-      code: function(e) {
-        var body = this.$body, target = e.target, x = e.offsetX, y = e.offsetY;
-        while ( target !== body ) {
-          // Sometimes this event is delivered after the target has been
-          // discarded by re-render. In this case, just exit early.
-          if ( ! target ) return;
-          x += target.offsetLeft;
-          y += target.offsetTop;
-          target = target.offsetParent;
-        }
-        this.mouseX = x;
-        this.mouseY = y;
+      name: 'makeRow',
+      code: function(map, Y) {
+        map = map || {};
+        map.properties = this.getProperties();
+        return this.RowView.create(map, Y);
       }
-    }
+    },
   ],
 
   templates: [
@@ -491,29 +420,7 @@ CLASS({
       <flex-col-resize-handle id="{{resizeHandleId}}"></flex-col-resize-handle>
     */},
     function bodyHTML() {/*
-      <%
-        var props = this.getProperties();
-        var objs = this.objs;
-        for ( var i = 0; i < objs.length; ++i ) {
-          var obj = objs[i];
-        %>
-          <flex-table-row class="{{this.getBodyRowClass(i)}}">
-        <%
-          for ( var j = 0; j < props.length; ++j ) {
-            var prop = props[j];
-      %>
-            <flex-table-cell class="{{this.getBodyCellClass(prop, j)}}"><% this.bodyCellHTML(out, obj, prop) %></flex-table-cell>
-      <%
-          }
-        %>
-          </flex-table-row>
-        <%
-        }
-      %>
-    */},
-    function bodyCellHTML(out, obj, prop) {/*
-      <%= prop.tableFormatter ?
-          prop.tableFormatter(obj[prop.name], obj, this) : obj[prop.name] %>
+      %%scrollView
     */},
     function colCSS(out, i) {/*
       #%%id .col-{{i}} {
