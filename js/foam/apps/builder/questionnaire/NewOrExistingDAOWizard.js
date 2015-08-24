@@ -31,14 +31,17 @@ CLASS({
     {
       name: 'existingViewFactory',
       label: 'Use an existing Data Source',
-      defaultValue: { factory_: 'foam.apps.builder.questionnaire.DAOWizard' },
+      defaultValue: { factory_: 'foam.apps.builder.questionnaire.ModelWizard' },
     },
     {
       name: 'nextViewFactory',
       defaultValueFn: function() { return this.newViewFactory; },
     },
     {
-      name: 'selection'
+      name: 'selection',
+      postSet: function(old,nu) {
+        this.data.dao = nu;
+      }
     },
     {
       name: 'existingDAO',
