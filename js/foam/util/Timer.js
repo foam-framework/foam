@@ -99,7 +99,7 @@ CLASS({
       help:  'Step the timer.',
 
       isAvailable: function() { return true; },
-      action: function()      {
+      code: function()      {
         this.i++;
         this.time  += this.interval * this.timeWarp;
         this.second = this.time /    1000 % 60 << 0;
@@ -113,7 +113,7 @@ CLASS({
 
       isAvailable: function() { return true; },
       isEnabled: function() { return this.isStarted; },
-      action: function() {
+      code: function() {
         this.isStarted = false;
         if ( this.timeout ) {
           clearTimeout(this.timeout);

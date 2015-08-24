@@ -110,7 +110,7 @@ CLASS({
       if ( ! e ) return;
       var parent = e.parentElement;
       while ( parent ) {
-        var overflow = this.X.window.getComputedStyle(parent).overflow;
+        var overflow = this.X.window.getComputedStyle(parent).overflowY;
         if ( overflow === 'scroll' || overflow === 'auto' ) {
           break;
         }
@@ -118,11 +118,12 @@ CLASS({
       }
       parent = parent || this.X.window;
 
+      // Can't use scrollIntoView; it scrolls more containers than it should.
       if ( e.offsetTop < parent.scrollTop ) { // Scroll up
-        e.scrollIntoView(true);
+        parent.scrollTop = e.offsetTop;
       } else if ( e.offsetTop + e.offsetHeight >=
           parent.scrollTop + parent.offsetHeight ) { // Down
-        e.scrollIntoView();
+        parent.scrollTop = e.offsetTop + e.offsetHeight - parent.offsetHeight;
       }
     }
   },

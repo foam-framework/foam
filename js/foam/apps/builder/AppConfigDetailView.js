@@ -80,7 +80,7 @@ CLASS({
       order: 1.0,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfQAWXGFAAAAFXRSTlMALePhKBXghJvbEray/fwg6uhP6U1pY8wzAAAAWklEQVR4Xq3PORKEMAwFUbGJdcZsvv9VSTr4JRIX5c70XySrXNNmqeuNBh9NmuYFWHNoA34R/kB+9RnkKgdPRskFEHYBhF0AYVdA2AUQL31wj3AA5xX226r2ACkvFWPaNFOcAAAAAElFTkSuQmCC',
       ligature: 'archive',
-      action: function() {
+      code: function() {
         this.doExportAction('downloadPackage', 'Download Package to Disk');
       },
     },
@@ -93,7 +93,7 @@ CLASS({
       order: 2.0,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA0SURBVHjazdBBCgAgEMNAs/9/tCAEFoo3FeeY3jpuqOWngWrIxd4RXdgD9oA9wLHLtR9emRVOAOP9ZYAiAAAAAElFTkSuQmCC',
       ligature: 'file_download',
-      action: function() {
+      code: function() {
         this.doExportAction('downloadApp', 'Download Files to Disk');
       },
     },
@@ -106,7 +106,7 @@ CLASS({
       order: 4.0,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAA1SURBVHjavcwxCgAwEALB6P8ffUUKEbEKOctZ8PwZUJxEcRV3lXQVuZf0fLtqtB5eR1sPWxsHogDjZnwe5wAAAABJRU5ErkJggg==',
       ligature: 'file_upload',
-      action: function() {
+      code: function() {
         this.doExportAction('uploadApp', 'Upload to Chrome Web Store');
       },
     },
@@ -119,7 +119,7 @@ CLASS({
       order: 5.0,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAACVBMVEVChfRChfRChfRFRUHlAAAAAnRSTlMAgJsrThgAAAAySURBVHjaxY+xDQAACINs/z/akRhj3JQRJuIMF9awIw3e1uAp1VO6p+ApgKcAc3/hkgQRygDjNDsCngAAAABJRU5ErkJggg==',
       ligature: 'publish',
-      action: function() {
+      code: function() {
         this.doExportAction('publishApp', 'Publish to Chrome Web Store');
       },
     },

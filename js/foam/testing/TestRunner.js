@@ -56,7 +56,7 @@ CLASS({
   actions: [
     {
       name: 'execute',
-      action: function() {
+      code: function() {
         for ( var i = 0; i < this.extraClassPaths.length ; i++ ) {
           this.X.ModelDAO = this.OrDAO.create({
             delegate: this.ModelFileDAO.create({

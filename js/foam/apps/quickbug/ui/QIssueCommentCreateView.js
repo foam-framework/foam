@@ -46,7 +46,7 @@ CLASS({
       name: 'save',
       label: 'Save changes',
       isEnabled: function() { return ! this.saving; },
-      action: function() {
+      code: function() {
         var defaultComment = this.issue.newComment();
 
         var diff = defaultComment.updates.diff(this.data.updates);
@@ -89,7 +89,7 @@ CLASS({
     {
       name: 'discard',
       isEnabled: function() { return ! this.saving; },
-      action: function() { this.browser.location.id = ''; }
+      code: function() { this.browser.location.id = ''; }
     }
   ],
 

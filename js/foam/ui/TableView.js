@@ -269,6 +269,13 @@ CLASS({
           this.scrollbar.extent = rows;
           this.scrollbar.height = containerHeight - headHeight - 10;
           this.scrollbar.paint();
+        } else {
+          if (this.scrollbar.size > 0) {
+            // If the scrollbar.size is nonzero, there are rows to show but none
+            // are currently visible. Reset rows to the default.
+            this.rows = this.model_.ROWS.defaultValue;
+            this.repaintTableData();
+          }
         }
       }
     },
@@ -391,8 +398,8 @@ CLASS({
           this.X.gestureManager.install(this.GestureTarget.create({
             containerID: this.id,
             handler: this,
-            getElement: function() { return this.container.$.parentElement; },
-            gesture: 'verticalScroll'
+            getElement: function() { return this.$container; }.bind(this),
+            gesture: 'verticalScrollMomentum'
           }));
         }
 

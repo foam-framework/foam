@@ -240,7 +240,7 @@ CLASS({
     {
       name: 'run',
       iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/play_arrow_white_24dp.png',
-      action: function() {
+      code: function() {
         this.running = true;
         this.outputView.reset();
       }

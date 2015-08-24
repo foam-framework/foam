@@ -131,7 +131,7 @@ CLASS({
   actions: [
     {
       name: 'clear',
-      action: function() {
+      code: function() {
         this.console_.removeAll();
         this.counter = 0;
       }

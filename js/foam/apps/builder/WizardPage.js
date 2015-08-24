@@ -31,7 +31,7 @@ CLASS({
     {
       name: 'next',
       label: 'Next',
-      action: function() {
+      code: function() {
         this.onNext();
         if ( this.nextViewFactory ) {
           this.stack.replaceView(
@@ -51,7 +51,7 @@ CLASS({
     {
       name: 'exit',
       label: 'Cancel',
-      action: function() {
+      code: function() {
         this.stack.popView();
       }
     }
@@ -59,7 +59,7 @@ CLASS({
 
   methods: [
     function onNext() {
-      /* if you need to do anything when the user picks the 'next' action, 
+      /* if you need to do anything when the user picks the 'next' action,
         implement this method. Remember to call this.SUPER() at the end of your
         implementation, or handle saving this.data yourself. */
       this.dao && this.dao.put(this.data);
@@ -67,7 +67,7 @@ CLASS({
     function onCancel() {
       /* if you need to do anything when the user picks the 'cancel' action, implement this method */
     }
-    
+
   ],
 
   templates: [

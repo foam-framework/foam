@@ -187,7 +187,7 @@ CLASS({
   listeners: [
     {
       name: 'onDAOUpdate',
-      isMerged: 100,
+      isFramed: true,
       code: function() {
         this.dao.select(MAP(this.objToChoice))(function(map) {
           // console.log('***** Update Choices ', map.arg2, this.choices);

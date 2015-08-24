@@ -242,7 +242,7 @@ CLASS({
   actions: [
     {
       name: 'registerComponents',
-      action: function() {
+      code: function() {
         this.componentsToRegister.forEach(this.registerComponent.bind(this));
         this.componentsToRegister = [];
       }

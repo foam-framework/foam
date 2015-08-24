@@ -48,7 +48,7 @@
 				name: 'clear',
 				label: 'Clear completed',
 				isEnabled: function () { return this.completedCount; },
-				action: function () { this.dao.where(this.Todo.COMPLETED).removeAll(); }
+				code: function () { this.dao.where(this.Todo.COMPLETED).removeAll(); }
 			}
 		],
 		listeners: [

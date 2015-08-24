@@ -96,7 +96,7 @@ CLASS({
     {
       name: 'newItem',
       label: 'Create...',
-      action: function() {
+      code: function() {
         var self = this;
         this.configDAO.select([])(function(configs) {
           this.overlay.open(this.SelectTypeView.create({

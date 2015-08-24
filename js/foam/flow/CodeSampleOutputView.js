@@ -93,7 +93,7 @@ CLASS({
   actions: [
     {
       name: 'reset',
-      action: function() {
+      code: function() {
         if ( this.flare ) {
           this.flare.fire();
         } else {

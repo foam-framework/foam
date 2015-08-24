@@ -90,7 +90,7 @@ CLASS({
     {
       name: 'add',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAHUlEQVR4AWNAgFHwHwhHNWBVhBtSqgETjMbDKAAA6iwzzdTyG+0AAAAASUVORK5CYII=',
-      action: function() {
+      code: function() {
         var newObj = this.data.model.create();
         this.stack.pushView(this.newView({
           data: newObj,

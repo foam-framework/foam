@@ -77,7 +77,7 @@ CLASS({
       ligature: 'arrow_back',
       isAvailable: function() { return this.data.enableNavBttns; },
       isEnabled: function() { return this.webview.canGoBack; },
-      action: function() { this.webview.back(); }
+      code: function() { this.webview.back(); }
     },
     {
       name: 'forward',
@@ -85,28 +85,28 @@ CLASS({
       ligature: 'arrow_forward',
       isAvailable: function() { return this.data.enableNavBttns; },
       isEnabled: function() { return this.webview.canGoForward; },
-      action: function() { this.webview.forward(); }
+      code: function() { this.webview.forward(); }
     },
     {
       name: 'home',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAZklEQVR4AWOgIQhg8CekJJ3hDxCm4VPSyPAfChuwK2BmmAmURMAZQBE0wMmwASqJgOsZOJCVCDIcAQpiwiNAGSiQZbgKFcSEVxhkEGY5YFXiAJLCVHSAoQEID+BWhPB6w8Apoj8AADuwY8lEA+JQAAAAAElFTkSuQmCC',
       ligature: 'home',
       isAvailable: function() { return this.data.enableHomeBttn; },
-      action: function() { this.webview.home(); }
+      code: function() { this.webview.home(); }
     },
     {
       name: 'reload',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVR4Ad3SP04CURDA4a8RlpNYEP5zQbBGIYT4Ck5iZbwEcStj9AQW7JrI2LLxuYmx45tuMr9uXKSJpFT7VErGgIWsnr1ozElSWIr8+ZNwtDLV1TGzUQsvIh/shVd958Y+RD6YCEd9TTciH5CElaal+D0ohalzC9EW1EJXi38Hz8LMH9wLd3K2wq0fRk4qg8y+9uVaRhLeDJ0behfWsgqPQmVtrqcwt1EJD64gnyQnzefb6mg1snNQqR3sDFygb3rVYPgYJpUVAAAAAElFTkSuQmCC',
       ligature: 'refresh',
       isAvailable: function() { return this.data.enableReloadBttn; },
-      action: function() { this.webview.reload(); }
+      code: function() { this.webview.reload(); }
     },
     {
       name: 'logout',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAcklEQVR4AWMYvCCQ4SXDfzzwFYM/inqQcgLwJYp6sBAqwJCnqgZFhgMMCqRoWAnkPUBoIewCPobjCC0IDfi1nIBoweMkTAjXQrkGTMCP6SQSlBMO1lUw5cRqUMAWcfROS68IJu8XqBoCGF4SUO47aDM/AFyMnK0wQYLQAAAAAElFTkSuQmCC',
       ligature: 'exit_to_app',
       isAvailable: function() { return this.data.enableLogoutBttn; },
-      action: function() { this.kiosk.logout(); }
+      code: function() { this.kiosk.logout(); }
     },
   ],
 
