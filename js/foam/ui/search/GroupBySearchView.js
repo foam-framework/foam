@@ -144,7 +144,9 @@ CLASS({
           }
           self.view.choices = options;
           if (typeof selected !== 'undefined') {
+            var oldData = self.view.data;
             self.view.data = selected;
+            if (!oldData) self.updatePredicate(null, null, null, selected);
           }
         });
       }
