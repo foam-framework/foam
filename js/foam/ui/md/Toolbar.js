@@ -123,35 +123,11 @@ CLASS({
 
   actions: [
     {
-      name: 'menuAction',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAGklEQVQ4y2NgGAVEg/9EAMo0jHp61NOjAAgAUWrXKeQhPE4AAAAASUVORK5CYII=',
-      ligature: 'menu',
-      action: function() {},
-    },
-    {
-      name: 'backAction',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPUlEQVQ4y2NgGLbgf8P/BtKU////+78WacpDSFMeSlPlYaQo/0OacjyAcg1wJ4WTGmHDS4sWaVrqhm/mBQAoLpX9t+4i2wAAAABJRU5ErkJggg==',
-      ligature: 'arrow_back',
-      action: function() {},
-    },
-    {
-      name: 'resetAction',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAdklEQVQ4y+WTuQ3AIBAEaQKK8NN/BEUArmccgGyj43MMIZo5TqtFqbUPJxYtbg2OvS44IJQKhguwdUETSiXjXr77KhGICRjihWKm8Dw3KXP4Z5VZ/Lfw7B5kyD1cy5C7uAx5iJcht6vhRTUi4OrC0Szftvi/vAFNdbZ2Dp661QAAAABJRU5ErkJggg==',
-      ligature: 'close',
-      action: function() {},
-    },
-    {
-      name: 'commitAction',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAUElEQVQ4jWNgGAW4wH9d0pRH///zv4E05f+J1jB0lP9n+b/0fzgJpv8PBUr++R9BgmP+N4C1RJLgdqiWKBK8CtVCUsiAtBCvHKqFFOUjAwAATIhwjZSqeJcAAAAASUVORK5CYII=',
-      ligature: 'check',
-      action: function() {},
-    },
-    {
       name: 'moreActions',
       // TODO(markdittmer): This URL is for menus, not "more actions".
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAGklEQVQ4y2NgGAVEg/9EAMo0jHp61NOjAAgAUWrXKeQhPE4AAAAASUVORK5CYII=',
       ligature: 'more_vert',
-      action: function() { this.moreActionsDropdown.open(); },
+      code: function() { this.moreActionsDropdown.open(); },
     },
   ],
 
@@ -180,8 +156,8 @@ CLASS({
           <% this.leftActionsInnerHTML(out) %>
         </actions>
 
-        <header id="%%id-header">
-          <%# this.title %>
+        <header id="%%id-header" class="md-title">
+          <div class="toolbar-title-text"><%# this.title %></div>
         </header>
 
         %%rightActionList
@@ -211,6 +187,11 @@ CLASS({
       toolbar header {
         margin-left: 12px;
         flex-grow: 1;
+        display: flex;
+        overflow-x: hidden;
+      }
+      toolbar header.md-title {
+        color: #fff;
       }
       toolbar actions {
         display: flex;
@@ -222,6 +203,9 @@ CLASS({
       }
       toolbar actions.right {
         align-items: flex-end;
+      }
+      toolbar header .toolbar-title-text {
+        flex-shrink: 0;
       }
     */},
   ],

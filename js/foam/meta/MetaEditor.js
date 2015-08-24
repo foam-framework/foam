@@ -74,13 +74,13 @@ CLASS({
   actions: [
     {
       name: 'addProperty',
-      action: function() {
+      code: function() {
         this.modelDefinition.properties.put(this.BooleanProperty.create({ name: '_newProperty_' }));
       }
     },
     {
       name: 'refresh',
-      action: function() {
+      code: function() {
         delete this.modelDefinition.instance_.prototype_;
         this.modelView = this.Model.create();
         this.modelView = this.modelDefinition.create();

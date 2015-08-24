@@ -159,7 +159,7 @@ CLASS({
       isEnabled: function() {
         return this.realIdx > 0;
       },
-      action: function() {
+      code: function() {
         this.realIdx--;
         this.enqueueListener('onBack');
       }
@@ -171,7 +171,7 @@ CLASS({
       isEnabled: function() {
         return this.realIdx < this.arr.length - 1;
       },
-      action: function() {
+      code: function() {
         this.realIdx++;
         this.enqueueListener('onForth');
       }

@@ -206,6 +206,20 @@ return JSONUtil.arrayToObjArray(X, [
     image: 'Complements.png'
   },
   {
+    name: 'Complements2a',
+    model: 'foam.demos.graphics.Complements2a',
+    description: 'Mesmerizing animation.',
+    keywords: ['animation'],
+    image: 'Complements2a.png'
+  },
+  {
+    name: 'Spin',
+    model: 'foam.demos.graphics.Spin',
+    description: 'Concentric spinng arcs.',
+    keywords: ['animation'],
+    image: 'Spin.png'
+  },
+  {
     name: 'Dragon',
     path: 'Tags.html',
     description: 'Demonstrates use of the FOAM tag to instantiate three views: an animated dragon, a time-wheel, and a DetailView of time.  Use the time-wheel to control the animation.',

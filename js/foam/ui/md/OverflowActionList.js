@@ -49,10 +49,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'moreActionsFactory',
-      defaultValue: {
-        factory_: 'foam.ui.ActionButton',
-        color: '#4285F4',
-      },
+      defaultValue: 'foam.ui.ActionButton',
     },
     {
       type: 'foam.ui.md.OverlayDropdownView',
@@ -84,7 +81,7 @@ CLASS({
       // TODO(markdittmer): This URL is for menus, not "more actions".
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAGklEQVQ4y2NgGAVEg/9EAMo0jHp61NOjAAgAUWrXKeQhPE4AAAAASUVORK5CYII=',
       ligature: 'more_vert',
-      action: function() { this.moreActionsDropdown.open(); },
+      code: function() { this.moreActionsDropdown.open(); },
     },
   ],
 

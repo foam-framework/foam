@@ -24,12 +24,6 @@ CLASS({
 
   properties: [
     {
-      name: 'name',
-    },
-    {
-      name: 'label',
-    },
-    {
       model_: 'FactoryProperty',
       hidden: true,
       name: 'factory',
@@ -37,10 +31,22 @@ CLASS({
         return this.IDBDAO.create({
           name: this.name,
           model: this.X.lookup(this.modelType),
-          useSimpleSerialization: false,
+          useSimpleSerialization: ! this.storesModels,
         });
       },
-    }
+    },
+    {
+      name: 'requiresUserConfiguration',
+      defaultValue: true,
+      hidden: true,
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'storesModels',
+      defaultValue: true,
+      view: 'foam.ui.md.CheckboxView',
+      label: 'This Data Store may hold Models'
+    },
   ],
 
 });

@@ -52,7 +52,7 @@ CLASS({
       name: 'save',
       label: 'Create',
       isEnabled: function() { return ! this.saving },
-      action: function() {
+      code: function() {
         var self = this;
         this.saving = true;
         this.errorView.data = "";
@@ -73,7 +73,7 @@ CLASS({
       name: 'discard',
       label: 'Discard',
       isEnabled: function() { return ! this.saving },
-      action: function() {
+      code: function() {
         this.browser.location.createMode = false;
       }
     },

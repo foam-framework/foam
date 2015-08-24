@@ -139,7 +139,7 @@ CLASS({
       iconUrl: 'https://www.gstatic.com/images/icons/material/system/1x/mode_edit_black_18dp.png',
       isEnabled: function() { return this.mode === 'read-only'; },
       isAvailable: function() { return this.mode === 'read-only'; },
-      action: function() {
+      code: function() {
         // TODO(markdittmer): Components involved in animated reactive updates
         // should be better decoupled. For now, use halo as indicator that we
         // need to synchronize with a flare state change.

@@ -57,7 +57,7 @@ CLASS({
       label: '< Prev',
       keyboardShortcuts: [ 37 /* left-arrow */, 75 /* k */ ],
       isEnabled: function() { return this.pos > 1; },
-      action: function() {
+      code: function() {
         this.pos--;
         this.location.id = this.rows[this.pos-1].id;
       }
@@ -67,7 +67,7 @@ CLASS({
       label: 'Next >',
       keyboardShortcuts: [ 39 /* right-arrow */, 74 /* j */ ],
       isEnabled: function() { return this.pos < this.total; },
-      action: function() {
+      code: function() {
         this.pos++;
         this.location.id = this.rows[this.pos-1].id;
       }
@@ -75,7 +75,7 @@ CLASS({
     {
       name: 'backToList',
       label: 'Back',
-      action: function() { this.location.id = ''; }
+      code: function() { this.location.id = ''; }
     }
   ],
 

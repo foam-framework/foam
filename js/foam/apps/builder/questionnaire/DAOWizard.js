@@ -12,41 +12,36 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'DAOWizard',
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.apps.builder.WizardPage',
 
   requires: [
     'foam.apps.builder.questionnaire.ModelWizard',
-    'foam.ui.md.UpdateDetailView',
+    'foam.apps.builder.dao.DAOFactoryEditView',
+    'foam.apps.builder.dao.IDBDAOFactoryEditView',
   ],
 
-  imports: [ 'stack' ],
+  properties: [
+    {
+      name: 'nextViewFactory',
+      defaultValue: {
+        factory_: 'foam.apps.builder.questionnaire.ModelWizard',
+      },
+    },
+  ],
 
   actions: [
     {
       name: 'next',
       label: 'Next: Create the Questions',
-      action: function() {
-        this.stack.replaceView(
-          this.ModelWizard.create({ data: this.data })
-        );
-      }
     }
   ],
 
   templates: [
-    function toHTML() {/*
-      <wizard id="%%id" <%= this.cssClassAttr() %>>
-      <div class="wizard-content">
-        <p class="md-style-trait-standard">Choose a data source, where your App will store its data.
+    function contentHTML() {/*
+        <p class="md-style-trait-standard md-title">Data Source Settings</p>
+        <p class="md-style-trait-standard">Set the following options for your Data Source.
         </p>
-        $$dao{ model_: 'foam.apps.builder.dao.DAOPickerView', baseModel: this.data.baseModelId }
-        </div>
-        <div class="wizard-footer">
-          $$next{ model_: 'foam.ui.md.FlatButton' }
-        </div>
-    </wizard>
-    */},
-    function CSS() {/*
+        $$dao{ model_: 'foam.apps.builder.dao.EditView', model: this.data.dao.model_ }
     */},
   ],
 

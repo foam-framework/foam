@@ -30,5 +30,12 @@ CLASS({
       documentation: function() {/* The name of the new item. */},
     },
   ],
+  
+  methods: [
+    function createModel(opt_X) {
+      var X = opt_X || this.Y;
+      return X.lookup(this.model).create({ name: this.name }, X);
+    }
+  ],
 
 });

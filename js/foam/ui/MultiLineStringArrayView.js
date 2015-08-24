@@ -196,7 +196,7 @@ CLASS({
     {
       name: 'add',
       label: 'Add',
-      action: function() {
+      code: function() {
         this.data = this.data.pushF('');
       }
     }

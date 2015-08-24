@@ -58,11 +58,11 @@ CLASS({
             break;
           }
         }
+        if (!prop && stringProps.length) prop = stringProps[0];
       }
       if (!prop) prop = this.model.ID;
       return prop;
     }
-    
   ],
 
   templates: [

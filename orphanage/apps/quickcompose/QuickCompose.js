@@ -264,7 +264,7 @@ var QuickCompose = FOAM({
          var body    = email.body;
          return length && ( subject || body );
        },
-       action: function() {
+       code: function() {
          this.email.timestamp = new Date();
          this.EMailDAO.put(this.email);
          this.window.close();
@@ -276,7 +276,7 @@ var QuickCompose = FOAM({
        iconUrl: '/images/trash.svg',
        help:  'Discard draft',
 
-       action: function() {
+       code: function() {
          this.email.to = [];
          this.email.subject = '';
          this.email.body = '';
@@ -293,7 +293,7 @@ var QuickCompose = FOAM({
        iconUrl: 'images/window_control_icon_flat_close.png',
        // help:  'Discard & Close',
 
-       action: function() {
+       code: function() {
          this.appWindow.close();
        }
      },
@@ -303,7 +303,7 @@ var QuickCompose = FOAM({
        iconUrl: 'images/window_control_icon_flat_minimize.png',
        // help:  'Minimize',
 
-       action: function() {
+       code: function() {
          this.appWindow.minimize();
        }
      }

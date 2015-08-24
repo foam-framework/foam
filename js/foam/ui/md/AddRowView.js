@@ -278,7 +278,7 @@ CLASS({
       label: '',
       iconUrl: 'images/ic_clear_24dp.png',
       isAvailable: function() { return !this.selected; },
-      action: function() {
+      code: function() {
         this.doClose();
       }
     },
@@ -288,7 +288,7 @@ CLASS({
       iconUrl: 'images/ic_done_24dp.png',
       //keyboardShortcuts: [ 13 /* enter */ ],
       isAvailable: function() { return this.selected; },
-      action: function() {
+      code: function() {
         var key = this.subKey ? this.subKey.f(this.softData) : this.softData;
         this.data = key;
         this.doClose();

@@ -46,32 +46,32 @@ CLASS({
     {
       name: 'moveToTop',
       keyboardShortcuts: ['shift-up'],
-      action: function() { this.pos = 'top'; },
+      code: function() { this.pos = 'top'; },
     },
     {
       name: 'moveToBottom',
       keyboardShortcuts: ['shift-down'],
-      action: function() { this.pos = 'bottom'; },
+      code: function() { this.pos = 'bottom'; },
     },
     {
       name: 'moveToLeft',
       keyboardShortcuts: ['shift-left'],
-      action: function() { this.pos = 'left'; },
+      code: function() { this.pos = 'left'; },
     },
     {
       name: 'moveToRight',
       keyboardShortcuts: ['shift-right'],
-      action: function() { this.pos = 'right'; },
+      code: function() { this.pos = 'right'; },
     },
     {
       name: 'moveToFull',
       keyboardShortcuts: ['alt-shift-up'],
-      action: function() { this.pos = 'full'; },
+      code: function() { this.pos = 'full'; },
     },
     {
       name: 'moveToHidden',
       keyboardShortcuts: ['alt-shift-down'],
-      action: function() { this.pos = 'hidden'; },
+      code: function() { this.pos = 'hidden'; },
     },
   ],
 

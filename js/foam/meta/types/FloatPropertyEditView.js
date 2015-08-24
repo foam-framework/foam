@@ -22,14 +22,6 @@ CLASS({
 
   extendsModel: 'foam.meta.types.EditView',
 
-  properties: [
-
-  ],
-
-  methods: [
-
-  ],
-
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>

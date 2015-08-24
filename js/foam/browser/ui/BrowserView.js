@@ -49,6 +49,7 @@ CLASS({
         'foam.ui.md.HaloView',
       ],
       imports: [
+        'document',
         'stack',
       ],
       exports: [
@@ -164,26 +165,41 @@ CLASS({
         },
       ],
 
+      methods: [
+        function initHTML() {
+          var out = TemplateOutput.create(this);
+          this.menuHTML(out);
+          this.document.body.insertAdjacentHTML('afterbegin', out.toString());
+          this.SUPER();
+        },
+        function destroy(s) {
+          this.SUPER(s);
+
+          var menuElem = this.X.document.getElementById(this.id +"-menu-container");
+          if ( menuElem ) menuElem.outerHTML = "";
+        }
+      ],
+
       actions: [
         {
           name: 'menuButton',
           iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAGklEQVQ4y2NgGAVEg/9EAMo0jHp61NOjAAgAUWrXKeQhPE4AAAAASUVORK5CYII=',
           isAvailable: function() { return ! this.menuExpanded; },
-          action: function() {
+          code: function() {
             this.menuOpen = true;
           }
         },
         {
           name: 'searchButton',
           iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAvklEQVQ4Ec3BO4rCYBgAwA/NOf6gZ1jZRlDwVoreI4W9+DiS0VJTGytlthMCyZLSmYjvZuGk8lY5msf/ZLaaCll0s8XDUjKQW6lRRBcLPPzEh4kas2jnhGU0WOMQ7VRI0WCEW7TzxiAaDPGKdirk0WCMe7RzxCoabLCPduaoTeLDryem0UWB2trI0NjGE7voJlNo2uEqj25mDm5e7vamEa64yKMvuQtKKfqSK1FK0ZdcibMUfUlKZyn6k6T4Xn//4NdJ9ptTNwAAAABJRU5ErkJggg==',
-          action: function() {
+          code: function() {
             this.searchMode = true;
           }
         },
         {
           name: 'backButton',
           iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPUlEQVQ4y2NgGLbgf8P/BtKU////+78WacpDSFMeSlPlYaQo/0OacjyAcg1wJ4WTGmHDS4sWaVrqhm/mBQAoLpX9t+4i2wAAAABJRU5ErkJggg==',
-          action: function() {
+          code: function() {
             this.searchMode = false;
             this.data.search = '';
           }
@@ -192,7 +208,7 @@ CLASS({
           name: 'createButton',
           iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
           isAvailable: function() { return this.data.showAdd; },
-          action: function() {
+          code: function() {
             this.stack.pushView(this.data.createView(null,
                 this.Y.sub({ dao: this.data.dao })));
           }
@@ -232,9 +248,10 @@ CLASS({
             padding: 0;
           }
           .browser-header .title {
-            font-size: 20px;
-            font-weight: 500;
             margin-left: 12px;
+          }
+          .browser-header .md-title {
+            color: #fff;
           }
 
           .browser-header .browser-spinner {
@@ -327,22 +344,10 @@ CLASS({
             <style>
               .browser-header-color { background-color: <%= this.data.headerColor %>; }
             </style>
-            <div id="<%= this.id %>-menu-container" class="browser-menu-container">
-              <div class="browser-menu-inner">
-                <div id="<%= this.id %>-menu-overlay" class="browser-menu-overlay"></div>
-                <div id="<%= this.id %>-menu-body" class="browser-menu"></div>
-              </div>
-            </div>
-            <%
-              this.setClass('menu-open', function() { return self.menuOpen; },
-                  this.id + '-menu-container');
-                  this.on('click', this.onMenuTouch, this.id + '-menu-overlay');
-            %>
-
 
             <div id="<%= this.id %>-header" class="browser-header browser-header-color">
               $$menuButton
-              $$title{ mode: 'read-only', extraClassName: 'expand title' }
+              $$title{ mode: 'read-only', extraClassName: 'md-title expand title' }
               <% if ( this.spinner ) { %>
                 <span class="browser-spinner">%%spinner</span>
               <% } %>
@@ -395,6 +400,19 @@ CLASS({
             <% } %>
           </div>
         */},
+        function menuHTML() {/*
+          <div id="<%= this.id %>-menu-container" class="browser-menu-container">
+            <div class="browser-menu-inner">
+              <div id="<%= this.id %>-menu-overlay" class="browser-menu-overlay"></div>
+              <div id="<%= this.id %>-menu-body" class="browser-menu"></div>
+            </div>
+          </div>
+          <%
+            this.setClass('menu-open', function() { return self.menuOpen; },
+                this.id + '-menu-container');
+                this.on('click', this.onMenuTouch, this.id + '-menu-overlay');
+          %>
+        */},
       ],
     },
   ],
@@ -441,6 +459,6 @@ CLASS({
         parent: this,
         data$: this.data$
       }, this.Y));
-    }
+    },
   ],
 });

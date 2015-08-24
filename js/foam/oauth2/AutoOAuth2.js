@@ -19,6 +19,11 @@ CLASS({
   name: 'AutoOAuth2',
   package: 'foam.oauth2',
   help: 'Registers an EasyOAuth2 model in the context based on the current environment.',
+  requires: [
+    'foam.oauth2.OAuth2ChromeIdentity',
+    'foam.oauth2.OAuth2ChromeApp',
+    'foam.oauth2.OAuth2Redirect'
+  ],
 
   imports: [
     'window',

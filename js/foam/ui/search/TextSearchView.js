@@ -58,7 +58,7 @@ CLASS({
     {
       name: 'view',
       type: 'view',
-      factory: function() { return foam.ui.TextFieldView.create({displayWidth:this.width, type: 'search', cssClass: 'foamSearchTextField'}); }
+      factory: function() { return this.TextFieldView.create({displayWidth:this.width, type: 'search', cssClass: 'foamSearchTextField'}); }
     },
     {
       name: 'label',
@@ -72,7 +72,7 @@ CLASS({
 
   methods: [
     function toHTML() {
-      return '<div class="foamSearchView">' +
+      return '<div class="foamSearchView foamSearchTextView">' +
         '<div class="foamSearchViewLabel">' +
         this.label +
         '</div>' +

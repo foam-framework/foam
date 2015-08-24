@@ -347,7 +347,7 @@ CLASS({
       name: 'bold',
       label: '<b>B</b>',
       help: 'Bold (Ctrl-B)',
-      action: function () {
+      code: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("bold");
       }
@@ -356,7 +356,7 @@ CLASS({
       name: 'italic',
       label: '<i>I</i>',
       help: 'Italic (Ctrl-I)',
-      action: function () {
+      code: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("italic");
       }
@@ -365,7 +365,7 @@ CLASS({
       name: 'underline',
       label: '<u>U</u>',
       help: 'Underline (Ctrl-U)',
-      action: function () {
+      code: function () {
         this.$.contentWindow.focus();
         this.document.execCommand("underline");
       }
@@ -374,7 +374,7 @@ CLASS({
       name: 'link',
       label: 'Link',
       help: 'Insert link (Ctrl-K)',
-      action: function () {
+      code: function () {
         // TODO: determine the actual location to position
         this.Link.create({
           richTextView: this,
@@ -385,14 +385,14 @@ CLASS({
       name: 'fontSize',
       label: 'Font Size',
       help: 'Change the font size.',
-      action: function(){}
+      code: function(){}
     },
     {
       name: 'small',
       help: 'Set\'s the font size to small.',
       label: 'small',
       parent: 'fontSize',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontSize", false, "2");
       }
@@ -402,7 +402,7 @@ CLASS({
       help: 'Set\'s the font size to normal.',
       label: 'normal',
       parent: 'fontSize',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontSize", false, "3");
       }
@@ -412,7 +412,7 @@ CLASS({
       help: 'Set\'s the font size to small.',
       label: 'large',
       parent: 'fontSize',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontSize", false, "5");
       }
@@ -422,7 +422,7 @@ CLASS({
       help: 'Set\'s the font size to huge.',
       label: 'huge',
       parent: 'fontSize',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontSize", false, "7");
       }
@@ -436,7 +436,7 @@ CLASS({
       name: 'sansSerif',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "arial, sans-serif");
       }
@@ -445,7 +445,7 @@ CLASS({
       name: 'serif',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "times new roman, serif");
       }
@@ -454,7 +454,7 @@ CLASS({
       name: 'wide',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "arial bold, sans-serif");
       }
@@ -463,7 +463,7 @@ CLASS({
       name: 'narrow',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "arial narrow, sans-serif");
       }
@@ -472,7 +472,7 @@ CLASS({
       name: 'comicSans',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "comic sans, sans-serif");
       }
@@ -481,7 +481,7 @@ CLASS({
       name: 'courierNew',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "courier new, monospace");
       }
@@ -490,7 +490,7 @@ CLASS({
       name: 'garamond',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "garamond, sans-serif");
       }
@@ -499,7 +499,7 @@ CLASS({
       name: 'georgia',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "georgia, sans-serif");
       }
@@ -508,7 +508,7 @@ CLASS({
       name: 'tahoma',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "tahoma, sans-serif");
       }
@@ -517,7 +517,7 @@ CLASS({
       name: 'trebuchet',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "trebuchet ms, sans-serif");
       }
@@ -526,7 +526,7 @@ CLASS({
       name: 'verdana',
       help: 'Set\'s the font face.',
       parent: 'fontFace',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("fontName", false, "verdana, sans-serif");
       }
@@ -534,21 +534,21 @@ CLASS({
     {
       name: 'removeFormatting',
       help: 'Removes formatting from the current selection.',
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("removeFormat");
       }
     },
     {
       name: 'justification',
-      action: function(){}
+      code: function(){}
     },
     {
       name: 'leftJustify',
       parent: 'justification',
       help: 'Align Left (Ctrl-Shift-W)',
       // Ctrl-Shift-L
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("justifyLeft");
       }
@@ -558,7 +558,7 @@ CLASS({
       parent: 'justification',
       help: 'Align Center (Ctrl-Shift-E)',
       // Ctrl-Shift-E
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand("justifyCenter");
       }
@@ -568,7 +568,7 @@ CLASS({
       parent: 'justification',
       help: 'Align Right (Ctrl-Shift-R)',
       // Ctrl-Shift-R
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('justifyRight');
       }
@@ -577,7 +577,7 @@ CLASS({
       name: 'numberedList',
       help: 'Numbered List (Ctrl-Shift-7)',
       // Ctrl-Shift-7
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('insertOrderedList');
       }
@@ -586,7 +586,7 @@ CLASS({
       name: 'bulletList',
       help: 'Bulleted List (Ctrl-Shift-7)',
       // Ctrl-Shift-8
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('insertUnorderedList');
       }
@@ -595,7 +595,7 @@ CLASS({
       name: 'decreaseIndentation',
       help: 'Indent Less (Ctrl-[)',
       // Ctrl-[
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('outdent');
       }
@@ -604,7 +604,7 @@ CLASS({
       name: 'increaseIndentation',
       help: 'Indent More (Ctrl-])',
       // Ctrl-]
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('indent');
       }
@@ -613,7 +613,7 @@ CLASS({
       name: 'blockQuote',
       help: 'Quote (Ctrl-Shift-9)',
       // Ctrl-Shift-9
-      action: function() {
+      code: function() {
         this.$.contentWindow.focus();
         this.document.execCommand('formatBlock', false, '<blockquote>');
       }

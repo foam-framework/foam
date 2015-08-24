@@ -41,7 +41,7 @@ CLASS({
   actions: [
     {
       name: 'test',
-      action: function() {
+      code: function() {
         this.X.ModelDAO.find(this.objId, {
           put: function(obj) {
             this.value = obj;

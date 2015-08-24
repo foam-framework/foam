@@ -64,6 +64,10 @@ this.on('mouseout', this.onMouseOut))) %>" <% if ( this.data && choice[0] === th
       this.SUPER();
       this.domValue = DomValue.create(this.$);
       Events.link(this.index$, this.domValue);
+    },
+    initInnerHTML: function() {
+      this.SUPER();
+      this.domValue && this.domValue.set(this.index);
     }
   },
 

@@ -149,7 +149,7 @@ var rootFeatureSet = [
   }],
   ['TodoController', 'Action', {
     name: 'toggle',
-    action: function() {
+    code: function() {
       this.todoDAO.select(UPDATE(SET(Todo.COMPLETED, this.activeCount), this.todoDAO));
     }
   }],

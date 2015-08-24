@@ -72,7 +72,7 @@ CLASS({
       label: '<',
       keyboardShortcuts: [ '<', 33 /* Page Down */ /*, 38*/ /* Down Arrow */ ],
       isEnabled: function() { return this.position > 1; },
-      action: function() {
+      code: function() {
         this.position--;
       }
     },
@@ -81,7 +81,7 @@ CLASS({
       label: '>',
       keyboardShortcuts: [ '>', 34 /* Page Up */ /*, 40*/ /* Up Arrow */ ],
       isEnabled: function() { return this.position < this.slides.length; },
-      action: function() {
+      code: function() {
         this.position++;
       }
     },
@@ -89,7 +89,7 @@ CLASS({
       name: 'legend',
       label: '+',
       keyboardShortcuts: [ '+' ],
-      action: function() { this.setView(this.Grid.create({cards: this.slides})); }
+      code: function() { this.setView(this.Grid.create({cards: this.slides})); }
     }
   ],
 

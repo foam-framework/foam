@@ -27,10 +27,7 @@ CLASS({
     'foam.mlang.CannedQuery',
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
-    'foam.tutorials.todo.ui.TodoDetailView',
     'foam.ui.DAOListView',
-    'foam.ui.ProgressView',
-    'foam.ui.SpinnerView',
     'foam.ui.TextFieldView',
     'foam.ui.Tooltip',
     'foam.ui.md.CannedQueryCitationView',
@@ -42,6 +39,7 @@ CLASS({
       name: 'data',
       factory: function() {
         return this.BrowserConfig.create({
+          model: this.Todo,
           dao: this.EasyDAO.create({
             model: this.Todo,
             daoType: 'LOCAL',

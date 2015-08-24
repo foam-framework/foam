@@ -153,7 +153,7 @@ CLASS({
       name: 'back',
       label: '',
       iconUrl: 'images/ic_arrow_back_24dp.png',
-      action: function() {
+      code: function() {
         this.stack.back();
       }
     },
@@ -161,7 +161,7 @@ CLASS({
       name: 'addRow',
       label: '',
       iconUrl: 'images/ic_add_24dp.png',
-      action: function() {
+      code: function() {
         var subY = this.srcDAO ? this.Y.sub({ dao: this.srcDAO }) : this.Y;
         var view = this.AddRowView.create(this.prop, subY);
         view.data$.addListener(function(obj, topic, old, nu) {

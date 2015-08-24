@@ -57,7 +57,7 @@ CLASS({
         <% if (this.data.iconUrl) { %>
           $$iconUrl
         <% } %>
-        $$label{ mode: 'read-only', extraClassName: 'canned-query-label' }
+        $$label{ mode: 'read-only', floatingLabel: false, extraClassName: 'canned-query-label' }
       </div>
     */},
   ]

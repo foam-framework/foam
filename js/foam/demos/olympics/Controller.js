@@ -139,7 +139,7 @@ CLASS({
   actions: [
     {
       name: 'clear',
-      action: function() { this.searchMgr.clear(); }
+      code: function() { this.searchMgr.clear(); }
     }
   ],
 

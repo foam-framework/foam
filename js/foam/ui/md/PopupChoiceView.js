@@ -155,11 +155,16 @@ CLASS({
       }
       var out = '';
 
+      if (this.floatingLabel) {
+        out += '<label id="' + this.id + '-label" class="md-floating-label">' +
+            this.label + '</label>';
+      }
+
       var textView = this.createTemplateView('text', {
         mode:'read-only',
         label: this.label,
         inlineStyle: true,
-        floatingLabel$: this.floatingLabel$
+        floatingLabel: false
       });
       this.addChild(textView);
       out += '<div class="value">'+textView.toHTML()+'</div>';
@@ -191,12 +196,17 @@ CLASS({
       }
 
       .popupChoiceView.md-style-trait-standard {
-        padding: 8px 0px 7px 0px;
+        padding: 24px 0px 8px 0px;
         margin: 8px 16px;
       }
       .popupChoiceView.md-style-trait-inline {
         padding: 8px 0px 8px 0px;
         margin: -8px 0px -8px 0px;
+      }
+
+      .popupChoiceView .md-floating-label {
+        font-size: 85%;
+        top: 6px;
       }
 
 

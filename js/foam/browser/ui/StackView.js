@@ -196,6 +196,9 @@ CLASS({
         height: 100%;
         position: absolute;
         height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
       }
 
       .stackview-edge {

@@ -12,35 +12,29 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'ModelWizard',
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.apps.builder.WizardPage',
 
-  imports: [ 'stack' ],
+  properties: [
+    {
+      name: 'nextViewFactory',
+      defaultValue: null,
+    },
+  ],
 
   actions: [
     {
       name: 'next',
       label: 'Finish',
-      action: function() {
-        this.stack.popView();
-      }
     }
   ],
 
   templates: [
-    function toHTML() {/*
-      <wizard id="%%id" <%= this.cssClassAttr() %>>
-      <div class="wizard-content">
-        <p class="md-style-trait-standard">Choose a your questions. You can create a new set, or re-use an existing
+    function contentHTML() {/*
+        <p class="md-style-trait-standard md-title">Choose a your questions</p>
+        <p class="md-style-trait-standard">You can create a new set, or re-use an existing
         set of questions.
         </p>
         $$model{ model_: 'foam.apps.builder.datamodels.ModelPickerView', baseModel: this.data.baseModelId }
-        </div>
-        <div class="wizard-footer">
-          $$next{ model_: 'foam.ui.md.FlatButton' }
-        </div>
-    </wizard>
-    */},
-    function CSS() {/*
     */},
   ],
 

@@ -83,7 +83,7 @@ CLASS({
     {
       name: 'sync',
       isEnabled: function() { return ! this.syncing; },
-      action: function() {
+      code: function() {
         this.syncing = true;
         this.syncs += 1;
 
