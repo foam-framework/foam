@@ -653,6 +653,9 @@ MODEL({
     /** Combinator to create the average of two functions. **/
     avg: function(f1, f2) { return function(x) { return (f1(x) + f2(x))/2; }; },
 
+    /** Combinator to create a progressive average of two functions. **/
+    spline: function(f1, f2) { return function(x) { return (1-x)*f1(x) + x*f2(x); }; },
+
     /** Constant speed. **/
     linear: function(x) { return x; },
 
