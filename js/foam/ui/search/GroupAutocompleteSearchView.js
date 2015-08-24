@@ -87,7 +87,10 @@ CLASS({
       // filter, I think?
       documentation: 'List of the groups found the last time we updated the DAO.',
       postSet: function(old, nu) {
-        this.view.autocompleteView.autocompleter.dao = nu;
+        if (this.view && this.view.autocompleteView &&
+            this.view.autocompleteView.autocompleter) {
+          this.view.autocompleteView.autocompleter.dao = nu;
+        }
       },
     },
     {
@@ -96,7 +99,11 @@ CLASS({
         var comp = this.split ?
             this.GroupSplitCompleter.xbind({ split: this.split }) :
             this.GroupCompleter;
-        return function(args) { return comp.create(args); };
+        return function(args) {
+          if (!args) args = {};
+          if (!args.dao) args.dao = this.groups;
+          return comp.create(args);
+        }.bind(this);
       }
     },
   ],
