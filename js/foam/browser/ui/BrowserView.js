@@ -209,8 +209,7 @@ CLASS({
           iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
           isAvailable: function() { return this.data.showAdd; },
           code: function() {
-            this.stack.pushView(this.data.createView(null,
-                this.Y.sub({ dao: this.data.dao })));
+            this.data.createFunction.call(this);
           }
         },
       ],

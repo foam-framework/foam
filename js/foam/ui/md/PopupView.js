@@ -33,7 +33,7 @@ CLASS({
       name: 'delegate',
       documentation: function() {/* The inner view to pop up.
         This should be created in the context of this popup,
-        so that X.viewContainerController is available to the inner
+        so that X.popup is available to the inner
         view to control the popup.</p>
         <p>The ViewContainerController interface includes methods to control
         your containing view, including .accept() and .reject()
@@ -87,6 +87,14 @@ CLASS({
     },
     {
       name: 'closeLatch_'
+    },
+    {
+      name: 'width',
+      help: 'If set, specifies the CSS width of the content container.',
+    },
+    {
+      name: 'height',
+      help: 'If set, specifies the CSS height of the content container.',
     }
   ],
 
@@ -113,6 +121,8 @@ CLASS({
       //this.$content.style.transform = "translateY("+this.viewportSize().height+"px)";
       this.$content.style.opacity = "0";
       this.$blocker.style.opacity = "0";
+      if ( this.width ) this.$content.style.width = this.width;
+      if ( this.height ) this.$content.style.height = this.height;
     },
     animateToExpanded: function() {
       //this.$content.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";

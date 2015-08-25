@@ -39,6 +39,7 @@ CLASS({
     'foam.ui.md.TextFieldView',
     'Model',
     'foam.apps.builder.dao.DAOFactory',
+    'foam.ui.md.PopupView',
   ],
   exports: [
     'touchManager',
@@ -100,15 +101,29 @@ CLASS({
                 })
               })
             }),
-            createView: function(args, X) {
-              var newObj = this.model.create();
-              return this.X.lookup('foam.apps.builder.questionnaire.AppWizard').create({
-                data: newObj
-              }, X.sub({ dao: this.dao }));
-//               return this.detailView({
-//                 data: newObj,
-//                 innerView: 'foam.apps.builder.questionnaire.AppWizard',
-//                 }, X.sub({ dao: this.dao }));
+            createFunction: function() {
+              /* 'this' is the browser view, this.data is the BrowserConfig */
+              var X = this.X;
+              var newObj = this.data.model.create();
+              var view = X.lookup('foam.ui.md.PopupView').create({
+                width: '80%',
+                height: '80%',
+                delegate: function(args, X) {
+                  var stack = X.lookup('foam.browser.ui.StackView').create({
+                      maxVisibleViews: 1,
+                      noDecoration: true,
+                  }, X);
+                  var Y = X.sub({ stack: stack });
+                  stack.pushView(
+                    X.lookup('foam.apps.builder.questionnaire.AppWizard').create({
+                      data: newObj,
+                      minWidth: 500,
+                    }, Y)
+                  );
+                  return stack;
+                }
+              }, X.sub({ dao: this.data.dao }));
+              view.open();
             },
             detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
             innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'

@@ -55,7 +55,7 @@ CLASS({
     {
       name: 'existingViewFactory',
       label: 'Use existing Data Model',
-      defaultValue: function() { },
+      defaultValue: null, //function() { },
     },
     {
       name: 'nextViewFactory',

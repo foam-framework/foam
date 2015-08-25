@@ -27,6 +27,12 @@ CLASS({
   ],
   properties: [
     {
+      model_: 'IntProperty',
+      name: 'maxVisibleViews',
+      defaultValue: 2,
+      documentation: 'Limits the number of views on screen at a time.',
+    },
+    {
       name: 'views_',
       documentation: 'Internal array of child views.',
       factory: function() { return []; }
@@ -44,6 +50,12 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'stackview-container'
+    },
+    {
+      model_: 'BooleanProperty',
+      documentation: 'If true, panel edges are not added',
+      name: 'noDecoration',
+      defaultValue: false,
     },
   ],
 
@@ -93,6 +105,7 @@ CLASS({
       style.left = this.$.offsetWidth;
       // not animating width makes a big difference in performance by avoiding layout events
       style.transition = "left 300ms ease"; // "width 300ms ease, left 300ms ease";
+      obj.view.setClass('stackview-hidden', function() { return this.noDecoration; }, obj.id + '-edge');
 
       obj.view.initHTML();
     },
@@ -134,7 +147,7 @@ CLASS({
       }
 
       index = Math.min(index + 1, this.views_.length - 1);
-      this.visibleStart_ = Math.max(index, this.views_.length - 2);
+      this.visibleStart_ = Math.max(index, this.views_.length - this.maxVisibleViews);
       // Currently visibleEnd_ is always the last view; it exists only to make
       // sure views that are replacing each other come and go lockstep in a
       // single frame.
