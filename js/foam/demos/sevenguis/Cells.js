@@ -138,7 +138,7 @@ MODEL({
     },
     {
       name: 'value',
-      adapt: function(_, v) { var ret = parseFloat(v); return isNaN(ret) ? v : ret.toFixed(2); },
+      adapt: function(_, v) { var ret = parseFloat(v); return ret && ! Number.isInteger(ret) ? ret.toFixed(2) : v; },
       displayWidth: 12
     }
   ],
