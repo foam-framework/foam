@@ -18,6 +18,8 @@ CLASS({
   requires: [
     'com.google.drive.FileDAO',
     'foam.dao.EasyDAO',
+    'foam.oauth2.AutoOAuth2',
+    'XHR'
   ],
 
   properties: [
@@ -28,10 +30,32 @@ CLASS({
       name: 'label',
     },
     {
+      name: 'authClientId'
+    },
+    {
+      name: 'authClientSecret'
+    },
+    {
       model_: 'FactoryProperty',
       hidden: true,
       name: 'factory', //TODO(jacksonic): Should be named .create, but can't until Model.create is moved
       defaultValue: function() {
+
+        var authX = this.AutoOAuth2.create().Y;
+        var agent = authX.lookup('foam.oauth2.EasyOAuth2').create({
+          scopes: [
+            'https://www.googleapis.com/auth/drive.appfolder'
+          ],
+          clientId: this.authClientId,
+          clientSecret: this.authClientSecret
+        });
+
+        authX.registerModel(
+          this.XHR.xbind({
+            authAgent: agent
+          })
+        );
+
         return this.EasyDAO.create({
           model: this.X.lookup(this.modelType),
           name: this.name,
@@ -39,7 +63,7 @@ CLASS({
           cache: true,
           guid: true,
           logging: true
-        });
+        }, authX);
       },
     }
   ],
