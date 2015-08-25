@@ -98,6 +98,8 @@ CLASS({
       this.addChild(this.ImageCView.create({
         x: 1530,
         y: 380,
+        width: 200,
+        height: 200,
         src: './js/foam/demos/empire/todo.png'
       }));
 
