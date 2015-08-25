@@ -27,11 +27,6 @@
     </div>
   </slide>
 
-  <slide>
-    <center>
-      <foam model="foam.demos.FOAMDiagram" width="1600" height="800" />
-    </center>
-  </slide>
 <!--
   <slide>
     <div class="heading-card">
@@ -82,7 +77,7 @@
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block blue">&nbsp;</div>
-        <div class="flex-grow content small-heading">History Lesson: Feature-Orientation</div>
+        <div class="flex-grow content small-heading">History Lesson: Feature-Oriented OS</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
@@ -548,7 +543,7 @@ CLASS({
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block blue">&nbsp;</div>
+        <div class="small-color-block green">&nbsp;</div>
         <div class="flex-grow content small-heading">Toolability (meta-programming)</div>
       </div>
     </div>
@@ -579,43 +574,31 @@ CLASS({
   <slide>
     <div class="heading-card">
       <div class="flex-row">
-        <div class="small-color-block green">&nbsp;</div>
-        <div class="flex-grow content small-heading">Summary</div>
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">OS for The World's Information</div>
       </div>
     </div>
     <div class="flex-row" style="align-items: stretch; flex-shrink: 1">
-      <div class="card flex-grow" style="overflow: auto">
-        <div>
-              <li><b>Model-Oriented</b></li>
-                <li class="d1">Models are Modelled</li>
-                <li class="d1">Language-Like Features</li>
-                <li class="d1">Better Toolability</li>
-                <li class="d1">Cross-Language D.R.Y.-ness</li>
-              <li><b>Feature-Oriented</b></li>
-                <li class="d1">Reactive MVC</li>
-                  <li class="d2">Reactive</li>
-                    <li class="d3">Observerless</li>
-                    <li class="d3">Animation</li>
-                    <li class="d3">Physics</li>
-                    <li class="d3">Live-Coding</li>
-                  <li class="d2">Models</li>
-                    <li class="d3">DAO's</li>
-                      <li class="d4">Technology Independent</li>
-                      <li class="d4">Offline</li>
-                  <li class="d2">Views</li>
-                    <li class="d3">Technology Independent</li>
-                    <!-- <li class="d3">Material Design</li> -->
-                    <li class="d3">Mobile</li>
-                  <li class="d2">Reusable Controllers</li>
-                <li class="d1">Cross-Platform/Tier</li>
-                  <li class="d2">Node.js</li>
-                  <li class="d2">Java</li>
-              <li><b><i>An OS for Information</i></b></li>
-          </div>
-      </div>
       <div class="card flex-col flex-grow" style="flex-grow: 3">
+      <center style="width:1100px">
         <iframe src="./demos/GoogleSimulator.html"></iframe>
+      </center>
+        <i><font size="+2" color="blue">Organize the world's information (y-axis) and make it universally accessible (z-axis) and useful (x-axis).</font></i>
       </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Summary</div>
+      </div>
+    </div>
+    <div style="align-items: stretch; flex-grow: 1">
+      <center>
+        <foam model="foam.demos.FOAMDiagram" x="2" y="2" width="1600" height="800" />
+      </center>
     </div>
   </slide>
 
