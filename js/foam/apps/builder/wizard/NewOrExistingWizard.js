@@ -57,6 +57,9 @@ CLASS({
       name: 'next',
       isEnabled: function() {
         // must be creating new OR have selected something
+        this.nextViewFactory;
+        this.newViewFactory;
+        this.selection;
         return (this.nextViewFactory === this.newViewFactory) ||
                (this.selection);
       },
