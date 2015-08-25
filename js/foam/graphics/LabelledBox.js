@@ -57,6 +57,14 @@ CLASS({
 
       c.fillStyle = grad;
       c.fillRect(1, 1, this.width-2, this.height-2);
+
+      // Redraw text over top of linear gradient so that it's clearer
+      c.fillStyle = this.color;
+      if ( this.align === 'center' ) {
+        c.fillText(this.text, this.width/2, this.height/2+10);
+      } else {
+        c.fillText(this.text, 0, this.height/2+10);
+      }
     }
   }
 });
