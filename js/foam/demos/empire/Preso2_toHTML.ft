@@ -398,6 +398,60 @@ CLASS({
   <slide>
     <div class="heading-card">
       <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">Reactive Programming</div>
+      </div>
+    </div>
+    <div class="card flex-col flex-grow">
+      <div style="height: 100%; width: 100%; overflow: hidden">
+      <foam model="foam.ui.md.TwoPaneView">
+        <views>
+          <viewChoice>
+            <label>Spreadsheets</label>
+            <p:view><div style="margin-left: 100px;transform:scale(1.8);transform-origin: 0 0;"><foam model="foam.demos.sevenguis.Cells" rows="10" columns="6" /></div></p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Graphical</label>
+            <p:view>
+              <code>
+                clock1.x = mouse.x;
+                clock1.y = mouse.y;
+              </code>
+            </p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Graphical (2nd Order)</label>
+            <p:view>
+              <code>
+                clock1.x = mouse.x;
+                clock1.y = mouse.y;
+
+                clock2.x = clock1.x + 200;
+                clock2.y = clock1.y + 200;
+              </code>
+            </p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Time</label>
+            <p:view>
+              <code>
+                clock1.x = mouse.x;
+                clock1.y = mouse.y;
+
+                clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
+                clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
+              </code>
+            </p:view>
+          </viewChoice>
+        </views>
+      </foam>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
         <div class="small-color-block green">&nbsp;</div>
         <div class="flex-grow content small-heading">Reactive Programming</div>
       </div>
