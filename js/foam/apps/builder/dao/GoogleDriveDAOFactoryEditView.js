@@ -17,7 +17,9 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        Create an app on the <a href="https://console.developers.google.com/" target="_blank">Google Developers Console</a> and copy the authentication details here.
+        <p class='md-style-trait-standard'>
+          Create an app on the <a href="https://console.developers.google.com/" target="_blank">Google Developers Console</a> and copy the authentication details here.
+        </p>
         $$authClientId
         $$authClientSecret
       </div>
