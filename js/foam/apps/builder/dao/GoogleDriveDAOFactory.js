@@ -36,6 +36,11 @@ CLASS({
       name: 'authClientSecret'
     },
     {
+      name: 'requiresUserConfiguration',
+      defaultValue: true,
+      hidden: true,
+    },
+    {
       model_: 'FactoryProperty',
       hidden: true,
       name: 'factory', //TODO(jacksonic): Should be named .create, but can't until Model.create is moved

@@ -18,6 +18,7 @@ CLASS({
     'foam.apps.builder.wizard.NewOrExistingModelWizard',
     'foam.apps.builder.dao.DAOFactoryEditView',
     'foam.apps.builder.dao.IDBDAOFactoryEditView',
+    'foam.apps.builder.dao.GoogleDriveDAOFactoryEditView'
   ],
 
   imports: [
