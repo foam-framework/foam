@@ -58,6 +58,7 @@ CLASS({
       label:  'Back',
       isAvailable: function() { return this.stack.views_.length > 1; },
       code: function() {
+        this.onBack();
         //this.popup && this.popup.close();
         if ( this.stack.views_.length <= 1 ) {
           this.onCancel();
@@ -77,7 +78,10 @@ CLASS({
     },
     function onCancel() {
       /* if you need to do anything when the user picks the 'cancel' action, implement this method */
-    }
+    },
+    function onBack() {
+      /* if you need to do anything when the user picks the 'back' action, implement this method */
+    },
   ],
 
   templates: [
