@@ -28,6 +28,53 @@
   </slide>
 
   <slide>
+    <center>
+      <foam model="foam.demos.FOAMDiagram" width="1600" height="800" />
+    </center>
+  </slide>
+<!--
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Overview</div>
+      </div>
+    </div>
+    <div class="card flex-grow">
+      <foam model="foam.demos.FOAMDiagram" width="1600" height="680" />
+    </div>
+  </slide>
+-->
+<!--
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Overview</div>
+      </div>
+    </div>
+    <div class="flex-row flex-grow" style="align-items: stretch">
+      <div class="card flex-grow">
+        <foam model="foam.demos.FOAMDiagram" />
+      </div>
+      <div class="card flex-col flex-grow">
+        <span class="small-heading">
+          <a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome
+            App Builder</a>
+        </span>
+
+        <br>
+
+        <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw"
+             style="border: 1px solid;">
+        <br>
+        <span style="font-size: 60%">(22k 1-week active users)</span>
+      </div>
+    </div>
+  </slide>
+-->
+
+  <slide>
     <foam model="foam.demos.FOAMComponents" />
   </slide>
 
@@ -54,6 +101,7 @@
       <iframe src="./demos/demo10b2.html"></iframe>
     </div>
   </slide>
+
 
   <slide>
     <div class="heading-card">
@@ -109,40 +157,6 @@ CLASS({
           <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Board}) %>
           <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Cell}) %>
         </div>
-      </div>
-    </div>
-  </slide>
-
-  <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block blue">&nbsp;</div>
-        <div class="flex-grow content small-heading">Model Types</div>
-      </div>
-    </div>
-    <div class="flex-row flex-grow" style="align-items: stretch">
-      <div class="card flex-grow">
-        <ul>
-          <li>Entities (default)</li>
-          <li>Animations</li>
-          <li>Queries (mLang)</li>
-          <li>Parsers</li>
-          <li>Interactive Documents (FLOW)</li>
-          <li>...</li>
-        </ul>
-      </div>
-      <div class="card flex-col flex-grow">
-        <span class="small-heading">
-          <a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome
-            App Builder</a>
-        </span>
-
-        <br>
-
-        <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw"
-             style="border: 1px solid;">
-        <br>
-        <span style="font-size: 60%">(20k 1-week active users)</span>
       </div>
     </div>
   </slide>
@@ -608,7 +622,7 @@ CLASS({
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Summary: Efficiency</div>
+        <div class="flex-grow content small-heading">Efficiency</div>
       </div>
     </div>
     <div class="flex-row">
