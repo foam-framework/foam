@@ -435,6 +435,10 @@ CLASS({
         return this.StackView.create();
       }
     },
+    {
+      name: 'className',
+      defaultValue: 'browser-outer-container',
+    },
   ],
 
   methods: [
@@ -448,9 +452,6 @@ CLASS({
       }), 'foam.ui.ActionButton');
       this.SharedStyles.create();
     },
-    function toHTML() {
-      return this.stack.toHTML();
-    },
     function initHTML() {
       this.SUPER();
       this.stack.initHTML();
@@ -460,4 +461,17 @@ CLASS({
       }, this.Y));
     },
   ],
+
+  templates: [
+    function toHTML() {/*
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        <% this.stack.toHTML(out); %>
+      </div>
+    */},
+    function CSS() {/*
+      .browser-outer-container {
+        background-color: #9e9e9e;
+      }
+    */},
+  ]
 });
