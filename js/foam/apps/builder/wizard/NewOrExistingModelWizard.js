@@ -10,13 +10,13 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.questionnaire',
+  package: 'foam.apps.builder.wizard',
   name: 'NewOrExistingModelWizard',
-  extendsModel: 'foam.apps.builder.NewOrExistingWizard',
+  extendsModel: 'foam.apps.builder.wizard.NewOrExistingWizard',
 
   requires: [
-    'foam.apps.builder.questionnaire.ModelWizard',
-    'foam.apps.builder.questionnaire.ModelPreviewWizard',
+    'foam.apps.builder.wizard.ModelWizard',
+    'foam.apps.builder.wizard.ModelPreviewWizard',
   ],
 
   imports: [
@@ -29,6 +29,12 @@ CLASS({
   ],
 
   properties: [
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        if ( nu.baseModelId ) this.baseModel = nu.baseModelId;
+      }
+    },
     {
       model_: 'ModelProperty',
       name: 'baseModel',
@@ -50,7 +56,7 @@ CLASS({
     {
       name: 'newViewFactory',
       label: 'Create a new Data Model',
-      defaultValue: { factory_: 'foam.apps.builder.questionnaire.ModelWizard' },
+      defaultValue: { factory_: 'foam.apps.builder.wizard.ModelWizard' },
     },
     {
       name: 'existingViewFactory',
@@ -77,7 +83,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'editView',
-      defaultValue: { factory_: 'foam.apps.builder.questionnaire.ModelPreviewWizard' },
+      defaultValue: { factory_: 'foam.apps.builder.wizard.ModelPreviewWizard' },
     },
     {
       model_: 'ViewFactoryProperty',

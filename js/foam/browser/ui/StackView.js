@@ -126,7 +126,7 @@ CLASS({
       var obj = this.views_[index];
       this.$.insertAdjacentHTML('beforeend', this.childHTML(index, this.views_[index]));
       this.elementAnimationAdd_(this.X.$(obj.id).style);
-      obj.view.setClass('stackview-hidden', function() { return this.noDecoration; }, obj.id + '-edge');
+      obj.view.setClass('stackview-hidden', function() { return this.noDecoration; }.bind(this), obj.id + '-edge');
 
       obj.view.initHTML();
     },

@@ -24,6 +24,8 @@ CLASS({
   ],
   imports: [
     'exportManager$',
+    'dao',
+    'stack',
   ],
 
   properties: [
@@ -123,6 +125,18 @@ CLASS({
         this.doExportAction('publishApp', 'Publish to Chrome Web Store');
       },
     },
+    {
+      name: 'delete',
+      label: 'Delete',
+      help: 'Removes this app',
+      priority: 2,
+      order: 10,
+      ligature: 'delete',
+      code: function() {
+        this.dao.remove(this.data);
+        this.stack.popView();
+      }
+    }
   ],
 
   templates: [

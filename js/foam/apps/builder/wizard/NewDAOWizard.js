@@ -10,13 +10,13 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.questionnaire',
+  package: 'foam.apps.builder.wizard',
   name: 'NewDAOWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
+  extendsModel: 'foam.apps.builder.wizard.WizardPage',
 
   requires: [
-    'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-    'foam.apps.builder.questionnaire.DAOWizard',
+    'foam.apps.builder.wizard.NewOrExistingModelWizard',
+    'foam.apps.builder.wizard.DAOWizard',
     'foam.meta.descriptor.DAOFactoryMetaDescriptor',
     'foam.meta.descriptor.MetaDescriptorView',
   ],
@@ -29,8 +29,7 @@ CLASS({
     {
       name: 'nextViewFactory',
       defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-        baseModel: 'foam.apps.builder.questionnaire.Questionnaire',
+        factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
       },
     },
     {
@@ -55,11 +54,10 @@ CLASS({
       name: 'daoFactory',
       postSet: function() {
         if ( this.daoFactory.requiresUserConfiguration ) {
-          this.nextViewFactory = { factory_: 'foam.apps.builder.questionnaire.DAOWizard' };
+          this.nextViewFactory = { factory_: 'foam.apps.builder.wizard.DAOWizard' };
         } else {
           this.nextViewFactory = {
-            factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-             baseModel: 'foam.apps.builder.questionnaire.Questionnaire',
+            factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
           };
         }
       }

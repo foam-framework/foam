@@ -10,9 +10,9 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
+  package: 'foam.apps.builder.wizard',
   name: 'NewOrExistingWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
+  extendsModel: 'foam.apps.builder.wizard.WizardPage',
 
   requires: [
     'foam.ui.md.ChoiceRadioView',
@@ -55,6 +55,14 @@ CLASS({
   actions: [
     {
       name: 'next',
+      isEnabled: function() {
+        // must be creating new OR have selected something
+        this.nextViewFactory;
+        this.newViewFactory;
+        this.selection;
+        return (this.nextViewFactory === this.newViewFactory) ||
+               (this.selection);
+      },
       labelFn: function() {
         this.nextViewFactory; //TODO: add i18n "Next: %1" to the label
         return ( this.nextViewFactory === this.newViewFactory ) ?
