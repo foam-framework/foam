@@ -16,7 +16,9 @@
   },
   "permissions": [
     "https://www.google-analytics.com/",
+    "https://accounts.google.com/*",
     "webview",
+    "identity",
     "power",
     "storage",
     "videoCapture",
