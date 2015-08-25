@@ -39,11 +39,16 @@ CLASS({
   ],
 
   templates: [
-    function contentHTML() {/*
+    function titleHTML() {/*
         <p class="md-style-trait-standard md-title">Preview</p>
+    */},
+    function instructionHTML() {/*
         <p class="md-style-trait-standard">Here is a preview of
         <%= this.data.name %>
         </p>
+    */},
+
+    function contentHTML() {/*
         $$data{ model_: 'foam.meta.types.ModelEditView', mode: 'read-only' }
     */},
   ],
