@@ -30,8 +30,10 @@ CLASS({
   ],
 
   properties: [
-    { name: 'width',      defaultValue: 1410    },
-    { name: 'height',     defaultValue: 810     },
+    { name: 'x',          defaultValue: 50      },
+    { name: 'y',          defaultValue: 50      },
+    { name: 'width',      defaultValue: 1500    },
+    { name: 'height',     defaultValue: 800     },
     { name: 'background', defaultValue: 'black' }
   ],
 
@@ -39,8 +41,8 @@ CLASS({
     initCView: function() {
       var self = this;
       function box(m) {
-        m.color = m.color || 'white';
-        m.background = m.background || '#aaa';
+        m.color = m.color || 'blue';
+        m.background = m.background || 'white';
         m.font = 'bold ' + (m.font || 22 ) + 'pt Arial';
         m.alpha = m.alpha || 0;
 
@@ -66,24 +68,22 @@ CLASS({
         }
       }
 
-      this.x = this.y = 50;
-
-      var foam = box({text: 'FOAM', font: 60, width: 1400, height: 800, x: 0, y: 0, alpha: 1});
+      var foam = box({text: 'FOAM', font: 60, width: this.width, height: this.height, x: 0, y: 0, alpha: 1});
         var modeler        = box({text: 'Modeler', font: 36});
           var ani          = box({text: 'Animations'});
           var parse        = box({text: 'Parsers'});
           var query        = box({text: 'Queries'});
           var concur       = box({text: 'Concurrency'});
-          var doc          = box({text: 'Live Documents'});
+          var doc          = box({text: 'Interactive Documents'});
           var models       = box({text: 'Models'});
           var otherm       = box({text: '...'});
-            var mp         = box({text: 'Classes',       font: 20, xbackground: 'navy'});
-            var mm         = box({text: 'Dependencies',  font: 20, xbackground: 'navy'});
-            var ma         = box({text: 'Type-Checking', font: 20, xbackground: 'navy'});
-            var ml         = box({text: 'Reflection',    font: 20, xbackground: 'navy'});
-            var mt         = box({text: 'Packages',      font: 20, xbackground: 'navy'});
-            var md         = box({text: '...',                     xbackground: 'navy'});
-        var lib            = box({text: 'Library', font: 36});
+            var mp         = box({text: 'Classes',       font: 20});
+            var mm         = box({text: 'Dependencies',  font: 20});
+            var ma         = box({text: 'Type-Checking', font: 20});
+            var ml         = box({text: 'Reflection',    font: 20});
+            var mt         = box({text: 'Packages',      font: 20});
+            var md         = box({text: '...'});
+        var lib            = box({text: 'Library',       font: 36});
           var c            = box({text: 'Client'});
             var android    = box({text: 'Android'});
             var web        = box({text: 'Web'});
@@ -93,12 +93,12 @@ CLASS({
                 var m3     = box({text: 'Offline'});
                 var m4     = box({text: 'Query'});
               var view     = box({text: 'View'});
-                var dom    = box({text: 'DOM', font: 26});
-                var canvas = box({text: 'Canvas', font: 26});
-                var webgl  = box({text: 'WebGL', font: 26});
-                var v1     = box({text: 'Reactivity', font: 26});
-                var v2     = box({text: 'Animation', font: 26});
-                var v3     = box({text: 'Physics', font: 26});
+                var dom    = box({text: 'DOM',           font: 28});
+                var canvas = box({text: 'Canvas',        font: 28});
+                var webgl  = box({text: 'WebGL',         font: 28});
+                var v1     = box({text: 'Reactivity',    font: 28});
+                var v2     = box({text: 'Animation',     font: 28});
+                var v3     = box({text: 'Physics',       font: 28});
               var ctrl     = box({text: 'Controller'});
             var ios        = box({text: 'iOS'});
           var s            = box({text: 'Server'});
@@ -106,7 +106,7 @@ CLASS({
             var java       = box({text: 'Java'});
             var other      = box({text: '...'});
 
-      var click = this.Label.create({text: '(keep clicking)', background: null, align: 'center', color: 'white', font: '20pt Arial', width: 1400, height: 100, y: 420});
+      var click = this.Label.create({text: '(keep clicking)', background: null, align: 'center', font: '20pt Arial', color: 'blue', width: this.width, height: 100, y: 420});
       this.addChild(click);
 
       children(foam, [modeler, lib], true);
@@ -153,7 +153,7 @@ CLASS({
         [0],
         [500, function() { mp.alpha = mm.alpha = ma.alpha = ml.alpha = mt.alpha = md.alpha = 1; }],
         [0],
-        function() { dom.background = 'red'; }
+        function() { dom.color = 'red'; }
       ])();
     }
   }
