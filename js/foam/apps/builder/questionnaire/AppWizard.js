@@ -12,18 +12,18 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'AppWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
+  extendsModel: 'foam.apps.builder.wizard.WizardPage',
 
   requires: [
-    'foam.apps.builder.questionnaire.NewDAOWizard',
-    'foam.apps.builder.questionnaire.NewOrExistingDAOWizard',
+    'foam.apps.builder.wizard.NewDAOWizard',
+    'foam.apps.builder.wizard.NewOrExistingDAOWizard',
   ],
 
   properties: [
     {
       name: 'nextViewFactory',
       defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.NewOrExistingDAOWizard',
+        factory_: 'foam.apps.builder.wizard.NewOrExistingDAOWizard',
       },
     },
   ],

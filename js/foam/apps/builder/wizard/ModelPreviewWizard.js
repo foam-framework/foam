@@ -10,9 +10,9 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.questionnaire',
+  package: 'foam.apps.builder.wizard',
   name: 'ModelPreviewWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
+  extendsModel: 'foam.apps.builder.wizard.WizardPage',
 
   properties: [
     {
@@ -30,17 +30,11 @@ CLASS({
   actions: [
     {
       name: 'next',
-      label: 'Done with Preview',
+      isAvailable: function() { return false; }
     },
     {
-      name: 'exit',
-      isAvailable: function() { return false; }
-    }
-  ],
-
-  methods: [
-    function onNext() {
-      // skip SUPER(), we don't want to save
+      name: 'back',
+      label: 'Done with Preview',
     }
   ],
 

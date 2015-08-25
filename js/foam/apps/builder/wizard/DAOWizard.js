@@ -10,12 +10,12 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.questionnaire',
+  package: 'foam.apps.builder.wizard',
   name: 'DAOWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
+  extendsModel: 'foam.apps.builder.wizard.WizardPage',
 
   requires: [
-    'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+    'foam.apps.builder.wizard.NewOrExistingModelWizard',
     'foam.apps.builder.dao.DAOFactoryEditView',
     'foam.apps.builder.dao.IDBDAOFactoryEditView',
   ],
@@ -28,8 +28,7 @@ CLASS({
     {
       name: 'nextViewFactory',
       defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-        baseModel: 'foam.apps.builder.questionnaire.Questionnaire',
+        factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
       },
     },
   ],

@@ -10,9 +10,13 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.questionnaire',
+  package: 'foam.apps.builder.wizard',
   name: 'ModelWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
+  extendsModel: 'foam.apps.builder.wizard.WizardPage',
+
+  requires: [
+    'foam.apps.builder.datamodels.ModelWizardEditView',
+  ],
 
   imports: [
     'modelDAO',
@@ -43,9 +47,9 @@ CLASS({
   templates: [
     function contentHTML() {/*
         <p class="md-style-trait-standard md-title">Create your Questions</p>
-        <p class="md-style-trait-standard">Add questions with the large '+' button at the bottom.
+        <p class="md-style-trait-standard">Add questions with the large '+' button.
         </p>
-        $$model{ model_: 'foam.meta.types.ModelEditView' }
+        $$model{ model_: 'foam.apps.builder.datamodels.ModelWizardEditView' }
     */},
   ],
 

@@ -30,7 +30,7 @@ CLASS({
   ],
 
   properties: [
-    { name: 'width',      defaultValue: 1210    },
+    { name: 'width',      defaultValue: 1410    },
     { name: 'height',     defaultValue: 810     },
     { name: 'background', defaultValue: 'black' }
   ],
@@ -41,7 +41,7 @@ CLASS({
       function box(m) {
         m.color = m.color || 'white';
         m.background = m.background || '#aaa';
-        m.font = (m.font || 22 ) + 'pt Arial';
+        m.font = 'bold ' + (m.font || 22 ) + 'pt Arial';
         m.alpha = m.alpha || 0;
 
         var b = self.Box.create(m);
@@ -68,7 +68,7 @@ CLASS({
 
       this.x = this.y = 50;
 
-      var foam = box({text: 'FOAM', font: 60, width: 1200, height: 800, x: 0, y: 0, alpha: 1});
+      var foam = box({text: 'FOAM', font: 60, width: 1400, height: 800, x: 0, y: 0, alpha: 1});
         var modeler        = box({text: 'Modeler', font: 36});
           var ani          = box({text: 'Animations'});
           var parse        = box({text: 'Parsers'});
@@ -77,12 +77,12 @@ CLASS({
           var doc          = box({text: 'Live Documents'});
           var models       = box({text: 'Models'});
           var otherm       = box({text: '...'});
-            var mp         = box({text: 'Classes',       font: 16, background: 'lightblue'});
-            var mm         = box({text: 'Dependencies',  font: 16, background: 'lightblue'});
-            var ma         = box({text: 'Type-Checking', font: 16, background: 'lightblue'});
-            var ml         = box({text: 'Reflection',    font: 16, background: 'lightblue'});
-            var mt         = box({text: 'Packages',      font: 16, background: 'lightblue'});
-            var md         = box({text: '...',                     background: 'lightblue'});
+            var mp         = box({text: 'Classes',       font: 20, xbackground: 'navy'});
+            var mm         = box({text: 'Dependencies',  font: 20, xbackground: 'navy'});
+            var ma         = box({text: 'Type-Checking', font: 20, xbackground: 'navy'});
+            var ml         = box({text: 'Reflection',    font: 20, xbackground: 'navy'});
+            var mt         = box({text: 'Packages',      font: 20, xbackground: 'navy'});
+            var md         = box({text: '...',                     xbackground: 'navy'});
         var lib            = box({text: 'Library', font: 36});
           var c            = box({text: 'Client'});
             var android    = box({text: 'Android'});
@@ -93,12 +93,12 @@ CLASS({
                 var m3     = box({text: 'Offline'});
                 var m4     = box({text: 'Query'});
               var view     = box({text: 'View'});
-                var dom    = box({text: 'DOM'});
-                var canvas = box({text: 'Canvas'});
-                var webgl  = box({text: 'WebGL'});
-                var v1     = box({text: 'Reactivity'});
-                var v2     = box({text: 'Animation'});
-                var v3     = box({text: 'Physics'});
+                var dom    = box({text: 'DOM', font: 26});
+                var canvas = box({text: 'Canvas', font: 26});
+                var webgl  = box({text: 'WebGL', font: 26});
+                var v1     = box({text: 'Reactivity', font: 26});
+                var v2     = box({text: 'Animation', font: 26});
+                var v3     = box({text: 'Physics', font: 26});
               var ctrl     = box({text: 'Controller'});
             var ios        = box({text: 'iOS'});
           var s            = box({text: 'Server'});
@@ -106,7 +106,7 @@ CLASS({
             var java       = box({text: 'Java'});
             var other      = box({text: '...'});
 
-      var click = this.Label.create({text: '(keep clicking)', background: null, align: 'center', color: 'white', font: '20pt Arial', width: 1200, height: 100, y: 420});
+      var click = this.Label.create({text: '(keep clicking)', background: null, align: 'center', color: 'white', font: '20pt Arial', width: 1400, height: 100, y: 420});
       this.addChild(click);
 
       children(foam, [modeler, lib], true);

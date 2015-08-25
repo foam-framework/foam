@@ -131,11 +131,11 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-edit-view-container">
-          <div class="md-heading md-model-edit-view-heading">
+          <!--<div class="md-heading md-model-edit-view-heading">
             <div class="meta-edit-heading md-style-trait-standard">
               $$metaEditModelTitle{ model_: foam.ui.TextFieldView, mode:'read-only' }
             </div>
-          </div>
+          </div>-->
           <div class="model-edit-view-list">
             $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }
           </div>
@@ -170,7 +170,7 @@ CLASS({
         flex-shrink: 0;
       }
       .model-edit-view-list {
-        background: grey;
+        background:  #9e9e9e;
         flex-grow: 1;
         display: flex;
         overflow-y: scroll;
