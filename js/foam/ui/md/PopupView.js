@@ -209,6 +209,9 @@ CLASS({
         right: 0px;
         z-index: 1000;
       }
+      .popup-view-content {
+        background: white;
+      }
     */}
   ]
 });

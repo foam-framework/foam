@@ -112,6 +112,7 @@ CLASS({
                   var stack = X.lookup('foam.browser.ui.StackView').create({
                       maxVisibleViews: 1,
                       noDecoration: true,
+                      transition: 'fade',
                   }, X);
                   var Y = X.sub({ stack: stack });
                   stack.pushView(

@@ -106,7 +106,7 @@ CLASS({
     scrollToSelection: function() {
       // Three cases: in view, need to scroll up, need to scroll down.
       // First we determine the parent's scrolling bounds.
-      var e = this.$.children[this.index];
+      var e = this.$ && this.$.children[this.index];
       if ( ! e ) return;
       var parent = e.parentElement;
       while ( parent ) {
