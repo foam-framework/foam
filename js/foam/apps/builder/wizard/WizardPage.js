@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
+  package: 'foam.apps.builder.wizard',
   name: 'WizardPage',
   extendsModel: 'foam.ui.md.DetailView',
 

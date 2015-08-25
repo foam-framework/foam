@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.datamodels',
   name: 'PropertyWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
+  extendsModel: 'foam.apps.builder.wizard.WizardPage',
 
   requires: [
     'foam.ui.md.PopupChoiceView',

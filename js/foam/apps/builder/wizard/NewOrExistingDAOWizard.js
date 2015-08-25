@@ -10,13 +10,13 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.questionnaire',
+  package: 'foam.apps.builder.wizard',
   name: 'NewOrExistingDAOWizard',
-  extendsModel: 'foam.apps.builder.NewOrExistingWizard',
+  extendsModel: 'foam.apps.builder.wizard.NewOrExistingWizard',
 
   requires: [
-    'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-    'foam.apps.builder.questionnaire.NewDAOWizard',
+    'foam.apps.builder.wizard.NewOrExistingModelWizard',
+    'foam.apps.builder.wizard.NewDAOWizard',
   ],
 
   imports: [
@@ -31,14 +31,13 @@ CLASS({
     {
       name: 'newViewFactory',
       label: 'Create a new Data Source',
-      defaultValue: { factory_: 'foam.apps.builder.questionnaire.NewDAOWizard' },
+      defaultValue: { factory_: 'foam.apps.builder.wizard.NewDAOWizard' },
     },
     {
       name: 'existingViewFactory',
       label: 'Use an existing Data Source',
       defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-        baseModel: 'foam.apps.builder.questionnaire.Questionnaire',
+        factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
       },
     },
     {
