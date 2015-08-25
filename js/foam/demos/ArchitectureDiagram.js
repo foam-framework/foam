@@ -52,7 +52,7 @@ CLASS({
       var ime       = this.Box.create({color: 'white', text: "IME",        background: 'orange', width: 300, height: 0,   x:750,  y:450, font: '22pt Arial'});
       var js        = this.Box.create({color: 'white', text: "JavaScript", background: 'red',    width: 0,   height: 50,  x:750,  y:800, font: '16pt Arial'});
       var java      = this.Box.create({color: 'white', text: "Java",       background: 'red',    width: 50,  height: 0,   x:1050, y:550, font: '16pt Arial'});
-      var dart      = this.Box.create({color: 'white', text: "Dart",       background: 'red',    width: 50,  height: 0,   x:1100, y:550, font: '16pt Arial'});
+      var dart      = this.Box.create({color: 'white', text: "Swift",      background: 'red',    width: 50,  height: 0,   x:1100, y:550, font: '16pt Arial'});
       var cpp       = this.Box.create({color: 'white', text: "C++",        background: 'red',    width: 50,  height: 0,   x:1150, y:550, font: '16pt Arial'});
       var future    = this.Box.create({color: 'white', text: "...",        background: 'red',    width: 100, height: 0,   x:1200, y:550, font: '16pt Arial'});
       var dev       = this.Circle.create({color:'red', r:15, x:800-15, y:-25});
