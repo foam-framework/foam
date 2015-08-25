@@ -82,11 +82,23 @@
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block blue">&nbsp;</div>
-        <div class="flex-grow content small-heading">History Lesson</div>
+        <div class="flex-grow content small-heading">History Lesson: Feature-Orientation</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
       <iframe src="./demos/UnixSimulator.html"></iframe>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Architecture</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <div style="transform:scale(0.85);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram" /></div>
     </div>
   </slide>
 
@@ -99,6 +111,112 @@
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
       <iframe src="./demos/demo10b2.html"></iframe>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block green">&nbsp;</div>
+        <div class="flex-grow content small-heading">Data Accesss Objects (DAOs)</div>
+      </div>
+    </div>
+
+    <div class="flex-row flex-grow" style="align-items: stretch">
+      <div class="card flex-grow" style="overflow: auto">
+        <pre class="theme-light prettyprint prettyprinted"><span class="kwd">interface</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+          </span><span class="kwd">void</span><span class="pln"> put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
+          </span><span class="kwd">void</span><span class="pln"> remove</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
+          </span><span class="kwd">void</span><span class="pln"> eof</span><span class="pun">();</span><span class="pln">
+          </span><span class="kwd">void</span><span class="pln"> error</span><span class="pun">(</span><span class="pln">msg</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">interface</span><span class="pln"> DAO </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+          </span><span class="kwd">void</span><span class="pln">   put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
+          </span><span class="kwd">void</span><span class="pln">   remove</span><span class="pun">(</span><span class="pln">id</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
+          </span><span class="kwd">void</span><span class="pln">   find</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
+          </span><span class="typ">Future</span><span class="pln"> </span><span class="kwd">select</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+          </span><span class="typ">Future</span><span class="pln"> removeAll</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
+          </span><span class="typ">Future</span><span class="pln"> update</span><span class="pun">(</span><span class="pln">expression</span><span class="pun">);</span><span class="pln">
+          </span><span class="kwd">void</span><span class="pln">   listen</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+          </span><span class="kwd">void</span><span class="pln">   pipe</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">):</span><span class="pln">  </span><span class="com">// select() + listen()</span><span class="pln">
+          </span><span class="kwd">void</span><span class="pln">   unlisten</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+          DAO    </span><span class="kwd">where</span><span class="pun">(</span><span class="pln">query</span><span class="pun">);</span><span class="pln">
+          DAO    limit</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
+          DAO    skip</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
+          DAO    orderBy</span><span class="pun">(</span><span class="pln">comparators</span><span class="pun">...);</span><span class="pln">
+</span><span class="pun">}</span></pre>
+      </div>
+      <div class="card flex-grow" style="overflow: auto">
+        <pre class="theme-dark prettyprint prettyprinted"><span class="pln">dao
+          </span><span class="pun">.</span><span class="pln">skip</span><span class="pun">(</span><span class="lit">200</span><span class="pun">)</span><span class="pln">
+          </span><span class="pun">.</span><span class="pln">limit</span><span class="pun">(</span><span class="lit">50</span><span class="pun">)</span><span class="pln">
+          </span><span class="pun">.</span><span class="pln">orderBy</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">)</span><span class="pln">
+          </span><span class="pun">.</span><span class="kwd">where</span><span class="pun">(</span><span class="pln">
+              AND</span><span class="pun">(</span><span class="pln">
+                EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TO</span><span class="pun">,</span><span class="pln">        </span><span class="str">'kgr@google.com'</span><span class="pun">),</span><span class="pln">
+                EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">FROM</span><span class="pun">,</span><span class="pln">      </span><span class="str">'mymom@gmail.com'</span><span class="pun">),</span><span class="pln">
+                GT</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">,</span><span class="pln"> startOfYear</span><span class="pun">)))</span><span class="pln">
+          </span><span class="pun">.</span><span class="kwd">select</span><span class="pun">(</span><span class="pln">
+              GROUP_BY</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">SUBJECT</span><span class="pun">,</span><span class="pln"> COUNT</span><span class="pun">()));</span></pre>
+      </div>
+    </div>
+
+    <div class="card flex-col"><a href="./demos/dao.html">DAO Examples</a></div>
+
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">TodoMVC</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <iframe style="width:60%;height:70%;" xxxsrc="http://todomvc.com/examples/foam/" src="./apps/todo/index.html"></iframe>
+      <div>
+<!--        <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="https://github.com/foam-framework/foam/tree/master/apps/todo">Source</a> -->
+        <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="/apps/todo/index.html">Source</a>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">DAO Strategies &amp; Decorators</div>
+      </div>
+    </div>
+    <div class="card flex-col flex-grow" style="justify-content: flex-start; overflow: auto">
+      <foam model="foam.demos.DAOStrategies" />
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Query-Optimizing Cache</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <img src="./js/foam/demos/empire/benchmarks.png">
+    </div>
+  </slide>
+
+  <slide>
+    <!--
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Task Manager</div>
+      </div>
+    </div>
+    -->
+    <div class="card flex-col flex-grow" style="overflow: hidden">
+      <foam model="foam.demos.olympics.Controller" />
     </div>
   </slide>
 
@@ -158,125 +276,6 @@ CLASS({
           <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Cell}) %>
         </div>
       </div>
-    </div>
-  </slide>
-
-  <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Architecture</div>
-      </div>
-    </div>
-    <div class="card flex-col center flex-grow" style="overflow: auto">
-      <div style="transform:scale(0.85);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram" /></div>
-    </div>
-  </slide>
-
-  <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block yellow">&nbsp;</div>
-        <div class="flex-grow content small-heading">TodoMVC</div>
-      </div>
-    </div>
-    <div class="card flex-col center flex-grow" style="overflow: auto">
-      <iframe style="width:60%;height:70%;" xxxsrc="http://todomvc.com/examples/foam/" src="./apps/todo/index.html"></iframe>
-      <div>
-<!--        <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="https://github.com/foam-framework/foam/tree/master/apps/todo">Source</a> -->
-        <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="/apps/todo/index.html">Source</a>
-      </div>
-    </div>
-  </slide>
-
-  <slide>
-
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block green">&nbsp;</div>
-        <div class="flex-grow content small-heading">Data Accesss Objects (DAOs)</div>
-      </div>
-    </div>
-
-    <div class="flex-row flex-grow" style="align-items: stretch">
-      <div class="card flex-grow" style="overflow: auto">
-        <pre class="theme-light prettyprint prettyprinted"><span class="kwd">interface</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln"> put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln"> remove</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln"> eof</span><span class="pun">();</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln"> error</span><span class="pun">(</span><span class="pln">msg</span><span class="pun">);</span><span class="pln">
-</span><span class="pun">}</span><span class="pln">
-
-</span><span class="kwd">interface</span><span class="pln"> DAO </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   remove</span><span class="pun">(</span><span class="pln">id</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   find</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="typ">Future</span><span class="pln"> </span><span class="kwd">select</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="typ">Future</span><span class="pln"> removeAll</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="typ">Future</span><span class="pln"> update</span><span class="pun">(</span><span class="pln">expression</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   listen</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   pipe</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">):</span><span class="pln">  </span><span class="com">// select() + listen()</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   unlisten</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
-          DAO    </span><span class="kwd">where</span><span class="pun">(</span><span class="pln">query</span><span class="pun">);</span><span class="pln">
-          DAO    limit</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
-          DAO    skip</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
-          DAO    orderBy</span><span class="pun">(</span><span class="pln">comparators</span><span class="pun">...);</span><span class="pln">
-</span><span class="pun">}</span></pre>
-      </div>
-      <div class="card flex-grow" style="overflow: auto">
-        <pre class="theme-dark prettyprint prettyprinted"><span class="pln">dao
-          </span><span class="pun">.</span><span class="pln">skip</span><span class="pun">(</span><span class="lit">200</span><span class="pun">)</span><span class="pln">
-          </span><span class="pun">.</span><span class="pln">limit</span><span class="pun">(</span><span class="lit">50</span><span class="pun">)</span><span class="pln">
-          </span><span class="pun">.</span><span class="pln">orderBy</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">)</span><span class="pln">
-          </span><span class="pun">.</span><span class="kwd">where</span><span class="pun">(</span><span class="pln">
-              AND</span><span class="pun">(</span><span class="pln">
-                EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TO</span><span class="pun">,</span><span class="pln">        </span><span class="str">'kgr@google.com'</span><span class="pun">),</span><span class="pln">
-                EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">FROM</span><span class="pun">,</span><span class="pln">      </span><span class="str">'mymom@gmail.com'</span><span class="pun">),</span><span class="pln">
-                GT</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">,</span><span class="pln"> startOfYear</span><span class="pun">)))</span><span class="pln">
-          </span><span class="pun">.</span><span class="kwd">select</span><span class="pun">(</span><span class="pln">
-              GROUP_BY</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">SUBJECT</span><span class="pun">,</span><span class="pln"> COUNT</span><span class="pun">()));</span></pre>
-      </div>
-    </div>
-
-    <div class="card flex-col"><a href="./demos/dao.html">DAO Examples</a></div>
-
-  </slide>
-
-  <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block blue">&nbsp;</div>
-        <div class="flex-grow content small-heading">DAO Strategies &amp; Decorators</div>
-      </div>
-    </div>
-    <div class="card flex-col flex-grow" style="justify-content: flex-start; overflow: auto">
-      <foam model="foam.demos.DAOStrategies" />
-    </div>
-  </slide>
-
-  <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Query-Optimizing Cache</div>
-      </div>
-    </div>
-    <div class="card flex-col center flex-grow" style="overflow: auto">
-      <img src="./js/foam/demos/empire/benchmarks.png">
-    </div>
-  </slide>
-
-  <slide>
-    <!--
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block blue">&nbsp;</div>
-        <div class="flex-grow content small-heading">Task Manager</div>
-      </div>
-    </div>
-    -->
-    <div class="card flex-col flex-grow" style="overflow: hidden">
-      <foam model="foam.demos.olympics.Controller" />
     </div>
   </slide>
 
@@ -497,6 +496,24 @@ CLASS({
     </div>
   </slide>
 
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">Calculator App</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="align-items: stretch; justify-content: space-around;">
+      <div>
+        <iframe src="./apps/acalc/Calc.html" style="height: 70%; width: 80%"></iframe>
+      </div>
+      <div>
+        <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>, <a href="./apps/pcalc/Calc.html">Polymer Version</a>, <a href="./apps/calc/RawCalc.html">Raw Version</a>, <a href="./demos/DemoCat.html?q=calc">Other Versions</a>
+      </div>
+    </div>
+  </slide>
+
   <slide>
     <div class="heading-card">
       <div class="flex-row">
@@ -507,6 +524,24 @@ CLASS({
     <div class="card flex-row center flex-grow" style="overflow: auto">
       <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;max-height:530px" src="./demos/democat/MBug.png"></a>
       <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/GMail.png"></a>
+      <a href="/index.html?model=foam.tutorials.todo.TodoApp" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/TodoBrowser.png"></a>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Tutorial</div>
+      </div>
+    </div>
+    <div class="flex-row flex-grow" style="align-items: stretch">
+      <div class="card flex-grow">
+        <iframe src="./index.html?model=foam.tutorials.phonecat.Controller" style="height: initial"></iframe>
+      </div>
+      <div class="card flex-col flex-grow">
+        <iframe src="http://foam-framework.github.io/foam/tutorial/0-intro/"></iframe>
+      </div>
     </div>
   </slide>
 
@@ -537,40 +572,6 @@ CLASS({
       </div>
       <div class="card flex-col flex-grow">
         <%= foam.documentation.diagram.DocDiagramView.create({data: foam.documentation.diagram.ModelDocDiagram}) %>
-      </div>
-    </div>
-  </slide>
-
-  <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Tutorial</div>
-      </div>
-    </div>
-    <div class="flex-row flex-grow" style="align-items: stretch">
-      <div class="card flex-grow">
-        <iframe src="./index.html?model=foam.tutorials.phonecat.Controller" style="height: initial"></iframe>
-      </div>
-      <div class="card flex-col flex-grow">
-        <iframe src="http://foam-framework.github.io/foam/tutorial/0-intro/"></iframe>
-      </div>
-    </div>
-  </slide>
-
-  <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block yellow">&nbsp;</div>
-        <div class="flex-grow content small-heading">Calculator App</div>
-      </div>
-    </div>
-    <div class="card flex-col center flex-grow" style="align-items: stretch; justify-content: space-around;">
-      <div>
-        <iframe src="./apps/acalc/Calc.html" style="height: 70%; width: 80%"></iframe>
-      </div>
-      <div>
-        <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>, <a href="./apps/pcalc/Calc.html">Polymer Version</a>, <a href="./apps/calc/RawCalc.html">Raw Version</a>, <a href="./demos/DemoCat.html?q=calc">Other Versions</a>
       </div>
     </div>
   </slide>
