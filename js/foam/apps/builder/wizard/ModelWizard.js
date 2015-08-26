@@ -54,7 +54,7 @@ CLASS({
     */},
 
     function contentHTML() {/*
-        $$model{ model_: 'foam.apps.builder.datamodels.ModelWizardEditView' }
+      $$model{ model_: 'foam.apps.builder.datamodels.ModelWizardEditView' }
     */},
   ],
 

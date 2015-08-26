@@ -95,8 +95,8 @@ CLASS({
       var vp = this.viewportSize();
       this.itemHeight = startFromClientRect.height;
       this.itemWidth = startFromClientRect.width-16;
-      var pixAbove = startFromClientRect.top - this.vMargin;
-      var pixBelow = vp.height - startFromClientRect.bottom - this.vMargin;
+      var pixAbove = startFromClientRect.top - this.vMargin - 4;
+      var pixBelow = vp.height - startFromClientRect.bottom - this.vMargin - 4;
 
       // slots represent potential screen real estate for drawing the menu
       var slotsAbove = Math.floor((pixAbove > 0) ? pixAbove / this.itemHeight : 0);
@@ -280,36 +280,35 @@ CLASS({
   },
   templates: [
     function CSS() {/*
-.foamChoiceMenuView {
-  list-style-type: none;
-  border: 2px solid grey;
-  background: white;
-  display: table-footer-group;
-  overflow-y: auto;
-  position: absolute;
-  margin: 0;
-  flex-direction: column;
-}
+      .foamChoiceMenuView {
+        list-style-type: none;
+        border: 2px solid grey;
+        background: white;
+        display: table-footer-group;
+        overflow-y: auto;
+        position: absolute;
+        margin: 0;
+        flex-direction: column;
+      }
 
-.foamChoiceMenuView .selected {
-  font-weight: bold;
-}
+      .foamChoiceMenuView .selected {
+        font-weight: bold;
+      }
 
-.foamChoiceMenuView {
-  margin: 0px;
-  padding: 0px;
-}
-.foamChoiceMenuView .choice {
-  display: block;
-  margin: 0px;
-  padding: 8px 0px 7px 0px;
-  display: inline-flex;
-  align-items: flex-end;
-  align-content: flex-start;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-*/}
+      .foamChoiceMenuView {
+        margin: 0px;
+        padding: 0px;
+      }
+      .foamChoiceMenuView .choice {
+        display: block;
+        margin: 0px;
+        padding: 8px 0px 7px 0px;
+        display: inline-flex;
+        align-items: flex-end;
+        align-content: flex-start;
+        overflow: hidden;
+        cursor: pointer;
+      }
+    */}
   ]
 });
