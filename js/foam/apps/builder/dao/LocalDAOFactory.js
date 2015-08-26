@@ -15,7 +15,7 @@ CLASS({
 
   extendsModel: 'foam.apps.builder.dao.DAOFactory',
 
-  requries: [
+  requires: [
     'foam.dao.IDBDAO',
     'foam.dao.EasyDAO',
   ],
