@@ -369,7 +369,19 @@ CLASS({
           </viewChoice>
           <viewChoice>
             <label>Animation</label>
-            <p:view><foam model="foam.demos.graphics.Dragon" timer=""/></p:view>
+            <p:view>
+<div style="margin-left:100px;transform:scale(0.5);transform-origin: 0 0;">
+<table>
+<tr>
+ <td align="center"><foam model="foam.demos.graphics.Dragon" timer=""/></td>
+ <td align="center"><foam model="foam.demos.graphics.Complements2a"/></td>
+</tr><tr>
+ <td valign="top" align="center"><foam model="foam.demos.graphics.Spin" width="800" height="800"/></td>
+ <td align="center"><foam model="foam.demos.supersnake.Robot" scaleX="8" scaleY="8" width="600" height="1000" x="450"/></td>
+</tr>
+</table>
+</div>
+</p:view>
           </viewChoice>
           <viewChoice>
             <label>Interpolation</label>
@@ -408,95 +420,47 @@ CLASS({
         <views>
           <viewChoice>
             <label>Spreadsheets</label>
-            <p:view><div style="margin-left: 100px;transform:scale(1.6);transform-origin: 0 0;"><foam model="foam.demos.sevenguis.Cells" rows="9" columns="5" /></div></p:view>
+            <p:view><div style="margin-left: 100px;transform:scale(1.5);transform-origin: 0 0;"><foam model="foam.demos.sevenguis.Cells" rows="9" columns="6" /></div></p:view>
           </viewChoice>
           <viewChoice>
             <label>Graphical</label>
             <p:view>
               <code>
-                clock1.x = mouse.x;
-                clock1.y = mouse.y;
+      clock1.x = mouse.x;
+      clock1.y = mouse.y;
               </code>
+              <foam model="foam.demos.ReactiveClocks" stage="0"/>
             </p:view>
           </viewChoice>
           <viewChoice>
             <label>Graphical (2nd Order)</label>
             <p:view>
               <code>
-                clock1.x = mouse.x;
-                clock1.y = mouse.y;
+      clock1.x = mouse.x;
+      clock1.y = mouse.y;
 
-                clock2.x = clock1.x + 200;
-                clock2.y = clock1.y + 200;
+      clock2.x = clock1.x + 200;
+      clock2.y = clock1.y + 200;
               </code>
+              <foam model="foam.demos.ReactiveClocks" stage="1"/>
             </p:view>
           </viewChoice>
           <viewChoice>
             <label>Time</label>
             <p:view>
               <code>
-                clock1.x = mouse.x;
-                clock1.y = mouse.y;
+      clock1.x = mouse.x;
+      clock1.y = mouse.y;
 
-                clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
-                clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
+      clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
+      clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
               </code>
+              <foam model="foam.demos.ReactiveClocks" stage="2"/>
             </p:view>
           </viewChoice>
         </views>
       </foam>
       </div>
-    </div>
-  </slide>
-
-  <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block green">&nbsp;</div>
-        <div class="flex-grow content small-heading">Reactive Programming</div>
-      </div>
-    </div>
-    <div class="card flex-col flex-grow">
-      <code-sample>
-        <title><!--Reactive Programming--></title>
-        <source>
-          <code-snippet>
-            <title>HTML</title>
-            <src language="html" maxLines="10">
-              <code><%
-                       var canvas  = foam.graphics.CView.create({width: 1900, height: 1000});
-                       var mouse   = foam.input.Mouse.create();
-                       var clock1  = foam.demos.ClockView.create({r: 60});
-                       var clock2  = foam.demos.ClockView.create({r: 60, color: '#3c0'});
-                       var timer   = foam.util.Timer.create();
-
-                       timer.start();
-                       canvas.addChildren(clock1, clock2);
-
-                       // Part 1
-                       clock1.x$ = mouse.x$;
-                       clock1.y$ = mouse.y$;
-
-                       // Part 2
-                       Events.dynamic(function() {
-                       //   clock2.x = clock1.x + 200;
-                       //   clock2.y = clock1.y + 200;
-                       });
-
-                       // Part 3
-                       Events.dynamic(function() {
-                       //   clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
-                       //   clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
-                       });
-
-                       this.addInitializer(function() { mouse.connect(canvas.view.$); });
-                       %>
-                <%= canvas %>
-              </code>
-            </src>
-          </code-snippet>
-        </source>
-      </code-sample>
     </div>
   </slide>
 

@@ -79,6 +79,7 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu ) return;
         this.updateHead();
+        if (this.$) this.initHTML();
       },
       defaultValue: undefined
     },

@@ -25,7 +25,7 @@ CLASS({
     'foam.graphics.SimpleRectangle as Rectangle'
   ],
   methods: [
-    function init() {
+    function initCView() {
       this.SUPER();
         
       var engine = this.Circle.create();
@@ -69,8 +69,9 @@ CLASS({
         // animate
         var robot = this;
         var timer = this.Timer.create();
+        var startY = this.y;
         timer.time$.addListener(function() {
-            robot.y = 300 + 100* Math.cos(timer.i/10);
+            robot.y = startY + 400 + 100 * Math.cos(timer.i/10);
             robot.a = Math.PI / 4 * Math.cos(timer.i/15);
             pupil.x = 4* Math.cos(timer.i/5);
             neck1.height = 15 + 10* Math.cos(timer.i/5);
