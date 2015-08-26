@@ -174,7 +174,6 @@ CLASS({
       .tableView, .mdTableView {
         outline: none;
       }
-      md-table table-header table-caption { padding-left: 0; }
       .medalController { display: flex; }
       .searchPanel { color: #666; }
       .foamSearchView select { width: 300px; }
