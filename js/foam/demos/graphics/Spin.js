@@ -24,7 +24,9 @@ CLASS({
   requires: [ 'foam.util.Timer', 'foam.graphics.Arc' ],
 
   properties: [
-    { name: 'timer', factory: function() { return this.Timer.create(); } }
+    { name: 'width',  defaultValue: 500 },
+    { name: 'height', defaultValue: 500 },
+    { name: 'timer',  factory: function() { return this.Timer.create(); } }
   ],
 
   methods: [
@@ -37,9 +39,8 @@ CLASS({
       this.addChild(arc);
     },
     function initCView() {
-      this.width = this.height = 500;
       for ( var a = 0 ; a < 20 ; a++ ) this.addArc(a, this.Arc.create({
-        x: this.width / 2, y: this.height / 2, r: 5+a * 12, arcWidth: 10,
+        x: this.width / 2, y: this.height / 2, r: 5+a * 12 * this.width / 500, arcWidth: 10 * this.width / 500,
         color: 'hsl(' + 18*a + ', 90%, 60%)'
       }));
 
