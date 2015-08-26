@@ -28,6 +28,20 @@ CLASS({
   properties: [
     {
       name: 'nextViewFactory',
+      defaultValue: function() { return this.nextViewNoConfig.apply(this, arguments); }
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'nextViewWithConfig',
+      label: 'Next: Data Source Settings',
+      defaultValue: {
+        factory_: 'foam.apps.builder.wizard.DAOWizard',
+      },
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'nextViewNoConfig',
+      label: 'Next: Create the Data Model',
       defaultValue: {
         factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
       },
@@ -53,13 +67,8 @@ CLASS({
     {
       name: 'daoFactory',
       postSet: function() {
-        if ( this.daoFactory.requiresUserConfiguration ) {
-          this.nextViewFactory = { factory_: 'foam.apps.builder.wizard.DAOWizard' };
-        } else {
-          this.nextViewFactory = {
-            factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
-          };
-        }
+        this.nextViewFactory = ( this.daoFactory.requiresUserConfiguration ) ?
+          this.nextViewWithConfig : this.nextViewNoConfig;
       }
     }
   ],
@@ -89,8 +98,8 @@ CLASS({
       name: 'next',
       labelFn: function() {
         if ( this.daoFactory && this.daoFactory.requiresUserConfiguration )
-          return 'Next: Data Source Settings';
-        return 'Next: Create the Questions';
+          return this.model_.NEXT_VIEW_WITH_CONFIG.label;
+        return this.model_.NEXT_VIEW_NO_CONFIG.label;
       },
     }
   ],

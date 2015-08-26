@@ -46,10 +46,10 @@ CLASS({
 
   templates: [
     function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Create your Questions</p>
+        <p class="md-style-trait-standard md-title">Create your Data Model</p>
     */},
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Add questions with the large '+' button.
+        <p class="md-style-trait-standard">Add properties with the large '+' button.
         </p>
     */},
 

@@ -21,6 +21,8 @@ CLASS({
   requires: [
     'foam.apps.builder.questionnaire.EditView',
     'foam.apps.builder.questionnaire.QuestionnaireView',
+    'foam.apps.builder.datamodels.ModelPickerView',
+    'foam.apps.builder.dao.DAOPickerView',
   ],
 
   listeners: [
@@ -62,9 +64,13 @@ CLASS({
   templates: [
     function toHTML() {/*
       <designer id="%%id" <%= this.cssClassAttr() %>>
-        <div class="row-layout">
+        <div class="flex-row">
           $$appName
           $$version
+        </div>
+        <div class="flex-row">
+          $$model{ model_: 'foam.apps.builder.datamodels.ModelPickerView', baseModel: this.data.baseModelId }
+          $$dao{   model_: 'foam.apps.builder.dao.DAOPickerView' }
         </div>
         <div class="preview-frame">
           $$data{ model_: 'foam.apps.builder.questionnaire.QuestionnaireView' }
@@ -79,11 +85,11 @@ CLASS({
         flex-grow: 1;
       }
 
-      designer.questionnaire-designer .row-layout {
+      designer.questionnaire-designer .flex-row {
         display: flex;
         flex-direction: row;
       }
-      designer.questionnaire-designer .row-layout :first-child {
+      designer.questionnaire-designer .flex-row :first-child {
         flex-grow: 1;
       }
 
@@ -95,7 +101,7 @@ CLASS({
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-        box-shadow: -2px 2px 3px rgba(0.5,0.5,0.5,0.75);
+        box-shadow: 0px 3px 4px #444;
       }
     */},
 

@@ -53,7 +53,7 @@ CLASS({
         <p class="md-style-trait-standard md-title">Data Source Settings</p>
     */},
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Set the following options for your Data Source.
+        <p class="md-style-trait-standard">Set the following options for your Data Source:
         </p>
     */},
     function contentHTML() {/*

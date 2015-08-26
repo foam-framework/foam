@@ -115,6 +115,9 @@ CLASS({
         box-shadow: 3px 3px 3px #aaa;
         border-radius: 30px;
       }
+      .md-button.wizard-createButton {
+        height: 40px;
+      }
       .wizard-floating-action-container {
         position:relative;
         display: flex;
