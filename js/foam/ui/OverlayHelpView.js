@@ -301,7 +301,17 @@ CLASS({
           color: 'white',
         }
       </overlay-help>
-      <% this.setClass('top-left', function() {
+      <% this.on('click', function() {
+           console.log('Bounce');
+           var e = this.$.querySelector('.close-action');
+           if ( e && e.style.animation === '' ) {
+             e.style.animation = 'bounce 0.5s ease-in-out';
+             e.addEventListener('animationend', function() {
+               e.style.animation = '';
+             });
+           }
+         }.bind(this), this.id);
+         this.setClass('top-left', function() {
            return this.actionLocation === 'TOP_LEFT';
          }.bind(this), this.closeActionView.id);
          this.setClass('top-right', function() {
@@ -315,8 +325,20 @@ CLASS({
          }.bind(this), this.closeActionView.id); %>
     */},
     function CSS() {/*
+      @keyframes bounce {
+          0%   { transform: scale(1.0); }
+          50%  { transform: scale(1.15); }
+          80%  { transform: scale(0.9); }
+          90%  { transform: scale(1.05); }
+          95%  { transform: scale(0.95); }
+          100% { transform: scale(1.0); }
+      }
       overlay-help {
-        display: inline;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
         z-index: 1000;
       }
       overlay-help .close-action {
