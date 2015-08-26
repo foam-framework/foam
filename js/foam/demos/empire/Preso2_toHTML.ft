@@ -369,7 +369,19 @@ CLASS({
           </viewChoice>
           <viewChoice>
             <label>Animation</label>
-            <p:view><foam model="foam.demos.graphics.Dragon" timer=""/></p:view>
+            <p:view>
+<div style="margin-left:100px;transform:scale(0.5);transform-origin: 0 0;">
+<table>
+<tr>
+ <td align="center"><foam model="foam.demos.graphics.Dragon" timer=""/></td>
+ <td align="center"><foam model="foam.demos.graphics.Complements2a"/></td>
+</tr><tr>
+ <td valign="top" align="center"><foam model="foam.demos.graphics.Spin" width="800" height="800"/></td>
+ <td align="center"><foam model="foam.demos.supersnake.Robot" scaleX="8" scaleY="8" width="600" height="1000" x="450"/></td>
+</tr>
+</table>
+</div>
+</p:view>
           </viewChoice>
           <viewChoice>
             <label>Interpolation</label>
