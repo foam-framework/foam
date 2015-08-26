@@ -38,34 +38,39 @@ CLASS({
     { name: 'mouse',  factory: function() { return this.Mouse.create(); } },
     { name: 'space',  factory: function() { return this.CView.create({width: 1500, height: 1000, background:'white'}); } },
     { name: 'clock1', factory: function() { return this.ClockView.create({x:300, y:300, r:60, color:'red'}); } },
-    { name: 'clock2', factory: function() { return this.ClockView.create({x:0, y:0, r:60, color:'green'}); } }
+    { name: 'clock2', factory: function() { return this.ClockView.create({x:0, y:0, r:60, color:'green'}); } },
+    { model_: 'IntProperty', name: 'stage', defaultValue: 2 }
   ],
 
   templates: [
-    function toHTML() {/*<table><tr><td valign="top">$$timer</td><td><%= this.space %></td></tr></table>*/}
+    function toHTML() {/*<table style="margin-left:20px"><tr><td valign="top"><% if ( self.stage >= 2 ) {%>$$timer <%}%></td><td><%= this.space %></td></tr></table>*/}
   ],
   methods: {
-    init: function() {
+    initHTML: function() {
       this.SUPER();
 
+      this.mouse.connect(this.space.$);
       Events.dynamic(function () {
         this.clock1.x = this.mouse.x;
         this.clock1.y = this.mouse.y;
       }.bind(this));
 
-      Events.dynamic(function () {
-        this.clock2.x = this.clock1.x + 200*Math.cos(this.timer.time*Math.PI/1000);
-        this.clock2.y = this.clock1.y + 200*Math.sin(this.timer.time*Math.PI/1000);
-      }.bind(this));
+      if ( this.stage == 1 ) {
+        Events.dynamic(function () {
+          this.clock2.x = this.clock1.x + 200;
+          this.clock2.y = this.clock1.y + 200;
+        }.bind(this));
+      } else if ( this.stage == 2 ) {
+        Events.dynamic(function () {
+          this.clock2.x = this.clock1.x + 200*Math.cos(this.timer.time*Math.PI/1000);
+          this.clock2.y = this.clock1.y + 200*Math.sin(this.timer.time*Math.PI/1000);
+        }.bind(this));
+      }
 
       this.space.addChild(this.clock1);
-      this.space.addChild(this.clock2);
+      if ( this.stage >= 1 ) this.space.addChild(this.clock2);
 
       this.timer.start();
-    },
-    initHTML: function() {
-      this.SUPER();
-      this.mouse.connect(this.space.$);
     }
   }
 });
