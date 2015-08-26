@@ -85,11 +85,14 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
+      <app-body id="%%id" <%= this.cssClassAttr() %>>
         $$content
-      </div>
+      </app-body>
     */},
     function CSS() {/*
+      app-body {
+
+      }
     */},
   ]
 });

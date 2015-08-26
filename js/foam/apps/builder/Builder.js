@@ -127,9 +127,9 @@ CLASS({
               view.open();
             },
             detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
-            innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'
-            //detailView: 'foam.apps.builder.questionnaire.AppWizard',
-            //innerDetailView: 'foam.apps.builder.questionnaire.AppWizard',
+            innerDetailView: { factory_: 'foam.apps.builder.AppConfigDetailView',
+              innerView: 'foam.apps.builder.questionnaire.DesignerView'
+            },
           }),
         ].dao;
         dao.model = this.BrowserConfig;
