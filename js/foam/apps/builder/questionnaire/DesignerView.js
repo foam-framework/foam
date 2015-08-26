@@ -67,7 +67,7 @@ CLASS({
     },
     {
       model_: 'ViewFactoryProperty',
-      name: 'panelView',
+      name: 'panel',
       defaultValue: {
         factory_: 'foam.apps.builder.Panel',
         innerView: {

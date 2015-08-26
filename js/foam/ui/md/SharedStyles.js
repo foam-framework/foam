@@ -235,6 +235,10 @@ input[name=q]::-webkit-input-placeholder {
   height: 36px;
 }
 
+.md-button.raised {
+  box-shadow: 1px 2px 3px rgba(0,0,0,0.33);
+}
+
 .md-button:not(.icon-only) {
   min-width: 64px;
 }

@@ -38,6 +38,11 @@ CLASS({
       }
     },
     {
+      model_: 'BooleanProperty',
+      name: 'raised',
+      defaultValue: false
+    },
+    {
       name: 'color',
       help: 'The text and background color to use for the active state',
       defaultValue: '#02A8F3'
@@ -53,10 +58,10 @@ CLASS({
     {
       model_: 'FloatProperty',
       name: 'alpha',
-      defaultValue: 1,
+      defaultValue: null,
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
-        this.$.style.opacity = nu;
+        this.$.style.opacity = nu === null ? '' : nu;
       }
     },
     {
@@ -314,7 +319,8 @@ CLASS({
                this.iconUrl; this.ligature; this.displayMode;
                return this.displayMode_ === 'LABEL_ONLY';
              }, this.id);
-        this.setClass('hidden', function() { return self.isHidden; }, this.id); %>
+        this.setClass('hidden', function() { return self.isHidden; }, this.id);
+        this.setClass('raised', function() { return self.raised; }, this.id); %>
     */},
     function labelHTML() {/*
       <% if ( this.action ) { %>
