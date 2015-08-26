@@ -22,7 +22,7 @@ CLASS({
     {
       name: 'adapt',
       defaultValue: function(old, nu, prop) {
-        var CSSTransition = prop.model_.CSSTransition;
+        var CSSTransition = prop.CSSTransition;
         if ( typeof nu === 'string' ) {
           return (old || CSSTransition.create()).fromString(nu);
         } else if ( CSSTransition.isInstance(nu) ) {
