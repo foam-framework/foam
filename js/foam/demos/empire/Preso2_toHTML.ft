@@ -408,7 +408,7 @@ CLASS({
         <views>
           <viewChoice>
             <label>Spreadsheets</label>
-            <p:view><div style="margin-left: 100px;transform:scale(1.8);transform-origin: 0 0;"><foam model="foam.demos.sevenguis.Cells" rows="10" columns="6" /></div></p:view>
+            <p:view><div style="margin-left: 100px;transform:scale(1.6);transform-origin: 0 0;"><foam model="foam.demos.sevenguis.Cells" rows="9" columns="5" /></div></p:view>
           </viewChoice>
           <viewChoice>
             <label>Graphical</label>

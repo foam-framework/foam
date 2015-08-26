@@ -95,7 +95,7 @@ var CellParser = {
   //AZ:  function(c) { return c.charCodeAt(0) - 'A'.charCodeAt(0); },
   row: function(c) { return parseInt(c); },
   number: function(s) { var f = parseFloat(s); return function() { return f; }; },
-  cell: function(a) { return function(cs) { return cs.cell(a[0] + a[1]).value; }; },
+  cell: function(a) { return function(cs) { return cs.cell(a[0] + a[1]).numValue; }; },
   vargs: function(a) {
     return function(cs) {
       var ret = [];
@@ -115,7 +115,7 @@ var CellParser = {
       var ret = [];
       for ( var c = c1 ; c <= c2; c++ )
         for ( var r = r1 ; r <= r2 ; r++ )
-          ret.push(cs.cell(c + r).value);
+          ret.push(cs.cell(c + r).numValue);
       return ret;
     }
   },
@@ -138,8 +138,15 @@ MODEL({
     },
     {
       name: 'value',
-      adapt: function(_, v) { var ret = parseFloat(v); return ret && ! Number.isInteger(ret) ? ret.toFixed(2) : v; },
+      adapt: function(_, v) {
+        var ret = parseFloat(v);
+        return ret && ! Number.isInteger(ret) ? ret.toFixed(2) : v;
+      },
       displayWidth: 12
+    },
+    {
+      name: 'numValue',
+      getter: function() { return parseFloat(this.value); }
     }
   ],
   methods: [
@@ -252,11 +259,13 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
     function cell(name) {
       var self = this;
       var cell = this.cells[name];
+      var cancel = null;
       if ( ! cell ) {
         cell = this.cells[name] = this.Cell.create();
         cell.formula$.addListener(function(_, _, _, formula) {
           var f = self.parser.parseString(formula);
-          self.dynamic(f.bind(null, self), function(v) {
+          cancel && cancel.destroy();
+          cancel = self.dynamic(f.bind(null, self), function(v) {
             cell.value = v;
           });
         });
