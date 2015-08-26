@@ -91,10 +91,6 @@ CLASS({
         this.$.style.top = (rect.top + 1) + 'px';
       }
     },
-    function destroy() {
-      console.log('HSV', this.id, 'destroy');
-      return this.SUPER.apply(this, arguments);
-    },
   ],
 
   templates: [

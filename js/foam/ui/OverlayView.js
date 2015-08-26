@@ -121,7 +121,6 @@ CLASS({
       this.onCSSPropertyInit();
     },
     function destroy() {
-      console.log('OV', this.id, 'destroy');
       return this.SUPER.apply(this, arguments);
     },
   ],

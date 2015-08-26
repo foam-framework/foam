@@ -51,12 +51,6 @@ CLASS({
       model_: 'IntProperty',
       name: 'index',
       defaultValue: 0,
-      // postSet: function(old, nu) {
-      //   if ( old === nu ) return;
-      //   aseq(
-      //       this.adestroyContent.bind(this, old),
-      //       this.aconstructContent.bind(this, nu))(nop);
-      // },
     },
     {
       model_: 'foam.core.types.StringEnumProperty',
@@ -187,64 +181,6 @@ CLASS({
         this.constructView_(overlays[i]);
       }
     },
-    // function adestroyContent(idx, ret) {
-    //   this.actionLocation = '';
-
-    //   for ( var i = 0; i < this.overlays_.length; ++i ) {
-    //     this.overlays_[i].opacity = 0;
-    //   }
-    //   this.setTimeout(function() {
-    //     for ( var i = 0; i < this.overlays_.length; ++i ) {
-    //       this.destroyView_(this.overlays_[i]);
-    //     }
-    //     ret();
-    //   }.bind(this), 300);
-
-    //   var v = this.helpSnippets[idx];
-    //   v && this.destroyView_(v);
-    // },
-    // function aconstructContent(idx, ret) {
-    //   var v = this.helpSnippets[idx];
-    //   if ( ! v ) {
-    //     this.destroy();
-    //     ret();
-    //     return;
-    //   }
-
-    //   var $ = v.target.$;
-    //   var rect = $.getBoundingClientRect($);
-    //   var vpWidth = this.document.documentElement.clientWidth;
-    //   var vpHeight = this.document.documentElement.clientHeight;
-
-    //   if ( rect.top > 0 ) this.overlays_.push(this.OverlayView.create({
-    //     height: rect.top,
-    //   }, this.Y));
-    //   if ( rect.bottom < vpHeight ) this.overlays_.push(this.OverlayView.create({
-    //     y: rect.bottom,
-    //     height: vpHeight - rect.bottom - 1,
-    //   }, this.Y));
-    //   if ( rect.left > 0 ) this.overlays_.push(this.OverlayView.create({
-    //     y: rect.top,
-    //     width: rect.left,
-    //     height: rect.bottom - rect.top -
-    //         (rect.bottom >= vpHeight ? 1 : 0),
-    //   }, this.Y));
-    //   if ( rect.right < vpWidth ) this.overlays_.push(this.OverlayView.create({
-    //     x: rect.right,
-    //     y: rect.top,
-    //     height: rect.bottom - rect.top -
-    //         (rect.bottom >= vpHeight ? 1 : 0),
-    //   }, this.Y));
-    //   for ( var i = 0; i < this.overlays_.length; ++i ) {
-    //     this.constructView_(this.overlays_[i]);
-    //   }
-
-    //   this.setTimeout(function() {
-    //     this.constructView_(v);
-    //     this.actionLocation = v.actionLocation;
-    //     ret();
-    //   }.bind(this), 300);
-    // },
     function constructView_(v) {
       this.document.body.insertAdjacentHTML('afterbegin', v.toHTML());
       v.initHTML();
