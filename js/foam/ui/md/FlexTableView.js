@@ -34,6 +34,8 @@ CLASS({
     },
     {
       name: 'rowHeight',
+      documentation: 'Set me to control the (fixed!) row height for the table.',
+      defaultValue: 48
     },
   ],
 
