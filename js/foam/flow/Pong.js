@@ -60,7 +60,7 @@ CLASS({
     {
       name: 'CSS',
       template: multiline(function() {/*
-        pong { position: absolute; top: 0px }
+        .card pong { position: absolute; top: 0px }
         pong p { padding: 10px; }
         pong code, pong code-view {
           font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
