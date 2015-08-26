@@ -115,8 +115,8 @@ CLASS({
 
   methods: [
     function init() {
-      this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
-      this.Y.registerModel(this.TextFieldView, 'foam.ui.TextFieldView');
+      //this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
+      //this.Y.registerModel(this.TextFieldView, 'foam.ui.TextFieldView');
       this.SharedStyles.create();
 
       this.SUPER();
