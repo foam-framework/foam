@@ -96,12 +96,17 @@ CLASS({
   ],
 
   templates: [
-    function contentHTML() {/*
+    function titleHTML() {/*
         <p class="md-style-trait-standard md-title">Choose what kind of Data Source to use</p>
+    */},
+    function instructionHTML() {/*
         <p class="md-style-trait-standard">The data source is where your App will store its data.
         This could be inside the device where it is running, in the cloud with Google Drive, or
         on another device on your network.
         </p>
+    */},
+
+    function contentHTML() {/*
         $$daoDescriptor
     */},
   ],

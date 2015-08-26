@@ -72,11 +72,15 @@ CLASS({
   ],
 
   templates: [
+    function titleHTML() {/*
+      <p class="md-style-trait-standard md-title">New or Existing</p>
+    */},
+    function instructionHTML() {/*
+      <p class="md-style-trait-standard">Choose one of the following options:</p>
+    */},
+
     function contentHTML() {/*
       <div class="new-existing-wizard-dao-page">
-        <p class="md-style-trait-standard md-title">New or Existing</p>
-        <p class="md-style-trait-standard">Choose one of the following options:
-        </p>
         $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
           orientation: 'vertical',
           choices: [

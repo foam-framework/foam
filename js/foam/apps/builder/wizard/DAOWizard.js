@@ -49,10 +49,14 @@ CLASS({
   ],
 
   templates: [
-    function contentHTML() {/*
+    function titleHTML() {/*
         <p class="md-style-trait-standard md-title">Data Source Settings</p>
+    */},
+    function instructionHTML() {/*
         <p class="md-style-trait-standard">Set the following options for your Data Source.
         </p>
+    */},
+    function contentHTML() {/*
         $$dao{ model_: 'foam.apps.builder.dao.EditView', model: this.data.dao.model_ }
     */},
   ],

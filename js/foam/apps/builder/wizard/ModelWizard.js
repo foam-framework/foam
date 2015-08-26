@@ -45,10 +45,15 @@ CLASS({
   ],
 
   templates: [
-    function contentHTML() {/*
+    function titleHTML() {/*
         <p class="md-style-trait-standard md-title">Create your Questions</p>
+    */},
+    function instructionHTML() {/*
         <p class="md-style-trait-standard">Add questions with the large '+' button.
         </p>
+    */},
+
+    function contentHTML() {/*
         $$model{ model_: 'foam.apps.builder.datamodels.ModelWizardEditView' }
     */},
   ],

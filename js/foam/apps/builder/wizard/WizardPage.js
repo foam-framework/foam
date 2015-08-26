@@ -85,12 +85,17 @@ CLASS({
   ],
 
   templates: [
+    function titleHTML() {/*
+    */},
+    function instructionHTML() {/*
+    */},
     function contentHTML() {/*
-
     */},
     function toHTML() {/*
       <wizard id="%%id" <%= this.cssClassAttr() %>>
         <div class="wizard-content">
+          <% this.titleHTML(out); %>
+          <% this.instructionHTML(out); %>
           <% this.contentHTML(out); %>
         </div>
         <div class="wizard-footer">
