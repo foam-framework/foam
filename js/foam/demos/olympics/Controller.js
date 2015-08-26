@@ -78,7 +78,7 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
-      view: { factory_: 'foam.ui.md.FlexTableView', scrollEnabled: true, xxxeditColumnsEnabled: true, xxxrows: 30}
+      view: { factory_: 'foam.ui.md.FlexTableView', rowHeight: 48, scrollEnabled: true, xxxeditColumnsEnabled: true, xxxrows: 30}
     },
     {
       name: 'searchMgr',
@@ -115,8 +115,8 @@ CLASS({
 
   methods: [
     function init() {
-      this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
-      this.Y.registerModel(this.TextFieldView, 'foam.ui.TextFieldView');
+      //this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
+      //this.Y.registerModel(this.TextFieldView, 'foam.ui.TextFieldView');
       this.SharedStyles.create();
 
       this.SUPER();
