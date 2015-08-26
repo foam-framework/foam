@@ -24,13 +24,21 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.demos.olympics.Medal',
-    'foam.ui.TextFieldView',
+    'foam.input.touch.GestureManager',
+    'foam.input.touch.TouchManager',
+    'foam.ui.md.PopupChoiceView',
+    'foam.ui.md.SharedStyles',
+    'foam.ui.md.TextFieldView',
     'foam.ui.search.GroupBySearchView',
     'foam.ui.search.SearchMgr',
     'foam.ui.search.TextSearchView'
   ],
 
-  exports: [ 'searchMgr' ],
+  exports: [
+    'gestureManager',
+    'searchMgr',
+    'touchManager',
+  ],
 
   properties: [
     { model_: 'IntProperty', name: 'count' },
@@ -70,7 +78,7 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
-      view: { factory_: 'foam.ui.md.TableView', scrollEnabled: true, xxxeditColumnsEnabled: true, xxxrows: 30}
+      view: { factory_: 'foam.ui.md.FlexTableView', scrollEnabled: true, xxxeditColumnsEnabled: true, xxxrows: 30}
     },
     {
       name: 'searchMgr',
@@ -90,11 +98,27 @@ CLASS({
       displayWidth: 35,
       displayHeight: 8
     },
+    {
+      name: 'touchManager',
+      factory: function() {
+        return this.TouchManager.create();
+      }
+    },
+    {
+      name: 'gestureManager',
+      factory: function() {
+        return this.GestureManager.create();
+      }
+    },
     'fromYear', 'toYear', 'color', 'city', 'gender', 'discipline', 'event',
   ],
 
   methods: [
     function init() {
+      this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
+      this.Y.registerModel(this.TextFieldView, 'foam.ui.TextFieldView');
+      this.SharedStyles.create();
+
       this.SUPER();
 
       GLOBAL.ctrl = this; // for debugging
@@ -149,7 +173,6 @@ CLASS({
       html { overflow: hidden; }
       .tableView, .mdTableView {
         outline: none;
-        height: 93%;
       }
       md-table table-header table-caption { padding-left: 0; }
       .medalController { display: flex; }
@@ -201,7 +224,7 @@ CLASS({
         </div>
         <div class="searchResults">
           $$filteredDAO{ title: 'Olympic Medals' }
-          <div class="counts">$$count{mode: 'read-only'} of $$totalCount{mode: 'read-only'} selected</div>
+          <div class="counts"><%# this.count %> of <%# this.totalCount %> selected</div>
         </div>
       </div>
     */}

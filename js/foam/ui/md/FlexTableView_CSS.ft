@@ -3,6 +3,7 @@ md-table {
   display: flex;
   flex-direction: column;
   max-width: 100%;
+  overflow: hidden;
 }
 
 md-table table-caption {
@@ -141,4 +142,8 @@ i.material-icons.actionLabel {
 .mdTable flex-table-cell.numeric {
   padding-right: 28px;
   margin-right: 28px;
+}
+
+.mdTable .scrollview-scroller {
+  overflow-x: hidden;
 }
