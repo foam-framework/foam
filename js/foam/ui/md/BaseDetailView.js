@@ -32,7 +32,7 @@ CLASS({
   properties: [
     {
       name: 'className',
-      defaultValue: 'mdDetailView'
+      defaultValue: 'md-detail-view'
     }
   ],
   methods: {
@@ -62,5 +62,8 @@ CLASS({
 
       return str;
     }
-  }
+  },
+  templates: [
+    function CSS() {/* .md-detail-view { flex-grow: 1; } */}
+  ]
 });

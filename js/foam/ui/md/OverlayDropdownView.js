@@ -240,18 +240,18 @@ CLASS({
       dropdown.open {
         overflow-y: auto;
       }
-      dropdown action-list.vertical flat-button {
-        padding: 16px;
-        margin: 0;
+      dropdown action-list.vertical .md-button {
         border-radius: 0;
       }
       dropdown action-list.vertical .md-button-label {
         text-transform: none;
       }
-      dropdown action-list.vertical flat-button {
-        padding: 16px;
+      dropdown .label-only {
         margin: 0;
-        border-radius: 0;
+        padding: 0;
+      }
+      dropdown .label-only .md-button-label {
+        margin: auto;
       }
     */}
   ],

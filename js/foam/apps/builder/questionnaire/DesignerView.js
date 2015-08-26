@@ -89,11 +89,13 @@ CLASS({
 
       designer.questionnaire-designer .preview-frame {
         position: relative;
-        margin: 8px;
-        border: 4px solid black;
+        margin: 16px;
+        border: 16px solid grey;
+        border-radius: 16px;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
+        box-shadow: -2px 2px 3px rgba(0.5,0.5,0.5,0.75);
       }
     */},
 

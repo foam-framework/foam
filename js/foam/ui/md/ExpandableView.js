@@ -15,7 +15,7 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
-    'foam.ui.md.CSSTransitionSet',
+    'foam.ui.CSSTransitionSet',
     'foam.ui.md.RotateFwdBwdAnimation'
   ],
 

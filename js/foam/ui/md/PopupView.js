@@ -174,7 +174,7 @@ CLASS({
       <% this.on('click', function() {
            if ( this.blockerMode === 'cancellable' ) self.close();
          }, this.id + 'Blocker'); %>
-      <div id="<%= this.id %>Content" class='popup-view-content <%= this.cardClass %>'>
+      <div id="<%= this.id %>Content" class='md-popup-view-content <%= this.cardClass %>'>
         %%delegateView
       </div>
       <% this.setClass('fixed', function() {

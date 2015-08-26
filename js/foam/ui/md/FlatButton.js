@@ -22,7 +22,7 @@ CLASS({
   properties: [
     {
       name: 'className',
-      defaultValue: 'flatbutton noselect',
+      defaultValue: 'md-button flatbutton noselect',
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
         this.$.className = this.className.split(' ').concat(
@@ -36,6 +36,11 @@ CLASS({
         this.$.className = this.className.split(' ').concat(
             this.extraClassName.split(' ')).join(' ');
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'raised',
+      defaultValue: false
     },
     {
       name: 'color',
@@ -53,10 +58,10 @@ CLASS({
     {
       model_: 'FloatProperty',
       name: 'alpha',
-      defaultValue: 1,
+      defaultValue: null,
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
-        this.$.style.opacity = nu;
+        this.$.style.opacity = nu === null ? '' : nu;
       }
     },
     {
@@ -216,8 +221,6 @@ CLASS({
   templates: [
     function CSS() {/*
       flat-button {
-        padding: 10px;
-        margin: 6px;
         display: inline-flex;
         align-items: baseline;
         justify-content: center;
@@ -253,7 +256,7 @@ CLASS({
         padding: 10px;
       }
 
-      flat-button .md-button-label {
+      flat-button.md-button .md-button-label {
         color: inherit;
       }
 
@@ -316,7 +319,8 @@ CLASS({
                this.iconUrl; this.ligature; this.displayMode;
                return this.displayMode_ === 'LABEL_ONLY';
              }, this.id);
-        this.setClass('hidden', function() { return self.isHidden; }, this.id); %>
+        this.setClass('hidden', function() { return self.isHidden; }, this.id);
+        this.setClass('raised', function() { return self.raised; }, this.id); %>
     */},
     function labelHTML() {/*
       <% if ( this.action ) { %>

@@ -48,8 +48,8 @@ CLASS({
 
   actions: [
     {
-      name: 'yes',
-      label: 'Yes',
+      name: 'confirm',
+      label: 'Confirm',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAJ1BMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfTHmrhGAAAADHRSTlMAKlT7gAWqUVj6UlNPDCTdAAAAO0lEQVQY02NgoBpgROYoOyDYTDZIHOUjJEiwpiNJcJxcgKTDxwpJB8vhTUhG+RgjGcVyBskOBhdqeRYAA6EM6OizgiUAAAAASUVORK5CYII=',
       ligature: 'done',
       code: function() {
@@ -58,8 +58,8 @@ CLASS({
       },
     },
     {
-      name: 'no',
-      label: 'No',
+      name: 'cancel',
+      label: 'Cancel',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAdklEQVQ4y+WTuQ3AIBAEaQKK8NN/BEUArmccgGyj43MMIZo5TqtFqbUPJxYtbg2OvS44IJQKhguwdUETSiXjXr77KhGICRjihWKm8Dw3KXP4Z5VZ/Lfw7B5kyD1cy5C7uAx5iJcht6vhRTUi4OrC0Szftvi/vAFNdbZ2Dp661QAAAABJRU5ErkJggg==',
       ligature: 'close',
       code: function() {
@@ -72,13 +72,12 @@ CLASS({
   templates: [
     function toHTML() {/*
       <export-confirm id="%%id">
-        <heading>{{this.data.title}}</heading>
-        <p>Your application requires the following permissions:</p>
-        <pre><% this.prettyPermissions(out); %></pre>
-        <p>Are you sure you want to export?</p>
-        <actions>
-          $$no{ model_: 'foam.ui.md.FlatButton' }
-          $$yes{ model_: 'foam.ui.md.FlatButton' }
+        <p class="md-headline">{{this.title}}</p>
+        <p class="md-subhead md-grey">Your application requires the following permissions:</p>
+        <pre class="md-quote md-grey" style="margin-left: 16px"><% this.prettyPermissions(out); %></pre>
+        <actions class="md-actions horizontal">
+          $$cancel{ model_: 'foam.ui.md.FlatButton', displayMode: 'LABEL_ONLY' }
+          $$confirm{ model_: 'foam.ui.md.FlatButton', displayMode: 'LABEL_ONLY' }
         </actions>
       </export-confirm>
     */},
@@ -99,24 +98,8 @@ CLASS({
       } else { %>No permissions<% } %>*/},
     function CSS() {/*
       export-confirm {
+        display: block;
         max-width: 600px;
-      }
-      export-confirm heading {
-        font-size: 150%;
-        font-weight: bold;
-      }
-      export-confirm p {
-        font-weight: bold;
-      }
-      export-confirm, export-confirm actions {
-        display: flex;
-        align-items: center;
-      }
-      export-confirm {
-        flex-direction: column;
-      }
-      export-confirm heading, export-confirm p, export-confirm pre, export-confirm actions {
-        margin: 6px;
       }
     */},
   ],

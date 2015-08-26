@@ -21,7 +21,7 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
   templates: [
     function CSS() {/*
-body {
+body, .md-font, .md-quote {
   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
 }
 
@@ -198,12 +198,56 @@ input[name=q]::-webkit-input-placeholder {
   line-height: 32px;
 }
 
-.md-button-label {
+.md-subhead {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: .04em;
+}
+
+.md-body, .md-quote {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0;
+}
+
+.md-quote {
+  margin-left: 16px;
+}
+
+.md-popup-view-content .md-headline {
+  margin: 0 0 20px 0;
+}
+
+.md-popup-view-content .md-subhead,
+.md-popup-view-content .md-quote {
+  margin: 0 0 24px 0;
+}
+
+.md-grey {
+  opacity: 0.54;
+}
+
+.md-button {
+  padding: 8px;
+  margin: 8px;
+  height: 36px;
+}
+
+.md-button.raised {
+  box-shadow: 1px 2px 3px rgba(0,0,0,0.33);
+}
+
+.md-button:not(.icon-only) {
+  min-width: 64px;
+}
+
+.md-button .md-button-label {
   color: rgba(0,0,0,0.87);
-  tex-transform: uppercase;
+  text-transform: uppercase;
   font-size: 14px;
   font-weight: 500;
-  line-height: 1;
   letter-spacing: 0;
 }
 
@@ -215,6 +259,8 @@ input[name=q]::-webkit-input-placeholder {
   background: rgba(0,0,0,0);
   box-shadow: 3px 3px 3px #aaa;
   border-radius: 30px;
+  margin: 0;
+  height: initial;
 }
 
 
@@ -228,7 +274,54 @@ input[name=q]::-webkit-input-placeholder {
   background: #fff;
   display: block;
   margin: 10px;
-  padding: 10px;
+  padding: 24px 16px;
+}
+
+.md-card.md-popup-view-content, .md-popup-view-content {
+  padding: 24px;
+}
+
+.md-actions {
+  display: flex;
+}
+
+.md-actions.horizontal {
+  justify-content: flex-end;
+}
+
+.md-actions.vertical {
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+.md-card-shell .md-actions {
+  width: 100%;
+}
+
+.md-card .md-actions {
+  width: calc(100% + 16px);
+  margin-left: -16px;
+  margin-bottom: -24px;
+}
+
+.md-popup-view-content .md-actions {
+  width: calc(100% + 48px);
+  margin-left: -24px;
+  margin-bottom: -24px;
+}
+
+.md-card-shell .md-actions.vertical,
+.md-card .md-actions.vertical,
+.md-popup-view-content .md-actions.vertical {
+  align-items: flex-end;
+}
+
+.md-actions.horizontal .md-button:not(:first-child) {
+  margin-left: 0;
+}
+
+.md-actions.vertical .md-button:not(:first-child) {
+  margin-top: 0;
 }
 
 .md-card p, .md-card-shell p {
@@ -250,7 +343,7 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .md-style-trait-inline {
-  padding: 0px;
+  padding: 0;
 }
 
 
