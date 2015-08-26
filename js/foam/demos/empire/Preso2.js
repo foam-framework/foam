@@ -17,7 +17,6 @@ CLASS({
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
 
   requires: [
-    'Timer',
     'com.google.sweeper.Game',
     'foam.demos.InterpolatedClocks',
     'foam.demos.graphics.Dragon',
@@ -45,6 +44,7 @@ CLASS({
     'foam.ui.ViewChoice',
     'foam.ui.md.SlideStyles',
     'foam.ui.md.TwoPaneView',
+    'foam.util.Timer',
     'foam.memento.FragmentMementoMgr'
   ],
 
