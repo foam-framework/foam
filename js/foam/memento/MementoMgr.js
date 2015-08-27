@@ -39,8 +39,8 @@ CLASS({
       label: ' <-- ',
       help:  'Go to previous view',
 
-      isEnabled:   function() { return this.stack.length; },
-      action:      function() {
+      isEnabled: function() { return this.stack.length; },
+      code: function() {
       this.dumpState('preBack');
         this.redo.push(this.mementoValue.get());
         this.restore(this.stack.pop());
@@ -54,8 +54,8 @@ CLASS({
       label: ' --> ',
       help:  'Undo the previous back.',
 
-      isEnabled:   function() { return this.redo.length; },
-      action:      function() {
+      isEnabled: function() { return this.redo.length; },
+      code: function() {
       this.dumpState('preForth');
         this.remember(this.mementoValue.get());
         this.restore(this.redo.pop());

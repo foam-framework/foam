@@ -167,7 +167,7 @@
     {
     name: 'lUp',
     keyboardShortcuts: [ 'q' ],
-    action: function() { this.lPaddle.y -= this.PADDLE_SPEED; }
+    code: function() { this.lPaddle.y -= this.PADDLE_SPEED; }
     },
     ...
     ]</code>
