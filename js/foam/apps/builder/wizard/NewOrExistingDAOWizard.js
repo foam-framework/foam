@@ -43,7 +43,7 @@ CLASS({
     },
     {
       name: 'nextViewFactory',
-      defaultValueFn: function() { return this.newViewFactory; },
+      lazyFactory: function() { return this.newViewFactory; },
     },
     {
       name: 'selection',

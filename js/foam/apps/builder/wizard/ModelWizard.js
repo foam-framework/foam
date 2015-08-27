@@ -27,11 +27,15 @@ CLASS({
       name: 'nextViewFactory',
       defaultValue: null,
     },
+    {
+      name: 'title',
+      defaultValue: 'Create your Data Model',
+    },
   ],
 
   actions: [
     {
-      name: 'next',
+      name: 'nextAction',
       label: 'Finish',
     }
   ],
@@ -45,9 +49,7 @@ CLASS({
   ],
 
   templates: [
-    function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Create your Data Model</p>
-    */},
+
     function instructionHTML() {/*
         <p class="md-style-trait-standard">Add properties with the large '+' button.
         </p>

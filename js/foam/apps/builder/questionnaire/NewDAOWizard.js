@@ -34,12 +34,14 @@ CLASS({
         factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
       },
     },
+    {
+      name: 'title',
+      defaultValue: 'Choose type of Data Source',
+    },
   ],
 
   templates: [
-    function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Choose what kind of Data Source to use</p>
-    */},
+
     function instructionHTML() {/*
         <p class="md-style-trait-standard">The data source is where your App will store its data.
         This could be local - inside the tablet the user is holding, in the cloud with Google Drive, or

@@ -28,35 +28,91 @@ CLASS({
 
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'nextViewFactory',
+      postSet: function(old,nu) {
+        this.nextView = ( nu ) ? nu({}, this.Y) : null;
+      }
     },
+    {
+      name: 'nextView',
+      lazyFactory: function() {
+        return ( this.nextViewFactory ) ? this.nextViewFactory({}, this.Y) : null;
+      },
+      postSet: function(old,nu) {
+        if ( old ) {
+          Events.unfollow(old.title$, this.nextTitle$);
+          old.destroy();
+        }
+        if ( nu ) {
+          Events.follow(nu.title$, this.nextTitle$);
+          if ( this.hidden ) {
+            this.propertyChange('title', null, this.title); // notify title listeners it might have changed
+          }
+        } else {
+          this.nextTitle = this.model_.NEXT_TITLE.defaultValue;
+        }
+      }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'nextTitle',
+      defaultValue: 'Finish',
+    },
+    {
+      model_: 'StringProperty',
+      name: 'title',
+      getter: function(name) {
+        if ( ! this.hidden ) {
+          var value = this.instance_[name];
+          if ( typeof value === 'undefined' ) {
+            var prop = this.model_.getProperty(name);
+            if ( prop.lazyFactory ) {
+              value = this.instance_[prop.name] = prop.lazyFactory.call(this, prop);
+            } else if ( prop.factory ) {
+              value = this.instance_[prop.name] = prop.factory.call(this, prop);
+            } else if ( prop.defaultValueFn ) {
+              value = prop.defaultValueFn.call(this, prop);
+            } else if ( typeof prop.defaultValue !== undefined ) {
+              value = prop.defaultValue;
+            }
+          }
+          return value;
+        } 
+        if ( this.nextView ) return this.nextView.title;
+
+        return "Finish";
+      }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'hidden',
+      defaultValue: false,
+    }
   ],
 
   actions: [
     {
-      name: 'next',
+      name: 'nextAction',
       labelFn: function() {
-        this.nextViewFactory.getModel(this.X);
+        return this.nextTitle;
       },
       code: function() {
         this.onNext();
         var X = this.Y;
-        nextVF = this.nextViewFactory;
-        if ( ! nextVF ) {
-          if ( this.wizardStack.length ) {
-            // there's a next view on the wizardStack
-            nextVF = this.wizardStack[this.wizardStack.length - 1];
-            // the next view gets a clone wizardStack that has been 'popped'
-            X = X.sub({ wizardStack: this.wizardStack.slice(0, -1) });
-          } else {
-            // no next view, so we're finished
-            this.popup && this.popup.close();
-            this.stack.popView();
-            return;
-          }
+        var nextV = this.nextView;
+        if ( ! nextV ) {
+          // no next view, so we're finished
+          this.popup && this.popup.close();
+          this.stack.popView();
+          return;
         }
-        this.stack.pushView(nextVF({ data: this.data }, X));
+        if ( nextV.hidden ) {
+          nextV.nextAction(); // don't add the hidden views to the stack, just plow straight through
+        } else {
+          this.stack.pushView(nextV);
+          nextV.onShown(); // TODO: do this in the stackview?
+        }
       }
     },
     {
@@ -85,6 +141,10 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.nextViewFactory = this.nextViewFactory;
+    },
     function onNext() {
       /* if you need to do anything when the user picks the 'next' action,
         implement this method. Remember to call this.SUPER() at the end of your
@@ -97,24 +157,15 @@ CLASS({
     function onBack() {
       /* if you need to do anything when the user picks the 'back' action, implement this method */
     },
-
-    function noViewSpecified() {
-      if ( this.wizardStack.length ) {
-        // there's a next view on the wizardStack
-        var nextVF = this.wizardStack[this.wizardStack.length - 1];
-        // the next view gets a clone wizardStack that has been 'popped'
-        X = X.sub({ wizardStack: this.wizardStack.slice(0, -1) });
-        return function(args, not_used_X) {
-          return nextVF(args, X);
-        };
-      } else {
-        return null;
-      }
-    }
+    function onShown() {
+      /* if you need to do anything when the page is shown, implement this method */
+      // TODO: skip to next page if hidden?
+    },
   ],
 
   templates: [
     function titleHTML() {/*
+      <p class="md-style-trait-standard md-title"><%# this.title %></p>
     */},
     function instructionHTML() {/*
     */},
@@ -134,7 +185,7 @@ CLASS({
           </div>
           <div class="spacer">&nbsp;</div>
           <div class="wizard-footer-items">
-            $$next{ model_: 'foam.ui.md.FlatButton' }
+            $$nextAction{ model_: 'foam.ui.md.FlatButton' }
           </div>
         </div>
       </wizard>

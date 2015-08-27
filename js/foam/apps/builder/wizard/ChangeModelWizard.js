@@ -14,6 +14,10 @@ CLASS({
   name: 'ChangeModelWizard',
   extendsModel: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
 
+  // requires: [
+  //   'foam.apps.builder.wizard.NewModelWizard',
+  // ],
+
   properties: [
     {
       name: 'newViewFactory',
@@ -26,31 +30,15 @@ CLASS({
       defaultValue: null, //function() { },
     },
     {
-      model_: 'ViewFactoryProperty',
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'editViewFactory',
       label: 'Edit the current Data Model',
       defaultValue: { factory_: 'foam.apps.builder.wizard.ModelWizard' },
     },
     {
       name: 'nextViewFactory',
-      defaultValueFn: function() { return this.editViewFactory; },
+      lazyFactory: function() { return this.editViewFactory; },
     },
-  ],
-
-  actions: [
-    {
-      name: 'next',
-      labelFn: function() {
-        this.nextViewFactory;
-        this.newViewFactory;
-        this.existingViewFactory;
-        this.editViewFactory;
-        return ( this.nextViewFactory === this.newViewFactory ) ?
-          this.model_.NEW_VIEW_FACTORY.label :
-            ( this.nextViewFactory === this.editViewFactory ) ?
-              this.model_.EDIT_VIEW_FACTORY.label : this.model_.EXISTING_VIEW_FACTORY.label;
-      },
-    }
   ],
 
   methods: [

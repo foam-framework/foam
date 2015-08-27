@@ -25,19 +25,15 @@ CLASS({
         factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
       },
     },
+    {
+      name: 'title',
+      defaultValue: 'Data Source Settings',
+    },
   ],
 
-  actions: [
-    {
-      name: 'next',
-      label: 'Next: Create the Questions',
-    }
-  ],
 
   templates: [
-    function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Data Source Settings</p>
-    */},
+
     function instructionHTML() {/*
         <p class="md-style-trait-standard">Set the following options for your Data Source:
         </p>

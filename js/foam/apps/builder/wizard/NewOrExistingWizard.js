@@ -25,13 +25,13 @@ CLASS({
 
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'newViewFactory',
       label: 'New',
       defaultValue: null,
     },
     {
-      model_: 'ViewFactoryProperty',
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'existingViewFactory',
       label: 'Existing',
       defaultValue: null,
@@ -42,19 +42,21 @@ CLASS({
       postSet: function(old,nu) {
         if ( nu ) {
           nu.select(COUNT())(function(c) {
-            if ( ! c.count ) {
-              this.next();
-            }
+            this.hidden = ! c.count; // if no choices, don't show this page, go straight to 'new thing' page
           }.bind(this));
 
         }
       }
     },
+    {
+      name: 'title',
+      defaultValue: 'New or Existing',
+    },
   ],
 
   actions: [
     {
-      name: 'next',
+      name: 'nextAction',
       isEnabled: function() {
         // must be creating new OR have selected something
         this.nextViewFactory;
@@ -62,18 +64,11 @@ CLASS({
         this.selection;
         return (this.nextViewFactory !== this.existingViewFactory || this.selection);
       },
-      labelFn: function() {
-        this.nextViewFactory;
-        return ( this.nextViewFactory === this.newViewFactory ) ?
-          this.model_.NEW_VIEW_FACTORY.label : this.model_.EXISTING_VIEW_FACTORY.label ;
-      },
     }
   ],
 
   templates: [
-    function titleHTML() {/*
-      <p class="md-style-trait-standard md-title">New or Existing</p>
-    */},
+
     function instructionHTML() {/*
       <p class="md-style-trait-standard">Choose one of the following options:</p>
     */},

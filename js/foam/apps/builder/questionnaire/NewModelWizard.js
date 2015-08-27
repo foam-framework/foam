@@ -11,24 +11,14 @@
 
 CLASS({
   package: 'foam.apps.builder.questionnaire',
-  name: 'ModelWizard',
-  extendsModel: 'foam.apps.builder.wizard.ModelWizard',
+  name: 'NewModelWizard',
+  extendsModel: 'foam.apps.builder.questionnaire.ModelWizard',
 
   properties: [
     {
       name: 'title',
-      defaultValue: 'Edit your Questions',
+      defaultValue: 'Create your Questions',
     },    
   ],
   
-  templates: [
-
-    function instructionHTML() {/*
-        <p class="md-style-trait-standard">Add new questions with the red '+' button.
-        </p>
-    */},
-
-  ],
-
-
 });

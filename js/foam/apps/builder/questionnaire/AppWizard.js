@@ -26,19 +26,15 @@ CLASS({
         factory_: 'foam.apps.builder.questionnaire.NewOrExistingDAOWizard',
       },
     },
+    {
+      name: 'title',
+      defaultValue: 'Name your Questionnaire',
+    },
   ],
 
-  actions: [
-    {
-      name: 'next',
-      label: 'Next: Choose Data Source',
-    }
-  ],
 
   templates: [
-    function titleHTML() {/*
-     <p class="md-style-trait-standard md-title">Name your Questionnaire</p>
-    */},
+   
 
     function instructionHTML() {/*
       <p class="md-style-trait-standard">Choose a name for your new Questionnaire. The name should

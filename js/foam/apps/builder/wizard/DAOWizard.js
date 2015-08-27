@@ -32,14 +32,12 @@ CLASS({
         factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
       },
     },
+    {
+      name: 'title',
+      defaultValue: 'Data Source Settings',
+    },
   ],
 
-  actions: [
-    {
-      name: 'next',
-      label: 'Next: The Questions',
-    }
-  ],
 
   methods: [
     function onNext() {
@@ -49,9 +47,7 @@ CLASS({
   ],
 
   templates: [
-    function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Data Source Settings</p>
-    */},
+
     function instructionHTML() {/*
         <p class="md-style-trait-standard">Set the following options for your Data Source:
         </p>
