@@ -58,13 +58,12 @@ CLASS({
       isEnabled: function() {
         // must be creating new OR have selected something
         this.nextViewFactory;
-        this.newViewFactory;
+        this.existingViewFactory;
         this.selection;
-        return (this.nextViewFactory === this.newViewFactory) ||
-               (this.selection);
+        return (this.nextViewFactory !== this.existingViewFactory || this.selection);
       },
       labelFn: function() {
-        this.nextViewFactory; //TODO: add i18n "Next: %1" to the label
+        this.nextViewFactory;
         return ( this.nextViewFactory === this.newViewFactory ) ?
           this.model_.NEW_VIEW_FACTORY.label : this.model_.EXISTING_VIEW_FACTORY.label ;
       },

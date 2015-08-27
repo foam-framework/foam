@@ -14,6 +14,13 @@ CLASS({
   name: 'DAOFactoryView',
   extendsModel: 'foam.apps.builder.dao.EditView',
 
+  properties: [
+    {
+      name: 'className',
+      defaultValue: 'dao-factory-view',
+    },
+  ],
+
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
@@ -26,15 +33,15 @@ CLASS({
       </div>
     */},
     function CSS() {/*
-      .dao-factory-title {
+      .dao-factory-view .dao-factory-title {
         color: rgba(0,0,0,0.74);
         font-weight: 500;
       }
-      .dao-factory-description {
+      .dao-factory-view .dao-factory-description {
         color: rgba(0,0,0,0.54);
       }
 
-      .dao-selected {
+      .dao-factory-view.dao-selected {
         background: #eeeeee;
       }
     */},

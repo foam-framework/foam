@@ -21,9 +21,6 @@ CLASS({
     'foam.apps.builder.ExportManager',
     'foam.apps.builder.kiosk.KioskAppConfig',
     'foam.apps.builder.kiosk.KioskDesignerView',
-    'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
-    'foam.apps.builder.questionnaire.DesignerView as QuestionnaireDesignerView',
-    'foam.apps.builder.questionnaire.AppWizard',
     'foam.browser.ui.BrowserView',
     'foam.dao.ContextualizingDAO',
     'foam.dao.EasyDAO',
@@ -40,6 +37,7 @@ CLASS({
     'Model',
     'foam.apps.builder.dao.DAOFactory',
     'foam.ui.md.PopupView',
+    'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
   ],
   exports: [
     'touchManager',
@@ -87,50 +85,7 @@ CLASS({
             detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
             innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView',
           }),
-          this.BrowserConfig.create({
-            title: 'Questionnaire Apps',
-            label: 'Questionnaire App',
-            model: this.QuestionnaireAppConfig,
-            dao:
-            this.SeqNoDAO.create({ delegate:
-              this.ContextualizingDAO.create({ delegate:
-                this.IDBDAO.create({
-                  model: this.QuestionnaireAppConfig,
-                  name: 'QuestionnaireAppConfigs',
-                  useSimpleSerialization: false,
-                })
-              })
-            }),
-            createFunction: function() {
-              /* 'this' is the browser view, this.data is the BrowserConfig */
-              var X = this.X;
-              var newObj = this.data.model.create();
-              var view = X.lookup('foam.ui.md.PopupView').create({
-                width: '80%',
-                height: '80%',
-                delegate: function(args, X) {
-                  var stack = X.lookup('foam.browser.ui.StackView').create({
-                      maxVisibleViews: 1,
-                      noDecoration: true,
-                      transition: 'fade',
-                  }, X);
-                  var Y = X.sub({ stack: stack });
-                  stack.pushView(
-                    X.lookup('foam.apps.builder.questionnaire.AppWizard').create({
-                      data: newObj,
-                      minWidth: 500,
-                    }, Y)
-                  );
-                  return stack;
-                }
-              }, X.sub({ dao: this.data.dao }));
-              view.open();
-            },
-            detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
-            innerDetailView: { factory_: 'foam.apps.builder.AppConfigDetailView',
-              innerView: 'foam.apps.builder.questionnaire.DesignerView'
-            },
-          }),
+          this.QuestionnaireBCFactory.create({}, this.Y).factory(),
         ].dao;
         dao.model = this.BrowserConfig;
         return dao;

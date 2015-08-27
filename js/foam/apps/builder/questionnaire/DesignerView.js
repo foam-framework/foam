@@ -23,6 +23,7 @@ CLASS({
     'foam.apps.builder.questionnaire.QuestionnaireView',
     'foam.apps.builder.datamodels.ModelPickerView',
     'foam.apps.builder.dao.DAOPickerView',
+    'foam.apps.builder.questionnaire.ChangeModelWizard',
   ],
 
   listeners: [
@@ -61,6 +62,14 @@ CLASS({
     },
   ],
 
+  methods: [
+    function init() {
+      this.SUPER();
+      // ModelSummaryView will use this, redirect to Questionnaire version
+      this.Y.registerModel(this.ChangeModelWizard, 'foam.apps.builder.wizard.ChangeModelWizard');
+    }
+  ],
+
   templates: [
     function toHTML() {/*
       <designer id="%%id" <%= this.cssClassAttr() %>>
@@ -69,7 +78,7 @@ CLASS({
           $$version
         </div>
         <div class="flex-row">
-          $$model{ model_: 'foam.apps.builder.datamodels.ModelPickerView', baseModel: this.data.baseModelId }
+          $$data{ model_: 'foam.apps.builder.ModelSummaryView' }
           $$dao{   model_: 'foam.apps.builder.dao.DAOPickerView' }
         </div>
         <div class="preview-frame">
