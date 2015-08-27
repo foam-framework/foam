@@ -12,41 +12,17 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'ModelWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
-
-  imports: [
-    'modelDAO',
-  ],
-
-  properties: [
-    {
-      name: 'nextViewFactory',
-      defaultValue: null,
-    },
-  ],
-
-  actions: [
-    {
-      name: 'next',
-      label: 'Finish',
-    }
-  ],
-
-
-  methods: [
-    function onNext() {
-      this.modelDAO && this.modelDAO.put(this.data.model);
-      this.SUPER();
-    }
-  ],
+  extendsModel: 'foam.apps.builder.wizard.ModelWizard',
 
   templates: [
-    function contentHTML() {/*
+    function titleHTML() {/*
         <p class="md-style-trait-standard md-title">Create your Questions</p>
-        <p class="md-style-trait-standard">Add questions with the large '+' button at the bottom.
-        </p>
-        $$model{ model_: 'foam.meta.types.ModelEditView' }
     */},
+    function instructionHTML() {/*
+        <p class="md-style-trait-standard">Add new questions with the red '+' button.
+        </p>
+    */},
+
   ],
 
 

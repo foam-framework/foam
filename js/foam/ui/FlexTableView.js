@@ -79,6 +79,7 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu ) return;
         this.updateHead();
+        if (this.$) this.initHTML();
       },
       defaultValue: undefined
     },
@@ -120,11 +121,16 @@ CLASS({
       }
     },
     {
+      name: 'rowHeight',
+      documentation: 'Set this to set the height of a row in the ScrollView.',
+      defaultValue: 48
+    },
+    {
       name: 'scrollView',
       factory: function() {
         return this.ScrollView.create({
           dao$: this.filteredDAO$,
-          rowHeight: 70,
+          rowHeight: this.rowHeight,
           rowView: this.makeRow,
         });
       }

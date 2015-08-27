@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'AppWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
+  extendsModel: 'foam.apps.builder.wizard.WizardPage',
 
   requires: [
     'foam.apps.builder.questionnaire.NewDAOWizard',
@@ -36,12 +36,18 @@ CLASS({
   ],
 
   templates: [
-    function contentHTML() {/*
-      <p class="md-style-trait-standard md-title">Name your Questionnaire</p>
+    function titleHTML() {/*
+     <p class="md-style-trait-standard md-title">Name your Questionnaire</p>
+    */},
+
+    function instructionHTML() {/*
       <p class="md-style-trait-standard">Choose a name for your new Questionnaire. The name should
         be a few words to indicate the purpose, such as &quot;new patient&quot;
         or &quot;customer service survey&quot;
       </p>
+    */},
+
+    function contentHTML() {/*
       $$appName
     */},
   ],

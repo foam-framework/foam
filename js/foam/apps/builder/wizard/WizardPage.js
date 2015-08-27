@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
+  package: 'foam.apps.builder.wizard',
   name: 'WizardPage',
   extendsModel: 'foam.ui.md.DetailView',
 
@@ -18,7 +18,7 @@ CLASS({
     'foam.ui.md.UpdateDetailView',
   ],
 
-  imports: [ 'stack', 'dao' ],
+  imports: [ 'stack', 'dao', 'popup' ],
 
   properties: [
     {
@@ -34,16 +34,12 @@ CLASS({
       code: function() {
         this.onNext();
         if ( this.nextViewFactory ) {
-          this.stack.replaceView(
+          this.stack.pushView(
             this.nextViewFactory({ data: this.data }, this.X)
-//             this.UpdateDetailView.create({
-//               data: this.data,
-//               innerView: this.nextViewFactory,
-//               immutable: true,
-//             })
           );
         } else {
           // no next view, so we're finished
+          this.popup && this.popup.close();
           this.stack.popView();
         }
       }
@@ -51,7 +47,23 @@ CLASS({
     {
       name: 'exit',
       label: 'Cancel',
+      isAvailable: function() { return this.stack.views_.length <= 1; },
       code: function() {
+        this.onCancel();
+        this.popup && this.popup.close();
+      }
+    },
+    {
+      name: 'back',
+      label:  'Back',
+      isAvailable: function() { return this.stack.views_.length > 1; },
+      code: function() {
+        this.onBack();
+        //this.popup && this.popup.close();
+        if ( this.stack.views_.length <= 1 ) {
+          this.onCancel();
+          this.popup && this.popup.close();
+        }
         this.stack.popView();
       }
     }
@@ -66,21 +78,30 @@ CLASS({
     },
     function onCancel() {
       /* if you need to do anything when the user picks the 'cancel' action, implement this method */
-    }
+    },
+    function onBack() {
+      /* if you need to do anything when the user picks the 'back' action, implement this method */
+    },
   ],
 
   templates: [
+    function titleHTML() {/*
+    */},
+    function instructionHTML() {/*
+    */},
     function contentHTML() {/*
-
     */},
     function toHTML() {/*
       <wizard id="%%id" <%= this.cssClassAttr() %>>
         <div class="wizard-content">
+          <% this.titleHTML(out); %>
+          <% this.instructionHTML(out); %>
           <% this.contentHTML(out); %>
         </div>
         <div class="wizard-footer">
           <div class="wizard-footer-items">
             $$exit{ model_: 'foam.ui.md.FlatButton' }
+            $$back{ model_: 'foam.ui.md.FlatButton' }
           </div>
           <div class="spacer">&nbsp;</div>
           <div class="wizard-footer-items">

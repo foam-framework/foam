@@ -167,7 +167,7 @@ CLASS({
       if ( this.name  ) params.name = this.name;
       if ( this.seqNo || this.guid ) params.property = this.seqProperty;
 
-      var dao = daoModel.create(params);
+      var dao = daoModel.create(params, this.Y);
 
       if ( MDAO.isInstance(dao) ) {
         this.mdao = dao;

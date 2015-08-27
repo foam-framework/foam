@@ -24,6 +24,8 @@ CLASS({
   ],
   imports: [
     'exportManager$',
+    'dao',
+    'stack',
   ],
 
   properties: [
@@ -49,7 +51,7 @@ CLASS({
         data: this.data,
         blockerMode: 'modal',
         delegate: this.ExportConfirmView.xbind({
-          title: title,
+          title: title + '?',
         }, this.Y),
       }, this.Y);
       confirmPopup.open();
@@ -123,6 +125,18 @@ CLASS({
         this.doExportAction('publishApp', 'Publish to Chrome Web Store');
       },
     },
+    {
+      name: 'delete',
+      label: 'Delete',
+      help: 'Removes this app',
+      priority: 2,
+      order: 10,
+      ligature: 'delete',
+      code: function() {
+        this.dao.remove(this.data);
+        this.stack.popView();
+      }
+    }
   ],
 
   templates: [

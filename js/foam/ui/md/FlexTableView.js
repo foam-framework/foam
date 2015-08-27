@@ -25,12 +25,18 @@ CLASS({
           className: 'mdTable',
           ascIcon: '<i class="material-icons">keyboard_arrow_up</i>',
           descIcon: '<i class="material-icons">keyboard_arrow_down</i>',
+          rowHeight: this.rowHeight,
           model$: this.model$,
           data$: this.data$,
           properties$: this.properties$
         });
       }
-    }
+    },
+    {
+      name: 'rowHeight',
+      documentation: 'Set me to control the (fixed!) row height for the table.',
+      defaultValue: 48
+    },
   ],
 
 

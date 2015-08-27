@@ -12,78 +12,42 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'NewOrExistingModelWizard',
-  extendsModel: 'foam.apps.builder.NewOrExistingWizard',
+  extendsModel: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
 
   requires: [
     'foam.apps.builder.questionnaire.ModelWizard',
     'foam.apps.builder.questionnaire.ModelPreviewWizard',
   ],
 
-  imports: [
-    'modelDAO',
-  ],
-
-  exports: [
-    'editView',
-    'innerEditView',
-  ],
-
   properties: [
     {
-      model_: 'ModelProperty',
-      name: 'baseModel',
-      help: 'The list is filtered to only include models that extend baseModel.',
-      postSet: function() {
-        if ( this.modelDAO ) {
-          this.existingDAO = this.modelDAO.where(EQ(Model.EXTENDS_MODEL, this.baseModel.id));
-        }
-      }
-    },
-    {
-      name: 'modelDAO',
-      postSet: function(old,nu) {
-        if ( this.baseModel ) {
-          this.existingDAO = this.modelDAO.where(EQ(Model.EXTENDS_MODEL, this.baseModel.id));
-        }
-      },
-    },
-    {
       name: 'newViewFactory',
-      label: 'Create a new Data Model',
+      label: 'Create a new Question Set',
       defaultValue: { factory_: 'foam.apps.builder.questionnaire.ModelWizard' },
     },
     {
       name: 'existingViewFactory',
-      label: 'Use existing Data Model',
-      defaultValue: function() { },
+      label: 'Use existing Question Set',
+      defaultValue: null, //function() { },
     },
     {
-      name: 'nextViewFactory',
-      defaultValueFn: function() { return this.newViewFactory; },
-    },
-    {
-      name: 'selection',
-      postSet: function(old,nu) {
-        this.data.model = nu;
-      }
-    },
-    {
-      name: 'existingDAO',
-      view: {
-        factory_: 'foam.ui.md.DAOListView',
-        rowView: 'foam.apps.builder.datamodels.ModelCitationView',
-      }
-    },
-    {
-      model_: 'ViewFactoryProperty',
       name: 'editView',
       defaultValue: { factory_: 'foam.apps.builder.questionnaire.ModelPreviewWizard' },
     },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'innerEditView',
-      defaultValue: function() {},
-    },
+  ],
+
+  templates: [
+    function titleHTML() {/*
+        <p class="md-style-trait-standard md-title">Choose the Question Set</p>
+    */},
+    function instructionHTML() {/*
+        <p class="md-style-trait-standard">Create a new set of questions, or share
+        an existing set of questions with one of your other Questionnaire Apps.
+        If you pick an existing set of questions, changes to the questions will
+        also show up in the other apps that use that set.
+        </p>
+    */},
+
   ],
 
 

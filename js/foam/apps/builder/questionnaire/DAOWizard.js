@@ -12,16 +12,10 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'DAOWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
+  extendsModel: 'foam.apps.builder.wizard.DAOWizard',
 
   requires: [
     'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-    'foam.apps.builder.dao.DAOFactoryEditView',
-    'foam.apps.builder.dao.IDBDAOFactoryEditView',
-  ],
-
-  imports: [
-    'daoConfigDAO',
   ],
 
   properties: [
@@ -29,7 +23,6 @@ CLASS({
       name: 'nextViewFactory',
       defaultValue: {
         factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-        baseModel: 'foam.apps.builder.questionnaire.Questionnaire',
       },
     },
   ],
@@ -37,23 +30,17 @@ CLASS({
   actions: [
     {
       name: 'next',
-      label: 'Next: The Questions',
-    }
-  ],
-
-  methods: [
-    function onNext() {
-      this.daoConfigDAO && this.daoConfigDAO.put(this.data.dao);
-      this.SUPER();
+      label: 'Next: Create the Questions',
     }
   ],
 
   templates: [
-    function contentHTML() {/*
+    function titleHTML() {/*
         <p class="md-style-trait-standard md-title">Data Source Settings</p>
-        <p class="md-style-trait-standard">Set the following options for your Data Source.
+    */},
+    function instructionHTML() {/*
+        <p class="md-style-trait-standard">Set the following options for your Data Source:
         </p>
-        $$dao{ model_: 'foam.apps.builder.dao.EditView', model: this.data.dao.model_ }
     */},
   ],
 

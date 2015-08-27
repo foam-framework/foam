@@ -92,7 +92,7 @@ CLASS({
 
       isAvailable: function() { return true; },
       isEnabled:   function() { return ! this.isStarted; },
-      action:      function() { this.isStarted = true; this.tick(); }
+      code:        function() { this.isStarted = true; this.tick(); }
     },
     {
       name:  'step',

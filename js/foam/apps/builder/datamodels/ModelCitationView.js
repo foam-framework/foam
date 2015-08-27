@@ -29,9 +29,10 @@ CLASS({
 
   actions: [
     {
-      name: 'editButton',
-      label: 'Edit',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAZ0lEQVR4AdXOrQ2AMBRF4bMc/zOUOSrYoYI5cQQwpAieQDW3qQBO7Xebxx8bWAk5/CASmRHzRHtB+d0Bkw0W5ZiT0SYbFcl6u/2eeJHbxIHOhWO6Er6/y9syXpMul5PLefAGKZ1/rwtTimwbWLpiCgAAAABJRU5ErkJggg==',
+      name: 'preview',
+      label: 'Preview',
+      isAvailable: function() { return !! this.editView; },
+      ligature: 'visibility',
       code: function() {
         this.stack.pushView(this.editView({
           data: this.data,
@@ -48,7 +49,7 @@ CLASS({
           $$id{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false }
         </div>
         <div class='md-style-trait-standard'>
-          $$editButton
+          $$preview{ color: 'black' }
         </div>
       </div>
     */},
@@ -56,10 +57,16 @@ CLASS({
       .md-model-citation-view {
         display: flex;
         align-items: center;
+        color: 'black';
       }
       .md-model-citation-view-name {
         flex-grow: 1;
       }
+
+      .md-model-citation-view.dao-selected {
+        background: #eeeeee;
+      }
+
     */},
   ],
 

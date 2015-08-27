@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'QuestionnaireView',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.ui.md.DetailView',
 
   requires: [
     'ViewFactoryProperty',
@@ -201,26 +201,29 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <kiosk id="%%id" <%= this.cssClassAttr() %>>
+      <questionnaire id="%%id" <%= this.cssClassAttr() %>>
         %%tosView
         %%toolbarView
         %%controller
-      </kiosk>
+      </questionnaire>
     */},
     function CSS() {/*
-      kiosk {
+
+      designer questionnaire {
+        height: auto;
+      }
+
+      questionnaire, questionnaire .kiosk-controller {
+        display: flex;
+        flex-grow: 1;
         position: relative;
         flex-direction: column;
         height: 100%;
       }
-      kiosk, kiosk .kiosk-controller {
-        display: flex;
-        flex-grow: 1;
-      }
-      kiosk kiosk-chrome {
+      questionnaire kiosk-chrome {
         z-index: 2;
       }
-      kiosk .kiosk-controller {
+      questionnaire .kiosk-controller {
         z-index: 1;
       }
     */},

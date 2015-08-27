@@ -307,6 +307,13 @@ return JSONUtil.arrayToObjArray(X, [
     src: 'apps/todo/',
     image: 'Todo.png'
   },
+  {
+    name: 'TodoBrowser',
+    model: 'foam.tutorials.todo.TodoApp',
+    description: "A Todo app building using FOAM's reusable controller.",
+    keywords: ['tutorial'],
+    image: 'TodoBrowser.png'
+  },
   /*
   {
     name: 'FOAM Code Browser',

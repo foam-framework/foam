@@ -12,38 +12,38 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'DesignerView',
-  extendsModel: 'foam.apps.builder.DesignerView',
+  extendsModel: 'foam.ui.md.DetailView',
+
+  traits: [
+    'foam.metrics.ScreenViewTrait',
+  ],
 
   requires: [
-    'foam.apps.builder.Panel',
-    'foam.ui.md.DetailView',
     'foam.apps.builder.questionnaire.EditView',
     'foam.apps.builder.questionnaire.QuestionnaireView',
-    'Model',
-    'foam.apps.builder.AppConfigDetailView',
-    'foam.ui.StringArrayView',
-    'foam.ui.ArrayView',
-    'foam.ui.TextAreaView',
-    'foam.ui.FunctionView',
+    'foam.apps.builder.datamodels.ModelPickerView',
+    'foam.apps.builder.dao.DAOPickerView',
+    'foam.apps.builder.questionnaire.ChangeModelWizard',
   ],
 
   listeners: [
     {
       name: 'dataChange',
       code: function() {
-        if (this.instanceView) {
+        if (this.dataView) {
           // bind this better
-          //this.instanceView.data = this.instance;
-          //this.instanceView.updateHTML();
           this.data.model.instance_.prototype_ = null;
-          this.instance = this.data.model.create();
-          this.instanceView.updateHTML();
+          this.dataView.updateHTML();
         }
       }
     }
   ],
 
   properties: [
+    {
+      name: 'className',
+      defaultValue: 'questionnaire-designer',
+    },
     {
       name: 'data',
       postSet: function(old, nu) {
@@ -54,32 +54,65 @@ CLASS({
           old.removeListener(this.dataChange);
         }
         this.data.model.instance_.prototype_ = null;
-        this.instance = this.data.model.create();
       },
     },
     {
       type: 'foam.apps.builder.ExportManager',
       name: 'exportManager',
     },
-    {
-      name: 'instance',
-      help: 'An example of your questionnaire as a user would see it.',
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'panelView',
-      defaultValue: {
-        factory_: 'foam.apps.builder.Panel',
-        innerView: {
-          factory_: 'foam.apps.builder.AppConfigDetailView',
-          innerView: 'foam.apps.builder.questionnaire.EditView',
-        },
-      },
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'appView',
-      defaultValue: 'foam.apps.builder.questionnaire.QuestionnaireView',
-    },
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      // ModelSummaryView will use this, redirect to Questionnaire version
+      this.Y.registerModel(this.ChangeModelWizard, 'foam.apps.builder.wizard.ChangeModelWizard');
+    }
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <designer id="%%id" <%= this.cssClassAttr() %>>
+        <div class="flex-row">
+          $$appName
+          $$version
+        </div>
+        <div class="flex-row">
+          $$data{ model_: 'foam.apps.builder.ModelSummaryView' }
+          $$dao{   model_: 'foam.apps.builder.dao.DAOPickerView' }
+        </div>
+        <div class="preview-frame">
+          $$data{ model_: 'foam.apps.builder.questionnaire.QuestionnaireView' }
+        </div>
+      </designer>
+    */},
+    function CSS() {/*
+      designer.questionnaire-designer {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+
+      designer.questionnaire-designer .flex-row {
+        display: flex;
+        flex-direction: row;
+      }
+      designer.questionnaire-designer .flex-row :first-child {
+        flex-grow: 1;
+      }
+
+      designer.questionnaire-designer .preview-frame {
+        position: relative;
+        margin: 16px;
+        border: 16px solid grey;
+        border-radius: 16px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0px 3px 4px #444;
+      }
+    */},
+
   ],
 });

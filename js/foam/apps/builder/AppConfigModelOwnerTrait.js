@@ -52,11 +52,7 @@ CLASS({
       name: 'model',
       view: 'foam.ui.md.DetailView',
       lazyFactory: function() {
-        this.defaultModel_ = true;
-        return this.Model.create({
-          extendsModel: this.baseModelId,
-          name: capitalize(camelize(this.appName)),
-        });
+        this.resetModel();
       },
       preSet: function(old,nu) {
         if ( ! nu ) return old;
@@ -67,5 +63,14 @@ CLASS({
 
   ],
 
+  methods: [
+    function resetModel() {
+      this.model = this.Model.create({
+        extendsModel: this.baseModelId,
+        name: capitalize(camelize(this.appName)),
+      });
+      this.defaultModel_ = true;
+    }
+  ],
 
 });

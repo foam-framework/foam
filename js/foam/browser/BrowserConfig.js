@@ -177,6 +177,15 @@ CLASS({
       }
     },
     {
+      model_: 'FunctionProperty',
+      name: 'createFunction',
+      documentation: 'Runs createView and adds the new view. "this" is the BrowserView, "this.data" is the BrowserConfig.',
+      defaultValue: function() {
+        this.stack.pushView(this.data.createView(null,
+            this.Y.sub({ dao: this.data.dao })));
+      },
+    },
+    {
       model_: 'ViewFactoryProperty',
       name: 'menuRowView',
       defaultValue: 'foam.ui.md.CannedQueryCitationView'

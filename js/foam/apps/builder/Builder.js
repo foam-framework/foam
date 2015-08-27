@@ -21,9 +21,6 @@ CLASS({
     'foam.apps.builder.ExportManager',
     'foam.apps.builder.kiosk.KioskAppConfig',
     'foam.apps.builder.kiosk.KioskDesignerView',
-    'foam.apps.builder.questionnaire.AppConfig as QuestionnaireAppConfig',
-    'foam.apps.builder.questionnaire.DesignerView as QuestionnaireDesignerView',
-    'foam.apps.builder.questionnaire.AppWizard',
     'foam.browser.ui.BrowserView',
     'foam.dao.ContextualizingDAO',
     'foam.dao.EasyDAO',
@@ -39,6 +36,8 @@ CLASS({
     'foam.ui.md.TextFieldView',
     'Model',
     'foam.apps.builder.dao.DAOFactory',
+    'foam.ui.md.PopupView',
+    'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
   ],
   exports: [
     'touchManager',
@@ -86,35 +85,7 @@ CLASS({
             detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
             innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView',
           }),
-          this.BrowserConfig.create({
-            title: 'Questionnaire Apps',
-            label: 'Questionnaire App',
-            model: this.QuestionnaireAppConfig,
-            dao:
-            this.SeqNoDAO.create({ delegate:
-              this.ContextualizingDAO.create({ delegate:
-                this.IDBDAO.create({
-                  model: this.QuestionnaireAppConfig,
-                  name: 'QuestionnaireAppConfigs',
-                  useSimpleSerialization: false,
-                })
-              })
-            }),
-            createView: function(args, X) {
-              var newObj = this.model.create();
-              return this.X.lookup('foam.apps.builder.questionnaire.AppWizard').create({
-                data: newObj
-              }, X.sub({ dao: this.dao }));
-//               return this.detailView({
-//                 data: newObj,
-//                 innerView: 'foam.apps.builder.questionnaire.AppWizard',
-//                 }, X.sub({ dao: this.dao }));
-            },
-            detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
-            innerDetailView: 'foam.apps.builder.questionnaire.DesignerView'
-            //detailView: 'foam.apps.builder.questionnaire.AppWizard',
-            //innerDetailView: 'foam.apps.builder.questionnaire.AppWizard',
-          }),
+          this.QuestionnaireBCFactory.create({}, this.Y).factory(),
         ].dao;
         dao.model = this.BrowserConfig;
         return dao;

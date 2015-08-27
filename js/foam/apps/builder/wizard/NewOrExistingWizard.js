@@ -10,9 +10,9 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
+  package: 'foam.apps.builder.wizard',
   name: 'NewOrExistingWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
+  extendsModel: 'foam.apps.builder.wizard.WizardPage',
 
   requires: [
     'foam.ui.md.ChoiceRadioView',
@@ -55,8 +55,15 @@ CLASS({
   actions: [
     {
       name: 'next',
+      isEnabled: function() {
+        // must be creating new OR have selected something
+        this.nextViewFactory;
+        this.existingViewFactory;
+        this.selection;
+        return (this.nextViewFactory !== this.existingViewFactory || this.selection);
+      },
       labelFn: function() {
-        this.nextViewFactory; //TODO: add i18n "Next: %1" to the label
+        this.nextViewFactory;
         return ( this.nextViewFactory === this.newViewFactory ) ?
           this.model_.NEW_VIEW_FACTORY.label : this.model_.EXISTING_VIEW_FACTORY.label ;
       },
@@ -64,11 +71,15 @@ CLASS({
   ],
 
   templates: [
+    function titleHTML() {/*
+      <p class="md-style-trait-standard md-title">New or Existing</p>
+    */},
+    function instructionHTML() {/*
+      <p class="md-style-trait-standard">Choose one of the following options:</p>
+    */},
+
     function contentHTML() {/*
       <div class="new-existing-wizard-dao-page">
-        <p class="md-style-trait-standard md-title">New or Existing</p>
-        <p class="md-style-trait-standard">Choose one of the following options:
-        </p>
         $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
           orientation: 'vertical',
           choices: [

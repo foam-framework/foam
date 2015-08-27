@@ -12,46 +12,17 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'ModelPreviewWizard',
-  extendsModel: 'foam.apps.builder.WizardPage',
-
-  properties: [
-    {
-      name: 'data',
-      adapt: function(old,nu) {
-        return nu.deepClone();
-      }
-    },
-    {
-      name: 'nextViewFactory',
-      defaultValue: null,
-    },
-  ],
-
-  actions: [
-    {
-      name: 'next',
-      label: 'Done with Preview',
-    },
-    {
-      name: 'exit',
-      isAvailable: function() { return false; }
-    }
-  ],
-
-  methods: [
-    function onNext() {
-      // skip SUPER(), we don't want to save
-    }
-  ],
+  extendsModel: 'foam.apps.builder.wizard.ModelPreviewWizard',
 
   templates: [
-    function contentHTML() {/*
-        <p class="md-style-trait-standard md-title">Preview</p>
-        <p class="md-style-trait-standard">Here is a preview of
-        <%= this.data.name %>
-        </p>
-        $$data{ model_: 'foam.meta.types.ModelEditView', mode: 'read-only' }
+    function titleHTML() {/*
+        <p class="md-style-trait-standard md-title">Preview of Questions</p>
     */},
+    function instructionHTML() {/*
+        <p class="md-style-trait-standard">These questions in <%= this.data.name %>:
+        </p>
+    */},
+
   ],
 
 

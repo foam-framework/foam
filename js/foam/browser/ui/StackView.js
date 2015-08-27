@@ -27,6 +27,12 @@ CLASS({
   ],
   properties: [
     {
+      model_: 'IntProperty',
+      name: 'maxVisibleViews',
+      defaultValue: 2,
+      documentation: 'Limits the number of views on screen at a time.',
+    },
+    {
       name: 'views_',
       documentation: 'Internal array of child views.',
       factory: function() { return []; }
@@ -44,6 +50,17 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'stackview-container'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'noDecoration',
+      documentation: 'If true, panel edges are not added',
+      defaultValue: false,
+    },
+    {
+      name: 'transition',
+      documentation: 'The transition when adding or removing a view. Choose from "slide" or "fade"',
+      defaultValue: 'slide',
     },
   ],
 
@@ -68,15 +85,35 @@ CLASS({
         this.popView_(0);
       }
     },
+    function elementAnimationAdd_(style) {
+      if ( this.transition == 'slide' ) {
+        style.width = "0px";
+        style.left = this.$.offsetWidth;
+        // not animating width makes a big difference in performance by avoiding layout events
+        style.transition = "left 300ms ease"; // "width 300ms ease, left 300ms ease";
+      } else if ( this.transition == 'fade' ) {
+        style.opacity = 0;
+        style.transition = "opacity 300ms ease";
+        this.X.setTimeout(function() { style.opacity = 1; }, 50);
+      }
+    },
+    function elementAnimationRemove_(style) {
+      if ( this.transition == 'slide' ) {
+        style.left = this.$.offsetWidth;
+      } else if ( this.transition == 'fade' ) {
+        style.opacity = 0;
+      }
+    },
     function destroyChildViews_(index) {
       while(this.views_.length > index) {
         var obj = this.views_.pop();
-        this.X.$(obj.id).style.left = this.$.offsetWidth;
+        this.elementAnimationRemove_(this.X.$(obj.id).style);
         this.resize();
         this.finishDestroy(obj);
       }
     },
     function finishDestroy(obj) {
+      // separate method to capture proper obj in closure
       this.X.setTimeout(function() { // clean up after animation
         obj.view.destroy();
         obj.hideBinding(); // Destroys the Events.dynamic for the hidden class.
@@ -88,11 +125,8 @@ CLASS({
     function renderChild(index) {
       var obj = this.views_[index];
       this.$.insertAdjacentHTML('beforeend', this.childHTML(index, this.views_[index]));
-      var style = this.X.$(obj.id).style;
-      style.width = "0px";
-      style.left = this.$.offsetWidth;
-      // not animating width makes a big difference in performance by avoiding layout events
-      style.transition = "left 300ms ease"; // "width 300ms ease, left 300ms ease";
+      this.elementAnimationAdd_(this.X.$(obj.id).style);
+      obj.view.setClass('stackview-hidden', function() { return this.noDecoration; }.bind(this), obj.id + '-edge');
 
       obj.view.initHTML();
     },
@@ -134,7 +168,7 @@ CLASS({
       }
 
       index = Math.min(index + 1, this.views_.length - 1);
-      this.visibleStart_ = Math.max(index, this.views_.length - 2);
+      this.visibleStart_ = Math.max(index, this.views_.length - this.maxVisibleViews);
       // Currently visibleEnd_ is always the last view; it exists only to make
       // sure views that are replacing each other come and go lockstep in a
       // single frame.
@@ -185,7 +219,6 @@ CLASS({
   templates: [
     function CSS() {/*
       .stackview-container {
-        background-color: #9e9e9e;
         height: 100%;
         width: 100%;
         overflow-x: hidden;
