@@ -22,8 +22,5 @@ CLASS({
         <p class="md-style-trait-standard">These questions in <%= this.data.name %>:
         </p>
     */},
-
   ],
-
-
 });

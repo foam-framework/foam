@@ -28,7 +28,7 @@ CLASS({
     {
       name: 'existingViewFactory',
       label: 'Use existing Question Set',
-      defaultValue: null, //function() { },
+      defaultValue: null, // no-op function constant?
     },
     {
       name: 'editView',
@@ -37,7 +37,7 @@ CLASS({
   ],
 
   templates: [
-    function titleHTML() {/*
+    function titleHTML() {/*git
         <p class="md-style-trait-standard md-title">Choose the Question Set</p>
     */},
     function instructionHTML() {/*

@@ -18,7 +18,13 @@ CLASS({
     'foam.ui.md.UpdateDetailView',
   ],
 
-  imports: [ 'stack', 'dao', 'popup' ],
+  imports: [
+    'stack',
+    'dao',
+    'popup',
+    'wizardStack'
+  ],
+
 
   properties: [
     {
@@ -30,18 +36,27 @@ CLASS({
   actions: [
     {
       name: 'next',
-      label: 'Next',
+      labelFn: function() {
+        this.nextViewFactory.getModel(this.X);
+      },
       code: function() {
         this.onNext();
-        if ( this.nextViewFactory ) {
-          this.stack.pushView(
-            this.nextViewFactory({ data: this.data }, this.X)
-          );
-        } else {
-          // no next view, so we're finished
-          this.popup && this.popup.close();
-          this.stack.popView();
+        var X = this.Y;
+        nextVF = this.nextViewFactory;
+        if ( ! nextVF ) {
+          if ( this.wizardStack.length ) {
+            // there's a next view on the wizardStack
+            nextVF = this.wizardStack[this.wizardStack.length - 1];
+            // the next view gets a clone wizardStack that has been 'popped'
+            X = X.sub({ wizardStack: this.wizardStack.slice(0, -1) });
+          } else {
+            // no next view, so we're finished
+            this.popup && this.popup.close();
+            this.stack.popView();
+            return;
+          }
         }
+        this.stack.pushView(nextVF({ data: this.data }, X));
       }
     },
     {
@@ -82,6 +97,20 @@ CLASS({
     function onBack() {
       /* if you need to do anything when the user picks the 'back' action, implement this method */
     },
+
+    function noViewSpecified() {
+      if ( this.wizardStack.length ) {
+        // there's a next view on the wizardStack
+        var nextVF = this.wizardStack[this.wizardStack.length - 1];
+        // the next view gets a clone wizardStack that has been 'popped'
+        X = X.sub({ wizardStack: this.wizardStack.slice(0, -1) });
+        return function(args, not_used_X) {
+          return nextVF(args, X);
+        };
+      } else {
+        return null;
+      }
+    }
   ],
 
   templates: [
