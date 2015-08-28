@@ -14,10 +14,6 @@ CLASS({
   name: 'ChangeModelWizard',
   extendsModel: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
 
-  // requires: [
-  //   'foam.apps.builder.wizard.NewModelWizard',
-  // ],
-
   properties: [
     {
       name: 'newViewFactory',

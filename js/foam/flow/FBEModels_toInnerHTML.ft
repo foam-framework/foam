@@ -1378,7 +1378,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
       isAvailable: function() { return !this.isRetired; },
       isEnabled: function() { return !this.isRunning; },
       keyboardShortcuts: [ 'r', '=' ],
-      action: function() { this.isRunning = true; }
+      code: function() { this.isRunning = true; }
     },
     {
       name: 'stop',
@@ -1387,7 +1387,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
       keyboardShortcuts: [ 's', '-' ],
       isAvailable: function() { return !this.isRetired; },
       isEnabled: function() { return this.isRunning; },
-      action: function() { this.isRunning = false; }
+      code: function() { this.isRunning = false; }
     },
     {
       name: 'step',
@@ -1396,7 +1396,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
       keyboardShortcuts: [ 'S', ' ' ],
       isAvailable: function() { return true; },
       isEnabled: function() { return !this.isRunning; },
-      action: function() { this.distance += this.strideLength; }
+      code: function() { this.distance += this.strideLength; }
     },
     {
       name: 'retire',
@@ -1404,7 +1404,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
       isAvailable: function() { return true; },
       isEnabled: function() { return !this.isRetired; },
       keyboardShortcuts: [ '/' ],
-      action: function() { this.isRunning = false; this.isRetired = true; }
+      code: function() { this.isRunning = false; this.isRetired = true; }
     },
     {
       name: 'retrain',
@@ -1412,7 +1412,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
       isAvailable: function() { return true; },
       isEnabled: function() { return this.isRetired; },
       keyboardShortcuts: [ '\\' ],
-      action: function() { this.isRetired = false; }
+      code: function() { this.isRetired = false; }
     }
   ],
 

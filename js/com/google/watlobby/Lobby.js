@@ -36,7 +36,10 @@ CLASS({
 
   extendsModel: 'foam.demos.physics.PhysicalCircle',
 
-  requires: [ 'foam.graphics.ImageCView' ],
+  requires: [
+    'foam.graphics.Circle',
+    'foam.graphics.ImageCView',
+  ],
 
   imports: [ 'lobby' ],
 
@@ -44,8 +47,9 @@ CLASS({
     { name: 'topic' },
     { name: 'image' },
     { name: 'roundImage' },
-    { name: 'borderWidth', defaultValue: 8 },
-    { name: 'color',       defaultValue: 'white' }
+    { name: 'borderWidth', defaultValue: 10 },
+    { name: 'color',       defaultValue: 'white' },
+    { name: 'ring' }
   ],
 
   methods: [
@@ -56,6 +60,13 @@ CLASS({
         var img = this.ImageCView.create({src: this.image});
         this.addChild(img);
         this.img = img;
+      }
+      // For roundImages we want to draw the border above our children to
+      // hide any blending issues at the border. To do this we add another
+      // Circle child.
+      if ( this.roundImage ) {
+        this.ring = this.Circle.create({color: null});
+        this.addChild(this.ring);
       }
     },
     function setSelected(selected) {
@@ -83,12 +94,18 @@ CLASS({
         }.bind(this), Movement.easy)();
       }
     },
-    function paintSelf() {
+    function paintChildren() {
+      if ( this.ring ) {
+        this.ring.r = this.r;
+        this.ring.borderWidth = this.borderWidth;
+        this.ring.border = this.border;
+      }
+
       if ( this.image ) {
         var d, s;
         if ( this.roundImage ) {
-          d = 2 * this.r;
-          s = -this.r;
+          d = 2 * this.r + 6;
+          s = -this.r - 3;
         } else {
           d = 2 * this.r * Math.SQRT1_2;
           s = -this.r * Math.SQRT1_2;
@@ -269,10 +286,19 @@ CLASS({
 
 CLASS({
   package: 'com.google.watlobby',
+  name: 'AirBubble',
+  extendsModel: 'foam.demos.physics.PhysicalCircle'
+});
+
+
+CLASS({
+  package: 'com.google.watlobby',
   name: 'Lobby',
   extendsModel: 'foam.graphics.CView',
+  traits: [ 'com.google.misc.Colors' ],
 
   requires: [
+    'com.google.watlobby.AirBubble',
     'com.google.watlobby.Bubble',
     'com.google.watlobby.PhotoAlbumBubble',
     'com.google.watlobby.Topic',
@@ -285,15 +311,6 @@ CLASS({
 
   imports: [ 'timer' ],
   exports: [ 'as lobby' ],
-
-  constants: {
-//    COLOURS: ['#33f','#f00','#fc0', '#3c0']
-    RED:    'rgb(219,68,55)',
-    GREEN:  'rgb(15,157,88)',
-    BLUE:   'rgb(66,133,244)',
-    YELLOW: 'rgb(244,180,0)',
-    COLOURS: ['rgb(66,133,244)','rgb(219,68,55)','rgb(244,180,0)', 'rgb(15,157,88)']
-  },
 
   properties: [
     { name: 'timer' },
@@ -318,7 +335,7 @@ CLASS({
             var r = c1.r * 1.2;
             if ( c1.x < r     ) { c1.vx += 0.2; c1.vy -= 0.19; }
             if ( c1.x > w - r ) { c1.vx -= 0.2; c1.vy += 0.19; }
-            if ( c1.y < r     ) { c1.vy += 0.2; c1.vx += 0.19; }
+            if ( c1.y < r && ! com.google.watlobby.AirBubble.isInstance(c1) ) { c1.vy += 0.2; c1.vx += 0.19; }
             if ( c1.y > h - r ) { c1.vy -= 0.2; c1.vx -= 0.19; }
 
             for ( var j = i+1 ; j < cs.length ; j++ ) {
@@ -335,6 +352,7 @@ CLASS({
       return JSONUtil.arrayToObjArray(this.X, [
         { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: this.RED },
         { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: this.RED },
+        { topic: 'pixel',        image: 'pixel.jpg',        r: 100, colour: this.RED },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160, colour: this.BLUE },
         { topic: 'android',      image: 'android.png',      r: 90, colour: this.GREEN },
@@ -382,7 +400,7 @@ CLASS({
       }
 
       for ( var i = 0 ; i < this.topics.length ; i++ ) {
-        var colour = this.COLOURS[i % this.COLOURS.length];
+        var colour = this.COLORS[i % this.COLORS.length];
         var t = this.topics[i];
         var c = this.X.lookup(t.model).create({
           r: 20 + Math.random() * 50,
@@ -405,7 +423,7 @@ CLASS({
 
       var N = this.n;
       for ( var i = 0 ; i < N ; i++ ) {
-        var colour = this.COLOURS[i % this.COLOURS.length];
+        var colour = this.COLORS[i % this.COLORS.length];
         var c = this.Bubble.create({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
@@ -415,14 +433,14 @@ CLASS({
         });
         this.addChild(c);
 
-        c.mass = c.r/50;
+        c.mass = c.r/150;
         c.gravity = 0.025;
-        c.friction = 0.96;
+        c.friction = 0.94;
         this.collider.add(c);
       }
 
-      for ( var i = 0 ; i < 200 ; i++ ) {
-        var b = this.PhysicalCircle.create({
+      for ( var i = 0 ; i < 100 ; i++ ) {
+        var b = this.AirBubble.create({
           r: 6,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
@@ -435,15 +453,15 @@ CLASS({
         });
 
         b.y$.addListener(function(b) {
-          if ( b.y < 1 ) {
+          if ( b.y < -5 ) {
             b.y = this.height;
             b.x = this.width * Math.random();
           }
         }.bind(this, b));
 
         b.vy = -4;
-        b.gravity = -0.1;
-        b.friction = 0.9;
+        b.gravity = -0.4;
+        b.friction = 0.8;
         this.collider.add(b);
 
         this.addChild(b);
