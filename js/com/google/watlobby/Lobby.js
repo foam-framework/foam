@@ -304,6 +304,7 @@ CLASS({
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
     'foam.demos.ClockView',
+    'foam.demos.graphics.Logo',
     'foam.demos.physics.PhysicalCircle',
     'foam.physics.PhysicsEngine as Collider',
     'foam.util.Timer'
@@ -358,7 +359,8 @@ CLASS({
         { topic: 'android',      image: 'android.png',      r: 90, colour: this.GREEN },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180, colour: this.BLUE },
-        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: 'darkblue' },
+//        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: 'darkblue' },
+        { topic: 'foam',         image: 'foam.png',         r: 100, colour: this.RED },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100, model: 'com.google.watlobby.VideoBubble' },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
@@ -415,9 +417,9 @@ CLASS({
         if ( t.colour ) c.border = t.colour;
         this.addChild(c);
 
-        c.mass = c.r/50;
-        c.gravity = 0.025;
-        c.friction = 0.96;
+        c.mass = c.r/150;
+        c.gravity = 0.03;
+        c.friction = 0.94;
         this.collider.add(c);
       }
 
@@ -434,7 +436,7 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/150;
-        c.gravity = 0.025;
+        c.gravity = 0.03;
         c.friction = 0.94;
         this.collider.add(c);
       }
@@ -473,7 +475,6 @@ CLASS({
 
       var clock = this.ClockView.create({x: this.width-70, y: 70, r: 60});
       this.addChild(clock);
-
       this.collider.start();
     },
 
