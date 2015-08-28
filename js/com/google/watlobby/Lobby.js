@@ -331,12 +331,12 @@ CLASS({
           var c1 = cs[i];
           this.updateChild(c1);
 
-          if ( c1.r !== 5 ) {
+          if ( ! com.google.watlobby.AirBubble.isInstance(c1) ) {
             // Bounce on Walls
             var r = c1.r * 1.2;
             if ( c1.x < r     ) { c1.vx += 0.2; c1.vy -= 0.19; }
             if ( c1.x > w - r ) { c1.vx -= 0.2; c1.vy += 0.19; }
-            if ( c1.y < r && ! com.google.watlobby.AirBubble.isInstance(c1) ) { c1.vy += 0.2; c1.vx += 0.19; }
+            if ( c1.y < r     ) { c1.vy += 0.2; c1.vx += 0.19; }
             if ( c1.y > h - r ) { c1.vy -= 0.2; c1.vx -= 0.19; }
 
             for ( var j = i+1 ; j < cs.length ; j++ ) {
