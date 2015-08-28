@@ -47,7 +47,7 @@ CLASS({
     { name: 'topic' },
     { name: 'image' },
     { name: 'roundImage' },
-    { name: 'borderWidth', defaultValue: 8 },
+    { name: 'borderWidth', defaultValue: 10 },
     { name: 'color',       defaultValue: 'white' },
     { name: 'ring' }
   ],
