@@ -31,7 +31,6 @@ CLASS({
       name: 'appConfig',
       help: 'The configuration for app parameters, question set, etc.',
       postSet: function(old,nu) {
-        console.log("controller listening for appConfig", nu.name_, nu.$UID);
         if ( old ) {
           old.model$.removeListener(this.configChange);
         }
@@ -46,14 +45,6 @@ CLASS({
       help: 'The store of questionnaires filled in by users.',
       lazyFactory: function() {
         return this.appConfig.dao.factory(this.Y);
-//         return this.EasyDAO.create({
-//           model: this.Questionnaire,
-//           name: 'questionnaires',
-//           daoType: this.IDBDAO,
-//           cache: true,
-//           seqNo: true,
-//           logging: true,
-//         });
       }
     },
     {
@@ -70,8 +61,6 @@ CLASS({
     {
       name: 'configChange',
       code: function(topic, old, nu) {
-        console.log('QController appconfig change', this.appConfig.$UID, this.appConfig.model.$UID);
-        //this.content = this.appConfig.model.create({}, this.Y);
         if ( old ) old.removeListener(this.modelChange);
         if ( nu ) nu.addListener(this.modelChange);
         this.modelChange();
@@ -80,7 +69,6 @@ CLASS({
     {
       name: 'modelChange',
       code: function(topic, old, nu) {
-        console.log('QController appconfig model change',this.appConfig.$UID, this.appConfig.model.$UID);
         this.appConfig.model.instance_.prototype_ = null; // rebuild changes to model
         this.content = this.appConfig.model.create({}, this.Y);
         this.updateHTML();

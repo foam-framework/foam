@@ -14,6 +14,10 @@ CLASS({
   name: 'AppWizard',
   extendsModel: 'foam.apps.builder.wizard.WizardPage',
 
+  imports: [
+    'selection$',
+  ],
+
   requires: [
     'foam.apps.builder.questionnaire.NewDAOWizard',
     'foam.apps.builder.questionnaire.NewOrExistingDAOWizard',
@@ -32,6 +36,12 @@ CLASS({
     },
   ],
 
+  methods: [
+    function onNext() {
+      this.SUPER(); // puts the app into the main dao
+      this.selection = this.data; // imported selection from browser's main list
+    }
+  ],
 
   templates: [
    

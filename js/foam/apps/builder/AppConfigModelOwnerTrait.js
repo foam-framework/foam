@@ -55,8 +55,6 @@ CLASS({
         this.resetModel();
       },
       preSet: function(old,nu) {
-        console.log('AppConfig model set', old && old.$UID, '>', nu && nu.$UID)
-        console.assert(!nu || nu.name_ !== 'BooleanProperty', "Bool prop assigned instead of model");
         if ( ! nu ) return old;
         if ( old ) this.defaultModel_ = false; // it's been set at least once
         return nu;
@@ -74,32 +72,18 @@ CLASS({
     {
       name: 'modelChange',
       code: function() {
-        console.log('AppConfig',this.$UID,'model inner change', this.model.$UID)
         this.propertyChange('model', null, this.model);
       }
     }
   ],
 
   methods: [
-    function init() {
-      console.log('AppConfig init',this.$UID);
-    },
     function resetModel() {
       this.model = this.Model.create({
         extendsModel: this.baseModelId,
         name: capitalize(camelize(this.appName)),
       });
       this.defaultModel_ = true;
-    },
-    function clone() {
-      var ret =  this.SUPER();
-      console.log('appconfig clone', this.$UID, ret.$UID);
-      return ret;
-    },
-    function deepClone() {
-      var ret =  this.SUPER();
-      console.log('appconfig deepClone', this.$UID, ret.$UID);
-      return ret;
     },
   ],
 

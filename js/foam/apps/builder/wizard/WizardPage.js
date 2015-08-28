@@ -28,12 +28,6 @@ CLASS({
 
   properties: [
     {
-      name: 'data',
-      postSet: function(old,nu) {
-        console.log("wp", this.name_, "data change", old && old.name_, old && old.$UID, ">", nu && nu.name_, nu && nu.$UID);
-      }
-    },
-    {
       model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'nextViewFactory',
       postSet: function(old,nu) {

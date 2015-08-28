@@ -44,7 +44,6 @@ CLASS({
   methods: [
     function onNext() {
       this.modelDAO && this.modelDAO.put(this.data.model);
-      console.log("ModelWiz appconfig", this.data.$UID);
       this.SUPER();
     }
   ],

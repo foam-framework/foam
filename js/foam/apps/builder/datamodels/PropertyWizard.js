@@ -25,12 +25,6 @@ CLASS({
       name: 'nextViewFactory',
       defaultValue: null,
     },
-    {
-      name: 'data',
-      postSet: function(old,nu) {
-        console.log("propertyWizard data change", old && old.name_, nu && nu.name_);
-      }
-    }
   ],
 
   actions: [
