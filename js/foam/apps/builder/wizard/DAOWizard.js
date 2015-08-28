@@ -28,9 +28,10 @@ CLASS({
   properties: [
     {
       name: 'nextViewFactory',
-      defaultValue: {
-        factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
-      },
+      defaultValue: null,
+      // {
+//         factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
+//},
     },
     {
       name: 'title',

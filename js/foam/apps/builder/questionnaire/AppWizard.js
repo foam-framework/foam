@@ -16,6 +16,7 @@ CLASS({
 
   imports: [
     'selection$',
+    'wizardStack',
   ],
 
   requires: [
@@ -34,9 +35,21 @@ CLASS({
       name: 'title',
       defaultValue: 'Name your Questionnaire',
     },
+    {
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
+      name: 'modelViewFactory',
+      defaultValue: {
+        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+      },
+    },
   ],
 
   methods: [
+    function init() {
+      this.wizardStack.push(this.modelViewFactory);
+      this.SUPER();
+    },
+    
     function onNext() {
       this.SUPER(); // puts the app into the main dao
       this.selection = this.data; // imported selection from browser's main list

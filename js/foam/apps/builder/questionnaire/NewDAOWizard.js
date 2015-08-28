@@ -22,17 +22,16 @@ CLASS({
   properties: [
     {
       name: 'nextViewWithConfig',
-      label: 'Next: Data Source Settings',
       defaultValue: {
         factory_: 'foam.apps.builder.questionnaire.DAOWizard',
       },
     },
     {
       name: 'nextViewNoConfig',
-      label: 'Next: Create the Questions',
-      defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-      },
+      defaultValue: null,
+      // {
+//         factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+//},
     },
     {
       name: 'title',

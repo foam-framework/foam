@@ -21,9 +21,10 @@ CLASS({
   properties: [
     {
       name: 'nextViewFactory',
-      defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-      },
+      defaultValue: null,
+      // {
+//         factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+//       },
     },
     {
       name: 'title',

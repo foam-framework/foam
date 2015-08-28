@@ -33,7 +33,6 @@ CLASS({
     {
       model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'nextViewWithConfig',
-      label: 'Next: Data Source Settings',
       defaultValue: {
         factory_: 'foam.apps.builder.wizard.DAOWizard',
       },
@@ -41,10 +40,10 @@ CLASS({
     {
       model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'nextViewNoConfig',
-      label: 'Next: Create the Data Model',
-      defaultValue: {
-        factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
-      },
+      defaultValue: null,
+      // {
+      //   factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
+      //},
     },
     {
       name: 'daoDescriptor',

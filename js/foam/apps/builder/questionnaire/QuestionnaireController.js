@@ -60,7 +60,7 @@ CLASS({
   listeners: [
     {
       name: 'configChange',
-      code: function(topic, old, nu) {
+      code: function(obj, topic, old, nu) {
         if ( old ) old.removeListener(this.modelChange);
         if ( nu ) nu.addListener(this.modelChange);
         this.modelChange();
@@ -68,7 +68,7 @@ CLASS({
     },
     {
       name: 'modelChange',
-      code: function(topic, old, nu) {
+      code: function(obj, topic, old, nu) {
         this.appConfig.model.instance_.prototype_ = null; // rebuild changes to model
         this.content = this.appConfig.model.create({}, this.Y);
         this.updateHTML();

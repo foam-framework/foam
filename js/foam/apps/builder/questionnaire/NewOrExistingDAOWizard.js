@@ -22,15 +22,14 @@ CLASS({
   properties: [
     {
       name: 'newViewFactory',
-      label: 'Create a new Data Source',
       defaultValue: { factory_: 'foam.apps.builder.questionnaire.NewDAOWizard' },
     },
     {
       name: 'existingViewFactory',
-      label: 'Use an existing Data Source',
-      defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-      },
+      defaultValue: null,
+      // defaultValue: {
+//         factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+//       },
     },
     {
       name: 'title',
