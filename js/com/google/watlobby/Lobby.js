@@ -400,7 +400,7 @@ CLASS({
       }
 
       for ( var i = 0 ; i < this.topics.length ; i++ ) {
-        var colour = this.COLOURS[i % this.COLOURS.length];
+        var colour = this.COLORS[i % this.COLORS.length];
         var t = this.topics[i];
         var c = this.X.lookup(t.model).create({
           r: 20 + Math.random() * 50,
@@ -423,7 +423,7 @@ CLASS({
 
       var N = this.n;
       for ( var i = 0 ; i < N ; i++ ) {
-        var colour = this.COLOURS[i % this.COLOURS.length];
+        var colour = this.COLORS[i % this.COLORS.length];
         var c = this.Bubble.create({
           r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
