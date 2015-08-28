@@ -79,7 +79,7 @@ CLASS({
           $$appName
           $$version
         </div>
-        <div class="flex-row">
+        <div class="flex-row-wrap">
           $$data{ model_: 'foam.apps.builder.ModelSummaryView' }
           $$data{ model_: 'foam.apps.builder.DAOSummaryView' }
         </div>
@@ -95,7 +95,16 @@ CLASS({
         flex-direction: column;
         flex-grow: 1;
       }
-
+      designer.questionnaire-designer .flex-row-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+      }
+      designer.questionnaire-designer .flex-row-wrap > * {
+        flex-grow: 1;
+      }
+      
       designer.questionnaire-designer .flex-row {
         display: flex;
         flex-direction: row;

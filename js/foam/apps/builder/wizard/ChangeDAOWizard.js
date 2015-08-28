@@ -23,7 +23,9 @@ CLASS({
     },
     {
       name: 'nextViewFactory',
-      lazyFactory: function() { return this.editViewFactory; },
+      lazyFactory: function() { 
+        return ( this.data.dao && this.data.dao.requiresUserConfiguration ) ?
+           this.editViewFactory : this.newViewFactory; },
     },
   ],
 

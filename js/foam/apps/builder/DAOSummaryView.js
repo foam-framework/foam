@@ -22,8 +22,8 @@ CLASS({
     {
       name: 'edit',
       label: 'Change',
-      width: 100,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAZ0lEQVR4AdXOrQ2AMBRF4bMc/zOUOSrYoYI5cQQwpAieQDW3qQBO7Xebxx8bWAk5/CASmRHzRHtB+d0Bkw0W5ZiT0SYbFcl6u/2eeJHbxIHOhWO6Er6/y9syXpMul5PLefAGKZ1/rwtTimwbWLpiCgAAAABJRU5ErkJggg==',
+      ligature: 'edit',
       code: function() {
         var view = this.WizardStackView.create({
               firstPage: {
@@ -35,38 +35,51 @@ CLASS({
     },
   ],
 
+  properties: [
+    {
+      name: 'className',
+      defaultValue: 'md-dao-picker-view',
+    },
+    {
+      name: 'dao'
+    },
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        if (nu) this.dao = nu.dao;
+      }
+    },
+  ],
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-picker-view-name">
-          <div class="md-model-picker-view-edit md-style-trait-standard">
-            $$dao{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false, inlineStyle: true }
-          </div>
-          <div class="md-model-picker-view-combo">
-            $$edit{ model_: 'foam.ui.md.FlatButton' }
-          </div>
+          <p class="md-style-trait-standard">Data Source:</p>
+          $$dao{ model_: 'foam.apps.builder.dao.DAOFactoryView' }
+          $$edit{ color: 'white' }
         </div>
       </div>
     */},
     function CSS() {/*
-      .md-model-picker-view {
+      .md-dao-picker-view {
+        margin: 16px;
+        padding: 8px;
+        background: #77F;
+        box-shadow: 0px 2px 4px #999;
+        color: white;
       }
       .md-model-picker-view-name {
-        display: flex;
         align-items: baseline;
+        display: flex;
+        flex-direction: row;
       }
-      .md-model-picker-view-title {
-        font-size: 120%;
-        color: #999;
+      .md-model-picker-view-name .md-button {
+        margin: 0px;
       }
-      .md-model-picker-view-edit {
-        flex-grow: 0;
-        padding-right: 24px;
-      }
-      .md-model-picker-view-combo {
-        min-width: 200px;
-      }
+      .md-model-picker-view-name > :nth-child(1){ min-width: 8em; flex-grow: 0;}
+      .md-model-picker-view-name > :nth-child(2){ min-width: 12em; flex-grow: 1; }
+      .md-model-picker-view-name > :nth-child(3){ flex-grow: 0; align-self: flex-start; }
     */},
   ],
 

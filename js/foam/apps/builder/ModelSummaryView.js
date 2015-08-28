@@ -24,6 +24,7 @@ CLASS({
       label: 'Change',
       width: 100,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAZ0lEQVR4AdXOrQ2AMBRF4bMc/zOUOSrYoYI5cQQwpAieQDW3qQBO7Xebxx8bWAk5/CASmRHzRHtB+d0Bkw0W5ZiT0SYbFcl6u/2eeJHbxIHOhWO6Er6/y9syXpMul5PLefAGKZ1/rwtTimwbWLpiCgAAAABJRU5ErkJggg==',
+      ligature: 'edit',
       code: function() {
         var view = this.WizardStackView.create({
               firstPage: {
@@ -35,37 +36,39 @@ CLASS({
     },
   ],
 
-
+  properties: [
+    {
+      name: 'className',
+      defaultValue: 'md-model-picker-view',
+    },
+    {
+      name: 'model'
+    },
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        if (nu) this.model = nu.model;
+      }
+    }
+  ],
+  
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-picker-view-name">
-          <div class="md-model-picker-view-edit md-style-trait-standard">
-            $$model{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false, inlineStyle: true }
-          </div>
-          <div class="md-model-picker-view-combo">
-            $$edit{ model_: 'foam.ui.md.FlatButton' }
-          </div>
+          <p class="md-style-trait-standard">Data Model:</p>
+          $$model{ model_: 'foam.apps.builder.datamodels.ModelCitationView' }
+          $$edit{ color: 'white' }
         </div>
       </div>
     */},
     function CSS() {/*
       .md-model-picker-view {
-      }
-      .md-model-picker-view-name {
-        display: flex;
-        align-items: baseline;
-      }
-      .md-model-picker-view-title {
-        font-size: 120%;
-        color: #999;
-      }
-      .md-model-picker-view-edit {
-        flex-grow: 0;
-        padding-right: 24px;
-      }
-      .md-model-picker-view-combo {
-        min-width: 200px;
+        margin: 16px;
+        padding: 8px;
+        background: #D33;
+        box-shadow: 0px 2px 4px #999;
+        color: white;
       }
     */},
   ],

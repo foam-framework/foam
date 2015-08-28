@@ -232,7 +232,6 @@ input[name=q]::-webkit-input-placeholder {
 .md-button {
   padding: 8px;
   margin: 8px;
-  height: 36px;
 }
 
 .md-button.raised {
@@ -241,6 +240,7 @@ input[name=q]::-webkit-input-placeholder {
 
 .md-button:not(.icon-only) {
   min-width: 64px;
+  height: 36px;
 }
 
 .md-button .md-button-label {
