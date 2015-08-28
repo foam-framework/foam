@@ -104,7 +104,7 @@ CLASS({
     */},
     function CSS() {/*
       app-body {
-
+        overflow-y: auto;
       }
     */},
   ]

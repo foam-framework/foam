@@ -97,6 +97,7 @@ CLASS({
       designer.questionnaire-designer .flex-row {
         display: flex;
         flex-direction: row;
+        flex-shrink: 0;
       }
       designer.questionnaire-designer .flex-row :first-child {
         flex-grow: 1;
