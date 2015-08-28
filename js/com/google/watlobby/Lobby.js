@@ -401,6 +401,16 @@ CLASS({
         this.timer.start();
       }
 
+      this.addTopicBubbles();
+      this.addBubbles();
+      this.addAirBubbles();
+
+      var clock = this.ClockView.create({x: this.width-70, y: 70, r: 60});
+      this.addChild(clock);
+      this.collider.start();
+    },
+
+    function addTopicBubbles() {
       for ( var i = 0 ; i < this.topics.length ; i++ ) {
         var colour = this.COLORS[i % this.COLORS.length];
         var t = this.topics[i];
@@ -422,7 +432,9 @@ CLASS({
         c.friction = 0.94;
         this.collider.add(c);
       }
+    },
 
+    function addBubbles() {
       var N = this.n;
       for ( var i = 0 ; i < N ; i++ ) {
         var colour = this.COLORS[i % this.COLORS.length];
@@ -440,7 +452,9 @@ CLASS({
         c.friction = 0.94;
         this.collider.add(c);
       }
+    },
 
+    function addAirBubbles() {
       for ( var i = 0 ; i < 100 ; i++ ) {
         var b = this.AirBubble.create({
           r: 6,
@@ -472,10 +486,6 @@ CLASS({
        document.body.addEventListener('click', this.onClick);
 
       }
-
-      var clock = this.ClockView.create({x: this.width-70, y: 70, r: 60});
-      this.addChild(clock);
-      this.collider.start();
     },
 
     function destroy() {
