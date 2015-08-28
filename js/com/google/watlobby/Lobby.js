@@ -286,10 +286,18 @@ CLASS({
 
 CLASS({
   package: 'com.google.watlobby',
+  name: 'AirBubble',
+  extendsModel: 'foam.demos.physics.PhysicalCircle'
+});
+
+
+CLASS({
+  package: 'com.google.watlobby',
   name: 'Lobby',
   extendsModel: 'foam.graphics.CView',
 
   requires: [
+    'com.google.watlobby.AirBubble',
     'com.google.watlobby.Bubble',
     'com.google.watlobby.PhotoAlbumBubble',
     'com.google.watlobby.Topic',
@@ -334,7 +342,7 @@ CLASS({
             var r = c1.r * 1.2;
             if ( c1.x < r     ) { c1.vx += 0.2; c1.vy -= 0.19; }
             if ( c1.x > w - r ) { c1.vx -= 0.2; c1.vy += 0.19; }
-            if ( c1.y < r     ) { c1.vy += 0.2; c1.vx += 0.19; }
+            if ( c1.y < r && ! com.google.watlobby.AirBubble.isInstance(c1) ) { c1.vy += 0.2; c1.vx += 0.19; }
             if ( c1.y > h - r ) { c1.vy -= 0.2; c1.vx -= 0.19; }
 
             for ( var j = i+1 ; j < cs.length ; j++ ) {
@@ -431,14 +439,14 @@ CLASS({
         });
         this.addChild(c);
 
-        c.mass = c.r/50;
+        c.mass = c.r/150;
         c.gravity = 0.025;
-        c.friction = 0.96;
+        c.friction = 0.94;
         this.collider.add(c);
       }
 
-      for ( var i = 0 ; i < 200 ; i++ ) {
-        var b = this.PhysicalCircle.create({
+      for ( var i = 0 ; i < 100 ; i++ ) {
+        var b = this.AirBubble.create({
           r: 6,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
@@ -451,15 +459,15 @@ CLASS({
         });
 
         b.y$.addListener(function(b) {
-          if ( b.y < 1 ) {
+          if ( b.y < -5 ) {
             b.y = this.height;
             b.x = this.width * Math.random();
           }
         }.bind(this, b));
 
         b.vy = -4;
-        b.gravity = -0.1;
-        b.friction = 0.9;
+        b.gravity = -0.4;
+        b.friction = 0.8;
         this.collider.add(b);
 
         this.addChild(b);
