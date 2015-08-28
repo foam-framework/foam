@@ -69,13 +69,13 @@ CLASS({
         function() {
           circle.x = circle.x + Math.random()*200-100;
           circle.alpha = 0;
-          circle.y = Y - 100 - Math.random() * 50;
+          circle.y = Math.random() * 50;
           circle.r = 25 + Math.random() * 50;
           circle.borderWidth = 8;
         },
         Movement.easeIn(0.5),
         (function() {
-          if ( this.timer.isStarted ) this.removeChild(circle);
+          if ( this.timer.isStarted ) this.removeChild(circle); else circle.alpha = 0.8;
         }).bind(this))();
     }
   }
