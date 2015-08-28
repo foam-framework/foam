@@ -30,7 +30,7 @@ CLASS({
 
         for ( var j = 0; j < trait.properties.length; j++ ) {
           var traitProp = trait.properties[j];
-          
+
           for ( var k = 0; k < properties.length; k++ ) {
             var prop = properties[k];
             if ( prop.name === traitProp.name ) {
@@ -48,10 +48,10 @@ CLASS({
       return model;
     },
       function generate(model) {
-        return this.swiftSource.call(this.prepModel(model));
+        return this.swiftSource.call(this.prepModel(model), undefined, this);
       },
       function genDetailView(model) {
-        return this.detailView.call(this.prepModel(model));
+        return this.detailView.call(this.prepModel(model), undefined, this);
       },
   ],
 
@@ -132,8 +132,7 @@ if ( this.implements.length > 0 ) {
   } %>
     }
 
-<% if ( false ) { for ( var i = 0 ; i < this.methods.length ; i++ ) {
-console.log(this.methods[i]);
+<% if ( true ) { for ( var i = 0 ; i < this.methods.length ; i++ ) {
   util.methodSource.call(this.methods[i], out, util);
 }
 }%>
@@ -211,7 +210,7 @@ class Abstract<%= this.name %>DetailView: UIViewController {
   ]
 })
 
-/* 
+/*
 
 <%  if ( this.properties.length > 0 ) { %>
         self.<%= this.properties[0].name %>View.view.setTranslatesAutoresizingMaskIntoConstraints(false)
