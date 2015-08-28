@@ -36,7 +36,10 @@ CLASS({
 
   extendsModel: 'foam.demos.physics.PhysicalCircle',
 
-  requires: [ 'foam.graphics.ImageCView' ],
+  requires: [
+    'foam.graphics.Circle',
+    'foam.graphics.ImageCView',
+  ],
 
   imports: [ 'lobby' ],
 
@@ -45,7 +48,8 @@ CLASS({
     { name: 'image' },
     { name: 'roundImage' },
     { name: 'borderWidth', defaultValue: 8 },
-    { name: 'color',       defaultValue: 'white' }
+    { name: 'color',       defaultValue: 'white' },
+    { name: 'ring' }
   ],
 
   methods: [
@@ -56,6 +60,13 @@ CLASS({
         var img = this.ImageCView.create({src: this.image});
         this.addChild(img);
         this.img = img;
+      }
+      // For roundImages we want to draw the border above our children to
+      // hide any blending issues at the border. To do this we add another
+      // Circle child.
+      if ( this.roundImage ) {
+        this.ring = this.Circle.create({color: null});
+        this.addChild(this.ring);
       }
     },
     function setSelected(selected) {
@@ -83,12 +94,18 @@ CLASS({
         }.bind(this), Movement.easy)();
       }
     },
-    function paintSelf() {
+    function paintChildren() {
+      if ( this.ring ) {
+        this.ring.r = this.r;
+        this.ring.borderWidth = this.borderWidth;
+        this.ring.border = this.border;
+      }
+
       if ( this.image ) {
         var d, s;
         if ( this.roundImage ) {
-          d = 2 * this.r;
-          s = -this.r;
+          d = 2 * this.r + 6;
+          s = -this.r - 3;
         } else {
           d = 2 * this.r * Math.SQRT1_2;
           s = -this.r * Math.SQRT1_2;
@@ -287,12 +304,11 @@ CLASS({
   exports: [ 'as lobby' ],
 
   constants: {
-//    COLOURS: ['#33f','#f00','#fc0', '#3c0']
-    RED:    'rgb(219,68,55)',
-    GREEN:  'rgb(15,157,88)',
-    BLUE:   'rgb(66,133,244)',
-    YELLOW: 'rgb(244,180,0)',
-    COLOURS: ['rgb(66,133,244)','rgb(219,68,55)','rgb(244,180,0)', 'rgb(15,157,88)']
+    RED:    '#EA4335',
+    GREEN:  '#34A853',
+    BLUE:   '#4285F4',
+    YELLOW: '#FBBC05',
+    COLOURS: [ '#EA4335', '#34A853', '#4285F4', '#FBBC05' ]
   },
 
   properties: [
