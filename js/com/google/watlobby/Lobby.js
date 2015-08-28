@@ -343,8 +343,8 @@ CLASS({
 
             // Add Coriolis Effect
             var a = Math.atan2(c1.y-h/2, c1.x-w/2);
-            c1.applyMomentum(c1.mass/4, a+Math.PI/2);
-            c1.applyMomentum(c1.mass/20, a);
+            // The 0.9 gives it a slight outward push
+            c1.applyMomentum(c1.mass/4, a+0.9*Math.PI/2);
 
             for ( var j = i+1 ; j < cs.length ; j++ ) {
               var c2 = cs[j];
@@ -439,7 +439,7 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/150;
-        c.gravity = 0.03;
+        c.gravity = 0;
         c.friction = 0.94;
         this.collider.add(c);
       }
@@ -459,7 +459,7 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/150;
-        c.gravity = 0.03;
+        c.gravity = 0;
         c.friction = 0.94;
         this.collider.add(c);
       }
@@ -487,7 +487,7 @@ CLASS({
         }.bind(this, b));
 
         b.vy = -4;
-        b.gravity = -0.4;
+        b.gravity = 0;
         b.friction = 0.8;
         this.collider.add(b);
 
