@@ -382,7 +382,7 @@ CLASS({
       name: 'onClick',
       code: function(evt) {
         var self = this;
-        // console.log('********************* onClick', evt);
+        console.log('********************* onClick', evt);
         var child = this.collider.findChildAt(evt.clientX, evt.clientY);
         if ( child === this.selected ) return;
 
@@ -411,6 +411,8 @@ CLASS({
       this.addTopicBubbles();
       this.addBubbles();
       this.addAirBubbles();
+
+      document.body.addEventListener('click', this.onClick);
 
       var foam = this.ImageCView.create({x: 10, y: this.height-80, width: 200, height: 66, src: 'foampowered.png'});
       this.addChild(foam);
@@ -494,8 +496,6 @@ CLASS({
         this.addChild(b);
 
 //        this.view.$.addEventListener('click', this.onClick);
-       document.body.addEventListener('click', this.onClick);
-
       }
     },
 
