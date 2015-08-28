@@ -31,8 +31,14 @@ CLASS({
       name: 'appConfig',
       help: 'The configuration for app parameters, question set, etc.',
       postSet: function(old,nu) {
-        if ( old ) old.removeListener(this.modelChange);
-        if ( nu ) nu.addListener(this.modelChange);
+        console.log("controller listening for appConfig", nu.name_, nu.$UID);
+        if ( old ) {
+          old.model$.removeListener(this.configChange);
+        }
+        if ( nu ) {
+          nu.model$.addListener(this.configChange);          
+          this.configChange(null, null, nu.model);
+        }
       }
     },
     {
@@ -62,11 +68,24 @@ CLASS({
 
   listeners: [
     {
-      name: 'modelChange',
-      code: function() {
-        this.content = this.appConfig.model.create({}, this.Y);
+      name: 'configChange',
+      code: function(topic, old, nu) {
+        console.log('QController appconfig change', this.appConfig.$UID, this.appConfig.model.$UID);
+        //this.content = this.appConfig.model.create({}, this.Y);
+        if ( old ) old.removeListener(this.modelChange);
+        if ( nu ) nu.addListener(this.modelChange);
+        this.modelChange();
       }
-    }
+    },
+    {
+      name: 'modelChange',
+      code: function(topic, old, nu) {
+        console.log('QController appconfig model change',this.appConfig.$UID, this.appConfig.model.$UID);
+        this.appConfig.model.instance_.prototype_ = null; // rebuild changes to model
+        this.content = this.appConfig.model.create({}, this.Y);
+        this.updateHTML();
+      }
+    },
   ],
 
   actions: [

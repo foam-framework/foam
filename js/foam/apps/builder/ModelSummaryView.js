@@ -28,23 +28,13 @@ CLASS({
         var view = this.WizardStackView.create({
               firstPage: {
                 factory_: 'foam.apps.builder.wizard.ChangeModelWizard',
-                data: this.data,
+                data$: this.data$,
           }});
         view.open();
       }
     },
   ],
 
-  listeners: [
-    {
-      name: 'selectionChange',
-      code: function(obj, topic, old, nu) {
-        if (nu) {
-          this.data = nu;
-        }
-      }
-    }
-  ],
 
   templates: [
     function toHTML() {/*

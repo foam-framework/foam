@@ -28,16 +28,22 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old,nu) {
+        console.log("wp", this.name_, "data change", old && old.name_, old && old.$UID, ">", nu && nu.name_, nu && nu.$UID);
+      }
+    },
+    {
       model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'nextViewFactory',
       postSet: function(old,nu) {
-        this.nextView = ( nu ) ? nu({ data$: this.data$ }, this.Y) : null;
+        this.nextView = ( nu ) ? nu({ data$: this.data$ }, this.X) : null;
       }
     },
     {
       name: 'nextView',
       lazyFactory: function() {
-        return ( this.nextViewFactory ) ? this.nextViewFactory({ data$: this.data$ }, this.Y) : null;
+        return ( this.nextViewFactory ) ? this.nextViewFactory({ data$: this.data$ }, this.X) : null;
       },
       postSet: function(old,nu) {
         if ( old ) {
@@ -100,7 +106,7 @@ CLASS({
       },
       code: function() {
         this.onNext();
-        var X = this.Y;
+        var X = this.X;
         var nextV = this.nextView;
         if ( ! nextV ) {
           // no next view, so we're finished
