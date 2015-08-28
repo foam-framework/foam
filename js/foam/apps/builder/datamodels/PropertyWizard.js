@@ -29,7 +29,7 @@ CLASS({
 
   actions: [
     {
-      name: 'next',
+      name: 'nextAction',
       isAvailable: function() { return false; },
     },
     {

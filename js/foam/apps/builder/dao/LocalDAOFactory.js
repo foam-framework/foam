@@ -15,6 +15,8 @@ CLASS({
 
   extendsModel: 'foam.apps.builder.dao.DAOFactory',
 
+  label: 'Simple local storage on your device',
+
   requires: [
     'foam.dao.IDBDAO',
     'foam.dao.EasyDAO',

@@ -25,11 +25,15 @@ CLASS({
       name: 'nextViewFactory',
       defaultValue: null,
     },
+    {
+      name: 'title',
+      defaultValue: 'Preview',
+    },
   ],
 
   actions: [
     {
-      name: 'next',
+      name: 'nextAction',
       isAvailable: function() { return false; }
     },
     {
@@ -39,9 +43,7 @@ CLASS({
   ],
 
   templates: [
-    function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Preview</p>
-    */},
+
     function instructionHTML() {/*
         <p class="md-style-trait-standard">Here is a preview of
         <%= this.data.name %>

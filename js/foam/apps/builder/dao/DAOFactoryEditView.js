@@ -17,7 +17,9 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        No configuration is necessary for this Data Store.
+        <p class="md-style-trait-standard">
+          No configuration is necessary for this Data Store.
+        </p>
       </div>
     */},
     function CSS() {/*

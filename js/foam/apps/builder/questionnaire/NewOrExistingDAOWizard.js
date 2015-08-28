@@ -22,22 +22,23 @@ CLASS({
   properties: [
     {
       name: 'newViewFactory',
-      label: 'Create a new Data Source',
       defaultValue: { factory_: 'foam.apps.builder.questionnaire.NewDAOWizard' },
     },
     {
       name: 'existingViewFactory',
-      label: 'Use an existing Data Source',
-      defaultValue: {
-        factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
-      },
+      defaultValue: null,
+      // defaultValue: {
+//         factory_: 'foam.apps.builder.questionnaire.NewOrExistingModelWizard',
+//       },
+    },
+    {
+      name: 'title',
+      defaultValue: 'Choose a Data Source',
     },
   ],
 
   templates: [
-    function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Choose a Data Source</p>
-    */},
+
     function instructionHTML() {/*
         <p class="md-style-trait-standard">When a user completes their Questionnaire, it will
         be saved into a Data Source. This could be inside the tablet the user is holding,

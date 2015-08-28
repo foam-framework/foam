@@ -19,6 +19,10 @@ CLASS({
       name: 'className',
       defaultValue: 'dao-factory-view',
     },
+    {
+      name: 'myModelName',
+      defaultValueFn: function() { return this.data && this.data.model_.label; },
+    }
   ],
 
   templates: [
@@ -28,17 +32,16 @@ CLASS({
           $$name{ mode: 'read-only', floatingLabel: false }
         </div>
         <div class="dao-factory-description">
-          $$label{ mode: 'read-only', floatingLabel: false }
+          $$myModelName{ mode: 'read-only', floatingLabel: false }
         </div>
       </div>
     */},
     function CSS() {/*
       .dao-factory-view .dao-factory-title {
-        color: rgba(0,0,0,0.74);
-        font-weight: 500;
+
       }
       .dao-factory-view .dao-factory-description {
-        color: rgba(0,0,0,0.54);
+        opacity: 0.75;
       }
 
       .dao-factory-view.dao-selected {

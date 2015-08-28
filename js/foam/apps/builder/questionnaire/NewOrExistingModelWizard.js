@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.questionnaire.ModelWizard',
+    'foam.apps.builder.questionnaire.NewModelWizard',
     'foam.apps.builder.questionnaire.ModelPreviewWizard',
   ],
 
@@ -23,23 +24,25 @@ CLASS({
     {
       name: 'newViewFactory',
       label: 'Create a new Question Set',
-      defaultValue: { factory_: 'foam.apps.builder.questionnaire.ModelWizard' },
+      defaultValue: { factory_: 'foam.apps.builder.questionnaire.NewModelWizard' },
     },
     {
       name: 'existingViewFactory',
       label: 'Use existing Question Set',
-      defaultValue: null, //function() { },
+      defaultValue: null, // no-op function constant?
     },
     {
       name: 'editView',
       defaultValue: { factory_: 'foam.apps.builder.questionnaire.ModelPreviewWizard' },
     },
+    {
+      name: 'title',
+      defaultValue: 'Choose the Question Set',
+    },
   ],
 
   templates: [
-    function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Choose the Question Set</p>
-    */},
+
     function instructionHTML() {/*
         <p class="md-style-trait-standard">Create a new set of questions, or share
         an existing set of questions with one of your other Questionnaire Apps.

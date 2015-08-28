@@ -65,7 +65,7 @@ CLASS({
     },
     {
       name: 'nextViewFactory',
-      defaultValueFn: function() { return this.newViewFactory; },
+      lazyFactory: function() { return this.newViewFactory; },
     },
     {
       name: 'selection',
@@ -81,12 +81,12 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'editView',
       defaultValue: { factory_: 'foam.apps.builder.wizard.ModelPreviewWizard' },
     },
     {
-      model_: 'ViewFactoryProperty',
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'innerEditView',
       defaultValue: function() {},
     },

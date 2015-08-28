@@ -15,6 +15,7 @@ CLASS({
   extendsModel: 'foam.apps.builder.wizard.ChangeModelWizard',
 
   requires: [
+    'foam.apps.builder.questionnaire.NewModelWizard',
     'foam.apps.builder.questionnaire.ModelWizard',
     'foam.apps.builder.questionnaire.ModelPreviewWizard',
   ],
@@ -23,7 +24,7 @@ CLASS({
     {
       name: 'newViewFactory',
       label: 'Create a new Question Set',
-      defaultValue: { factory_: 'foam.apps.builder.questionnaire.ModelWizard' },
+      defaultValue: { factory_: 'foam.apps.builder.questionnaire.NewModelWizard' },
     },
     {
       name: 'editViewFactory',
@@ -39,12 +40,14 @@ CLASS({
       name: 'editView',
       defaultValue: { factory_: 'foam.apps.builder.questionnaire.ModelPreviewWizard' },
     },
+    {
+      name: 'title',
+      defaultValue: 'Change the Question Set',
+    },
   ],
 
   templates: [
-    function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Change the Question Set</p>
-    */},
+
     function instructionHTML() {/*
         <p class="md-style-trait-standard">Edit the current set of questions,
         Create a new set, or share

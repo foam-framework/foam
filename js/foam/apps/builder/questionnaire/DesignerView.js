@@ -24,6 +24,7 @@ CLASS({
     'foam.apps.builder.datamodels.ModelPickerView',
     'foam.apps.builder.dao.DAOPickerView',
     'foam.apps.builder.questionnaire.ChangeModelWizard',
+    'foam.apps.builder.questionnaire.ChangeDAOWizard',
   ],
 
   listeners: [
@@ -67,6 +68,7 @@ CLASS({
       this.SUPER();
       // ModelSummaryView will use this, redirect to Questionnaire version
       this.Y.registerModel(this.ChangeModelWizard, 'foam.apps.builder.wizard.ChangeModelWizard');
+      this.Y.registerModel(this.ChangeDAOWizard, 'foam.apps.builder.wizard.ChangeDAOWizard');
     }
   ],
 
@@ -77,9 +79,9 @@ CLASS({
           $$appName
           $$version
         </div>
-        <div class="flex-row">
+        <div class="flex-row-wrap">
           $$data{ model_: 'foam.apps.builder.ModelSummaryView' }
-          $$dao{   model_: 'foam.apps.builder.dao.DAOPickerView' }
+          $$data{ model_: 'foam.apps.builder.DAOSummaryView' }
         </div>
         <div class="preview-frame">
           $$data{ model_: 'foam.apps.builder.questionnaire.QuestionnaireView' }
@@ -93,10 +95,20 @@ CLASS({
         flex-direction: column;
         flex-grow: 1;
       }
-
+      designer.questionnaire-designer .flex-row-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+      }
+      designer.questionnaire-designer .flex-row-wrap > * {
+        flex-grow: 1;
+      }
+      
       designer.questionnaire-designer .flex-row {
         display: flex;
         flex-direction: row;
+        flex-shrink: 0;
       }
       designer.questionnaire-designer .flex-row :first-child {
         flex-grow: 1;
