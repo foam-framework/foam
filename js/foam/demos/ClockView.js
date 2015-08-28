@@ -21,8 +21,11 @@ CLASS({
 
   extendsModel: 'foam.graphics.Circle',
 
+  traits: [ 'com.google.misc.Colors' ],
+
   requires: [
-    'foam.graphics.Circle', 'foam.ui.IntFieldView'
+    'foam.graphics.Circle',
+    'foam.ui.IntFieldView'
   ],
 
   properties: [
@@ -35,34 +38,34 @@ CLASS({
     {
       name: 'color',
       type: 'String',
-      defaultValue: '#33f'
+      factory: function() { return this.BLUE; }
     },
     {
       name: 'white',
       type: 'foam.graphics.Circle',
       factory: function() {
-        return this.Circle.create({r:this.r-3,color:'white'});
+        return this.Circle.create({r:this.r-5, color:'white'});
       }
     },
     {
       name: 'minuteHand',
       type: 'Hand',
       factory: function() {
-        return this.Hand.create({r:this.r-6,width:5,color:'#fc0'});
+        return this.Hand.create({r:this.r-6, width:5, color:this.GREEN});
       }
     },
     {
       name: 'hourHand',
       type: 'Hand',
       factory: function() {
-        return this.Hand.create({r:this.r-15,width:7,color:'#3c0'});
+        return this.Hand.create({r:this.r-15, width:7, color: this.YELLOW});
       }
     },
     {
       name: 'secondHand',
       type: 'Hand',
       factory: function() {
-        return this.Hand.create({r:this.r-6,width:3,color:'#f00'});
+        return this.Hand.create({r:this.r-6, width:3, color: this.RED});
       }
     }
   ],

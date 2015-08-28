@@ -24,6 +24,6 @@ CLASS({
     GREEN:  '#34A853',
     BLUE:   '#4285F4',
     YELLOW: '#FBBC05',
-    COLOURS: [ '#EA4335', '#34A853', '#4285F4', '#FBBC05' ]
+    COLORS: [ '#EA4335', '#34A853', '#4285F4', '#FBBC05' ]
   }
 });

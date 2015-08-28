@@ -471,7 +471,7 @@ CLASS({
 
       }
 
-      var clock = this.ClockView.create({x:this.width-70,y:70, r:60});
+      var clock = this.ClockView.create({x: this.width-70, y: 70, r: 60});
       this.addChild(clock);
 
       this.collider.start();
