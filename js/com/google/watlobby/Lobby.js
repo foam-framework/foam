@@ -295,6 +295,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Lobby',
   extendsModel: 'foam.graphics.CView',
+  traits: [ 'com.google.misc.Colors' ],
 
   requires: [
     'com.google.watlobby.AirBubble',
@@ -310,14 +311,6 @@ CLASS({
 
   imports: [ 'timer' ],
   exports: [ 'as lobby' ],
-
-  constants: {
-    RED:    '#EA4335',
-    GREEN:  '#34A853',
-    BLUE:   '#4285F4',
-    YELLOW: '#FBBC05',
-    COLOURS: [ '#EA4335', '#34A853', '#4285F4', '#FBBC05' ]
-  },
 
   properties: [
     { name: 'timer' },
