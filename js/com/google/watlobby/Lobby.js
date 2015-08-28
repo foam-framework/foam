@@ -359,6 +359,7 @@ CLASS({
       return JSONUtil.arrayToObjArray(this.X, [
         { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: this.RED },
         { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: this.RED },
+        { topic: 'pixel',        image: 'pixel.jpg',        r: 100, colour: this.RED },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160, colour: this.BLUE },
         { topic: 'android',      image: 'android.png',      r: 90, colour: this.GREEN },
