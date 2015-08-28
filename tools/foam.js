@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-global.DEBUG = true;
-
 require('../core/bootFOAMnode.js');
 
 (function() {
