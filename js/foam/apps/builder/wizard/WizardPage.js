@@ -31,18 +31,19 @@ CLASS({
       model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'nextViewFactory',
       postSet: function(old,nu) {
-        this.nextView = ( nu ) ? nu({}, this.Y) : null;
+        this.nextView = ( nu ) ? nu({ data$: this.data$ }, this.Y) : null;
       }
     },
     {
       name: 'nextView',
       lazyFactory: function() {
-        return ( this.nextViewFactory ) ? this.nextViewFactory({}, this.Y) : null;
+        return ( this.nextViewFactory ) ? this.nextViewFactory({ data$: this.data$ }, this.Y) : null;
       },
       postSet: function(old,nu) {
         if ( old ) {
           Events.unfollow(old.title$, this.nextTitle$);
           old.destroy();
+          if ( old.$ ) old.$.outerHTML = '';
         }
         if ( nu ) {
           Events.follow(nu.title$, this.nextTitle$);

@@ -28,7 +28,7 @@ CLASS({
   properties: [
     {
       name: 'nextViewFactory',
-      defaultValue: function() { return this.nextViewNoConfig.apply(this, arguments); }
+      lazyFactory: function() { return this.nextViewNoConfig; },
     },
     {
       model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
