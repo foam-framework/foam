@@ -335,16 +335,16 @@ CLASS({
 
           if ( ! com.google.watlobby.AirBubble.isInstance(c1) ) {
             // Bounce on Walls
-            var r = c1.r * 1.2;
-            if ( c1.x < 2 * r     ) { c1.vx += 0.5; }
-            if ( c1.x > w - 2 * r ) { c1.vx -= 0.5; }
-            if ( c1.y < 2 * r     ) { c1.vy += 0.5; }
-            if ( c1.y > h - 2 * r ) { c1.vy -= 0.5; }
-
+            // Uses a gentle repel rather than a hard bounce, looks better
+            var r = c1.r * 2;
+            if ( c1.x < r     ) { c1.vx += 0.5; }
+            if ( c1.x > w - r ) { c1.vx -= 0.5; }
+            if ( c1.y < r     ) { c1.vy += 0.5; }
+            if ( c1.y > h - r ) { c1.vy -= 0.5; }
             // Add Coriolis Effect
             var a = Math.atan2(c1.y-h/2, c1.x-w/2);
-            // The 0.9 gives it a slight outward push
-            c1.applyMomentum(c1.mass/4, a+0.9*Math.PI/2);
+            // The 0.8 gives it a slight outward push
+            c1.applyMomentum(c1.mass/4, a+0.8*Math.PI/2);
 
             for ( var j = i+1 ; j < cs.length ; j++ ) {
               var c2 = cs[j];
