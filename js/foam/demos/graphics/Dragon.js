@@ -19,6 +19,7 @@ CLASS({
   package: 'foam.demos.graphics',
   name:  'Dragon',
   extendsModel: 'foam.graphics.CView',
+  traits: [ 'com.google.misc.Colors' ],
 
   requires: [
     'foam.demos.graphics.EyesCView',
@@ -26,10 +27,11 @@ CLASS({
     'foam.util.Timer'
   ],
   imports: [ 'timer' ],
-
+/*
   constants: {
-    COLOURS: ['#33f','#f00','#fc0','#33f','#3c0']
+    // COLOURS: ['#33f','#f00','#fc0','#33f','#3c0']
   },
+  */
 
   properties: [
     { name: 'i', defaultValue: 1 },
@@ -39,7 +41,7 @@ CLASS({
       type:  'EyesCView',
       paint: true,
       factory: function() {
-        return this.EyesCView.create({x:-45, y: -160, r: 25});
+        return this.EyesCView.create({x:-50, y: -160, r: 25});
       }
     },
     { name:  'color', defaultValue: 'red' },
@@ -83,13 +85,13 @@ CLASS({
     dot: function(r) {
       var c = this.canvas;
       c.beginPath();
-      c.fillStyle = this.COLOURS[this.i = (this.i + 1) % this.COLOURS.length];//'rgb(245,50,50)';
+      c.fillStyle = this.COLORS[this.i = (this.i + 1) % this.COLORS.length];//'rgb(245,50,50)';
       c.arc(0,0,r,0,Math.PI*2,true);
       c.fill();
     },
 
     tail: function(r, a) {
-      if ( r < 2 ) return;
+      if ( r < 1 ) return;
 
       var c = this.canvas;
       this.dot(r);
@@ -110,7 +112,7 @@ CLASS({
     },
 
     feather: function(r) {
-      if ( r < 0.9 ) return;
+      if ( r < 1 ) return;
 
       var c = this.canvas;
       this.dot(r);
@@ -155,7 +157,7 @@ CLASS({
         y: -this.r*6,
         color: 'white',
         borderWidth: 2,
-        border: this.COLOURS[Math.floor(Math.random() * this.COLOURS.length)]});
+        border: this.COLORS[Math.floor(Math.random() * this.COLORS.length)]});
 
       this.addChild(circle);
 
