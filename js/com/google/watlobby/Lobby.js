@@ -316,7 +316,7 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'n',          defaultValue: 30 },
+    { name: 'n',          defaultValue: 50 },
     { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
