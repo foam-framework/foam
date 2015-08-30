@@ -15,7 +15,7 @@ CLASS({
   extendsModel: 'foam.apps.builder.wizard.NewOrExistingWizard',
 
   requires: [
-    'foam.apps.builder.wizard.NewOrExistingModelWizard',
+    //'foam.apps.builder.wizard.NewOrExistingModelWizard',
     'foam.apps.builder.wizard.NewDAOWizard',
   ],
 
@@ -36,13 +36,14 @@ CLASS({
     {
       name: 'existingViewFactory',
       label: 'Use an existing Data Source',
-      defaultValue: {
-        factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
-      },
+      defaultValue: null,
+//       {
+//         factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
+//       },
     },
     {
       name: 'nextViewFactory',
-      defaultValueFn: function() { return this.newViewFactory; },
+      lazyFactory: function() { return this.newViewFactory; },
     },
     {
       name: 'selection',

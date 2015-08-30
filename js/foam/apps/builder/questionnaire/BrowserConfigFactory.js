@@ -51,7 +51,9 @@ CLASS({
               firstPage: {
                 factory_: 'foam.apps.builder.questionnaire.AppWizard',
                 data: newObj,
-          }}, X.sub({ dao: this.data.dao }));
+          }}, X.sub({ 
+            dao: this.data.dao,
+           }));
           view.open();
         },
         detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },

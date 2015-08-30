@@ -11,26 +11,28 @@
 
 CLASS({
   package: 'foam.apps.builder.wizard',
-  name: 'ChangeModelWizard',
-  extendsModel: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
+  name: 'ChangeDAOWizard',
+  extendsModel: 'foam.apps.builder.wizard.NewOrExistingDAOWizard',
 
   properties: [
     {
       model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'editViewFactory',
-      label: 'Edit the current Data Model',
-      defaultValue: { factory_: 'foam.apps.builder.wizard.ModelWizard' },
+      label: 'Edit the current Data Source',
+      defaultValue: { factory_: 'foam.apps.builder.wizard.DAOWizard' },
     },
     {
       name: 'nextViewFactory',
-      lazyFactory: function() { return this.editViewFactory; },
+      lazyFactory: function() { 
+        return ( this.data.dao && this.data.dao.requiresUserConfiguration ) ?
+           this.editViewFactory : this.newViewFactory; },
     },
   ],
 
   methods: [
     function onNext() {
       if ( this.nextViewFactory === this.newViewFactory ) {
-        this.data.resetModel();
+        this.data.resetDAO();
       }
       this.SUPER();
     }
@@ -39,13 +41,19 @@ CLASS({
   templates: [
     function contentHTML() {/*
       <div class="new-existing-wizard-dao-page">
-        $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
-          orientation: 'vertical',
-          choices: [
+        <% var choiceList = ( this.data.dao && this.data.dao.requiresUserConfiguration )  ?
+          [
             [this.editViewFactory, this.model_.EDIT_VIEW_FACTORY.label],
             [this.newViewFactory, this.model_.NEW_VIEW_FACTORY.label],
             [this.existingViewFactory, this.model_.EXISTING_VIEW_FACTORY.label ],
-          ]
+          ] :
+          [
+            [this.newViewFactory, this.model_.NEW_VIEW_FACTORY.label],
+            [this.existingViewFactory, this.model_.EXISTING_VIEW_FACTORY.label ],
+          ]; %>
+        $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
+          orientation: 'vertical',
+          choices: choiceList,
         }
         <% if ( this.existingDAO ) { %>
           <div id="<%= this.id %>-container">

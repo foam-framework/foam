@@ -59,8 +59,22 @@ CLASS({
         if ( old ) this.defaultModel_ = false; // it's been set at least once
         return nu;
       },
+      postSet: function(old,nu) {
+        if ( old ) old.removeListener(this.modelChange);
+        if ( nu ) nu.addListener(this.modelChange);
+        this.modelChange();
+      },
    },
 
+  ],
+
+  listeners: [
+    {
+      name: 'modelChange',
+      code: function() {
+        this.propertyChange('model', null, this.model);
+      }
+    }
   ],
 
   methods: [
@@ -70,7 +84,7 @@ CLASS({
         name: capitalize(camelize(this.appName)),
       });
       this.defaultModel_ = true;
-    }
+    },
   ],
 
 });
