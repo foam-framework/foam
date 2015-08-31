@@ -115,7 +115,7 @@ CLASS({
       }
       .md-summary-view-name > :nth-child(1){ margin: 8px; align-self: center;  flex-grow: 0;}
       .md-summary-view-name > :nth-child(2){ min-width: 12em; flex-grow: 1; }
-      .md-summary-view-name > :nth-child(3){ flex-grow: 0; align-self: flex-start; }
+      .md-summary-view-name > :nth-child(3){ flex-grow: 0; align-self: center; }
     */},
   ],
 

@@ -36,6 +36,7 @@ CLASS({
     {
       name: 'label',
       type: 'String',
+      defaultValueFn: function() { return this.prop && this.prop.label; }
     },
     {
       name: 'className',
@@ -130,7 +131,7 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         <span class="toggle-label noselect"><%# this.label %></span>
         <span class="toggle-text-indicator noselect"><%# this.data ? "ON" : "OFF" %></span>
-        <div id="<%=this.on('click', this.onClick)%>" class="toggle-outer noselect">
+        <div class="toggle-outer noselect">
           <span id="<%=this.id%>-background" class="toggle-background">
             <div class="toggle-lever"></div>
           </span>
@@ -140,6 +141,7 @@ CLASS({
         </div>
       </div>
       <%
+        this.on('click', this.onClick, this.id);
         this.setClass('toggledOn', function() { return !!self.data; },
             this.id + '-background');
         this.setClass('enabled', function() { return !!self.enabled; },

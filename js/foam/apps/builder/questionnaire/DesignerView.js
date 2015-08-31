@@ -80,8 +80,8 @@ CLASS({
           $$version
         </div>
         <div class="flex-row-wrap">
-          $$data{ model_: 'foam.apps.builder.ModelSummaryView' }
-          $$data{ model_: 'foam.apps.builder.DAOSummaryView' }
+          $$data{ model_: 'foam.apps.builder.datamodels.ModelSummaryView' }
+          $$data{ model_: 'foam.apps.builder.dao.DAOSummaryView' }
         </div>
         <div class="preview-frame">
           $$data{ model_: 'foam.apps.builder.questionnaire.QuestionnaireView' }

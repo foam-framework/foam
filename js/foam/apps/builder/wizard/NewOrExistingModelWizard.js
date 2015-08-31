@@ -61,7 +61,7 @@ CLASS({
     {
       name: 'existingViewFactory',
       label: 'Use existing Data Model',
-      defaultValue: null, //function() { },
+      defaultValue: null,
     },
     {
       name: 'nextViewFactory',
@@ -69,9 +69,6 @@ CLASS({
     },
     {
       name: 'selection',
-      postSet: function(old,nu) {
-        this.data.model = nu;
-      }
     },
     {
       name: 'existingDAO',
@@ -92,6 +89,12 @@ CLASS({
     },
   ],
 
+  methods: [
+    function onNext() {
+      this.SUPER();
+      if ( this.selection ) this.data.model = this.selection;
+    }
+  ],
 
 
 });
