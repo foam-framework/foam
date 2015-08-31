@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.demos.graphics',
   name:  'Dragon',
   extendsModel: 'foam.graphics.CView',
-  traits: [ 'com.google.misc.Colors' ],
+  traits: [ 'foam.ui.Colors' ],
 
   requires: [
     'foam.demos.graphics.EyesCView',
@@ -27,11 +27,6 @@ CLASS({
     'foam.util.Timer'
   ],
   imports: [ 'timer' ],
-/*
-  constants: {
-    // COLOURS: ['#33f','#f00','#fc0','#33f','#3c0']
-  },
-  */
 
   properties: [
     { name: 'i', defaultValue: 1 },
