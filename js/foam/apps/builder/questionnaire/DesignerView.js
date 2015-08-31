@@ -94,6 +94,8 @@ CLASS({
         display: flex;
         flex-direction: column;
         flex-grow: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
       designer.questionnaire-designer .flex-row-wrap {
         display: flex;
@@ -104,7 +106,7 @@ CLASS({
       designer.questionnaire-designer .flex-row-wrap > * {
         flex-grow: 1;
       }
-      
+
       designer.questionnaire-designer .flex-row {
         display: flex;
         flex-direction: row;
@@ -123,7 +125,24 @@ CLASS({
         display: flex;
         flex-direction: column;
         box-shadow: 0px 3px 4px #444;
+        overflow-y: hidden;
+        min-height: 400px;
       }
+
+      @media (min-width: 600px) {
+
+      }
+      @media (max-width: 600px) {
+        designer.questionnaire-designer .preview-frame {
+          margin: 0px;
+          border: 8px solid grey;
+          border-radius: 8px;
+        }
+
+
+      }
+
+
     */},
 
   ],

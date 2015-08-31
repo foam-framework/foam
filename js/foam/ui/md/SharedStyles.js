@@ -281,6 +281,13 @@ input[name=q]::-webkit-input-placeholder {
   padding: 24px;
 }
 
+@media (max-width: 600px) {
+  .md-card.md-popup-view-content, .md-popup-view-content {
+    padding: 0px;
+  }
+}
+
+
 .md-actions {
   display: flex;
 }
