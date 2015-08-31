@@ -37,6 +37,13 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old,nu) {
+        if ( old ) old.removeListener(this.refresh);
+        if ( nu ) nu.addListener(this.refresh);
+      }
+    },
+    {
       model_: 'StringProperty',
       name: 'wizardStartPageName',
     },
@@ -60,6 +67,17 @@ CLASS({
         height: 48,
       },
     },
+  ],
+
+  listeners: [
+    {
+      name: 'refresh',
+      code: function() { this.updateHTML(); },
+    }
+  ],
+
+  methods: [
+    function shouldDestroy() { return true; },
   ],
 
   templates: [

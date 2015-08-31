@@ -85,6 +85,8 @@ CLASS({
       .md-model-citation-view {
         display: flex;
         align-items: center;
+        transition: background-color 300ms ease;
+        background-color: transparent;
       }
       .md-model-citation-view-name {
         flex-grow: 1;
@@ -105,7 +107,7 @@ CLASS({
 
 
       .md-model-citation-view.dao-selected {
-        background: #eeeeee;
+        background-color: #eeeeee;
       }
 
     */},
