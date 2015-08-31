@@ -29,7 +29,7 @@ CLASS({
   methods: [
     function initHTML() {
       this.SUPER();
-      this.$.addEventListener('mousedown', this.resize);
+      this.$ && this.$.addEventListener('mousedown', this.resize);
     },
   ],
 

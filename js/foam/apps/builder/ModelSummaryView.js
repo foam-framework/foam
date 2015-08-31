@@ -21,6 +21,10 @@ CLASS({
 
   properties: [
     {
+      name: 'extraClassName',
+      defaultValue: 'model-summary-view',
+    },
+    {
       name: 'wizardStartPageName',
       defaultValue: 'foam.apps.builder.wizard.ChangeModelWizard',
     },
@@ -30,15 +34,15 @@ CLASS({
         return this.ModelCitationView.create({ data: this.data.model });
       }
     },
-//     {
-//       name: 'model'
-//     },
-//     {
-//       name: 'data',
-//       postSet: function(old,nu) {
-//         if (nu) this.model = nu.model;
-//       }
-//     }
   ],
+
+  templates: [
+    function CSS() {/*
+      .md-summary-view.model-summary-view {
+        background: #77F;
+      }
+    */},
+  ],
+
 
 });

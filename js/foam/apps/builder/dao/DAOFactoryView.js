@@ -28,20 +28,30 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="dao-factory-title">
-          $$name{ mode: 'read-only', floatingLabel: false }
-        </div>
-        <div class="dao-factory-description">
-          $$myModelName{ mode: 'read-only', floatingLabel: false }
+        <div class="dao-factory-container">
+          <div class="dao-factory-title md-style-trait-standard">
+            $$name{ model_: 'foam.ui.StringElideTextualView' }
+          </div>
+          <div class="dao-factory-description md-style-trait-standard">
+            $$myModelName{ model_: 'foam.ui.StringElideTextualView' }
+          </div>
         </div>
       </div>
     */},
     function CSS() {/*
-      .dao-factory-view .dao-factory-title {
-
+      .dao-factory-view {
+        display: flex;
+      }
+      .dao-factory-view .dao-factory-container {
+        flex-grow: 1;
+        width: 0;
       }
       .dao-factory-view .dao-factory-description {
         opacity: 0.75;
+        display: flex;
+      }
+      .dao-factory-view .dao-factory-title {
+        display: flex;
       }
 
       .dao-factory-view.dao-selected {

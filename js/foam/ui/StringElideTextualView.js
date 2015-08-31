@@ -17,25 +17,36 @@
 
 CLASS({
   package: 'foam.ui',
-  name: 'TextualView',
+  name: 'StringElideTextualView',
   extendsModel: 'foam.ui.View',
 
-  documentation: 'Extracts one property value as a string.',
+  documentation: 'Outputs a tag containing the raw string, with text ellipsis enabled.',
 
   properties: [
     {
       name: 'tagName',
-      defaultValue: 'span',
+      defaultValue: 'div',
     },
     {
-      model_: 'StringProperty',
-      name: 'propertyName',
-      defaultValue: 'name',
-      help: 'The name of the property to use, as in this.data[propertyName].',
+      name: 'className',
+      defaultValue: 'string-elide-textual-view',
     }
   ],
 
   templates: [
-    function toHTML() {/*<%= this.data[this.propertyName] %>*/},
+    function toInnerHTML() {/*<div class="elide-string"><%= this.data %></div>*/},
+    function CSS() {/*
+      .string-elide-textual-view {
+        width: 0;
+        flex-grow: 1;
+      }
+
+      .string-elide-textual-view .elide-string {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+      }
+    */},
   ]
 });

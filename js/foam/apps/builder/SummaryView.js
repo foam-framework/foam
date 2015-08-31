@@ -37,6 +37,13 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old,nu) {
+        if ( old ) old.removeListener(this.refresh);
+        if ( nu ) nu.addListener(this.refresh);
+      }
+    },
+    {
       model_: 'StringProperty',
       name: 'wizardStartPageName',
     },
@@ -62,6 +69,17 @@ CLASS({
     },
   ],
 
+  listeners: [
+    {
+      name: 'refresh',
+      code: function() { this.updateHTML(); },
+    }
+  ],
+
+  methods: [
+    function shouldDestroy() { return true; },
+  ],
+
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
@@ -76,7 +94,7 @@ CLASS({
       .md-summary-view {
         margin: 16px;
         padding: 8px;
-        background: #77F;
+        background: #888;
         box-shadow: 0px 2px 4px #999;
         color: white;
       }
@@ -95,7 +113,7 @@ CLASS({
       .md-summary-view-name .md-button {
         margin: 0px;
       }
-      .md-summary-view-name > :nth-child(1){ margin: 8px; align-self: flex-start;  flex-grow: 0;}
+      .md-summary-view-name > :nth-child(1){ margin: 8px; align-self: center;  flex-grow: 0;}
       .md-summary-view-name > :nth-child(2){ min-width: 12em; flex-grow: 1; }
       .md-summary-view-name > :nth-child(3){ flex-grow: 0; align-self: flex-start; }
     */},
