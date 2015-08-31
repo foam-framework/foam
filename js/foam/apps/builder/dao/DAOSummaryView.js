@@ -10,39 +10,51 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder',
-  name: 'ModelSummaryView',
+  package: 'foam.apps.builder.dao',
+  name: 'DAOSummaryView',
   extendsModel: 'foam.apps.builder.SummaryView',
 
   requires: [
-    'foam.apps.builder.datamodels.ModelCitationView',
-    'foam.apps.builder.wizard.ChangeModelWizard',
+    'foam.apps.builder.dao.DAOFactoryView',
+    'foam.apps.builder.wizard.ChangeDAOWizard',
   ],
 
   properties: [
     {
       name: 'extraClassName',
-      defaultValue: 'model-summary-view',
+      defaultValue: 'dao-summary-view',
     },
     {
       name: 'wizardStartPageName',
-      defaultValue: 'foam.apps.builder.wizard.ChangeModelWizard',
+      defaultValue: 'foam.apps.builder.wizard.ChangeDAOWizard',
     },
     {
       name: 'citationViewFactory',
       defaultValue: function() {
-        return this.ModelCitationView.create({ data: this.data.model });
+        return this.DAOFactoryView.create({ data: this.data.dao });
       }
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'icon',
+      defaultValue: {
+        factory_: 'foam.ui.Icon',
+        ligature: 'storage',
+        color: 'white',
+        fontSize: '48',
+        width: 48,
+        height: 48,
+      },
     },
   ],
 
   templates: [
     function CSS() {/*
-      .md-summary-view.model-summary-view {
-        background: #77F;
+      .md-summary-view.dao-summary-view {
+        background: #D77;
       }
     */},
   ],
 
-
 });
+
