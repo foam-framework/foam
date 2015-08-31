@@ -32,12 +32,22 @@ CLASS({
       defaultValue: true,
       postSet: function(old, nu) {
         if ( ! this.$ ) return;
-        if ( ! nu ) this.$.innerHTML = '';
-        else if ( ! old && nu ) {
+        if ( ! nu ) {
+          this.$.innerHTML = '';
+          if ( this.hideContainer ) {
+            this.$.style.display = 'none';
+          }
+        } else if ( ! old && nu ) {
           this.$.innerHTML = this.toInnerHTML();
           this.initInnerHTML();
+          this.$.style.display = '';
         }
       }
+    },
+    {
+      name: 'hideContainer',
+      documentation: 'Set true to hide the outer container when data is false.',
+      defaultValue: false
     },
     {
       name: 'color',
