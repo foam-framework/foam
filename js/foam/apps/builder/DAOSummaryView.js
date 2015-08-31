@@ -55,7 +55,7 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-picker-view-name">
-          <p class="md-style-trait-standard">Data Source:</p>
+          <p class="md-style-trait-standard">Data:</p>
           $$dao{ model_: 'foam.apps.builder.dao.DAOFactoryView' }
           $$edit{ color: 'white' }
         </div>
@@ -69,6 +69,13 @@ CLASS({
         box-shadow: 0px 2px 4px #999;
         color: white;
       }
+      @media (max-width: 600px) {
+        .md-dao-picker-view {
+          margin-left: 0px;
+          margin-right: 0px;
+        }
+      }
+
       .md-model-picker-view-name {
         align-items: baseline;
         display: flex;
@@ -77,7 +84,7 @@ CLASS({
       .md-model-picker-view-name .md-button {
         margin: 0px;
       }
-      .md-model-picker-view-name > :nth-child(1){ min-width: 8em; flex-grow: 0;}
+      .md-model-picker-view-name > :nth-child(1){ min-width: 4em; flex-grow: 0;}
       .md-model-picker-view-name > :nth-child(2){ min-width: 12em; flex-grow: 1; }
       .md-model-picker-view-name > :nth-child(3){ flex-grow: 0; align-self: flex-start; }
     */},
