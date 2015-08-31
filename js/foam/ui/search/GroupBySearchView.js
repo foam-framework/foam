@@ -90,10 +90,11 @@ CLASS({
       this.view.data = '';
     },
     function toHTML() {
+      /*
       if (this.view.floatingLabel$) {
         return this.view.toHTML();
       }
-
+      */
       return '<div class="foamSearchView foamSearchGroupView">' +
         '<div class="foamSearchViewLabel">' +
         this.label +
