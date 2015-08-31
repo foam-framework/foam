@@ -29,7 +29,7 @@ CLASS({
       name: 'timer',
       factory: function() { return this.Timer.create(); },
       postSet: function(_, timer) {
-        timer.time$.addListener(function() { this.addBubble(); this.paint(); }.bind(this));
+        timer.time$.addListener(function() { this.addBubble(); }.bind(this));
       }
     },
     { name: 'className', defaultValue: 'logo-background' }
@@ -51,27 +51,27 @@ CLASS({
     addBubble: function() {
       if ( ! this.view.$ ) this.destroy();
       var c = this.canvas;
-      var Y = this.height+20;
+      var Y = this.height+15;
       var X = 10+Math.random()*(this.width-20);
 
       var circle = this.Circle.create({
         x: X,
         y: Y,
         r: 15,
-        alpha: 0.8,
+        alpha: 0.4,
         color: null,
-        borderWidth: 1,
+        borderWidth: 2,
         border: this.colors[Math.floor(Math.random() * this.colors.length)]}) || '#000000';
 
       this.addChild(circle);
       circle.stop = Movement.animate(
-        4000,
+        10000,
         function() {
           circle.x = circle.x + Math.random()*200-100;
           circle.alpha = 0;
           circle.y = 0;
           circle.r = 15 + Math.random() * 50;
-          circle.borderWidth = 8;
+          //circle.borderWidth = 1;
         },
         Movement.easeOut(0.5),
         (function() {
@@ -95,7 +95,6 @@ CLASS({
 
   methods: {
     paintSelf: function() {
-      this.SUPER();
       var c = this.canvas;
 
       c.fillStyle = 'white';
@@ -134,7 +133,7 @@ CLASS({
   properties: [
     {
       name: 'duration',
-      defaultValue: 2000
+      defaultValue: 0
     },
     {
       model_: 'StringArrayProperty',
