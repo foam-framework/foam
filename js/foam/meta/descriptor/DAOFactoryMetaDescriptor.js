@@ -32,15 +32,20 @@ CLASS({
     {
       label: 'The Type of the DAO',
       name: 'model',
-      defaultValue: 'foam.apps.builder.dao.LocalDAOFactory',
-      view: {
-         factory_: 'foam.ui.ChoiceView',
-         choices: [
-           ['foam.apps.builder.dao.LocalDAOFactory', 'Local IDB Data Store'],
-           ['foam.apps.builder.dao.IDBDAOFactory', 'Specialized IDB Store'],
-           ['foam.apps.builder.dao.GoogleDriveDAOFactory', 'Google Drive']
-         ]
-       },
+      defaultValueFn: function() { return this.LocalDAOFactory.id; },
+      view: function(args, opt_X) {
+        var X = opt_X || this.X;
+        var v = X.lookup('foam.ui.ChoiceView').create(args, X);
+        v.objToChoice = function(obj) { 
+          return [obj.id, obj.label]; 
+        };
+        v.dao = [
+          X.lookup('foam.apps.builder.dao.LocalDAOFactory'),
+          X.lookup('foam.apps.builder.dao.GoogleDriveDAOFactory'),
+          X.lookup('foam.apps.builder.dao.IDBDAOFactory'),
+        ];
+        return v;
+      },
     },
     {
       label: 'The name of the new DAO',

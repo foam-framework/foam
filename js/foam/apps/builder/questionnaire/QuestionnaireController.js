@@ -31,8 +31,13 @@ CLASS({
       name: 'appConfig',
       help: 'The configuration for app parameters, question set, etc.',
       postSet: function(old,nu) {
-        if ( old ) old.removeListener(this.modelChange);
-        if ( nu ) nu.addListener(this.modelChange);
+        if ( old ) {
+          old.model$.removeListener(this.configChange);
+        }
+        if ( nu ) {
+          nu.model$.addListener(this.configChange);          
+          this.configChange(null, null, nu.model);
+        }
       }
     },
     {
@@ -40,14 +45,6 @@ CLASS({
       help: 'The store of questionnaires filled in by users.',
       lazyFactory: function() {
         return this.appConfig.dao.factory(this.Y);
-//         return this.EasyDAO.create({
-//           model: this.Questionnaire,
-//           name: 'questionnaires',
-//           daoType: this.IDBDAO,
-//           cache: true,
-//           seqNo: true,
-//           logging: true,
-//         });
       }
     },
     {
@@ -62,11 +59,21 @@ CLASS({
 
   listeners: [
     {
-      name: 'modelChange',
-      code: function() {
-        this.content = this.appConfig.model.create({}, this.Y);
+      name: 'configChange',
+      code: function(obj, topic, old, nu) {
+        if ( old ) old.removeListener(this.modelChange);
+        if ( nu ) nu.addListener(this.modelChange);
+        this.modelChange();
       }
-    }
+    },
+    {
+      name: 'modelChange',
+      code: function(obj, topic, old, nu) {
+        this.appConfig.model.instance_.prototype_ = null; // rebuild changes to model
+        this.content = this.appConfig.model.create({}, this.Y);
+        this.updateHTML();
+      }
+    },
   ],
 
   actions: [
@@ -104,7 +111,7 @@ CLASS({
     */},
     function CSS() {/*
       app-body {
-
+        overflow-y: auto;
       }
     */},
   ]

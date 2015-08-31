@@ -15,6 +15,8 @@ CLASS({
 
   extendsModel: 'foam.apps.builder.dao.DAOFactory',
 
+  label: 'Cloud storage on Google Drive',
+
   requires: [
     'com.google.drive.FileDAO',
     'foam.dao.EasyDAO',

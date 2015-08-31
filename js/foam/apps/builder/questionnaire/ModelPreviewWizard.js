@@ -14,16 +14,17 @@ CLASS({
   name: 'ModelPreviewWizard',
   extendsModel: 'foam.apps.builder.wizard.ModelPreviewWizard',
 
+  properties: [
+    {
+      name: 'title',
+      defaultValue: 'Preview of Questions',
+    },
+  ],
+
   templates: [
-    function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Preview of Questions</p>
-    */},
     function instructionHTML() {/*
         <p class="md-style-trait-standard">These questions in <%= this.data.name %>:
         </p>
     */},
-
   ],
-
-
 });

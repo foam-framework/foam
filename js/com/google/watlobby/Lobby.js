@@ -306,6 +306,7 @@ CLASS({
     'foam.demos.ClockView',
     'foam.demos.graphics.Logo',
     'foam.demos.physics.PhysicalCircle',
+    'foam.graphics.ImageCView',
     'foam.physics.PhysicsEngine as Collider',
     'foam.util.Timer'
   ],
@@ -315,7 +316,8 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'n',          defaultValue: 20 },
+    { name: 'n',          defaultValue: 50 },
+    { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
     { name: 'background', defaultValue: '#ccf' },
@@ -331,13 +333,18 @@ CLASS({
           var c1 = cs[i];
           this.updateChild(c1);
 
-          if ( c1.r !== 5 ) {
+          if ( ! com.google.watlobby.AirBubble.isInstance(c1) ) {
             // Bounce on Walls
-            var r = c1.r * 1.2;
-            if ( c1.x < r     ) { c1.vx += 0.2; c1.vy -= 0.19; }
-            if ( c1.x > w - r ) { c1.vx -= 0.2; c1.vy += 0.19; }
-            if ( c1.y < r && ! com.google.watlobby.AirBubble.isInstance(c1) ) { c1.vy += 0.2; c1.vx += 0.19; }
-            if ( c1.y > h - r ) { c1.vy -= 0.2; c1.vx -= 0.19; }
+            // Uses a gentle repel rather than a hard bounce, looks better
+            var r = c1.r * 2;
+            if ( c1.x < r     ) { c1.vx += 0.5; }
+            if ( c1.x > w - r ) { c1.vx -= 0.5; }
+            if ( c1.y < r     ) { c1.vy += 0.5; }
+            if ( c1.y > h - r ) { c1.vy -= 0.5; }
+            // Add Coriolis Effect
+            var a = Math.atan2(c1.y-h/2, c1.x-w/2);
+            // The 0.8 gives it a slight outward push
+            c1.applyMomentum(c1.mass/4, a+0.8*Math.PI/2);
 
             for ( var j = i+1 ; j < cs.length ; j++ ) {
               var c2 = cs[j];
@@ -360,7 +367,7 @@ CLASS({
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180, colour: this.BLUE },
 //        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: 'darkblue' },
-        { topic: 'foam',         image: 'foam.png',         r: 100, colour: this.RED },
+        { topic: 'foam',         image: 'foam.png',         r: 100, colour: this.GREEN },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100, model: 'com.google.watlobby.VideoBubble' },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
@@ -375,7 +382,7 @@ CLASS({
       name: 'onClick',
       code: function(evt) {
         var self = this;
-        // console.log('********************* onClick', evt);
+        console.log('********************* onClick', evt);
         var child = this.collider.findChildAt(evt.clientX, evt.clientY);
         if ( child === this.selected ) return;
 
@@ -401,6 +408,22 @@ CLASS({
         this.timer.start();
       }
 
+      this.addTopicBubbles();
+      this.addBubbles();
+      this.addAirBubbles();
+
+      document.body.addEventListener('click', this.onClick);
+
+      var foam = this.ImageCView.create({x: 10, y: this.height-80, width: 200, height: 66, src: 'foampowered.png'});
+      this.addChild(foam);
+
+      var clock = this.ClockView.create({x: this.width-100, y: 100, r: 90});
+      this.addChild(clock);
+
+      this.collider.start();
+    },
+
+    function addTopicBubbles() {
       for ( var i = 0 ; i < this.topics.length ; i++ ) {
         var colour = this.COLORS[i % this.COLORS.length];
         var t = this.topics[i];
@@ -418,16 +441,18 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/150;
-        c.gravity = 0.03;
+        c.gravity = 0;
         c.friction = 0.94;
         this.collider.add(c);
       }
+    },
 
+    function addBubbles() {
       var N = this.n;
       for ( var i = 0 ; i < N ; i++ ) {
         var colour = this.COLORS[i % this.COLORS.length];
         var c = this.Bubble.create({
-          r: 20 + Math.random() * 50,
+          r: 10 + Math.random() * 60,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           color: 'white',
@@ -436,12 +461,14 @@ CLASS({
         this.addChild(c);
 
         c.mass = c.r/150;
-        c.gravity = 0.03;
+        c.gravity = 0;
         c.friction = 0.94;
         this.collider.add(c);
       }
+    },
 
-      for ( var i = 0 ; i < 100 ; i++ ) {
+    function addAirBubbles() {
+      for ( var i = 0 ; i < this.airBubbles ; i++ ) {
         var b = this.AirBubble.create({
           r: 6,
           x: Math.random() * this.width,
@@ -462,20 +489,14 @@ CLASS({
         }.bind(this, b));
 
         b.vy = -4;
-        b.gravity = -0.4;
+        b.gravity = 0;
         b.friction = 0.8;
         this.collider.add(b);
 
         this.addChild(b);
 
 //        this.view.$.addEventListener('click', this.onClick);
-       document.body.addEventListener('click', this.onClick);
-
       }
-
-      var clock = this.ClockView.create({x: this.width-70, y: 70, r: 60});
-      this.addChild(clock);
-      this.collider.start();
     },
 
     function destroy() {

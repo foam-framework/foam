@@ -14,6 +14,11 @@ CLASS({
   name: 'ModelCitationView',
   extendsModel: 'foam.ui.DetailView',
 
+  requires: [
+    'foam.ui.TextualDAOListView',
+    'foam.ui.TextualView',
+  ],
+
   imports: [
     'stack',
     'editView',
@@ -24,6 +29,19 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'md-model-citation-view'
+    },
+    {
+      name: 'subtitle'
+    },
+    {
+      name: 'data',
+      postSet: function() {
+        var names = [];
+        this.data.properties.forEach(function(p) {
+          names.push(p.name);
+        }.bind(this));
+        this.subtitle = names.join(', ');
+      }
     },
   ],
 
@@ -42,11 +60,19 @@ CLASS({
     },
   ],
 
+  methods: [
+    function init() {
+      this.Y.set('selection$', null);
+      this.SUPER();
+    }
+  ],
+
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class='md-model-citation-view-name'>
           $$id{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false }
+          $$properties{ model_: 'foam.ui.TextualDAOListView', rowView: 'foam.ui.TextualView' }
         </div>
         <div class='md-style-trait-standard'>
           $$preview{ color: 'black' }
@@ -57,12 +83,20 @@ CLASS({
       .md-model-citation-view {
         display: flex;
         align-items: center;
-        color: 'black';
       }
       .md-model-citation-view-name {
         flex-grow: 1;
       }
-
+      .md-model-citation-view .textual-dao-view {
+        text-overflow: ellipsis;  
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        margin: 16px;
+        opacity: 0.75;
+      }
+      
+      
       .md-model-citation-view.dao-selected {
         background: #eeeeee;
       }

@@ -15,6 +15,8 @@ CLASS({
 
   extendsModel: 'foam.apps.builder.dao.DAOFactory',
 
+  label: 'Specialized local storage in IndexedDB',
+
   requires: [
     'foam.dao.IDBDAO',
     'foam.dao.EasyDAO',
