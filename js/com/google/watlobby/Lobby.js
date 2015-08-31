@@ -336,15 +336,18 @@ CLASS({
           if ( ! com.google.watlobby.AirBubble.isInstance(c1) ) {
             // Bounce on Walls
             // Uses a gentle repel rather than a hard bounce, looks better
-            var r = c1.r * 2;
-            if ( c1.x < r     ) { c1.vx += 0.5; }
-            if ( c1.x > w - r ) { c1.vx -= 0.5; }
-            if ( c1.y < r     ) { c1.vy += 0.5; }
-            if ( c1.y > h - r ) { c1.vy -= 0.5; }
+            var r = c1.r + 10;
+            if ( c1.x < r     ) { c1.vx += 0.5; c1.out_ = false; }
+            if ( c1.x > w - r ) { c1.vx -= 0.5; c1.out_ = false; }
+            if ( c1.y < r +(h-w)/2     ) { c1.vy += 0.5; /*c1.out_ = false;*/ }
+            if ( c1.y > w - r ) { c1.vy -= 0.5; /*c1.out_ = false;*/ }
             // Add Coriolis Effect
             var a = Math.atan2(c1.y-h/2, c1.x-w/2);
-            // The 0.8 gives it a slight outward push
-            c1.applyMomentum(c1.mass/4, a+0.8*Math.PI/2);
+            var d = Movement.distance(c1.y-h/2, c1.x-w/2);
+            if ( d < 700 ) c1.out_ = true;
+
+            // The 0.9 gives it a slight outward push
+            c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
 
             for ( var j = i+1 ; j < cs.length ; j++ ) {
               var c2 = cs[j];
@@ -410,7 +413,7 @@ CLASS({
 
       this.addTopicBubbles();
       this.addBubbles();
-      this.addAirBubbles();
+//      this.addAirBubbles();
 
       document.body.addEventListener('click', this.onClick);
 
@@ -450,12 +453,13 @@ CLASS({
     function addBubbles() {
       var N = this.n;
       for ( var i = 0 ; i < N ; i++ ) {
-        var colour = this.COLORS[i % this.COLORS.length];
+        var colour = this.COLORS[Math.floor(i / N * this.COLORS.length)];
         var c = this.Bubble.create({
           r: 10 + Math.random() * 60,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          color: 'white',
+//          color: 'white',
+          color: null,
           border: colour
         });
         this.addChild(c);
