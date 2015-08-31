@@ -104,8 +104,8 @@ CLASS({
       c.fillStyle = 'rgba(0,0,0,1)';
       c.strokeStyle = 'white';
 
-      c.lineWidth = 1;
-      c.strokeStyle = 'gray';
+      c.lineWidth = 3;
+      c.strokeStyle = '#888';
       c.globalCompositeOperation = '';
       c.strokeText(this.text, 0, this.height-5);
       c.globalCompositeOperation = 'destination-out';
