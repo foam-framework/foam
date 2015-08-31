@@ -212,6 +212,7 @@ CLASS({
       .popup-view-content {
         background: white;
       }
+
     */}
   ]
 });
