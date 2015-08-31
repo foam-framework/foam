@@ -238,8 +238,9 @@ CLASS({
 
   methods: [
 
+    //
     // State
-
+    //
     function onSetAttr(key, value) {
       this.state.onSetAttr.call(this, key, value);
     },
