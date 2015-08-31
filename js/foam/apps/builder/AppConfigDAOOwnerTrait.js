@@ -27,10 +27,7 @@ CLASS({
       view: 'foam.ui.md.DetailView',
       label: 'Data storage',
       lazyFactory: function() {
-        return this.LocalDAOFactory.create({
-          name: 'newDAO',
-          modelType: this.baseModelId,
-        });
+        this.resetDAO();
       },
    },
    {
@@ -38,6 +35,15 @@ CLASS({
      help: 'The model name of the base type for models this trait stores.',
    },
 
+  ],
+  
+  methods: [
+    function resetDAO() {
+      this.dao = this.LocalDAOFactory.create({
+        name: 'newDAO',
+        modelType: this.baseModelId,
+      });
+    }
   ],
 
 

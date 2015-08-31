@@ -28,23 +28,22 @@ CLASS({
   properties: [
     {
       name: 'nextViewFactory',
-      defaultValue: function() { return this.nextViewNoConfig.apply(this, arguments); }
+      lazyFactory: function() { return this.nextViewNoConfig; },
     },
     {
-      model_: 'ViewFactoryProperty',
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'nextViewWithConfig',
-      label: 'Next: Data Source Settings',
       defaultValue: {
         factory_: 'foam.apps.builder.wizard.DAOWizard',
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'nextViewNoConfig',
-      label: 'Next: Create the Data Model',
-      defaultValue: {
-        factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
-      },
+      defaultValue: null,
+      // {
+      //   factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
+      //},
     },
     {
       name: 'daoDescriptor',
@@ -70,7 +69,11 @@ CLASS({
         this.nextViewFactory = ( this.daoFactory.requiresUserConfiguration ) ?
           this.nextViewWithConfig : this.nextViewNoConfig;
       }
-    }
+    },
+    {
+      name: 'title',
+      defaultValue: 'Choose the type of Data Source',
+    },
   ],
 
   listeners: [
@@ -93,21 +96,8 @@ CLASS({
 
   ],
 
-  actions: [
-    {
-      name: 'next',
-      labelFn: function() {
-        if ( this.daoFactory && this.daoFactory.requiresUserConfiguration )
-          return this.model_.NEXT_VIEW_WITH_CONFIG.label;
-        return this.model_.NEXT_VIEW_NO_CONFIG.label;
-      },
-    }
-  ],
-
   templates: [
-    function titleHTML() {/*
-        <p class="md-style-trait-standard md-title">Choose what kind of Data Source to use</p>
-    */},
+
     function instructionHTML() {/*
         <p class="md-style-trait-standard">The data source is where your App will store its data.
         This could be inside the device where it is running, in the cloud with Google Drive, or

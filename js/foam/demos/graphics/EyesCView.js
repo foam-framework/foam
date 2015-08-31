@@ -21,6 +21,7 @@ CLASS({
   label: 'Eyes',
 
   extendsModel: 'foam.graphics.CView',
+  traits: [ 'foam.ui.Colors' ],
 
   requires: [ 'foam.demos.graphics.EyeCView' ],
 
@@ -32,13 +33,13 @@ CLASS({
     {
       name:  'leftEye',
       factory: function() {
-        return this.EyeCView.create({x:this.r * 65.0 / 50.0, y:85, r: this.r, color:'red'});
+        return this.EyeCView.create({x:this.r * 65.0 / 50.0, y:85, r: this.r, color: this.RED});
       }
     },
     {
       name:  'rightEye',
       factory: function() {
-        return this.EyeCView.create({x:this.r * 65.0 / 50.0 + this.r * 85 / 50, y:88, r: 0.98 * this.r, color:'yellow'});
+        return this.EyeCView.create({x:this.r * 65.0 / 50.0 + this.r * 85 / 50, y:88, r: 0.98 * this.r, color: this.YELLOW});
       }
     },
     { name: 'width',  defaultValue: 300 },

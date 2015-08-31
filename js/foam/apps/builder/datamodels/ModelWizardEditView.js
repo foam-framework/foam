@@ -49,36 +49,36 @@ CLASS({
     },
   ],
 
-  listeners: [
-    {
-      name: 'subObjectChange',
-      code: function() {
-        this.data.propertyChange('properties', null, this.data.properties);
-      }
-    },
-  ],
+  // listeners: [
+  //   {
+  //     name: 'subObjectChange',
+  //     code: function() {
+  //       this.data.propertyChange('properties', null, this.data.properties);
+  //     }
+  //   },
+  // ],
 
-  methods: [
-    function put(o, sink) {
-      /* TODO: this is only used by the create action's view */
-      var prop = this.X.lookup(o.model).create({ name: o.name });
-      this.data.properties.put(prop);
-      prop.addListener(this.subObjectChange);
-      this.subObjectChange();
-
-      sink && sink.put(prop);
-    },
-    function remove(o, sink) {
-      /* TODO: this is only used by delete actions on property citation views */
-      this.data.properties.remove(o, {
-        remove: function(p) {
-          p.removeListener(this.subObjectChange);
-          sink && sink.remove(p);
-        }.bind(this)
-      });
-      this.subObjectChange();
-    },
-  ],
+  // methods: [
+  //   function put(o, sink) {
+  //     /* TODO: this is only used by the create action's view */
+  //     var prop = this.X.lookup(o.model).create({ name: o.name });
+  //     this.data.properties.put(prop);
+  //     prop.addListener(this.subObjectChange);
+  //     this.subObjectChange();
+  //
+  //     sink && sink.put(prop);
+  //   },
+  //   function remove(o, sink) {
+  //     /* TODO: this is only used by delete actions on property citation views */
+  //     this.data.properties.remove(o, {
+  //       remove: function(p) {
+  //         p.removeListener(this.subObjectChange);
+  //         this.subObjectChange();
+  //         sink && sink.remove(p);
+  //       }.bind(this)
+  //     });
+  //   },
+  // ],
 
   templates: [
     function toHTML() {/*

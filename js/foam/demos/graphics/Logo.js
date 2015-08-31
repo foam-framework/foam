@@ -22,7 +22,7 @@ CLASS({
 
   requires: [ 'foam.graphics.Circle', 'foam.util.Timer' ],
 
-  imports: [ 'colours$', 'width$', 'height$' ],
+  imports: [ 'colors$', 'width$', 'height$' ],
 
   properties: [
     {
@@ -57,11 +57,11 @@ CLASS({
       var circle = this.Circle.create({
         x: X,
         y: Y,
-        r: 5,
+        r: 15,
         alpha: 0.8,
         color: null,
         borderWidth: 1,
-        border: this.colours[Math.floor(Math.random() * this.colours.length)]}) || '#000000';
+        border: this.colors[Math.floor(Math.random() * this.colors.length)]}) || '#000000';
 
       this.addChild(circle);
       circle.stop = Movement.animate(
@@ -69,11 +69,11 @@ CLASS({
         function() {
           circle.x = circle.x + Math.random()*200-100;
           circle.alpha = 0;
-          circle.y = Y - 100 - Math.random() * 50;
-          circle.r = 25 + Math.random() * 50;
+          circle.y = 0;
+          circle.r = 15 + Math.random() * 50;
           circle.borderWidth = 8;
         },
-        Movement.easeIn(0.5),
+        Movement.easeOut(0.5),
         (function() {
           if ( this.timer.isStarted ) this.removeChild(circle);
         }).bind(this))();
@@ -121,6 +121,7 @@ CLASS({
   package: 'foam.demos.graphics',
   name:  'Logo',
   extendsModel: 'foam.ui.View',
+  traits: [ 'foam.ui.Colors' ],
 
   requires: [
     'foam.demos.graphics.LogoForeground',
@@ -128,18 +129,18 @@ CLASS({
     'foam.ui.TextFieldView'
   ],
 
-  exports: [ 'text$', 'font$', 'colours$', 'width$', 'height$' ],
+  exports: [ 'text$', 'font$', 'colors$', 'width$', 'height$' ],
 
   properties: [
     {
       name: 'duration',
-      defaultValue: 0
+      defaultValue: 2000
     },
     {
       model_: 'StringArrayProperty',
-      name: 'colours',
-      singular: 'colour',
-      factory: function() { return ['#33f','#f00','#fc0','#33f','#3c0']; }
+      name: 'colors',
+      singular: 'color',
+      factory: function() { return this.COLORS; }
     },
     {
       name: 'text',

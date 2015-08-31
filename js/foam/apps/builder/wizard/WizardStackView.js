@@ -24,7 +24,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'firstPage',
     },
     {
@@ -49,7 +49,10 @@ CLASS({
             transition: 'fade',
         }, X);
         var Y = X.sub({ stack: stack });
-        stack.pushView(this.firstPage({}, Y));
+        var view = this.firstPage({}, Y);
+        stack.pushView(view);
+        view.onShown(); //TODO: have stack view do this?
+        
         return stack;
       }
     },
