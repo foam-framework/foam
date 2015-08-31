@@ -17,6 +17,7 @@ CLASS({
   requires: [
     'foam.ui.TextualDAOListView',
     'foam.ui.TextualView',
+    'foam.ui.StringElideTextualView',
   ],
 
   imports: [

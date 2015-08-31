@@ -14,6 +14,10 @@ CLASS({
   name: 'DAOFactoryView',
   extendsModel: 'foam.apps.builder.dao.EditView',
 
+  requires: [
+    'foam.ui.StringElideTextualView',
+  ],
+
   properties: [
     {
       name: 'className',
