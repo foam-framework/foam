@@ -95,7 +95,7 @@ CLASS({
       .md-summary-view-name .md-button {
         margin: 0px;
       }
-      .md-summary-view-name > :nth-child(1){ margin: 8px; align-self: flex-start;  flex-grow: 0;}
+      .md-summary-view-name > :nth-child(1){ margin: 8px; align-self: center;  flex-grow: 0;}
       .md-summary-view-name > :nth-child(2){ min-width: 12em; flex-grow: 1; }
       .md-summary-view-name > :nth-child(3){ flex-grow: 0; align-self: flex-start; }
     */},

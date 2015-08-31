@@ -30,15 +30,6 @@ CLASS({
         return this.ModelCitationView.create({ data: this.data.model });
       }
     },
-//     {
-//       name: 'model'
-//     },
-//     {
-//       name: 'data',
-//       postSet: function(old,nu) {
-//         if (nu) this.model = nu.model;
-//       }
-//     }
   ],
 
 });

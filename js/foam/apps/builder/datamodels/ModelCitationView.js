@@ -71,7 +71,7 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class='md-model-citation-view-name'>
-          $$id{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false }
+          $$data{ model_: 'foam.ui.TextualView', propertyName: 'id' }
           $$properties{ model_: 'foam.ui.TextualDAOListView', rowView: 'foam.ui.TextualView' }
         </div>
         <div class='md-style-trait-standard'>
@@ -86,17 +86,18 @@ CLASS({
       }
       .md-model-citation-view-name {
         flex-grow: 1;
+        width: 0;
       }
       .md-model-citation-view .textual-dao-view {
-        text-overflow: ellipsis;  
+        text-overflow: ellipsis;
         white-space: nowrap;
         width: 100%;
         overflow: hidden;
-        margin: 16px;
+        margin: 16px 0px 16px 16px;
         opacity: 0.75;
       }
-      
-      
+
+
       .md-model-citation-view.dao-selected {
         background: #eeeeee;
       }
