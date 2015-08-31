@@ -21,6 +21,10 @@ CLASS({
 
   properties: [
     {
+      name: 'extraClassName',
+      defaultValue: 'dao-summary-view',
+    },
+    {
       name: 'wizardStartPageName',
       defaultValue: 'foam.apps.builder.wizard.ChangeDAOWizard',
     },
@@ -42,6 +46,14 @@ CLASS({
         height: 48,
       },
     },
+  ],
+
+  templates: [
+    function CSS() {/*
+      .md-summary-view.dao-summary-view {
+        background: #D77;
+      }
+    */},
   ],
 
 });

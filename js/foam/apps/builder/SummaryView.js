@@ -76,7 +76,7 @@ CLASS({
       .md-summary-view {
         margin: 16px;
         padding: 8px;
-        background: #77F;
+        background: #888;
         box-shadow: 0px 2px 4px #999;
         color: white;
       }

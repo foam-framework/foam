@@ -21,6 +21,10 @@ CLASS({
 
   properties: [
     {
+      name: 'extraClassName',
+      defaultValue: 'model-summary-view',
+    },
+    {
       name: 'wizardStartPageName',
       defaultValue: 'foam.apps.builder.wizard.ChangeModelWizard',
     },
@@ -31,5 +35,14 @@ CLASS({
       }
     },
   ],
+
+  templates: [
+    function CSS() {/*
+      .md-summary-view.model-summary-view {
+        background: #77F;
+      }
+    */},
+  ],
+
 
 });

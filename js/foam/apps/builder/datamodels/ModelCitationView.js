@@ -71,12 +71,14 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class='md-model-citation-view-name'>
-          $$data{ model_: 'foam.ui.TextualView', propertyName: 'id' }
-          $$properties{ model_: 'foam.ui.TextualDAOListView', rowView: 'foam.ui.TextualView' }
+          <div class='md-model-citation-view-inner  md-style-trait-standard'>
+            $$id{ model_: 'foam.ui.StringElideTextualView' }
+          </div>
+          <div class='md-model-citation-view-inner  md-style-trait-standard'>
+            $$properties{ model_: 'foam.ui.TextualDAOListView', rowView: 'foam.ui.TextualView' }
+          </div>
         </div>
-        <div class='md-style-trait-standard'>
-          $$preview{ color: 'black' }
-        </div>
+        $$preview{ color: 'black' }
       </div>
     */},
     function CSS() {/*
@@ -88,12 +90,16 @@ CLASS({
         flex-grow: 1;
         width: 0;
       }
+
+      .md-model-citation-view-inner {
+        display: flex;
+      }
+
       .md-model-citation-view .textual-dao-view {
         text-overflow: ellipsis;
         white-space: nowrap;
         width: 100%;
         overflow: hidden;
-        margin: 16px 0px 16px 16px;
         opacity: 0.75;
       }
 

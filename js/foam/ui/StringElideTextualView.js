@@ -34,9 +34,14 @@ CLASS({
   ],
 
   templates: [
-    function toInnerHTML() {/*<%= this.data %>*/},
+    function toInnerHTML() {/*<div class="elide-string"><%= this.data %></div>*/},
     function CSS() {/*
       .string-elide-textual-view {
+        width: 0;
+        flex-grow: 1;
+      }
+
+      .string-elide-textual-view .elide-string {
         text-overflow: ellipsis;
         white-space: nowrap;
         width: 100%;

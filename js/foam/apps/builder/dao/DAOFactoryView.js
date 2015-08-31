@@ -29,11 +29,11 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="dao-factory-container">
-          <div class="dao-factory-title">
-            $$name{ mode: 'read-only', floatingLabel: false }
+          <div class="dao-factory-title md-style-trait-standard">
+            $$name{ model_: 'foam.ui.StringElideTextualView' }
           </div>
-          <div class="dao-factory-description">
-            $$myModelName{ mode: 'read-only', floatingLabel: false }
+          <div class="dao-factory-description md-style-trait-standard">
+            $$myModelName{ model_: 'foam.ui.StringElideTextualView' }
           </div>
         </div>
       </div>
@@ -48,10 +48,10 @@ CLASS({
       }
       .dao-factory-view .dao-factory-description {
         opacity: 0.75;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 100%;
-        overflow: hidden;
+        display: flex;
+      }
+      .dao-factory-view .dao-factory-title {
+        display: flex;
       }
 
       .dao-factory-view.dao-selected {
