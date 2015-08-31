@@ -15,7 +15,6 @@ CLASS({
   extendsModel: 'foam.apps.builder.wizard.NewOrExistingWizard',
 
   requires: [
-    //'foam.apps.builder.wizard.NewOrExistingModelWizard',
     'foam.apps.builder.wizard.NewDAOWizard',
   ],
 
@@ -37,9 +36,6 @@ CLASS({
       name: 'existingViewFactory',
       label: 'Use an existing Data Source',
       defaultValue: null,
-//       {
-//         factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
-//       },
     },
     {
       name: 'nextViewFactory',
@@ -47,9 +43,6 @@ CLASS({
     },
     {
       name: 'selection',
-      postSet: function(old,nu) {
-        this.data.dao = nu;
-      }
     },
     {
       name: 'existingDAO',
@@ -60,6 +53,11 @@ CLASS({
     }
   ],
 
-
+  methods: [
+    function onNext() {
+      this.SUPER();
+      if ( this.selection ) this.data.dao = this.selection;
+    },
+  ],
 
 });

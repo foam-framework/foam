@@ -93,6 +93,10 @@ var TemplateOutput = {
         var o = arguments[i];
         if ( typeof o === 'string' ) {
           buf.push(o);
+        } else if ( 'Element' === o.name_ ) {
+          // Temporary bridge for working with foam.u2 Views
+          buf.push(o.toString());
+          obj.addChild({ initHTML: function() { o.load(); }});
         } else {
           if ( o && o.toView_ ) o = o.toView_();
           if ( ! ( o === null || o === undefined ) ) {

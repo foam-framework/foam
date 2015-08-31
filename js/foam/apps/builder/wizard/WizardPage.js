@@ -79,7 +79,7 @@ CLASS({
             }
           }
           return value;
-        } 
+        }
         if ( this.nextView ) return this.nextView.title;
 
         return "Finish";

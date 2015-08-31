@@ -16,6 +16,10 @@
  */
 
 var DEBUG  = DEBUG  || false;
+
+// Flag to enable documentation
+var _DOC_ = _DOC_ || false;
+
 var GLOBAL = GLOBAL || this;
 
 Object.defineProperty_ = Object.defineProperty;

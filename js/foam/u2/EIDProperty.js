@@ -23,7 +23,7 @@ CLASS({
 
   constants: {
     NEXT_ID: function() {
-      return 'view' + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
+      return 'u2v' + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
     }
   },
 

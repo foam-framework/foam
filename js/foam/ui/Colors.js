@@ -17,25 +17,15 @@
 
 CLASS({
   package: 'foam.ui',
-  name: 'TextualView',
-  extendsModel: 'foam.ui.View',
+  name: 'Colors',
 
-  documentation: 'Extracts one property value as a string.',
+  documentation: 'FOAM colour scheme. Not the same as the com.google.misc.Colors scheme.',
 
-  properties: [
-    {
-      name: 'tagName',
-      defaultValue: 'span',
-    },
-    {
-      model_: 'StringProperty',
-      name: 'propertyName',
-      defaultValue: 'name',
-      help: 'The name of the property to use, as in this.data[propertyName].',
-    }
-  ],
-
-  templates: [
-    function toHTML() {/*<%= this.data[this.propertyName] %>*/},
-  ]
+  constants: {
+    RED:    '#f00',
+    GREEN:  '#3c0',
+    BLUE:   '#33f',
+    YELLOW: '#fc0',
+    COLORS: ['#33f','#f00','#fc0','#3c0']
+  }
 });

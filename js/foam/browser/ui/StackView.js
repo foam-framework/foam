@@ -202,16 +202,28 @@ CLASS({
         sizes[i] = newSize;
       }
 
+      var foundTop = false;
       var pos = this.$.offsetWidth;
       for (i = this.visibleEnd_; i >= 0; i--) {
         var size = sizes[i] || 0; // size zero for buried items to the left
         pos -= size; // left edge
         var s = this.X.$(this.views_[i].id).style;
-        if (size > 0)  s.width = size + 'px'; // only set size for non-zero, buried panels will be overlapped
+        // ugly code to not animate width on the topmost visible view
+        if ( this.transition == 'slide' ) {
+          if ( ! foundTop ) {
+            s.transition = "left 300ms ease";
+            foundTop = true;
+          } else {
+            s.transition = "left 300ms ease, width 300ms ease";
+          }
+        }
+        if (size > 0) {
+          s.width = size + 'px'; // only set size for non-zero, buried panels will be overlapped
+          bottomMostVisibleStyle = s;
+        }
         s.zIndex = i; // z ordering ensures overlap
         s.left = pos + 'px';
         s.top = "0px";
-
       }
     },
   ],

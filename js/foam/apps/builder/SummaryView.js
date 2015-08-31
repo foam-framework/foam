@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'DAOSummaryView',
+  name: 'SummaryView',
   extendsModel: 'foam.ui.md.DetailView',
 
   requires: [
@@ -27,7 +27,7 @@ CLASS({
       code: function() {
         var view = this.WizardStackView.create({
               firstPage: {
-                factory_: 'foam.apps.builder.wizard.ChangeDAOWizard',
+                factory_: this.wizardStartPageName,
                 data$: this.data$,
           }});
         view.open();
@@ -37,49 +37,85 @@ CLASS({
 
   properties: [
     {
-      name: 'className',
-      defaultValue: 'md-dao-picker-view',
-    },
-    {
-      name: 'dao'
-    },
-    {
       name: 'data',
       postSet: function(old,nu) {
-        if (nu) this.dao = nu.dao;
+        if ( old ) old.removeListener(this.refresh);
+        if ( nu ) nu.addListener(this.refresh);
       }
     },
+    {
+      model_: 'StringProperty',
+      name: 'wizardStartPageName',
+    },
+    {
+      name: 'className',
+      defaultValue: 'md-summary-view',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'citationViewFactory',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'icon',
+      defaultValue: {
+        factory_: 'foam.ui.Icon',
+        ligature: 'widgets',
+        color: 'white',
+        fontSize: '48',
+        width: 48,
+        height: 48,
+      },
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'refresh',
+      code: function() { this.updateHTML(); },
+    }
+  ],
+
+  methods: [
+    function shouldDestroy() { return true; },
   ],
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-model-picker-view-name">
-          <p class="md-style-trait-standard">Data Source:</p>
-          $$dao{ model_: 'foam.apps.builder.dao.DAOFactoryView' }
+        <div class="md-summary-view-name">
+          %%icon()
+          %%citationViewFactory()
           $$edit{ color: 'white' }
         </div>
       </div>
     */},
     function CSS() {/*
-      .md-dao-picker-view {
+      .md-summary-view {
         margin: 16px;
         padding: 8px;
-        background: #77F;
+        background: #888;
         box-shadow: 0px 2px 4px #999;
         color: white;
       }
-      .md-model-picker-view-name {
+      @media (max-width: 600px) {
+        .md-summary-view {
+          margin-left: 0px;
+          margin-right: 0px;
+        }
+      }
+
+      .md-summary-view-name {
         align-items: baseline;
         display: flex;
         flex-direction: row;
       }
-      .md-model-picker-view-name .md-button {
+      .md-summary-view-name .md-button {
         margin: 0px;
       }
-      .md-model-picker-view-name > :nth-child(1){ min-width: 8em; flex-grow: 0;}
-      .md-model-picker-view-name > :nth-child(2){ min-width: 12em; flex-grow: 1; }
-      .md-model-picker-view-name > :nth-child(3){ flex-grow: 0; align-self: flex-start; }
+      .md-summary-view-name > :nth-child(1){ margin: 8px; align-self: center;  flex-grow: 0;}
+      .md-summary-view-name > :nth-child(2){ min-width: 12em; flex-grow: 1; }
+      .md-summary-view-name > :nth-child(3){ flex-grow: 0; align-self: center; }
     */},
   ],
 

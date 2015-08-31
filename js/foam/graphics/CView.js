@@ -295,7 +295,7 @@ CLASS({
     transform: function() {
       this.canvas.translate(this.x, this.y);
       this.canvas.scale(this.scaleX, this.scaleY);
-      this.canvas.rotate(this.a);
+      if ( this.a ) this.canvas.rotate(this.a);
     },
 
     scale: function(s) {

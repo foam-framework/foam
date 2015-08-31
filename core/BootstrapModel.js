@@ -183,7 +183,7 @@ var BootstrapModel = {
     // Note: Only documentation browser uses this, and it will be replaced
     // by the new Feature Oriented bootstrapping process, so only use the
     // extra memory in DEBUG mode.
-    if ( DEBUG ) BootstrapModel.saveDefinition(this);
+    if ( _DOC_ ) BootstrapModel.saveDefinition(this);
 
     if ( this.extendsModel && ! this.X.lookup(this.extendsModel) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
 

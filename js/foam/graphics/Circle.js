@@ -75,6 +75,7 @@ CLASS({
         c.fillStyle = this.color;
         c.fill();
       }
+
       if ( this.border ) {
         c.lineWidth = this.borderWidth;
 

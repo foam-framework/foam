@@ -193,7 +193,7 @@ CLASS({
           outHTMLs[d.ordering] = d.view.$;
         } else {
           outHTMLs[d.ordering] = d.view.toHTML();
-
+          // TODO(jacksonic): Wrap views so we don't have to fiddle with their real style tags
           if ( this.X.selection$ ) {
             this.bindSelection(d);
           }

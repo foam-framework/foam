@@ -21,7 +21,7 @@ CLASS({
   label: 'Eyes',
 
   extendsModel: 'foam.graphics.CView',
-  traits: [ 'com.google.misc.Colors' ],
+  traits: [ 'foam.ui.Colors' ],
 
   requires: [ 'foam.demos.graphics.EyeCView' ],
 

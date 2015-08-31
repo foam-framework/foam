@@ -21,8 +21,8 @@ CLASS({
   requires: [
     'foam.apps.builder.questionnaire.EditView',
     'foam.apps.builder.questionnaire.QuestionnaireView',
-    'foam.apps.builder.datamodels.ModelPickerView',
-    'foam.apps.builder.dao.DAOPickerView',
+    'foam.apps.builder.datamodels.ModelSummaryView',
+    'foam.apps.builder.dao.DAOSummaryView',
     'foam.apps.builder.questionnaire.ChangeModelWizard',
     'foam.apps.builder.questionnaire.ChangeDAOWizard',
   ],
@@ -80,8 +80,8 @@ CLASS({
           $$version
         </div>
         <div class="flex-row-wrap">
-          $$data{ model_: 'foam.apps.builder.ModelSummaryView' }
-          $$data{ model_: 'foam.apps.builder.DAOSummaryView' }
+          $$data{ model_: 'foam.apps.builder.datamodels.ModelSummaryView' }
+          $$data{ model_: 'foam.apps.builder.dao.DAOSummaryView' }
         </div>
         <div class="preview-frame">
           $$data{ model_: 'foam.apps.builder.questionnaire.QuestionnaireView' }
@@ -94,6 +94,8 @@ CLASS({
         display: flex;
         flex-direction: column;
         flex-grow: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
       designer.questionnaire-designer .flex-row-wrap {
         display: flex;
@@ -104,7 +106,7 @@ CLASS({
       designer.questionnaire-designer .flex-row-wrap > * {
         flex-grow: 1;
       }
-      
+
       designer.questionnaire-designer .flex-row {
         display: flex;
         flex-direction: row;
@@ -123,7 +125,24 @@ CLASS({
         display: flex;
         flex-direction: column;
         box-shadow: 0px 3px 4px #444;
+        overflow-y: hidden;
+        min-height: 400px;
       }
+
+      @media (min-width: 600px) {
+
+      }
+      @media (max-width: 600px) {
+        designer.questionnaire-designer .preview-frame {
+          margin: 0px;
+          border: 8px solid grey;
+          border-radius: 8px;
+        }
+
+
+      }
+
+
     */},
 
   ],

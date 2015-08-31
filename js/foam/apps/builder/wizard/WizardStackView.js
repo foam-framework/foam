@@ -52,7 +52,7 @@ CLASS({
         var view = this.firstPage({}, Y);
         stack.pushView(view);
         view.onShown(); //TODO: have stack view do this?
-        
+
         return stack;
       }
     },
@@ -64,13 +64,13 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      @media (min-width: 500px) {
+      @media (min-width: 600px) {
         .wizard-stack-view .md-popup-view-content {
           width: 80%;
           height: 80%;
         }
       }
-      @media (max-width: 500px) {
+      @media (max-width: 600px) {
         .wizard-stack-view .md-popup-view-content {
           width: 100%;
           height: 100%;
