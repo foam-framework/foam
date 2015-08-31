@@ -21,8 +21,8 @@ CLASS({
   requires: [
     'foam.apps.builder.questionnaire.EditView',
     'foam.apps.builder.questionnaire.QuestionnaireView',
-    'foam.apps.builder.datamodels.ModelPickerView',
-    'foam.apps.builder.dao.DAOPickerView',
+    'foam.apps.builder.datamodels.ModelSummaryView',
+    'foam.apps.builder.dao.DAOSummaryView',
     'foam.apps.builder.questionnaire.ChangeModelWizard',
     'foam.apps.builder.questionnaire.ChangeDAOWizard',
   ],
