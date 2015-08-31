@@ -1,1 +1,1 @@
-var DEBUG = true;
+var _DOC_ = true;
