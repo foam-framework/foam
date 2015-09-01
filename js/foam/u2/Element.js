@@ -108,7 +108,9 @@ CLASS({
       onAddListener: function(topic, listener) {
         this.id$el.addEventListener(topic, listener);
       },
-      onSetStyle:    function() { },
+      onSetStyle:    function(key, value) {
+        this.id$el.style[key] = value;
+      },
       onSetAttr:     function(key, value) {
         this.id$el[key] = value;
       },
@@ -408,7 +410,7 @@ CLASS({
     function write(document) {
       /* For debugging, not production. */
       document.writeln(this.outerHTML);
-      this.load();
+      // this.load();
     },
 
     function toString() { return this.outerHTML; }
