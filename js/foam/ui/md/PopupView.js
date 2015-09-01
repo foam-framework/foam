@@ -170,19 +170,21 @@ CLASS({
 
   templates: [
     function toInnerHTML() {/*
-      <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
-      <% this.on('click', function() {
-           if ( this.blockerMode === 'cancellable' ) self.close();
-         }, this.id + 'Blocker'); %>
-      <div id="<%= this.id %>Content" class='md-popup-view-content <%= this.cardClass %>'>
-        %%delegateView
-      </div>
-      <% this.setClass('fixed', function() {
-           return this.layoutMode === 'fixed';
-         }, this.id); %>
-      <% this.setClass('relative', function() {
-           return this.layoutMode === 'relative';
-         }, this.id); %>
+      <% if ( this.delegateView ) { %>
+        <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
+        <% this.on('click', function() {
+             if ( this.blockerMode === 'cancellable' ) self.close();
+           }, this.id + 'Blocker'); %>
+        <div id="<%= this.id %>Content" class='md-popup-view-content <%= this.cardClass %>'>
+          %%delegateView
+        </div>
+        <% this.setClass('fixed', function() {
+             return this.layoutMode === 'fixed';
+           }, this.id); %>
+        <% this.setClass('relative', function() {
+             return this.layoutMode === 'relative';
+           }, this.id); %>
+      <% } %>
     */},
     function CSS() {/*
       .fixed .popup-view-modal-blocker, .fixed.popup-view-container {

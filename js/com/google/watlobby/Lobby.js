@@ -337,14 +337,17 @@ CLASS({
             // Bounce on Walls
             // Uses a gentle repel rather than a hard bounce, looks better
             var r = c1.r + 10;
-            if ( c1.x < r     ) { c1.vx += 0.5; c1.out_ = false; }
-            if ( c1.x > w - r ) { c1.vx -= 0.5; c1.out_ = false; }
-            if ( c1.y < r +(h-w)/2     ) { c1.vy += 0.5; /*c1.out_ = false;*/ }
-            if ( c1.y > w - r ) { c1.vy -= 0.5; /*c1.out_ = false;*/ }
+            //if ( c1.x < r     ) { c1.vx += 0.5; c1.out_ = false; }
+            //if ( c1.x > w - r ) { c1.vx -= 0.5; c1.out_ = false; }
+            //if ( c1.y < r +(h-w)/2     ) { c1.vy += 0.5; /*c1.out_ = false;*/ }
+            //if ( c1.y > w - r ) { c1.vy -= 0.5; /*c1.out_ = false;*/ }
+
             // Add Coriolis Effect
             var a = Math.atan2(c1.y-h/2, c1.x-w/2);
             var d = Movement.distance(c1.y-h/2, c1.x-w/2);
+            if ( d > w / 2 - r ) c1.out_ = false;
             if ( d < 700 ) c1.out_ = true;
+            // c1.color = c1.out_ ? 'orange' : 'blue';
 
             // The 0.9 gives it a slight outward push
             c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
