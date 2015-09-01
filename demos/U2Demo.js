@@ -16,7 +16,8 @@ e.style('fontSize',   '32pt');
 
 e.on('click', function() { console.log('clicked'); });
 
-var e2 = E('font').c('important text');
+var e2 = E('font').c('(click me, important)');
+e2.on('click', function() { console.log('clicked, but listener added before.'); });
 e2.write(document);
 e2.cls('important');
 
