@@ -351,6 +351,9 @@ CLASS({
         }
       }
 
+      // force container height
+      this.$.style.height = pos;
+
       // come back and transition in the new views
       this.X.setTimeout(this.finishPositioning, 50);
     },

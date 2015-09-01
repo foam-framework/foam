@@ -74,19 +74,21 @@ CLASS({
     */},
 
     function contentHTML() {/*
-      <div class="new-existing-wizard-dao-page">
-        $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
-          orientation: 'vertical',
-          choices: [
-            [this.newViewFactory, this.model_.NEW_VIEW_FACTORY.label],
-            [this.existingViewFactory, this.model_.EXISTING_VIEW_FACTORY.label ],
-          ]
-        }
-        <% if ( this.existingDAO ) { %>
-          <div id="<%= this.id %>-container">
-            $$existingDAO
-          </div>
-        <%  } %>
+      <div class="new-existing-wizard-dao-page-scroller">
+        <div class="new-existing-wizard-dao-page">
+          $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
+            orientation: 'vertical',
+            choices: [
+              [this.newViewFactory, this.model_.NEW_VIEW_FACTORY.label],
+              [this.existingViewFactory, this.model_.EXISTING_VIEW_FACTORY.label ],
+            ]
+          }
+          <% if ( this.existingDAO ) { %>
+            <div id="<%= this.id %>-container">
+              $$existingDAO
+            </div>
+          <%  } %>
+        </div>
       </div>
       <%
         this.setClass('existing-hidden', function() { return self.nextViewFactory === self.newViewFactory; }, this.id+'-container');
@@ -96,14 +98,21 @@ CLASS({
     function CSS() {/*
       .new-existing-wizard-dao-page {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         flex-grow: 1;
+      }
+      .new-existing-wizard-dao-page-scroller {
+        overflow-y: hidden;
+        overflow-x: hidden;
+        flex-grow: 1;
+        flex-shrink: 1;
+        display: flex;
       }
 
       .new-existing-wizard-dao-container {
         flex-grow: 1;
-        overflow-y: scroll;
         transition: opacity 300ms ease;
+        overflow-y: auto;
       }
 
       .existing-hidden {
@@ -122,6 +131,26 @@ CLASS({
           padding: 0px 8px 16px 60px;
         }
       }
+
+      @media (max-width: 1000px) {
+        .new-existing-wizard-dao-container {
+          overflow-y: hidden;
+          flex-shrink: 1;
+        }
+        .new-existing-wizard-dao-page {
+          flex-direction: column;
+        }
+        .new-existing-wizard-dao-page-scroller {
+          display: block;
+          overflow-y: auto;
+          border-top: 1px solid rgba(0,0,0,0.25);
+          border-bottom: 1px solid rgba(0,0,0,0.25);
+          flex-basis: 0;
+        }
+
+      }
+
+
     */},
   ],
 

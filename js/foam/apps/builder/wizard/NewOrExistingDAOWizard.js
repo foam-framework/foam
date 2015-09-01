@@ -56,7 +56,9 @@ CLASS({
   methods: [
     function onNext() {
       this.SUPER();
-      if ( this.selection ) this.data.dao = this.selection;
+      if ( this.selection && this.nextViewFactory === this.exitinstViewFactory ) {
+        this.data.dao = this.selection;
+      }
     },
   ],
 

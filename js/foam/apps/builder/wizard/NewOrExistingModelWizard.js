@@ -92,7 +92,9 @@ CLASS({
   methods: [
     function onNext() {
       this.SUPER();
-      if ( this.selection ) this.data.model = this.selection;
+      if ( this.selection && this.nextViewFactory === this.exitinstViewFactory ) {
+        this.data.model = this.selection;
+      }
     }
   ],
 

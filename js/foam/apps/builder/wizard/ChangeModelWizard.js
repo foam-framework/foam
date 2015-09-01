@@ -38,6 +38,7 @@ CLASS({
 
   templates: [
     function contentHTML() {/*
+      <div class="new-existing-wizard-dao-page-scroller">
       <div class="new-existing-wizard-dao-page">
         $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
           orientation: 'vertical',
@@ -52,6 +53,7 @@ CLASS({
             $$existingDAO
           </div>
         <%  } %>
+      </div>
       </div>
       <%
         this.setClass('existing-hidden', function() { return self.nextViewFactory !== self.existingViewFactory; }, this.id+'-container');

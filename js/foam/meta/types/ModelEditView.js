@@ -174,6 +174,7 @@ CLASS({
         flex-grow: 1;
         display: flex;
         overflow-y: scroll;
+        flex-basis: 0;
       }
 
       .md-model-edit-view h2 {
