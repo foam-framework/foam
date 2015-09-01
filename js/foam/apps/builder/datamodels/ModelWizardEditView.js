@@ -26,6 +26,11 @@ CLASS({
     'foam.apps.builder.datamodels.PropertyWizard',
     'foam.apps.builder.datamodels.PropertyEditWizard',
     'foam.meta.types.EditView',
+    'foam.meta.types.PropertyCitationView',
+  ],
+
+  exports: [
+    'properties$',
   ],
 
   properties: [
@@ -33,6 +38,15 @@ CLASS({
       name: 'className',
       defaultValue: 'md-model-edit-view'
     },
+    {
+      name: 'properties',
+      lazyFactory: function() { return this.data.properties; },
+      postSet: function(old, nu) {
+        if ( old !== nu ) {
+          this.data.properties = nu;
+        }
+      },
+    }
   ],
 
   actions: [
@@ -63,7 +77,7 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-edit-view-container wizard-floating-action-container">
           <div class="model-edit-view-list">
-            $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.CitationView' }
+            $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.PropertyCitationView' }
           </div>
           <div class="floating-action">
             $$createButton{
@@ -83,8 +97,8 @@ CLASS({
     function CSS() {/*
       .wizard-createButton {
         position: absolute;
-        top: -26px;
-        right: 80px;
+        top: -40px;
+        right: calc(-26px + 50%);
         z-index: 10;
         background: rgba(0,0,0,0);
         box-shadow: 3px 3px 3px #aaa;
