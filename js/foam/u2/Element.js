@@ -94,7 +94,12 @@ CLASS({
       },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
-        this.id$el.classList[enabled ? 'add' : 'remove'](cls);
+        var e = this.id$el;
+        if ( ! e ) {
+          console.warn('Missing Element: ', this.id);
+          return
+        }
+        e.classList[enabled ? 'add' : 'remove'](cls);
       },
       onAddListener: function(topic, listener) {
         this.id$el.addEventListener(topic, listener);
@@ -104,11 +109,16 @@ CLASS({
         this.id$el[key] = value;
       },
       onAddChildren: function() {
+        var e = this.id$el;
+        if ( ! e ) {
+          console.warn('Missing Element: ', this.id);
+          return
+        }
         var out = this.createOutputStream();
         for ( var i = 0 ; i < arguments.length ; i++ ) {
           out(arguments[i]);
         }
-        this.id$el.insertAdjacentHTML('beforeend', out);
+        e.insertAdjacentHTML('beforeend', out);
       },
       toString:      function() { return 'LOADED'; }
     },
