@@ -203,6 +203,7 @@ CLASS({
         flex-grow: 1;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
       }
       wizard .wizard-footer {
         flex-grow: 0;
