@@ -410,7 +410,7 @@ CLASS({
     function write(document) {
       /* For debugging, not production. */
       document.writeln(this.outerHTML);
-      // this.load();
+      this.load();
     },
 
     function toString() { return this.outerHTML; }
