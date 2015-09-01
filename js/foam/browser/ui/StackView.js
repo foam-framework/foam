@@ -107,7 +107,8 @@ CLASS({
     function destroyChildViews_(index) {
       while(this.views_.length > index) {
         var obj = this.views_.pop();
-        this.elementAnimationRemove_(this.X.$(obj.id).style);
+        var e = this.X.$(obj.id);
+        e && this.elementAnimationRemove_(e.style);
         this.resize();
         this.finishDestroy(obj);
       }

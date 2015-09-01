@@ -24,6 +24,8 @@ CLASS({
 
   requires: [
     'foam.apps.builder.datamodels.PropertyWizard',
+    'foam.apps.builder.datamodels.PropertyEditWizard',
+    'foam.meta.types.EditView',
   ],
 
   properties: [
@@ -49,43 +51,19 @@ CLASS({
     },
   ],
 
-  // listeners: [
-  //   {
-  //     name: 'subObjectChange',
-  //     code: function() {
-  //       this.data.propertyChange('properties', null, this.data.properties);
-  //     }
-  //   },
-  // ],
-
-  // methods: [
-  //   function put(o, sink) {
-  //     /* TODO: this is only used by the create action's view */
-  //     var prop = this.X.lookup(o.model).create({ name: o.name });
-  //     this.data.properties.put(prop);
-  //     prop.addListener(this.subObjectChange);
-  //     this.subObjectChange();
-  //
-  //     sink && sink.put(prop);
-  //   },
-  //   function remove(o, sink) {
-  //     /* TODO: this is only used by delete actions on property citation views */
-  //     this.data.properties.remove(o, {
-  //       remove: function(p) {
-  //         p.removeListener(this.subObjectChange);
-  //         this.subObjectChange();
-  //         sink && sink.remove(p);
-  //       }.bind(this)
-  //     });
-  //   },
-  // ],
+  methods: [
+    function init() {
+      this.Y.set('ModelWizardEditView_foam_meta_types_EditView', this.EditView);
+      this.Y.registerModel(this.PropertyEditWizard, 'foam.meta.types.EditView');
+    }
+  ],
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-edit-view-container wizard-floating-action-container">
           <div class="model-edit-view-list">
-            $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }
+            $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.CitationView' }
           </div>
           <div class="floating-action">
             $$createButton{
@@ -99,17 +77,14 @@ CLASS({
               background: '#e51c23'
             }
           </div>
-
         </div>
-
-
       </div>
     */},
     function CSS() {/*
       .wizard-createButton {
         position: absolute;
         top: -26px;
-        right: 20px;
+        right: 80px;
         z-index: 10;
         background: rgba(0,0,0,0);
         box-shadow: 3px 3px 3px #aaa;
@@ -122,6 +97,10 @@ CLASS({
         position:relative;
         display: flex;
         flex-grow: 1;
+      }
+      .model-edit-view-list {
+        border-top: 1px solid rgba(0,0,0,0.25);
+        border-bottom: 1px solid rgba(0,0,0,0.25);
       }
     */}
   ]
