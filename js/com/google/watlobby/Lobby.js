@@ -23,6 +23,7 @@ CLASS({
     { name: 'topic' },
     { name: 'image' },
     { name: 'colour' },
+    { name: 'background' },
     { name: 'r' },
     { name: 'model', defaultValue: 'com.google.watlobby.Bubble' },
     {name: 'roundImage' }
@@ -373,7 +374,7 @@ CLASS({
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180, colour: this.BLUE },
 //        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: 'darkblue' },
-        { topic: 'foam',         image: 'foam.png',         r: 100, colour: this.GREEN },
+        { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, colour: 'red' },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100, model: 'com.google.watlobby.VideoBubble' },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
@@ -420,7 +421,7 @@ CLASS({
 
       document.body.addEventListener('click', this.onClick);
 
-      var foam = this.ImageCView.create({x: 10, y: this.height-80, width: 200, height: 66, src: 'foampowered.png'});
+      var foam = this.ImageCView.create({x: 10, y: this.height-100, width: 837/2.9, height: 269/2.9, src: 'foampowered_red.png'});
       this.addChild(foam);
 
       var clock = this.ClockView.create({x: this.width-100, y: 100, r: 90});
@@ -444,6 +445,7 @@ CLASS({
         c.r = t.r;
         c.roundImage = t.roundImage;
         if ( t.colour ) c.border = t.colour;
+        if ( t.background ) c.color = t.background;
         this.addChild(c);
 
         c.mass = c.r/150;
