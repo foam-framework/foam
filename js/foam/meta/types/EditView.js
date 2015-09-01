@@ -67,19 +67,20 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-card">
           $$label{ mode: this.mode }
-        </div>
       </div>
     */},
     function CSS() {/*
       .meta-edit-view {
         display: flex;
+        flex-direction: column;
+        align-content: baseline;
         flex-grow: 1;
+        background: white;
       }
       .meta-edit-heading {
         display: flex;
-        align-items: center;
+        align-items: baseline;
       }
       .meta-edit-heading .md-title {
         flex-grow: 1;
