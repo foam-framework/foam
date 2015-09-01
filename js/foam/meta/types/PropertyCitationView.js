@@ -39,17 +39,16 @@ CLASS({
     {
       name: 'properties',
       postSet: function(old, nu) {
-        if ( nu ) {
-          for (var i = 0; i < nu.length; ++i) {
-            if (nu[i] === this.data) {
-              this.index = i;
-              break;
-            }
-          }
-        } else {
-          this.index = -1;
-        }
+        this.calcIndex();
       },
+    },
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old) old.removeListener(this.calcIndex);
+        if ( nu ) nu.addListener(this.calcIndex);
+        this.calcIndex();
+      }
     },
   ],
 
@@ -84,9 +83,10 @@ CLASS({
         var swap = this.properties[this.index - 1];
         this.properties[this.index - 1] = this.data;
         this.properties[this.index] = swap;
-        this.properties.notify_('reset',{});
 
-        this.properties = this.properties;
+        // notify
+        this.calcIndex();
+        this.properties.notify_('reset',{});
         this.data.propertyChange('name', null, this.data.name);
         swap.propertyChange('name', null, swap.name);
       },
@@ -108,9 +108,10 @@ CLASS({
         var swap = this.properties[this.index + 1];
         this.properties[this.index + 1] = this.data;
         this.properties[this.index] = swap;
-        this.properties.notify_('reset',{});
 
-        this.properties = this.properties;
+        // notify
+        this.calcIndex();
+        this.properties.notify_('reset',{});
         this.data.propertyChange('name', null, this.data.name);
         swap.propertyChange('name', null, swap.name);
       },
@@ -120,7 +121,7 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.properties = this.properties;
+      this.calcIndex();
     },
 
     function addMoveExpiry() {
@@ -129,6 +130,23 @@ CLASS({
         this.moveMode = Math.max(this.moveMode - 1, 0);
       }.bind(this), 3000);
     },
+  ],
+  listeners: [
+    {
+      name: 'calcIndex',
+      code: function() {
+        var props = this.properties;
+        if ( props ) {
+          for (var i = 0; i < props.length; ++i) {
+            if (props[i] === this.data) {
+              this.index = i;
+              return;
+            }
+          }
+        }
+        this.index = -1;
+      }
+    }
   ],
 
   templates: [
