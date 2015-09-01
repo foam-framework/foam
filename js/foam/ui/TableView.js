@@ -410,7 +410,7 @@ CLASS({
     repaintTable: function() {
       if ( ! this.$ ) return;
       var table = this.$table;
-      var out = TemplateOutput.create();
+      var out = TemplateOutput.create(this);
 
       if ( ! table ) {
         this.tableToHTML(out);
@@ -427,7 +427,7 @@ CLASS({
     repaintTableData: function() {
       var tbody = this.$tbody;
       if ( ! tbody ) { this.repaintTable(); return; }
-      var out = TemplateOutput.create();
+      var out = TemplateOutput.create(this);
 
       this.tableDataToHTML(out);
       tbody.outerHTML = out.toString();

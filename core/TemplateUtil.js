@@ -87,6 +87,7 @@ var TemplateOutput = {
   // TODO(kgr): redesign, I think this is actually broken.  If we call appendHTML() of
   // a sub-view then it will be added to the wrong parent.
   create: function(obj) {
+    console.assert(obj, 'Owner required when creating TemplateOutput.');
     var buf = [];
     var f = function templateOut(/* arguments */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {

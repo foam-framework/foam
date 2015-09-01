@@ -23,7 +23,7 @@ CLASS({
     },
     {
       name: 'nextViewFactory',
-      lazyFactory: function() { 
+      lazyFactory: function() {
         return ( this.data.dao && this.data.dao.requiresUserConfiguration ) ?
            this.editViewFactory : this.newViewFactory; },
     },
@@ -40,6 +40,7 @@ CLASS({
 
   templates: [
     function contentHTML() {/*
+      <div class="new-existing-wizard-dao-page-scroller">
       <div class="new-existing-wizard-dao-page">
         <% var choiceList = ( this.data.dao && this.data.dao.requiresUserConfiguration )  ?
           [
@@ -60,6 +61,7 @@ CLASS({
             $$existingDAO
           </div>
         <%  } %>
+      </div>
       </div>
       <%
         this.setClass('existing-hidden', function() { return self.nextViewFactory !== self.existingViewFactory; }, this.id+'-container');
