@@ -88,8 +88,7 @@ console.log('     change', old,nu,'      now: ', this.hour, this.minute);
   ],
   methods: [
     function calcTime() {
-      if ( ! this.data ) return;
-      var newData = new Date(this.data);
+      var newData = ( ! this.data ) ? new Date() : new Date(this.data);
 console.log("calc new data", newData, this.data);
       newData.setHours(this.hour);
       newData.setMinutes(this.minute);
