@@ -152,15 +152,24 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        $$name{ model_:'foam.ui.StringElideTextualView' }
-        $$label{ model_:'foam.ui.StringElideTextualView', extraClassName: 'md-grey' }
-        $$edit{ color: 'black' }
-        $$move{ color: 'black' }
-        $$moveUp{ color: 'black' }
-        $$moveDown{ color: 'black' }
+        <div class="meta-citation-view-labels">
+          $$name{ model_:'foam.ui.StringElideTextualView', extraClassName: 'meta-citation-view-title' }
+          $$label{ model_:'foam.ui.md.TextFieldView', floatingLabel: false, extraClassName: 'md-grey meta-citation-view-editors' }
+        </div>
+        <div class="property-citation-view-buttons">
+          $$edit{ color: 'black' }
+          $$move{ color: 'black' }
+          $$moveUp{ color: 'black' }
+          $$moveDown{ color: 'black' }
+        </div>
       </div>
     */},
     function CSS() {/*
+      .property-citation-view-buttons {
+        min-width: 200px;
+        display: flex;
+        flex-direction: row-reverse;
+      }
 
     */},
 

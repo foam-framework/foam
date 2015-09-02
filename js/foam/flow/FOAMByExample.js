@@ -15,6 +15,7 @@ CLASS({
   extendsModel: 'foam.flow.Section',
 
   requires: [
+    'foam.ui.DetailView',
     'foam.flow.AceCodeView',
     'foam.flow.Aside',
     'foam.flow.BookTitle',

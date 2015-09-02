@@ -26,6 +26,7 @@ CLASS({
     'metaEditModelTitle',
     'metaEditPropertyTitle',
     'mode',
+    'stack',
   ],
 
   properties: [
@@ -49,6 +50,7 @@ CLASS({
         if (this.dao && this.dao.remove) {
           this.dao.remove(this.data);
           // our parent view should now destroy this view
+          this.stack && this.stack.popView();
         }
       }
     }
@@ -97,4 +99,3 @@ CLASS({
   ]
 
 });
-
