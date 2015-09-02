@@ -72,10 +72,10 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class='md-model-citation-view-name'>
-          <div class='md-model-citation-view-inner  md-style-trait-standard'>
+          <div class='md-model-citation-view-inner md-subhead'>
             $$id{ model_: 'foam.ui.StringElideTextualView' }
           </div>
-          <div class='md-model-citation-view-inner  md-style-trait-standard'>
+          <div class='md-model-citation-view-inner'>
             $$properties{ model_: 'foam.ui.TextualDAOListView', rowView: 'foam.ui.TextualView' }
           </div>
         </div>
@@ -96,6 +96,7 @@ CLASS({
 
       .md-model-citation-view-inner {
         display: flex;
+        margin: 12px;
       }
 
       .md-model-citation-view .textual-dao-view {

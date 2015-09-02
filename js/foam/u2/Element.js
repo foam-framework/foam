@@ -62,6 +62,10 @@ CLASS({
       },
       load:          function() {
         this.state = this.LOADED;
+        for ( var i = 0 ; i < this.elListeners.length ; i++ ) {
+          var l = this.elListeners[i];
+          this.id$el.addEventListener(l[0], l[1]);
+        }
       },
       unload:        function() { console.error('Must load before unloading.'); },
       destroy:       function() { },
@@ -104,7 +108,9 @@ CLASS({
       onAddListener: function(topic, listener) {
         this.id$el.addEventListener(topic, listener);
       },
-      onSetStyle:    function() { },
+      onSetStyle:    function(key, value) {
+        this.id$el.style[key] = value;
+      },
       onSetAttr:     function(key, value) {
         this.id$el[key] = value;
       },
@@ -404,6 +410,7 @@ CLASS({
     function write(document) {
       /* For debugging, not production. */
       document.writeln(this.outerHTML);
+      this.load();
     },
 
     function toString() { return this.outerHTML; }

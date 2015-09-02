@@ -27,8 +27,14 @@ CLASS({
       view: 'foam.ui.md.DetailView',
       label: 'Data storage',
       lazyFactory: function() {
-        this.resetDAO();
+        return this.LocalDAOFactory.create({
+          name: 'newDAO',
+          modelType: this.baseModelId,
+        });
       },
+      postSet: function(old,nu) {
+        if ( ! nu ) debugger;
+      }
    },
    {
      name: 'baseModelId',
@@ -36,7 +42,7 @@ CLASS({
    },
 
   ],
-  
+
   methods: [
     function resetDAO() {
       this.dao = this.LocalDAOFactory.create({
