@@ -48,7 +48,7 @@ CLASS({
     { name: 'topic' },
     { name: 'image' },
     { name: 'roundImage' },
-    { name: 'borderWidth', defaultValue: 10 },
+    { name: 'borderWidth', defaultValue: 20 },
     { name: 'color',       defaultValue: 'white' },
     { name: 'ring' }
   ],
@@ -347,15 +347,18 @@ CLASS({
             // Add Coriolis Effect
             var a = Math.atan2(c1.y-h/2, c1.x-w/2);
             var d = Movement.distance(c1.y-h/2, c1.x-w/2);
+            // Keeps topic bubbles from going too far off screen
+            // if ( c1.topic && d > h / 2 - r) c1.out_ = false;
             if ( d > w / 2 - r ) c1.out_ = false;
-            if ( d < h /4 ) c1.out_ = true;
+            if ( d < h/4 ) c1.out_ = true;
             // c1.color = c1.out_ ? 'orange' : 'blue';
 
             // The 0.9 gives it a slight outward push
-            c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
+            if ( c1.mass != c1.INFINITE_MASS )
+              c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
 
             // Make collision detection 5X faster by only checking every fifth time.
-            if ( ( self.timer.i + i ) % 5 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
+            if ( ( self.timer.i + i ) % 10 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
               var c2 = cs[j];
               if ( c1.intersects(c2) ) this.collide(c1, c2);
             }
@@ -391,7 +394,7 @@ CLASS({
       name: 'onClick',
       code: function(evt) {
         var self = this;
-        console.log('********************* onClick', evt);
+        // console.log('********************* onClick', evt);
         var child = this.collider.findChildAt(evt.clientX, evt.clientY);
         if ( child === this.selected ) return;
 
