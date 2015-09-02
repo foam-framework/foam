@@ -60,8 +60,8 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="meta-citation-view-labels">
-          $$name{ model_:'foam.ui.StringElideTextualView' }
-          $$label{ model_:'foam.ui.StringElideTextualView', extraClassName: 'md-grey' }
+          $$name{ model_:'foam.ui.StringElideTextualView', extraClassName: 'meta-citation-view-title' }
+          $$label{ model_:'foam.ui.StringElideTextualView', extraClassName: 'md-grey meta-citation-view-editors' }
         </div>
         $$edit{ color: 'black' }
       </div>
@@ -84,11 +84,11 @@ CLASS({
         flex-basis: 100%;
       }
 
-      .meta-citation-view-labels > :nth-child(1) {
-        flex-basis: 30%;
+      .meta-citation-view-title {
+        flex-basis: 20%;
       }
-      .meta-citation-view-labels > :nth-child(2) {
-        flex-basis: 60%;
+      .meta-citation-view-editors {
+        flex-basis: 80%;
       }
     */},
 
