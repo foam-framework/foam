@@ -334,6 +334,10 @@ CLASS({
         function isPropNumeric(prop) {
           return IntProperty.isInstance(prop) || FloatProperty.isInstance(prop);
         },
+        function shouldDestroy(old, nu) {
+          if (!old || !nu) return true;
+          return !nu.equals(old);
+        },
         function getBodyCellClass(prop, i) {
           var cssClasses = ['col-' + i];
           if ( this.isPropNumeric(prop) )
