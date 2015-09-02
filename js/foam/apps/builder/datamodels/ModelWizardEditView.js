@@ -113,6 +113,8 @@ CLASS({
         flex-grow: 1;
       }
       .model-edit-view-list {
+        margin-left: 16px;
+        margin-right: 16px;
         border-top: 1px solid rgba(0,0,0,0.25);
         border-bottom: 1px solid rgba(0,0,0,0.25);
       }

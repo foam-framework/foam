@@ -59,8 +59,10 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        $$name{ model_:'foam.ui.StringElideTextualView' }
-        $$label{ model_:'foam.ui.StringElideTextualView', extraClassName: 'md-grey' }
+        <div class="meta-citation-view-labels">
+          $$name{ model_:'foam.ui.StringElideTextualView' }
+          $$label{ model_:'foam.ui.StringElideTextualView', extraClassName: 'md-grey' }
+        </div>
         $$edit{ color: 'black' }
       </div>
     */},
@@ -68,22 +70,25 @@ CLASS({
       .meta-citation-view {
         display: flex;
         flex-direction: row;
-        align-items: baseline;
+        align-items: center;
         flex-grow: 1;
         background: white;
         border-bottom: 1px solid #eee;
         min-height: 48px;
       }
-      .meta-citation-view > :nth-child(1) {
+      .meta-citation-view-labels {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        margins: auto 16px;
+        flex-basis: 100%;
+      }
+
+      .meta-citation-view-labels > :nth-child(1) {
         flex-basis: 30%;
-        margin: auto 16px;
       }
-      .meta-citation-view > :nth-child(2) {
+      .meta-citation-view-labels > :nth-child(2) {
         flex-basis: 60%;
-        margin: auto 16px;
-      }
-      .meta-citation-view > :nth-child(3) {
-        align-self: center;
       }
     */},
 
