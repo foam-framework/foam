@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'TimePickerView',
-  extendsModel: 'foam.ui.View',
+  extendsModel: 'foam.ui.DetailView',
   requires: [
     'foam.ui.md.PopupChoiceView',
   ],
@@ -28,9 +28,11 @@ CLASS({
     },
     {
       name: 'hour',
+      defaultValue: -1,
       view: {
         factory_: 'foam.ui.md.PopupChoiceView',
         choices: [
+          [-1, "Hour"],
           [0,"12 am"],
           [1,"1 am"],
           [2,"2 am"],
@@ -59,22 +61,23 @@ CLASS({
       },
       postSet: function(old,nu) {
 console.log("hour change", old, nu);
-        if ( ! equals(old,nu) ) this.calcTime();  
+        if ( (! equals(old,nu)) ) this.calcTime();
       }
     },
     {
       name: 'minute',
+      defaultValue: -1,
       view: function(args, opt_X) {
         var X = opt_X || this.X;
         var v = X.lookup('foam.ui.md.PopupChoiceView').create(args, X);
-        var times = [];
-        for (var x = 0; x < 60; ++x) { times.push(x); }        
+        var times = [[-1,'Minute']];
+        for (var x = 0; x < 60; ++x) { times.push(x); }
         v.choices = times;
         return v;
       },
       postSet: function(old,nu) {
-        if ( ! equals(old,nu) ) this.calcTime();
-      }      
+        if ( (! equals(old,nu)) ) this.calcTime();
+      }
     },
     {
       name: 'data',
@@ -90,8 +93,8 @@ console.log('     change', old,nu,'      now: ', this.hour, this.minute);
     function calcTime() {
       var newData = ( ! this.data ) ? new Date() : new Date(this.data);
 console.log("calc new data", newData, this.data);
-      newData.setHours(this.hour);
-      newData.setMinutes(this.minute);
+      if ( this.hour >= 0 ) newData.setHours(this.hour);
+      if ( this.minute >= 0 ) newData.setMinutes(this.minute);
       this.data = newData;
     }
   ],
@@ -106,7 +109,7 @@ console.log("calc new data", newData, this.data);
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        $$hour $$minute  
+        $$hour $$minute
       </div>
     */},
   ]
