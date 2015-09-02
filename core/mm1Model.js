@@ -552,9 +552,9 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
 
           if ( DEBUG && Arg ) {
             var str = fn.toString();
-            method.args = str.
-              match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-              split(',').
+            var match = str.match(/^function[ _$\w]*\(([ ,\w]+)/);
+            if ( match )
+            method.args = match[1].split(',').
               map(function(name) { return Arg.create({name: name.trim()}); });
           }
 
