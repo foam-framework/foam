@@ -317,7 +317,7 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'n',          defaultValue: 50 },
+    { name: 'n',          defaultValue: 30 },
     { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
@@ -335,7 +335,7 @@ CLASS({
           var c1 = cs[i];
           this.updateChild(c1);
 
-          if ( ! com.google.watlobby.AirBubble.isInstance(c1) ) {
+//          if ( ! com.google.watlobby.AirBubble.isInstance(c1) ) {
             // Bounce on Walls
             // Uses a gentle repel rather than a hard bounce, looks better
             var r = c1.r + 10;
@@ -359,7 +359,7 @@ CLASS({
               var c2 = cs[j];
               if ( c1.intersects(c2) ) this.collide(c1, c2);
             }
-          }
+//          }
         }
       };
       return c;
@@ -437,7 +437,6 @@ CLASS({
         var colour = this.COLORS[i % this.COLORS.length];
         var t = this.topics[i];
         var c = this.X.lookup(t.model).create({
-          r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           border: colour
