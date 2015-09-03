@@ -4,10 +4,12 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+import foam.core.Value;
+
 /**
- * FOAM wrapper for Android's {@link EditText} for editing {@link String}s.
+ * View bridge that binds an {@link EditText} to a FOAM {@link Value <String>}.
  */
-public class EditTextBridge extends AbstractEditTextBridge<String> {
+public class EditTextBridge extends AbstractTextFieldBridge<EditText, String> {
   public EditTextBridge(Context context) {
     super(context);
   }
@@ -16,14 +18,17 @@ public class EditTextBridge extends AbstractEditTextBridge<String> {
   }
 
   @Override
+  protected EditText makeInnerView(Context context, AttributeSet attrs) {
+    return new EditText(context, attrs);
+  }
+
+  @Override
   protected String convertStringToValue(String s) {
     return s;
   }
 
-  protected void updateViewFromValue() {
-    EditText v = view.getEditText();
-    String oldValue = v.getText().toString();
-    String newValue = value.get();
-    if (!oldValue.equals(newValue)) v.setText(newValue);
+  @Override
+  protected String convertValueToString(String s) {
+    return s;
   }
 }

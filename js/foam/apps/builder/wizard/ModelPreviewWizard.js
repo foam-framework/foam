@@ -51,7 +51,17 @@ CLASS({
     */},
 
     function contentHTML() {/*
+      <div class="model-preview-wizard-list">
         $$data{ model_: 'foam.meta.types.ModelEditView', mode: 'read-only' }
+      </div>
+    */},
+
+    function CSS() {/*
+      .model-preview-wizard-list {
+        margin: 16px;
+        display: flex;
+        flex-grow: 1;
+      }
     */},
   ],
 

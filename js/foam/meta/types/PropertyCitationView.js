@@ -154,7 +154,7 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="meta-citation-view-labels">
           $$name{ model_:'foam.ui.StringElideTextualView', extraClassName: 'meta-citation-view-title' }
-          $$label{ model_:'foam.ui.md.TextFieldView', floatingLabel: false, extraClassName: 'md-grey meta-citation-view-editors' }
+          $$label{ model_:'foam.ui.md.TextFieldView', floatingLabel: false, extraClassName: 'md-grey meta-citation-view-editors', mode$: this.mode$ }
         </div>
         <div class="property-citation-view-buttons">
           $$edit{ color: 'black' }

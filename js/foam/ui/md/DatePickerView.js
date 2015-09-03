@@ -52,10 +52,10 @@ CLASS({
         return nu;
       },
       postSet: function(old, nu) {
-        this.year = nu.getUTCFullYear();
-        this.month = nu.getUTCMonth();
-        this.date = nu.getUTCDate();
-        this.day = nu.getUTCDay();
+        this.year = nu.getFullYear();
+        this.month = nu.getMonth();
+        this.date = nu.getDate();
+        this.day = nu.getDay();
       },
     },
     {
@@ -393,7 +393,7 @@ CLASS({
         <div class="date-picker-header">
           <div class="date-picker-header-year"><%# this.year %></div>
           <div class="date-picker-header-date">
-            <%# this.DAY_NAMES[this.day] + ', ' + this.MONTH_NAMES[this.month] + 
+            <%# this.DAY_NAMES[this.day] + ', ' + this.MONTH_NAMES[this.month] +
                 ' ' + this.date %>
           </div>
         </div>

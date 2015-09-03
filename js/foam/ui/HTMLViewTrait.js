@@ -165,14 +165,14 @@ CLASS({
       documentation: 'Allows specifying the minimum width of a view. ' +
           'This is optional, and only used by views attempting responsive ' +
           'layouts, such as $$DOC{ref:"foam.browser.ui.StackView"}.',
-      defaultValue: 300
+      defaultValue: 0
     },
     {
       name: 'minHeight',
       documentation: 'Allows specifying the minimum height of a view. ' +
           'This is optional, and only used by views attempting advanced ' +
           'layouts, such as $$DOC{ref:"foam.ui.ScrollView"}.',
-      defaultValue: 40
+      defaultValue: 0
     },
     {
       name: 'preferredWidth',
@@ -200,7 +200,7 @@ CLASS({
       documentation: 'Allows specifying the maximum height of a view. ' +
           'This is optional, and only used by views attempting advanced ' +
           'layouts, such as $$DOC{ref:"foam.ui.ScrollView"}.',
-      defaultValue: 40
+      defaultValue: 10000
     },
     {
       name: '$parent',
