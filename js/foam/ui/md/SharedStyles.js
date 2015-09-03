@@ -220,8 +220,8 @@ input[name=q]::-webkit-input-placeholder {
   margin: 0 0 20px 0;
 }
 
-.md-popup-view-content .md-subhead,
-.md-popup-view-content .md-quote {
+.md-popup-view-content > .md-subhead,
+.md-popup-view-content > .md-quote {
   margin: 0 0 24px 0;
 }
 

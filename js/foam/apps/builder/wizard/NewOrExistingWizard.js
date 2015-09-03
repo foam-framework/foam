@@ -116,7 +116,7 @@ CLASS({
       }
 
       .existing-hidden {
-        opacity: 0.4;
+        opacity: 0;
         pointer-events: none;
       }
 

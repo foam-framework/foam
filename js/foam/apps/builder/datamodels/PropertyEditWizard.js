@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder.datamodels',
-  name: 'PropertyWizard',
+  name: 'PropertyEditWizard',
   extendsModel: 'foam.apps.builder.wizard.WizardPage',
 
   requires: [
@@ -27,7 +27,7 @@ CLASS({
     },
     {
       name: 'title',
-      defaultValue: 'Create a new Property',
+      defaultValue: 'Edit',
     },
   ],
 
@@ -46,23 +46,16 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
+      // put old EditView back
+      this.Y.registerModel(this.X.ModelWizardEditView_foam_meta_types_EditView, 'foam.meta.types.EditView')
       this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
     },
 
-    function onBack() {
-      this.dao && this.dao.put(this.data);
-      this.SUPER();
-    }
   ],
 
   templates: [
     function contentHTML() {/*
-        <p class="md-style-trait-standard">Choose a name to describe the purpose,
-        such as "first name", "catalogue number" or "home phone". Choose the type
-        that most closely matches the value you expect, such as a number, text,
-        yes/no, or web URL.
-        </p>
-        $$data{ model_: 'foam.meta.descriptor.MetaDescriptorView', metaEditPropertyTitle: '' }
+        $$data{ model_: 'foam.meta.types.EditView', model: this.data.model_ }
     */},
   ],
 

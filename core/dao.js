@@ -534,6 +534,7 @@ CLASS({
           } catch(err) {
             if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
               console.error('Error delivering event (removing listener): ', fName, err);
+              if ( DEBUG ) console.error(err.stack); // TODO: make a NO_DEBUGGER flag for mobile debugger mode?
             }
             this.unlisten(l);
           }

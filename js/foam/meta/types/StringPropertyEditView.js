@@ -25,15 +25,9 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-card">
           <% this.headerHTML(out); %>
-          <div>
             $$label{ model_: 'foam.ui.TextFieldView', mode: this.mode }
-          </div>
-          <div>
             $$defaultValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
-          </div>
-        </div>
       </div>
 */},
   ]

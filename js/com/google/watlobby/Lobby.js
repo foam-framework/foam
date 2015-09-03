@@ -48,7 +48,7 @@ CLASS({
     { name: 'topic' },
     { name: 'image' },
     { name: 'roundImage' },
-    { name: 'borderWidth', defaultValue: 10 },
+    { name: 'borderWidth', defaultValue: 20 },
     { name: 'color',       defaultValue: 'white' },
     { name: 'ring' }
   ],
@@ -317,7 +317,7 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'n',          defaultValue: 50 },
+    { name: 'n',          defaultValue: 30 },
     { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
@@ -326,6 +326,7 @@ CLASS({
       var c = this.Collider.create();
       var w = this.width;
       var h = this.height;
+      var self = this;
       // Make collision detection much faster by not checking
       // if air bubbles collide with other air bubbles
       c.detectCollisions = function() {
@@ -334,7 +335,7 @@ CLASS({
           var c1 = cs[i];
           this.updateChild(c1);
 
-          if ( ! com.google.watlobby.AirBubble.isInstance(c1) ) {
+//          if ( ! com.google.watlobby.AirBubble.isInstance(c1) ) {
             // Bounce on Walls
             // Uses a gentle repel rather than a hard bounce, looks better
             var r = c1.r + 10;
@@ -346,18 +347,22 @@ CLASS({
             // Add Coriolis Effect
             var a = Math.atan2(c1.y-h/2, c1.x-w/2);
             var d = Movement.distance(c1.y-h/2, c1.x-w/2);
+            // Keeps topic bubbles from going too far off screen
+            // if ( c1.topic && d > h / 2 - r) c1.out_ = false;
             if ( d > w / 2 - r ) c1.out_ = false;
-            if ( d < 700 ) c1.out_ = true;
+            if ( d < h/4 ) c1.out_ = true;
             // c1.color = c1.out_ ? 'orange' : 'blue';
 
             // The 0.9 gives it a slight outward push
-            c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
+            if ( c1.mass != c1.INFINITE_MASS )
+              c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
 
-            for ( var j = i+1 ; j < cs.length ; j++ ) {
+            // Make collision detection 5X faster by only checking every fifth time.
+            if ( ( self.timer.i + i ) % 10 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
               var c2 = cs[j];
               if ( c1.intersects(c2) ) this.collide(c1, c2);
             }
-          }
+//          }
         }
       };
       return c;
@@ -389,7 +394,7 @@ CLASS({
       name: 'onClick',
       code: function(evt) {
         var self = this;
-        console.log('********************* onClick', evt);
+        // console.log('********************* onClick', evt);
         var child = this.collider.findChildAt(evt.clientX, evt.clientY);
         if ( child === this.selected ) return;
 
@@ -435,7 +440,6 @@ CLASS({
         var colour = this.COLORS[i % this.COLORS.length];
         var t = this.topics[i];
         var c = this.X.lookup(t.model).create({
-          r: 20 + Math.random() * 50,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           border: colour

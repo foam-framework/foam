@@ -35,6 +35,7 @@ CLASS({
     'foam.meta.descriptor.MetaDescriptorView',
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.DAOListView',
+    'foam.meta.types.CitationView',
   ],
 
   imports: ['stack'],
@@ -137,7 +138,7 @@ CLASS({
             </div>
           </div>-->
           <div class="model-edit-view-list">
-            $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.EditView' }
+            $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.CitationView' }
           </div>
         </div>
         <div class="floating-action">
@@ -170,10 +171,9 @@ CLASS({
         flex-shrink: 0;
       }
       .model-edit-view-list {
-        background:  #9e9e9e;
         flex-grow: 1;
         display: flex;
-        overflow-y: scroll;
+        overflow-y: auto;
         flex-basis: 0;
       }
 

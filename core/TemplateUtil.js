@@ -97,7 +97,9 @@ var TemplateOutput = {
         } else if ( 'Element' === o.name_ ) {
           // Temporary bridge for working with foam.u2 Views
           buf.push(o.toString());
-          obj.addChild({ initHTML: function() { o.load(); }});
+          // Needs to be bound, since o is a loop variable and will otherwise
+          // be the final element of the arguments array, not the correct one.
+          obj.addChild({ initHTML: o.load.bind(o) });
         } else {
           if ( o && o.toView_ ) o = o.toView_();
           if ( ! ( o === null || o === undefined ) ) {

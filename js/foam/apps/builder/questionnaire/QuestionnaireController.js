@@ -35,8 +35,8 @@ CLASS({
           old.model$.removeListener(this.configChange);
         }
         if ( nu ) {
-          nu.model$.addListener(this.configChange);          
-          this.configChange(null, null, nu.model);
+          nu.model$.addListener(this.configChange);
+          this.configChange(null, null, null, nu.model);
         }
       }
     },

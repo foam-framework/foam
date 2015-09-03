@@ -55,7 +55,7 @@ CLASS({
       for ( var a = 0 ; a < 2*Math.PI ; a += 2*Math.PI/40 ) {
         var circle = this.Circle.create({
           color: 'white',
-          borderWidth: 4,
+          borderWidth: 16,
           border: 'hsl(' + 180*a/Math.PI + ', 90%, 60%)'
         });
 
