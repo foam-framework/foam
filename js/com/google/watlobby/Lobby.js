@@ -424,7 +424,7 @@ CLASS({
         { topic: 'onhub',        image: 'onhub.jpg',        roundImage: true, r: 120 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160, color: this.BLUE },
         { topic: 'android',      image: 'android.png',      r: 90, color: this.GREEN },
-        { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
+        { topic: 'gmailoffline', image: 'gmailoffline.png', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180, color: this.BLUE },
 //        { topic: 'foam',         image: 'foampowered.png',  r: 100, color: 'darkblue' },
         { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, color: 'red' },
