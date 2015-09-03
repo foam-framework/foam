@@ -1034,7 +1034,7 @@ if ( DEBUG ) CLASS({
     { // Note: defaultValue: for the getter function didn't work. factory: does.
       name: 'getter',
       type: 'Function',
-      debug: true,
+      labels: ['debug'],
       defaultValue: function(name) {
         var doc = this.instance_[name]
         if (doc && typeof Documentation != 'undefined' && Documentation // a source has to exist (otherwise we'll return undefined below)
@@ -1057,17 +1057,17 @@ if ( DEBUG ) CLASS({
     {
       name: 'view',
       defaultValue: 'foam.ui.DetailView',
-      debug: true
+      labels: ['debug']
     },
     {
       name: 'help',
       defaultValue: 'Documentation for this entity.',
-      debug: true
+      labels: ['debug']
     },
     {
       name: 'documentation',
       factory: function() { return "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."; },
-      debug: true
+      labels: ['debug']
    }
   ]
 });

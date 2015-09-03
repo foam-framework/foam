@@ -58,6 +58,12 @@ var Property = {
          */}
     },
     {
+      name: 'labels',
+      type: 'Array',
+      subType: 'String',
+      labels: ['debug'],
+    },
+    {
       name: 'label',
       type: 'String',
       required: false,

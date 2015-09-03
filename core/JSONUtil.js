@@ -92,12 +92,7 @@ var JSONUtil = {
 
   arrayToObjArray: function(X, a, opt_defaultModel, seq) {
     for ( var i = 0 ; i < a.length ; i++ ) {
-      if ( ( ! DEBUG ) && a[i] && a[i].debug ) {
-        a.splice(i,1);
-        i--;
-      } else {
-        a[i] = this.mapToObj(X, a[i], opt_defaultModel, seq);
-      }
+      a[i] = this.mapToObj(X, a[i], opt_defaultModel, seq);
     }
     return a;
   },
@@ -132,7 +127,7 @@ var JSONUtil = {
 
           X.arequire(obj.model_)(function(model) {
             if ( ! model ) {
-               if ( DEBUG && obj.model_ !== 'Template' && obj.model_ !== 'ArrayProperty' && obj.model_ !== 'ViewFactoryProperty' && obj.model_ !== 'Documentation' && obj.model_ !== 'DocumentationProperty' && obj.model_ !== 'CSSProperty' && obj.model_ !== 'FunctionProperty' )
+               if ( FLAGS.debug && obj.model_ !== 'Template' && obj.model_ !== 'ArrayProperty' && obj.model_ !== 'ViewFactoryProperty' && obj.model_ !== 'Documentation' && obj.model_ !== 'DocumentationProperty' && obj.model_ !== 'CSSProperty' && obj.model_ !== 'FunctionProperty' )
                  console.warn('Failed to dynamically load: ', obj.model_);
               future.set(obj);
               return;

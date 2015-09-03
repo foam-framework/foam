@@ -23,7 +23,7 @@ CLASS({
 
   templates: [
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">These questions in <%= this.data.name %>:
+        <p class="md-style-trait-standard">The questions in <%= this.data.name %>:
         </p>
     */},
   ],

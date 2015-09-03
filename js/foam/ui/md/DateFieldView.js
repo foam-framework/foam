@@ -77,9 +77,8 @@ CLASS({
       .md-date-field-body {
         align-items: center;
         border-bottom: 1px solid #e0e0e0;
-        display: flex;
-        flex-direction: row;
         padding: 8px 0;
+        flex-grow: 1;
       }
 
       .md-date-field-read-only .md-date-field-body {
@@ -91,6 +90,13 @@ CLASS({
       .md-date-field .md-floating-label {
         font-size: 85%;
         top: 12px;
+      }
+
+      .md-date-field {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        flex-grow: 1;
       }
     */},
     function toHTML() {/*

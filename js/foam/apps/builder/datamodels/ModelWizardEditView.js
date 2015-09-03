@@ -97,7 +97,7 @@ CLASS({
     function CSS() {/*
       .wizard-createButton {
         position: absolute;
-        top: -40px;
+        top: -28px;
         right: calc(-26px + 50%);
         z-index: 10;
         background: rgba(0,0,0,0);

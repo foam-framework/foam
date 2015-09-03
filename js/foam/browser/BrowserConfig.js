@@ -146,7 +146,10 @@ CLASS({
       name: 'listView',
       defaultValue: {
         factory_: 'foam.ui.DAOListView',
-        rowView: 'foam.ui.md.CitationView'
+        rowView: 'foam.ui.md.CitationView',
+        minWidth: 350,
+        preferredWidth: 500,
+        maxWidth: 500,
       }
     },
     {
@@ -155,7 +158,7 @@ CLASS({
       documentation: 'A ViewFactory for the main detail view. You usually ' +
           'will want to override $$DOC{ref:".innerDetailView"} rather than ' +
           'this property.',
-      defaultValue: 'foam.ui.md.UpdateDetailView',
+      defaultValue: { factory_: 'foam.ui.md.UpdateDetailView', perferredWidth: 1000 },
     },
     {
       model_: 'ViewFactoryProperty',

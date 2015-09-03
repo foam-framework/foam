@@ -90,7 +90,7 @@ CLASS({
     {
       model_: 'DocumentationProperty',
       name: 'documentation',
-      debug: true
+      labels: ['debug'],
     },
     {
       model_: 'ArrayProperty',
