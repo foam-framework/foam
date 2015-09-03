@@ -39,6 +39,8 @@ CLASS({
     {
       name: 'properties',
       postSet: function(old, nu) {
+        old && old.unlisten(this.propertiesDAOChange);
+        nu && nu.listen(this.propertiesDAOChange);
         this.calcIndex();
       },
     },
@@ -50,6 +52,10 @@ CLASS({
         this.calcIndex();
       }
     },
+    {
+      name: 'propertyTracker_',
+      defaultValue: 0,
+    }
   ],
 
   actions: [
@@ -58,7 +64,7 @@ CLASS({
       ligature: 'reorder',
       label: 'Re-order',
       isAvailable: function() {
-        this.mode; this.moveMode; this.properties;
+        this.mode; this.moveMode; this.properties; this.propertyTracker_;
         return this.mode == 'read-write' &&
           (! this.moveMode) &&
           this.properties && (this.properties.length > 1);
@@ -72,7 +78,7 @@ CLASS({
       label: 'Move Up',
       ligature: 'keyboard_arrow_up',
       isAvailable: function() {
-        this.moveMode; this.mode; this.index;
+        this.moveMode; this.mode; this.index; this.propertyTracker_;
         return this.moveMode &&
           this.mode == 'read-write' &&
           this.index > 0;
@@ -96,7 +102,7 @@ CLASS({
       label: 'Move Down',
       ligature: 'keyboard_arrow_down',
       isAvailable: function() {
-        this.moveMode; this.mode; this.index; this.properties;
+        this.moveMode; this.mode; this.index; this.properties;  this.propertyTracker_;
         return this.moveMode &&
           this.mode == 'read-write' &&
           this.index >= 0 &&
@@ -145,6 +151,12 @@ CLASS({
           }
         }
         this.index = -1;
+      }
+    },
+    {
+      name: 'propertiesDAOChange',
+      code: function() {
+        this.propertyTracker_ += 1;
       }
     }
   ],
