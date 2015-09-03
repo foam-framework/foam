@@ -30,8 +30,8 @@
           e.style.display = 'flex';
           e.style.flexDirection = 'row';
           if ( color ) e.style.backgroundColor = color;
-          e.innerHTML = "<div style='flex-basis: 50%'>"+text+"</div>" +
-            ( stack ? "<pre style='font: inherit; font-size: inherit; margin: 0; padding: 0px 8px; flex-basis: 50%'>"+stack.substring(7)+"</pre>" : "");
+          e.innerHTML = "<div style='flex-basis: 30%'>"+text+"</div>" +
+            ( stack ? "<pre style='font: inherit; font-size: inherit; margin: 0; padding: 0px 8px; flex-grow:1; overflow-x: auto;'>"+stack.substring(7)+"</pre>" : "");
 
           out.appendChild(e);
           out.scrollTop = e.offsetTop + e.offsetHeight;
