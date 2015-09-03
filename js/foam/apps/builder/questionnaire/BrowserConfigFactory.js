@@ -60,12 +60,6 @@ CLASS({
         innerDetailView: { factory_: 'foam.apps.builder.AppConfigDetailView',
           innerView: 'foam.apps.builder.questionnaire.DesignerView'
         },
-        listView: {
-          factory_: 'foam.ui.DAOListView',
-          rowView: 'foam.ui.md.CitationView',
-          minWidth: 400,
-          preferredWidth: 600,
-        }
       }, X);
     },
   ],

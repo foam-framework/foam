@@ -179,7 +179,8 @@ CLASS({
       // The algorithm here is straightforward. They all have minWidth allocated
       // already. We try to assign each view some extra, up to its preferred
       // width. If there's still some left, we make a second pass, allowing each
-      // view more space, up to its maxWidth. If there's still some left, tough.
+      // view more space, up to its maxWidth. If there's still some left, the last
+      // view gets it, no matter the maximum.
 
       if (this.visibleStart_ < 0) return;
 
@@ -201,6 +202,11 @@ CLASS({
         var newSize = Math.min(sizes[i] + width, this.views_[i].view.maxWidth);
         width -= newSize - sizes[i];
         sizes[i] = newSize;
+      }
+
+      if ( width > 0 ) {
+        i = this.visibleEnd_;
+        sizes[i] += width;
       }
 
       var foundTop = false;
