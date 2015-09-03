@@ -415,7 +415,7 @@ CLASS({
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
         { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, color: this.RED },
-        { topic: 'flip',         image: 'flip.jpg',         r: 110, color: this.RED },
+        { topic: 'flip',         image: 'flip.png',         r: 110, color: this.RED },
         { topic: 'pixel',        image: 'pixel.jpg',        r: 110, color: this.RED },
         { topic: 'googlecanada', image: 'googlecanada.png', roundImage: true, r: 200, color: this.RED },
         { topic: 'onhub',        image: 'onhub.png',        roundImage: true, r: 120 },
