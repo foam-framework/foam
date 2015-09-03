@@ -51,15 +51,21 @@ CLASS({
               firstPage: {
                 factory_: 'foam.apps.builder.questionnaire.AppWizard',
                 data: newObj,
-          }}, X.sub({ 
+          }}, X.sub({
             dao: this.data.dao,
            }));
           view.open();
         },
-        detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
+        detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true, minWidth: 600, preferredWidth: 10000 },
         innerDetailView: { factory_: 'foam.apps.builder.AppConfigDetailView',
           innerView: 'foam.apps.builder.questionnaire.DesignerView'
         },
+        listView: {
+          factory_: 'foam.ui.DAOListView',
+          rowView: 'foam.ui.md.CitationView',
+          minWidth: 400,
+          preferredWidth: 600,
+        }
       }, X);
     },
   ],
