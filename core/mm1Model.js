@@ -401,7 +401,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
 
           if ( typeof p === 'string' ) newValue[i] = p = { name: p };
 
-          if ( ( ( ! DEBUG ) && p.debug ) && ( ! p.model_ || typeof p.model_ === 'string' ) ) {
+          if ( p.labels && ! FEATURE_ENABLED(p.labels) ) {
             newValue.splice(i,1);
             i--;
             continue;
@@ -550,7 +550,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
             code: fn
           });
 
-          if ( DEBUG && Arg ) {
+          if ( FEATURE_ENABLED(['debug']) && Arg ) {
             var str = fn.toString();
             var match = str.match(/^function[ _$\w]*\(([ ,\w]+)/);
             if ( match )
@@ -638,6 +638,16 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) output[this.name] = o[this.name];
+      },
+      preSet: function(_, templates) {
+        for ( var i = 0 ; i < templates.length ; i++ ) {
+          if ( templates[i].labels && ! FEATURE_ENABLED(templates[i].labels) ) {
+            templates.splice(i, 1);
+            i--;
+            continue;
+          }
+        }
+        return templates;
       },
       postSet: function(_, templates) { TemplateUtil.expandModelTemplates(this); },
       help: 'Templates associated with this entity.',
@@ -739,7 +749,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       name: 'issues',
       type: 'Array[Issue]',
       subType: 'Issue',
-      debug: true,
+      labels: ['debug'],
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
