@@ -16,9 +16,18 @@
  */
 
 var DEBUG  = DEBUG  || false;
-
-// Flag to enable documentation
 var _DOC_ = _DOC_ || false;
+
+var FLAGS = FLAGS || {};
+FLAGS.javascript = true;
+FLAGS.debug = DEBUG;
+FLAGS.documentation = _DOC_;
+
+function FEATURE_ENABLED(labels) {
+  for ( var i = 0 ; i < labels.length ; i++ ) {
+    if ( FLAGS[labels[i]] ) return true;
+  }
+}
 
 var GLOBAL = GLOBAL || this;
 

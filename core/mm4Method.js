@@ -87,7 +87,7 @@ CLASS({
       model_: 'DocumentationProperty',
       name: 'documentation',
       documentation: 'The developer documentation.',
-      debug: true
+      labels: ['documentation']
     },
     {
       name: 'default',
@@ -317,7 +317,7 @@ CLASS({
       displayWidth: 30,
       displayHeight: 1,
       defaultValue: 'Object',
-      debug: true,
+      labels: ['debug'],
       help: 'The type of this argument.',
       documentation: function() { /* <p>The type of the $$DOC{ref:'.'}, either a primitive type or a $$DOC{ref:'Model'}.</p>
       */}
@@ -328,7 +328,7 @@ CLASS({
       required: false,
       defaultValueFn: function() { return this.type; },
       help: 'The java type that represents the type of this property.',
-      debug: true,
+      labels: ['debug'],
       documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
         or class to use. */}
     },
@@ -338,7 +338,7 @@ CLASS({
       required: false,
       defaultValueFn: function() { return this.type; },
       help: 'The javascript type that represents the type of this property.',
-      debug: true,
+      labels: ['debug'],
       documentation: function() { /* When running FOAM in a javascript environment, specifies the javascript
          type to use. */}
     },
@@ -364,7 +364,7 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'required',
       defaultValue: true,
-      debug: true,
+      labels: ['debug'],
       documentation: function() { /*
         Indicates that this arugment is required for calls to the containing $$DOC{ref:'Method'}.
       */}
@@ -372,7 +372,7 @@ CLASS({
     {
       name: 'defaultValue',
       help: 'Default Value if not required and not provided.',
-      debug: true,
+      labels: ['debug'],
       documentation: function() { /*
         The default value to use if this argument is not required and not provided to the $$DOC{ref:'Method'} call.
       */}
@@ -384,7 +384,7 @@ CLASS({
       displayHeight: 1,
       defaultValue: '',
       help: 'A brief description of this argument.',
-      debug: true,
+      labels: ['debug'],
       documentation: function() { /*
         A human-readable description of the argument.
       */}
@@ -397,7 +397,7 @@ CLASS({
       displayHeight: 6,
       defaultValue: '',
       help: 'Help text associated with the entity.',
-      debug: true,
+      labels: ['debug'],
       documentation: function() { /*
           This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
           through field labels or tooltips.
@@ -407,7 +407,7 @@ CLASS({
       model_: 'DocumentationProperty',
       name: 'documentation',
       documentation: 'The developer documentation.',
-      debug: true
+      labels: ['debug']
     }
   ],
 
@@ -437,7 +437,7 @@ CLASS({
       name: 'javaSource',
       description: 'Java Source',
       template: '<%= this.type %> <%= this.name %>',
-      debug: true
+      labels: ['debug'],
     },
     {
       model_: 'Template',
@@ -445,7 +445,7 @@ CLASS({
       name: 'closureSource',
       description: 'Closure JavaScript Source',
       template: '@param {<%= this.javascriptType %>} <%= this.name %> .',
-      debug: true
+      labels: ['debug']
     },
     {
       model_: 'Template',
@@ -453,7 +453,7 @@ CLASS({
       name: 'webIdl',
       description: 'Web IDL Source',
       template: '<%= this.type %> <%= this.name %>',
-      debug: true
+      labels: ['debug']
     }
   ]
 });
@@ -564,7 +564,7 @@ CLASS({
     {
       model_: 'DocumentationProperty',
       name: 'documentation',
-      debug: true
+      labels: ['debug'],
     },
     {
       name: 'language',
@@ -572,6 +572,10 @@ CLASS({
       lazyFactory: function() {
         return this.name === 'CSS' ? 'css' : 'html';
       }
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'labels'
     }
   ]
 });
@@ -618,7 +622,7 @@ CLASS({
       model_: 'DocumentationProperty',
       name: 'documentation',
       documentation: 'The developer documentation.',
-      debug: true
+      labels: ['debug']
     },
     {
       name: 'value',
@@ -786,7 +790,7 @@ CLASS({
       displayWidth: 70,
       displayHeight: 6,
       defaultValue: '',
-      debug: true,
+      labels: ['debug'],
       help: 'Help text associated with the entity.',
       documentation: function() { /*
           This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'.'},
@@ -797,7 +801,7 @@ CLASS({
       model_: 'DocumentationProperty',
       name: 'documentation',
       documentation: 'The developer documentation.',
-      debug: true
+      labels: ['debug']
     },
     {
       name: 'code',
@@ -807,7 +811,7 @@ CLASS({
       view: 'foam.ui.FunctionView',
       help: 'Javascript code to implement this method.',
       postSet: function() {
-        if ( ! DEBUG ) return;
+        if ( ! _DOC_ ) return;
         // check for documentation in a multiline comment at the beginning of the code
         // accepts "/* comment */ function() {...." or "function() { /* comment */ ..."
         // TODO: technically unicode letters are valid in javascript identifiers, which we are not catching here for function arguments.
@@ -835,7 +839,7 @@ CLASS({
       documentation: function() { /*
           The return type of the $$DOC{ref:'Method'}.
         */},
-      debug: true
+      labels: ['debug']
     },
     {
       name: 'swiftReturnType',
@@ -848,7 +852,7 @@ CLASS({
       documentation: function() { /*
           Indicates whether the return type is checked.
         */},
-      debug: true
+      labels: ['debug']
     },
     {
       model_: 'ArrayProperty',
@@ -861,7 +865,7 @@ CLASS({
       documentation: function() { /*
           The $$DOC{ref:'Arg',text:'Arguments'} for the method.
         */},
-      debug: true
+      labels: ['debug']
     },
     {
       name: 'whenIdle',
@@ -1028,9 +1032,9 @@ CLASS({
       factory: function() { return []; },
       help: 'Sub-documents comprising the full body of this document.',
       documentation: "Optional sub-documents to be included in this document. A viewer may choose to provide an index or a table of contents.",
-      debug: true,
+      labels: ['debug'],
       preSet: function(old, nu) {
-        if ( ! DEBUG ) return []; // returning undefined causes problems
+        if ( ! _DOC_ ) return []; // returning undefined causes problems
         var self = this;
         var foamalized = [];
         // create models if necessary
