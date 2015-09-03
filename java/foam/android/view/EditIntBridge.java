@@ -1,15 +1,15 @@
 package foam.android.view;
 
 import android.content.Context;
-import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+import foam.core.Value;
+
 /**
- * Wraps an {@link EditText} (actually {@link TextInputLayout}) with conversion to and from
- * an integer.
+ * View bridge that binds an {@link EditText} to a FOAM {@link Value<Integer>}.
  */
-public class EditIntBridge extends AbstractEditTextBridge<Integer> {
+public class EditIntBridge extends AbstractTextFieldBridge<EditText, Integer> {
   public EditIntBridge(Context context) {
     super(context);
   }
@@ -18,17 +18,17 @@ public class EditIntBridge extends AbstractEditTextBridge<Integer> {
   }
 
   @Override
+  protected EditText makeInnerView(Context context, AttributeSet attrs) {
+    return new EditText(context, attrs);
+  }
+
+  @Override
   protected Integer convertStringToValue(String s) {
     return Integer.parseInt(s);
   }
 
   @Override
-  protected void updateViewFromValue() {
-    EditText v = view.getEditText();
-    String oldValue = v.getText().toString();
-    String newValue = value.get().toString();
-    if (!oldValue.equals(newValue)) v.setText(newValue);
+  protected String convertValueToString(Integer s) {
+    return s.toString();
   }
-
-  // TODO(braden): Override other TextWatcher calls to disallow entering non-numeric values.
 }

@@ -3,6 +3,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <link rel="stylesheet" href="core/foam.css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons+Extended" />
     <script language="javascript">
       DEBUG = true;
       (function() {
@@ -21,74 +24,71 @@
           }
           return ret;
         }
+        function appendMessage(text, stack, color) {
+          var out = document.getElementById('_DEBUG_OUTPUT_');
+          var e = document.createElement('div');
+          e.style.display = 'flex';
+          e.style.flexDirection = 'row';
+          if ( color ) e.style.backgroundColor = color;
+          e.innerHTML = "<div style='flex-basis: 30%'>"+text+"</div>" +
+            ( stack ? "<pre style='font: inherit; font-size: inherit; margin: 0; padding: 0px 8px; flex-grow:1; overflow-x: auto;'>"+stack.substring(7)+"</pre>" : "");
+
+          out.appendChild(e);
+          out.scrollTop = e.offsetTop + e.offsetHeight;
+        }
+
         var console = window.console;
 
         var oldLog = console.log;
         console.log = function() {
-          var out = document.getElementById('_DEBUG_OUTPUT_');
-          if ( out ) {
-            out.value = out.value + "\nL: " + argsArray(arguments).join();
-          }
+          appendMessage("L: " + argsArray(arguments).join());
           oldLog.apply(console, arguments);
         };
 
         var oldDebug = console.debug;
         console.debug = function() {
-          var out = document.getElementById('_DEBUG_OUTPUT_');
-          if ( out ) {
-            out.value = out.value + "\nD: " + argsArray(arguments).join();
-          }
+          appendMessage("D: " + argsArray(arguments).join(), (new Error()).stack);
           oldDebug.apply(console, arguments);
         };
 
         var oldInfo = console.info;
         console.info = function() {
-          var out = document.getElementById('_DEBUG_OUTPUT_');
-          if ( out ) {
-            out.value = out.value + "\nI: " + argsArray(arguments).join();
-          }
+          appendMessage("I: " + argsArray(arguments).join());
           oldInfo.apply(console, arguments);
         };
 
         var oldWarn = console.warn;
         console.warn = function() {
-          var out = document.getElementById('_DEBUG_OUTPUT_');
-          if ( out ) {
-            out.value = out.value + "\nW: " + argsArray(arguments).join();
-          }
+          appendMessage("W: " + argsArray(arguments).join(), (new Error()).stack, "rgba(255,255,200,0.9)");
           oldWarn.apply(console, arguments);
         };
 
         var oldError = console.error;
         console.error = function() {
-          var out = document.getElementById('_DEBUG_OUTPUT_');
-          if ( out ) {
-            out.value = out.value + "\nE: " + argsArray(arguments).join();
-          }
+          appendMessage("E: " + argsArray(arguments).join(), (new Error()).stack, "rgba(255,200,200,0.9)");
           oldError.apply(console, arguments);
         };
 
         var oldAssert = console.assert;
         console.assert = function() {
           if ( !arguments[0] ) {
-            var out = document.getElementById('_DEBUG_OUTPUT_');
-            if ( out ) {
-              var args = argsArray(arguments);
-              out.value = out.value + "\nAssert: " + args.slice(1).join();
-            }
+            var args = argsArray(arguments);
+            appendMessage("Assert: " + args.slice(1).join(), (new Error()).stack, "rgba(255,200,200,0.9)");
           }
           oldAssert.apply(console, arguments);
         };
 
         window._DEBUG_OUTPUT_toggleSize = function() {
           var e = document.getElementById('_DEBUG_OUTPUT_');
-          if (e.style.width == '100px' )
+          if (e.style.width == '200px' )
           {
             e.style.width = window.innerWidth;
             e.style.height = window.innerHeight;
+            //e.style.overflow = 'auto';
           } else {
-            e.style.width = '100px';
+            e.style.width = '200px';
             e.style.height = '20px';
+            //e.style.overflow = 'hidden';
           }
         };
 
@@ -96,12 +96,10 @@
     </script>
     <script src="core/bootFOAM.js"></script>
     <script src="demos/demos.js"></script>
-    <script src="apps/navigator/data/TodoData.js"></script>
-    <script src="apps/navigator/data/AudioData.js"></script>
   </head>
   <body>
     <script src="index.js"></script>
-    <textarea id="_DEBUG_OUTPUT_" style="position:fixed; z-index:1000; width: 100px; height: 20px; background: #eeeeff" readOnly=true
-     onclick="window._DEBUG_OUTPUT_toggleSize()" >DEBUG Log</textarea>
+    <div id="_DEBUG_OUTPUT_" style="position:fixed; z-index:1000; width: 200px; height: 20px; background-color: rgba(200,200,255,0.9); display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto;"
+     onclick="window._DEBUG_OUTPUT_toggleSize()" >DEBUG Log</div>
   </body>
 </html>

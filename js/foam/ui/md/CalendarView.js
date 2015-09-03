@@ -39,19 +39,31 @@ CLASS({
     {
       name: 'day',
       defaultValueFn: function() {
-        return this.data && this.data.getUTCDate();
+        return this.data && this.data.getDate();
       }
     },
     {
       name: 'month',
       defaultValueFn: function() {
-        return this.data.getUTCMonth();
+        return this.data.getMonth();
       }
     },
     {
       name: 'year',
       defaultValueFn: function() {
-        return this.data.getUTCFullYear();
+        return this.data.getFullYear();
+      }
+    },
+    {
+      name: 'hour',
+      defaultValueFn: function() {
+        return this.data.getHours();
+      }
+    },
+    {
+      name: 'minute',
+      defaultValueFn: function() {
+        return this.data.getMinutes();
       }
     },
     {
@@ -72,7 +84,7 @@ CLASS({
         var element = this.document.elementFromPoint(point.x, point.y);
         if ( element && element.tagName === 'TD' ) {
           var newDay = element.innerText;
-          this.data = new Date(this.year, this.month, newDay);
+          this.data = new Date(this.year, this.month, newDay, this.hour, this.minute);
         }
       }
     },
@@ -81,15 +93,15 @@ CLASS({
   methods: [
     function isToday(day) {
       var today = new Date();
-      return this.month === today.getUTCMonth() &&
-          this.year === today.getUTCFullYear() &&
-          day === today.getUTCDate();
+      return this.month === today.getMonth() &&
+          this.year === today.getFullYear() &&
+          day === today.getDate();
     },
     function isSelected(day) {
       if ( ! this.data ) return false;
-      return this.month === this.data.getUTCMonth() &&
-          this.year === this.data.getUTCFullYear() &&
-          day === this.data.getUTCDate();
+      return this.month === this.data.getMonth() &&
+          this.year === this.data.getFullYear() &&
+          day === this.data.getDate();
     },
   ],
 
@@ -155,7 +167,7 @@ CLASS({
                   %> <td></td> <%
                 } else {
                   var day = row * 7 + (col - firstDay) + 1;
-                  var testDate = new Date(this.year, this.month, day);
+                  var testDate = new Date(this.year, this.month, day, this.hour, this.minute);
                   if (testDate.getMonth() != this.month) {
                     %> <td></td> <%
                   } else {

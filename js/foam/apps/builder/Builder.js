@@ -82,7 +82,11 @@ CLASS({
               seqNo: true,
               logging: true,
             }),
-            detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true },
+            detailView: {
+              factory_: 'foam.ui.md.UpdateDetailView',
+              liveEdit: true,
+              preferredWidth: 1000
+            },
             innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView',
           }),
           this.QuestionnaireBCFactory.create({}, this.Y).factory(),

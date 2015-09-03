@@ -185,7 +185,6 @@ CLASS({
       // build missing views for new items
       var outHTMLs = []; // string contents and existing nodes
       var toInit = []; // newly html'd views to init
-      var debugCount = 0;
       for (var key in this.rowCache_) {
         var d = this.rowCache_[key];
 
@@ -200,11 +199,6 @@ CLASS({
 
           toInit.push(d);
           this.addChild(d.view);
-          debugCount++;
-//           if (debugCount > 2) {
-//             this.X.setTimeout(this.realDAOUpdate, 16);
-//             break;
-//           }
         }
       }
 
