@@ -9,12 +9,17 @@ import android.widget.EditText;
  * Wraps an {@link EditText} (actually {@link TextInputLayout}) with conversion to and from
  * an integer.
  */
-public class EditIntBridge extends AbstractEditTextBridge<Integer> {
-  public EditIntBridge(Context context) {
+public class MDEditIntBridge extends AbstractMDTextFieldBridge<EditText, Integer> {
+  public MDEditIntBridge(Context context) {
     super(context);
   }
-  public EditIntBridge(Context context, AttributeSet attrs) {
+  public MDEditIntBridge(Context context, AttributeSet attrs) {
     super(context, attrs);
+  }
+
+  @Override
+  protected EditText makeInnerView(Context context) {
+    return new EditText(context);
   }
 
   @Override
@@ -23,12 +28,8 @@ public class EditIntBridge extends AbstractEditTextBridge<Integer> {
   }
 
   @Override
-  protected void updateViewFromValue() {
-    EditText v = view.getEditText();
-    String oldValue = v.getText().toString();
-    String newValue = value.get().toString();
-    if (!oldValue.equals(newValue)) v.setText(newValue);
+  protected String convertValueToString(Integer t) {
+    return t.toString();
   }
-
   // TODO(braden): Override other TextWatcher calls to disallow entering non-numeric values.
 }

@@ -27,9 +27,9 @@ public class PropertyViewFactory {
   public static ViewBridge create(int type, Context context, AttributeSet attrs) {
     boolean readOnly = AttributeUtils.findBoolean(attrs, "read_only", false);
     if (type == Property.TYPE_INTEGER) {
-      return readOnly ? new IntViewBridge(context, attrs) : new EditIntBridge(context, attrs);
+      return readOnly ? new IntViewBridge(context, attrs) : new MDEditIntBridge(context, attrs);
     } else if (type == Property.TYPE_STRING) {
-      return readOnly ? new TextViewBridge(context, attrs) : new EditTextBridge(context, attrs);
+      return readOnly ? new TextViewBridge(context, attrs) : new MDEditTextBridge(context, attrs);
     } else if (type == Property.TYPE_BOOLEAN) {
       return new CheckBoxBridge(context, attrs);
     } else if ((type & Property.TYPE_ARRAY) != 0) {
