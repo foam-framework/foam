@@ -3,6 +3,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <link rel="stylesheet" href="core/foam.css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons+Extended" />
     <script language="javascript">
       DEBUG = true;
       (function() {
@@ -55,6 +58,7 @@
           var out = document.getElementById('_DEBUG_OUTPUT_');
           if ( out ) {
             out.value = out.value + "\nW: " + argsArray(arguments).join();
+            out.style.backgroundColor = "rgba(255,255,200,0.9)";
           }
           oldWarn.apply(console, arguments);
         };
@@ -64,6 +68,7 @@
           var out = document.getElementById('_DEBUG_OUTPUT_');
           if ( out ) {
             out.value = out.value + "\nE: " + argsArray(arguments).join();
+            out.style.backgroundColor = "rgba(255,200,200,0.9)";
           }
           oldError.apply(console, arguments);
         };
@@ -75,6 +80,7 @@
             if ( out ) {
               var args = argsArray(arguments);
               out.value = out.value + "\nAssert: " + args.slice(1).join();
+              out.style.backgroundColor = "rgba(255,200,200,0.9)";
             }
           }
           oldAssert.apply(console, arguments);
@@ -96,12 +102,10 @@
     </script>
     <script src="core/bootFOAM.js"></script>
     <script src="demos/demos.js"></script>
-    <script src="apps/navigator/data/TodoData.js"></script>
-    <script src="apps/navigator/data/AudioData.js"></script>
   </head>
   <body>
     <script src="index.js"></script>
-    <textarea id="_DEBUG_OUTPUT_" style="position:fixed; z-index:1000; width: 100px; height: 20px; background: #eeeeff" readOnly=true
+    <textarea id="_DEBUG_OUTPUT_" style="position:fixed; z-index:1000; width: 100px; height: 20px; background-color: rgba(200,200,255,0.9)" readOnly=true
      onclick="window._DEBUG_OUTPUT_toggleSize()" >DEBUG Log</textarea>
   </body>
 </html>
