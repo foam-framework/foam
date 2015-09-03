@@ -22,11 +22,12 @@ CLASS({
   properties: [
     { name: 'topic' },
     { name: 'image' },
-    { name: 'colour' },
+    { name: 'color' },
     { name: 'background' },
     { name: 'r' },
     { name: 'model', defaultValue: 'com.google.watlobby.Bubble' },
-    {name: 'roundImage' }
+    { name: 'roundImage' },
+    { name: 'text' }
   ]
 });
 
@@ -39,6 +40,7 @@ CLASS({
 
   requires: [
     'foam.graphics.Circle',
+    'foam.graphics.SimpleRectangle',
     'foam.graphics.ImageCView',
   ],
 
@@ -50,7 +52,8 @@ CLASS({
     { name: 'roundImage' },
     { name: 'borderWidth', defaultValue: 20 },
     { name: 'color',       defaultValue: 'white' },
-    { name: 'ring' }
+    { name: 'ring' },
+    { name: 'zoom', defaultValue: 0 }
   ],
 
   methods: [
@@ -58,7 +61,7 @@ CLASS({
       this.SUPER();
 
       if ( this.image ) {
-        var img = this.ImageCView.create({src: this.image});
+        var img = this.img = this.ImageCView.create({src: this.image});
         this.addChild(img);
         this.img = img;
       }
@@ -77,25 +80,54 @@ CLASS({
       }
       if ( selected ) {
         this.oldMass_ = this.oldMass_ || this.mass;
-        this.oldR_ = this.oldR_ || this.r;
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
         this.cancel_ = Movement.animate(2000, function() {
-          var width = this.lobby.width;
-          var height = this.lobby.height;
-          this.r = Math.min(width, height)/2.3;
-          this.x = width/2;
-          this.y = height/2;
+          var w = this.lobby.width;
+          var h = this.lobby.height;
+          this.x = w/2;
+          this.y = h/2;
+          this.zoom = 1;
         }.bind(this), Movement.easy)();
       } else {
         this.mass = this.oldMass_;
         this.cancel_ = Movement.animate(1000, function() {
-          this.r = this.oldR_;
+          this.zoom = 0;
         }.bind(this), Movement.easy)();
       }
     },
     function paintChildren() {
+      var c = this.canvas;
+
+      if ( this.topic.r ) this.r = this.topic.r;
+
+      if ( this.zoom ) {
+        var w = this.lobby.width;
+        var h = this.lobby.height;
+        var r = Math.min(w, h)/2.3;
+
+        this.r += (r - this.topic.r) * this.zoom;
+
+        if ( this.zoom > 0.5 ) {
+          if ( ! this.textArea_ ) {
+            console.log(this.topic.color);
+            this.textArea_ = this.SimpleRectangle.create({alpha: 0.1, background: this.border});
+            this.addChild(this.textArea_);
+          }
+
+          this.textArea_.width = this.textArea_.height = 2 * ( this.zoom - 0.5 ) * this.r * 0.85;
+          this.textArea_.y = - this.textArea_.height / 2;
+          this.textArea_.x = this.r/2 - this.textArea_.width/2-100;
+        } else if ( this.textArea_ ) {
+          this.removeChild(this.textArea_);
+          this.textArea_ = null;
+        }
+
+//        c.fillStyle = this.topic.color;
+//        c.fillRect(10, 10, 20, 20);
+      }
+
       if ( this.ring ) {
         this.ring.r = this.r;
         this.ring.borderWidth = this.borderWidth;
@@ -103,6 +135,7 @@ CLASS({
       }
 
       if ( this.image ) {
+        /*
         var d, s;
         if ( this.roundImage ) {
           d = 2 * this.r + 6;
@@ -113,6 +146,20 @@ CLASS({
         }
         this.img.x = this.img.y = s;
         this.img.width = this.img.height = d;
+        */
+        var d, s;
+        if ( this.roundImage ) {
+          d = (2-this.zoom*.9) * this.r + 6;
+          s = -this.r - 3;
+        } else {
+          d = (2-this.zoom*.9) * this.r * Math.SQRT1_2;
+          s = -this.r * Math.SQRT1_2;
+        }
+
+          this.img.y += this.zoom * this.r/2.6;
+          this.img.x -= this.zoom * this.r/5.3;
+          this.img.width = this.img.height = d;
+        this.img.x = this.img.y = s;
       }
       this.SUPER();
     }
@@ -156,7 +203,7 @@ CLASS({
         var w = lobby.width;
         var h = lobby.height;
 
-        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: lobby.width, height: lobby.height});
+        var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: w, height: h});
         lobby.addChild(r);
 //        Movement.animate(1500, function() { r.alpha = 0.7; })();
 
@@ -370,16 +417,16 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, colour: this.RED },
-        { topic: 'flip',         image: 'flip.jpg',         r: 100, colour: this.RED },
-        { topic: 'pixel',        image: 'pixel.jpg',        r: 100, colour: this.RED },
+        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, color: this.RED },
+        { topic: 'flip',         image: 'flip.jpg',         r: 100, color: this.RED },
+        { topic: 'pixel',        image: 'pixel.jpg',        r: 100, color: this.RED },
         { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
-        { topic: 'inbox',        image: 'inbox.png',        r: 160, colour: this.BLUE },
-        { topic: 'android',      image: 'android.png',      r: 90, colour: this.GREEN },
+        { topic: 'inbox',        image: 'inbox.png',        r: 160, color: this.BLUE },
+        { topic: 'android',      image: 'android.png',      r: 90, color: this.GREEN },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
-        { topic: 'fiber',        image: 'fiber.jpg',        r: 180, colour: this.BLUE },
-//        { topic: 'foam',         image: 'foampowered.png',  r: 100, colour: 'darkblue' },
-        { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, colour: 'red' },
+        { topic: 'fiber',        image: 'fiber.jpg',        r: 180, color: this.BLUE },
+//        { topic: 'foam',         image: 'foampowered.png',  r: 100, color: 'darkblue' },
+        { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, color: 'red' },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100, model: 'com.google.watlobby.VideoBubble' },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
@@ -403,7 +450,7 @@ CLASS({
           this.selected = null;
         }
 
-        if ( child && child.setSelected ) {
+        if ( child && child.setSelected && child.topic ) {
           this.selected = child
           child.setSelected(true);
         }
@@ -437,18 +484,18 @@ CLASS({
 
     function addTopicBubbles() {
       for ( var i = 0 ; i < this.topics.length ; i++ ) {
-        var colour = this.COLORS[i % this.COLORS.length];
+        var color = this.COLORS[i % this.COLORS.length];
         var t = this.topics[i];
         var c = this.X.lookup(t.model).create({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          border: colour
+          border: color
         }, this.Y);
         c.topic = t;
         c.image = t.image;
         c.r = t.r;
         c.roundImage = t.roundImage;
-        if ( t.colour ) c.border = t.colour;
+        if ( t.color ) c.border = t.color;
         if ( t.background ) c.color = t.background;
         this.addChild(c);
 
@@ -462,14 +509,14 @@ CLASS({
     function addBubbles() {
       var N = this.n;
       for ( var i = 0 ; i < N ; i++ ) {
-        var colour = this.COLORS[Math.floor(i / N * this.COLORS.length)];
+        var color = this.COLORS[Math.floor(i / N * this.COLORS.length)];
         var c = this.Bubble.create({
           r: 10 + Math.random() * 60,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
 //          color: 'white',
           color: null,
-          border: colour
+          border: color
         });
         this.addChild(c);
 
