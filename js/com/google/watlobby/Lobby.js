@@ -415,19 +415,19 @@ CLASS({
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
         { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, color: this.RED },
-        { topic: 'flip',         image: 'flip.jpg',         r: 100, color: this.RED },
-        { topic: 'pixel',        image: 'pixel.jpg',        r: 100, color: this.RED },
-        { topic: 'googlecanada', image: 'googlecanada.png', roundImage: true, r: 200 },
+        { topic: 'flip',         image: 'flip.jpg',         r: 110, color: this.RED },
+        { topic: 'pixel',        image: 'pixel.jpg',        r: 110, color: this.RED },
+        { topic: 'googlecanada', image: 'googlecanada.png', roundImage: true, r: 200, color: this.RED },
         { topic: 'onhub',        image: 'onhub.png',        roundImage: true, r: 120 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160, color: this.BLUE },
         { topic: 'android',      image: 'android.png',      r: 100, color: this.GREEN },
-        { topic: 'calc',         image: 'calculator.png',   r: 90, color: this.RED   },
-        { topic: 'gmailoffline', image: 'gmailoffline.png', r: 160 },
+        { topic: 'calc',         image: 'calculator.png',   r: 100, color: this.RED   },
+        { topic: 'gmailoffline', image: 'gmailoffline.png', r: 160, color: this.BLUE },
         { topic: 'fiber',        image: 'fiber.png',        r: 180, color: this.BLUE },
         { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, color: 'red' },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 120, model: 'com.google.watlobby.VideoBubble', video: '1Bb29KxXzDs' },
-        { topic: 'appbuilder',   image: 'appbuilder.png', r: 100, model: 'com.google.watlobby.VideoBubble', video: 'HvxKHj9QmMI' },
-        { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
+        { topic: 'appbuilder',   image: 'appbuilder.png', r: 120, model: 'com.google.watlobby.VideoBubble', video: 'HvxKHj9QmMI' },
+        { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 110, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
         // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, <iframe width="560" height="315" src="https://www.youtube.com/embed/1Bb29KxXzDs" frameborder="0" allowfullscreen></iframe>
 
