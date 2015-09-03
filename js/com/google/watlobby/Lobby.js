@@ -423,7 +423,7 @@ CLASS({
         { topic: 'android',      image: 'android.png',      r: 100, color: this.GREEN },
         { topic: 'calc',         image: 'calculator.png',   r: 90, color: this.RED   },
         { topic: 'gmailoffline', image: 'gmailoffline.png', r: 160 },
-        { topic: 'fiber',        image: 'fiber.jpg',        r: 180, color: this.BLUE },
+        { topic: 'fiber',        image: 'fiber.png',        r: 180, color: this.BLUE },
         { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, color: 'red' },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 120, model: 'com.google.watlobby.VideoBubble', video: '1Bb29KxXzDs' },
         { topic: 'appbuilder',   image: 'appbuilder.png', r: 100, model: 'com.google.watlobby.VideoBubble', video: 'HvxKHj9QmMI' },
