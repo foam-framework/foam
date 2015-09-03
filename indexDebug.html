@@ -24,13 +24,15 @@
           }
           return ret;
         }
-        function appendMessage(text, color) {
+        function appendMessage(text, stack, color) {
           var out = document.getElementById('_DEBUG_OUTPUT_');
           var e = document.createElement('div');
           e.style.display = 'flex';
-          e.style.flexDirection = 'column';
+          e.style.flexDirection = 'row';
           if ( color ) e.style.backgroundColor = color;
-          e.innerHTML = text;
+          e.innerHTML = "<div style='flex-basis: 50%'>"+text+"</div>" +
+            ( stack ? "<pre style='font: inherit; font-size: inherit; margin: 0; padding: 0px 8px; flex-basis: 50%'>"+stack.substring(7)+"</pre>" : "");
+
           out.appendChild(e);
           out.scrollTop = e.offsetTop + e.offsetHeight;
         }
@@ -45,7 +47,7 @@
 
         var oldDebug = console.debug;
         console.debug = function() {
-          appendMessage("D: " + argsArray(arguments).join());
+          appendMessage("D: " + argsArray(arguments).join(), (new Error()).stack);
           oldDebug.apply(console, arguments);
         };
 
@@ -57,13 +59,13 @@
 
         var oldWarn = console.warn;
         console.warn = function() {
-          appendMessage("W: " + argsArray(arguments).join(), "rgba(255,255,200,0.9)");
+          appendMessage("W: " + argsArray(arguments).join(), (new Error()).stack, "rgba(255,255,200,0.9)");
           oldWarn.apply(console, arguments);
         };
 
         var oldError = console.error;
         console.error = function() {
-          appendMessage("E: " + argsArray(arguments).join(), "rgba(255,200,200,0.9)");
+          appendMessage("E: " + argsArray(arguments).join(), (new Error()).stack, "rgba(255,200,200,0.9)");
           oldError.apply(console, arguments);
         };
 
@@ -71,7 +73,7 @@
         console.assert = function() {
           if ( !arguments[0] ) {
             var args = argsArray(arguments);
-            appendMessage("Assert: " + args.slice(1).join(), "rgba(255,200,200,0.9)");
+            appendMessage("Assert: " + args.slice(1).join(), (new Error()).stack, "rgba(255,200,200,0.9)");
           }
           oldAssert.apply(console, arguments);
         };
