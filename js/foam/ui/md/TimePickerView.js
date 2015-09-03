@@ -100,16 +100,25 @@ console.log("calc new data", newData, this.data);
   ],
   templates: [
     function CSS() {/*
-      .time-picker-view {
+      .time-picker-view .time-picker-view-editors {
         display: flex;
         flex-direction: row;
         align-items: baseline;
       }
+      .time-picker-view .time-picker-view-editors > :nth-child(n) {
+        min-width: 100px;       
+      }
+      
       }
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        $$hour $$minute
+        <div class="md-title">
+          Choose Time
+        </div>
+        <div class="time-picker-view-editors">
+          $$hour $$minute
+        </div>
       </div>
     */},
   ]
