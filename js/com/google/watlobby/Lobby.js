@@ -27,6 +27,7 @@ CLASS({
     { name: 'r' },
     { name: 'model', defaultValue: 'com.google.watlobby.Bubble' },
     { name: 'roundImage' },
+    { name: 'video' },
     { name: 'text' }
   ]
 });
@@ -182,10 +183,6 @@ CLASS({
 
   properties: [
     {
-      name: 'video',
-      defaultValue: '1Bb29KxXzDs'
-    },
-    {
       name: 'playIcon',
       factory: function() { return this.ImageCView.create({src: 'play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
     }
@@ -209,7 +206,7 @@ CLASS({
 
         this.children_.push(r);
 
-        var video = this.video;
+        var video = this.topic.video;
         var vw = Math.floor(Math.min(w, h * 1.77) * 0.7);
         var vh = Math.floor(vw / 1.77);
 
@@ -426,9 +423,9 @@ CLASS({
         { topic: 'android',      image: 'android.png',      r: 90, color: this.GREEN },
         { topic: 'gmailoffline', image: 'gmailoffline.png', r: 160 },
         { topic: 'fiber',        image: 'fiber.jpg',        r: 180, color: this.BLUE },
-//        { topic: 'foam',         image: 'foampowered.png',  r: 100, color: 'darkblue' },
         { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, color: 'red' },
-        { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 100, model: 'com.google.watlobby.VideoBubble' },
+        { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 120, model: 'com.google.watlobby.VideoBubble', video: '1Bb29KxXzDs' },
+        { topic: 'appbuilder',   image: 'appbuilder.png', r: 100, model: 'com.google.watlobby.VideoBubble', video: 'HvxKHj9QmMI' },
         { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 90, model: 'com.google.watlobby.PhotoAlbumBubble' },
         // chromebook, mine sweeper, calculator, I'm feeling lucky
         // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, <iframe width="560" height="315" src="https://www.youtube.com/embed/1Bb29KxXzDs" frameborder="0" allowfullscreen></iframe>
