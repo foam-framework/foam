@@ -790,30 +790,6 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       documentation: function() { /*
           Internal documentation or implementation-specific 'todo' notes.
         */}
-    },
-    {
-      name: 'createActionFactory',
-      type: 'Function',
-      required: false,
-      displayWidth: 70,
-      displayHeight: 3,
-      rows:3,
-      view: 'foam.ui.FunctionView',
-      defaultValue: '',
-      help: 'Factory to create the action object for creating this object',
-      documentation: function() { /* Factory to create the action object for creating this object  */}
-    },
-    {
-      name: 'deleteActionFactory',
-      type: 'Function',
-      required: false,
-      displayWidth: 70,
-      displayHeight: 3,
-      rows:3,
-      view: 'foam.ui.FunctionView',
-      defaultValue: '',
-      help: 'Factory to create the action object for deleting this object',
-      documentation: function() { /* Factory to create the action object for deleting this object  */}
     }
   ],
 
