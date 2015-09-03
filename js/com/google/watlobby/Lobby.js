@@ -420,7 +420,7 @@ CLASS({
         { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, color: this.RED },
         { topic: 'flip',         image: 'flip.jpg',         r: 100, color: this.RED },
         { topic: 'pixel',        image: 'pixel.jpg',        r: 100, color: this.RED },
-        { topic: 'googlecanada', image: 'googlecanada.gif', r: 200 },
+        { topic: 'googlecanada', image: 'googlecanada.png', roundImage: true, r: 200 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160, color: this.BLUE },
         { topic: 'android',      image: 'android.png',      r: 90, color: this.GREEN },
         { topic: 'gmailoffline', image: 'gmailoffline.jpg', r: 160 },
