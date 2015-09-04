@@ -14,7 +14,10 @@ CLASS({
   name: 'FlexTableView',
   extendsModel: 'foam.ui.md.TableView',
 
-  requires: [ 'foam.ui.FlexTableView' ],
+  requires: [
+    'foam.ui.FlexTableView',
+    'foam.ui.Icon',
+  ],
 
   properties: [
     {
@@ -23,8 +26,20 @@ CLASS({
         return this.FlexTableView.create({
           scrollEnabled: true,
           className: 'mdTable',
-          ascIcon: '<i class="material-icons">keyboard_arrow_up</i>',
-          descIcon: '<i class="material-icons">keyboard_arrow_down</i>',
+          ascIcon: this.Icon.create({
+            url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAOklEQVR4AWMYYaABCAkq+Q+EDYSUzGSYBVKGT8l0BkYgxKnMASgxDagACKDK7LEp84YogSgD8kYIAACj3BCo983dYwAAAABJRU5ErkJggg==',
+            ligature: 'keyboard_arrow_up',
+            width: 16,
+            height: 16,
+            fontSize: 16
+          }, this.Y),
+          descIcon: this.Icon.create({
+            url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAQklEQVR4AWMYDoAFnYcJNBnuMFjDebYMtxk0MBVJMtxg+MxgA1XyBciTBLMxlQElbfAoQShDKMGjDKYErzIgHFEAAGLzEOwIrN0jAAAAAElFTkSuQmCC',
+            ligature: 'keyboard_arrow_down',
+            width: 16,
+            height: 16,
+            fontSize: 16
+          }, this.Y),
           rowHeight: this.rowHeight,
           model$: this.model$,
           data$: this.data$,

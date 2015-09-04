@@ -16,9 +16,9 @@ CLASS({
 
   requires: [
     'foam.ui.TableView',
-    'foam.ui.md.ActionLabel',
     'foam.ui.md.EditColumns',
     'foam.ui.md.EditColumnsView',
+    'foam.ui.md.FlatButton',
     'foam.ui.md.OverlayDropdownView'
   ],
   imports: [ 'hardSelection$' ],
@@ -129,7 +129,13 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.X.registerModel(this.ActionLabel.xbind({ extraClassName: 'material-icons' }), 'foam.ui.ActionButton');
+      this.Y.registerModel(this.FlatButton.xbind({
+        displayMode: 'ICON_ONLY',
+        height: 24,
+        width: 24,
+        color: 'rgba(0, 0, 0, 0.54)',
+        halo: ''
+      }), 'foam.ui.ActionButton');
     },
     function getModel() {
       return this.X.model ||
@@ -146,7 +152,7 @@ CLASS({
       this.$.querySelector('table-caption').innerHTML = out.toString();
     },
     function updateTableActions() {
-      var children = this.children;
+      var children = this.children.slice();
       for ( var i = 0; i < children.length; ++i ) {
         var child = children[i];
         if ( Action.isInstance(child.action) ) {
@@ -178,7 +184,8 @@ CLASS({
   actions: [
     {
       name: 'clearSelection',
-      label: 'clear_all',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAGUlEQVR4AWOgBxgF/3FDkjUMe/ePun8UAAAVElOtyzJqcQAAAABJRU5ErkJggg==',
+      ligature: 'clear_all',
       isAvailable: function() {
         return !!this.hardSelection;
       },
@@ -188,7 +195,8 @@ CLASS({
     },
     {
       name: 'editColumns',
-      label: 'more_vert',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAM0lEQVR4AWMYtiCI4TXDKwZ/otUDlf8HwpfEa3gF1vCCeA3+DC+Byn2p5sXRUBoNpWEKAEP5JZC/ixCxAAAAAElFTkSuQmCC',
+      ligature: 'more_vert',
       code: function(X, action) {
         if ( this.columnSelectionView.state === 'OPEN' ) return;
         this.columnSelectionView.open();
