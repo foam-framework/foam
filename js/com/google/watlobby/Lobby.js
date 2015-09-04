@@ -64,7 +64,6 @@ CLASS({
     { name: 'topic' },
     { name: 'image' },
     { name: 'roundImage' },
-    { name: 'ring' },
     { name: 'zoom', defaultValue: 0 }
   ],
 
@@ -76,13 +75,6 @@ CLASS({
         var img = this.img = this.ImageCView.create({src: this.image});
         this.addChild(img);
         this.img = img;
-      }
-      // For roundImages we want to draw the border above our children to
-      // hide any blending issues at the border. To do this we add another
-      // Circle child.
-      if ( this.roundImage ) {
-        this.ring = this.Circle.create({color: null});
-        this.addChild(this.ring);
       }
     },
     function setSelected(selected) {
@@ -109,11 +101,8 @@ CLASS({
         }.bind(this), Movement.easy)();
       }
     },
-    function paintChildren() {
-      var c = this.canvas;
-
-      if ( this.topic.r ) this.r = this.topic.r;
-
+    function paint() {
+      this.r = this.topic.r;
       if ( this.zoom ) {
         var w = this.lobby.width;
         var h = this.lobby.height;
@@ -135,16 +124,14 @@ CLASS({
           this.removeChild(this.textArea_);
           this.textArea_ = null;
         }
-
-//        c.fillStyle = this.topic.color;
-//        c.fillRect(10, 10, 20, 20);
       }
 
-      if ( this.ring ) {
-        this.ring.r = this.r;
-        this.ring.borderWidth = this.borderWidth;
-        this.ring.border = this.border;
-      }
+
+      this.SUPER();
+    },
+    function paintBorder() { },
+    function paintChildren() {
+      var c = this.canvas;
 
       if ( this.image ) {
         /*
@@ -174,6 +161,7 @@ CLASS({
         this.img.x = this.img.y = s;
       }
       this.SUPER();
+      foam.graphics.Circle.getPrototype().paintBorder.call(this);
     }
   ]
 });
@@ -373,8 +361,6 @@ CLASS({
       var w = this.width;
       var h = this.height;
       var self = this;
-      // Make collision detection much faster by not checking
-      // if air bubbles collide with other air bubbles
       c.detectCollisions = function() {
         var cs = this.children;
         for ( var i = 0 ; i < cs.length ; i++ ) {
@@ -396,7 +382,7 @@ CLASS({
             c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
 
           // Make collision detection 5X faster by only checking every fifth time.
-          if ( ( self.timer.i + i ) % 6 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
+          if ( ( self.timer.i + i ) % 5 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
             var c2 = cs[j];
             if ( c1.intersects(c2) ) this.collide(c1, c2);
           }
@@ -420,7 +406,7 @@ CLASS({
         { topic: 'foam',         image: 'foam_whiteontransparent.png', r: 80, color: 'red', roundImage: true, background: 'red' },
         { topic: 'inwatvideo',   image: 'inwatvideo.png',   r: 120, model: 'Video', video: '1Bb29KxXzDs', roundImage: true },
         { topic: 'appbuilder',   image: 'appbuilder.png',   r: 120, model: 'Video', video: 'HvxKHj9QmMI' },
-        { topic: 'photos',       image: 'photoalbum.png',   r: 110, model: 'PhotoAlbum', roundImage: true }
+        { topic: 'photos',       image: 'photoalbum.png',   r: 110, model: 'PhotoAlbum', color: this.YELLOW, roundImage: true }
       ], this.Topic);
     }}
   ],
