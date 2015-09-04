@@ -74,7 +74,11 @@ CLASS({
         c.fill();
       }
 
+      this.paintBorder();
+    },
+    function paintBorder() {
       if ( this.border ) {
+        var c = this.canvas;
         c.lineWidth = this.borderWidth;
 
         c.beginPath();
