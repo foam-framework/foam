@@ -81,8 +81,8 @@ CLASS({
     {
       name: 'data',
       postSet: function(old,nu) {
-        if ( (! old) || this.hour != this.data.getHours() ) this.hour = this.data.getHours();
-        if ( (! old) || this.minute != this.data.getMinutes() ) this.minute = this.data.getMinutes();
+        if ( nu && ( (! old) || this.hour != this.data.getHours() )) this.hour = this.data.getHours();
+        if ( nu && ( (! old) || this.minute != this.data.getMinutes() )) this.minute = this.data.getMinutes();
       }
     }
   ],
