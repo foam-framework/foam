@@ -25,7 +25,7 @@ CLASS({
     { name: 'color' },
     { name: 'background' },
     { name: 'r' },
-    { name: 'model', defaultValue: 'com.google.watlobby.Bubble' },
+    { name: 'model', defaultValue: 'com.google.watlobby.TopicBubble' },
     { name: 'roundImage' },
     { name: 'video' },
     { name: 'text' }
@@ -39,6 +39,19 @@ CLASS({
 
   extendsModel: 'foam.demos.physics.PhysicalCircle',
 
+  properties: [
+    { name: 'borderWidth', defaultValue: 20 },
+    { name: 'color',       defaultValue: 'white' }
+  ]
+});
+
+
+CLASS({
+  package: 'com.google.watlobby',
+  name: 'TopicBubble',
+
+  extendsModel: 'com.google.watlobby.Bubble',
+
   requires: [
     'foam.graphics.Circle',
     'foam.graphics.SimpleRectangle',
@@ -51,8 +64,6 @@ CLASS({
     { name: 'topic' },
     { name: 'image' },
     { name: 'roundImage' },
-    { name: 'borderWidth', defaultValue: 20 },
-    { name: 'color',       defaultValue: 'white' },
     { name: 'ring' },
     { name: 'zoom', defaultValue: 0 }
   ],
@@ -172,10 +183,9 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'VideoBubble',
 
-  extendsModel: 'com.google.watlobby.Bubble',
+  extendsModel: 'com.google.watlobby.TopicBubble',
 
   requires: [
-    'com.google.watlobby.Bubble',
     'foam.graphics.ImageCView',
     'foam.graphics.SimpleRectangle',
     'foam.graphics.ViewCView'
@@ -254,7 +264,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'PhotoAlbumBubble',
 
-  extendsModel: 'com.google.watlobby.Bubble',
+  extendsModel: 'com.google.watlobby.TopicBubble',
 
   requires: [
     'foam.graphics.SimpleRectangle',
@@ -336,6 +346,7 @@ CLASS({
 
   requires: [
     'com.google.watlobby.Bubble',
+    'com.google.watlobby.TopicBubble',
     'com.google.watlobby.PhotoAlbumBubble',
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
@@ -428,7 +439,7 @@ CLASS({
           this.selected = null;
         }
 
-        if ( child && child.setSelected && child.topic ) {
+        if ( child && child.setSelected ) {
           this.selected = child
           child.setSelected(true);
         }
@@ -445,8 +456,8 @@ CLASS({
         this.timer.start();
       }
 
-      this.addTopicBubbles();
       this.addBubbles();
+      this.addTopicBubbles();
 
       document.body.addEventListener('click', this.onClick);
 
