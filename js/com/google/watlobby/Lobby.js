@@ -369,33 +369,26 @@ CLASS({
         for ( var i = 0 ; i < cs.length ; i++ ) {
           var c1 = cs[i];
           this.updateChild(c1);
+          var r = c1.r + 10;
 
-            // Bounce on Walls
-            // Uses a gentle repel rather than a hard bounce, looks better
-            var r = c1.r + 10;
-            //if ( c1.x < r     ) { c1.vx += 0.5; c1.out_ = false; }
-            //if ( c1.x > w - r ) { c1.vx -= 0.5; c1.out_ = false; }
-            //if ( c1.y < r +(h-w)/2     ) { c1.vy += 0.5; /*c1.out_ = false;*/ }
-            //if ( c1.y > w - r ) { c1.vy -= 0.5; /*c1.out_ = false;*/ }
+          // Add Coriolis Effect
+          var a = Math.atan2(c1.y-h/2, c1.x-w/2);
+          var d = Movement.distance(c1.y-h/2, c1.x-w/2);
+          // Keeps topic bubbles from going too far off screen
+          // if ( c1.topic && d > h / 2 - r) c1.out_ = false;
+          if ( d > w / 2 - r ) c1.out_ = false;
+          if ( d < h/4 ) c1.out_ = true;
+          // c1.color = c1.out_ ? 'orange' : 'blue';
 
-            // Add Coriolis Effect
-            var a = Math.atan2(c1.y-h/2, c1.x-w/2);
-            var d = Movement.distance(c1.y-h/2, c1.x-w/2);
-            // Keeps topic bubbles from going too far off screen
-            // if ( c1.topic && d > h / 2 - r) c1.out_ = false;
-            if ( d > w / 2 - r ) c1.out_ = false;
-            if ( d < h/4 ) c1.out_ = true;
-            // c1.color = c1.out_ ? 'orange' : 'blue';
+          // The 0.9 gives it a slight outward push
+          if ( c1.mass != c1.INFINITE_MASS )
+            c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
 
-            // The 0.9 gives it a slight outward push
-            if ( c1.mass != c1.INFINITE_MASS )
-              c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
-
-            // Make collision detection 5X faster by only checking every fifth time.
-            if ( ( self.timer.i + i ) % 10 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
-              var c2 = cs[j];
-              if ( c1.intersects(c2) ) this.collide(c1, c2);
-            }
+          // Make collision detection 5X faster by only checking every fifth time.
+          if ( ( self.timer.i + i ) % 10 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
+            var c2 = cs[j];
+            if ( c1.intersects(c2) ) this.collide(c1, c2);
+          }
         }
       };
       return c;
@@ -416,10 +409,7 @@ CLASS({
         { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, color: 'red' },
         { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 120, model: 'com.google.watlobby.VideoBubble', video: '1Bb29KxXzDs' },
         { topic: 'appbuilder',   image: 'appbuilder.png', r: 120, model: 'com.google.watlobby.VideoBubble', video: 'HvxKHj9QmMI' },
-        { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 110, model: 'com.google.watlobby.PhotoAlbumBubble' },
-        // chromebook, mine sweeper, calculator, I'm feeling lucky
-        // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, <iframe width="560" height="315" src="https://www.youtube.com/embed/1Bb29KxXzDs" frameborder="0" allowfullscreen></iframe>
-
+        { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 110, model: 'com.google.watlobby.PhotoAlbumBubble' }
       ], this.Topic);
     }}
   ],
