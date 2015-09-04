@@ -209,6 +209,7 @@ CLASS({
   templates: [
     function CSS() {/*
       .md-autocomplete-container {
+        display: block;
         position: relative;
       }
       .md-autocomplete-popup {
