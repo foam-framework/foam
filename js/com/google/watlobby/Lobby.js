@@ -72,6 +72,7 @@ CLASS({
       this.SUPER();
 
       this.addChild(this.img = this.ImageCView.create({src: this.image}));
+      this.addChild(this.textArea = this.SimpleRectangle.create({alpha: 0, background: this.border}));
     },
     function setSelected(selected) {
       if ( this.cancel_ ) {
@@ -89,18 +90,23 @@ CLASS({
           this.x = w/2;
           this.y = h/2;
           this.zoom = 1;
+          this.textArea.alpha = 0.1;
         }.bind(this), Movement.easy)();
       } else {
         this.mass = this.oldMass_;
         this.cancel_ = Movement.animate(1000, function() {
           this.zoom = 0;
+          this.textArea.alpha = 0;
         }.bind(this), Movement.easy)();
       }
     },
     function layout() {
       if ( ! this.img ) return;
 
+      var c = this.canvas;
+
       this.r = this.topic.r;
+
       if ( this.zoom ) {
         var w = this.lobby.width;
         var h = this.lobby.height;
@@ -108,50 +114,21 @@ CLASS({
 
         this.r += (r - this.topic.r) * this.zoom;
 
-        if ( this.zoom > 0.5 ) {
-          if ( ! this.textArea_ ) {
-            console.log(this.topic.color);
-            this.textArea_ = this.SimpleRectangle.create({alpha: 0.1, background: this.border});
-            this.addChild(this.textArea_);
-          }
+        if ( this.zoom ) {
 
-          this.textArea_.width = this.textArea_.height = 2 * ( this.zoom - 0.5 ) * this.r * 0.85;
-          this.textArea_.y = - this.textArea_.height / 2;
-          this.textArea_.x = this.r/2 - this.textArea_.width/2-100;
-        } else if ( this.textArea_ ) {
-          this.removeChild(this.textArea_);
-          this.textArea_ = null;
+          this.textArea.width = this.textArea.height = this.zoom * this.r*0.9;
+          this.textArea.y = - this.textArea.height / 2;
+          this.textArea.x = 0;
         }
-
-      }
-
-      var c = this.canvas;
-
-      /*
-        var d, s;
-        if ( this.roundImage ) {
-        d = 2 * this.r + 6;
-        s = -this.r - 3;
-        } else {
-        d = 2 * this.r * Math.SQRT1_2;
-        s = -this.r * Math.SQRT1_2;
-        }
-        this.img.x = this.img.y = s;
-        this.img.width = this.img.height = d;
-      */
-      var d, s;
-      if ( this.roundImage ) {
-        d = (2-this.zoom*.9) * this.r + 6;
-        s = -this.r - 3;
       } else {
-        d = (2-this.zoom*.9) * this.r * Math.SQRT1_2;
-        s = -this.r * Math.SQRT1_2;
+        this.textArea.width = this.textArea.height = 0;
       }
 
-      this.img.y += this.zoom * this.r/2.6;
-      this.img.x -= this.zoom * this.r/5.3;
-      this.img.width = this.img.height = d;
-      this.img.x = this.img.y = s;
+      var r2 = this.roundImage ? this.r + 2 : Math.SQRT1_2 * this.r;
+      this.img.x      = this.roundImage ? -r2 : -r2 * (1+this.zoom/4);
+      this.img.y      = -r2 / (1+this.zoom);
+      this.img.width  = (2-this.zoom) * r2;
+      this.img.height = (2-this.zoom) * r2;
     },
     function paint() {
       this.layout();
