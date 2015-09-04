@@ -17,6 +17,7 @@ CLASS({
   requires: [
     'foam.apps.ctm.Task',
     'foam.apps.ctm.TaskPieGraph',
+    'foam.ui.Icon',
     'foam.ui.ActionButton'
   ],
 
@@ -56,6 +57,19 @@ CLASS({
       defaultValueFn: function() {
         return this.$ && this.$.querySelector('#' + this.id + '-task-label');
       }
+    },
+    {
+      name: 'searchIcon',
+      lazyFactory: function() {
+        return this.Icon.create({
+          url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVQ4Ec3BMU7CYAAG0BfkHH8jZ5C4mGDirSBwjw7sBORIVEdhBibI50g6FOvGezy4D1sHVwef3v1haCkiIiJqQ3csxdFUMVCZOYlapw9x9OJm7CQmOmzFVNtcbHQ4iKLtWfzocBUDbU/iosNBVNpGYq/Dp5hpW4i1Du/iZOzm1Vm86VSLk7lnT0YWzmLljqFaRERErMS3yh0TGz8u9tbe8C2+VHqrfIlG0VulEY2it0ojdoreisZO8Q9F8bh+AdReVMyZp3KbAAAAAElFTkSuQmCC',
+          ligature: 'search',
+          color: 'rgba(0, 0, 0, 0.27)',
+          width: 20,
+          height: 20,
+          fontSize: 20
+        }, this.Y);
+      }
     }
   ],
 
@@ -77,7 +91,7 @@ CLASS({
           <header-text>Task Manager</header-text>
           <search-box>
             <chrome>
-              <i class="material-icons search">search</i>
+              %%searchIcon
             </chrome>
             $$search{ height: 30 }
           </search-box>
@@ -276,7 +290,7 @@ CLASS({
         justify-content: space-between;
         align-items: center;
       }
-      task-manager img {
+      task-manager .task-row-icon {
         margin-right: 4px;
         vertical-align: text-bottom;
       }
