@@ -60,7 +60,6 @@ CLASS({
       name: 'color',
       lazyFactory: function() { return 'black'; },
       postSet: function(old, nu) {
-        debugger;
         if ( old ) Events.unfollow(old.alpha$, this.alpha$);
         if ( nu ) Events.follow(nu.alpha$, this.alpha$);
       },
@@ -85,16 +84,16 @@ CLASS({
       defaultValue: 'material-icons-extended',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'foam.ui.ImageView',
       name: 'imageView',
       lazyFactory: function() {
-        return function() {
-          return this.ImageView.create({
-            data$: this.url$,
-            className$: this.imageClassName$,
-            alpha$: this.alpha$,
-          }, this.Y);
-        }.bind(this);
+        return this.ImageView.create({
+          data$: this.url$,
+          className$: this.imageClassName$,
+          alpha$: this.alpha$,
+          displayWidth$: this.width$,
+          displayHeight$: this.height$,
+        }, this.Y);
       },
     },
     {
@@ -136,7 +135,11 @@ CLASS({
   templates: [
     function toHTML() {/*
       <icon id="%%id" %%cssClassAttr()>
-        %%imageView()
+        <% if ( this.ligatureView ) { %>
+             %%ligatureView
+        <% } else { %>
+             %%imageView
+        <% } %>
       </icon>
     */},
     function CSS() {/*
