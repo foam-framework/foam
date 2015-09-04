@@ -178,9 +178,11 @@ CLASS({
     */},
     function CSS() {/*
       .property-citation-view-buttons {
-        min-width: 200px;
+        min-width: 170px;
+        max-width: 170px;
         display: flex;
         flex-direction: row-reverse;
+        align-items: center;
       }
 
     */},
