@@ -51,6 +51,11 @@ var FOAMargs = process.argv.slice(2);
     }
   }
 
+  // Backwards compatability support for clients that don't yet
+  // pass --flags to the swift generator.
+  global.FLAGS = global.FLAGS || {};
+  global.FLAGS.swift = true;
+
   require('../core/bootFOAMnode.js');
 
   if ( CLASSPATH ) {
