@@ -176,6 +176,22 @@ CLASS({
           c.alpha = 1.0;
           return c;
         }
+        rgb = nu.match(/^\s*#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])\s*$/);
+        if ( rgb ) {
+          c.red = parseInt(rgb[1] + rgb[1], 16);
+          c.green = parseInt(rgb[2] + rgb[2], 16);
+          c.blue = parseInt(rgb[3] + rgb[3], 16);
+          c.alpha = 1.0;
+          return c;
+        }
+        rgb = nu.match(/^\s*#([0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F])\s*$/);
+        if ( rgb ) {
+          c.red = parseInt(rgb[1], 16);
+          c.green = parseInt(rgb[2], 16);
+          c.blue = parseInt(rgb[3], 16);
+          c.alpha = 1.0;
+          return c;
+        }
         rgb = nu.match(/^\s*rgb[(]\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*[)]\s*$/);
         if ( rgb ) {
           c.red = parseInt(rgb[1]);
