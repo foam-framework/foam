@@ -43,9 +43,10 @@ CLASS({
       defaultValue: false
     },
     {
+      model_: 'foam.ui.ColorProperty',
       name: 'color',
       help: 'The text and background color to use for the active state',
-      defaultValue: '#02A8F3'
+      lazyFactory: function() { return '#02A8F3'; }
     },
     {
       model_: 'StringProperty',
@@ -73,9 +74,8 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      model_: 'foam.ui.ColorProperty',
       name: 'haloColor',
-      defaultValue: '',
       postSet: function(old, nu) {
         if ( ! old ) Events.unfollow(this.currentColor_$, this.haloColor_$);
         if ( ! nu )  Events.follow(this.currentColor_$, this.haloColor_$);
@@ -136,7 +136,6 @@ CLASS({
         return this.HaloView.create({
           className: 'halo',
           recentering: false,
-          color$: this.haloColor_$,
           pressedAlpha: 0.2,
           startAlpha: 0.2,
           finishAlpha: 0
@@ -148,13 +147,13 @@ CLASS({
       defaultValueFn: function() { return this.action && this.action.help; }
     },
     {
-      model_: 'StringProperty',
+      model_: 'foam.ui.ColorProperty',
       name: 'currentColor_',
       hidden: true,
       defaultValueFn: function() { return this.color; }
     },
     {
-      model_: 'StringProperty',
+      model_: 'foam.ui.ColorProperty',
       name: 'haloColor_',
       hidden: true
     },
@@ -169,14 +168,19 @@ CLASS({
     function init() {
       this.SUPER();
       if ( ! this.haloColor ) Events.follow(this.currentColor_$, this.haloColor_$);
+      // TODO(markdittmer): Halos (really, CViews in general) could probably
+      // share the same modelled notion of color.
+      Events.map(this.haloColor_$, this.halo.color$, function(color) {
+        return color.toString();
+      });
     },
     function initHTML() {
       this.SUPER();
 
       this.currentColor_$.addListener(function() {
-        if ( this.$ ) this.$.style.color = this.currentColor_;
+        if ( this.$ ) this.$.style.color = this.currentColor_.toString();
       }.bind(this));
-      this.$.style.color = this.currentColor_;
+      this.$.style.color = this.currentColor_.toString();
       this.$.style.font = this.font;
       this.$.style.opacity = this.alpha;
       this.$.style.background = this.background;
