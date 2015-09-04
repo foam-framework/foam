@@ -47,6 +47,13 @@ CLASS({
       postSet: function(_, newValue) {
         if ( this.$ ) this.$.style.height = newValue;
       }
+    },
+    {
+      name: 'alpha',
+      defaultValue: 1.0,
+      postSet: function(_, newValue) {
+        if ( this.$ ) this.$.style.opacity = newValue;
+      }
     }
   ],
 
@@ -56,7 +63,8 @@ CLASS({
         ( this.backupImage ? ' src="' + this.backupImage + '"' : '' ) :
         ' src="' + this.data + '"';
 
-      return '<img ' + this.cssClassAttr() + ' id="' + this.id + '"' + src + '>';
+      return '<img ' + this.cssClassAttr() + ' id="' + this.id + '"' + src +
+          'style="opacity:' + this.alpha + '">';
     },
     isSupportedUrl: function(url) {
       url = url.trim().toLowerCase();

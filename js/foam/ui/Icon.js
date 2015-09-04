@@ -56,8 +56,18 @@ CLASS({
       defaultValue: 24,
     },
     {
+      model_: 'foam.ui.ColorProperty',
       name: 'color',
-      defaultValue: 'black',
+      lazyFactory: function() { return 'black'; },
+      postSet: function(old, nu) {
+        debugger;
+        if ( old ) Events.unfollow(old.alpha$, this.alpha$);
+        if ( nu ) Events.follow(nu.alpha$, this.alpha$);
+      },
+    },
+    {
+      model_: 'FloatProperty',
+      name: 'alpha',
     },
     {
       model_: 'IntProperty',
@@ -82,6 +92,7 @@ CLASS({
           return this.ImageView.create({
             data$: this.url$,
             className$: this.imageClassName$,
+            alpha$: this.alpha$,
           }, this.Y);
         }.bind(this);
       },
