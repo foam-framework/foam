@@ -250,6 +250,11 @@ CLASS({
 
       flat-button.icon-only {
         border-radius: 50%;
+        transition: transform 250ms ease, width 249ms ease, margin 249ms ease, padding 249ms ease;
+        transition-delay: 249ms, 0ms, 0ms, 0ms;        
+        transform: unset;
+        width: 40px;
+        flex-shrink: 0;
       }
 
       flat-button.createButton {
@@ -264,6 +269,15 @@ CLASS({
       flat-button.label-only .flat-button-icon-container,
       flat-button.icon-only .md-button-label {
         display: none;
+      }
+
+      flat-button.icon-only.hidden {
+        display: inherit!important;
+        transform: rotateZ(180deg) scaleY(0);
+        transition-delay: 0ms, 250ms, 250ms, 250ms;
+        width: 0;
+        margin: 0;
+        padding: 0;        
       }
 
       flat-button:not(.label-only) .md-button-label {
@@ -287,6 +301,11 @@ CLASS({
         position: absolute;
         left: 0px;
         bottom: -7px;
+      }
+
+      flat-button.icon-only.createButton {
+        width: 44px;
+        height: 44px;
       }
 
     */},

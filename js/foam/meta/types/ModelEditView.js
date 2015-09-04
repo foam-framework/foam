@@ -181,7 +181,6 @@ CLASS({
         font-size: 120%;
         color: #777;
       }
-
     */}
   ]
 
