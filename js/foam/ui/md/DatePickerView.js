@@ -49,6 +49,7 @@ CLASS({
       },
       adapt: function(old, nu) {
         if (typeof nu === 'string') return new Date(nu);
+        if ( ! nu ) return new Date();
         return nu;
       },
       postSet: function(old, nu) {

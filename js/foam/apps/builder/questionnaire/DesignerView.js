@@ -125,8 +125,9 @@ CLASS({
         display: flex;
         flex-direction: column;
         box-shadow: 0px 3px 4px #444;
-        overflow-y: hidden;
+        overflow-y: auto;
         min-height: 400px;
+        max-height: 100%;
       }
 
       @media (min-width: 600px) {
