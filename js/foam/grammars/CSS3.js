@@ -33,6 +33,7 @@ CLASS({
       'justify-content': true,
       'align-items': true,
       'align-content': true,
+      'user-select': true,
       'display': 'flex'
     }
   },
