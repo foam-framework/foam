@@ -97,7 +97,9 @@ CLASS({
         }.bind(this), Movement.easy)();
       }
     },
-    function paint() {
+    function layout() {
+      if ( ! this.img ) return;
+
       this.r = this.topic.r;
       if ( this.zoom ) {
         var w = this.lobby.width;
@@ -120,13 +122,9 @@ CLASS({
           this.removeChild(this.textArea_);
           this.textArea_ = null;
         }
+
       }
 
-
-      this.SUPER();
-    },
-    function paintBorder() { },
-    function paintChildren() {
       var c = this.canvas;
 
       /*
@@ -154,6 +152,13 @@ CLASS({
       this.img.x -= this.zoom * this.r/5.3;
       this.img.width = this.img.height = d;
       this.img.x = this.img.y = s;
+    },
+    function paint() {
+      this.layout();
+      this.SUPER();
+    },
+    function paintBorder() { },
+    function paintChildren() {
       this.SUPER();
       foam.graphics.Circle.getPrototype().paintBorder.call(this);
     }
