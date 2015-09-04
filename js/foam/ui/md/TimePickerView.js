@@ -60,7 +60,6 @@ CLASS({
         ]
       },
       postSet: function(old,nu) {
-console.log("hour change", old, nu);
         if ( (! equals(old,nu)) ) this.calcTime();
       }
     },
@@ -82,17 +81,14 @@ console.log("hour change", old, nu);
     {
       name: 'data',
       postSet: function(old,nu) {
-console.log('data change', old,nu,' existing: ', this.hour, this.minute);
-        if ( (! old) || this.hour != this.data.getHours() ) this.hour = this.data.getHours();
-        if ( (! old) || this.minute != this.data.getMinutes() ) this.minute = this.data.getMinutes();
-console.log('     change', old,nu,'      now: ', this.hour, this.minute);
+        if ( nu && ( (! old) || this.hour != this.data.getHours() )) this.hour = this.data.getHours();
+        if ( nu && ( (! old) || this.minute != this.data.getMinutes() )) this.minute = this.data.getMinutes();
       }
     }
   ],
   methods: [
     function calcTime() {
       var newData = ( ! this.data ) ? new Date() : new Date(this.data);
-console.log("calc new data", newData, this.data);
       if ( this.hour >= 0 ) newData.setHours(this.hour);
       if ( this.minute >= 0 ) newData.setMinutes(this.minute);
       this.data = newData;
