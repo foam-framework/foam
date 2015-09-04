@@ -24,7 +24,6 @@ CLASS({
     'foam.graphics.PositionedCViewView',
     'foam.graphics.CViewView',
     'foam.graphics.webgl.CViewGLView'
-
   ],
 
   traits: [ 'foam.patterns.ChildTreeTrait' ],
@@ -281,15 +280,17 @@ CLASS({
       }
       if ( this.suspended ) return; // we allowed initialization, but if suspended don't paint
 
-      this.canvas.save();
+      var c = this.canvas;
+      c.save();
+      c.globalAlpha *= this.alpha;
       this.transform();
       if ( this.clipped ) {
-        this.canvas.rect(0,0,this.width,this.height);
-        this.canvas.clip();
+        c.rect(0,0,this.width,this.height);
+        c.clip();
       }
       this.paintSelf();
       this.paintChildren();
-      this.canvas.restore();
+      c.restore();
     },
 
     transform: function() {

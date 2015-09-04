@@ -62,8 +62,6 @@ CLASS({
       var c = this.canvas;
       if ( ! c ) return;
 
-      c.globalAlpha = this.alpha;
-
       if ( ! this.r ) return;
 
       if ( this.color) {

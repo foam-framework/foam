@@ -215,10 +215,9 @@ CLASS({
           initHTML: function() {}
         }, x: this.x, y: this.y, width: 0, height: 0});
 
-        this.r_ = this.r;
         lobby.collider.stop();
         Movement.compile([
-          [500, function() { this.r = 0; }.bind(this) ],
+          [500, function() { this.alpha = 0; }.bind(this) ],
           [1000, function(i, j) {
             r.alpha = 0.7;
             v.width = vw;
@@ -236,7 +235,7 @@ CLASS({
 //        lobby.collider.stop();
         Movement.compile([
           [ 500, function() { v.x = this.x; v.y = this.y; v.width = v.height = r.alpha = 0; }.bind(this) ],
-          [ 500, function() { this.r = this.r_ }.bind(this) ],
+          [ 500, function() { this.alpha = 1.0; }.bind(this) ],
           function() {
             v.destroy();
             lobby.collider.start();
@@ -331,19 +330,11 @@ CLASS({
 
 CLASS({
   package: 'com.google.watlobby',
-  name: 'AirBubble',
-  extendsModel: 'foam.demos.physics.PhysicalCircle'
-});
-
-
-CLASS({
-  package: 'com.google.watlobby',
   name: 'Lobby',
   extendsModel: 'foam.graphics.CView',
   traits: [ 'com.google.misc.Colors' ],
 
   requires: [
-    'com.google.watlobby.AirBubble',
     'com.google.watlobby.Bubble',
     'com.google.watlobby.PhotoAlbumBubble',
     'com.google.watlobby.Topic',
@@ -361,7 +352,7 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'n',          defaultValue: 30 },
+    { name: 'n',          defaultValue: 25 },
     { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
@@ -379,7 +370,6 @@ CLASS({
           var c1 = cs[i];
           this.updateChild(c1);
 
-//          if ( ! com.google.watlobby.AirBubble.isInstance(c1) ) {
             // Bounce on Walls
             // Uses a gentle repel rather than a hard bounce, looks better
             var r = c1.r + 10;
@@ -406,7 +396,6 @@ CLASS({
               var c2 = cs[j];
               if ( c1.intersects(c2) ) this.collide(c1, c2);
             }
-//          }
         }
       };
       return c;
@@ -421,7 +410,7 @@ CLASS({
         { topic: 'onhub',        image: 'onhub.png',        roundImage: true, r: 120 },
         { topic: 'inbox',        image: 'inbox.png',        r: 160, color: this.BLUE },
         { topic: 'android',      image: 'android.png',      r: 100, color: this.GREEN },
-        { topic: 'calc',         image: 'calculator.png',   r: 100, color: this.RED   },
+        { topic: 'calc',         image: 'calculator.png',   r: 100, color: this.GREEN },
         { topic: 'gmailoffline', image: 'gmailoffline.png', r: 160, color: this.BLUE },
         { topic: 'fiber',        image: 'fiber.png',        r: 180, color: this.BLUE },
         { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, color: 'red' },
@@ -468,7 +457,6 @@ CLASS({
 
       this.addTopicBubbles();
       this.addBubbles();
-//      this.addAirBubbles();
 
       document.body.addEventListener('click', this.onClick);
 
@@ -513,7 +501,6 @@ CLASS({
           r: 10 + Math.random() * 60,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-//          color: 'white',
           color: null,
           border: color
         });
@@ -523,38 +510,6 @@ CLASS({
         c.gravity = 0;
         c.friction = 0.94;
         this.collider.add(c);
-      }
-    },
-
-    function addAirBubbles() {
-      for ( var i = 0 ; i < this.airBubbles ; i++ ) {
-        var b = this.AirBubble.create({
-          r: 6,
-          x: Math.random() * this.width,
-          y: Math.random() * this.height,
-          borderWidth: 0.5,
-          color: 'rgba(0,0,255,0.2)',
-          border: '#blue',
-//          color: 'rgba(100,100,200,0.2)',
-//          border: '#55a',
-          mass: 0.7
-        });
-
-        b.y$.addListener(function(b) {
-          if ( b.y < -5 ) {
-            b.y = this.height;
-            b.x = this.width * Math.random();
-          }
-        }.bind(this, b));
-
-        b.vy = -4;
-        b.gravity = 0;
-        b.friction = 0.8;
-        this.collider.add(b);
-
-        this.addChild(b);
-
-//        this.view.$.addEventListener('click', this.onClick);
       }
     },
 
