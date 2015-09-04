@@ -187,6 +187,7 @@ var Model = {
     {
       name: 'swiftClassName',
       type: 'String',
+      labels: ['swift'],
       defaultValueFn: function() { return (this.abstract ? 'Abstract' : '') + this.name; },
       help: 'The Swift classname of this model.'
     },
