@@ -118,7 +118,7 @@ CLASS({
 
           this.textArea.width = this.textArea.height = this.zoom * this.r*0.9;
           this.textArea.y = - this.textArea.height / 2;
-          this.textArea.x = 0;
+          this.textArea.x = -20;
         }
       } else {
         this.textArea.width = this.textArea.height = 0;
