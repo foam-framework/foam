@@ -43,7 +43,13 @@ CLASS({
           }
         }
       }
-      model.properties = properties;
+
+      model.properties = properties.filter(function(p) {
+        if ( p.labels && p.labels.indexOf('swift') == -1 ) {
+          return false;
+        }
+        return true;
+      });
 
       return model;
     },
