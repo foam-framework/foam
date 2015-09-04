@@ -25,7 +25,7 @@ CLASS({
     { name: 'color' },
     { name: 'background' },
     { name: 'r' },
-    { name: 'model', defaultValue: 'com.google.watlobby.TopicBubble' },
+    { name: 'model', defaultValue: 'Topic' },
     { name: 'roundImage' },
     { name: 'video' },
     { name: 'text' }
@@ -396,7 +396,7 @@ CLASS({
             c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
 
           // Make collision detection 5X faster by only checking every fifth time.
-          if ( ( self.timer.i + i ) % 10 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
+          if ( ( self.timer.i + i ) % 6 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
             var c2 = cs[j];
             if ( c1.intersects(c2) ) this.collide(c1, c2);
           }
@@ -407,20 +407,20 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, color: this.RED },
+        { topic: 'chrome',       image: 'chrome.png',       r: 180, color: this.RED,   roundImage: true },
         { topic: 'flip',         image: 'flip.png',         r: 110, color: this.RED },
         { topic: 'pixel',        image: 'pixel.png',        r: 110, color: this.RED },
-        { topic: 'googlecanada', image: 'googlecanada.png', roundImage: true, r: 200, color: this.RED },
-        { topic: 'onhub',        image: 'onhub.png',        roundImage: true, r: 120 },
+        { topic: 'googlecanada', image: 'googlecanada.png', r: 200, color: this.RED,   roundImage: true },
+        { topic: 'onhub',        image: 'onhub.png',        r: 120, color: this.GREEN, roundImage: true },
         { topic: 'inbox',        image: 'inbox.png',        r: 160, color: this.BLUE },
         { topic: 'android',      image: 'android.png',      r: 100, color: this.GREEN },
         { topic: 'calc',         image: 'calculator.png',   r: 100, color: this.GREEN },
         { topic: 'gmailoffline', image: 'gmailoffline.png', r: 160, color: this.BLUE },
         { topic: 'fiber',        image: 'fiber.png',        r: 180, color: this.BLUE },
-        { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, color: 'red' },
-        { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 120, model: 'com.google.watlobby.VideoBubble', video: '1Bb29KxXzDs' },
-        { topic: 'appbuilder',   image: 'appbuilder.png', r: 120, model: 'com.google.watlobby.VideoBubble', video: 'HvxKHj9QmMI' },
-        { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 110, model: 'com.google.watlobby.PhotoAlbumBubble' }
+        { topic: 'foam',         image: 'foam_whiteontransparent.png', r: 80, color: 'red', roundImage: true, background: 'red' },
+        { topic: 'inwatvideo',   image: 'inwatvideo.png',   r: 120, model: 'Video', video: '1Bb29KxXzDs', roundImage: true },
+        { topic: 'appbuilder',   image: 'appbuilder.png',   r: 120, model: 'Video', video: 'HvxKHj9QmMI' },
+        { topic: 'photos',       image: 'photoalbum.png',   r: 110, model: 'PhotoAlbum', roundImage: true }
       ], this.Topic);
     }}
   ],
@@ -474,7 +474,7 @@ CLASS({
       for ( var i = 0 ; i < this.topics.length ; i++ ) {
         var color = this.COLORS[i % this.COLORS.length];
         var t = this.topics[i];
-        var c = this.X.lookup(t.model).create({
+        var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           border: color
