@@ -71,11 +71,7 @@ CLASS({
     function initCView() {
       this.SUPER();
 
-      if ( this.image ) {
-        var img = this.img = this.ImageCView.create({src: this.image});
-        this.addChild(img);
-        this.img = img;
-      }
+      this.addChild(this.img = this.ImageCView.create({src: this.image}));
     },
     function setSelected(selected) {
       if ( this.cancel_ ) {
@@ -133,33 +129,31 @@ CLASS({
     function paintChildren() {
       var c = this.canvas;
 
-      if ( this.image ) {
-        /*
+      /*
         var d, s;
         if ( this.roundImage ) {
-          d = 2 * this.r + 6;
-          s = -this.r - 3;
+        d = 2 * this.r + 6;
+        s = -this.r - 3;
         } else {
-          d = 2 * this.r * Math.SQRT1_2;
-          s = -this.r * Math.SQRT1_2;
+        d = 2 * this.r * Math.SQRT1_2;
+        s = -this.r * Math.SQRT1_2;
         }
         this.img.x = this.img.y = s;
         this.img.width = this.img.height = d;
-        */
-        var d, s;
-        if ( this.roundImage ) {
-          d = (2-this.zoom*.9) * this.r + 6;
-          s = -this.r - 3;
-        } else {
-          d = (2-this.zoom*.9) * this.r * Math.SQRT1_2;
-          s = -this.r * Math.SQRT1_2;
-        }
-
-          this.img.y += this.zoom * this.r/2.6;
-          this.img.x -= this.zoom * this.r/5.3;
-          this.img.width = this.img.height = d;
-        this.img.x = this.img.y = s;
+      */
+      var d, s;
+      if ( this.roundImage ) {
+        d = (2-this.zoom*.9) * this.r + 6;
+        s = -this.r - 3;
+      } else {
+        d = (2-this.zoom*.9) * this.r * Math.SQRT1_2;
+        s = -this.r * Math.SQRT1_2;
       }
+
+      this.img.y += this.zoom * this.r/2.6;
+      this.img.x -= this.zoom * this.r/5.3;
+      this.img.width = this.img.height = d;
+      this.img.x = this.img.y = s;
       this.SUPER();
       foam.graphics.Circle.getPrototype().paintBorder.call(this);
     }
