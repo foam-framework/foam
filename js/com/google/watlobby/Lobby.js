@@ -94,7 +94,7 @@ CLASS({
         }.bind(this), Movement.easy)();
       } else {
         this.mass = this.oldMass_;
-        this.cancel_ = Movement.animate(1000, function() {
+        this.cancel_ = Movement.animate(2000, function() {
           this.zoom = 0;
           this.textArea.alpha = 0;
         }.bind(this), Movement.easy)();
@@ -265,7 +265,7 @@ CLASS({
               r: 0, x: this.x, y: this.y, border: '#f00'
             });
             Movement.animate(2000, function(i, j) {
-              this.r = Math.min(w, h) / 2 - 6;
+              this.r = Math.min(w, h) / 2 - 16;
               this.x = ( i + 0.5 ) * w;
               this.y = ( j + 0.5 ) * h;
             }.bind(b, i, j), Movement.oscillate(0.6, 0.03, 2))();
@@ -426,7 +426,7 @@ CLASS({
       var foam = this.ImageCView.create({x: 10, y: this.height-100, width: 837/2.9, height: 269/2.9, src: 'foampowered_red.png'});
       this.addChild(foam);
 
-      var clock = this.ClockView.create({x: this.width-100, y: 100, r: 90});
+      var clock = this.ClockView.create({x: this.width-120, y: 120, r: 120-10});
       this.addChild(clock);
 
       this.collider.start();
