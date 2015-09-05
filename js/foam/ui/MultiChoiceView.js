@@ -22,12 +22,18 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   documentation: 'A View for selecting a set of keys from an array of choices or from a DAO.',
+  requires: [ 'foam.u2.Element' ],
 
   properties: [
     {
       name: 'prop',
       hidden: true
     },
+      {
+          type: 'Property',
+          name: 'property',
+          hidden: true
+      },
     {
       name:  'choices',
       type:  'Array[StringField]',
@@ -138,8 +144,8 @@ CLASS({
 <% this.choices.forEach(function(choice) {
   var id = self.nextID();
   self.data$.addListener(function() { if ( ! self.X.$(id) ) return; self.X.$(id).selected = self.data[choice[0]]; });
+  out(self.optionToHTML(id, choice[0], self.data[choice[0]], choice[1].toString()));
  %>
- <option id="<%= id %>" <% if ( self.data[choice[0]] ) { %> selected="selected"<% } %>><%= escapeHTML(choice[1].toString()) %></option>
 <% }); %>
 */}
   ],
@@ -155,6 +161,20 @@ CLASS({
       var t = e.target || e.srcElement;
       if ( t.nodeType == 3 ) t = t.parentNode; // Opera fix
       return t;
-    }
+    },
+      function optionToHTML(id, key, selected, value) {
+          var self = this;
+          var e = E('option');
+          e.id = id;
+          if (selected) {
+              e.attr('selected', 'selected');
+          }
+          if (key && this.property && this.property.optionLabelFormatter) {
+              this.property.optionLabelFormatter(e, key, value);
+          } else {
+              e.c(escapeHTML(value));
+          }
+          return e;
+      },
   ]
 });
