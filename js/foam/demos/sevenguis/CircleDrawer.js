@@ -26,21 +26,33 @@ MODEL({
   ],
 
   properties: [
-    { name: 'canvas', factory: function() { return this.CView.create({width: 500, height: 500, background: '#f3f3f3'}); }},
+    {
+      name: 'canvas',
+      factory: function() {
+        return this.CView.create({width: 500, height: 500, background: '#f3f3f3', border: 'black'});
+      }
+    },
   ],
   methods: [
     function initHTML() {
       this.SUPER();
       this.canvas.$.addEventListener('click', this.onClick);
+      this.canvas.$.addEventListener('contextmenu', this.onRightClick);
     }
   ],
   listeners: [
     {
       name: 'onClick',
       code: function(evt) {
-        console.log('click: ', evt);
         this.canvas.addChild(this.Circle.create({x: evt.offsetX, y: evt.offsetY, r: 25, color: '#999', border: 'black'}));
         this.canvas.paint();
+      }
+    },
+    {
+      name: 'onRightClick',
+      code: function(evt) {
+        console.log('right-click: ', evt);
+        evt.preventDefault();
       }
     }
   ],
