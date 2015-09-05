@@ -82,7 +82,7 @@ CLASS({
         c.lineWidth = this.borderWidth;
 
         c.beginPath();
-        c.arc(0, 0, this.r+this.borderWidth/2-0.1, -this.endAngle, -this.startAngle, false);
+        c.arc(0, 0, this.r+this.borderWidth/2-1, -this.endAngle, -this.startAngle, false);
         c.closePath();
 
         c.strokeStyle = this.border;
