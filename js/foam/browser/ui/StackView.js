@@ -204,7 +204,8 @@ CLASS({
         sizes[i] = newSize;
       }
 
-      if ( width > 0 ) {
+      if ( width !== 0 ) {
+        // either the last view needs to suck up extra space, or only one view fit and it needs to shrink
         i = this.visibleEnd_;
         sizes[i] += width;
       }

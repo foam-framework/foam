@@ -43,9 +43,10 @@ CLASS({
       defaultValue: false
     },
     {
+      model_: 'foam.ui.ColorProperty',
       name: 'color',
       help: 'The text and background color to use for the active state',
-      defaultValue: '#02A8F3'
+      lazyFactory: function() { return '#02A8F3'; }
     },
     {
       model_: 'StringProperty',
@@ -73,9 +74,8 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      model_: 'foam.ui.ColorProperty',
       name: 'haloColor',
-      defaultValue: '',
       postSet: function(old, nu) {
         if ( ! old ) Events.unfollow(this.currentColor_$, this.haloColor_$);
         if ( ! nu )  Events.follow(this.currentColor_$, this.haloColor_$);
@@ -136,7 +136,6 @@ CLASS({
         return this.HaloView.create({
           className: 'halo',
           recentering: false,
-          color$: this.haloColor_$,
           pressedAlpha: 0.2,
           startAlpha: 0.2,
           finishAlpha: 0
@@ -148,13 +147,13 @@ CLASS({
       defaultValueFn: function() { return this.action && this.action.help; }
     },
     {
-      model_: 'StringProperty',
+      model_: 'foam.ui.ColorProperty',
       name: 'currentColor_',
       hidden: true,
       defaultValueFn: function() { return this.color; }
     },
     {
-      model_: 'StringProperty',
+      model_: 'foam.ui.ColorProperty',
       name: 'haloColor_',
       hidden: true
     },
@@ -169,14 +168,19 @@ CLASS({
     function init() {
       this.SUPER();
       if ( ! this.haloColor ) Events.follow(this.currentColor_$, this.haloColor_$);
+      // TODO(markdittmer): Halos (really, CViews in general) could probably
+      // share the same modelled notion of color.
+      Events.map(this.haloColor_$, this.halo.color$, function(color) {
+        return color.toString();
+      });
     },
     function initHTML() {
       this.SUPER();
 
       this.currentColor_$.addListener(function() {
-        if ( this.$ ) this.$.style.color = this.currentColor_;
+        if ( this.$ ) this.$.style.color = this.currentColor_.toString();
       }.bind(this));
-      this.$.style.color = this.currentColor_;
+      this.$.style.color = this.currentColor_.toString();
       this.$.style.font = this.font;
       this.$.style.opacity = this.alpha;
       this.$.style.background = this.background;
@@ -250,6 +254,11 @@ CLASS({
 
       flat-button.icon-only {
         border-radius: 50%;
+        transition: transform 250ms ease, width 249ms ease, margin 249ms ease, padding 249ms ease;
+        transition-delay: 249ms, 0ms, 0ms, 0ms;        
+        transform: unset;
+        width: 40px;
+        flex-shrink: 0;
       }
 
       flat-button.createButton {
@@ -264,6 +273,15 @@ CLASS({
       flat-button.label-only .flat-button-icon-container,
       flat-button.icon-only .md-button-label {
         display: none;
+      }
+
+      flat-button.icon-only.hidden {
+        display: inherit!important;
+        transform: rotateZ(180deg) scaleY(0);
+        transition-delay: 0ms, 250ms, 250ms, 250ms;
+        width: 0;
+        margin: 0;
+        padding: 0;        
       }
 
       flat-button:not(.label-only) .md-button-label {
@@ -287,6 +305,11 @@ CLASS({
         position: absolute;
         left: 0px;
         bottom: -7px;
+      }
+
+      flat-button.icon-only.createButton {
+        width: 44px;
+        height: 44px;
       }
 
     */},

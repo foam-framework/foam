@@ -187,6 +187,15 @@ CLASS({
     function updateHead() {
       var head = this.$head;
       if ( ! head ) return;
+
+      // Remove header column asc/desc sorting indicator icons when they are
+      // views rather than raw HTML.
+      var children = this.children.slice();
+      for ( var i = 0; i < children.length; ++i ) {
+        if ( children[i] === this.ascIcon || children[i] === this.descIcon )
+          this.removeChild(children[i]);
+      }
+
       var out = TemplateOutput.create(this);
       this.headHTML(out);
       head.innerHTML = out.toString();
@@ -421,8 +430,15 @@ CLASS({
     function headCellHTML(out, prop, i) {/*
       <flex-col-label>
         <label>{{prop.tableLabel}}</label>
-        <% if ( this.isSortedByProp(prop) ) { %>
-          <span class="indicator"><%= this.sortOrder === prop ? this.ascIcon : this.descIcon %></span>
+        <% if ( this.isSortedByProp(prop) ) {
+             var icon = this.sortOrder === prop ? this.ascIcon : this.descIcon; %>
+             <span class="indicator">
+             <% if ( typeof icon === 'string' ) { %>
+                  <%= icon %>
+             <% } else {
+                  out(icon);
+                } %>
+             </span>
         <% } %>
       </flex-col-label>
 

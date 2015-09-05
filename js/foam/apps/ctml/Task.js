@@ -47,7 +47,7 @@ CLASS({
       aliases: ['t', 'task'],
       label: 'Task',
       tableFormatter: function(name, obj) {
-        return '<img src="' + obj.iconUrl + '"><span>' + name + '</span>';
+        return '<img class="task-row-icon" src="' + obj.iconUrl + '"><span>' + name + '</span>';
       }
     },
     {
@@ -89,7 +89,8 @@ CLASS({
   actions: [
     {
       name: 'open',
-      label: 'open_in_browser',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAV0lEQVR4Ad2SsQ2AMAwEb0GksNGPG2cJIwEFbowRoiB3hfXFdWYiVgxPHDQCht9oBLzg+yDhg0DoSaB9qxoIP1UlEH5RSZDsfwQjvkC4h51Aw9KgszANG5E0n/P2Pi6uAAAAAElFTkSuQmCC',
+      ligature: 'open_in_browser',
       code: function() {
         // TODO(markdittmer): Implement this.
         console.log('Open process', this.id);
@@ -97,7 +98,8 @@ CLASS({
     },
     {
       name: 'kill',
-      label: 'delete',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAANklEQVR4AWMYCkCB4QHDfyh8AOThAf9xQzI1UA5INX9Uw6gGnOAVVuUvcGvwZ3iJRbnvIM/yAMG7x37sRHSvAAAAAElFTkSuQmCC',
+      ligature: 'delete',
       code: function() {
         // TODO(markdittmer): Implement this.
         console.log('Kill process', this.id);

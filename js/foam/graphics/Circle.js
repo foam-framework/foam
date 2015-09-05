@@ -62,8 +62,6 @@ CLASS({
       var c = this.canvas;
       if ( ! c ) return;
 
-      c.globalAlpha = this.alpha;
-
       if ( ! this.r ) return;
 
       if ( this.color) {
@@ -76,7 +74,11 @@ CLASS({
         c.fill();
       }
 
+      this.paintBorder();
+    },
+    function paintBorder() {
       if ( this.border ) {
+        var c = this.canvas;
         c.lineWidth = this.borderWidth;
 
         c.beginPath();

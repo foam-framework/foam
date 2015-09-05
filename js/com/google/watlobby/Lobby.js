@@ -25,7 +25,7 @@ CLASS({
     { name: 'color' },
     { name: 'background' },
     { name: 'r' },
-    { name: 'model', defaultValue: 'com.google.watlobby.Bubble' },
+    { name: 'model', defaultValue: 'Topic' },
     { name: 'roundImage' },
     { name: 'video' },
     { name: 'text' }
@@ -39,6 +39,19 @@ CLASS({
 
   extendsModel: 'foam.demos.physics.PhysicalCircle',
 
+  properties: [
+    { name: 'borderWidth', defaultValue: 20 },
+    { name: 'color',       defaultValue: 'white' }
+  ]
+});
+
+
+CLASS({
+  package: 'com.google.watlobby',
+  name: 'TopicBubble',
+
+  extendsModel: 'com.google.watlobby.Bubble',
+
   requires: [
     'foam.graphics.Circle',
     'foam.graphics.SimpleRectangle',
@@ -51,9 +64,6 @@ CLASS({
     { name: 'topic' },
     { name: 'image' },
     { name: 'roundImage' },
-    { name: 'borderWidth', defaultValue: 20 },
-    { name: 'color',       defaultValue: 'white' },
-    { name: 'ring' },
     { name: 'zoom', defaultValue: 0 }
   ],
 
@@ -61,18 +71,8 @@ CLASS({
     function initCView() {
       this.SUPER();
 
-      if ( this.image ) {
-        var img = this.img = this.ImageCView.create({src: this.image});
-        this.addChild(img);
-        this.img = img;
-      }
-      // For roundImages we want to draw the border above our children to
-      // hide any blending issues at the border. To do this we add another
-      // Circle child.
-      if ( this.roundImage ) {
-        this.ring = this.Circle.create({color: null});
-        this.addChild(this.ring);
-      }
+      this.addChild(this.img = this.ImageCView.create({src: this.image}));
+      this.addChild(this.textArea = this.SimpleRectangle.create({alpha: 0, background: this.border}));
     },
     function setSelected(selected) {
       if ( this.cancel_ ) {
@@ -90,18 +90,22 @@ CLASS({
           this.x = w/2;
           this.y = h/2;
           this.zoom = 1;
+          this.textArea.alpha = 0.1;
         }.bind(this), Movement.easy)();
       } else {
         this.mass = this.oldMass_;
         this.cancel_ = Movement.animate(1000, function() {
           this.zoom = 0;
+          this.textArea.alpha = 0;
         }.bind(this), Movement.easy)();
       }
     },
-    function paintChildren() {
+    function layout() {
+      if ( ! this.img ) return;
+
       var c = this.canvas;
 
-      if ( this.topic.r ) this.r = this.topic.r;
+      this.r = this.topic.r;
 
       if ( this.zoom ) {
         var w = this.lobby.width;
@@ -110,59 +114,30 @@ CLASS({
 
         this.r += (r - this.topic.r) * this.zoom;
 
-        if ( this.zoom > 0.5 ) {
-          if ( ! this.textArea_ ) {
-            console.log(this.topic.color);
-            this.textArea_ = this.SimpleRectangle.create({alpha: 0.1, background: this.border});
-            this.addChild(this.textArea_);
-          }
+        if ( this.zoom ) {
 
-          this.textArea_.width = this.textArea_.height = 2 * ( this.zoom - 0.5 ) * this.r * 0.85;
-          this.textArea_.y = - this.textArea_.height / 2;
-          this.textArea_.x = this.r/2 - this.textArea_.width/2-100;
-        } else if ( this.textArea_ ) {
-          this.removeChild(this.textArea_);
-          this.textArea_ = null;
+          this.textArea.width = this.textArea.height = this.zoom * this.r*0.9;
+          this.textArea.y = - this.textArea.height / 2;
+          this.textArea.x = -20;
         }
-
-//        c.fillStyle = this.topic.color;
-//        c.fillRect(10, 10, 20, 20);
+      } else {
+        this.textArea.width = this.textArea.height = 0;
       }
 
-      if ( this.ring ) {
-        this.ring.r = this.r;
-        this.ring.borderWidth = this.borderWidth;
-        this.ring.border = this.border;
-      }
-
-      if ( this.image ) {
-        /*
-        var d, s;
-        if ( this.roundImage ) {
-          d = 2 * this.r + 6;
-          s = -this.r - 3;
-        } else {
-          d = 2 * this.r * Math.SQRT1_2;
-          s = -this.r * Math.SQRT1_2;
-        }
-        this.img.x = this.img.y = s;
-        this.img.width = this.img.height = d;
-        */
-        var d, s;
-        if ( this.roundImage ) {
-          d = (2-this.zoom*.9) * this.r + 6;
-          s = -this.r - 3;
-        } else {
-          d = (2-this.zoom*.9) * this.r * Math.SQRT1_2;
-          s = -this.r * Math.SQRT1_2;
-        }
-
-          this.img.y += this.zoom * this.r/2.6;
-          this.img.x -= this.zoom * this.r/5.3;
-          this.img.width = this.img.height = d;
-        this.img.x = this.img.y = s;
-      }
+      var r2 = this.roundImage ? this.r + 2 : Math.SQRT1_2 * this.r;
+      this.img.x      = this.roundImage ? -r2 : -r2 * (1+this.zoom/4);
+      this.img.y      = -r2 / (1+this.zoom);
+      this.img.width  = (2-this.zoom) * r2;
+      this.img.height = (2-this.zoom) * r2;
+    },
+    function paint() {
+      this.layout();
       this.SUPER();
+    },
+    function paintBorder() { },
+    function paintChildren() {
+      this.SUPER();
+      foam.graphics.Circle.getPrototype().paintBorder.call(this);
     }
   ]
 });
@@ -172,10 +147,9 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'VideoBubble',
 
-  extendsModel: 'com.google.watlobby.Bubble',
+  extendsModel: 'com.google.watlobby.TopicBubble',
 
   requires: [
-    'com.google.watlobby.Bubble',
     'foam.graphics.ImageCView',
     'foam.graphics.SimpleRectangle',
     'foam.graphics.ViewCView'
@@ -215,10 +189,9 @@ CLASS({
           initHTML: function() {}
         }, x: this.x, y: this.y, width: 0, height: 0});
 
-        this.r_ = this.r;
         lobby.collider.stop();
         Movement.compile([
-          [500, function() { this.r = 0; }.bind(this) ],
+          [500, function() { this.alpha = 0; }.bind(this) ],
           [1000, function(i, j) {
             r.alpha = 0.7;
             v.width = vw;
@@ -236,7 +209,7 @@ CLASS({
 //        lobby.collider.stop();
         Movement.compile([
           [ 500, function() { v.x = this.x; v.y = this.y; v.width = v.height = r.alpha = 0; }.bind(this) ],
-          [ 500, function() { this.r = this.r_ }.bind(this) ],
+          [ 500, function() { this.alpha = 1.0; }.bind(this) ],
           function() {
             v.destroy();
             lobby.collider.start();
@@ -255,7 +228,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'PhotoAlbumBubble',
 
-  extendsModel: 'com.google.watlobby.Bubble',
+  extendsModel: 'com.google.watlobby.TopicBubble',
 
   requires: [
     'foam.graphics.SimpleRectangle',
@@ -331,20 +304,13 @@ CLASS({
 
 CLASS({
   package: 'com.google.watlobby',
-  name: 'AirBubble',
-  extendsModel: 'foam.demos.physics.PhysicalCircle'
-});
-
-
-CLASS({
-  package: 'com.google.watlobby',
   name: 'Lobby',
   extendsModel: 'foam.graphics.CView',
   traits: [ 'com.google.misc.Colors' ],
 
   requires: [
-    'com.google.watlobby.AirBubble',
     'com.google.watlobby.Bubble',
+    'com.google.watlobby.TopicBubble',
     'com.google.watlobby.PhotoAlbumBubble',
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
@@ -361,7 +327,7 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'n',          defaultValue: 30 },
+    { name: 'n',          defaultValue: 25 },
     { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
@@ -371,42 +337,31 @@ CLASS({
       var w = this.width;
       var h = this.height;
       var self = this;
-      // Make collision detection much faster by not checking
-      // if air bubbles collide with other air bubbles
       c.detectCollisions = function() {
         var cs = this.children;
         for ( var i = 0 ; i < cs.length ; i++ ) {
           var c1 = cs[i];
           this.updateChild(c1);
+          var r = c1.r + 10;
 
-//          if ( ! com.google.watlobby.AirBubble.isInstance(c1) ) {
-            // Bounce on Walls
-            // Uses a gentle repel rather than a hard bounce, looks better
-            var r = c1.r + 10;
-            //if ( c1.x < r     ) { c1.vx += 0.5; c1.out_ = false; }
-            //if ( c1.x > w - r ) { c1.vx -= 0.5; c1.out_ = false; }
-            //if ( c1.y < r +(h-w)/2     ) { c1.vy += 0.5; /*c1.out_ = false;*/ }
-            //if ( c1.y > w - r ) { c1.vy -= 0.5; /*c1.out_ = false;*/ }
+          // Add Coriolis Effect
+          var a = Math.atan2(c1.y-h/2, c1.x-w/2);
+          var d = Movement.distance(c1.y-h/2, c1.x-w/2);
+          // Keeps topic bubbles from going too far off screen
+          // if ( c1.topic && d > h / 2 - r) c1.out_ = false;
+          if ( d > w / 2 - r ) c1.out_ = false;
+          if ( d < h/4 ) c1.out_ = true;
+          // c1.color = c1.out_ ? 'orange' : 'blue';
 
-            // Add Coriolis Effect
-            var a = Math.atan2(c1.y-h/2, c1.x-w/2);
-            var d = Movement.distance(c1.y-h/2, c1.x-w/2);
-            // Keeps topic bubbles from going too far off screen
-            // if ( c1.topic && d > h / 2 - r) c1.out_ = false;
-            if ( d > w / 2 - r ) c1.out_ = false;
-            if ( d < h/4 ) c1.out_ = true;
-            // c1.color = c1.out_ ? 'orange' : 'blue';
+          // The 0.9 gives it a slight outward push
+          if ( c1.mass != c1.INFINITE_MASS )
+            c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
 
-            // The 0.9 gives it a slight outward push
-            if ( c1.mass != c1.INFINITE_MASS )
-              c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/4, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
-
-            // Make collision detection 5X faster by only checking every fifth time.
-            if ( ( self.timer.i + i ) % 10 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
-              var c2 = cs[j];
-              if ( c1.intersects(c2) ) this.collide(c1, c2);
-            }
-//          }
+          // Make collision detection 5X faster by only checking every fifth time.
+          if ( ( self.timer.i + i ) % 5 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
+            var c2 = cs[j];
+            if ( c1.intersects(c2) ) this.collide(c1, c2);
+          }
         }
       };
       return c;
@@ -414,23 +369,20 @@ CLASS({
     {
       name: 'topics',   factory: function() {
       return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 180, roundImage: true, color: this.RED },
+        { topic: 'chrome',       image: 'chrome.png',       r: 180, color: this.RED,   roundImage: true },
         { topic: 'flip',         image: 'flip.png',         r: 110, color: this.RED },
         { topic: 'pixel',        image: 'pixel.png',        r: 110, color: this.RED },
-        { topic: 'googlecanada', image: 'googlecanada.png', roundImage: true, r: 200, color: this.RED },
-        { topic: 'onhub',        image: 'onhub.png',        roundImage: true, r: 120 },
+        { topic: 'googlecanada', image: 'googlecanada.png', r: 200, color: this.RED,   roundImage: true },
+        { topic: 'onhub',        image: 'onhub.png',        r: 120, color: this.GREEN, roundImage: true },
         { topic: 'inbox',        image: 'inbox.png',        r: 160, color: this.BLUE },
         { topic: 'android',      image: 'android.png',      r: 100, color: this.GREEN },
-        { topic: 'calc',         image: 'calculator.png',   r: 100, color: this.RED   },
+        { topic: 'calc',         image: 'calculator.png',   r: 100, color: this.GREEN },
         { topic: 'gmailoffline', image: 'gmailoffline.png', r: 160, color: this.BLUE },
         { topic: 'fiber',        image: 'fiber.png',        r: 180, color: this.BLUE },
-        { topic: 'foam',         image: 'foam_whiteontransparent.png', background: 'red',  roundImage: true,        r: 80, color: 'red' },
-        { topic: 'inwatvideo',   image: 'inwatvideo.png', roundImage: true, r: 120, model: 'com.google.watlobby.VideoBubble', video: '1Bb29KxXzDs' },
-        { topic: 'appbuilder',   image: 'appbuilder.png', r: 120, model: 'com.google.watlobby.VideoBubble', video: 'HvxKHj9QmMI' },
-        { topic: 'photos',       image: 'photoalbum.png', roundImage: true, r: 110, model: 'com.google.watlobby.PhotoAlbumBubble' },
-        // chromebook, mine sweeper, calculator, I'm feeling lucky
-        // thtps://www.youtube.com/watch?v=1Bb29KxXzDs, <iframe width="560" height="315" src="https://www.youtube.com/embed/1Bb29KxXzDs" frameborder="0" allowfullscreen></iframe>
-
+        { topic: 'foam',         image: 'foam_whiteontransparent.png', r: 80, color: 'red', roundImage: true, background: 'red' },
+        { topic: 'inwatvideo',   image: 'inwatvideo.png',   r: 120, model: 'Video', video: '1Bb29KxXzDs', roundImage: true },
+        { topic: 'appbuilder',   image: 'appbuilder.png',   r: 120, model: 'Video', video: 'HvxKHj9QmMI' },
+        { topic: 'photos',       image: 'photoalbum.png',   r: 110, model: 'PhotoAlbum', color: this.YELLOW, roundImage: true }
       ], this.Topic);
     }}
   ],
@@ -449,7 +401,7 @@ CLASS({
           this.selected = null;
         }
 
-        if ( child && child.setSelected && child.topic ) {
+        if ( child && child.setSelected ) {
           this.selected = child
           child.setSelected(true);
         }
@@ -466,9 +418,8 @@ CLASS({
         this.timer.start();
       }
 
-      this.addTopicBubbles();
       this.addBubbles();
-//      this.addAirBubbles();
+      this.addTopicBubbles();
 
       document.body.addEventListener('click', this.onClick);
 
@@ -485,7 +436,7 @@ CLASS({
       for ( var i = 0 ; i < this.topics.length ; i++ ) {
         var color = this.COLORS[i % this.COLORS.length];
         var t = this.topics[i];
-        var c = this.X.lookup(t.model).create({
+        var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           border: color
@@ -513,7 +464,6 @@ CLASS({
           r: 10 + Math.random() * 60,
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-//          color: 'white',
           color: null,
           border: color
         });
@@ -523,38 +473,6 @@ CLASS({
         c.gravity = 0;
         c.friction = 0.94;
         this.collider.add(c);
-      }
-    },
-
-    function addAirBubbles() {
-      for ( var i = 0 ; i < this.airBubbles ; i++ ) {
-        var b = this.AirBubble.create({
-          r: 6,
-          x: Math.random() * this.width,
-          y: Math.random() * this.height,
-          borderWidth: 0.5,
-          color: 'rgba(0,0,255,0.2)',
-          border: '#blue',
-//          color: 'rgba(100,100,200,0.2)',
-//          border: '#55a',
-          mass: 0.7
-        });
-
-        b.y$.addListener(function(b) {
-          if ( b.y < -5 ) {
-            b.y = this.height;
-            b.x = this.width * Math.random();
-          }
-        }.bind(this, b));
-
-        b.vy = -4;
-        b.gravity = 0;
-        b.friction = 0.8;
-        this.collider.add(b);
-
-        this.addChild(b);
-
-//        this.view.$.addEventListener('click', this.onClick);
       }
     },
 

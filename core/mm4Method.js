@@ -345,6 +345,7 @@ CLASS({
     {
       name: 'swiftType',
       type: 'String',
+      labels: ['swift'],
       defaultValueFn: function() { return this.type; },
     },
     {
@@ -843,6 +844,7 @@ CLASS({
     },
     {
       name: 'swiftReturnType',
+      labels: ['swift'],
       defaultValueFn: function() { return this.returnType; }
     },
     {

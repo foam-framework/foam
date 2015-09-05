@@ -149,6 +149,7 @@ var Property = {
     },
     {
       name: 'swiftDefaultValue',
+      labels: ['swift'],
       defaultValueFn: function() {
         switch(typeof this.defaultValue) {
         case "string":
@@ -188,6 +189,7 @@ var Property = {
       name: 'swiftType',
       type: 'String',
       required: false,
+      labels: ['swift'],
       defaultValueFn: function() { return this.type; },
       help: 'The Swift type that represents this type of property.',
     },
@@ -365,6 +367,7 @@ var Property = {
     {
       name: 'swiftView',
       type: 'String',
+      labels: ['swift'],
       defaultValueFn: function() { return this.view.substring(this.view.lastIndexOf('.')+1); },
       help: 'The default view name for this property in swift.'
     },

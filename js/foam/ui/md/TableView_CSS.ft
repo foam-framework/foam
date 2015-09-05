@@ -33,14 +33,14 @@ md-table table-header.selection table-caption {
 }
 
 md-table table-header table-actions {
-  display: block;
+  display: flex;
   padding-right: 14px;
 }
 
-md-table table-header table-actions i {
+md-table table-header table-actions .md-button {
   cursor: pointer;
-  display: block;
-  margin-left: 24px;
+  margin: 0 0 0 24px;
+  padding: 0;
   font-size: 24px;
   color: rgba(0, 0, 0, 0.54);
 }

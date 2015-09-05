@@ -71,7 +71,7 @@ CLASS({
       task-manager tm-body {
         display: flex;
       }
-      task-manager img {
+      task-manager .task-row-icon {
         margin-right: 4px;
         vertical-align: text-bottom;
       }
