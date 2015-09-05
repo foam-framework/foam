@@ -26,7 +26,7 @@ MODEL({
   ],
 
   constants: {
-    SELECTED_COLOR: 'grey',
+    SELECTED_COLOR: '#ddd',
     UNSELECTED_COLOR: 'white'
   },
 
@@ -41,7 +41,7 @@ MODEL({
     {
       name: 'canvas',
       factory: function() {
-        return this.CView.create({width: 500, height: 500, background: '#f3f3f3', border: 'black'});
+        return this.CView.create({width: 500, height: 500, background: '#f3f3f3'});
       }
     },
   ],
@@ -66,7 +66,7 @@ MODEL({
             x: x,
             y: y,
             r: 25,
-            color: 'white',
+            color: this.UNSELECTED_COLOR,
             border: 'black'}));
         }
         this.canvas.paint();
