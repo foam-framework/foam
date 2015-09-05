@@ -18,8 +18,35 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CircleDrawer',
-  properties: [
+  extendsModel: 'foam.ui.View',
+
+  requires: [
+    'foam.graphics.Circle',
+    'foam.graphics.CView'
   ],
-  methods: {
-  }
+
+  properties: [
+    { name: 'canvas', factory: function() { return this.CView.create({width: 500, height: 500, background: '#f3f3f3'}); }},
+  ],
+  methods: [
+    function initHTML() {
+      this.SUPER();
+      this.canvas.$.addEventListener('click', this.onClick);
+    }
+  ],
+  listeners: [
+    {
+      name: 'onClick',
+      code: function(evt) {
+        console.log('click: ', evt);
+        this.canvas.addChild(this.Circle.create({x: evt.offsetX, y: evt.offsetY, r: 25, color: '#999', border: 'black'}));
+        this.canvas.paint();
+      }
+    }
+  ],
+  templates: [
+    function toHTML() {/*
+      Undo Redo <br> %%canvas
+    */}
+  ]
 });
