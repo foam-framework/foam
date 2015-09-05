@@ -121,8 +121,10 @@ CLASS({
         this.textArea.width = this.textArea.height = 0;
       }
 
-      var r2 = this.roundImage ? this.r + 2 : Math.SQRT1_2 * this.r;
-      this.img.x      = this.roundImage ? -r2 : -r2 * (1+this.zoom/4);
+      var r2 = this.roundImage ?
+        (1-0.15*this.zoom)*this.r + 2 :
+        Math.SQRT1_2 * this.r;
+      this.img.x      = this.roundImage ? -r2 - 0.15*this.zoom*this.r/1.5 : -r2 * (1+this.zoom/4);
       this.img.y      = -r2 / (1+this.zoom);
       this.img.width  = (2-this.zoom) * r2;
       this.img.height = (2-this.zoom) * r2;
