@@ -607,6 +607,16 @@ var Property = {
       documentation: "A Suggestion for $$DOC{ref:'foam.ui.TableView'} column width."
     },
     {
+      name: 'optionLabelFormatter',
+      label: 'Option List Label formatter',
+      type: 'Function',
+      required: false,
+      view: 'foam.ui.FunctionView',
+      defaultView: '',
+      help: 'Function to format the label of an option list value for display in a select or option list.',
+      documentation: "A function to format the label of an option list value for display in a $$DOC{ref:'foam.ui.MultiChoiceView'}."
+    },
+    {
       name: 'help',
       label: 'Help Text',
       type: 'String',
