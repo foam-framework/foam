@@ -25,7 +25,19 @@ MODEL({
     'foam.graphics.CView'
   ],
 
+  constants: {
+    SELECTED_COLOR: 'grey',
+    UNSELECTED_COLOR: 'white'
+  },
+
   properties: [
+    {
+      name: 'selected',
+      postSet: function(o, n) {
+        if ( o ) o.color = this.UNSELECTED_COLOR;
+        if ( n ) n.color = this.SELECTED_COLOR;
+      }
+    },
     {
       name: 'canvas',
       factory: function() {
@@ -44,7 +56,19 @@ MODEL({
     {
       name: 'onClick',
       code: function(evt) {
-        this.canvas.addChild(this.Circle.create({x: evt.offsetX, y: evt.offsetY, r: 25, color: '#999', border: 'black'}));
+        var x = evt.offsetX;
+        var y = evt.offsetY;
+        var c = this.canvas.findChildAt(x, y);
+        if ( c ) {
+          this.selected = c;
+        } else {
+          this.canvas.addChild(this.Circle.create({
+            x: x,
+            y: y,
+            r: 25,
+            color: 'white',
+            border: 'black'}));
+        }
         this.canvas.paint();
       }
     },
