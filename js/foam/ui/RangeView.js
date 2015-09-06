@@ -23,7 +23,7 @@ CLASS({
   extendsModel: 'foam.ui.AbstractNumberFieldView',
 
   properties: [
-    { name: 'type',     defaultValue: 'range' },
+    { name: 'type',     getter: function() { return 'range'; }},
     { name: 'maxValue', defaultValue: 100 }
   ],
 
