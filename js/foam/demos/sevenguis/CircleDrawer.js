@@ -21,6 +21,7 @@ MODEL({
   extendsModel: 'foam.ui.View',
 
   requires: [
+    'foam.demos.sevenguis.DiameterDialog',
     'foam.graphics.Circle',
     'foam.graphics.CView'
   ],
@@ -41,14 +42,14 @@ MODEL({
     {
       name: 'canvas',
       factory: function() {
-        return this.CView.create({width: 500, height: 500, background: '#f3f3f3'});
+        return this.CView.create({width: 300, height: 300, background: '#f3f3f3'});
       }
     },
   ],
   methods: [
     function initHTML() {
       this.SUPER();
-      this.canvas.$.addEventListener('click', this.onClick);
+      this.canvas.$.addEventListener('click',       this.onClick);
       this.canvas.$.addEventListener('contextmenu', this.onRightClick);
     }
   ],
@@ -62,7 +63,7 @@ MODEL({
         if ( c ) {
           this.selected = c;
         } else {
-          this.canvas.addChild(this.Circle.create({
+          this.canvas.addChild(this.selected = this.Circle.create({
             x: x,
             y: y,
             r: 25,
@@ -77,6 +78,9 @@ MODEL({
       code: function(evt) {
         console.log('right-click: ', evt);
         evt.preventDefault();
+        if ( ! this.selected ) return;
+        var d = this.DiameterDialog.create({data: this.selected});
+        d.write(document);
       }
     }
   ],
