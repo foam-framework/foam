@@ -24,7 +24,7 @@ MODEL({
     function toHTML() {/*
       <br>
       Adjust the diameter of the circle at ($$x{mode: 'read-only'}, $$y{mode: 'read-only'}).<br>
-      $$r
+      $$r{model_: 'foam.ui.RangeView', maxValue: 200, onKeyMode: true}
     */}
   ]
 });
