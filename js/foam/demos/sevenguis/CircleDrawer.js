@@ -19,11 +19,12 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CircleDrawer',
   extendsModel: 'foam.ui.View',
+  traits: [ 'foam.memento.MementoMgr' ],
 
   requires: [
     'foam.demos.sevenguis.DiameterDialog',
     'foam.graphics.Circle',
-    'foam.graphics.CView'
+    'foam.graphics.CView',
   ],
 
   constants: {
@@ -40,6 +41,23 @@ MODEL({
       }
     },
     {
+      name: 'memento',
+      postSet: function(_, m) {
+        if ( this.feedback_ ) return;
+        console.log('setter: ', arguments);
+        this.canvas.children = [];
+        for ( var i = 0 ; i < m.length ; i++ ) {
+          var c = m[i];
+          this.addCircle(c.x, c.y, c.d);
+        }
+        this.canvas.paint();
+      },
+    },
+    {
+      name: 'mementoValue',
+      factory: function() { return this.memento$; }
+    },
+    {
       name: 'canvas',
       factory: function() {
         return this.CView.create({width: 300, height: 300, background: '#f3f3f3'});
@@ -51,6 +69,29 @@ MODEL({
       this.SUPER();
       this.canvas.$.addEventListener('click',       this.onClick);
       this.canvas.$.addEventListener('contextmenu', this.onRightClick);
+    },
+    function addCircle(x, y, opt_d) {
+      var d = opt_d || 25;
+      var c = this.Circle.create({
+        x: x,
+        y: y,
+        r: d,
+        color: this.UNSELECTED_COLOR,
+        border: 'black'});
+      this.canvas.addChild(c);
+      return c;
+    },
+    function updateMemento() {
+      var m = [];
+      var cs = this.canvas.children;
+      for ( var i = 0 ; i < cs.length ; i++ ) {
+        var c = cs[i];
+        m.push({x: c.x, y: c.y, r: c.r});
+      }
+      console.log('getter: ', m);
+      this.feedback_ = true;
+      this.memento = m;
+      this.feedback_ = false;
     }
   ],
   listeners: [
@@ -63,12 +104,8 @@ MODEL({
         if ( c ) {
           this.selected = c;
         } else {
-          this.canvas.addChild(this.selected = this.Circle.create({
-            x: x,
-            y: y,
-            r: 25,
-            color: this.UNSELECTED_COLOR,
-            border: 'black'}));
+          this.selected = this.addCircle(x, y);
+          this.updateMemento();
         }
         this.canvas.paint();
       }
@@ -86,7 +123,7 @@ MODEL({
   ],
   templates: [
     function toHTML() {/*
-      Undo Redo <br> %%canvas
+      $$back $$forth<br> %%canvas
     */}
   ]
 });
