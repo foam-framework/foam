@@ -210,15 +210,8 @@ CLASS({
       name: 'generateSampleCodeContext_',
       code: function() {
         var X = this.sampleCodeBaseContext.sub();
-        // HACK(markdittmer):
-        // (1) Make the view output view's DOM element the "body" of the
-        //     context's document.
-        // (2) Re-bind getElementById() to make sure it works as expected.
-        // (3) Override DOM element's insertAdjacentHTML() to set
-        //     view-output-view's contents. To avoid stacking the same view
-        //     for every run of the code sample, squash what's already there.
-        //     This has the unfortunate limitation of supporting only one
-        //     obj.write(X.document) per code sample.
+        // Make the view output view's DOM element the "body" of the context's
+        // document.
         X.document = Object.create(X.document, {
           getElementById: {
             value: function() {
@@ -229,17 +222,7 @@ CLASS({
           body: {
             get: function() {
               if ( this.outputView && this.outputView.viewOutputView ) {
-                var viewOutputView = this.outputView.viewOutputView;
-                var e = viewOutputView.getOutputDOMContainer();
-                var body = Object.create(e, {
-                  insertAdjacentHTML: {
-                    value: function(position, html) {
-                      e.insertAdjacentHTML.apply(e, arguments);
-                      if ( viewOutputView.data ) viewOutputView.data.view = html;
-                    }
-                  }
-                });
-                return body;
+                return this.outputView.viewOutputView.getOutputDOMContainer();
               } else {
                 throw new Error('Attempt to access code sample document.body' +
                     'when code sample view output view is not available');
