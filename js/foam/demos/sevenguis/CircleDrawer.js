@@ -118,6 +118,17 @@ MODEL({
         if ( ! this.selected ) return;
         var p = this.PopupView.create({delegate: function() { return this.DiameterDialog.create({data: this.selected}); }.bind(this), layoutMode: 'relative'});
         p.open(this.$);
+
+        // If the size is changed with the dialog, then create an updated memento
+        var oldR = this.selected.r;
+        var l = function(_, _, _, state) {
+          if ( state === 'closed' ) {
+            if ( this.selected.r !== oldR )
+              this.updateMemento();
+            p.state$.removeListener(l);
+          }
+        }.bind(this);
+        p.state$.addListener(l);
       }
     }
   ],
