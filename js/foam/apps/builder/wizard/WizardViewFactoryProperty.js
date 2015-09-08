@@ -30,20 +30,23 @@ CLASS({
           } else if ( typeof prop.defaultValue !== undefined ) {
             value = prop.defaultValue;
           }
+          if ( value ) this.instance_[name] = value;
         }
 
         // when null or no value is specified, check for additional wizard pages on X.wizardStack
         if ( ! value && this.wizardStack && this.wizardStack.length ) {
           // the next view gets a clone wizardStack that has been 'popped'
-          var X = this.Y.sub({ wizardStack: this.wizardStack.slice(0, -1) });        
+          var X = this.Y.sub({ wizardStack: this.wizardStack.slice(0, -1) });
           var viewFactory = this.wizardStack[this.wizardStack.length - 1];
           value = function(args, unused_X) {
             return viewFactory(args, X);
-          } 
-        }     
-        return value;   
+          }
+          if ( value ) this.instance_[name] = value;
+        }
+        return value;
       }
     },
   ],
+
 
 });
