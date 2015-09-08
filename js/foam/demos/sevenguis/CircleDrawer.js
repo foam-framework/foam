@@ -23,16 +23,31 @@ MODEL({
   traits: [ 'foam.memento.MementoMgr' ],
 
   requires: [
-    'foam.ui.md.PopupView',
-    'foam.demos.sevenguis.DiameterDialog',
-    'foam.graphics.Circle',
     'foam.graphics.CView',
+    'foam.graphics.Circle',
+    'foam.ui.DetailView', // TODO: This shouldn't be required
+    'foam.ui.md.PopupView'
   ],
 
   constants: {
     SELECTED_COLOR:   '#ddd',
     UNSELECTED_COLOR: 'white'
   },
+
+  models: [
+    {
+      name: 'DiameterDialog',
+      extendsModel: 'foam.ui.DetailView',
+
+      templates: [
+        function toHTML() {/*
+          <br>
+          Adjust the diameter of the circle at ($$x{mode: 'read-only'}, $$y{mode: 'read-only'}).<br>
+          $$r{model_: 'foam.ui.RangeView', maxValue: 200, onKeyMode: true}
+        */}
+      ]
+    }
+  ],
 
   properties: [
     {
@@ -73,11 +88,10 @@ MODEL({
       this.canvas.$.addEventListener('contextmenu', this.onRightClick);
     },
     function addCircle(x, y, opt_d) {
-      var d = opt_d || 25;
       var c = this.Circle.create({
         x: x,
         y: y,
-        r: d,
+        r: opt_d || 25,
         color: this.UNSELECTED_COLOR,
         border: 'black'});
       this.canvas.addChild(c);
