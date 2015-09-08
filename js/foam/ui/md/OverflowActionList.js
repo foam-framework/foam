@@ -27,8 +27,15 @@ CLASS({
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        this.showActions_ = nu.slice(0, this.maxShowActions);
-        this.moreActions_ = nu.slice(this.maxShowActions);
+        if ( nu.length === this.maxShowActions + 1 ) {
+          // Edge case: More actions dropdown would lead to exactly one more
+          // action. Just show that action instead.
+          this.showActions_ = nu.slice();
+          this.moreActions_ = [];
+        } else {
+          this.showActions_ = nu.slice(0, this.maxShowActions);
+          this.moreActions_ = nu.slice(this.maxShowActions);
+        }
       },
     },
     {
@@ -91,7 +98,7 @@ CLASS({
       <actions id="%%id" %%cssClassAttr()>
         %%moreActionsDropdown
         %%showActionList
-        $$moreActions
+        $$moreActions{ extraClassName: 'more-actions-button' }
         <% this.setClass('hide-more-actions',
                function() { return this.moreActions_.length === 0; }.bind(this),
                this.moreActionsView.id); %>
@@ -99,6 +106,7 @@ CLASS({
     */},
     function CSS() {/*
       actions flat-button.hide-more-actions { display: none; }
+      actions flat-button.more-actions-button { margin-left: 0; }
     */},
   ],
 });
