@@ -148,13 +148,15 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
+      .CircleDrawer { width:610px; height: 600px; margin: 20px; }
+      .CircleDrawer canvas { border: 1px solid black; }
       .CircleDrawer .md-card { font-size: 20px; }
       .CircleDrawer .actionButton { margin: 10px; }
       .CircleDrawer input[type='range'] { width: 400px; }
-      .CircleDrawer .popup-view-container { width: 600px; height: 545px; }
+      .CircleDrawer .popup-view-container { width: 640px; height: 585px; }
     */},
     function toHTML() {/*
-      <div id="%%id" style="width:610px; height: 600px;" class="CircleDrawer">
+      <div id="%%id" class="CircleDrawer">
         <center class="buttonRow">$$back{label: 'Undo'} $$forth{label: 'Redo'}</center>
         %%canvas
       </div>
