@@ -23,6 +23,7 @@ CLASS({
     function CSS() {/*
 body, .md-font, .md-quote {
   font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+  -webkit-font-smoothing: antialiased;
 }
 
 table {

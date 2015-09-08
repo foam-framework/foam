@@ -18,8 +18,112 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CircleDrawer',
-  properties: [
+  extendsModel: 'foam.ui.View',
+
+  traits: [ 'foam.memento.MementoMgr' ],
+
+  requires: [
+    'foam.demos.sevenguis.DiameterDialog',
+    'foam.graphics.Circle',
+    'foam.graphics.CView',
   ],
-  methods: {
-  }
+
+  constants: {
+    SELECTED_COLOR:   '#ddd',
+    UNSELECTED_COLOR: 'white'
+  },
+
+  properties: [
+    {
+      name: 'selected',
+      postSet: function(o, n) {
+        if ( o ) o.color = this.UNSELECTED_COLOR;
+        if ( n ) n.color = this.SELECTED_COLOR;
+      }
+    },
+    {
+      name: 'memento',
+      postSet: function(l, m) {
+        if ( this.feedback_ ) return;
+        this.canvas.children = [];
+        for ( var i = 0 ; i < m.length ; i++ ) {
+          var c = m[i];
+          this.addCircle(c.x, c.y, c.r);
+        }
+        this.selected = null;
+        this.canvas.view.paint(); // TODO: This shouldn't be necessary
+      },
+    },
+    {
+      name: 'mementoValue',
+      factory: function() { return this.memento$; }
+    },
+    {
+      name: 'canvas',
+      factory: function() {
+        return this.CView.create({width: 300, height: 300, background: '#f3f3f3'});
+      }
+    },
+  ],
+  methods: [
+    function initHTML() {
+      this.SUPER();
+      this.canvas.$.addEventListener('click',       this.onClick);
+      this.canvas.$.addEventListener('contextmenu', this.onRightClick);
+    },
+    function addCircle(x, y, opt_d) {
+      var d = opt_d || 25;
+      var c = this.Circle.create({
+        x: x,
+        y: y,
+        r: d,
+        color: this.UNSELECTED_COLOR,
+        border: 'black'});
+      this.canvas.addChild(c);
+      return c;
+    },
+    function updateMemento() {
+      var m = [];
+      var cs = this.canvas.children;
+      for ( var i = 0 ; i < cs.length ; i++ ) {
+        var c = cs[i];
+        m.push({x: c.x, y: c.y, r: c.r});
+      }
+      this.feedback_ = true;
+      this.memento = m;
+      this.feedback_ = false;
+    }
+  ],
+  listeners: [
+    {
+      name: 'onClick',
+      code: function(evt) {
+        var x = evt.offsetX;
+        var y = evt.offsetY;
+        var c = this.canvas.findChildAt(x, y);
+        if ( c ) {
+          this.selected = c;
+        } else {
+          this.selected = this.addCircle(x, y);
+          this.updateMemento();
+        }
+        this.canvas.paint(); // TODO: This shouldn't be necessary
+      }
+    },
+    {
+      name: 'onRightClick',
+      code: function(evt) {
+        evt.preventDefault();
+        if ( ! this.selected ) return;
+        var d = this.DiameterDialog.create({data: this.selected});
+        d.write(document);
+      }
+    }
+  ],
+  templates: [
+    function toHTML() {/*
+      $$back{label: 'Undo'} $$forth{label: 'Redo'}<br>
+      %%canvas
+    */}
+  ]
 });

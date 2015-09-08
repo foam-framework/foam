@@ -56,7 +56,7 @@ MODEL({
 
     'create child': seq(
       '$$',
-      repeat(notChars(' $\n<{')),
+      repeat(notChars(' $\n<{,.')),
       optional(JSONParser.export('objAsString'))),
 
     'simple value': seq('%%', repeat(notChars(' ()-"\n><:;,')), optional('()')),

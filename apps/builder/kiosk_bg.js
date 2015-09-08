@@ -33,9 +33,9 @@ function runApp() {
       'kiosk_view.html',
       {
         id: 'KioskWindow',
-        width: 1100,
-        height: 720,
-        minWidth: 800,
+        width: 800,
+        height: 700,
+        minWidth: 400,
         minHeight: 600
       },
       onWindowCreate.bind(this));

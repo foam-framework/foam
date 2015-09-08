@@ -15,21 +15,16 @@
  * limitations under the License.
  */
 
-// TODO: finish
-CLASS({
-  package: 'foam.ui',
-  name: 'RangeView',
-
-  extendsModel: 'foam.ui.AbstractNumberFieldView',
-
-  properties: [
-    { name: 'type',     getter: function() { return 'range'; }},
-    { name: 'maxValue', defaultValue: 100 }
-  ],
-
-  methods: {
-    extraAttributes: function() {
-      return this.SUPER() + ' max="' + this.maxValue + '"';
-    }
-  }
+MODEL({
+  package: 'foam.demos.sevenguis',
+  name: 'DiameterDialog',
+  extendsModel: 'foam.ui.DetailView',
+  
+  templates: [
+    function toHTML() {/*
+      <br>
+      Adjust the diameter of the circle at ($$x{mode: 'read-only'}, $$y{mode: 'read-only'}).<br>
+      $$r{model_: 'foam.ui.RangeView', maxValue: 200, onKeyMode: true}
+    */}
+  ]
 });
