@@ -135,8 +135,8 @@ CLASS({
       code: function() {
         this.dao.remove(this.data);
         this.stack.popView();
-      }
-    }
+      },
+    },
   ],
 
   templates: [
