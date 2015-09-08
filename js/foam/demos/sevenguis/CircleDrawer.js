@@ -23,6 +23,7 @@ MODEL({
   traits: [ 'foam.memento.MementoMgr' ],
 
   requires: [
+    'foam.ui.md.PopupView',
     'foam.demos.sevenguis.DiameterDialog',
     'foam.graphics.Circle',
     'foam.graphics.CView',
@@ -61,7 +62,7 @@ MODEL({
     {
       name: 'canvas',
       factory: function() {
-        return this.CView.create({width: 300, height: 300, background: '#f3f3f3'});
+        return this.CView.create({width: 600, height: 500, background: '#f3f3f3'});
       }
     },
   ],
@@ -115,15 +116,23 @@ MODEL({
       code: function(evt) {
         evt.preventDefault();
         if ( ! this.selected ) return;
-        var d = this.DiameterDialog.create({data: this.selected});
-        d.write(document);
+        var p = this.PopupView.create({delegate: function() { return this.DiameterDialog.create({data: this.selected}); }.bind(this), layoutMode: 'relative'});
+        p.open(this.$);
       }
     }
   ],
   templates: [
+    function CSS() {/*
+      .CircleDrawer .md-card { font-size: 20px; }
+      .CircleDrawer .actionButton { margin: 10px; }
+      .CircleDrawer input[type='range'] { width: 380px; }
+      .CircleDrawer .popup-view-container { width: 600px; height: 545px; }
+    */},
     function toHTML() {/*
-      $$back{label: 'Undo'} $$forth{label: 'Redo'}<br>
-      %%canvas
+      <div id="%%id" style="width:610px; height: 600px;" class="CircleDrawer">
+        <center class="buttonRow">$$back{label: 'Undo'} $$forth{label: 'Redo'}</center>
+        %%canvas
+      </div>
     */}
   ]
 });
