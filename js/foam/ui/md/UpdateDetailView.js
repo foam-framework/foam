@@ -32,7 +32,7 @@ CLASS({
     'stack'
   ],
   exports: [
-    'toolbar$'
+    'toolbar as mdToolbar'
   ],
 
   properties: [

@@ -70,7 +70,7 @@ CLASS({
       this.Y.registerModel(this.ChangeModelWizard, 'foam.apps.builder.wizard.ChangeModelWizard');
       this.Y.registerModel(this.ChangeDAOWizard, 'foam.apps.builder.wizard.ChangeDAOWizard');
 
-      this.Y.set('toolbar$', null);
+      this.Y.set('mdToolbar', null);
     }
   ],
 

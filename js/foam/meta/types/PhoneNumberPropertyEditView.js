@@ -26,8 +26,8 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
           <% this.headerHTML(out); %>
-            $$help{ model_: 'foam.ui.TextFieldView', mode: this.mode }
             $$label{ model_: 'foam.ui.TextFieldView', mode: this.mode }
+            $$help{ model_: 'foam.ui.TextFieldView', mode: this.mode }
       </div>
     */},
 
