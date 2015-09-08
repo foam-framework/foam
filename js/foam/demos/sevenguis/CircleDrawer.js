@@ -19,6 +19,7 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CircleDrawer',
   extendsModel: 'foam.ui.View',
+
   traits: [ 'foam.memento.MementoMgr' ],
 
   requires: [
@@ -28,7 +29,7 @@ MODEL({
   ],
 
   constants: {
-    SELECTED_COLOR: '#ddd',
+    SELECTED_COLOR:   '#ddd',
     UNSELECTED_COLOR: 'white'
   },
 
@@ -69,7 +70,6 @@ MODEL({
       this.SUPER();
       this.canvas.$.addEventListener('click',       this.onClick);
       this.canvas.$.addEventListener('contextmenu', this.onRightClick);
-GLOBAL.cd = this;
     },
     function addCircle(x, y, opt_d) {
       var d = opt_d || 25;
@@ -107,7 +107,7 @@ GLOBAL.cd = this;
           this.selected = this.addCircle(x, y);
           this.updateMemento();
         }
-        this.canvas.paint();
+        this.canvas.paint(); // TODO: This shouldn't be necessary
       }
     },
     {
@@ -122,7 +122,7 @@ GLOBAL.cd = this;
   ],
   templates: [
     function toHTML() {/*
-      $$back $$forth<br>
+      $$back{label: 'Undo'} $$forth{label: 'Redo'}<br>
       %%canvas
     */}
   ]
