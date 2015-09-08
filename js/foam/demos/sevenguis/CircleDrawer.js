@@ -42,15 +42,15 @@ MODEL({
     },
     {
       name: 'memento',
-      postSet: function(_, m) {
+      postSet: function(l, m) {
         if ( this.feedback_ ) return;
-        console.log('setter: ', arguments);
         this.canvas.children = [];
         for ( var i = 0 ; i < m.length ; i++ ) {
           var c = m[i];
-          this.addCircle(c.x, c.y, c.d);
+          this.addCircle(c.x, c.y, c.r);
         }
-        this.canvas.paint();
+        this.selected = null;
+        this.canvas.view.paint(); // TODO: This shouldn't be necessary
       },
     },
     {
@@ -69,6 +69,7 @@ MODEL({
       this.SUPER();
       this.canvas.$.addEventListener('click',       this.onClick);
       this.canvas.$.addEventListener('contextmenu', this.onRightClick);
+GLOBAL.cd = this;
     },
     function addCircle(x, y, opt_d) {
       var d = opt_d || 25;
@@ -88,7 +89,6 @@ MODEL({
         var c = cs[i];
         m.push({x: c.x, y: c.y, r: c.r});
       }
-      console.log('getter: ', m);
       this.feedback_ = true;
       this.memento = m;
       this.feedback_ = false;
@@ -113,7 +113,6 @@ MODEL({
     {
       name: 'onRightClick',
       code: function(evt) {
-        console.log('right-click: ', evt);
         evt.preventDefault();
         if ( ! this.selected ) return;
         var d = this.DiameterDialog.create({data: this.selected});
@@ -123,7 +122,8 @@ MODEL({
   ],
   templates: [
     function toHTML() {/*
-      $$back $$forth<br> %%canvas
+      $$back $$forth<br>
+      %%canvas
     */}
   ]
 });
