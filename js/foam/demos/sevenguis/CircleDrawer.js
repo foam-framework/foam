@@ -116,7 +116,7 @@ MODEL({
         evt.preventDefault();
         if ( ! this.selected ) return;
         var d = this.DiameterDialog.create({data: this.selected});
-        d.write(document);
+        d.write(this.X);
       }
     }
   ],

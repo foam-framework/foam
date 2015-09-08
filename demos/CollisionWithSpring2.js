@@ -25,7 +25,7 @@ function bounceOnWalls(c, w, h) {
   });
 }
 
-space.write(document);
+space.write();
 space.addChild(bumper);
 space.addChild(anchor);
 mouse.connect(space.$);

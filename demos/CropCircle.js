@@ -214,7 +214,7 @@ var fs = [
 // for ( var i = 0 ; i < 1  ; i++ ) {
 for ( var i = 0 ; i < fs.length  ; i++ ) {
   var cs = CropCircle.create({f: fs[i]});
-  cs.write(document);
+  cs.write();
 }
 
 });

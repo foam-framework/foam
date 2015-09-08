@@ -36,4 +36,4 @@ CLASS({
 var value = Person.create({ name: 'Adam' });
 var view  = PersonView.create({ model: Person, data: value });
 
-view.write(document);
+view.write();

@@ -38,7 +38,7 @@
   ].select(dao);
 
   // Display DAO, index will be assigned automatically
-  DAOListView.create({data: dao}, X).write(X.document);
+  DAOListView.create({data: dao}, X).write();
 });</code>
                 </src>
               </code-snippet>
@@ -84,7 +84,7 @@
   ].select(dao);
 
   // Select id from Person Where lastName CONTAINS 'jon'
-  DAOListView.create({data: dao.where(CONTAINS(Person.LAST_NAME, 'jon'))}, X).write(X.document);
+  DAOListView.create({data: dao.where(CONTAINS(Person.LAST_NAME, 'jon'))}, X).write();
 });</code>
                 </src>
               </code-snippet>
@@ -130,7 +130,7 @@
   ].select(dao);
 
   // Select id from Person Where lastName CONTAINS 'jon' and firstName EQ 'alec'
-  DAOListView.create({data: dao.where(AND(CONTAINS(Person.LAST_NAME, 'jon'), EQ(Person.FIRST_NAME, 'alec')))}, X).write(X.document);
+  DAOListView.create({data: dao.where(AND(CONTAINS(Person.LAST_NAME, 'jon'), EQ(Person.FIRST_NAME, 'alec')))}, X).write();
 });</code>
                 </src>
               </code-snippet>
@@ -177,7 +177,7 @@
 
   // Add 1 to the 'age' field of Person in the DAO
   dao.select(UPDATE(SET(Person.AGE, ADD(Person.AGE, 1)), dao));
-  DAOListView.create({data: dao}, X).write(X.document);
+  DAOListView.create({data: dao}, X).write();
 });</code>
                 </src>
               </code-snippet>

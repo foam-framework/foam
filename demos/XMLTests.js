@@ -53,5 +53,5 @@ arequire('DemoView')(function(DemoView) {
       ]
   });
   test.test();
-  test.write(document, DemoView);
+  test.write(X, DemoView);
 });
