@@ -30,6 +30,7 @@ CLASS({
             $$defaultValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
             $$minValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
             $$maxValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
+            $$help{ model_: 'foam.ui.TextFieldView', mode: this.mode }
       </div>
     */},
 

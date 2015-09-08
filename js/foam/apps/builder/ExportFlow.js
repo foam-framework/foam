@@ -14,7 +14,7 @@ CLASS({
   name: 'ExportFlow',
 
   imports: [
-    'toolbar$',
+    'mdToolbar as toolbar',
   ],
   properties: [
     'config',

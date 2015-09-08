@@ -19,7 +19,7 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'DiameterDialog',
   extendsModel: 'foam.ui.DetailView',
-  
+
   templates: [
     function toHTML() {/*
       <br>

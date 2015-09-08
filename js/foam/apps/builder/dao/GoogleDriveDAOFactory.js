@@ -18,10 +18,11 @@ CLASS({
   label: 'Cloud storage on Google Drive',
 
   requires: [
+    'XHR',
     'com.google.drive.FileDAO',
     'foam.dao.EasyDAO',
-    'foam.oauth2.AutoOAuth2',
-    'XHR'
+    'foam.dao.FutureDAO',
+    'foam.oauth2.AutoOAuth2'
   ],
 
   properties: [
@@ -46,31 +47,24 @@ CLASS({
       model_: 'FactoryProperty',
       hidden: true,
       name: 'factory', //TODO(jacksonic): Should be named .create, but can't until Model.create is moved
-      defaultValue: function() {
+      defaultValue: function(X) {
+        var identityManager = X.exportManager$.get().identityManager;
+        var future = afuture();
 
-        var authX = this.AutoOAuth2.create().Y;
-        var agent = authX.lookup('foam.oauth2.EasyOAuth2').create({
-          scopes: [
-            'https://www.googleapis.com/auth/drive.appfolder'
-          ],
-          clientId: this.authClientId,
-          clientSecret: this.authClientSecret
-        });
+        identityManager.withOAuth(function(oauthStatus, authAgent) {
+          var authX = this.Y.sub();
+          authX.registerModel(this.XHR.xbind({ authAgent: authAgent }));
+          future.set(this.EasyDAO.create({
+            model: this.X.lookup(this.modelType),
+            name: this.name,
+            daoType: this.FileDAO,
+            cache: true,
+            guid: true,
+            logging: true
+          }, authX));
+        }.bind(this));
 
-        authX.registerModel(
-          this.XHR.xbind({
-            authAgent: agent
-          })
-        );
-
-        return this.EasyDAO.create({
-          model: this.X.lookup(this.modelType),
-          name: this.name,
-          daoType: this.FileDAO,
-          cache: true,
-          guid: true,
-          logging: true
-        }, authX);
+        return this.FutureDAO.create({ future: future.get }, this.Y);
       },
     }
   ],

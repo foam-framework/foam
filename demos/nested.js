@@ -52,7 +52,7 @@ var view1 = DAOListView.create({dao: dao});
 var view2 = DAOListView.create({dao: dao});
 
 document.writeln('<h1>View 1</h1>');
-view1.write(document);
+view1.write();
 
 document.writeln('<h1>View 2</h1>');
-view2.write(document);
+view2.write();

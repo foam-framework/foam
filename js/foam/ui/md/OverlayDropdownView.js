@@ -252,6 +252,7 @@ CLASS({
       }
       dropdown .label-only .md-button-label {
         margin: auto;
+        font-weight: 400;
       }
     */}
   ],

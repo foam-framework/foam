@@ -33,10 +33,9 @@ CLASS({
     toView_: function() {
       return this.toCView().toView_();
     },
-    write: function(d) {
-      var v = this.toView_();
-      if ( d.writeln ) { d.writeln(v.toHTML()); } else { d.log(v.toHTML()); }
-      v.initHTML();
+    write: function(opt_X) {
+      var X = opt_X || this.X;
+      X.writeView(this.toView_(), X);
     },
     put: function(obj) {
       this.SUPER.apply(this, arguments);

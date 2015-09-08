@@ -20,6 +20,9 @@ CLASS({
   name: 'EditView',
   package: 'foam.meta.types',
   extendsModel: 'foam.ui.md.DetailView',
+  traits: [
+    'foam.ui.md.ToolbarViewTrait'
+  ],
 
   imports: [
     'dao',
@@ -37,7 +40,12 @@ CLASS({
     {
       name: 'mode',
       defaultValue: 'read-write',
-    }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showHeader',
+      defaultValue: true,
+    },
   ],
 
   actions: [
@@ -45,6 +53,7 @@ CLASS({
       name: 'delete',
       help: 'Delete this item.',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAO0lEQVQ4y2NgGPwgUSHxQeJ/KHyQqIBP6X/ckDoayHE/qeaPahjVgEvDK6waXuDW4J/4ElN5ou8gz/MAREwU2Wrzn1YAAAAASUVORK5CYII=',
+      ligature: 'delete',
       isAvailable: function() { return (this.mode == 'read-write') && (this.dao && this.dao.remove) },
       code: function() {
         if (this.dao && this.dao.remove) {
@@ -58,6 +67,7 @@ CLASS({
 
   templates: [
     function headerHTML(out) {/*
+      <% if ( this.showHeader ) { %>
       <div class="meta-edit-heading md-style-trait-standard">
         <div class="md-title">$$name{
           model_: 'foam.ui.md.TextFieldView',
@@ -66,6 +76,7 @@ CLASS({
         }</div>
         <div class="meta-edit-view-right-title-icon">$$delete</div>
       </div>
+      <% } %>
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>

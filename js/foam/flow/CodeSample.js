@@ -143,7 +143,13 @@ CLASS({
     },
     {
       name: 'sampleCodeBaseContext',
-      factory: function() { return this.IsolatedContext.create({}, GLOBAL.X).Y; }
+      factory: function() {
+        return this.IsolatedContext.create({}, GLOBAL.X).Y.sub({
+          writeView: function(view) {
+            this.output.viewOutput.view = function() { return view; };
+          }.bind(this)
+        });
+      }
     },
     {
       name: 'sampleCodeContext',
@@ -209,29 +215,7 @@ CLASS({
     {
       name: 'generateSampleCodeContext_',
       code: function() {
-        var X = this.sampleCodeBaseContext.sub();
-        // Make the view output view's DOM element the "body" of the context's
-        // document.
-        X.document = Object.create(X.document, {
-          getElementById: {
-            value: function() {
-              var proto = Object.getPrototypeOf(this);
-              return proto.getElementById.apply(proto, arguments);
-            }
-          },
-          body: {
-            get: function() {
-              if ( this.outputView && this.outputView.viewOutputView ) {
-                return this.outputView.viewOutputView.getOutputDOMContainer();
-              } else {
-                throw new Error('Attempt to access code sample document.body' +
-                    'when code sample view output view is not available');
-              }
-            }.bind(this)
-          }
-        });
-
-        return X;
+        return this.sampleCodeBaseContext.sub({});
       }
     }
   ],

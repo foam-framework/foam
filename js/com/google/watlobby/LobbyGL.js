@@ -535,7 +535,7 @@ CLASS({
       });
 
      document.body.addEventListener('click', this.onClick);
-     //this.backgroundLayer.write(document);
+     //this.backgroundLayer.write(this.X);
 
       var clock = this.ClockView.create({x:this.width-70,y:70, r:60});
       this.addChild(clock);

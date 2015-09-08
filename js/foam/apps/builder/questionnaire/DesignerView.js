@@ -69,6 +69,8 @@ CLASS({
       // ModelSummaryView will use this, redirect to Questionnaire version
       this.Y.registerModel(this.ChangeModelWizard, 'foam.apps.builder.wizard.ChangeModelWizard');
       this.Y.registerModel(this.ChangeDAOWizard, 'foam.apps.builder.wizard.ChangeDAOWizard');
+
+      this.Y.set('mdToolbar', null);
     }
   ],
 

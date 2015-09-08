@@ -53,8 +53,8 @@ CLASS({
 });
 
 var t = GLOBAL.t = Test.create();
-t.write(document);
-t.write(document);
+t.write();
+t.write();
 
 var Bookmark = X.foam.lib.bookmarks.Bookmark;
 
@@ -88,7 +88,7 @@ var ade = ArrayDAOExample.create({p2: [
   Bookmark.create({id: 1, title: 'title1', img: ''}),
   Bookmark.create({id: 1, title: 'title2', img: ''})
 ]});
-ade.write(document);
+ade.write();
 */
 
 CLASS({
@@ -117,13 +117,13 @@ var p2 = Point3D.create({x: 1, y: 2, z: 3});
 p2.scale(2);
 console.log(p2.toJSON());
 
-p2.write(document);
+p2.write();
 
 var dv = foam.ui.DetailView.create({data: p2});
-dv.write(document);
+dv.write();
 
 var dv2 = foam.ui.DetailView.create({model: Point3D});
-dv2.write(document);
+dv2.write();
 
 
 
@@ -302,10 +302,10 @@ view.addChild(v4);
 
 document.writeln("<br/>");
 
-v1.write(document);
-v2.write(document);
-v3.write(document);
-view.write(document);
+v1.write();
+v2.write();
+v3.write();
+view.write();
 
 v2.data$ = v1.data$;
 v3.data$ = v1.data$;
@@ -318,11 +318,11 @@ var s1 = ScrollCView.create({
   x:10, y:10, width: 30, height:290,
   value:100, extent:50, size: 500
 });
-sview.write(document);
+sview.write();
 sview.addChild(s1);
 s1.paint();
 var sv1 = DetailView.create({data: s1});
-sv1.write(document);
+sv1.write();
 
 /*
   var mmodels = models.concat(models).concat(models).concat(models).concat(models);
@@ -362,14 +362,14 @@ DomValue.DEFAULT_EVENT = 'keyup';
 o = Model;
 var dv1 = DetailView.create({data: o});
 document.writeln("<td valign=top width=500>");
-dv1.write(document);
+dv1.write();
 document.writeln("</td>");
 
 /*
   var dv2 = DetailView.create({model: o.model_});
   dv2.set(o);
   document.writeln("<td width=500>");
-  dv2.write(document);
+  dv2.write();
   document.writeln("</td>");
 */
 var dv3 = TextAreaView.create({displayHeight:120});
@@ -411,7 +411,7 @@ var Planet = Circle;
 var space = Canvas.create({width: 800, height: 600, background:'#000'});
 document.writeln("<table><tr>");
 document.writeln("<td valign=top>");
-space.write(document);
+space.write();
 document.writeln("</td>");
 
 var timer = foam.util.Timer.create({});
@@ -471,9 +471,9 @@ var dragon = Dragon.create({
 
 var tt = foam.graphics.Turntable.create();
 //    space.addChild(tt);
-tt.write(document);
+tt.write();
 tt.paint();
-dragon.write(document);
+dragon.write();
 dragon.paint();
 
 // timer.start();
@@ -562,7 +562,7 @@ var ctrl2 = DAOController.create({
 
 var stack2 = StackView.create();
 
-stack2.write(document);
+stack2.write();
 ctrl2.__proto__.stackView = stack2;
 stack2.pushView(ctrl2, "Bookmarks");
 
@@ -574,7 +574,7 @@ var ctrl = DAOController.create({
 
 var stack = StackView.create();
 
-stack.write(document);
+stack.write();
 ctrl.__proto__.stackView = stack;
 stack.pushView(ctrl, "Browse Models");
 });

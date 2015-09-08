@@ -439,11 +439,10 @@ CLASS({
       this.initHTML();
     },
 
-    write: function(document) {
+    write: function(opt_X) {
       /*  Write the View's HTML to the provided document and then initialize. */
-      var html = this.toHTML();
-      document.body.insertAdjacentHTML('beforeend', html);
-      this.initHTML();
+      var X = opt_X || this.X;
+      X.writeView(this, X);
     },
 
     updateHTML: function() {

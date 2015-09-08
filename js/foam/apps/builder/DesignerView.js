@@ -29,7 +29,7 @@ CLASS({
     'foam.ui.HelpSnippetView',
   ],
   imports: [
-    'toolbar$'
+    'mdToolbar as toolbar'
   ],
 
   properties: [

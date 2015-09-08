@@ -205,12 +205,16 @@ dao.select(GROUP_BY(Person.AGE, MAP(Person.NAME, [].sink)))(console.log.json);
 dao.select(GROUP_BY(Person.AGE, COUNT()))(console.log.json);
 
 // Pie Graph
-dao.select(PIE(Person.AGE,{r:120}))(function(p) { p.write(console); });
+dao.select(PIE(Person.AGE,{r:120}))(function(p) { console.log(p.toHTML()); });
 
 // Live Pie Graph, notice that it shows data added after
 var pie = PIE(Person.AGE);
 dao.pipe(pie);
-pie.write(console);
+pie.write(
+  X.sub({
+    writeView: function(view, opt_X) { (opt_X || X).console.log(view.toHTML()); }
+  })
+);
 
 // Group+Pies
 dao.select(GROUP_BY(Person.AGE, PIE(Person.SEX, {colorMap: {M: 'lightblue', F: 'pink'}})))(function(g) { console.log(g.toHTML()); g.initHTML(); });
@@ -409,7 +413,7 @@ ModelDAO.select(console.log.json);
 // WEB UI
 
 // Output in a TableView
-X.foam.ui.TableView.create({model: Person, dao: dao}).write(document);
+X.foam.ui.TableView.create({model: Person, dao: dao}).write();
 
 // Document is also a Sink
 dao.select(document);

@@ -23,7 +23,7 @@ apar(
 var space   = foam.graphics.CView.create({width: 2000, height: 1700});
 var mouse   = foam.input.Mouse.create();
 
-space.write(document);
+space.write();
 mouse.connect(space.$);
 
 mouse.x = mouse.y = 300;

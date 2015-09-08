@@ -125,7 +125,7 @@ MODEL({
     function CSS() {/*
       .CircleDrawer .md-card { font-size: 20px; }
       .CircleDrawer .actionButton { margin: 10px; }
-      .CircleDrawer input[type='range'] { width: 380px; }
+      .CircleDrawer input[type='range'] { width: 400px; }
       .CircleDrawer .popup-view-container { width: 600px; height: 545px; }
     */},
     function toHTML() {/*
