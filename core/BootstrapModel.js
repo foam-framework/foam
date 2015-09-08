@@ -167,13 +167,24 @@ var BootstrapModel = {
   },
 
   buildProtoMethods_: function(cls) {
-    // add methods
-    for ( key in this.methods ) {
-      var m = this.methods[key];
-      if ( Method && Method.isInstance(m) ) {
-        cls.addMethod(m.name, m.generateFunction());
-      } else {
-        cls.addMethod(key, m);
+    if ( Array.isArray(this.methods) ) {
+      for ( var i = 0 ; i < this.methods.length ; i++ ) {
+        var m = this.methods[i];
+        if ( typeof m == "function" ) {
+          cls.addMethod(m.name, m);
+        } else {
+          cls.addMethod(m.name, m.code);
+        }
+      }
+    } else {
+      // add methods
+      for ( key in this.methods ) {
+        var m = this.methods[key];
+        if ( Method && Method.isInstance(m) ) {
+          cls.addMethod(m.name, m.generateFunction());
+        } else {
+          cls.addMethod(key, m);
+        }
       }
     }
   },
