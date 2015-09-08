@@ -85,7 +85,8 @@ CLASS({
             detailView: {
               factory_: 'foam.ui.md.UpdateDetailView',
               liveEdit: true,
-              preferredWidth: 1000
+              minWidth: 600,
+              preferredWidth: 10000,
             },
             innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView',
           }),

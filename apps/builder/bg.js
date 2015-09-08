@@ -41,9 +41,9 @@ function runApp() {
       'designer_view.html',
       {
         id: 'KioskDesignerWindow',
-        width: 1100,
-        height: 720,
-        minWidth: 800,
+        width: 800,
+        height: 700,
+        minWidth: 400,
         minHeight: 600
       },
       onWindowCreate.bind(this));

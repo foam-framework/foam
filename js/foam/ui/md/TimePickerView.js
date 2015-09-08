@@ -70,7 +70,7 @@ CLASS({
         var X = opt_X || this.X;
         var v = X.lookup('foam.ui.md.PopupChoiceView').create(args, X);
         var times = [[-1,'Minute']];
-        for (var x = 0; x < 60; ++x) { times.push(x); }
+        for (var x = 0; x < 60; x += 5) { times.push((x < 10) ? '0'+x : ''+x); }
         v.choices = times;
         return v;
       },
@@ -102,9 +102,9 @@ CLASS({
         align-items: baseline;
       }
       .time-picker-view .time-picker-view-editors > :nth-child(n) {
-        min-width: 100px;       
+        min-width: 100px;
       }
-      
+
       }
     */},
     function toHTML() {/*

@@ -29,15 +29,6 @@ CLASS({
     },
   ],
 
-  methods: [
-    function onNext() {
-      if ( this.nextViewFactory === this.newViewFactory ) {
-        this.data.resetDAO();
-      }
-      this.SUPER();
-    }
-  ],
-
   templates: [
     function contentHTML() {/*
       <div class="new-existing-wizard-dao-page-scroller">
