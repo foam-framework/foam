@@ -64,14 +64,14 @@ CLASS({
       documentation: function() {/* The canvas view this scene draws into */ }
     },
     {
-      name:  'canvas',
+      name: 'canvas',
       getter: function() { return this.view && this.view.canvas; },
       transient: true,
       hidden: true,
       documentation: function() {/* Safe getter for the canvas view this scene draws into */ }
     },
     {
-      name:  '$',
+      name: '$',
       getter: function() { return this.view && this.view.$; },
       transient: true,
       hidden: true,
@@ -212,7 +212,6 @@ CLASS({
     toGLView_: function() { /* internal, creates a CViewGLView wrapper for 3d canvases */
       return this.CViewGLView.create({ sourceView: this });
     },
-
     toPositionedView_: function() { /* Internal. Creates a PositionedCViewView wrapper. */
       if ( ! this.view ) {
         var params = {cview: this};
@@ -221,7 +220,6 @@ CLASS({
       }
       return this.view;
     },
-
     initCView: function() { /* Override in submodels for initialization. Callled
           once on first $$DOC{ref:'.paint'} when transitioning from 'initial'
           to 'active' '$$DOC{ref:'.state'}. */ },
@@ -230,7 +228,6 @@ CLASS({
                                    with an $$DOC{ref:'foam.graphics.AbstractCViewView'} wrapper. */
       this.toView_().write(document);
     },
-
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. */
       this.SUPER(child);
@@ -247,6 +244,17 @@ CLASS({
       child.view = undefined;
       child.removeListener(this.view.paint);
       return this;
+    },
+
+    findChildAt: function(x, y) {
+      var c2 = { x: x, y: y, r: 1 };
+
+      var cs = this.children;
+      // Start from the end to find the child in the foreground
+      for ( var i = cs.length-1 ; i >= 0 ; i-- ) {
+        var c1 = cs[i];
+        if ( c1.intersects(c2) ) return c1;
+      }
     },
 
     erase: function() { /* Wipes the canvas area of this $$DOC{ref:'.'}. Primarily used
