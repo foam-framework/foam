@@ -10,7 +10,7 @@
     var timer = foam.util.Timer.create({});
     var space = Canvas.create({width: 2000, height: 1200, background: 'white'});
 
-    space.write(document);
+    space.write();
 
     function box(color, x, text) {
       return Box.create({color: 'white', width: 120, height:100, font: 'bold 10pt Arial', y: -200, background: color, x: x, text: text});

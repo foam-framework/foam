@@ -51,4 +51,4 @@ var v    = OrbitingLayout.create({
     FloatingView.create({ view: DetailView.create({ data: mail }) })
   ]
 });
-v.write(document);
+v.write();

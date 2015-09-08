@@ -161,7 +161,7 @@ var cview = CViewView.create({
   height: 800
 });
 
-cview.write(document);
+cview.write();
 
 view.dao = dao;
 

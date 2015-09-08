@@ -66,4 +66,4 @@ view.addDecorators({
   }
 });
 
-view.write(document);
+view.write();

@@ -6,8 +6,8 @@ var timer = Timer.create({interval:16});
 
 document.writeln("<table><tr><td valign=top>");
 var space = Canvas.create({width: 1000, height: 800, background:'#fff'});
-space.write(document);
-timer.write(document);
+space.write();
+timer.write();
 
 document.writeln("</td><td valign=top>");
 document.writeln('<div id="display"></div>');
