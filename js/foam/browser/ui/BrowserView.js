@@ -350,8 +350,8 @@ CLASS({
               <% if ( this.spinner ) { %>
                 <span class="browser-spinner">%%spinner</span>
               <% } %>
-              <% for ( var i = 0; i < this.parent.model_.actions.length; i++) {
-                var v = this.createActionView(this.parent.model_.actions[i]);
+              <% for ( var i = 0; i < this.parent.model_.getRuntimeActions().length; i++) {
+                var v = this.createActionView(this.parent.model_.getRuntimeActions()[i]);
                 v.data = this.parent;
                 out(v);
               } %>

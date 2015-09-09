@@ -25,7 +25,6 @@ MODEL({
   requires: [
     'foam.graphics.CView',
     'foam.graphics.Circle',
-    'foam.ui.DetailView', // TODO: This shouldn't be required
     'foam.ui.md.PopupView'
   ],
 
@@ -41,7 +40,6 @@ MODEL({
 
       templates: [
         function toHTML() {/*
-          <br>
           Adjust the diameter of the circle at ($$x{mode: 'read-only'}, $$y{mode: 'read-only'}).<br>
           $$r{model_: 'foam.ui.RangeView', maxValue: 200, onKeyMode: true}
         */}
@@ -61,13 +59,12 @@ MODEL({
       name: 'memento',
       postSet: function(l, m) {
         if ( this.feedback_ ) return;
-        this.canvas.children = [];
+        this.canvas.removeAllChildren();
         for ( var i = 0 ; i < m.length ; i++ ) {
           var c = m[i];
           this.addCircle(c.x, c.y, c.r);
         }
         this.selected = null;
-        this.canvas.view.paint(); // TODO: This shouldn't be necessary
       },
     },
     {
@@ -122,7 +119,6 @@ MODEL({
           this.selected = this.addCircle(x, y);
           this.updateMemento();
         }
-        this.canvas.paint(); // TODO: This shouldn't be necessary
       }
     },
     {

@@ -104,8 +104,8 @@ CLASS({
       name: 'selection',
       postSet: function(old, nu) {
         this.itemToolbar.destroy();
-        this.itemToolbar.addActions(nu.model_.actions);
-        this.itemToolbar.addActions(nu.model_.actions.map(function(a) {
+        this.itemToolbar.addActions(nu.model_.getRuntimeActions());
+        this.itemToolbar.addActions(nu.model_.getRuntimeActions().map(function(a) {
           a = a.clone();
           a.action.bind(nu);
           return a;
@@ -133,7 +133,7 @@ CLASS({
           className: 'browser-action-bar',
           extraClassName: 'browser-top-actions'
         });
-        view.addActions(this.config.model_.actions);
+        view.addActions(this.config.model_.getRuntimeActions());
         return view;
       }
     },

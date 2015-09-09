@@ -144,6 +144,14 @@
   // DetailView lets us override toHTML() and still re-render when necessary
   extendsModel: 'foam.ui.DetailView',
 
+  properties: [
+    {
+      name: 'log',
+      documentation: 'Store reference to the virtual console logging function',
+      defaultValue: console.log.bind(console)
+    }
+  ],
+
   templates: [
     {
       // All views are identified in the DOM by their id. You must output an
@@ -162,6 +170,12 @@
           <h3>Person Manual View</h3>
           <p><%# this.data.lastName %>, <%# this.data.firstName %>. View id: <%# this.id %></p>
         </div>
+
+        <button id="%%id-log-contents" class="actionButton available"
+                style="max-width: 200px; margin: 10px">Log View Contents</button>
+        <%  this.on('click', function() {
+              this.log(this.$.outerHTML);
+            }.bind(this), this.id + '-log-contents'); %>
       */}
     }
   ]
@@ -188,10 +202,6 @@
 
   // The view will render the data we have set on it
   view.write();
-
-  // The view does not have a way to reference the extra content
-  // that appears outside its id'd element.
-  console.log("View contents: ", view.$.outerHTML);
 });</code>
                 </src>
               </code-snippet>

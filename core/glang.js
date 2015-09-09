@@ -151,9 +151,9 @@ CLASS({
       this.graph_.initHTML();
       this.graph_.paint();
     },
-    write: function(d) {
-      if ( d.writeln ) { d.writeln(this.toHTML()); } else { d.log(this.toHTML()); }
-      this.initHTML();
+    write: function(opt_X) {
+      var X = opt_X || this.X;
+      X.writeView(this.toView_(), X);
     },
     put: function(obj) {
       this.SUPER.apply(this, arguments);
