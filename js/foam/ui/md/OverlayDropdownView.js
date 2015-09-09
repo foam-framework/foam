@@ -240,6 +240,9 @@ CLASS({
       dropdown.open {
         overflow-y: auto;
       }
+      dropdown action-list.vertical {
+        margin-top: 0;
+      }
       dropdown action-list.vertical .md-button {
         border-radius: 0;
       }
