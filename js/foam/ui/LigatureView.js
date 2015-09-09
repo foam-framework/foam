@@ -76,7 +76,7 @@ CLASS({
     },
     {
       name: 'color',
-      defaultValue: 'black',
+      defaultValue: 'currentColor',
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
         this.$.style['color'] = nu;
