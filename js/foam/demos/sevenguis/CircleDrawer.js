@@ -57,7 +57,7 @@ MODEL({
     },
     {
       name: 'memento',
-      postSet: function(l, m) {
+      postSet: function(_, m) {
         if ( this.feedback_ ) return;
         this.canvas.removeAllChildren();
         for ( var i = 0 ; i < m.length ; i++ ) {
@@ -110,9 +110,7 @@ MODEL({
     {
       name: 'onClick',
       code: function(evt) {
-        var x = evt.offsetX;
-        var y = evt.offsetY;
-        var c = this.canvas.findChildAt(x, y);
+        var x = evt.offsetX, y = evt.offsetY, c = this.canvas.findChildAt(x, y);
         if ( c ) {
           this.selected = c;
         } else {
