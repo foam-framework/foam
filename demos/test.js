@@ -4,6 +4,15 @@ apar(
   arequire('foam.ui.TableView')
 )(function() {
 
+var Bookmark = X.foam.lib.bookmarks.Bookmark;
+
+var aDAO = [].dao;
+
+aDAO.put(Bookmark.create({id: 1, title: 'title1'}));
+aDAO.put(Bookmark.create({id: 2, title: 'title2'}));
+aDAO.put(Bookmark.create({id: 3, title: 'title3'}));
+aDAO.remove(2);
+
 CLASS({
   name: 'Test',
   properties: [
@@ -47,7 +56,20 @@ CLASS({
     },
     {
       name: 'setProperty',
-      view: { factory_: 'foam.ui.MultiChoiceView', choices: ['foo','bar','baz','moo'], size: 4 }
+      view: {
+        factory_: 'foam.ui.MultiChoiceView',
+        choices: ['foo','bar','baz','moo'],
+        size: 4
+      }
+    },
+    {
+      name: 'setPropertyFromDAO',
+      view: {
+        factory_: 'foam.ui.MultiChoiceView',
+        dao: aDAO,
+        objToChoice: function(bookmark) { return [bookmark.id, bookmark.title]; },
+        size: 4
+      }
     }
   ]
 });
@@ -55,15 +77,6 @@ CLASS({
 var t = GLOBAL.t = Test.create();
 t.write();
 t.write();
-
-var Bookmark = X.foam.lib.bookmarks.Bookmark;
-
-var aDAO = [].dao;
-
-aDAO.put(Bookmark.create({id: 1, title: 'title1'}));
-aDAO.put(Bookmark.create({id: 2, title: 'title2'}));
-aDAO.put(Bookmark.create({id: 3, title: 'title3'}));
-aDAO.remove(2);
 
 CLASS({
   name: 'ArrayDAOExample',
