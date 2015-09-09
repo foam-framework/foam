@@ -407,9 +407,9 @@ CLASS({
       return f;
     },
 
-    function write(document) {
+    function write(X) {
       /* For debugging, not production. */
-      document.writeln(this.outerHTML);
+      (X.document || document).writeln(this.outerHTML);
       this.load();
     },
 

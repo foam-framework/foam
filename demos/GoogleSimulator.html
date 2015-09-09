@@ -21,9 +21,9 @@
     timer  = foam.util.Timer.create({interval:20});
     var space  = Canvas.create({width: 1000, height: 750, background:'#fff'});
 
-//    timer.write(document);
+//    timer.write();
 
-    space.write(document);
+    space.write();
 
     var oldAddCode = System.getPrototype().addCode;
     System.getPrototype().addCode = function() { };

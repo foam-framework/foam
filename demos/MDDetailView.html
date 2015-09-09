@@ -20,15 +20,15 @@ delete Timer.prototype_;
 
 var t = Timer.create();
 var v1 = DetailView.create({data: t, showActions: true});
-v1.write(document);
+v1.write();
 
 var v2 = X.foam.ui.md.DetailView.create({data: t, showActions: true});
-v2.write(document);
+v2.write();
 
 document.write('<br><br>');
 
 var tt = Turntable.create();
-tt.write(document);
+tt.write();
 tt.paint();
 
 tt.time$ = t.time$;

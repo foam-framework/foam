@@ -336,7 +336,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
   }, X);
   // Write the default view of the modelled object out to this conteXt's
   // document.
-  morticia.write(X.document);
+  morticia.write();
 });</code>
               </src>
             </code-snippet>
@@ -367,7 +367,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
   }, X);
   // Same as previous example, but we manually construct a "DetailView" and
   // render that.
-  DetailView.create({ data: will }, X).write(X.document);
+  DetailView.create({ data: will }, X).write();
 });</code>
               </src>
             </code-snippet>
@@ -409,7 +409,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
   TableView.create({
     model: Person,
     data: smithFamily
-  }, X).write(X.document);
+  }, X).write();
 });</code>
               </src>
             </code-snippet>
@@ -645,7 +645,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
   // changes in Combinations and Symmetric Permutations.
   // NOTE: The text box where you make a change needs to lose focus before the
   // change takes effect.
-  StringCombos.create({ s1: 'a', s2: 'B', s3: 'c' }, X).write(X.document);
+  StringCombos.create({ s1: 'a', s2: 'B', s3: 'c' }, X).write();
 });</code>
               </src>
             </code-snippet>
@@ -931,7 +931,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
             <code-snippet title="Example">
               <src language="javascript">
                 <code>X.arequire('foam.sandbox.Family')(function(Family) {
-  Family.create({}, X).write(X.document);
+  Family.create({}, X).write();
 });</code>
               </src>
             </code-snippet>
@@ -986,9 +986,9 @@ X.arequire('foam.sandbox.Person')(function(Person) {
   randomRect.randomize(1000);
   square.scale(2 * Math.PI);
 
-  defaultRect.write(X.document);
-  randomRect.write(X.document);
-  square.write(X.document);
+  defaultRect.write();
+  randomRect.write();
+  square.write();
 });</code>
             </src>
           </code-snippet>
@@ -1033,11 +1033,11 @@ X.arequire('foam.sandbox.Person')(function(Person) {
     firstName: 'Bruce',
     lastName: 'Springsteen',
     id: 1
-  });
+  }, X);
   // Auto-generate Doug's ID.
-  var doug = Employee.create({ firstName: 'Douglas', lastName: 'Alderman' });
-  theBoss.write(X.document);
-  doug.write(X.document);
+  var doug = Employee.create({ firstName: 'Douglas', lastName: 'Alderman' }, X);
+  theBoss.write();
+  doug.write();
 });</code>
             </src>
           </code-snippet>
@@ -1341,7 +1341,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
   ['Johnson', 'Jamison', 'Johanson'].forEach(function(lastName) {
     lua.lastName = lastName;
   });
-  lua.write(X.document);
+  lua.write();
 });</code>
             </src>
           </code-snippet>
@@ -1489,7 +1489,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
           <code-snippet title="Example">
             <src language="javascript">
               <code>X.arequire('foam.sandbox.Runner')(function(Runner) {
-  Runner.create({}, X).write(X.document);
+  Runner.create({}, X).write();
 });
 </code>
             </src>
@@ -1628,7 +1628,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
     X.arequire('foam.sandbox.CompanyEmployee'))
 (function(Company, Division, CompanyEmployee) {
   // Joe is created outside the context of a company. He's unemployed.
-  CompanyEmployee.create({ firstName: 'Joe' }, X).write(X.document);
+  CompanyEmployee.create({ firstName: 'Joe' }, X).write();
 
   // Pretty much everyone at Bruce, Unltd. is a shell corporation.
   var bruceUnltd = Company.create({ name: 'Bruce, Unltd.' }, X);
@@ -1652,7 +1652,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
     divisionName: 'Corporate Espionage'
   });
 
-  bruceInc.write(X.document);
+  bruceInc.write();
 });</code>
             </src>
           </code-snippet>

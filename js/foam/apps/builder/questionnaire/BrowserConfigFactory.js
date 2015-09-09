@@ -56,7 +56,12 @@ CLASS({
            }));
           view.open();
         },
-        detailView: { factory_: 'foam.ui.md.UpdateDetailView', liveEdit: true, minWidth: 600, preferredWidth: 10000 },
+        detailView: {
+          factory_: 'foam.ui.md.UpdateDetailView',
+          liveEdit: true,
+          minWidth: 600,
+          preferredWidth: 10000
+        },
         innerDetailView: { factory_: 'foam.apps.builder.AppConfigDetailView',
           innerView: 'foam.apps.builder.questionnaire.DesignerView'
         },

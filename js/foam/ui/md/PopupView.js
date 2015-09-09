@@ -68,7 +68,7 @@ CLASS({
       name: 'layoutMode',
       defaultValue: 'fixed',
       choices: [
-        ['fixed', 'Fixed'],
+        ['fixed',    'Fixed'],
         ['relative', 'Relative']
       ]
     },
@@ -78,7 +78,7 @@ CLASS({
       defaultValue: 'cancellable',
       choices: [
         ['cancellable', 'Cancellable'],
-        ['modal', 'Modal']
+        ['modal',       'Modal']
       ]
     },
     {

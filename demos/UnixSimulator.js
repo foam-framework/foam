@@ -18,14 +18,14 @@
     var space2 = Canvas.create({width: 450, height: 700, background:'#fff'}, X);
 
     // document.writeln("<table><tr><td>");
-    var spaceView = space.write(document);
+    var spaceView = space.write(X);
     // document.writeln("</td><td>");
-    var graphsView = graphs.write(document);
+    var graphsView = graphs.write(X);
     // document.writeln("</td><td>");
-    var space2View = space2.write(document);
+    var space2View = space2.write(X);
     // document.writeln("</td><tr></table>");
 
-    var timerView = timer.write(document);
+    var timerView = timer.write(X);
 
     var sys = System.create({
       parent: space,
@@ -48,9 +48,9 @@
     }, X);
 
     // document.writeln('<table><tr><td>');
-    // var sysView = sys.write(document);
+    // var sysView = sys.write(X);
     // document.writeln('</td><td>');
-    // var sys2View = sys2.write(document);
+    // var sys2View = sys2.write(X);
     // document.writeln('</td></tr></table>');
 
     space2.$.addEventListener('click', addPlatforms);

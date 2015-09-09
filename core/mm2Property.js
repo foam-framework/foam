@@ -747,26 +747,26 @@ var Property = {
     },
   ],
 
-  methods: {
-    partialEval: function() { return this; },
-    f: function(obj) { return obj[this.name] },
-    compare: function(o1, o2) {
+  methods: [
+    function partialEval() { return this; },
+    function f(obj) { return obj[this.name] },
+    function compare(o1, o2) {
       return this.compareProperty(this.f(o1), this.f(o2));
     },
-    readResolve: function() {
+    function readResolve() {
       return this.modelId ?
         this.X.lookup(this.modelId)[constantize(this.name)] : this;
     },
-    toSQL: function() { return this.name; },
-    toMQL: function() { return this.name; },
-    toBQL: function() { return this.name; },
-    cloneProperty: function(/* this=prop, */ value) {
+    function toSQL() { return this.name; },
+    function toMQL() { return this.name; },
+    function toBQL() { return this.name; },
+    function cloneProperty(/* this=prop, */ value) {
       return ( value && value.clone ) ? value.clone() : value;
     },
-    deepCloneProperty: function(/* this=prop, */ value) {
+    function deepCloneProperty(/* this=prop, */ value) {
       return ( value && value.deepClone ) ? value.deepClone() : value;
     },
-    initPropertyAgents: function(proto, fastInit) {
+    function initPropertyAgents(proto, fastInit) {
       var prop   = this;
       var name   = prop.name;
       var name$_ = prop.name$_;
@@ -806,7 +806,7 @@ var Property = {
         });
       }
     }
-  },
+  ],
 
   //templates: [
   //  {

@@ -61,7 +61,7 @@
   }, X);
   // Though we are creating a DetailView as before, it will check for a toDetailHTML()
   // template on its data, and render that instead of the default view.
-  DetailView.create({ data: lawyer }, X).write(X.document);
+  DetailView.create({ data: lawyer }, X).write();
 });
                   </code>
                 </src>
@@ -121,7 +121,7 @@
   }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 });</code>
                 </src>
               </code-snippet>
@@ -187,7 +187,7 @@
   }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 
   // The view does not have a way to reference the extra content
   // that appears outside its id'd element.
@@ -319,7 +319,7 @@
   }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 
   // set this property and the sub-views based on it will update
   view.primaryContact = person2;
@@ -395,7 +395,7 @@
   }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 
 });</code>
                 </src>
@@ -473,7 +473,7 @@
   var view = CardPersonView.create({ data: person }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 
 });</code>
                 </src>
@@ -554,7 +554,7 @@
   var view = ToggleCardPersonView.create({ data: person }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 
 });</code>
                 </src>

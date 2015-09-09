@@ -147,4 +147,4 @@ var view = Y.ScrollView.create({
   dao: dao
 });
 
-view.write(document);
+view.write();

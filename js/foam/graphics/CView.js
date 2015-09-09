@@ -38,7 +38,7 @@ CLASS({
       <p><code>
             var rootNode = this.X.CView.create({width:300, height:200});<br/>
             <br/>
-            rootNode.write(document); // a CViewView wrapper is created for us<br/>
+            rootNode.write(this.X); // a CViewView wrapper is created for us<br/>
             <br/>
             rootNode.addChild(this.X.Circle.create({x:30, y:50, radius: 30, color: 'blue'});<br/>
             rootNode.addChild(this.X.Label.create({x: 50, y: 30, text: "Hello", color: 'black'});<br/>
@@ -224,9 +224,10 @@ CLASS({
           once on first $$DOC{ref:'.paint'} when transitioning from 'initial'
           to 'active' '$$DOC{ref:'.state'}. */ },
 
-    write: function(document) { /* Inserts this $$DOC{ref:'foam.graphics.CView'} into the DOM
+    write: function(opt_X) { /* Inserts this $$DOC{ref:'foam.graphics.CView'} into the DOM
                                    with an $$DOC{ref:'foam.graphics.AbstractCViewView'} wrapper. */
-      this.toView_().write(document);
+      var X = opt_X || this.X;
+      X.writeView(this.toView_(), X);
     },
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. */

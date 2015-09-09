@@ -23,15 +23,31 @@ MODEL({
   traits: [ 'foam.memento.MementoMgr' ],
 
   requires: [
-    'foam.demos.sevenguis.DiameterDialog',
-    'foam.graphics.Circle',
     'foam.graphics.CView',
+    'foam.graphics.Circle',
+    'foam.ui.DetailView', // TODO: This shouldn't be required
+    'foam.ui.md.PopupView'
   ],
 
   constants: {
     SELECTED_COLOR:   '#ddd',
     UNSELECTED_COLOR: 'white'
   },
+
+  models: [
+    {
+      name: 'DiameterDialog',
+      extendsModel: 'foam.ui.DetailView',
+
+      templates: [
+        function toHTML() {/*
+          <br>
+          Adjust the diameter of the circle at ($$x{mode: 'read-only'}, $$y{mode: 'read-only'}).<br>
+          $$r{model_: 'foam.ui.RangeView', maxValue: 200, onKeyMode: true}
+        */}
+      ]
+    }
+  ],
 
   properties: [
     {
@@ -61,7 +77,7 @@ MODEL({
     {
       name: 'canvas',
       factory: function() {
-        return this.CView.create({width: 300, height: 300, background: '#f3f3f3'});
+        return this.CView.create({width: 600, height: 500, background: '#f3f3f3'});
       }
     },
   ],
@@ -72,11 +88,10 @@ MODEL({
       this.canvas.$.addEventListener('contextmenu', this.onRightClick);
     },
     function addCircle(x, y, opt_d) {
-      var d = opt_d || 25;
       var c = this.Circle.create({
         x: x,
         y: y,
-        r: d,
+        r: opt_d || 25,
         color: this.UNSELECTED_COLOR,
         border: 'black'});
       this.canvas.addChild(c);
@@ -115,15 +130,36 @@ MODEL({
       code: function(evt) {
         evt.preventDefault();
         if ( ! this.selected ) return;
-        var d = this.DiameterDialog.create({data: this.selected});
-        d.write(document);
+        var p = this.PopupView.create({delegate: function() { return this.DiameterDialog.create({data: this.selected}); }.bind(this), layoutMode: 'relative'});
+        p.open(this.$);
+
+        // If the size is changed with the dialog, then create an updated memento
+        var oldR = this.selected.r;
+        var l = function(_, _, _, state) {
+          if ( state === 'closed' ) {
+            if ( this.selected.r !== oldR )
+              this.updateMemento();
+            p.state$.removeListener(l);
+          }
+        }.bind(this);
+        p.state$.addListener(l);
       }
     }
   ],
   templates: [
+    function CSS() {/*
+      .CircleDrawer { width:610px; height: 600px; margin: 20px; }
+      .CircleDrawer canvas { border: 1px solid black; }
+      .CircleDrawer .md-card { font-size: 20px; }
+      .CircleDrawer .actionButton { margin: 10px; }
+      .CircleDrawer input[type='range'] { width: 400px; }
+      .CircleDrawer .popup-view-container { width: 640px; height: 585px; }
+    */},
     function toHTML() {/*
-      $$back{label: 'Undo'} $$forth{label: 'Redo'}<br>
-      %%canvas
+      <div id="%%id" class="CircleDrawer">
+        <center class="buttonRow">$$back{label: 'Undo'} $$forth{label: 'Redo'}</center>
+        %%canvas
+      </div>
     */}
   ]
 });

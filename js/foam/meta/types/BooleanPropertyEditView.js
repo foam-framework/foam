@@ -26,18 +26,13 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
           <% this.headerHTML(out); %>
-          <div>
             $$label{ model_: 'foam.ui.TextFieldView', mode: this.mode }
-          </div>
-          <div>
             $$defaultValue{ model_: 'foam.ui.md.CheckboxView', mode: this.mode, showBorder: true }
-          </div>
-          <div>
             $$view{ model_: 'foam.ui.md.PopupChoiceView', choices: [
               'foam.ui.md.ToggleView',
               'foam.ui.md.CheckboxView',
             ] , mode: this.mode}
-          </div>
+            $$help{ model_: 'foam.ui.TextFieldView', mode: this.mode }
       </div>
     */},
 
