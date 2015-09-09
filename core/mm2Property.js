@@ -836,6 +836,7 @@ Model.methods = {
   getAllRawFeatures:        BootstrapModel.getAllRawFeatures,
   atest:                    BootstrapModel.atest,
   getRuntimeProperties:     BootstrapModel.getRuntimeProperties,
+  getRuntimeActions:        BootstrapModel.getRuntimeActions,
   create:                   BootstrapModel.create
 };
 

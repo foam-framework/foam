@@ -32,7 +32,7 @@ CLASS({
         if ( old === nu ) return;
         this.dataToolbarActions_ = this.wrapToolbarActions(
             nu,
-            (nu && nu.model_ && nu.model_.actions) || []);
+            (nu && nu.model_ && nu.model_.getRuntimeActions()) || []);
       },
     },
     {
@@ -67,8 +67,7 @@ CLASS({
     function init() {
       this.SUPER();
       if ( ! this.hideOwnActions ) {
-        this.toolbarActions_ = this.wrapToolbarActions(this, this.model_.actions);
-        this.addDestructor(this.removeToolbarActions.bind(this));
+        this.toolbarActions_ = this.wrapToolbarActions(this, this.model_.getRuntimeActions());
       }
     },
     function removeToolbarActions() {

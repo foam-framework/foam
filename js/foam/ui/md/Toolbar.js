@@ -64,6 +64,9 @@ CLASS({
       model_: 'ArrayProperty',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'rightActions',
+      postSet: function(old,nu) {
+        console.log('right actions set', old, nu);
+      }
     },
     {
       name: '$leftActions',
@@ -149,7 +152,7 @@ CLASS({
   ],
 
   templates: [
-    function toHTML() {/*
+    function toHTML() {/* <% console.log('toolbar rendering', this.leftActions, this.rightActions); %>
       <toolbar id="%%id" %%cssClassAttr()>
 
         <actions id="%%id-left-actions" class="left">

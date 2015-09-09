@@ -152,8 +152,8 @@ CLASS({
     {
       name: 'onDoubleClick',
       code: function(evt) {
-        for ( var i = 0 ; i < this.model_.actions.length ; i++ ) {
-          var action = this.model_.actions[i];
+        for ( var i = 0 ; i < this.model_.getRuntimeActions().length ; i++ ) {
+          var action = this.model_.getRuntimeActions()[i];
 
           if ( action.default ) {
             action.action.call(this);
