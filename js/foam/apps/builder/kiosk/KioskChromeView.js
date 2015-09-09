@@ -132,13 +132,13 @@ CLASS({
         align-items: center;
         flex-grow: 0;
         flex-shrink: 0;
-        padding: 0px 6px;
+        padding: 0 8px 0 0;
         box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.38);
       }
-      kiosk-chrome .actionButtonCView {
+      kiosk-chrome .md-button {
         flex-grow: 0;
         flex-shrink: 0;
-        margin: 12px 6px;
+        margin-left: 0;
       }
       kiosk-chrome .md-text-field-container {
         flex-grow: 1;
