@@ -32,7 +32,8 @@ CLASS({
         display: flex;
       }
       log-entry > num {
-        width: 35px;
+        min-width: 35px;
+        max-width: 35px;
         display: inline-block;
         text-align: right;
         padding-right: 13px;
