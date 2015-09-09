@@ -157,11 +157,12 @@ CLASS({
       this.initColWidths();
     },
     function initGlobalState() {
-      var body = this.document.body;
-      var id = body.id ? body.id : ( body.id = this.nextID() );
-      this.setClass('flex-table-view-col-resize', function() {
-        return this.isResizing;
-      }.bind(this), id);
+      this.X.dynamic(
+          function() { this.isResizing; }.bind(this),
+          function() {
+            DOM.setClass(this.document.body, 'flex-table-view-col-resize',
+                         this.isResizing);
+          }.bind(this));
     },
     function getModel() {
       return this.X.model ||
