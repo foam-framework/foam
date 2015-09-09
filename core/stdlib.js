@@ -357,13 +357,6 @@ MODEL({
         var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
         return v.toString(16);
       });
-    },
-
-    function writeView(view, opt_X) {
-      var document = (opt_X || this.X).document;
-      var html = view.toHTML();
-      document.body.insertAdjacentHTML('beforeend', html);
-      view.initHTML();
     }
   ]
 });
