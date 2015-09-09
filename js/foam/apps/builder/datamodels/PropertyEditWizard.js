@@ -35,6 +35,10 @@ CLASS({
       name: 'title',
       defaultValueFn: function() { return this.data.name; }
     },
+    {
+      name: 'hideOwnActions',
+      defaultValue: true,
+    },
   ],
 
   actions: [
@@ -59,7 +63,6 @@ CLASS({
       this.toolbar = this.Toolbar.create({
           data$: this.data$,
           title$: this.title$,
-          hideOwnActions: true,
       }, this.Y);
       this.Y.set('mdToolbar', this.toolbar);
     },

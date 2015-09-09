@@ -577,10 +577,10 @@ CLASS({
         });
       }
 
-      init(this.model_.actions);
+      init(this.model_.getRuntimeActions());
 
-      if ( this.data && this.data.model_ && this.data.model_.actions.length )
-        init(this.data.model_.actions, this.data$);
+      if ( this.data && this.data.model_ && this.data.model_.getRuntimeActions().length )
+        init(this.data.model_.getRuntimeActions(), this.data$);
 
       if ( found ) {
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);

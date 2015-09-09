@@ -37,7 +37,7 @@ CLASS({
       str += '<div class="actionToolbar">';
 
       // Actions on the View, are bound to the view
-      var actions = this.model_.actions;
+      var actions = this.model_.getRuntimeActions();
       for ( var i = 0 ; i < actions.length; i++ ) {
         var v = this.createActionView(actions[i]);
         //v.data = this;

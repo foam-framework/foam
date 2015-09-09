@@ -554,6 +554,11 @@ var BootstrapModel = {
     return this.instance_.properties_;
   },
 
+  getRuntimeActions: function() {
+    if ( ! this.instance_.actions_ ) this.getPrototype();
+    return this.instance_.actions_;
+  },
+
   getProperty: function(name) { /* Returns the requested $$DOC{ref:'Property'} of this instance. */
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
