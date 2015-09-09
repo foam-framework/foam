@@ -599,17 +599,22 @@ var BootstrapModel = {
     this.required__ = future.get;
 
     var go = function() {
-      var args = [];
+      var args = [], model = this, i;
 
       if ( this.extendsModel ) args.push(this.X.arequire(this.extendsModel));
 
-      var i;
+      if ( this.models ) {
+        for ( i = 0; i < this.models.length; i++ ) {
+          args.push(this.models[i].arequire());
+        }
+      }
+
       if ( this.traits ) {
         for ( i = 0; i < this.traits.length; i++ ) {
           args.push(this.X.arequire(this.traits[i]));
         }
       }
-      var model = this;
+
       if ( this.templates ) for ( i = 0 ; i < this.templates.length ; i++ ) {
         var t = this.templates[i];
         args.push(
