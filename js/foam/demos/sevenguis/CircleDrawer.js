@@ -25,7 +25,6 @@ MODEL({
   requires: [
     'foam.graphics.CView',
     'foam.graphics.Circle',
-    'foam.ui.DetailView', // TODO: This shouldn't be required
     'foam.ui.md.PopupView'
   ],
 
