@@ -250,8 +250,8 @@ CLASS({
     },
 
     removeAllChildren: function(child) { /* Removes all children from the scene. */
-      this.children = [];
-      this.view.paint();
+      for ( var i = this.children.length-1 ; i >= 0 ; i-- )
+        this.removeChild(this.children[i]);
       return this;
     },
 
