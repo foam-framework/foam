@@ -22,18 +22,12 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   documentation: 'A View for selecting a set of keys from an array of choices or from a DAO.',
-  requires: [ 'foam.u2.Element' ],
 
   properties: [
     {
       name: 'prop',
       hidden: true
     },
-      {
-          type: 'Property',
-          name: 'property',
-          hidden: true
-      },
     {
       name:  'choices',
       type:  'Array[StringField]',
@@ -50,26 +44,22 @@ CLASS({
           return out;
         }
 
-        if (a && a.clone) {
-          a = a.clone();
-          // Upgrade single values to [value, value]
-          for ( var i = 0 ; i < a.length ; i++ )
-            if ( ! Array.isArray(a[i]) )
-              a[i] = [a[i], a[i]];
-          return a;
-        }
+        a = a.clone();
+        // Upgrade single values to [value, value]
+        for ( var i = 0 ; i < a.length ; i++ )
+          if ( ! Array.isArray(a[i]) )
+            a[i] = [a[i], a[i]];
+        return a;
       },
 
       postSet: function(_, choices) {
         var set = this.data;
         var newSet = {};
 
-        if (choices) {
-          for ( var i = 0 ; i < choices.length ; i++ ) {
-            var key = choices[i][0];
+        for ( var i = 0 ; i < choices.length ; i++ ) {
+          var key = choices[i][0];
 
-            if ( set[key] ) newSet[key] = set[key];
-          }
+          if ( set[key] ) newSet[key] = set[key];
         }
 
         if ( Object.keys(set).toString() !== Object.keys(newSet).toString() ) this.data = newSet;
@@ -144,8 +134,8 @@ CLASS({
 <% this.choices.forEach(function(choice) {
   var id = self.nextID();
   self.data$.addListener(function() { if ( ! self.X.$(id) ) return; self.X.$(id).selected = self.data[choice[0]]; });
-  out(self.optionToHTML(id, choice[0], self.data[choice[0]], choice[1].toString()));
  %>
+ <option id="<%= id %>" <% if ( self.data[choice[0]] ) { %> selected="selected"<% } %>><%= escapeHTML(choice[1].toString()) %></option>
 <% }); %>
 */}
   ],
@@ -161,20 +151,6 @@ CLASS({
       var t = e.target || e.srcElement;
       if ( t.nodeType == 3 ) t = t.parentNode; // Opera fix
       return t;
-    },
-      function optionToHTML(id, key, selected, value) {
-          var self = this;
-          var e = E('option');
-          e.id = id;
-          if (selected) {
-              e.attr('selected', 'selected');
-          }
-          if (key && this.property && this.property.optionLabelFormatter) {
-              this.property.optionLabelFormatter(e, key, value);
-          } else {
-              e.c(escapeHTML(value));
-          }
-          return e;
-      },
+    }
   ]
 });
