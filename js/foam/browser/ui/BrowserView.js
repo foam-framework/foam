@@ -448,7 +448,6 @@ CLASS({
         displayMode: 'ICON_ONLY',
         height: 24,
         width: 24,
-        color: 'white'
       }), 'foam.ui.ActionButton');
       this.SharedStyles.create();
     },

@@ -58,7 +58,7 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'hideOwnActions',
-      help: "If true, do not automatically add the view's own actions to the toolbar, just the data's actions",
+      help: "If true, do not autoxmatically add the view's own actions to the toolbar, just the data's actions",
       defaultValue: false,
     },
   ],

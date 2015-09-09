@@ -58,15 +58,16 @@ CLASS({
     {
       model_: 'foam.ui.ColorProperty',
       name: 'color',
-      lazyFactory: function() { return 'black'; },
+      lazyFactory: function() { return 'currentColor'; },
       postSet: function(old, nu) {
-        if ( old ) Events.unfollow(old.alpha$, this.alpha$);
-        if ( nu ) Events.follow(nu.alpha$, this.alpha$);
+        if ( old && old.alpha$ ) Events.unfollow(old.alpha$, this.alpha$);
+        if ( nu && nu.alpha$ ) Events.follow(nu.alpha$, this.alpha$);
       },
     },
     {
       model_: 'FloatProperty',
       name: 'alpha',
+      defaultValue: 1.0,
     },
     {
       model_: 'IntProperty',

@@ -118,7 +118,7 @@ CLASS({
         </flow-state>
         <p id="%%id-message" class="md-subhead md-grey">{{this.data.message}}</p>
         <details class="md-subhead md-grey">{{this.data.details}}</details>
-        <actions class="md-actions vertical">
+        <actions class="md-actions md-popup-footer-actions vertical">
           $$openDevDashboard{
             model_: 'foam.ui.md.FlatButton',
             displayMode: 'LABEL_ONLY',
