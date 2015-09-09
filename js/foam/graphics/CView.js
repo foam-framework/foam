@@ -236,6 +236,7 @@ CLASS({
       if ( this.view ) {
         child.view = this.view;
         child.addListener(this.view.paint);
+        this.view.paint();
       }
       return this;
     },
@@ -244,6 +245,13 @@ CLASS({
       this.SUPER(child);
       child.view = undefined;
       child.removeListener(this.view.paint);
+      this.view.paint();
+      return this;
+    },
+
+    removeAllChildren: function(child) { /* Removes all children from the scene. */
+      this.children = [];
+      this.view.paint();
       return this;
     },
 
