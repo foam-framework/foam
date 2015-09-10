@@ -324,11 +324,11 @@ input[name=q]::-webkit-input-placeholder {
   align-items: flex-end;
 }
 
-.md-actions.horizontal .md-button:not(:first-child) {
+.md-actions.horizontal .md-button {
   margin-left: 0;
 }
 
-.md-actions.vertical .md-button:not(:first-child) {
+.md-actions.vertical .md-button {
   margin-top: 0;
 }
 

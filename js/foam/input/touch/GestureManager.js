@@ -162,6 +162,8 @@ CLASS({
         var answer = self.gestures[name].recognize(self.points);
         if ( answer >= self.Gesture.WAIT ) {
           matches.push([name, answer]);
+        } else {
+          delete self.active[name];
         }
       });
 
@@ -199,9 +201,21 @@ CLASS({
         match = matches[lastYes][0];
       }
 
+      // Filter out handlers that demand gesture points be inside the container.
+      var matched = this.active[match].filter(function(m) {
+        if ( ! m.enforceContainment ) return true;
+        var r = m.getElement().getBoundingClientRect();
+        var keys = Object.keys(self.points);
+        for ( var i = 0; i < keys.length; ++i ) {
+          var p = self.points[keys[i]];
+          if ( p.x < r.left || p.x > r.right ||
+              p.y < r.top || p.y > r.bottom ) return false;
+        }
+        return true;
+      });
+
       // Filter all the handlers to make sure none is a child of any already existing.
       // This prevents eg. two tap handlers firing when the tap is on an inner one.
-      var matched = this.active[match];
       var legal = [];
       for ( i = 0 ; i < matched.length ; i++ ) {
         var m = matched[i].getElement();
@@ -215,9 +229,11 @@ CLASS({
 
         if ( contained === 0 ) legal.push(matched[i].handler);
       }
-      // There will always be at least one survivor here.
 
-      this.gestures[match].attach(this.points, legal);
+      // legal.length may be 0 if all targets enforce containment and current x
+      // or y is no longer inside targets. In this case, do not bother attaching
+      // the empty list of handlers.
+      if ( legal.length > 0 ) this.gestures[match].attach(this.points, legal);
       this.recognized = this.gestures[match];
     },
 
