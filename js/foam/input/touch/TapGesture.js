@@ -41,7 +41,7 @@ CLASS({
       // I recognize:
       // - multiple points that
       // - are all done and
-      // - none of which has moved more than 10px net.
+      // - none of which has moved more than DRAG_TOLERANCE in some direction.
       var response;
       var doneCount = 0;
       var self = this;
