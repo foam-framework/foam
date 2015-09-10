@@ -162,6 +162,8 @@ CLASS({
         var answer = self.gestures[name].recognize(self.points);
         if ( answer >= self.Gesture.WAIT ) {
           matches.push([name, answer]);
+        } else {
+          delete self.active[name];
         }
       });
 
