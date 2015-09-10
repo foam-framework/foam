@@ -75,7 +75,7 @@ CLASS({
         <p class="md-headline">{{this.title}}</p>
         <p class="md-subhead md-grey">Your application requires the following permissions:</p>
         <pre class="md-quote md-grey" style="margin-left: 16px"><% this.prettyPermissions(out); %></pre>
-        <actions class="md-actions horizontal">
+        <actions class="md-actions md-popup-footer-actions horizontal">
           $$cancel{ model_: 'foam.ui.md.FlatButton', displayMode: 'LABEL_ONLY' }
           $$confirm{ model_: 'foam.ui.md.FlatButton', displayMode: 'LABEL_ONLY' }
         </actions>

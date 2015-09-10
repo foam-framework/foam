@@ -306,13 +306,13 @@ input[name=q]::-webkit-input-placeholder {
   width: 100%;
 }
 
-.md-card .md-actions {
+.md-card .md-actions.md-popup-footer-actions {
   width: calc(100% + 16px);
   margin-left: -16px;
   margin-bottom: -24px;
 }
 
-.md-popup-view-content .md-actions {
+.md-popup-view-content .md-actions.md-popup-footer-actions {
   width: calc(100% + 48px);
   margin-left: -24px;
   margin-bottom: -24px;
