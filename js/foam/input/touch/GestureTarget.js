@@ -31,6 +31,12 @@ CLASS({
       help: 'The containing DOM node\'s ID. Used for checking what inputs are within which gesture targets.'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'enforceContainment',
+      help: 'Require that the start and end of a matching gesture be inside the container.',
+      defaultValue: false
+    },
+    {
       name: 'getElement',
       help: 'Function to retrieve the element this gesture is attached to. Defaults to $(containerID).',
       defaultValue: function() { return this.X.$(this.containerID); }
