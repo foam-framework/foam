@@ -159,9 +159,11 @@ CLASS({
       }
       action-list.vertical {
         flex-direction: column;
+        margin-top: 8px;
       }
       action-list.horizontal {
         flex-direction: row;
+        margin-left: 8px;
       }
     */},
   ],

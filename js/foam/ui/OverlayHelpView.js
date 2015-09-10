@@ -161,7 +161,7 @@ CLASS({
       }, this.Y));
       if ( rect.bottom < vpHeight ) overlays.push(Overlay.create({
         y: rect.bottom,
-        height: vpHeight - rect.bottom - 1,
+        height: vpHeight - rect.bottom,
       }, this.Y));
       if ( rect.left > 0 ) overlays.push(Overlay.create({
         y: rect.top,

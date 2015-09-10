@@ -350,6 +350,7 @@ CLASS({
         var manager = this.X.gestureManager;
         var target = this.GestureTarget.create({
           containerID: opt_id,
+          enforceContainment: true,
           handler: {
             tapClick: function(pointMap) {
               // Create a fake event.
@@ -494,7 +495,7 @@ CLASS({
         $$DOC{ref:'.initHTML'}. */
       this.initInnerHTML();
       this.initKeyboardShortcuts();
-      this.maybeInitTooltip();
+      // this.maybeInitTooltip();
     },
 
     maybeInitTooltip: function() {
