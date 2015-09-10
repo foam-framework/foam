@@ -20,6 +20,10 @@ CLASS({
     'foam.ui.LigatureView',
   ],
 
+  imports: [
+    'document',
+  ],
+
   properties: [
     {
       model_: 'StringProperty',
@@ -30,19 +34,23 @@ CLASS({
       name: 'ligature',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( nu ) this.ligatureTester = this.LigatureTester.create({
-          ligature$: this.ligature$,
-          expectedWidth$: this.width$,
-          expectedHeight$: this.height$,
-          ligatureViewFactory: function() {
-            return this.LigatureView.create({
-              data$: this.ligature$,
-              color$: this.color$,
-              fontSize$: this.fontSize$,
-              className$: this.ligatureClassName$,
-            }, this.Y);
-          }.bind(this),
-        }, this.Y);
+        // Check that document.createElement exists, as a way of checking if we
+        // have a real DOM. LigatureTester doesn't load properly without one.
+        if ( nu && this.document.createElement ) {
+          this.ligatureTester = this.LigatureTester.create({
+            ligature$: this.ligature$,
+            expectedWidth$: this.width$,
+            expectedHeight$: this.height$,
+            ligatureViewFactory: function() {
+              return this.LigatureView.create({
+                data$: this.ligature$,
+                color$: this.color$,
+                fontSize$: this.fontSize$,
+                className$: this.ligatureClassName$,
+              }, this.Y);
+            }.bind(this),
+          }, this.Y);
+        }
       },
     },
     {
