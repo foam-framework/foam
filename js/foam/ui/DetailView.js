@@ -77,7 +77,7 @@ CLASS({
     {
       name: 'title',
       defaultValueFn: function() {
-        return (this.data && this.data.id ? 'Edit ' : 'New ') + this.model.label;
+        return /*(this.data && this.data.id ? 'Edit ' : 'New ') +*/ this.model.label;
       },
       documentation: function() {/*
         <p>The display title for the $$DOC{ref:'foam.ui.View'}.
@@ -127,7 +127,7 @@ CLASS({
       var title = this.title;
 
       return title ?
-        '<tr><th colspan=2 class="heading">' + title + '</th></tr>' :
+        '<tr><td colspan="2" class="heading">' + title + '</td></tr>' :
         '';
     },
 
@@ -140,7 +140,7 @@ CLASS({
 
     rowToHTML: function(prop, view) {
       /* HTML formatter for each $$DOC{ref:'Property'} row. */
-      var str = "";
+      var str = '';
 
       if ( prop.detailViewPreRow ) str += prop.detailViewPreRow(this);
 
