@@ -298,6 +298,30 @@ CLASS({
 
 
 CLASS({
+  name:  'LongProperty',
+  extendsModel: 'IntProperty',
+
+  help:  'Describes a properties of type Long.',
+  label: 'Round long numbers such as 1, 0, or -245',
+
+  properties: [
+    {
+      name: 'type',
+      defaultValue: 'Long'
+    },
+    {
+      name: 'displayWidth',
+      defaultValue: 12
+    },
+    {
+      name: 'javaType',
+      defaultValue: 'long',
+    }
+  ]
+});
+
+
+CLASS({
   name:  'FloatProperty',
   extendsModel: 'Property',
 
