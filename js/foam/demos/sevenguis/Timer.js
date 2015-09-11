@@ -33,6 +33,7 @@ MODEL({
       defaultValue: 0
     },
     {
+      model_: 'IntProperty',
       name: 'duration',
       units: 'ms',
       view: { factory_: 'foam.ui.RangeView', maxValue: 10000 },
@@ -48,7 +49,7 @@ MODEL({
     function init() {
       this.SUPER();
       this.X.dynamic(function() {
-        this.progress = 100 * Math.min(1, 1000 * this.elapsedTime / this.duration);
+        this.progress = this.duration ? 100 * Math.min(1, 1000 * this.elapsedTime / this.duration) : 100;
       }.bind(this));
       this.duration$.addListener(this.tick);
       this.tick();
