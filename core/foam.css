@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-html, body {
-  margin: 0;
-  padding: 0;
-}
+/* TODO: move all CSS to individual models. */
 
 body {
   font-family: Roboto, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
   font-size: 12px;
 }
+
 p, h1, form, button {
   border: 0;
   margin: 0;
@@ -209,7 +207,8 @@ option[selected]{
 }
 
 .actionToolbar {
-  float: right;
+  float: left;
+  margin-top: 4px;
 }
 
 .actionBorderActions {
