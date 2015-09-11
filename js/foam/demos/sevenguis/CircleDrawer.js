@@ -144,12 +144,12 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
-      .CircleDrawer { width:610px; height: 600px; margin: 20px; }
+      .CircleDrawer { width:600px; margin: 20px; }
       .CircleDrawer canvas { border: 1px solid black; }
       .CircleDrawer .md-card { font-size: 20px; }
       .CircleDrawer .actionButton { margin: 10px; }
       .CircleDrawer input[type='range'] { width: 400px; }
-      .CircleDrawer .popup-view-container { width: 640px; height: 585px; }
+      .CircleDrawer .popup-view-container { width: 602px; }
     */},
     function toHTML() {/*
       <div id="%%id" class="CircleDrawer">
