@@ -85,7 +85,7 @@ Name | Aliases
   var extras = [];
   if (prop.shortName) extras.push(prop.shortName);
   if (prop.aliases && prop.aliases.length) extras.push.apply(extras, prop.aliases);
-  %>**<%= prop.name %>** | <%= extras.length ? extras.join(', ') : '' %>
+  %>**<%= prop.name %>** |<%= extras.length ? ' ' + extras.join(', ') : '' %>
 <% } %>
 */},
   ]
