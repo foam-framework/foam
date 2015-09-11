@@ -155,7 +155,7 @@ CLASS({
     {
       name: 'javaType',
       type: 'String',
-      defaultValue: 'Date',
+      defaultValue: 'java.util.Date',
       help: 'The Java type of this property.'
     },
     {
