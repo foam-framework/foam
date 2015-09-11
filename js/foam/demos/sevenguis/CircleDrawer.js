@@ -26,7 +26,7 @@ MODEL({
     'foam.graphics.Circle',
     'foam.graphics.CView',
     'foam.ui.md.ChoiceMenuView',
-    'foam.ui.md.PopupView'
+    'foam.ui.PopupView'
   ],
 
   constants: {
@@ -126,19 +126,16 @@ MODEL({
         evt.preventDefault();
         if ( ! this.selected ) return;
 
-        var p = this.PopupView.create({delegate: function() { return this.DiameterDialog.create({data: this.selected}); }.bind(this), layoutMode: 'relative'});
-        p.open(this.$);
+        var p = this.PopupView.create({view: this.DiameterDialog.create({data: this.selected}), width: 420, height: 50});
+        p.openOn(this.$);
 
         // If the size is changed with the dialog, then create an updated memento
         var oldR = this.selected.r;
-        var l = function(_, _, _, state) {
-          if ( state === 'closed' ) {
-            if ( this.selected.r !== oldR )
-              this.updateMemento();
-            p.state$.removeListener(l);
-          }
-        }.bind(this);
-        p.state$.addListener(l);
+        p.subscribe(p.CLOSED_TOPIC, function() {
+          if ( this.selected.r !== oldR )
+            this.updateMemento();
+          p = null;
+        }.bind(this));
       }
     }
   ],
@@ -149,7 +146,6 @@ MODEL({
       .CircleDrawer .md-card { font-size: 20px; }
       .CircleDrawer .actionButton { margin: 10px; }
       .CircleDrawer input[type='range'] { width: 400px; }
-      .CircleDrawer .popup-view-container { width: 602px; }
     */},
     function toHTML() {/*
       <div id="%%id" class="CircleDrawer">
