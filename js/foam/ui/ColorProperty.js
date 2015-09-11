@@ -167,7 +167,7 @@ CLASS({
       name: 'adapt',
       defaultValue: function(old, nu, self) {
         if ( old === nu || self.Color.isInstance(nu) ) return nu;
-        if ( nu == 'currentColor' ) return 'nu'; // CSS inherit color, allows CSS control of element color
+        if ( nu == 'currentColor' ) return nu; // CSS inherit color, allows CSS control of element color
         
         var c = self.Color.create();
         var rgb = self.COLORS[nu];

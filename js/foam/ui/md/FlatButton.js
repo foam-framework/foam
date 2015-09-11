@@ -172,8 +172,12 @@ CLASS({
       // share the same modelled notion of color. (jacksonic) But make sure 
       // CSS like 'color: currentColor' still works!
       Events.map(this.haloColor_$, this.halo.color$, function(color) {
+        if ( color == 'currentColor' && this.$ ) {
+          var s = this.X.window.getComputedStyle(this.$);
+          if ( s && s.color ) return s.color;
+        }
         return color.toString();
-      });
+      }.bind(this));
     },
     function initHTML() {
       this.SUPER();
@@ -185,6 +189,9 @@ CLASS({
       this.$.style.font = this.font;
       this.$.style.opacity = this.alpha;
       this.$.style.background = this.background;
+      var temp = this.haloColor_;
+      this.haloColor_ = 'black';
+      this.haloColor_ = temp; // do the 'currentColor' check again
     },
     function bindData() {
       if ( ( ! this.action ) || ( ! this.data ) ) return;
