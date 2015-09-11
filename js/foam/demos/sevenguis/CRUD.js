@@ -84,23 +84,25 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
-      body { padding: 10px !important; }
-      .buttons { padding-left: 592px; }
+      .crud { padding: 10px !important; }
+      .crud .buttons { padding-left: 592px; }
       .crud .detailView { border: none; background: white; }
-      .crud span { overflow: hidden !important; }
-      .crud { width: 1000px; }
-      .detailPane { width: 45%; display: inline-block; margin-left: 50px; margin-top: 16px; }
-      .label { color: #039; font-size: 14px; padding-top: 6px; }
-      .prefix { margin-left: 10px; }
-      .summaryPane { width: 49%; display: inline-block; vertical-align: top; }
-      .tableView { height: 184px; outline: none; }
+      .crud .content span { overflow: hidden !important; }
+      .crud .content { width: 1000px; }
+      .crud .detailPane { width: 45%; display: inline-block; margin-left: 50px; margin-top: 16px; }
+      .crud .label { color: #039; font-size: 14px; padding-top: 6px; }
+      .crud .prefix { margin-left: 10px; }
+      .crud .summaryPane { width: 49%; display: inline-block; vertical-align: top; }
+      .crud .tableView { height: 184px; outline: none; }
     */},
     function toHTML() {/*
-      <span class="prefix label">Filter prefix: </span> $$prefix{onKeyMode: true, type: 'search'}
       <div class="crud">
-        <span class="summaryPane">$$filteredDAO</span>
-        <span class="detailPane">$$data</span>
-        <div class="buttons">$$createItem $$updateItem $$deleteItem</div>
+        <span class="prefix label">Filter prefix: </span> $$prefix{onKeyMode: true, type: 'search'}
+        <div class="content">
+          <span class="summaryPane">$$filteredDAO</span>
+          <span class="detailPane">$$data</span>
+          <div class="buttons">$$createItem $$updateItem $$deleteItem</div>
+        </div>
       </div>
     */}
   ],
