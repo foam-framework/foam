@@ -48,6 +48,7 @@ CLASS({
     },
     function aconfirmExportAction(title, ret) {
       var confirmPopup = this.PopupView.create({
+        cardClass: 'md-card-shell',
         data: this.data,
         blockerMode: 'modal',
         delegate: this.ExportConfirmView.xbind({
@@ -63,6 +64,7 @@ CLASS({
         title: title,
       }, this.Y);
       var popup = this.PopupView.create({
+        cardClass: 'md-card-shell',
         blockerMode: 'modal',
         delegate: 'foam.apps.builder.ExportFlowView',
         data: exportFlow,

@@ -23,8 +23,9 @@ MODEL({
   traits: [ 'foam.memento.MementoMgr' ],
 
   requires: [
-    'foam.graphics.CView',
     'foam.graphics.Circle',
+    'foam.graphics.CView',
+    'foam.ui.md.ChoiceMenuView',
     'foam.ui.md.PopupView'
   ],
 
@@ -124,6 +125,7 @@ MODEL({
       code: function(evt) {
         evt.preventDefault();
         if ( ! this.selected ) return;
+
         var p = this.PopupView.create({delegate: function() { return this.DiameterDialog.create({data: this.selected}); }.bind(this), layoutMode: 'relative'});
         p.open(this.$);
 

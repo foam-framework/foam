@@ -244,8 +244,10 @@ CLASS({
     removeChild: function(child) { /* Removes a child from the scene. */
       this.SUPER(child);
       child.view = undefined;
-      child.removeListener(this.view.paint);
-      this.view.paint();
+      if ( this.view ) {
+        child.removeListener(this.view.paint);
+        this.view.paint();
+      }
       return this;
     },
 
