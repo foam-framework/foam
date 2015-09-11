@@ -43,6 +43,7 @@ CLASS({
     'setTimeout',
     'warn',
     'window',
+    'writeView',
     'as FOAMWindow'
   ],
 
