@@ -41,7 +41,7 @@ MODEL({
 
       templates: [
         function toHTML() {/*
-          Adjust the diameter of the circle at ($$x{mode: 'read-only'}, $$y{mode: 'read-only'}).<br>
+          Adjust the diameter of the circle at ($$x{mode: 'read-only'}, $$y{mode: 'read-only'}).<br><br>
           $$r{model_: 'foam.ui.RangeView', maxValue: 200, onKeyMode: true}
         */}
       ]
@@ -126,7 +126,7 @@ MODEL({
         evt.preventDefault();
         if ( ! this.selected ) return;
 
-        var p = this.PopupView.create({view: this.DiameterDialog.create({data: this.selected}), width: 420, height: 50});
+        var p = this.PopupView.create({view: this.DiameterDialog.create({data: this.selected}), width: 410, height: 70});
         p.openOn(this.$);
 
         // If the size is changed with the dialog, then create an updated memento
