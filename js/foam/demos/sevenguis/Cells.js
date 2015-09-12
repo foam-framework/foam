@@ -15,16 +15,6 @@
  * limitations under the License.
  */
 
-// TODO: Create a Range Model?
-/*
-MODEL({
-  package: 'foam.demos.sevenguis',
-  name: 'CellParser',
-  extendsModel: 'foam.parse.Grammar',
-
-  methods: {
-*/
-
 var CellParser = {
   __proto__: grammar,
 
@@ -121,7 +111,6 @@ var CellParser = {
   },
   string: function(s) { return function() { return s; }; }
 });
-//});
 
 
 // https://www.artima.com/pins1ed/the-scells-spreadsheet.html
@@ -203,7 +192,6 @@ MODEL({
       ]
     }
   ],
-
   properties: [
     {
       name: 'rows',
@@ -219,14 +207,12 @@ MODEL({
     },
     {
       name: 'parser',
-      factory: function() { return /*this.*/CellParser/*.create()*/; }
+      factory: function() { return CellParser; }
     }
   ],
   methods: [
     function init() {
       this.SUPER();
-
-      window.cells = this; // makes debugging easier, not needed
 
       // Two sample spreadsheets
       // Spreadsheet taken from Visicalc
