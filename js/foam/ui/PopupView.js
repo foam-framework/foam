@@ -55,13 +55,15 @@ CLASS({
   templates: [
     function CSS() {/*
       .popup {
-      padding: 20px;
-      opacity: 0.9;
-      background: #999;
-      box-shadow: 3px 3px 6px 0 gray;
-      color: white;
-      position: absolute;
-    } */}
+        background: #999;
+        box-shadow: 3px 3px 6px 0 gray;
+        color: white;
+        font-size: 18px;
+        opacity: 0.9;
+        padding: 20px;
+        position: absolute;
+      }
+    */}
   ],
   methods: {
     open: function() {
