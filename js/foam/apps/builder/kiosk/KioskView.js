@@ -20,7 +20,7 @@ CLASS({
     'foam.apps.builder.TOSView',
     'foam.apps.builder.Timeout',
     'foam.apps.builder.WebView',
-    'foam.apps.builder.kiosk.KioskChromeView',
+    'foam.apps.builder.kiosk.ChromeView',
     'foam.ui.md.FlatButton',
     'foam.ui.md.PopupView',
   ],
@@ -33,7 +33,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      view: 'foam.apps.builder.kiosk.KioskChromeView',
+      view: 'foam.apps.builder.kiosk.ChromeView',
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( old ) {

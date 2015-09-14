@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder.kiosk',
-  name: 'KioskDesignerView',
+  name: 'DesignerView',
   extendsModel: 'foam.apps.builder.DesignerView',
 
   requires: [

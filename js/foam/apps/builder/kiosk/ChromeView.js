@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder.kiosk',
-  name: 'KioskChromeView',
+  name: 'ChromeView',
   extendsModel: 'foam.ui.View',
 
   imports: [
