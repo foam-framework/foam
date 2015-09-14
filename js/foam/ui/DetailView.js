@@ -230,14 +230,15 @@ CLASS({
           .detailView {
             border: solid 2px #dddddd;
             background: #fafafa;
-            width: 99%;
+            display: table;
           }
 
           .detailView .heading {
+            color: black;
             float: left;
-            font-size: 14px;
-            font-weight: bold;
+            font-size: 16px;
             margin-bottom: 8px;
+            padding: 2px;
           }
 
           .detailView .propertyLabel {
@@ -273,6 +274,10 @@ CLASS({
           }
 
           .detailView .label {
+            color: #444;
+            font-size: smaller;
+            padding-left: 6px;
+            padding-top: 8px;
             vertical-align: top;
           }
 
@@ -282,7 +287,6 @@ CLASS({
 
           .detailArrayLabel .foamTable {
             margin: 1px;
-            width: 99%;
           }
       */}
     }
