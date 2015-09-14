@@ -109,7 +109,7 @@ CLASS({
       Events.link(pValue, this.childData$);
       if ( this.prop.validate ) {
         this.X.dynamic3(data, this.prop.validate, function(error) {
-          console.log('************************** error, ', self.prop.name, error, self.view.$);
+          // console.log('************************** error, ', self.prop.name, error, self.view.$);
           if ( ! self.view ) return;
           self.view.$.style.border = error ? '2px solid red' : '';
         });
