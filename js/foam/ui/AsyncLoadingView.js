@@ -65,28 +65,8 @@
    methods: [
      function init() {
        this.SUPER();
-       this.construct();
-     },
-     
-     function mergeWithCopyFrom(other) {
-       /* Override/Append to args, typically
-          used to merge in $$DOC{ref:'.model'} if it is a JSON object. */
-       for (var key in other) {
-         if ( key == 'factory_' ) continue;
-         this.copyFrom[key] = other[key];
-       }
-     },
 
-     function skipKeysFn_hasOwnProperty(name) {
-       if ( name == 'factory_' ||
-            name == 'model_' ||
-            name == 'view' ) {
-         return false;
-       }
-       return this.inner.hasOwnProperty(name);
-     },
-
-     function construct() { /* Picks the model to create, then passes off to $$DOC{ref:'.finishRender'}. */
+       /* Picks the model to create, then passes off to $$DOC{ref:'.finishRender'}. */
        // Decorators to allow us to skip over keys without copying them
        // as create() args
        var skipKeysArgDecorator = Object.create(this.args);
@@ -136,6 +116,24 @@
        console.warn("AsyncLoadingView: View load with invalid model. ", this.model, this.args, this.copyFrom);
      },
      
+     function mergeWithCopyFrom(other) {
+       /* Override/Append to args, typically
+          used to merge in $$DOC{ref:'.model'} if it is a JSON object. */
+       for (var key in other) {
+         if ( key == 'factory_' ) continue;
+         this.copyFrom[key] = other[key];
+       }
+     },
+
+     function skipKeysFn_hasOwnProperty(name) {
+       if ( name == 'factory_' ||
+            name == 'model_' ||
+            name == 'view' ) {
+         return false;
+       }
+       return this.inner.hasOwnProperty(name);
+     },
+
      function requireViewInstance(view) {
        view.arequire()(function(m) {
          this.finishRender(view);
