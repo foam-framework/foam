@@ -132,8 +132,8 @@ CLASS({
     function logout() {
       this.webview.ahome(function() {
         this.webview.clearCache();
-        if ( this.data.termsOfService ) this.openTOS();
       }.bind(this));
+      if ( this.data.termsOfService ) this.openTOS();
     },
     function openTOS() {
       this.tosData.accepted = false;
