@@ -25,14 +25,8 @@ CLASS({
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( old ) {
-          Events.unfollow(old.homepage$, this.url$);
-          old.removeListener(this.onDataPropertyChange);
-        }
-        if ( nu ) {
-          Events.follow(nu.homepage$, this.url$);
-          nu.addListener(this.onDataPropertyChange);
-        }
+        if ( old ) Events.unfollow(old.homepage$, this.url$);
+        if ( nu ) Events.follow(nu.homepage$, this.url$);
       },
     },
     {
@@ -57,13 +51,6 @@ CLASS({
   ],
 
   listeners: [
-    {
-      name: 'onDataPropertyChange',
-      code: function() {
-        this.updateInnerHTML();
-        this.initHTML();
-      }
-    },
     {
       name: 'onNavigate',
       code: function(_, __, url) { this.url = url; },
@@ -120,11 +107,12 @@ CLASS({
       $$back
       $$forward
       $$home
-      <% if ( this.data.enableNavBar ) { %>
-        $$url
-      <% } %>
+      $$url
       $$reload
       $$logout
+      <% this.setClass('hidden', function() {
+           return ! this.data.enableNavBar;
+         }.bind(this), this.urlView.id); %>
     */},
     function CSS() {/*
       kiosk-chrome {
@@ -132,8 +120,9 @@ CLASS({
         align-items: center;
         flex-grow: 0;
         flex-shrink: 0;
-        padding: 0 8px 0 0;
+        padding: 0 0 0 8px;
         box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.38);
+        overflow: hidden;
       }
       kiosk-chrome .md-button {
         flex-grow: 0;
@@ -144,8 +133,19 @@ CLASS({
         flex-grow: 1;
         flex-shrink: 1;
       }
-      kiosk-chrome .actionButtonCView[width="0"][height="0"] {
-        margin: 0px;
+      kiosk-chrome .md-text-field-container.hidden {
+        display: inherit!important;
+        transform: rotateZ(180deg) scaleY(0);
+        transition-delay: 0ms, 250ms, 250ms, 250ms;
+        width: 0;
+        max-width: 0;
+        margin: 0;
+        padding: 0;
+      }
+      kiosk-chrome .md-text-field-container {
+        transition: transform 250ms ease, width 249ms ease, margin 249ms ease, padding 249ms ease;
+        transition-delay: 249ms, 0ms, 0ms, 0ms;
+        transform: unset;
       }
     */},
   ]

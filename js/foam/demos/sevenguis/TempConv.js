@@ -18,9 +18,13 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'TempConv',
+  label: 'Temperature Converter',
   properties: [
     { name: 'c', model_: 'FloatProperty', view: { factory_: 'foam.ui.FloatFieldView', onKeyMode: true, precision: 4 } },
     { name: 'f', model_: 'FloatProperty', view: { factory_: 'foam.ui.FloatFieldView', onKeyMode: true, precision: 4 } }
+  ],
+  templates: [
+    function toDetailHTML() {/* $$c Celsius = $$f Fahrenheit */}
   ],
   methods: {
     init: function() { Events.relate(this.c$, this.f$, this.c2f, this.f2c); },

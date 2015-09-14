@@ -1,4 +1,4 @@
-a:/**
+/**
  * @license
  * Copyright 2012 Google Inc. All Rights Reserved.
  *
@@ -21,9 +21,8 @@ CLASS({
 
   properties: [
     {
-      name: 'parser',
+      name: 'grammar',
       factory: function() {
-        var X = this.X;
         return {
           __proto__: grammar,
 
@@ -143,8 +142,14 @@ CLASS({
           charEscape: seq('\\', alt('a', 'b', 'f', 'n', 'r', 't', 'v','?')),
 
           quoteEscape: seq('\\"'),
-
-        }.addActions({
+        }
+      }
+    },
+    {
+      name: 'parser',
+      factory: function() {
+        var X = this.X;
+        return this.grammar.addActions({
           package: function(a) {
             this.currentPackage = a[1];
           },

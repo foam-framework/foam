@@ -575,7 +575,6 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
       name: 'labels'
     }
   ]

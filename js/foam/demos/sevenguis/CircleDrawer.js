@@ -26,7 +26,7 @@ MODEL({
     'foam.graphics.Circle',
     'foam.graphics.CView',
     'foam.ui.md.ChoiceMenuView',
-    'foam.ui.md.PopupView'
+    'foam.ui.PopupView'
   ],
 
   constants: {
@@ -41,7 +41,7 @@ MODEL({
 
       templates: [
         function toHTML() {/*
-          Adjust the diameter of the circle at ($$x{mode: 'read-only'}, $$y{mode: 'read-only'}).<br>
+          Adjust the diameter of the circle at ($$x{mode: 'read-only'}, $$y{mode: 'read-only'}).<br><br>
           $$r{model_: 'foam.ui.RangeView', maxValue: 200, onKeyMode: true}
         */}
       ]
@@ -126,30 +126,26 @@ MODEL({
         evt.preventDefault();
         if ( ! this.selected ) return;
 
-        var p = this.PopupView.create({delegate: function() { return this.DiameterDialog.create({data: this.selected}); }.bind(this), layoutMode: 'relative'});
-        p.open(this.$);
+        var p = this.PopupView.create({view: this.DiameterDialog.create({data: this.selected}), width: 410, height: 70});
+        p.openOn(this.$);
 
         // If the size is changed with the dialog, then create an updated memento
         var oldR = this.selected.r;
-        var l = function(_, _, _, state) {
-          if ( state === 'closed' ) {
-            if ( this.selected.r !== oldR )
-              this.updateMemento();
-            p.state$.removeListener(l);
-          }
-        }.bind(this);
-        p.state$.addListener(l);
+        p.subscribe(p.CLOSED_TOPIC, function() {
+          if ( this.selected.r !== oldR )
+            this.updateMemento();
+          p = null;
+        }.bind(this));
       }
     }
   ],
   templates: [
     function CSS() {/*
-      .CircleDrawer { width:610px; height: 600px; margin: 20px; }
+      .CircleDrawer { width:600px; margin: 20px; }
       .CircleDrawer canvas { border: 1px solid black; }
       .CircleDrawer .md-card { font-size: 20px; }
       .CircleDrawer .actionButton { margin: 10px; }
       .CircleDrawer input[type='range'] { width: 400px; }
-      .CircleDrawer .popup-view-container { width: 640px; height: 585px; }
     */},
     function toHTML() {/*
       <div id="%%id" class="CircleDrawer">

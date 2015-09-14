@@ -689,9 +689,8 @@ CLASS({
         copyFrom: opt_args
       }, X);
 
-      if ( v.view ) {
-        v = v.view;
-      }
+      if ( v.view ) v = v.view;
+
       this[r.name + 'View'] = v;
       return v;
     },
@@ -711,9 +710,8 @@ CLASS({
         copyFrom: opt_args
       }, X);
 
-      if ( v.view ) {
-        v = v.view;
-      }
+      if ( v.view ) v = v.view;
+
       this[action.name + 'View'] = v;
       return v;
     },

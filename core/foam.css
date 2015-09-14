@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-html, body {
-  margin: 0;
-  padding: 0;
-}
+/* TODO: move all CSS to individual models. */
 
 body {
   font-family: Roboto, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
   font-size: 12px;
 }
+
 p, h1, form, button {
   border: 0;
   margin: 0;
@@ -75,66 +73,6 @@ p, h1, form, button {
   transition: opacity 0.3s;
 }
 
-/* ----------- detailView ----------- */
-
-.detailView {
-  display: table;
-  border: solid 2px #dddddd;
-  background: #fafafa;
-  width: 99%;
-}
-
-.detailView .heading {
-  float: left;
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.detailView .propertyLabel {
-  font-size: 14px;
-  display: block;
-  font-weight: bold;
-  text-align: right;
-  float: left;
-}
-
-.detailView input {
-  font-size: 12px;
-  padding: 4px 2px;
-  border: solid 1px #aacfe4;
-  margin: 2px 0 0 10px;
-}
-
-.detailView textarea {
-  float: left;
-  font-size: 12px;
-  padding: 4px 2px;
-  border: solid 1px #aacfe4;
-  margin: 2px 0 0 10px;
-  width: 98%;
-  overflow: auto;
-}
-
-.detailView select {
-  font-size: 12px;
-  padding: 4px 2px;
-  border: solid 1px #aacfe4;
-  margin: 2px 0 0 10px;
-}
-
-.detailView .label {
-  vertical-align: top;
-}
-
-.detailArrayLabel {
-  font-size: medium;
-}
-
-.detailArrayLabel .foamTable {
-  margin: 1px;
-  width: 99%;
-}
 
 /* ----------- summaryView ----------- */
 
@@ -209,7 +147,8 @@ option[selected]{
 }
 
 .actionToolbar {
-  float: right;
+  float: left;
+  margin-top: 4px;
 }
 
 .actionBorderActions {

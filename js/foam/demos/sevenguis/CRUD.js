@@ -84,7 +84,7 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
-      .crud { padding: 10px !important; }
+      .crud { padding: 10px; }
       .crud .buttons { padding-left: 592px; }
       .crud .detailView { border: none; background: white; }
       .crud .content span { overflow: hidden !important; }
