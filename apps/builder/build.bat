@@ -13,8 +13,9 @@ node --harmony "%FOAM_DIR%\tools\foam.js" foam.build.BuildApp appDefinition=%APP
 copy "%FOAM_DIR%\core\foam.css" "%BUILD_DIR%\foam.css"
 echo "%BASEDIR_FILES%"
 for %%f in (%BASEDIR_FILES%) do (
-  del /P /F /A %BUILD_DIR%\%%f
+  del /Q /F /A %BUILD_DIR%\%%f
   rmdir /S /Q %BUILD_DIR%\%%f
+  Robocopy /S /E %BASEDIR%\%%f %BUILD_DIR%\%%f
   copy %BASEDIR%\%%f %BUILD_DIR%\%%f
 )
 
