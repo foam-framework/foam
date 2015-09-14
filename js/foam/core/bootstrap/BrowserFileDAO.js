@@ -47,6 +47,7 @@ MODEL({
       return this.rootPath + key.replace(/\./g, '/') + '.js';
     },
     find: function(key, sink) {
+      var url = this.toURL_(key);
       if ( this.preload[key] ) {
         sink && sink.put && sink.put(this.preload[key]);
         delete this.preload[key];
@@ -60,7 +61,6 @@ MODEL({
 
       this.pending[key] = [sink];
 
-      var tag = this.document.createElement('script');
       var looking = key;
 
       var onerror = function() {
@@ -69,52 +69,69 @@ MODEL({
         for ( var i = 0 ; i < pending.length ; i++ ) {
           pending[i] && pending[i].error && pending[i].error.apply(null, arguments);
         }
-        tag.remove();
       }.bind(this);
 
-      tag.callback = function(data, latch) {
-        var work = [anop];
-        var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
+      aseq(
+        function(ret) {
+          var xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function() {
+            if ( xhr.readyState != xhr.DONE ) return;
 
-        if ( ! obj ) throw new Error('Failed to decode data: ' + data);
-
-        if ( looking === obj.id ) looking = null;
-
-        if ( ! this.pending[obj.id] ) {
-          if ( latch ) {
-            latch(data);
-          } else {
-            // Workaround for legacy apps that include extra models via
-            // additional script tags.
-            this.preload[obj.id] = obj;
-          }
-          return;
-        }
-
-        aseq.apply(null, work)(
-          function(ret) {
-            var sinks = this.pending[obj.id];
-            delete this.pending[obj.id];
-            if ( sinks ) {
-              for ( var i = 0; i < sinks.length ; i++ ) {
-                var sink = sinks[i];
-                sink && sink.put && sink.put(obj);
-              }
+            if ( xhr.status >= 200 && xhr.status < 300 ) {
+              ret(xhr.response);
+              return;
             }
-          }.bind(this));
-      }.bind(this);
+            ret(null);
+          }.bind(this);
 
-      tag.onload = function() {
-        if ( looking != null ) {
-          onerror();
-        }
-        tag.remove();
-      };
-      tag.onerror = onerror;
+          xhr.open("GET", url);
+          xhr.responseType = "text";
+          xhr.send();
+        }.bind(this),
+        function(ret, data) {
+          if ( ! data ) {
+            sink && sink.error && sink.error('Could not load model ' + key);
+          }
+          var oldCb = GLOBAL.__DATACALLBACK;
+          GLOBAL.__DATACALLBACK = function(data, latch) {
+            var work = [anop];
+            var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
-      tag.src = this.toURL_(key);
+            if ( ! obj ) throw new Error('Failed to decode data: ' + data);
 
-      this.document.head.appendChild(tag);
+            if ( looking === obj.id ) looking = null;
+
+            if ( ! this.pending[obj.id] ) {
+              if ( latch ) {
+                latch(data);
+              } else {
+                // Workaround for legacy apps that include extra models via
+                // additional script tags.
+                this.preload[obj.id] = obj;
+              }
+              return;
+            }
+
+            aseq.apply(null, work)(
+              function(ret) {
+                var sinks = this.pending[obj.id];
+                delete this.pending[obj.id];
+                if ( sinks ) {
+                  for ( var i = 0; i < sinks.length ; i++ ) {
+                    var sink = sinks[i];
+                    sink && sink.put && sink.put(obj);
+                  }
+                }
+              }.bind(this));
+          }.bind(this);
+          GLOBAL.__DATACALLBACK.sourcePath = url;
+          eval(data);
+          GLOBAL.__DATACALLBACK = oldCb;
+        }.bind(this))(function() {
+          if ( looking ) {
+            onerror();
+          }
+        });
     }
   }
 });
