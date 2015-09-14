@@ -20,6 +20,8 @@
    name: 'AsyncLoadingView',
    extendsModel: 'foam.ui.BaseView',
 
+   requires: ['Model'],
+   
    documentation: function() {/* Loads a view with arequire, giving the
      host view a placeholder immediately and filling in the actual view
      when it is available.
