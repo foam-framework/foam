@@ -10,6 +10,8 @@ MODEL({
     'foam.demos.dailycount.DailyCount',
     'foam.demos.dailycount.DailyThing'
   ],
+
+  exports: [ 'counts', 'today' ],
   
   properties: [
     {
@@ -31,6 +33,14 @@ MODEL({
           cache: true,
           seqNo: true});
       }
+    }
+  ],
+
+  methods: [
+    function today() {
+      var today = new Date();
+      today.setHours(0,0,0,0);
+      return today;
     }
   ],
 

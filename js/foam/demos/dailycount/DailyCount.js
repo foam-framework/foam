@@ -10,6 +10,9 @@ MODEL({
       name: 'thingID'
     },
     {
+      name: 'date'
+    },
+    {
       name: 'count'
     }
   ]

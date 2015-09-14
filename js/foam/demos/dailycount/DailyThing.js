@@ -13,7 +13,7 @@ MODEL({
 
   templates: [
     function toDetailHTML() {/*
-      $$id{mode: 'read-only'} $$data $$id <br>
+      $$id{mode: 'read-only'} $$data $$id{model_: 'foam.demos.dailycount.CountView'} <br>
     */}
   ]
 });
