@@ -46,21 +46,15 @@ var __DATA;
   // Hookup ModelDAO callback as CLASS and __DATA global functions.
   var oldClass = CLASS;
 
+  GLOBAL.__DATACALLBACK = oldClass
+
   MODEL = CLASS = function(json) {
     json.model_ = 'Model';
-    if ( document && document.currentScript )
-      json.sourcePath = document.currentScript.src;
-
-    if ( document && document.currentScript && document.currentScript.callback )
-      document.currentScript.callback(json, oldClass);
-    else
-      oldClass(json);
+    json.sourcePath = GLOBAL.__DATACALLBACK.sourcePath;
+    GLOBAL.__DATACALLBACK(json, oldClass);
   };
+
   __DATA = function(json) {
-    if ( document && document.currentScript ) {
-      json.sourcePath = document.currentScript.src;
-      document.currentScript.callback &&
-          document.currentScript.callback(json, oldClass);
-    }
+    GLOBAL.__DATACALLBACK(json);
   };
 })();
