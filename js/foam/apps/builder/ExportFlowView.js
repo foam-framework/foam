@@ -111,14 +111,20 @@ CLASS({
   templates: [
     function toHTML() {/*
       <export-flow id="%%id">
-        <p class="md-headline">{{this.data.title}}</p>
-        <flow-state class="md-subhead">
-          <img id="%%id-icon" src="{{this.STATE_ICONS[this.data.state]}}">
-          <state-label class="md-grey">{{this.stateLabel()}}</state-label>
-        </flow-state>
-        <p id="%%id-message" class="md-subhead md-grey">{{this.data.message}}</p>
-        <details class="md-subhead md-grey">{{this.data.details}}</details>
-        <actions class="md-actions md-popup-footer-actions vertical">
+        <div class="md-card-heading">
+          <span class="md-headline">{{this.data.title}}</span>
+        </div>
+        <div class="md-card-heading-content-spacer"></div>
+        <div class="md-card-content">
+          <flow-state class="md-subhead">
+            <img id="%%id-icon" src="{{this.STATE_ICONS[this.data.state]}}">
+            <state-label class="md-grey">{{this.stateLabel()}}</state-label>
+          </flow-state>
+          <span id="%%id-message" class="md-subhead md-grey">{{this.data.message}}</span>
+          <details class="md-subhead md-grey">{{this.data.details}}</details>
+        </div>
+        <div class="md-card-content-footer-spacer"></div>
+        <actions class="md-actions md-card-footer vertical">
           $$openDevDashboard{
             model_: 'foam.ui.md.FlatButton',
             displayMode: 'LABEL_ONLY',
@@ -146,8 +152,10 @@ CLASS({
           opacity: 0.3;
         }
       }
-      export-flow {
-        width: 600px;
+      @media (min-width: 600px) {
+        export-flow {
+          min-width: 570px;
+        }
       }
       export-flow, export-flow flow-state, export-flow actions {
         display: flex;
