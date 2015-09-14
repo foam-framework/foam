@@ -126,12 +126,7 @@
      },
 
      function skipKeysFn_hasOwnProperty(name) {
-       if ( name == 'factory_' ||
-            name == 'model_' ||
-            name == 'view' ) {
-         return false;
-       }
-       return this.inner.hasOwnProperty(name);
+       return name != 'factory_' && name != 'model_' && name != 'view' && this.inner.hasOwnProperty(name);
      },
 
      function requireViewInstance(view) {
