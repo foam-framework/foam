@@ -22,6 +22,7 @@ __DATA({
   precompileTemplates: true,
   coreFiles: [
     'firefox',
+    'internetexplorer',
     'funcName',
     'safari',
     'stdlib',

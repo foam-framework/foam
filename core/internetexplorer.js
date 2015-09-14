@@ -20,3 +20,16 @@ if (!('remove' in Element.prototype)) {
         this.parentElement && this.parentElement.removeChild(this);
     };
 }
+
+if ( typeof Number.isNaN !== 'function' ) {
+  Number.isNaN = function(value) {
+    return typeof value === "number" && value !== value;
+  };
+}
+
+if ( typeof Number.isInteger !== 'function' ) {
+  Number.isInteger = function(value) {
+    return (typeof value === 'number' &&
+        Math.round(value) === value);
+  };
+}

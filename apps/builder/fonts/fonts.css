@@ -20,7 +20,9 @@
   display: inline-block;
   word-wrap: normal;
   -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
 }
 
 /***********************/

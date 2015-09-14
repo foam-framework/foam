@@ -55,7 +55,7 @@ __DATA({
   ],
   coreFiles: [
     'firefox',
-	'internetexplorer',
+    'internetexplorer',
     'funcName',
     'safari',
     'stdlib',
