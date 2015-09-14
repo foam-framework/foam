@@ -49,7 +49,8 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.webview.subscribe(['action', 'navigate'], this.onNavigate);
+      this.webview &&
+          this.webview.subscribe(['action', 'navigate'], this.onNavigate);
     },
     function updateInnerHTML() {
       if ( ! this.$ ) return;
@@ -73,30 +74,34 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAOUlEQVR4AWMYxqABCElS/p/hN4MWacpDSFMeSlPlYaQo/0OScnyQYg0IJ4XjcsLI0KJFmpa64Zt3AdTaQlFOlKYFAAAAAElFTkSuQmCC',
       ligature: 'arrow_back',
       isAvailable: function() { return this.data.enableNavBttns; },
-      isEnabled: function() { return this.webview.canGoBack; },
-      code: function() { this.webview.back(); }
+      isEnabled: function() {
+        return ( ! this.webview ) || this.webview.canGoBack;
+      },
+      code: function() { this.webview && this.webview.back(); }
     },
     {
       name: 'forward',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAOUlEQVR4AWMYxqCRoYEU5boMfxj+k6YlgnQtkXTREkW6lmjcWv7jhQ3kayDspGGrnPLE1wCEwxYAABNmQoikBfhoAAAAAElFTkSuQmCC',
       ligature: 'arrow_forward',
       isAvailable: function() { return this.data.enableNavBttns; },
-      isEnabled: function() { return this.webview.canGoForward; },
-      code: function() { this.webview.forward(); }
+      isEnabled: function() {
+        return ( ! this.webview ) || this.webview.canGoForward;
+      },
+      code: function() { this.webview && this.webview.forward(); }
     },
     {
       name: 'home',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAZklEQVR4AWOgIQhg8CekJJ3hDxCm4VPSyPAfChuwK2BmmAmURMAZQBE0wMmwASqJgOsZOJCVCDIcAQpiwiNAGSiQZbgKFcSEVxhkEGY5YFXiAJLCVHSAoQEID+BWhPB6w8Apoj8AADuwY8lEA+JQAAAAAElFTkSuQmCC',
       ligature: 'home',
       isAvailable: function() { return this.data.enableHomeBttn; },
-      code: function() { this.webview.home(); }
+      code: function() { this.webview && this.webview.home(); }
     },
     {
       name: 'reload',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVR4Ad3SP04CURDA4a8RlpNYEP5zQbBGIYT4Ck5iZbwEcStj9AQW7JrI2LLxuYmx45tuMr9uXKSJpFT7VErGgIWsnr1ozElSWIr8+ZNwtDLV1TGzUQsvIh/shVd958Y+RD6YCEd9TTciH5CElaal+D0ohalzC9EW1EJXi38Hz8LMH9wLd3K2wq0fRk4qg8y+9uVaRhLeDJ0behfWsgqPQmVtrqcwt1EJD64gnyQnzefb6mg1snNQqR3sDFygb3rVYPgYJpUVAAAAAElFTkSuQmCC',
       ligature: 'refresh',
       isAvailable: function() { return this.data.enableReloadBttn; },
-      code: function() { this.webview.reload(); }
+      code: function() { this.webview && this.webview.reload(); }
     },
     {
       name: 'logout',
