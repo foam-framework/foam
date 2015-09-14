@@ -14,35 +14,55 @@ CLASS({
   name: 'BrowserConfigFactory',
 
   requires: [
-    'foam.dao.EasyDAO',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.kiosk.AppConfig',
+    'foam.apps.builder.kiosk.BasicInfoWizard',
     'foam.apps.builder.kiosk.DesignerView',
+    'foam.apps.builder.wizard.WizardStackView',
+    'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
     'foam.ui.md.UpdateDetailView',
   ],
 
   methods: [
     function factory(opt_X) {
       var X = opt_X || this.X;
+      var WizardStackView = X.lookup('foam.apps.builder.wizard.WizardStackView') ||
+          this.WizardStackView;
+      var AppConfig = X.lookup('foam.apps.builder.kiosk.AppConfig') ||
+          this.AppConfig;
+      var EasyDAO = X.lookup('foam.dao.EasyDAO') || this.EasyDAO;
+      var IDBDAO = X.lookup('foam.dao.IDBDAO') || this.IDBDAO;
       return this.BrowserConfig.create({
-            title: 'Kiosk Apps',
-            label: 'Kiosk App',
-            model: this.AppConfig,
-            dao: this.EasyDAO.create({
-              model: this.AppConfig,
-              name: 'KioskAppConfigs',
-              daoType: this.IDBDAO,
-              cache: true,
-              seqNo: true,
-              logging: true,
-            }, X),
-            detailView: {
-              factory_: 'foam.ui.md.UpdateDetailView',
-              liveEdit: true,
-              minWidth: 600,
-              preferredWidth: 10000,
-            },
-            innerDetailView: 'foam.apps.builder.kiosk.DesignerView',
+        title: 'Kiosk Apps',
+        label: 'Kiosk App',
+        model: AppConfig,
+        dao: EasyDAO.create({
+          model: AppConfig,
+          name: 'KioskAppConfigs',
+          daoType: IDBDAO,
+          cache: true,
+          seqNo: true,
+          logging: true,
+        }, X),
+        createFunction: function() {
+          var newObj = this.data.model.create({}, X);
+          var view = WizardStackView.create({
+            firstPage: {
+              factory_: 'foam.apps.builder.kiosk.BasicInfoWizard',
+              data: newObj,
+            }}, X.sub({
+              dao: this.data.dao,
+            }));
+          view.open();
+        },
+        detailView: {
+          factory_: 'foam.ui.md.UpdateDetailView',
+          liveEdit: true,
+          minWidth: 600,
+          preferredWidth: 10000,
+        },
+        innerDetailView: 'foam.apps.builder.kiosk.DesignerView',
       }, X);
     },
   ],
