@@ -62,6 +62,7 @@ CLASS({
         opacity: 0.9;
         padding: 20px;
         position: absolute;
+        box-sizing: border-box;
       }
     */}
   ],
@@ -72,9 +73,9 @@ CLASS({
       var div      = document.createElement('div');
       div.style.left = this.x + 'px';
       div.style.top  = this.y + 'px';
-      if ( this.width )     div.style.width     = this.width + 'px';
-      if ( this.height )    div.style.height    = this.height + 'px';
-      if ( this.maxWidth )  div.style.maxWidth  = this.maxWidth + 'px';
+      if ( this.width )     div.style.width     = this.width     + 'px';
+      if ( this.height )    div.style.height    = this.height    + 'px';
+      if ( this.maxWidth )  div.style.maxWidth  = this.maxWidth  + 'px';
       if ( this.maxHeight ) div.style.maxHeight = this.maxHeight + 'px';
       div.style.position = 'absolute';
       div.id = this.id;
@@ -92,7 +93,6 @@ CLASS({
 
       bg.style.width = bg.style.height = '10000px';
       bg.style.opacity = 0;
-      bg.innerHTML = 'foobar';
       bg.style.position = 'fixed';
       bg.style.top = '0';
       bg.style.zIndex = 998;
@@ -100,14 +100,13 @@ CLASS({
 
       if ( ! this.y ) this.y = (parent.clientHeight - this.height)/2;
       if ( ! this.x ) this.x = (parent.clientWidth - this.width)/2;
-
       div.className = 'popup';
       div.style.left = this.x + 'px';
       div.style.top  = this.y + 'px';
 
-      if ( this.width )     div.style.width     = this.width + 'px';
-      if ( this.height )    div.style.height    = this.height + 'px';
-      if ( this.maxWidth )  div.style.maxWidth  = this.maxWidth + 'px';
+      if ( this.width )     div.style.width     = this.width     + 'px';
+      if ( this.height )    div.style.height    = this.height    + 'px';
+      if ( this.maxWidth )  div.style.maxWidth  = this.maxWidth  + 'px';
       if ( this.maxHeight ) div.style.maxHeight = this.maxHeight + 'px';
 
       parent.style.position = 'relative';
