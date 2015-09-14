@@ -43,6 +43,7 @@ CLASS({
     'setTimeout',
     'warn',
     'window',
+    'writeView',
     'as FOAMWindow'
   ],
 
@@ -184,6 +185,12 @@ CLASS({
       }
 
       this.window.cancelAnimationFrame && this.window.cancelAnimationFrame(id);
+    },
+    writeView: function(view, opt_X) {
+      var document = (opt_X || this.X).document;
+      var html = view.toHTML();
+      document.body.insertAdjacentHTML('beforeend', html);
+      view.initHTML();
     }
   }
 });

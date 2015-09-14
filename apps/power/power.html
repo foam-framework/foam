@@ -100,7 +100,7 @@
     wattMeter.link(power);
 
     document.write("<center>");
-    batteryMeter.write(document);
+    batteryMeter.write();
     document.write("<div id=\"batteryStatus\">--</div>");
 
     document.write("<div style=\"height:50;\"> </div>");
@@ -108,7 +108,7 @@
     document.write("<b><a href=\"#\">12 hours</a></b> | <a href=\"#\">1 hour</a> | <a href=\"#\">5 mins.</a>");
     document.write("<div style=\"height:450;\"> </div>");
     document.write("<div id=\"wattMeter\">");
-    wattMeter.write(document);
+    wattMeter.write();
     document.write("</div></center>");
 
     power.propertyValue("battery").addListener(function(power) {
@@ -414,16 +414,16 @@
 
     var bv1 = BooleanView.create();
     bv1.setValue(power.applications[0].propertyValue('active'));
-    bv1.write(document);
+    bv1.write();
     var bv2 = BooleanView.create();
     bv2.setValue(power.applications[1].propertyValue('active'));
-    bv2.write(document);
+    bv2.write();
     var bv3 = BooleanView.create();
     bv3.setValue(power.applications[2].propertyValue('active'));
-    bv3.write(document);
+    bv3.write();
     var bv4 = BooleanView.create();
     bv4.setValue(power.applications[3].propertyValue('active'));
-    bv4.write(document);
+    bv4.write();
     document.write("</td></tr></table>");
 
     batteryGraph.canvasView.$.onclick = function() {

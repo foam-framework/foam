@@ -350,6 +350,7 @@ CLASS({
         var manager = this.X.gestureManager;
         var target = this.GestureTarget.create({
           containerID: opt_id,
+          enforceContainment: true,
           handler: {
             tapClick: function(pointMap) {
               // Create a fake event.
@@ -439,11 +440,10 @@ CLASS({
       this.initHTML();
     },
 
-    write: function(document) {
+    write: function(opt_X) {
       /*  Write the View's HTML to the provided document and then initialize. */
-      var html = this.toHTML();
-      document.body.insertAdjacentHTML('beforeend', html);
-      this.initHTML();
+      var X = opt_X || this.X;
+      X.writeView(this, X);
     },
 
     updateHTML: function() {
@@ -495,7 +495,7 @@ CLASS({
         $$DOC{ref:'.initHTML'}. */
       this.initInnerHTML();
       this.initKeyboardShortcuts();
-      this.maybeInitTooltip();
+      // this.maybeInitTooltip();
     },
 
     maybeInitTooltip: function() {
@@ -578,10 +578,10 @@ CLASS({
         });
       }
 
-      init(this.model_.actions);
+      init(this.model_.getRuntimeActions());
 
-      if ( this.data && this.data.model_ && this.data.model_.actions.length )
-        init(this.data.model_.actions, this.data$);
+      if ( this.data && this.data.model_ && this.data.model_.getRuntimeActions().length )
+        init(this.data.model_.getRuntimeActions(), this.data$);
 
       if ( found ) {
         console.assert(this.$, 'View must define outer id when using keyboard shortcuts: ' + this.name_);
@@ -689,9 +689,8 @@ CLASS({
         copyFrom: opt_args
       }, X);
 
-      if ( v.view ) {
-        v = v.view;
-      }
+      if ( v.view ) v = v.view;
+
       this[r.name + 'View'] = v;
       return v;
     },
@@ -711,9 +710,8 @@ CLASS({
         copyFrom: opt_args
       }, X);
 
-      if ( v.view ) {
-        v = v.view;
-      }
+      if ( v.view ) v = v.view;
+
       this[action.name + 'View'] = v;
       return v;
     },

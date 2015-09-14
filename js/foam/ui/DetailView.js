@@ -77,7 +77,7 @@ CLASS({
     {
       name: 'title',
       defaultValueFn: function() {
-        return (this.data && this.data.id ? 'Edit ' : 'New ') + this.model.label;
+        return /*(this.data && this.data.id ? 'Edit ' : 'New ') +*/ this.model.label;
       },
       documentation: function() {/*
         <p>The display title for the $$DOC{ref:'foam.ui.View'}.
@@ -127,7 +127,7 @@ CLASS({
       var title = this.title;
 
       return title ?
-        '<tr><th colspan=2 class="heading">' + title + '</th></tr>' :
+        '<tr><td colspan="2" class="heading">' + title + '</td></tr>' :
         '';
     },
 
@@ -140,7 +140,7 @@ CLASS({
 
     rowToHTML: function(prop, view) {
       /* HTML formatter for each $$DOC{ref:'Property'} row. */
-      var str = "";
+      var str = '';
 
       if ( prop.detailViewPreRow ) str += prop.detailViewPreRow(this);
 
@@ -230,14 +230,15 @@ CLASS({
           .detailView {
             border: solid 2px #dddddd;
             background: #fafafa;
-            width: 99%;
+            display: table;
           }
 
           .detailView .heading {
+            color: black;
             float: left;
-            font-size: 14px;
-            font-weight: bold;
+            font-size: 16px;
             margin-bottom: 8px;
+            padding: 2px;
           }
 
           .detailView .propertyLabel {
@@ -273,6 +274,10 @@ CLASS({
           }
 
           .detailView .label {
+            color: #444;
+            font-size: smaller;
+            padding-left: 6px;
+            padding-top: 8px;
             vertical-align: top;
           }
 
@@ -282,7 +287,6 @@ CLASS({
 
           .detailArrayLabel .foamTable {
             margin: 1px;
-            width: 99%;
           }
       */}
     }

@@ -373,6 +373,7 @@ CLASS({
         { topic: 'pixel',        image: 'pixel.png',        r: 110, color: this.RED },
         { topic: 'googlecanada', image: 'googlecanada.png', r: 200, color: this.RED,   roundImage: true },
         { topic: 'onhub',        image: 'onhub.png',        r: 120, color: this.GREEN, roundImage: true },
+        { topic: 'onhubvideo',   image: 'onhublogo.png',    r: 120, color: this.BLUE,  roundImage: true, video: 'HNnfHP7VDP8', model: 'Video' },
         { topic: 'inbox',        image: 'inbox.png',        r: 160, color: this.BLUE },
         { topic: 'android',      image: 'android.png',      r: 100, color: this.GREEN },
         { topic: 'calc',         image: 'calculator.png',   r: 100, color: this.GREEN },

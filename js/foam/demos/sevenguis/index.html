@@ -1,0 +1,91 @@
+<html>
+ <head>
+  <script language="javascript" src="../../../../core/bootFOAM.js"></script>
+  <link rel="stylesheet" href="../../../../core/foam.css">
+  <style>.detailView { width: inherit; }</style>
+  <title>Seven GUIs in FOAM</title>
+ </head>
+ <body>
+   <h1>Seven GUIs in <a href="http://foamdev.com">FOAM</a></h1>
+   <br>
+   See the <a href="https://github.com/eugenkiss/7guis/wiki">7GUIs Wiki</a> for more information.<br><br>
+
+   <h2>1. Counter</h2>
+     <blockquote>
+     <foam model="foam.demos.sevenguis.Counter"></foam>
+     <br><br><br>
+     <a href="/index.html?model=foam.demos.sevenguis.Counter">Stand-Alone Version</a>, <a href="Counter.js">Source</a>
+     <br><br>
+     </blockquote>
+
+   <h2>2. Temperature Converter</h2>
+     <blockquote>
+     <foam model="foam.demos.sevenguis.TempConv"></foam>
+     <br><br>
+     Notes:<ul>
+       <li>FOAM already has three more polished example of <a href="http://foam-framework.github.io/foam/foam/demos/TwoWayDataBinding.html">how to do this</a>.
+     </ul>
+     <a href="/index.html?model=foam.demos.sevenguis.TempConv">Stand-Alone Version</a>, <a href="TempConv.js">Source</a>
+     <br><br>
+     </blockquote>
+
+   <h2>3. Flight Booker</h2>
+     <blockquote>
+     <foam model="foam.demos.sevenguis.FlightBooker"></foam>
+     <br><br>
+     Notes:<ul>
+       <li>It didn't make sense to show when the date was an invalid format, because of the use of a Date Picker, so instead I added validation to make sure that the departure date is today or later and that the return date is the departure date or later if it's a two-way flight.
+     </ul>
+     <a href="/index.html?model=foam.demos.sevenguis.FlightBooker">Stand-Alone Version</a>, <a href="FlightBooker.js">Source</a>
+     <br><br>
+     </blockquote>
+
+   <h2>4. Timer</h2>
+     <blockquote>
+     <foam model="foam.demos.sevenguis.Timer"></foam>
+     <br><br>
+     <a href="/index.html?model=foam.demos.sevenguis.Timer">Stand-Alone Version</a>, <a href="Timer.js">Source</a>
+     <br><br>
+     </blockquote>
+
+   <h2>5. CRUD</h2>
+     <blockquote>
+     <foam model="foam.demos.sevenguis.CRUD"></foam>
+     <br><br>
+     Notes:<ul>
+       <li>TODO: Show how to replace the prefix search with the full Google query language with the same amount of code.
+       <li>TODO: Show how to use FOAM's generic CRUD controler to create a more full-featured version without code.
+       <li>TODO: Show how to add client/server support.
+     </ul>
+     <a href="/index.html?model=foam.demos.sevenguis.CRUD">Stand-Alone Version</a>, <a href="CRUD.js">Source</a>
+     <br><br>
+     </blockquote>
+
+   <h2>6. Circle Drawer</h2>
+     <blockquote>
+     <foam model="foam.demos.sevenguis.CircleDrawer"></foam>
+     <div style="margin-left: 20px;">(Click to create or select a circle.  Right-click to adjust diameter.)</div>
+     <br><br>
+     Notes:<ul>
+       <li>TODO: Add "Edit Diameter..." menu on right-click.
+     </ul>
+     <a href="/index.html?model=foam.demos.sevenguis.CircleDrawer">Stand-Alone Version</a>, <a href="CircleDrawer.js">Source</a>
+     <br><br>
+     </blockquote>
+
+   <h2>7. Cells</h2>
+     <blockquote>
+     <foam model="foam.demos.sevenguis.Cells" columns="5" rows="8"></foam>
+     <br><br>
+     Notes:<ul>
+       <li>FOAM has support for context-free grammars, which this code uses, so it would be just as easy to support regular mathematical expressions as it is to support the add(), mul(), etc. syntax.
+       <li>I've pre-loaded a sample spreadsheet taken from Visicalc.
+       <li>I added simple load and save support.
+       <li>TODO: Add graphing support.
+     </ul>
+     <a href="/index.html?model=foam.demos.sevenguis.Cells">Stand-Alone Version</a>, <a href="Cells.js">Source</a>
+     <br><br>
+     </blockquote>
+
+ </body>
+</html>

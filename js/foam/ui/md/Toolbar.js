@@ -64,6 +64,9 @@ CLASS({
       model_: 'ArrayProperty',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'rightActions',
+      postSet: function(old,nu) {
+        console.log('right actions set', old, nu);
+      }
     },
     {
       name: '$leftActions',
@@ -149,7 +152,7 @@ CLASS({
   ],
 
   templates: [
-    function toHTML() {/*
+    function toHTML() {/* <% console.log('toolbar rendering', this.leftActions, this.rightActions); %>
       <toolbar id="%%id" %%cssClassAttr()>
 
         <actions id="%%id-left-actions" class="left">
@@ -184,6 +187,11 @@ CLASS({
         padding: 0;
         width: 100%;
       }
+      .md-card toolbar {
+        background-color: transparent;
+        color: currentColor;      
+      }
+      
       toolbar header {
         margin-left: 12px;
         flex-grow: 1;
@@ -193,10 +201,12 @@ CLASS({
       toolbar header.md-title {
         color: #fff;
       }
+      .md-card toolbar header.md-title {
+        color: currentColor;
+      }
       toolbar actions {
         display: flex;
         position: relative;
-        color: #000;
       }
       toolbar actions.left {
         align-items: flex-start;

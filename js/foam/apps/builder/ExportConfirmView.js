@@ -72,10 +72,16 @@ CLASS({
   templates: [
     function toHTML() {/*
       <export-confirm id="%%id">
-        <p class="md-headline">{{this.title}}</p>
-        <p class="md-subhead md-grey">Your application requires the following permissions:</p>
-        <pre class="md-quote md-grey" style="margin-left: 16px"><% this.prettyPermissions(out); %></pre>
-        <actions class="md-actions horizontal">
+        <div class="md-card-heading">
+          <span class="md-headline">{{this.title}}</span>
+        </div>
+        <div class="md-card-heading-content-spacer"></div>
+        <div class="md-card-content">
+          <span class="md-subhead md-grey">Your application requires the following permissions:</span>
+          <pre class="md-quote md-grey" style="margin-left: 16px"><% this.prettyPermissions(out); %></pre>
+        </div>
+        <div class="md-card-content-footer-spacer"></div>
+        <actions class="md-actions md-card-footer horizontal">
           $$cancel{ model_: 'foam.ui.md.FlatButton', displayMode: 'LABEL_ONLY' }
           $$confirm{ model_: 'foam.ui.md.FlatButton', displayMode: 'LABEL_ONLY' }
         </actions>
@@ -99,7 +105,14 @@ CLASS({
     function CSS() {/*
       export-confirm {
         display: block;
-        max-width: 600px;
+      }
+      export-confirm pre {
+        margin: 0;
+      }
+      @media (min-width: 600px) {
+        export-confirm {
+          min-width: 570px;
+        }
       }
     */},
   ],

@@ -60,12 +60,12 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
-      body { padding: 10px !important; }
-      .error { border: 2px solid red; }
-      .title, .flight button, .flight input, .flight select {
+      .flight { padding: 10px; }
+      .flight .error { border: 2px solid red; }
+      .flight .title, .flight button, .flight input, .flight select {
         width: 160px; height: 24px; margin: 5px;
       }
-      .title { font-size: 18px; }
+      .flight .title { font-size: 18px; }
     */},
     function toHTML() {/*
       <div class="flight">

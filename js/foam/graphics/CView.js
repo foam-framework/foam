@@ -38,7 +38,7 @@ CLASS({
       <p><code>
             var rootNode = this.X.CView.create({width:300, height:200});<br/>
             <br/>
-            rootNode.write(document); // a CViewView wrapper is created for us<br/>
+            rootNode.write(this.X); // a CViewView wrapper is created for us<br/>
             <br/>
             rootNode.addChild(this.X.Circle.create({x:30, y:50, radius: 30, color: 'blue'});<br/>
             rootNode.addChild(this.X.Label.create({x: 50, y: 30, text: "Hello", color: 'black'});<br/>
@@ -62,6 +62,10 @@ CLASS({
       transient: true,
       hidden: true,
       documentation: function() {/* The canvas view this scene draws into */ }
+    },
+    {
+      name: 'children',
+      hidden: true
     },
     {
       name: 'canvas',
@@ -136,10 +140,12 @@ CLASS({
     },
     {
       name: 'canvasX',
+      hidden: true,
       getter: function() { return this.x + ( this.parent ? this.parent.canvasX : 0 ); }
     },
     {
       name: 'canvasY',
+      hidden: true,
       getter: function() { return this.y + ( this.parent ? this.parent.canvasY : 0 ); }
     },
     {
@@ -224,9 +230,10 @@ CLASS({
           once on first $$DOC{ref:'.paint'} when transitioning from 'initial'
           to 'active' '$$DOC{ref:'.state'}. */ },
 
-    write: function(document) { /* Inserts this $$DOC{ref:'foam.graphics.CView'} into the DOM
+    write: function(opt_X) { /* Inserts this $$DOC{ref:'foam.graphics.CView'} into the DOM
                                    with an $$DOC{ref:'foam.graphics.AbstractCViewView'} wrapper. */
-      this.toView_().write(document);
+      var X = opt_X || this.X;
+      X.writeView(this.toView_(), X);
     },
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. */
@@ -235,6 +242,7 @@ CLASS({
       if ( this.view ) {
         child.view = this.view;
         child.addListener(this.view.paint);
+        this.view.paint();
       }
       return this;
     },
@@ -242,7 +250,16 @@ CLASS({
     removeChild: function(child) { /* Removes a child from the scene. */
       this.SUPER(child);
       child.view = undefined;
-      child.removeListener(this.view.paint);
+      if ( this.view ) {
+        child.removeListener(this.view.paint);
+        this.view.paint();
+      }
+      return this;
+    },
+
+    removeAllChildren: function(child) { /* Removes all children from the scene. */
+      for ( var i = this.children.length-1 ; i >= 0 ; i-- )
+        this.removeChild(this.children[i]);
       return this;
     },
 

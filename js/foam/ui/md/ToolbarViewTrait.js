@@ -14,7 +14,7 @@ CLASS({
   name: 'ToolbarViewTrait',
 
   requires: [ 'foam.ui.md.ToolbarAction' ],
-  imports: [ 'toolbar$' ],
+  imports: [ 'mdToolbar as toolbar' ],
 
   properties: [
     {
@@ -32,7 +32,7 @@ CLASS({
         if ( old === nu ) return;
         this.dataToolbarActions_ = this.wrapToolbarActions(
             nu,
-            (nu && nu.model_ && nu.model_.actions) || []);
+            (nu && nu.model_ && nu.model_.getRuntimeActions()) || []);
       },
     },
     {
@@ -55,13 +55,20 @@ CLASS({
         if ( nu ) this.toolbar.addRightActions && this.toolbar.addRightActions(nu);
       },
     },
+    {
+      model_: 'BooleanProperty',
+      name: 'hideOwnActions',
+      help: "If true, do not autoxmatically add the view's own actions to the toolbar, just the data's actions",
+      defaultValue: false,
+    },
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.toolbarActions_ = this.wrapToolbarActions(this, this.model_.actions);
-      this.addDestructor(this.removeToolbarActions.bind(this));
+      if ( ! this.hideOwnActions ) {
+        this.toolbarActions_ = this.wrapToolbarActions(this, this.model_.getRuntimeActions());
+      }
     },
     function removeToolbarActions() {
       if ( ! this.toolbar ) return;

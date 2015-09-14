@@ -33,6 +33,7 @@ MODEL({
       defaultValue: 0
     },
     {
+      model_: 'IntProperty',
       name: 'duration',
       units: 'ms',
       view: { factory_: 'foam.ui.RangeView', maxValue: 10000 },
@@ -48,7 +49,7 @@ MODEL({
     function init() {
       this.SUPER();
       this.X.dynamic(function() {
-        this.progress = 100 * Math.min(1, 1000 * this.elapsedTime / this.duration);
+        this.progress = this.duration ? 100 * Math.min(1, 1000 * this.elapsedTime / this.duration) : 100;
       }.bind(this));
       this.duration$.addListener(this.tick);
       this.tick();
@@ -65,19 +66,21 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
-      .elapsed { margin-top: 10px; }
-      .label { display: inline-block; width: 130px; }
-      body { padding: 10px !important; font-size: 18px !important; }
-      button { width: 332px !important; margin-top: 16px !important; }
-      input { margin-left: 12px; }
-      input[name="duration"] { width: 182px; }
-      row { display: block; height: 30px; }
+      .timer { padding: 10px !important; font-size: 18px; }
+      .timer .elapsed { margin-top: 10px; }
+      .timer .label { display: inline-block; width: 130px; }
+      .timer button { width: 332px !important; margin-top: 16px !important; }
+      .timer input { margin-left: 12px; }
+      .timer input[name="duration"] { width: 182px; }
+      .timer row { display: block; height: 30px; }
     */},
     function toHTML() {/*
-      <row><span class="label">Elapsed Time:</span> $$progress</row>
-      <row class="elapsed">$$elapsedTime{model_: 'foam.ui.FloatFieldView', precision: 1, mode: 'read-only'}s</row>
-      <row><span class="label">Duration:</span> $$duration{onKeyMode: true}</row>
-      $$reset
+      <div class="timer">
+        <row><span class="label">Elapsed Time:</span> $$progress{width: 50}</row>
+        <row class="elapsed">$$elapsedTime{model_: 'foam.ui.FloatFieldView', precision: 1, mode: 'read-only'}s</row>
+        <row><span class="label">Duration:</span> $$duration{onKeyMode: true}</row>
+        $$reset
+      </div>
     */}
   ],
   listeners: [

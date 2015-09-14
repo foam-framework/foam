@@ -15,16 +15,6 @@
  * limitations under the License.
  */
 
-// TODO: Create a Range Model?
-/*
-MODEL({
-  package: 'foam.demos.sevenguis',
-  name: 'CellParser',
-  extendsModel: 'foam.parse.Grammar',
-
-  methods: {
-*/
-
 var CellParser = {
   __proto__: grammar,
 
@@ -121,99 +111,87 @@ var CellParser = {
   },
   string: function(s) { return function() { return s; }; }
 });
-//});
 
 
 // https://www.artima.com/pins1ed/the-scells-spreadsheet.html
 MODEL({
   package: 'foam.demos.sevenguis',
-  name: 'Cell',
-  extendsModel: 'foam.ui.View',
-  requires: [ 'foam.ui.TextFieldView' ],
-  imports: [ 'cells' ],
-  properties: [
-    {
-      name: 'formula',
-      displayWidth: 10
-    },
-    {
-      name: 'value',
-      adapt: function(_, v) {
-        var ret = parseFloat(v);
-        return ret && ! Number.isInteger(ret) ? ret.toFixed(2) : v;
-      },
-      displayWidth: 12
-    },
-    {
-      name: 'numValue',
-      getter: function() { return parseFloat(this.value); }
-    }
-  ],
-  methods: [
-    function initHTML() {
-      this.SUPER();
-
-      this.valueView.$.addEventListener('click',  this.onClick);
-      this.formulaView.$.addEventListener('blur', this.onBlur);
-      this.formula$.addListener(this.onBlur);
-    }
-  ],
-  listeners: [
-    {
-      name: 'onClick',
-      code: function() {
-        DOM.setClass(this.$, 'formula', true);
-        this.formulaView.$.focus();
-      }
-    },
-    {
-      name: 'onBlur',
-      code: function() {
-        DOM.setClass(this.$, 'formula', false);
-      }
-    }
-  ],
-  templates: [
-    function CSS() {/*
-      .cellView > span {
-        display: block;
-        height: 15px;
-        padding: 2px;
-        width: 100%;
-      }
-      .cellView > input {
-        border:  none;
-        display: none;
-        margin-left: 2px;
-        outline: none;
-      }
-      .cellView {
-        outline: 1px solid white;
-      }
-      .cellView.formula {
-        outline: 1px solid blue;
-      }
-      .cellView.formula > input {
-        display: inherit;
-      }
-      .cellView.formula > span {
-        display: none;
-      }
-    */},
-    function toHTML() {/*
-      <div id="%%id" class="cellView">$$formula $$value{mode: 'read-only', escapeHTML: false}</div>
-    */}
-  ]
-});
-
-
-MODEL({
-  package: 'foam.demos.sevenguis',
   name: 'Cells',
   extendsModel: 'foam.ui.View',
-  requires: [ 'foam.demos.sevenguis.Cell' ],
   imports:  [ 'dynamic' ],
   exports:  [ 'as cells' ],
+
+  models: [
+    {
+      name: 'Cell',
+      extendsModel: 'foam.ui.View',
+      requires: [ 'foam.ui.TextFieldView' ],
+      imports: [ 'cells' ],
+      properties: [
+        {
+          name: 'formula',
+          displayWidth: 10
+        },
+        {
+          name: 'value',
+          adapt: function(_, v) {
+            var ret = parseFloat(v);
+            return ret && ! Number.isInteger(ret) ? ret.toFixed(2) : v;
+          },
+          displayWidth: 12
+        },
+        {
+          name: 'numValue',
+          getter: function() { return parseFloat(this.value); }
+        }
+      ],
+      methods: [
+        function initHTML() {
+          this.SUPER();
+
+          this.valueView.$.addEventListener('click',  this.onClick);
+          this.formulaView.$.addEventListener('blur', this.onBlur);
+          this.formula$.addListener(this.onBlur);
+        }
+      ],
+      listeners: [
+        {
+          name: 'onClick',
+          code: function() {
+            DOM.setClass(this.$, 'formula', true);
+            this.formulaView.$.focus();
+          }
+        },
+        {
+          name: 'onBlur',
+          code: function() { DOM.setClass(this.$, 'formula', false); }
+        }
+      ],
+      templates: [
+        function CSS() {/*
+          .cellView > span {
+            display: block;
+            height: 15px;
+            padding: 2px;
+            width: 100%;
+          }
+          .cellView > input {
+            border:  none;
+            display: none;
+            margin-left: 2px;
+            outline: none;
+          }
+          .cellView                 { outline: 1px solid white; }
+          .cellView.formula         { outline: 1px solid blue; }
+          .cellView.formula > input { display: inherit; }
+          .cellView.formula > span  { display: none; }
+        */},
+        function toHTML() {/*
+          <div id="%%id" class="cellView">$$formula $$value{mode: 'read-only', escapeHTML: false}</div>
+        */}
+      ]
+    }
+  ],
   properties: [
     {
       name: 'rows',
@@ -229,17 +207,18 @@ MODEL({
     },
     {
       name: 'parser',
-      factory: function() { return /*this.*/CellParser/*.create()*/; }
+      factory: function() { return CellParser; }
     }
   ],
   methods: [
     function init() {
       this.SUPER();
 
-window.cells = this;
-
+      // Two sample spreadsheets
+      // Spreadsheet taken from Visicalc
 this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</u></b>","D0":"<b><u>Cost</u></b>","A1":"Muck Rake","B1":"43","C1":"12.95","D1":"=mul(B1,C1)","A2":"Buzz Cut","B2":"15","C2":"6.76","D2":"=mul(B2,C2)","A3":"Toe Toner","B3":"250","C3":"49.95","D3":"=mul(B3,C3)","A4":"Eye Snuff","B4":"2","C4":"4.95","D4":"=mul(B4,C4)","C5":"Subtotal","D5":"=sum(D1:D4)","B6":"9.75","C6":"Tax","D6":"=div(mul(B6,D5),100)","C7":"<b>Total</b>","D7":"=add(D5,D6)"});
 
+      // Spreadsheet to test all functions
 //      this.load({"A0":"<b>Formulas</b>","B0":"<b>Values</b>","A1":" 1","B1":"1","A2":" 10","B2":"10","A3":" 10.12","B3":"10.12","A4":" -10.1","B4":"-10.1","A5":" foobar","B5":"foobar","A6":" =add(1,2)","B6":"=add(1,2)","A7":" =sub(2,1)","B7":"=sub(2,1)","A8":" =mul(2,3)","B8":"=mul(2,3)","A9":" =div(9,3)","B9":"=div(9,3)","A10":" =mod(8,3)","B10":"=mod(8,3)","A11":" =add(mul(2,3),div(3,2))","B11":"=add(mul(2,3),div(3,2))","A12":" =A1","B12":"=A1","A13":" =add(A1,B1)","B13":"=add(A1,B1)","A14":" =sum(1,2,3,4,5)","B14":"=sum(1,2,3,4,5)","A15":" =sum(B6:B10)","B15":"=sum(B6:B10)","A16":" =prod(B6:B10)","B16":"=prod(B6:B10)"});
     },
     function load(map) {
@@ -282,9 +261,8 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
       .cells tr { height: 26px; }
       .cells { overflow: auto; }
       .cell { min-width: 102px; }
-      table.cells, .cells th, .cells td {
-        border: 1px solid #ccc;
-      }
+      table.cells, .cells th, .cells td { border: 1px solid #ccc; }
+      .cells td { height: 100%; }
       .cells th, .cells td {
         border-right: none;
         border-bottom: none;
@@ -292,9 +270,6 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
       table.cells {
         border-left: none;
         border-top: none;
-      }
-      .cells td {
-        height: 100%;
       }
       .cells th {
         background: #eee;

@@ -65,17 +65,6 @@ CLASS({
     },
     {
       model_: 'BooleanProperty',
-      name: 'showBorder',
-      dynamicValue: function() {
-        return this.animationState === 'OPEN';
-      },
-      postSet: function(old, nu) {
-        if ( ! this.$ || old === nu ) return;
-        this.$.style.border = nu ? '1px solid #eee' : 'none';
-      }
-    },
-    {
-      model_: 'BooleanProperty',
       name: 'coverPage',
       defaultValue: false,
       postSet: function(old, nu) {
@@ -113,7 +102,6 @@ CLASS({
         this.delegateView.initHTML();
       }
 
-      this.showBorder = true;
       this.height = -1;
       this.coverPage = true;
       this.state = 'OPEN';
@@ -239,6 +227,9 @@ CLASS({
       }
       dropdown.open {
         overflow-y: auto;
+      }
+      dropdown action-list.vertical {
+        margin-top: 0;
       }
       dropdown action-list.vertical .md-button {
         border-radius: 0;

@@ -46,7 +46,7 @@ CLASS({
       model_: 'foam.ui.ColorProperty',
       name: 'color',
       help: 'The text and background color to use for the active state',
-      lazyFactory: function() { return '#02A8F3'; }
+      defaultValueFn: function() { return this.displayMode == 'ICON_ONLY' ? 'currentColor' : '#02A8F3'; }
     },
     {
       model_: 'StringProperty',
@@ -169,10 +169,15 @@ CLASS({
       this.SUPER();
       if ( ! this.haloColor ) Events.follow(this.currentColor_$, this.haloColor_$);
       // TODO(markdittmer): Halos (really, CViews in general) could probably
-      // share the same modelled notion of color.
+      // share the same modelled notion of color. (jacksonic) But make sure 
+      // CSS like 'color: currentColor' still works!
       Events.map(this.haloColor_$, this.halo.color$, function(color) {
+        if ( color == 'currentColor' && this.$ ) {
+          var s = this.X.window.getComputedStyle(this.$);
+          if ( s && s.color ) return s.color;
+        }
         return color.toString();
-      });
+      }.bind(this));
     },
     function initHTML() {
       this.SUPER();
@@ -184,6 +189,9 @@ CLASS({
       this.$.style.font = this.font;
       this.$.style.opacity = this.alpha;
       this.$.style.background = this.background;
+      var temp = this.haloColor_;
+      this.haloColor_ = 'black';
+      this.haloColor_ = temp; // do the 'currentColor' check again
     },
     function bindData() {
       if ( ( ! this.action ) || ( ! this.data ) ) return;

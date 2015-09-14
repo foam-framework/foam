@@ -61,7 +61,7 @@
   }, X);
   // Though we are creating a DetailView as before, it will check for a toDetailHTML()
   // template on its data, and render that instead of the default view.
-  DetailView.create({ data: lawyer }, X).write(X.document);
+  DetailView.create({ data: lawyer }, X).write();
 });
                   </code>
                 </src>
@@ -121,7 +121,7 @@
   }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 });</code>
                 </src>
               </code-snippet>
@@ -144,6 +144,14 @@
   // DetailView lets us override toHTML() and still re-render when necessary
   extendsModel: 'foam.ui.DetailView',
 
+  properties: [
+    {
+      name: 'log',
+      documentation: 'Store reference to the virtual console logging function',
+      defaultValue: console.log.bind(console)
+    }
+  ],
+
   templates: [
     {
       // All views are identified in the DOM by their id. You must output an
@@ -162,6 +170,12 @@
           <h3>Person Manual View</h3>
           <p><%# this.data.lastName %>, <%# this.data.firstName %>. View id: <%# this.id %></p>
         </div>
+
+        <button id="%%id-log-contents" class="actionButton available"
+                style="max-width: 200px; margin: 10px">Log View Contents</button>
+        <%  this.on('click', function() {
+              this.log(this.$.outerHTML);
+            }.bind(this), this.id + '-log-contents'); %>
       */}
     }
   ]
@@ -187,11 +201,7 @@
   }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
-
-  // The view does not have a way to reference the extra content
-  // that appears outside its id'd element.
-  console.log("View contents: ", view.$.outerHTML);
+  view.write();
 });</code>
                 </src>
               </code-snippet>
@@ -319,7 +329,7 @@
   }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 
   // set this property and the sub-views based on it will update
   view.primaryContact = person2;
@@ -395,7 +405,7 @@
   }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 
 });</code>
                 </src>
@@ -473,7 +483,7 @@
   var view = CardPersonView.create({ data: person }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 
 });</code>
                 </src>
@@ -554,7 +564,7 @@
   var view = ToggleCardPersonView.create({ data: person }, X);
 
   // The view will render the data we have set on it
-  view.write(X.document);
+  view.write();
 
 });</code>
                 </src>

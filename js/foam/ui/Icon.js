@@ -20,6 +20,10 @@ CLASS({
     'foam.ui.LigatureView',
   ],
 
+  imports: [
+    'document',
+  ],
+
   properties: [
     {
       model_: 'StringProperty',
@@ -30,19 +34,23 @@ CLASS({
       name: 'ligature',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( nu ) this.ligatureTester = this.LigatureTester.create({
-          ligature$: this.ligature$,
-          expectedWidth$: this.width$,
-          expectedHeight$: this.height$,
-          ligatureViewFactory: function() {
-            return this.LigatureView.create({
-              data$: this.ligature$,
-              color$: this.color$,
-              fontSize$: this.fontSize$,
-              className$: this.ligatureClassName$,
-            }, this.Y);
-          }.bind(this),
-        }, this.Y);
+        // Check that document.createElement exists, as a way of checking if we
+        // have a real DOM. LigatureTester doesn't load properly without one.
+        if ( nu && this.document.createElement ) {
+          this.ligatureTester = this.LigatureTester.create({
+            ligature$: this.ligature$,
+            expectedWidth$: this.width$,
+            expectedHeight$: this.height$,
+            ligatureViewFactory: function() {
+              return this.LigatureView.create({
+                data$: this.ligature$,
+                color$: this.color$,
+                fontSize$: this.fontSize$,
+                className$: this.ligatureClassName$,
+              }, this.Y);
+            }.bind(this),
+          }, this.Y);
+        }
       },
     },
     {
@@ -58,15 +66,16 @@ CLASS({
     {
       model_: 'foam.ui.ColorProperty',
       name: 'color',
-      lazyFactory: function() { return 'black'; },
+      lazyFactory: function() { return 'currentColor'; },
       postSet: function(old, nu) {
-        if ( old ) Events.unfollow(old.alpha$, this.alpha$);
-        if ( nu ) Events.follow(nu.alpha$, this.alpha$);
+        if ( old && old.alpha$ ) Events.unfollow(old.alpha$, this.alpha$);
+        if ( nu && nu.alpha$ ) Events.follow(nu.alpha$, this.alpha$);
       },
     },
     {
       model_: 'FloatProperty',
       name: 'alpha',
+      defaultValue: 1.0,
     },
     {
       model_: 'IntProperty',

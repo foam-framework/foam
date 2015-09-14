@@ -831,7 +831,7 @@ console.log.str.error    = console.log.str.bind(console, 'error: ');
 
 document.put = function(obj) {
   if ( obj.write ) {
-    obj.write(this);
+    obj.write(this.X);
   } else {
     this.write(obj.toString());
   }

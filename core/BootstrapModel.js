@@ -554,6 +554,11 @@ var BootstrapModel = {
     return this.instance_.properties_;
   },
 
+  getRuntimeActions: function() {
+    if ( ! this.instance_.actions_ ) this.getPrototype();
+    return this.instance_.actions_;
+  },
+
   getProperty: function(name) { /* Returns the requested $$DOC{ref:'Property'} of this instance. */
     // NOTE: propertyMap_ is invalidated in a few places
     // when properties[] is updated.
@@ -599,17 +604,22 @@ var BootstrapModel = {
     this.required__ = future.get;
 
     var go = function() {
-      var args = [];
+      var args = [], model = this, i;
 
       if ( this.extendsModel ) args.push(this.X.arequire(this.extendsModel));
 
-      var i;
+      if ( this.models ) {
+        for ( i = 0; i < this.models.length; i++ ) {
+          args.push(this.models[i].arequire());
+        }
+      }
+
       if ( this.traits ) {
         for ( i = 0; i < this.traits.length; i++ ) {
           args.push(this.X.arequire(this.traits[i]));
         }
       }
-      var model = this;
+
       if ( this.templates ) for ( i = 0 ; i < this.templates.length ; i++ ) {
         var t = this.templates[i];
         args.push(

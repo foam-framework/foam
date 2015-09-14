@@ -1,7 +1,7 @@
 apar(
    arequire('foam.ui.DetailView')
 )(function() {
-  
+
   MODEL({
     name: 'Temperature',
     documentation: 'Version 1: Uses Events.relate() to relate to two fields.',
@@ -21,7 +21,7 @@ apar(
       */}
     ]
   });
-  Temperature.create().write(document);
+  Temperature.create().write();
 
   MODEL({
     name: 'Temperature2',
@@ -45,8 +45,8 @@ apar(
       */}
     ]
   });
-  Temperature2.create().write(document);
- 
+  Temperature2.create().write();
+
   MODEL({
     name: 'Temperature3',
     documentation: "Version 3: Uses the postSet's on the properties instead of relate().",
@@ -77,5 +77,5 @@ apar(
       */}
     ]
   });
-  Temperature3.create().write(document);
+  Temperature3.create().write();
 });
