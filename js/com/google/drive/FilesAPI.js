@@ -84,14 +84,17 @@ CLASS({
           }
 
           var metadata = {
-            title: file.title
+            title: file.title,
+            mimeType: file.mimeType
           };
 
-          metadata.parents = [
-            {
-              id: file.parent
-            }
-          ];
+          if ( file.parent ) {
+            metadata.parents = [
+              {
+                id: file.parent,
+              }
+            ];
+          }
 
           self.XHR.create().asend(
             ret,
@@ -100,23 +103,28 @@ CLASS({
             method
           )
         },
-        function(ret, data) {
-          if ( ! data ) {
+        function(ret, data, _, success) {
+          if ( ! data || ! success) {
             return;
           }
 
           data = JSON.parse(data);
-          self.XHR.create().asend(
-            function(resp) {
-              if ( resp ) {
-                ret(data);
-                return;
-              }
-              ret();
-            },
-            self.uploadUri + '/files/' + data.id + '?uploadType=media',
-            file.contents,
-            "PUT")
+
+          if ( file.contents.length > 0 ) {
+            self.XHR.create().asend(
+              function(resp) {
+                if ( resp ) {
+                  ret(data);
+                  return;
+                }
+                ret();
+              },
+              self.uploadUri + '/files/' + data.id + '?uploadType=media',
+              file.contents,
+              "PUT")
+          } else {
+            ret(data);
+          }
         })(ret);
     },
     function remove(ret, id) {
@@ -125,6 +133,13 @@ CLASS({
         this.metadataUri + '/files/' + id,
         undefined,
         "DELETE");
+    },
+    function copy(ret, id) {
+      this.XHR.create().asend(
+        ret,
+        this.metadataUri + '/files/' + id + '/copy',
+        undefined,
+        "POST");
     }
   ]
 })

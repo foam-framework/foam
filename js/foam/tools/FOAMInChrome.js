@@ -18,7 +18,35 @@
 CLASS({
   package: 'foam.tools',
   name: 'FOAMInChrome',
+  requires: [
+    'XHR',
+    'foam.oauth2.AutoOAuth2'
+  ],
+  exports: [
+    'authAgent'
+  ],
+  properties: [
+    {
+      name: 'authAgent',
+      factory: function() {
+        var X = this.AutoOAuth2.create().Y;
+        return X.lookup('foam.oauth2.EasyOAuth2').create({
+          scopes: [
+            'https://www.googleapis.com/auth/drive.file'
+          ],
+          clientId: '982012106580-juaqtmvoue69plra0v6dlqv4ttbggqi3.apps.googleusercontent.com',
+          clientSecret: '-uciG4ePPT5DXFccHn4kNHWq'
+        }, X);
+      }
+    }
+  ],
   methods: [
+    function init() {
+      this.Y.registerModel(this.XHR.xbind({
+        authAgent: this.authAgent
+      }));
+      window.foaminchrome = this;
+    },
     function execute() {
       var X = this.Y;
       chrome.app.runtime.onLaunched.addListener(function() {
