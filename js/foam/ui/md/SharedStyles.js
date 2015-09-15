@@ -250,7 +250,7 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .md-popup-view-content {
-  max-width: 95%;
+  max-width: calc(100% - 80px);
 }
 
 .md-popup-view-content > .md-subhead,
@@ -301,6 +301,7 @@ input[name=q]::-webkit-input-placeholder {
   display: block;
   background: #fff;
   margin: 10px;
+  overflow: hidden;
 }
 
 .md-card {
@@ -312,12 +313,6 @@ input[name=q]::-webkit-input-placeholder {
 
 .md-card.md-popup-view-content {
   padding: 24px;
-}
-
-@media (max-width: 600px) {
-  .md-card.md-popup-view-content, .md-popup-view-content {
-    padding: 0px;
-  }
 }
 
 
@@ -355,6 +350,7 @@ input[name=q]::-webkit-input-placeholder {
 .md-card p, .md-card-shell p {
   width: initial;
   flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .md-heading {
@@ -391,6 +387,17 @@ input[name=q]::-webkit-input-placeholder {
     page-break-inside: avoid;
   }
 }
+
+@media (max-width: 600px) {
+  .md-card-shell {
+    margin: 0;
+  }
+  .md-popup-view-content {
+    max-width: 100%;
+  }
+
+}
+
 
 .noselect {
   -webkit-touch-callout: none;
