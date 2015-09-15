@@ -64,6 +64,10 @@ CLASS({
       documentation: function() {/* The canvas view this scene draws into */ }
     },
     {
+      name: 'children',
+      hidden: true
+    },
+    {
       name: 'canvas',
       getter: function() { return this.view && this.view.canvas; },
       transient: true,
@@ -136,10 +140,12 @@ CLASS({
     },
     {
       name: 'canvasX',
+      hidden: true,
       getter: function() { return this.x + ( this.parent ? this.parent.canvasX : 0 ); }
     },
     {
       name: 'canvasY',
+      hidden: true,
       getter: function() { return this.y + ( this.parent ? this.parent.canvasY : 0 ); }
     },
     {

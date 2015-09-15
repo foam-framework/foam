@@ -23,6 +23,10 @@ CLASS({
     'title',
     'parent',
     {
+      name: 'mimeType',
+      defaultValue: 'application/octet-stream'
+    },
+    {
       name: 'contents'
     }
   ]

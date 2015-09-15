@@ -15,16 +15,6 @@
  * limitations under the License.
  */
 
-// TODO: Create a Range Model?
-/*
-MODEL({
-  package: 'foam.demos.sevenguis',
-  name: 'CellParser',
-  extendsModel: 'foam.parse.Grammar',
-
-  methods: {
-*/
-
 var CellParser = {
   __proto__: grammar,
 
@@ -121,7 +111,6 @@ var CellParser = {
   },
   string: function(s) { return function() { return s; }; }
 });
-//});
 
 
 // https://www.artima.com/pins1ed/the-scells-spreadsheet.html
@@ -138,6 +127,10 @@ MODEL({
       extendsModel: 'foam.ui.View',
       requires: [ 'foam.ui.TextFieldView' ],
       imports: [ 'cells' ],
+      documentation: function() {/*
+        Doesn't build inner views until value is set or user clicks on view.
+        This complicates the design but saves memory and startup time.
+      */},
       properties: [
         {
           name: 'formula',
@@ -160,12 +153,33 @@ MODEL({
         function initHTML() {
           this.SUPER();
 
+          if ( this.hasOwnProperty('value') ) {
+            this.initValueHTML();
+          } else {
+            this.value$.addListener(this.initValueHTML.bind(this));
+            this.$.addEventListener('click', this.onClickWhenEmpty);
+          }
+        },
+        function initValueHTML() {
+          this.$.removeEventListener('click', this.onClickWhenEmpty);
+          this.$.innerHTML = this.toValueHTML();
+
+          this.valueView.initHTML();
+          this.formulaView.initHTML();
+
           this.valueView.$.addEventListener('click',  this.onClick);
           this.formulaView.$.addEventListener('blur', this.onBlur);
           this.formula$.addListener(this.onBlur);
         }
       ],
       listeners: [
+        {
+          name: 'onClickWhenEmpty',
+          code: function() {
+            this.initValueHTML();
+            this.onClick();
+          }
+        },
         {
           name: 'onClick',
           code: function() {
@@ -198,12 +212,14 @@ MODEL({
           .cellView.formula > span  { display: none; }
         */},
         function toHTML() {/*
-          <div id="%%id" class="cellView">$$formula $$value{mode: 'read-only', escapeHTML: false}</div>
+          <div id="%%id" class="cellView"> &nbsp; </div>
+        */},
+        function toValueHTML() {/*
+          $$formula $$value{mode: 'read-only', escapeHTML: false}
         */}
       ]
     }
   ],
-
   properties: [
     {
       name: 'rows',
@@ -219,14 +235,12 @@ MODEL({
     },
     {
       name: 'parser',
-      factory: function() { return /*this.*/CellParser/*.create()*/; }
+      factory: function() { return CellParser; }
     }
   ],
   methods: [
     function init() {
       this.SUPER();
-
-      window.cells = this; // makes debugging easier, not needed
 
       // Two sample spreadsheets
       // Spreadsheet taken from Visicalc

@@ -21,6 +21,8 @@ CLASS({
 
   extendsModel: 'foam.ui.SimpleView',
 
+  constants: { CLOSED_TOPIC: [ 'closed' ] },
+
   properties: [
     {
       name: 'view',
@@ -50,23 +52,76 @@ CLASS({
     }
   ],
 
+  templates: [
+    function CSS() {/*
+      .popup {
+        background: #999;
+        box-shadow: 3px 3px 6px 0 gray;
+        color: white;
+        font-size: 18px;
+        opacity: 0.9;
+        padding: 20px;
+        position: absolute;
+        box-sizing: border-box;
+      }
+    */}
+  ],
   methods: {
-    // TODO: first argument isn't used anymore, find and cleanup all uses
-    open: function(_, opt_delay) {
+    open: function() {
       if ( this.$ ) return;
       var document = this.X.document;
       var div      = document.createElement('div');
       div.style.left = this.x + 'px';
-      div.style.top = this.y + 'px';
-      if ( this.width )     div.style.width = this.width + 'px';
-      if ( this.height )    div.style.height = this.height + 'px';
-      if ( this.maxWidth )  div.style.maxWidth = this.maxWidth + 'px';
+      div.style.top  = this.y + 'px';
+      if ( this.width )     div.style.width     = this.width     + 'px';
+      if ( this.height )    div.style.height    = this.height    + 'px';
+      if ( this.maxWidth )  div.style.maxWidth  = this.maxWidth  + 'px';
       if ( this.maxHeight ) div.style.maxHeight = this.maxHeight + 'px';
       div.style.position = 'absolute';
       div.id = this.id;
       div.innerHTML = this.view.toHTML();
 
       document.body.appendChild(div);
+      this.view.initHTML();
+    },
+    openOn: function(parent) {
+      if ( this.$ ) return;
+      var self     = this;
+      var document = this.X.document;
+      var bg       = document.createElement('div');
+      var div      = document.createElement('div');
+
+      bg.style.width = bg.style.height = '10000px';
+      bg.style.opacity = 0;
+      bg.style.position = 'fixed';
+      bg.style.top = '0';
+      bg.style.zIndex = 998;
+      div.style.zIndex = 999;
+
+      if ( ! this.y ) this.y = (parent.clientHeight - this.height)/2;
+      if ( ! this.x ) this.x = (parent.clientWidth - this.width)/2;
+      div.className = 'popup';
+      div.style.left = this.x + 'px';
+      div.style.top  = this.y + 'px';
+
+      if ( this.width )     div.style.width     = this.width     + 'px';
+      if ( this.height )    div.style.height    = this.height    + 'px';
+      if ( this.maxWidth )  div.style.maxWidth  = this.maxWidth  + 'px';
+      if ( this.maxHeight ) div.style.maxHeight = this.maxHeight + 'px';
+
+      parent.style.position = 'relative';
+      div.id = this.id;
+      div.innerHTML = this.view.toHTML();
+
+      document.body.appendChild(bg);
+      bg.addEventListener('click', function() {
+        div.remove();
+        bg.remove();
+        self.destroy();
+        self.publish(self.CLOSED_TOPIC);
+      });
+
+      parent.appendChild(div);
       this.view.initHTML();
     },
     close: function() {

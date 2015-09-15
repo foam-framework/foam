@@ -85,10 +85,6 @@ CLASS({
         font-size: smaller;
         margin-left: 12px;
       }
-      .detailView .label {
-        color: #444;
-        font-size: smaller;
-      }
       .panel .detailView {
         width: 820px;
       }
