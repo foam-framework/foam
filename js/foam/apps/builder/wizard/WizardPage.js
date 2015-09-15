@@ -89,7 +89,14 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'hidden',
       defaultValue: false,
-    }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'scrollContent',
+      documentation: 'If true, contentHTML will not be padded and occupy the full page width',
+      defaultValue: false,
+    },
+
   ],
 
   actions: [
@@ -180,9 +187,14 @@ CLASS({
         <div class="md-card-heading-content-spacer"></div>
         <div class="md-card-content">
           <% this.instructionHTML(out); %>
+     <% if ( this.scrollContent ) { %>
+        </div>
+        <% this.contentHTML(out); %>
+     <% } else { %>
           <% this.contentHTML(out); %>
         </div>
         <div class="md-card-content-footer-spacer"></div>
+     <% } %>
         <div class="md-actions md-card-footer horizontal">
             $$exit{ model_: 'foam.ui.md.FlatButton' }
             $$back{ model_: 'foam.ui.md.FlatButton' }
