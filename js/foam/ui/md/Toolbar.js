@@ -189,11 +189,11 @@ CLASS({
       }
       .md-card toolbar {
         background-color: transparent;
-        color: currentColor;      
+        color: currentColor;
       }
-      
+
       toolbar header {
-        margin-left: 12px;
+        margin-left: 8px;
         flex-grow: 1;
         display: flex;
         overflow-x: hidden;

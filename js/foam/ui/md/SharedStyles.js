@@ -209,14 +209,22 @@ input[name=q]::-webkit-input-placeholder {
 
 .md-card-heading-content-spacer {
   height: 20px;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .md-card-shell.md-popup-view-content .md-card-content {
   padding: 0 24px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .md-card-content-footer-spacer {
   height: 24px;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .md-subhead {

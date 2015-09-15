@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.ui.md.UpdateDetailView',
+    'foam.browser.ui.StackView',
   ],
 
   exports: [
@@ -60,6 +61,10 @@ CLASS({
       name: 'extraClassName',
       defaultValue: 'wizard-stack-view',
     },
+    {
+      name: 'cardClass',
+      defaultValue: 'md-card-shell',
+    },
   ],
 
   templates: [
@@ -74,8 +79,6 @@ CLASS({
         .wizard-stack-view .md-popup-view-content {
           width: 100%;
           height: 100%;
-          margin: -8px;
-          padding: 0px;
         }
       }
 

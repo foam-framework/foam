@@ -174,50 +174,27 @@ CLASS({
     */},
     function toHTML() {/*
       <wizard id="%%id" <%= this.cssClassAttr() %>>
-        <div class="wizard-content">
+        <div class="md-card-heading">
           <% this.titleHTML(out); %>
+        </div>
+        <div class="md-card-heading-content-spacer"></div>
+        <div class="md-card-content">
           <% this.instructionHTML(out); %>
           <% this.contentHTML(out); %>
         </div>
-        <div class="wizard-footer">
-          <div class="wizard-footer-items">
+        <div class="md-card-content-footer-spacer"></div>
+        <div class="md-actions md-card-footer horizontal">
             $$exit{ model_: 'foam.ui.md.FlatButton' }
             $$back{ model_: 'foam.ui.md.FlatButton' }
-          </div>
-          <div class="spacer">&nbsp;</div>
-          <div class="wizard-footer-items">
             $$nextAction{ model_: 'foam.ui.md.FlatButton' }
-          </div>
         </div>
       </wizard>
     */},
     function CSS() {/*
       wizard {
-        padding: 8px;
         display: flex;
         flex-direction: column;
         height: 100%
-      }
-
-      wizard .wizard-content {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      wizard .wizard-footer {
-        flex-grow: 0;
-        display: flex;
-        flex-direction: row;
-        align-items: baseline;
-        align-content: space-between;
-        justify-content: flex-end;
-      }
-      wizard .wizard-footer-items {
-        flex-grow: 0;
-      }
-      wizard .spacer {
-        flex-grow: 1;
       }
 
     */},
