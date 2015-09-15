@@ -187,7 +187,7 @@ CLASS({
         padding: 0;
         width: 100%;
       }
-      .md-card toolbar {
+      .md-card toolbar, .md-card-shell toolbar {
         background-color: transparent;
         color: currentColor;
       }
@@ -201,7 +201,7 @@ CLASS({
       toolbar header.md-title {
         color: #fff;
       }
-      .md-card toolbar header.md-title {
+      .md-card toolbar header.md-title, .md-card-shell toolbar header.md-title {
         color: currentColor;
       }
       toolbar actions {
