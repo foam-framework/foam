@@ -42,17 +42,23 @@ CLASS({
     function toHTML() {/*
       <tos-popup id="%%id" <%= this.cssClassAttr() %>>
         <tos-content>
-          <tos>$$tos{
-            model_: 'foam.ui.md.TextFieldView',
-            mode: 'read-only',
-            growable: true,
-          }</tos>
-          <tos-form>
-            $$accepted{ model_: 'foam.ui.md.CheckboxView' }
-          </tos-form>
-          <tos-actions>
-            $$accept{ model_: 'foam.ui.md.FlatButton' }
-          </tos-actions>
+          <tos-heading class="md-card-heading">
+            <span class="md-headline">Terms of Service</span>
+          </tos-heading>
+          <div class="md-card-heading-content-spacer"></div>
+          <tos class="md-card-content">
+            <span class="tos">{{this.data.tos}}</span>
+            $$accepted{
+              model_: 'foam.ui.md.CheckboxView',
+              extraClassName: 'accept',
+            }
+          </tos>
+          <actions class="md-actions md-card-footer horizontal">
+            $$accept{
+              model_: 'foam.ui.md.FlatButton',
+              displayMode: 'LABEL_ONLY',
+            }
+          </actions>
         </tos-content>
       </tos-popup>
     */},
@@ -60,31 +66,24 @@ CLASS({
       tos-popup {
         display: block;
       }
-      tos-popup tos-content, tos-popup tos-content tos, tos-popup tos-content tos-form, tos-popup tos-content tos-actions {
+      tos-popup tos-content {
         display: flex;
+      }
+      tos-popup tos-heading {
+        display: block;
+        flex-grow: 0;
+        flex-shrink: 0;
       }
       tos-popup tos-content {
         flex-direction: column;
       }
       tos-popup tos-content tos {
+        display: block;
         flex-grow: 1;
         overflow: auto;
       }
-      tos-popup tos-content tos-actions, tos-popup tos-content tos-form {
-        flex-grow: 0;
-      }
-      tos-popup tos-content tos-actions {
-        justify-content: flex-end;
-      }
-      tos-popup tos-content tos .md-text-field-container {
-        flex-grow: 1;
-      }
-      tos-popup tos-content tos label.md-text-field-label {
-        font-weight: bold;
-        font-size: 120%;
-      }
-      tos-popup tos-content tos .md-text-field-input {
-        white-space: pre-wrap;
+      tos-popup tos-content tos .tos {
+        white-space: pre-line;
       }
     */},
   ]

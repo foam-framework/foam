@@ -71,7 +71,8 @@ CLASS({
         return this.PopupView.create({
           delegate: this.TOSView,
           data$: this.tosData$,
-          blockerMode: 'modal'
+          blockerMode: 'modal',
+          cardClass: 'md-card-shell',
         }, this.Y);
       },
     },
