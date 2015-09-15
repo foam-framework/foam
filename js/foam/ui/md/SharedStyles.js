@@ -354,6 +354,7 @@ input[name=q]::-webkit-input-placeholder {
 
 .md-card p, .md-card-shell p {
   width: initial;
+  flex-shrink: 0;
 }
 
 .md-heading {
