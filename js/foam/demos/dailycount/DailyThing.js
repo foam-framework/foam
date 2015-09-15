@@ -2,14 +2,7 @@ MODEL({
   package: 'foam.demos.dailycount',
   name: 'DailyThing',
 
-  properties: [
-    {
-      name: 'id'
-    },
-    {
-      name: 'data'
-    }
-  ],
+  properties: [ 'id', 'data' ],
 
   templates: [
     function toDetailHTML() {/*
