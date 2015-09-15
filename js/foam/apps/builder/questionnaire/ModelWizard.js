@@ -18,14 +18,22 @@ CLASS({
     {
       name: 'title',
       defaultValue: 'Edit your Questions',
-    },    
+    },
   ],
-  
+
   templates: [
 
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Add new questions with the red '+' button.
-        </p>
+        <div class="md-style-trait-standard">
+          <p>Add new questions with the red
+          '+' button, click the sandwich to re-order a question, or
+          click the pencil to edit the details.
+          </p>
+          <p>You can't change the name of a
+          question, but you can change the label that users see.
+          </p>
+        </div>
+        <div class="md-card-heading-content-spacer"></div>
     */},
 
   ],
