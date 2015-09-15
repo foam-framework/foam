@@ -12,10 +12,13 @@
 CLASS({
   package: 'foam.apps.builder.kiosk',
   name: 'DesignerView',
-  extendsModel: 'foam.apps.builder.DesignerView',
+  extendsModel: 'foam.ui.View',
 
   requires: [
+    'foam.apps.builder.AppConfigDetailView',
+    'foam.apps.builder.AppConfigSheetView',
     'foam.apps.builder.kiosk.KioskView',
+    'foam.ui.VerticalSlidePanel',
   ],
 
   exports: [
@@ -37,8 +40,48 @@ CLASS({
     },
     {
       model_: 'ViewFactoryProperty',
+      name: 'panel',
+      defaultValue: 'foam.apps.builder.AppConfigDetailView',
+    },
+    {
+      model_: 'ViewFactoryProperty',
       name: 'appView',
       defaultValue: 'foam.apps.builder.kiosk.KioskView',
     },
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <designer id="%%id" <%= this.cssClassAttr() %>>
+
+        <%= this.VerticalSlidePanel.create({
+              data$: this.data$,
+              minPanelHeight: 400,
+              stripHeight: 12,
+              overlapPanels: true,
+              mainView: 'foam.apps.builder.kiosk.KioskView',
+              panelView: {
+                factory_: 'foam.apps.builder.AppConfigDetailView',
+                innerView: {
+                  factory_: 'foam.apps.builder.AppConfigSheetView',
+                  minHeight: 400,
+                },
+              },
+            }, this.Y) %>
+      </designer>
+    */},
+    function CSS() {/*
+      designer {
+        position: relative;
+        display: flex;
+        flex-grow: 1;
+      }
+      designer .SlidePanel {
+        flex-grow: 1;
+      }
+      designer .panel {
+        width: 100%;
+      }
+    */},
   ],
 });

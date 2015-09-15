@@ -208,6 +208,8 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .md-card-heading-content-spacer {
+  flex-grow: 0;
+  flex-shrink: 0;
   height: 20px;
   flex-shrink: 0;
   flex-grow: 0;
@@ -222,6 +224,8 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .md-card-content-footer-spacer {
+  flex-grow: 0;
+  flex-shrink: 0;
   height: 24px;
   flex-shrink: 0;
   flex-grow: 0;
@@ -354,12 +358,15 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .md-heading {
-  background: #fff;
-  display: block;
-  padding: 10px;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.38);
-  border-bottom: 1px solid rgba(0,0,0,0.2);
-  z-index: 4;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.md-heading.md-headline {
+  padding: 0 12px;
 }
 
 .md-style-trait-standard {
