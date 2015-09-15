@@ -6,17 +6,17 @@ MODEL({
   requires: [
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
-    'foam.ui.DetailView',
     'foam.demos.dailycount.DailyCount',
-    'foam.demos.dailycount.DailyThing'
+    'foam.demos.dailycount.DailyThing',
+    'foam.ui.DetailView'
   ],
 
-  exports: [ 'counts', 'today' ],
+  exports: [ 'counts' ],
   
   properties: [
     {
       name: 'things',
-      view: { factory_: 'foam.ui.DAOListView', rowView: 'foam.ui.DetailView' },
+      view: 'foam.ui.DAOListView',
       factory: function() {
         return this.EasyDAO.create({
           model: foam.demos.dailycount.DailyThing,
@@ -36,18 +36,12 @@ MODEL({
     }
   ],
 
-  methods: [
-    function today() {
-      var today = new Date();
-      today.setHours(0,0,0,0);
-      return today;
-    }
-  ],
-
   actions: [
     {
       name: 'add',
-      code: function() { this.things.put(this.DailyThing.create()); }
+      code: function() {
+        this.things.put(this.DailyThing.create());
+      }
     }
   ],
 
