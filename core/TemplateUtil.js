@@ -248,7 +248,6 @@ MODEL({
       for ( var i = 0 ; i < t.args.length ; i++ ) {
         args.push(t.args[i].name);
       }
-	  //console.log('(function() { var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput); return function(' + args.join(',') + '){' + code + '};})()');
       return eval('(function() { var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput); return function(' + args.join(',') + '){' + code + '};})()');
     },
     compile: function(t) {

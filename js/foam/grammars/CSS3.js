@@ -385,7 +385,6 @@ CLASS({
                 var important = this.important ? '!important' : '';
                 var prefixData = css.PREFIXED_KEYS[key];
                 var value = this.value.toString();
-         //if (key == 'display' ) console.log(key, parts, value,
                 var values = css.PREFIXES.length > 0 && prefixData === value ?
                     css.PREFIXES.map(function(p) { return p + value; }).concat(value) :
                     [value];
