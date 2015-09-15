@@ -394,6 +394,8 @@ CLASS({
       if ( arg2 === TRUE ) return !! arg1;
       if ( arg2 === FALSE ) return ! arg1;
 
+      if ( arg1 && arg1.compareTo ) return arg1.compareTo(arg2) == 0;
+
       return arg1 == arg2;
     }
   }
