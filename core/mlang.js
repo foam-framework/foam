@@ -365,13 +365,12 @@ CLASS({
       var newArg1 = this.arg1.partialEval();
       var newArg2 = this.arg2.partialEval();
 
-      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-        return compile_(newArg1.f() == newArg2.f());
-      }
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) )
+        return compile_(this.f());
 
       return this.arg1 !== newArg1 || this.arg2 !== newArg2 ?
         EqExpr.create({arg1: newArg1, arg2: newArg2}) :
-      this;
+        this ;
     },
 
     f: function(obj) {
@@ -394,9 +393,7 @@ CLASS({
       if ( arg2 === TRUE ) return !! arg1;
       if ( arg2 === FALSE ) return ! arg1;
 
-      if ( arg1 && arg1.compareTo ) return arg1.compareTo(arg2) == 0;
-
-      return arg1 == arg2;
+      return equals(arg1, arg2);
     }
   }
 });
@@ -656,13 +653,12 @@ CLASS({
       var newArg1 = this.arg1.partialEval();
       var newArg2 = this.arg2.partialEval();
 
-      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-        return compile_(newArg1.f() != newArg2.f());
-      }
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) )
+        return compile_(this.f());
 
       return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
         NeqExpr.create({arg1: newArg1, arg2: newArg2}) :
-      this;
+        this ;
     },
 
     f: function(obj) {
@@ -685,7 +681,7 @@ CLASS({
       if ( arg2 === TRUE ) return ! arg1;
       if ( arg2 === FALSE ) return !! arg1;
 
-      return arg1 != arg2;
+      return ! equals(arg1, arg2);
     }
   }
 });
