@@ -22,9 +22,8 @@ CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
-    'foam.dao.IDBDAO',
     'foam.demos.dailycount.DailyCount',
-    'foam.demos.dailycount.DailyThing',
+    'foam.demos.dailycount.DailyThing'
     'foam.ui.DetailView'
   ],
 

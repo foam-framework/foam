@@ -29,6 +29,7 @@ CLASS({
     'foam.dao.ContextualizingDAO',
     'foam.dao.DeDupDAO',
     'foam.dao.GUIDDAO',
+    'foam.dao.IDBDAO',
     'foam.dao.SeqNoDAO'
   ],
 
