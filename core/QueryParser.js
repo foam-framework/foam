@@ -210,7 +210,7 @@ var QueryParserFactory = function(model, opt_enableKeyword) {
 
     me: function() { return this.ME || this.X.ME || ""; },
 
-    has: function(v) { return NEQ(v[1], ''); },
+    has: function(v) { return NEQ(v[1], ArrayProperty.isInstance(v[1]) ? [] : ''); },
 
     is: function(v) { return EQ(v[1], TRUE); },
 
