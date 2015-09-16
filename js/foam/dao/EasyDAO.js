@@ -164,6 +164,10 @@ CLASS({
       var daoModel = typeof daoType === 'string' ? this.X.lookup(daoType) : daoType;
       var params   = { model: this.model, autoIndex: this.autoIndex };
 
+      if ( ! daoModel ) {
+        console.warn("EasyDAO: Unknown DAO Type.  Add '" + daoType + "' to requires: list."); 
+      }
+
       if ( this.name  ) params.name = this.name;
       if ( this.seqNo || this.guid ) params.property = this.seqProperty;
 
