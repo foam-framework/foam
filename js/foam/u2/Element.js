@@ -66,6 +66,8 @@ CLASS({
           var l = this.elListeners[i];
           this.id$el.addEventListener(l[0], l[1]);
         }
+
+        this.walkChildren('load');
       },
       unload:        function() { console.error('Must load before unloading.'); },
       destroy:       function() { },
@@ -95,6 +97,7 @@ CLASS({
       load:          function() { console.error('Duplicate load.'); },
       unload:        function() {
         this.state = this.UNLOADED;
+        this.walkChildren('unload');
       },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
@@ -132,6 +135,7 @@ CLASS({
       output:        function() { },
       load:          function() {
         this.state = this.LOADED;
+        this.walkChildren('load');
       },
       unload:        function() { },
       destroy:       function() { },
@@ -277,6 +281,13 @@ CLASS({
       this.state.onSetCls.call(this, cls, add);
     },
 
+    function walkChildren(method) {
+      for (var i = 0; i < this.childNodes.length; i++) {
+        var c = this.childNodes[i];
+        c[method] && c[method].call(c);
+      }
+    },
+
     //
     // Lifecycle
     //
@@ -392,7 +403,8 @@ CLASS({
               } else {
                 buf.push(o);
               }
-              if ( o.initHTML && self && obj.addChild ) self.addChild(o);
+              // TODO(kgr): Figure out what this line was supposed to do.
+              //if ( o.initHTML && self && obj.addChild ) self.addChild(o);
             }
           }
         }
