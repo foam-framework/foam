@@ -138,22 +138,17 @@ if ( this.implements.length > 0 ) {
   } %>
     }
 
-<% if ( true ) { for ( var i = 0 ; i < this.methods.length ; i++ ) {
-  util.methodSource.call(this.methods[i], out, util);
-}
-}%>
-}
-*/},
-    function methodSource(_, util) {/*
-    func <%= this.name %> (<%
-  for ( var i = 0; i < this.args.length; i++ ) {
-    util.argSource.call(this.args[i], out, util)
-    if ( i != this.args.length - 1 ) { %>, <% }
+<%
+  function swiftSource(f) {
+    f.swiftSource && f.swiftSource.call(self, out, f);
   }
-%>)<% if ( this.swiftReturnType ) { %> -> <%= this.swiftReturnType %><% } %> {}
+
+  this.methods.forEach(swiftSource);
+  this.listeners.forEach(swiftSource);
+%>
+}
 */},
-    function argSource() {/*var <%= this.name %>: <%= this.swiftType %>*/},
-    function detailView() {/*
+  function detailView() {/*
 class Abstract<%= this.name %>DetailView: UIViewController {
     var data: <%= this.name %>!
 
