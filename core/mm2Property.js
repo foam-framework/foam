@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var Property = {
+GLOBAL.Property = {
   __proto__: BootstrapModel,
   instance_: {},
 
