@@ -67,7 +67,7 @@ CLASS({
           this.id$el.addEventListener(l[0], l[1]);
         }
 
-        this.walkChildren('load');
+        this.visitChildren('load');
       },
       unload:        function() { console.error('Must load before unloading.'); },
       destroy:       function() { },
@@ -97,7 +97,7 @@ CLASS({
       load:          function() { console.error('Duplicate load.'); },
       unload:        function() {
         this.state = this.UNLOADED;
-        this.walkChildren('unload');
+        this.visitChildren('unload');
       },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
@@ -135,7 +135,7 @@ CLASS({
       output:        function() { },
       load:          function() {
         this.state = this.LOADED;
-        this.walkChildren('load');
+        this.visitChildren('load');
       },
       unload:        function() { },
       destroy:       function() { },
@@ -281,10 +281,10 @@ CLASS({
       this.state.onSetCls.call(this, cls, add);
     },
 
-    function walkChildren(method) {
+    function visitChildren(methodName) {
       for (var i = 0; i < this.childNodes.length; i++) {
         var c = this.childNodes[i];
-        c[method] && c[method].call(c);
+        c[methodName] && c[methodName].call(c);
       }
     },
 
