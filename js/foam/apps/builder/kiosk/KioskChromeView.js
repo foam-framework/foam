@@ -25,8 +25,14 @@ CLASS({
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( old ) Events.unfollow(old.homepage$, this.url$);
-        if ( nu ) Events.follow(nu.homepage$, this.url$);
+        if ( old ) {
+          Events.unfollow(old.homepage$, this.url$);
+          Events.unfollow(old.enableNavBar$, this.urlEnabled$);
+        }
+        if ( nu ) {
+          Events.follow(nu.homepage$, this.url$);
+          Events.follow(nu.enableNavBar$, this.urlEnabled$);
+        }
       },
     },
     {
@@ -34,6 +40,10 @@ CLASS({
       name: 'url',
       view: 'foam.ui.md.TextFieldView',
     },
+    {
+      model_: 'BooleanProperty',
+      name: 'urlEnabled',
+    }
   ],
 
   methods: [
@@ -107,7 +117,7 @@ CLASS({
       $$back
       $$forward
       $$home
-      $$url
+      $$url{ enabled$: this.urlEnabled$ }
       $$reload
       $$logout
       <% this.setClass('hidden', function() {
@@ -135,18 +145,19 @@ CLASS({
       }
       kiosk-chrome .md-text-field-container.hidden {
         display: inherit!important;
-        transform: rotateZ(180deg) scaleY(0);
         transition-delay: 0ms, 250ms, 250ms, 250ms;
+        opacity: 0;
         width: 0;
-        max-width: 0;
         margin: 0;
         padding: 0;
+
       }
       kiosk-chrome .md-text-field-container {
-        transition: transform 250ms ease, width 249ms ease, margin 249ms ease, padding 249ms ease;
+        transition: opacity 250ms ease, width 249ms ease, margin 249ms ease, padding 249ms ease;
         transition-delay: 249ms, 0ms, 0ms, 0ms;
-        transform: unset;
+        opacity: unset;
       }
     */},
   ]
 });
+//# sourceURL=js/foam/apps/builder/kiosk/KioskChromeView.js

@@ -29,6 +29,7 @@ CLASS({
     'foam.dao.ContextualizingDAO',
     'foam.dao.DeDupDAO',
     'foam.dao.GUIDDAO',
+    'foam.dao.IDBDAO',
     'foam.dao.SeqNoDAO'
   ],
 
@@ -163,6 +164,10 @@ CLASS({
       var daoType  = typeof this.daoType === 'string' ? this.ALIASES[this.daoType] || this.daoType : this.daoType;
       var daoModel = typeof daoType === 'string' ? this.X.lookup(daoType) : daoType;
       var params   = { model: this.model, autoIndex: this.autoIndex };
+
+      if ( ! daoModel ) {
+        console.warn("EasyDAO: Unknown DAO Type.  Add '" + daoType + "' to requires: list."); 
+      }
 
       if ( this.name  ) params.name = this.name;
       if ( this.seqNo || this.guid ) params.property = this.seqProperty;

@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-var DEBUG  = DEBUG  || false;
+var DEBUG = DEBUG || false;
 var _DOC_ = _DOC_ || false;
-
 var FLAGS = FLAGS || {};
 FLAGS.javascript = true;
 FLAGS.debug = DEBUG;
@@ -155,6 +154,15 @@ MODEL({
       if ( ! a || ! b ) return false;
       if ( a.equals ) return a.equals(b);
       return a == b;
+    },
+
+    function compare(a, b) {
+      if ( a === b   ) return 0;
+      if ( a == null ) return -1;
+      if ( b == null ) return  1;
+      if ( a.compareTo ) return  a.compareTo(b);
+      if ( b.compareTo ) return -b.compareTo(a);
+      return a > b ? 1 : -1 ;
     },
 
     function toCompare(c) {
