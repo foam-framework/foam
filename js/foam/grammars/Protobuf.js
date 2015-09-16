@@ -23,7 +23,7 @@ CLASS({
     {
       name: 'grammar',
       factory: function() {
-        return {
+        return  SkipGrammar.create({
           __proto__: grammar,
 
           START: sym('proto'),
@@ -47,7 +47,7 @@ CLASS({
 
           import: seq("import", sym('strLit'), ";"),
 
-          package: seq("package", sym('ident'), ";"),
+          package: seq("package", sym('ident'), repeat(seq(".", sym("ident"))), ";"),
 
           option: seq("option", sym('optionBody'), ";"),
 
@@ -57,20 +57,23 @@ CLASS({
 
           extend: seq("extend", sym('userType'), sym('messageBody')),
 
-          enum: seq("enum", sym('ident'), "{", repeat(alt(sym('option'), sym('enumField'), ";")), "}"),
+          enum: seq("enum", sym('ident'), sym("openBrace"), repeat(alt(sym('option'), sym('enumField'), ";")), sym("closeBrace")),
 
           enumField: seq(sym('ident'), "=", sym('sintLit'), ";"),
 
-          service: seq("service", sym('ident'), "{", repeat(seq(sym('option'), sym('rpc')), ";"), "}"),
+          service: seq("service", sym('ident'), sym("openBrace"), repeat(seq(sym('option'), sym('rpc')), ";"), sym("closeBrace")),
 
           rpc: seq("rpc", sym('ident'), "(", sym('userType'), ")", "returns", "(", sym('userType'), ")", ";"),
 
+          openBrace: literal("{"),
+          closeBrace: literal("}"),
+
           messageBody: seq(
-            "{",
+            sym('openBrace'),
             repeat(
               alt(sym('field'), sym('enum'), sym('message'), sym('extend'), sym('extensions'), sym('group'), sym('option'), ';')
             ),
-            "}"),
+            sym('closeBrace')),
 
           group: seq(sym('modifier'), "group", sym('camelIdent'), "=", sym('intLit'), sym('messageBody')),
 
@@ -142,7 +145,9 @@ CLASS({
           charEscape: seq('\\', alt('a', 'b', 'f', 'n', 'r', 't', 'v','?')),
 
           quoteEscape: seq('\\"'),
-        }
+        }, alt(repeat0(alt(' ', '\t', '\n', '\r')), // Skip whitespace and C++ style comments.
+               seq('//', repeat0(notChar('\n')))));
+
       }
     },
     {
@@ -152,6 +157,9 @@ CLASS({
         return this.grammar.addActions({
           package: function(a) {
             this.currentPackage = a[1];
+            if ( a[2] && a[2].length ) {
+              this.currentPackage += a[2].map(function(a) { return a.join(''); }).join('')
+            }
           },
 
           quoteEscape: function(a) {
