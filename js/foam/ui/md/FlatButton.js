@@ -169,7 +169,7 @@ CLASS({
       this.SUPER();
       if ( ! this.haloColor ) Events.follow(this.currentColor_$, this.haloColor_$);
       // TODO(markdittmer): Halos (really, CViews in general) could probably
-      // share the same modelled notion of color. (jacksonic) But make sure 
+      // share the same modelled notion of color. (jacksonic) But make sure
       // CSS like 'color: currentColor' still works!
       Events.map(this.haloColor_$, this.halo.color$, function(color) {
         if ( color == 'currentColor' && this.$ ) {
@@ -263,7 +263,7 @@ CLASS({
       flat-button.icon-only {
         border-radius: 50%;
         transition: transform 250ms ease, width 249ms ease, margin 249ms ease, padding 249ms ease;
-        transition-delay: 249ms, 0ms, 0ms, 0ms;        
+        transition-delay: 249ms, 0ms, 0ms, 0ms;
         transform: unset;
         width: 40px;
         flex-shrink: 0;
@@ -289,7 +289,7 @@ CLASS({
         transition-delay: 0ms, 250ms, 250ms, 250ms;
         width: 0;
         margin: 0;
-        padding: 0;        
+        padding: 0;
       }
 
       flat-button:not(.label-only) .md-button-label {

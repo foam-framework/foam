@@ -77,7 +77,11 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-edit-view-container wizard-floating-action-container">
           <div class="model-edit-view-list">
-            $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.PropertyCitationView' }
+              $$properties{
+                model_: 'foam.ui.md.DAOListView',
+                mode: 'read-only',
+                rowView: 'foam.meta.types.PropertyCitationView',
+               }
           </div>
           <div class="floating-action">
             $$createButton{
@@ -113,10 +117,17 @@ CLASS({
         flex-grow: 1;
       }
       .model-edit-view-list {
-        margin-left: 16px;
-        margin-right: 16px;
         border-top: 1px solid rgba(0,0,0,0.25);
         border-bottom: 1px solid rgba(0,0,0,0.25);
+      }
+
+      wizard .model-edit-view-list .meta-citation-view {
+        padding-left: calc(24px + 16px);
+        padding-right: 24px;
+      }
+
+      .md-model-edit-view {
+        flex-grow: 99999;
       }
     */}
   ]
