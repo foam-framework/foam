@@ -3,4 +3,5 @@ I had a question about how to implement a custom View which lets you increment a
 Of course you would want to add some CSS to fix up the appearance in the final version.  Also, you might want to add a timer to force the CountView to refresh at the start of every new day.
 
 [Runnable Demo](http://foam-framework.github.io/foam/foam/index.html?model=foam.demos.dailycount.Controller)
+
 [Video Walkithrough](http://youtu.be/9Vv7P9inQjE)
