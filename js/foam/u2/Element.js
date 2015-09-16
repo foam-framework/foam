@@ -243,12 +243,12 @@ CLASS({
     {
       name: 'outerHTML',
       transient: true,
-      getter: function() { return this.output(this.createOutputStream()); }
+      getter: function() { return this.output(this.createOutputStream()).toString(); }
     },
     {
       name: 'innerHTML',
       transient: true,
-      getter: function() { return this.outputInnerHTML(this.createOutputStream()); }
+      getter: function() { return this.outputInnerHTML(this.createOutputStream()).toString(); }
     }
   ],
 
