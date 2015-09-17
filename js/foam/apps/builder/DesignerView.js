@@ -92,12 +92,25 @@ CLASS({
       name: 'constructHelpSnippets',
       isMerged: 500,
       code: function () {
+        var self = this;
         this.OverlayHelpView.create({
           helpSnippets: [
             this.HelpSnippetView.create({
               data: 'Configure your app using the options listed in the config view',
               extraClassName: 'md-body',
               target: this.panelView,
+              beforeInit: function() {
+                // If panel view is openable, target its contents.
+                if ( self.panelView && self.panelView.open ) {
+                  self.panelView.open(self.$);
+                  this.target = self.panelView.delegateView ||
+                      self.panelView.innerView || self.panelView;
+                }
+              },
+              afterDestroy: function() {
+                self.panelView && self.panelView.close &&
+                    self.panelView.close();
+              },
               location: 'ABOVE',
               actionLocation: 'BOTTOM_RIGHT',
             }, this.Y),

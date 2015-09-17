@@ -22,7 +22,7 @@ CLASS({
   properties: [
     {
       name: 'views',
-      factory: function() { return []; }
+      factory: function() { return {}; }
     },
     {
       name: 'predicate',
@@ -31,9 +31,9 @@ CLASS({
       postSet: function(old, nu) {
         // Update the memento's fields based on the current views.
         var changed = false;
-        this.views && this.views.length && this.views.forEach(function(v, i) {
-          if (this.memento[i] !== v.memento) changed = true;
-          this.memento[i] = v.memento;
+        Object_forEach(this.views, function(view, key) {
+          if (this.memento[key] !== view.memento) changed = true;
+          this.memento[key] = view.memento;
         }.bind(this));
         if (changed) this.propertyChange('memento', '', this.memento);
       },
@@ -45,12 +45,12 @@ CLASS({
         return typeof nu === 'string' || typeof nu === 'undefined' ? {} : nu;
       },
       postSet: function(old, nu) {
-        if (nu && this.views && this.views.length) {
+        if (nu && this.views) {
           var changed = false;
-          this.views.forEach(function(v, i) {
-            if (nu[i]) {
+          Object_forEach(this.views, function(v, k) {
+            if (nu[k]) {
               changed = true;
-              v.memento = nu[i];
+              v.memento = nu[k];
             }
           });
           if (changed) this.onViewUpdate();
@@ -68,17 +68,53 @@ CLASS({
 
   methods: [
     function and(views) {
-      return AND.apply(null, views.map(function(v) { return v.predicate; })).partialEval();
+      return AND.apply(null, Object.keys(views).map(function(k) { return views[k].predicate; })).partialEval();
     },
     function add(view) {
-      this.views.push(view);
+      // Check the view's name, and if it's a duplicate, change the name to add
+      // a number.
+      if (this.views[view.name]) {
+        var num = 2;
+        while (this.views[view.name + '_' + num]) {
+          num++;
+        }
+        view.name = view.name + '_' + num;
+      }
+
+      this.views[view.name] = view;
       view.predicate$.addListener(this.onViewUpdate);
-      if (this.memento && this.memento[this.views.length - 1])
-        view.memento = this.memento[this.views.length - 1];
+      if (this.memento && this.memento[view.name])
+        view.memento = this.memento[view.name];
+      this.updateViews();
       return view;
     },
+    function remove(view_or_name) {
+      var view, name;
+      if (typeof view_or_name === 'string') {
+        name = view_or_name;
+        view = this.views[view_or_name];
+      } else {
+        view = view_or_name;
+        name = view.name;
+      }
+
+      if (!this.views[name]) return;
+
+      view.predicate$.removeListener(this.onViewUpdate);
+      if (this.memento && this.memento[name]) {
+        delete this.memento[name];
+      }
+
+      delete this.views[name];
+    },
+    function removeAll() {
+      Object_forEach(this.views, function(v) {
+        v.predicate$.removeListener(this.onViewUpdate);
+      }.bind(this));
+      this.views = {};
+    },
     function clear() {
-      this.views.forEach(function(v) { v.clear(); });
+      Object_forEach(this.views, function(v) { v.clear(); });
     }
   ],
 
@@ -99,9 +135,14 @@ CLASS({
       code: function() {
         // Less important than updating main view, so delay
         // TODO: don't update source
-        for ( var i = 0; i < this.views.length; i++ )
-          this.views[i].dao = this.dao.where(this.and(
-            this.views.filter(function(_,j) { return j !== i; })));
+        Object_forEach(this.views, function(view, name) {
+          var temp = {};
+          Object_forEach(this.views, function(v, n) {
+            if (name === n) return;
+            temp[n] = v;
+          });
+          this.views[name].dao = this.dao.where(this.and(temp));
+        }.bind(this));
       }
     }
   ]

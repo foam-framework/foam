@@ -68,6 +68,11 @@ CLASS({
     {
       name: 'memento',
     },
+    {
+      name: 'name',
+      documentation: 'All SearchViews require a name. Defaults to "query".',
+      defaultValue: 'query',
+    },
   ],
 
   methods: [

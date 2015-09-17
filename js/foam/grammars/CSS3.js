@@ -386,12 +386,12 @@ CLASS({
                 var prefixData = css.PREFIXED_KEYS[key];
                 var value = this.value.toString();
                 var values = css.PREFIXES.length > 0 && prefixData === value ?
-                    css.PREFIXES.map(function(p) { return p + value; }) :
+                    css.PREFIXES.map(function(p) { return p + value; }).concat(value) :
                     [value];
                 var rtn = values.map(function(v) {
                   return key + ':' + v + important;
                 });
-                if ( prefixData === true || prefixData === value ) {
+                if ( prefixData === true /*|| prefixData === value*/ ) {
                   for ( var i = 0; i < css.PREFIXES.length; ++i ) {
                     rtn = rtn.concat(values.map(function(v) {
                       return css.PREFIXES[i] + key + ':' + v + important;

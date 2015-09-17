@@ -65,11 +65,6 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      this.addInitializer(this.beforeInit);
-      this.addDestructor(this.afterDestroy);
-    },
     function initHTML() {
       this.SUPER();
       var rect = this.target.$.getBoundingClientRect();
