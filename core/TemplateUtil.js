@@ -56,10 +56,10 @@ MODEL({
 
     'create child': seq(
       '$$',
-      repeat(notChars(' $\n<{,.')),
+      repeat(notChars(' $\r\n<{,.')),
       optional(JSONParser.export('objAsString'))),
 
-    'simple value': seq('%%', repeat(notChars(' ()-"\n><:;,')), optional('()')),
+    'simple value': seq('%%', repeat(notChars(' ()-"\r\n><:;,')), optional('()')),
 
     'live value tag': seq('<%#', repeat(not('%>', anyChar)), '%>'),
 
@@ -71,8 +71,14 @@ MODEL({
     'values tag': seq('{{', repeat(not('}}', anyChar)), '}}'),
 
     'code tag': seq('<%', repeat(not('%>', anyChar)), '%>'),
-    'ignored newline': literal('\\\n'),
-    newline: literal('\n'),
+    'ignored newline': alt(
+      literal('\\\r\\\n'),
+      literal('\\\n')
+    ),
+    newline: alt(
+      literal('\r\n'),
+      literal('\n')
+    ),
     'single quote': literal("'"),
     text: anyChar
   }
@@ -141,7 +147,7 @@ var ConstantTemplate = function(str) {
   };
 
   f.toString = function() {
-    return 'ConstantTemplate("' + str.replace(/\n/g, "\\n").replace(/"/g, '\\"') + '")';
+    return 'ConstantTemplate("' + str.replace(/\n/g, "\\n").replace(/"/g, '\\"').replace(/\r/g, '') + '")';
   };
 
   return f;

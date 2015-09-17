@@ -20,7 +20,7 @@ CLASS({
     'foam.apps.builder.TOSView',
     'foam.apps.builder.Timeout',
     'foam.apps.builder.WebView',
-    'foam.apps.builder.kiosk.KioskChromeView',
+    'foam.apps.builder.kiosk.ChromeView',
     'foam.ui.md.FlatButton',
     'foam.ui.md.PopupView',
   ],
@@ -33,7 +33,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      view: 'foam.apps.builder.kiosk.KioskChromeView',
+      view: 'foam.apps.builder.kiosk.ChromeView',
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( old ) {
@@ -71,7 +71,8 @@ CLASS({
         return this.PopupView.create({
           delegate: this.TOSView,
           data$: this.tosData$,
-          blockerMode: 'modal'
+          blockerMode: 'modal',
+          cardClass: 'md-card-shell',
         }, this.Y);
       },
     },
@@ -132,8 +133,8 @@ CLASS({
     function logout() {
       this.webview.ahome(function() {
         this.webview.clearCache();
-        if ( this.data.termsOfService ) this.openTOS();
       }.bind(this));
+      if ( this.data.termsOfService ) this.openTOS();
     },
     function openTOS() {
       this.tosData.accepted = false;

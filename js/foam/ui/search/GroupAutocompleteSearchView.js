@@ -60,6 +60,11 @@ CLASS({
       type: 'Property',
     },
     {
+      name: 'name',
+      documentation: 'All SearchViews require a name. Defaults to the property name.',
+      defaultValueFn: function() { return this.property.name; }
+    },
+    {
       name: 'op',
       defaultValue: CONTAINS_IC
     },

@@ -136,7 +136,7 @@ CLASS({
           <div class="md-style-trait-standard">Plaining Text</div>
           $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: false }
           $$data{model_:'foam.ui.md.TextFieldView', inlineStyle: false, floatingLabel: false }
-          $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: false,  choices:this.choices}
+          $$data{model_: 'foam.ui.md.PopupChoiceView', inlineStyle: false,  choices:this.choices, floatingLabel: true, label: 'Data label:'}
           $$data{model_:'foam.ui.md.EditableView', inlineStyle: false }
         </div>
         <hr/>

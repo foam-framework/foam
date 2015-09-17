@@ -28,7 +28,9 @@ var __DATA;
   var path = document.location.pathname;
   path = path.substring(0, path.lastIndexOf('/'));
 
-  var foamdir = new URL(window.FOAM_BOOT_DIR).pathname;
+  var pEl = X.document.createElement('a');
+  pEl.href = window.FOAM_BOOT_DIR;
+  var foamdir = pEl.pathname;
   foamdir = foamdir.substring(0, foamdir.lastIndexOf('/'));
   foamdir = foamdir.substring(0, foamdir.lastIndexOf('/'));
 

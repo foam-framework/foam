@@ -38,6 +38,7 @@ module.exports = function(grunt) {
         dest: 'build/foam.js',
         src: [
           'core/firefox.js',
+          'core/internetexplorer.js',
           'core/funcName.js',
           'core/safari.js',
           'core/i18n.js',

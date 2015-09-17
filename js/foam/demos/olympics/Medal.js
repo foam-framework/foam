@@ -32,8 +32,8 @@ requires: [ 'foam.u2.Element' ],  //////////// Added this line HERE
       xxxtableFormatter: function(c) {
         return '<span class="' + c + '">' + c + '</span>';
       },
- tableFormatter: function(c) {
-        var e = E('span');
+      tableFormatter: function(c, owner) {
+        var e = owner.Element.create({ nodeName: 'span'});
         this.X.setTimeout(function() { e.cls(c); e.c(c); }, 100+Math.random()*500);
         return e;
       },
