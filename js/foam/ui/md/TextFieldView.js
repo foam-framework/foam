@@ -265,7 +265,6 @@ CLASS({
         padding-bottom: 8px;
       }
       .md-text-field-container.md-text-field-no-label .md-text-field-input {
-        //font-size: 16px;
       }
 
       .md-text-field-container.md-text-field-no-label {

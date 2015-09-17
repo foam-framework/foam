@@ -63,7 +63,10 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'floatingLabel',
-      defaultValue: false
+      defaultValue: false,
+      postSet: function(old,nu) {
+        this.updateHTML();
+      }
     }
   ],
 
@@ -174,6 +177,7 @@ CLASS({
 
       this.on('click', this.launch, this.id);
       this.setMDClasses();
+      this.setClass('popupChoiceView-floating', function() { return this.floatingLabel; }.bind(this), this.id);
       return out;
     }
   },
@@ -205,10 +209,13 @@ CLASS({
       }
 
       .popupChoiceView .md-floating-label {
+        position: absolute;
         font-size: 85%;
-        top: 6px;
+        top: -8px;
       }
-
+      .popupChoiceView.md-style-trait-standard.popupChoiceView-floating {
+        margin-top: 24px;
+      }
 
       .popupChoiceView .downArrow {
         width: 12px;
