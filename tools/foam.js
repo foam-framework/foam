@@ -20,41 +20,41 @@ global.DEBUG = true;
 var FOAMargs = process.argv.slice(2);
 
 (function() {
+  var args = {
+    "classpath": null,
+    "flags": null,
+    "extraProperties": null
+  };
 
-  var CLASSPATH;
   while (FOAMargs[0].indexOf('--') == 0 ) {
-    if ( FOAMargs[0].indexOf('--classpath') == 0 ) {
-      var cp = FOAMargs.shift();
-
-      if ( cp[11] === '=') {
-        cp = cp.substring(12).split(',');
-      } else {
-        cp = (FOAMargs.shift()).split(',');
+    var keys = Object.keys(args);
+    for ( var i = 0; i < keys.length ; i++ ) {
+      var argname = keys[i];
+      if ( FOAMargs[0].indexOf('--' + keys[i]) == 0 ) {
+        var arg = FOAMargs.shift();
+        if ( arg[keys[i].length + 2] == '=' ) {
+          arg = arg.substring(keys[i].length + 3);
+        } else {
+          arg = FOAMargs.shift();
+        }
+        args[keys[i]] = arg;
       }
-
-      CLASSPATH = cp;
-    } else if ( FOAMargs[0].indexOf('--flags') == 0 ) {
-      var flags = FOAMargs.shift();
-      if ( flags[7] == '=' ) {
-        flags = flags.substring(8).split(',');
-      } else {
-        flags = (FOAMargs.shift()).split(',');
-      }
-
-      var f = {};
-      for ( var i = 0 ; i < flags.length ; i++ ) {
-        f[flags[i]] = true;
-      }
-      global.FLAGS = f;
-    } else {
-      break;
     }
   }
 
-  // Backwards compatability support for clients that don't yet
-  // pass --flags to the swift generator.
-  global.FLAGS = global.FLAGS || {};
-  global.FLAGS.swift = true;
+  if ( args.classpath )
+    var CLASSPATH = args.classpath.split(',');
+
+  if ( args.flags ) {
+    args.flags = args.flags.split(',');
+    var f = {};
+    for ( var i = 0 ; i < args.flags.length ; i++ ) {
+      f[args.flags[i]] = true;
+    }
+    global.FLAGS = f;
+  }
+
+  if ( args.extraProperties ) global.__EXTRA_PROPERTIES__ = args.extraProperties;
 
   require('../core/bootFOAMnode.js');
 
