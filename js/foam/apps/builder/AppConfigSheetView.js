@@ -49,12 +49,11 @@ CLASS({
       app-config {
         display: flex;
         flex-direction: column;
+        width: 100%;
         position: absolute;
         bottom: 0;
         z-index: 2;
-        left: 16px;
         background-color: #fff;
-        right: 16px;
         box-shadow: 2px 0px 7px rgba(0, 0, 0, 0.48);
       }
       app-config .app-config-title {

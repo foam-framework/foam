@@ -139,8 +139,10 @@ CLASS({
       }
       this.overlays_ = [];
       this.destroyView_(this.helpSnippets[this.index]);
+      this.helpSnippets[this.index].afterDestroy();
     },
     function constructContent() {
+      this.helpSnippets[this.index].beforeInit();
       this.constructOverlays();
       this.constructView_(this.helpSnippets[this.index]);
     },
