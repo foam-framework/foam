@@ -112,14 +112,14 @@ CLASS({
                     self.panelView.close();
               },
               location: 'ABOVE',
-              actionLocation: 'BOTTOM_RIGHT',
+              actionLocation: 'TOP_RIGHT',
             }, this.Y),
             this.HelpSnippetView.create({
               data: 'See how your app looks with the live preview',
               extraClassName: 'md-body',
               target: this.appView,
               location: 'ABOVE',
-              actionLocation: 'BOTTOM_RIGHT',
+              actionLocation: 'TOP_RIGHT',
             }, this.Y),
             this.HelpSnippetView.create({
               data: "When you're ready, use the action toolbar to package, download, upload, or publish your app",
