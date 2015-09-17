@@ -300,7 +300,6 @@ input[name=q]::-webkit-input-placeholder {
   height: initial;
 }
 
-
 .md-card-shell {
   display: block;
   background: #fff;
