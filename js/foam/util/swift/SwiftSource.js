@@ -140,7 +140,7 @@ if ( this.implements.length > 0 ) {
 
 <%
   function swiftSource(f) {
-    f.swiftSource && f.swiftSource.call(self, out, f);
+    f.swiftSource$f && f.swiftSource$f.call(self, out, f);
   }
 
   this.methods.forEach(swiftSource);
