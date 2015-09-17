@@ -288,7 +288,7 @@ input[name=q]::-webkit-input-placeholder {
   letter-spacing: 0;
 }
 
-.createButton {
+.floatingActionButton {
   position: absolute;
   bottom: 10px;
   right: 20px;

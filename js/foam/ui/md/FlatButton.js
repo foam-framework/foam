@@ -269,7 +269,7 @@ CLASS({
         flex-shrink: 0;
       }
 
-      flat-button.createButton {
+      flat-button.floatingActionButton {
         padding: 10px;
       }
 
@@ -315,7 +315,7 @@ CLASS({
         bottom: -7px;
       }
 
-      flat-button.icon-only.createButton {
+      flat-button.icon-only.floatingActionButton {
         width: 44px;
         height: 44px;
       }

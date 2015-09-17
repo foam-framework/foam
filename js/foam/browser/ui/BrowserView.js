@@ -385,7 +385,7 @@ CLASS({
                      easeOutTime: 0,
                    }), 'foam.ui.md.HaloView'); %>
                 $$createButton{
-                  extraClassName: 'createButton',
+                  extraClassName: 'floatingActionButton',
                   color: 'white',
                   font: '30px Roboto Arial',
                   alpha: 1,
