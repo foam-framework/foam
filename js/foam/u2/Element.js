@@ -419,7 +419,8 @@ CLASS({
       return f;
     },
 
-    function write(X) {
+    function write(opt_X) {
+      opt_X = opt_X || GLOBAL;
       /* For debugging, not production. */
       (X.document || document).writeln(this.outerHTML);
       this.load();
