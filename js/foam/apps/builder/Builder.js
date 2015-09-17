@@ -16,28 +16,17 @@ CLASS({
   requires: [
     'Model',
     'com.google.analytics.AnalyticsDAO',
-    'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.ExportManager',
-    'foam.apps.builder.kiosk.KioskAppConfig',
-    'foam.apps.builder.kiosk.KioskDesignerView',
+    'foam.apps.builder.dao.DAOFactory',
+    'foam.apps.builder.kiosk.BrowserConfigFactory as KioskBCFactory',
+    'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
     'foam.browser.ui.BrowserView',
     'foam.dao.ContextualizingDAO',
-    'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
-    'foam.dao.SeqNoDAO',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.metrics.Metric',
-    'foam.ui.DAOListView',
-    'foam.ui.ImageView',
-    'foam.ui.md.DetailView',
-    'foam.ui.md.PopupChoiceView',
-    'foam.ui.md.TextFieldView',
-    'Model',
-    'foam.apps.builder.dao.DAOFactory',
-    'foam.ui.md.PopupView',
-    'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
   ],
   exports: [
     'touchManager',
@@ -70,26 +59,7 @@ CLASS({
       name: 'menuDAO',
       factory: function() {
         var dao = [
-          this.BrowserConfig.create({
-            title: 'Kiosk Apps',
-            label: 'Kiosk App',
-            model: this.KioskAppConfig,
-            dao: this.EasyDAO.create({
-              model: this.KioskAppConfig,
-              name: 'KioskAppConfigs',
-              daoType: this.IDBDAO,
-              cache: true,
-              seqNo: true,
-              logging: true,
-            }),
-            detailView: {
-              factory_: 'foam.ui.md.UpdateDetailView',
-              liveEdit: true,
-              minWidth: 600,
-              preferredWidth: 10000,
-            },
-            innerDetailView: 'foam.apps.builder.kiosk.KioskDesignerView',
-          }),
+          this.KioskBCFactory.create({}, this.Y).factory(),
           this.QuestionnaireBCFactory.create({}, this.Y).factory(),
         ].dao;
         dao.model = this.BrowserConfig;
@@ -153,7 +123,7 @@ CLASS({
       this.SUPER();
       this.metricsDAO.put(this.Metric.create({
         name: 'launchApp',
-      }));
+      }, this.Y));
     },
   ],
 });

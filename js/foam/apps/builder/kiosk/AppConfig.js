@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder.kiosk',
-  name: 'KioskAppConfig',
+  name: 'AppConfig',
   extendsModel: 'foam.apps.builder.AppConfig',
 
   constants: {
