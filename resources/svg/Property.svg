@@ -7,10 +7,34 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   width="744.09448"
-   height="1052.3622"
-   id="svg2">
+   width="542"
+   height="435"
+   id="svg2"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="Property.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1813"
+     inkscape:window-height="1148"
+     id="namedview3158"
+     showgrid="false"
+     inkscape:zoom="0.89702957"
+     inkscape:cx="67.345806"
+     inkscape:cy="699.31247"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
   <defs
      id="defs4" />
   <metadata
@@ -21,20 +45,13 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <g
-     id="layer1">
-    <path
-       d="m 144.28125,239.5 c -36.40571,0 -65.71875,29.31304 -65.71875,65.71875 l 0,304.28125 c 0,36.40571 29.31304,65.71875 65.71875,65.71875 l 411.4375,0 c 36.40571,0 65.71875,-29.31304 65.71875,-65.71875 l 0,-304.28125 C 621.4375,268.81304 592.12446,239.5 555.71875,239.5 l -411.4375,0 z m 6.125,28.53125 399.1875,0 c 23.21787,0 41.90625,18.07562 41.90625,40.53125 l 0,297.625 c 0,22.45563 -18.68838,40.53125 -41.90625,40.53125 l -399.1875,0 C 127.18838,646.71875 108.5,628.64313 108.5,606.1875 l 0,-297.625 c 0,-22.45563 18.68838,-40.53125 41.90625,-40.53125 z"
-       id="rect2991"
-       style="fill:#000000;fill-rule:evenodd;stroke:none" />
-    <path
-       d="m 481.42856,458.07648 a 140,140 0 1 1 -280,0 140,140 0 1 1 280,0 z"
-       transform="translate(8.5714417,-0.71710205)"
-       id="path3039"
-       style="fill:#000000;stroke:none" />
-  </g>
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:#000000;stroke:none"
+     id="path3039"
+     d="m 411,217.5 a 140,140 0 0 1 -280,0 140,140 0 1 1 280,0 z" />
 </svg>

@@ -7,10 +7,34 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   width="744.09448"
-   height="1052.3622"
-   id="svg2">
+   width="542"
+   height="435"
+   id="svg2"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="DateTimeProperty.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview3101"
+     showgrid="false"
+     inkscape:zoom="0.22425739"
+     inkscape:cx="-158.59301"
+     inkscape:cy="526.18109"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
   <defs
      id="defs4" />
   <metadata
@@ -21,27 +45,25 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     id="layer1">
+     id="g3156"
+     transform="translate(-79,377.50281)">
     <path
-       d="m 144.28125,239.5 c -36.40571,0 -65.71875,29.31304 -65.71875,65.71875 l 0,304.28125 c 0,36.40571 29.31304,65.71875 65.71875,65.71875 l 411.4375,0 c 36.40571,0 65.71875,-29.31304 65.71875,-65.71875 l 0,-304.28125 C 621.4375,268.81304 592.12446,239.5 555.71875,239.5 l -411.4375,0 z m 6.125,28.53125 399.1875,0 c 23.21787,0 41.90625,18.07562 41.90625,40.53125 l 0,297.625 c 0,22.45563 -18.68838,40.53125 -41.90625,40.53125 l -399.1875,0 C 127.18838,646.71875 108.5,628.64313 108.5,606.1875 l 0,-297.625 c 0,-22.45563 18.68838,-40.53125 41.90625,-40.53125 z"
-       id="rect2991"
-       style="fill:#000000;fill-rule:evenodd;stroke:none" />
-    <path
-       d="m 350,290.9375 c -91.91596,0 -166.4375,74.49029 -166.4375,166.40625 0,91.91596 74.52154,166.4375 166.4375,166.4375 91.91596,0 166.4375,-74.52154 166.4375,-166.4375 C 516.4375,365.42779 441.91596,290.9375 350,290.9375 z m 0,20 c 80.87027,0 146.4375,65.53598 146.4375,146.40625 0,80.87027 -65.56723,146.4375 -146.4375,146.4375 -80.87027,0 -146.4375,-65.56723 -146.4375,-146.4375 0,-80.87027 65.56723,-146.40625 146.4375,-146.40625 z"
+       d="m 350,-326.42468 c -91.91596,0 -166.4375,74.49029 -166.4375,166.40625 0,91.915957 74.52154,166.4374974 166.4375,166.4374974 91.91596,0 166.4375,-74.5215404 166.4375,-166.4374974 0,-91.91596 -74.52154,-166.40625 -166.4375,-166.40625 z m 0,20 c 80.87027,0 146.4375,65.53598 146.4375,146.40625 0,80.870267 -65.56723,146.437497 -146.4375,146.437497 -80.87027,0 -146.4375,-65.56723 -146.4375,-146.437497 0,-80.87027 65.56723,-146.40625 146.4375,-146.40625 z"
        id="path3165"
-       style="fill:#000000;stroke:none" />
+       style="fill:#000000;stroke:none"
+       inkscape:connector-curvature="0" />
     <rect
        width="18.571428"
        height="128.57143"
        rx="0"
        ry="0"
        x="338.57144"
-       y="338.07648"
+       y="-279.28571"
        id="rect3188"
        style="fill:#000000;stroke:none" />
     <rect
@@ -49,8 +71,8 @@
        height="88.170143"
        rx="0"
        ry="0"
-       x="565.3681"
-       y="11.044787"
+       x="135.62048"
+       y="-432.18546"
        transform="matrix(0.71794201,0.69610291,-0.69610291,0.71794201,0,0)"
        id="rect3188-0"
        style="fill:#000000;stroke:none" />

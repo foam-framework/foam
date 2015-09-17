@@ -13,7 +13,9 @@ CLASS({
   package: 'foam.meta.descriptor',
   name: 'PropertyMetaDescriptor',
   extendsModel: 'foam.meta.descriptor.MetaDescriptor',
-  
+
+  requires: ['foam.meta.descriptor.PropertyTypeCitationView'],
+
   label: 'Property',
 
   documentation: function() {/* Describes a type (such as when creating a new
@@ -23,28 +25,26 @@ CLASS({
 
   properties: [
     {
-      label: 'The Type of the property',
-      name: 'model',
-      defaultValue: 'StringProperty',
+      name: 'selectionsDAO',
       view: {
-         factory_: 'foam.ui.ChoiceView',
-         objToChoice: function(obj) { return [obj.id, obj.label]; },
-         dao: [
-           StringProperty,
-           BooleanProperty,
-           DateProperty,
-           DateTimeProperty,
-           IntProperty,
-           FloatProperty,
+        factory_: 'foam.ui.DAOListView',
+        rowView: 'foam.meta.descriptor.PropertyTypeCitationView',
+      },
+      defaultValue: [
+         StringProperty,
+         BooleanProperty,
+         DateProperty,
+         DateTimeProperty,
+         IntProperty,
+         FloatProperty,
 //           StringArrayProperty,
-           EMailProperty,
-           URLProperty,
+         EMailProperty,
+         URLProperty,
 //           ImageProperty,
 //           ColorProperty,
 //           PasswordProperty,
-           PhoneNumberProperty,
-         ]
-      },
+         PhoneNumberProperty,
+       ],
     },
     {
       label: 'The name of the new property',

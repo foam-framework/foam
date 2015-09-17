@@ -29,6 +29,10 @@ CLASS({
       name: 'title',
       defaultValue: 'Create a new Property',
     },
+    {
+      name: 'scrollContent',
+      defaultValue: true,
+    },
   ],
 
   actions: [
@@ -56,12 +60,14 @@ CLASS({
   ],
 
   templates: [
-    function contentHTML() {/*
+    function instructionHTML() {/*
         <p class="md-style-trait-standard">Choose a name to describe the purpose,
         such as "first name", "catalogue number" or "home phone". Choose the type
         that most closely matches the value you expect, such as a number, text,
         yes/no, or web URL.
         </p>
+    */},
+    function contentHTML() {/*
         $$data{ model_: 'foam.meta.descriptor.MetaDescriptorView', metaEditPropertyTitle: '' }
     */},
   ],
