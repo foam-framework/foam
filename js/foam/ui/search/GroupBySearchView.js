@@ -95,9 +95,7 @@ CLASS({
       this.view.data = '';
     },
     function toHTML() {
-      if (this.view.floatingLabel$) {
-        return this.view.toHTML();
-      }
+      if ( this.model_.FLOATING_LABEL) return this.view.toHTML();
 
       return '<div class="foamSearchView foamSearchGroupView">' +
         '<div class="foamSearchViewLabel">' +
