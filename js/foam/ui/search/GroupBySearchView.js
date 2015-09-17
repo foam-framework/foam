@@ -62,6 +62,11 @@ CLASS({
       type: 'Property'
     },
     {
+      name: 'name',
+      documentation: 'All SearchViews require a name. Defaults to the property name.',
+      defaultValueFn: function() { return this.property.name; }
+    },
+    {
       name: 'op',
       defaultValue: EQ
     },
@@ -90,9 +95,7 @@ CLASS({
       this.view.data = '';
     },
     function toHTML() {
-      if (this.view.floatingLabel$) {
-        return this.view.toHTML();
-      }
+      if ( this.model_.FLOATING_LABEL) return this.view.toHTML();
 
       return '<div class="foamSearchView foamSearchGroupView">' +
         '<div class="foamSearchViewLabel">' +
