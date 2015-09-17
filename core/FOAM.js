@@ -219,7 +219,6 @@ var CLASS = function(m) {
 
   // Don't Latch these Models, as we know that we'll need them on startup
   var EAGER = {
-    'Property': true,
     'Method': true,
     'BooleanProperty': true,
     'Action': true,
