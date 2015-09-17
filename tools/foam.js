@@ -59,10 +59,10 @@ var FOAMargs = process.argv.slice(2);
   require('../core/bootFOAMnode.js');
 
   if ( CLASSPATH ) {
-    for ( var i = 0 ; i < cp.length ; i++ ) {
+    for ( var i = 0 ; i < CLASSPATH.length ; i++ ) {
       X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
         delegate: X.node.dao.ModelFileDAO.create({
-          classpath: cp[i]
+          classpath: CLASSPATH[i]
         }),
         primary: X.ModelDAO
       });
