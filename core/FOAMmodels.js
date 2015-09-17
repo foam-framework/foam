@@ -20,6 +20,8 @@ function IN_NODEJS() { return ! IN_BROWSER(); }
 function IN_CHROME_APP() { return window.chrome && window.chrome.runtime && (!! window.chrome.runtime.id) };
 function IN_BROWSER_NOT_APP() { return IN_BROWSER() && ! IN_CHROME_APP(); }
 
+var __EXTRA_PROPERTIES__;
+
 var files = [
 //  ['ServiceWorker', function() { return window.navigator && navigator.serviceWorker; }],
   [ 'firefox',  function() { return window.navigator && navigator.userAgent.indexOf('Firefox') != -1; }],
@@ -48,6 +50,7 @@ var files = [
   'BootstrapModel',
   'mm1Model',
   'mm2Property',
+  [ __EXTRA_PROPERTIES__, function() { return __EXTRA_PROPERTIES__ != undefined; } ],
   'mm3Types',
   'mm4Method',
   'mm5Debug',
