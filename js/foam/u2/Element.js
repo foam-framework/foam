@@ -422,7 +422,7 @@ CLASS({
     function write(opt_X) {
       opt_X = opt_X || GLOBAL;
       /* For debugging, not production. */
-      (X.document || document).writeln(this.outerHTML);
+      (opt_X.document || document).writeln(this.outerHTML);
       this.load();
     },
 
