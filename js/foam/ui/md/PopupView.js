@@ -27,6 +27,113 @@ CLASS({
     'document'
   ],
 
+  constants: {
+    // Duration of in/out transitions, in seconds.
+    TRANSITION_DURATION: 0.3,
+
+    // Animation strategies:
+    FADE: {
+      initialContentOpacity: 0,
+      initialBlockerOpacity: 0,
+      animateToHidden: function() {
+        if ( this.$content ) {
+          this.setTransition(this.$content,
+                             'opacity', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
+                                 this.TRANSITION_DURATION + 's');
+          this.$content.style.opacity = '0';
+          this.$content.style.pointerEvents = 'none';
+        }
+        if ( this.$blocker ) {
+          this.setTransition(this.$blocker,
+                             'opacity', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
+                                 this.TRANSITION_DURATION + 's', '0');
+          this.$blocker.style.pointerEvents = 'none';
+        }
+      },
+      animateToExpanded: function() {
+        //this.$content.style.transition = 'transform cubic-bezier(0.0, 0.0, 0.2, 1) ' + this.TRANSITION_DURATION + 's';
+        //this.$content.style.transform = 'translateY(0)';
+        this.setTransition(this.$content,
+                           'opacity', 'cubic-bezier(0.0, 0.0, 0.2, 1) ' +
+                               this.TRANSITION_DURATION + 's');
+        this.$content.style.opacity = '1';
+
+        this.setTransition(this.$blocker,
+                           'opacity', 'cubic-bezier(0.0, 0.0, 0.2, 1) ' +
+                               this.TRANSITION_DURATION + 's', '0.4');
+      },
+    },
+    BOTTOM: {
+      initialContentOpacity: 0,
+      initialBlockerOpacity: 0,
+      animateToHidden: function() {
+        if ( this.$content ) {
+          // Current location before animation begins.
+          var rect = this.$content.getBoundingClientRect();
+
+          // Switch to fixed layout strategy without moving element.
+          this.$content.style.position = 'fixed';
+          this.$content.style.top = rect.top;
+          this.$content.style.left = rect.left;
+          this.$content.style.width = rect.width;
+          this.$content.style.height = rect.height;
+          this.setTransition(this.$content,
+                             'top', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
+                                 this.TRANSITION_DURATION + 's',
+                             '' + this.document.documentElement.clientHeight);
+          this.$content.style.pointerEvents = 'none';
+        }
+        if ( this.$blocker ) {
+          this.setTransition(this.$blocker,
+                             'opacity', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
+                                 this.TRANSITION_DURATION + 's', '0');
+          this.$blocker.style.pointerEvents = 'none';
+        }
+      },
+      animateToExpanded: function() {
+        // Target location based on current layout.
+        var rect = this.$content.getBoundingClientRect();
+        // Target layout to restore after animation completes.
+        var style = this.X.window.getComputedStyle(this.$content);
+        var position = style.position;
+        var top = style.top;
+        var left = style.left;
+        var width = style.width;
+        var height = style.height;
+
+        // Switch to fixed layout situated beneath the viewport.
+        this.$content.style.position = 'fixed';
+        this.$content.style.top = this.document.documentElement.clientHeight;
+        this.$content.style.left = rect.left;
+        this.$content.style.width = rect.width;
+        this.$content.style.height = rect.height;
+        this.$content.style.opacity = '1';
+        // Transition to target location.
+        this.setTransition(this.$content,
+                           'top', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
+                               this.TRANSITION_DURATION + 's', '' + rect.top);
+        // Restore initial styling after animation completes.
+        var listener = function() {
+          var rect2 = this.$content.getBoundingClientRect();
+          if ( rect2.top !== rect.top ) return;
+          this.setTransition(this.$content,
+                             'none');
+          this.$content.style.top = top;
+          this.$content.style.left = left;
+          this.$content.style.width = width;
+          this.$content.style.height = height;
+          this.$content.style.position = position;
+          this.$content.removeEventListener('transitionend', listener);
+        }.bind(this);
+        this.$content.addEventListener('transitionend', listener);
+
+        this.setTransition(this.$blocker,
+                           'opacity', 'cubic-bezier(0.0, 0.0, 0.2, 1) ' +
+                               this.TRANSITION_DURATION + 's', '0.4');
+      }
+    }
+  },
+
   properties: [
     {
       model_: 'ViewFactoryProperty',
@@ -74,6 +181,16 @@ CLASS({
     },
     {
       model_: 'foam.core.types.StringEnumProperty',
+      name: 'layoutPosition',
+      defaultValue: 'center',
+      choices: [
+        ['center',    'Center'],
+        ['top',    'Top'],
+        ['bottom', 'Bottom']
+      ]
+    },
+    {
+      model_: 'foam.core.types.StringEnumProperty',
       name: 'blockerMode',
       defaultValue: 'cancellable',
       choices: [
@@ -95,6 +212,19 @@ CLASS({
     {
       name: 'height',
       help: 'If set, specifies the CSS height of the content container.',
+    },
+    {
+      name: 'animationStrategy',
+      help: 'A strategy that implements animateToHidden() and animateToExpanded()',
+      lazyFactory: function() { return this.FADE; },
+      adapt: function(old, nu) {
+        if ( old === nu ) return nu;
+        if ( typeof nu === 'string' && this[nu.toUpperCase()] )
+          nu = this[nu.toUpperCase()];
+        if ( ! nu || ! nu.animateToHidden || ! nu.animateToExpanded )
+          return this.FADE;
+        return nu;
+      }
     }
   ],
 
@@ -119,40 +249,25 @@ CLASS({
     initializePosition: function() {
       this.$content.style.zIndex = "1010";
       //this.$content.style.transform = "translateY("+this.viewportSize().height+"px)";
-      this.$content.style.opacity = "0";
-      this.$blocker.style.opacity = "0";
+      this.$content.style.opacity = this.animationStrategy.initialContentOpacity;
+      this.$blocker.style.opacity = this.animationStrategy.initialBlockerOpacity;
       if ( this.width ) this.$content.style.width = this.width;
       if ( this.height ) this.$content.style.height = this.height;
     },
     animateToExpanded: function() {
-      //this.$content.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
-      //this.$content.style.transform = "translateY(0)";
-      this.$content.style.transition = "opacity cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
-      this.$content.style.opacity = "1";
-
-      this.$blocker.style.transition = "opacity cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
-      this.$blocker.style.opacity = "0.4";
-
+      this.animationStrategy.animateToExpanded.call(this);
       this.isHidden = false;
     },
     animateToHidden: function() {
       this.isHidden = true;
-      if ( this.$content ) {
-        this.$content.style.transition = "opacity cubic-bezier(0.4, 0.0, 1, 1) .1s"
-        this.$content.style.opacity = "0";
-        this.$content.style.pointerEvents = "none";
-      }
-      if ( this.$blocker ) {
-        this.$blocker.style.transition = "opacity cubic-bezier(0.4, 0.0, 1, 1) .1s"
-        this.$blocker.style.opacity = "0";
-        this.$blocker.style.pointerEvents = "none";
-      }
+      this.animationStrategy.animateToHidden.call(this);
     },
     close: function() {
       this.state = 'closing';
 
       this.animateToHidden();
-      var id = this.setTimeout(function() { this.destroy(); }.bind(this), 300);
+      var id = this.setTimeout(function() { this.destroy(); }.bind(this),
+                               this.TRANSITION_DURATION * 1000 + 150);
       this.closeLatch_ = function() {
         this.clearTimeout(id);
         this.closeLatch_ = '';
@@ -165,7 +280,11 @@ CLASS({
       this.state = 'closed';
       this.SUPER(p);
     },
-
+    setTransition: function(e, prop, transition, value) {
+      e.style.transition = prop + ' ' + transition;
+      e.offsetLeft = e.offsetLeft;
+      if ( value ) e.style[prop] = value;
+    }
   },
 
   templates: [
@@ -178,6 +297,15 @@ CLASS({
         <div id="<%= this.id %>Content" class='md-popup-view-content <%= this.cardClass %>'>
           %%delegateView
         </div>
+        <% this.setClass('center', function() {
+             return this.layoutPosition === 'center';
+           }, this.id); %>
+        <% this.setClass('top', function() {
+             return this.layoutPosition === 'top';
+           }, this.id); %>
+        <% this.setClass('bottom', function() {
+             return this.layoutPosition === 'bottom';
+           }, this.id); %>
         <% this.setClass('fixed', function() {
              return this.layoutMode === 'fixed';
            }, this.id); %>
@@ -203,18 +331,26 @@ CLASS({
       }
       .popup-view-container {
         display: flex;
-        align-items: center;
         justify-content: center;
+        align-items: center;
         top: 0px;
         left: 0px;
         bottom: 0px;
         right: 0px;
         z-index: 1000;
       }
+      .popup-view-container.center {
+        align-items: center;
+      }
+      .popup-view-container.bottom {
+        align-items: flex-end;
+      }
+      .popup-view-container.top {
+        align-items: flex-start;
+      }
       .popup-view-content {
         background: white;
       }
-
     */}
   ]
 });
