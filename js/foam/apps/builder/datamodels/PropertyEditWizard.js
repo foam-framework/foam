@@ -70,10 +70,16 @@ CLASS({
   ],
 
   templates: [
-    function titleHTML() {/* */},
+    function titleHTML() {/* %%toolbar */},
+    function instructionHTML() {/*
+      <div class="md-style-trait-standard">
+        Change details, such as the label the user will see, below. Click the
+        trash can icon to delete this item.
+      </div>
+      <div class="md-card-heading-content-spacer"></div>
+    */},
     function contentHTML() {/*
-        %%toolbar
-        $$data{ model_: 'foam.meta.types.EditView', model: this.data.model_, showHeader: false }
+      $$data{ model_: 'foam.meta.types.EditView', model: this.data.model_, showHeader: false }
     */},
   ],
 

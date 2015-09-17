@@ -113,15 +113,15 @@ var TRUE = (FOAM({
 
   documentation: 'Model for the primitive true value.',
 
-  methods: {
-    clone:     function() { return this; },
-    deepClone: function() { return this; },
-    toString:  function() { return '<true>'; },
-    toSQL:     function() { return '( 1 = 1 )'; },
-    toMQL:     function() { return ''; },
-    toBQL:     function() { return ''; },
-    f:         function() { return true; }
-  }
+  methods: [
+    function clone() { return this; },
+    function deepClone() { return this; },
+    function toString() { return '<true>'; },
+    function toSQL() { return '( 1 = 1 )'; },
+    function toMQL() { return ''; },
+    function toBQL() { return ''; },
+    function f() { return true; }
+  ]
 })).create();
 
 
@@ -132,14 +132,14 @@ var FALSE = (FOAM({
 
   documentation: 'Model for the primitive false value.',
 
-  methods: {
-    clone:     function() { return this; },
-    deepClone: function() { return this; },
-    toSQL: function(out) { return '( 1 <> 1 )'; },
-    toMQL: function(out) { return '<false>'; },
-    toBQL: function(out) { return '<false>'; },
-    f:     function() { return false; }
-  }
+  methods: [
+    function clone() { return this; },
+    function deepClone() { return this; },
+    function toSQL(out) { return '( 1 <> 1 )'; },
+    function toMQL(out) { return '<false>'; },
+    function toBQL(out) { return '<false>'; },
+    function f() { return false; }
+  ]
 })).create();
 
 
@@ -365,13 +365,12 @@ CLASS({
       var newArg1 = this.arg1.partialEval();
       var newArg2 = this.arg2.partialEval();
 
-      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-        return compile_(newArg1.f() == newArg2.f());
-      }
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) )
+        return compile_(this.f());
 
       return this.arg1 !== newArg1 || this.arg2 !== newArg2 ?
         EqExpr.create({arg1: newArg1, arg2: newArg2}) :
-      this;
+        this ;
     },
 
     f: function(obj) {
@@ -394,7 +393,7 @@ CLASS({
       if ( arg2 === TRUE ) return !! arg1;
       if ( arg2 === FALSE ) return ! arg1;
 
-      return arg1 == arg2;
+      return equals(arg1, arg2);
     }
   }
 });
@@ -654,13 +653,12 @@ CLASS({
       var newArg1 = this.arg1.partialEval();
       var newArg2 = this.arg2.partialEval();
 
-      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) ) {
-        return compile_(newArg1.f() != newArg2.f());
-      }
+      if ( ConstantExpr.isInstance(newArg1) && ConstantExpr.isInstance(newArg2) )
+        return compile_(this.f());
 
       return this.arg1 !== newArg1 || this.arg2 != newArg2 ?
         NeqExpr.create({arg1: newArg1, arg2: newArg2}) :
-      this;
+        this ;
     },
 
     f: function(obj) {
@@ -683,7 +681,7 @@ CLASS({
       if ( arg2 === TRUE ) return ! arg1;
       if ( arg2 === FALSE ) return !! arg1;
 
-      return arg1 != arg2;
+      return ! equals(arg1, arg2);
     }
   }
 });

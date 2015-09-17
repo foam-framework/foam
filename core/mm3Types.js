@@ -444,6 +444,40 @@ CLASS({
   ]
 });
 
+CLASS({
+  name: 'TemplateProperty',
+  extendsModel: 'FunctionProperty',
+
+  properties: [
+    {
+      name: 'adapt',
+      defaultValue: function(_, value) {
+        if ( typeof value === 'function' ) {
+          value = multiline(value);
+        }
+
+        if ( typeof value === 'string' ) {
+          var f = TemplateUtil.compile(
+            Template.create({
+              template: value
+            }));
+          f.toString = function() { return value; };
+          return f;
+        }
+        return value;
+      }
+    },
+    {
+      name: 'defaultValue',
+      adapt: function(_, value) {
+        if ( typeof value === 'string' ) {
+          return TemplateProperty.ADAPT.defaultValue.call(this, _, value);
+        }
+        return value;
+      }
+    }
+  ]
+});
 
 CLASS({
   name: 'ArrayProperty',

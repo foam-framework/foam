@@ -38,6 +38,18 @@ CLASS({
     { name: 'labelId' },
     { name: '$label', getter: function() { return this.X.$(this.labelId); } },
     { model_: 'BooleanProperty', name: 'focused', defaultValue: false },
+    {
+      model_: 'BooleanProperty',
+      name: 'enabled',
+      defaultValue: true,
+      postSet: function(old, nu) {
+        if ( nu ) {
+          this.$input && this.$input.removeAttribute('disabled');
+        } else {
+          this.$input && this.$input.setAttribute('disabled', '');
+        }
+      }
+    },
     'prop',
     { name: 'label', defaultValueFn: function() { return this.prop.label; } },
     {
@@ -316,11 +328,11 @@ CLASS({
           <div id="{{{input}}}" class="md-text-field-input"<%= this.mode == 'read-write' ? ' contenteditable' : '' %>>
           </div>
         <% } else if ( this.displayHeight > 1 ) { %>
-          <textarea id="{{{input}}}" type="text" class="md-text-field-input" rows="{{{this.displayHeight}}}"<%= this.mode == 'read-only' ? ' disabled' : '' %>></textarea>
+          <textarea id="{{{input}}}" type="text" <% out(( ! this.enabled ) ? 'disabled' : ''); %> class="md-text-field-input" rows="{{{this.displayHeight}}}"<%= this.mode == 'read-only' ? ' disabled' : '' %>></textarea>
         <% } else if ( this.mode === 'read-only' ) { %>
           <span id="{{{input}}}" class="md-text-field-read-only"><%# this.data %></span>
         <% } else { %>
-          <input id="{{{input}}}" type="text"
+          <input id="{{{input}}}" type="text" <% out(( ! this.enabled ) ? 'disabled' : ''); %>
               class="md-text-field-input <%= this.underline ? '' : 'md-text-field-borderless' %>"
               <%= this.floatingLabel ? '' : 'placeholder="' + this.label + '"' %><%= this.mode == 'read-only' ? ' disabled' : '' %> />
           <% if ( this.clearAction ) { %>

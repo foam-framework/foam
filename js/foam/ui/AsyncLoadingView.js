@@ -72,7 +72,7 @@
        var skipKeysArgDecorator = Object.create(this.args);
        skipKeysArgDecorator.hasOwnProperty = this.skipKeysFn_hasOwnProperty;
        skipKeysArgDecorator.inner = this.args;
-       
+
        // HACK to ensure model-for-model works. It requires that 'model', if specified,
        // be present in the create({ args }). Since we set Actions and Properties as
        // the create arg object sometimes, we must temporarily transfer the model
@@ -81,11 +81,11 @@
        if ( this.copyFrom && this.copyFrom.model ) {
          skipKeysArgDecorator.model = this.copyFrom.model;
        }
-       
+
        if ( this.copyFrom && this.copyFrom.model_ ) {
          if ( typeof this.copyFrom.model_ === 'string' ) { // string model_ in copyFrom
            return this.requireModelName(this.copyFrom.model_, skipKeysArgDecorator);
-         } else if ( this.Model.isInstance(this.copyFrom.model_) ) { // or model instance
+         } else if ( Model.isInstance(this.copyFrom.model_) ) { // or model instance
            return this.finishRender(this.copyFrom.model_.create(skipKeysArgDecorator, this.Y));
          }
        }
@@ -97,7 +97,7 @@
          return this.requireViewInstance(FOAM(this.model));
        }
        if ( this.model.model_ ) {
-         if ( this.Model.isInstance(this.model) ) { // is a model instance
+         if ( Model.isInstance(this.model) ) { // is a model instance
            return this.finishRender(this.model.create(skipKeysArgDecorator, this.Y));
          } else {
            // JSON with Model instance specified in model_
@@ -115,7 +115,7 @@
        }
        console.warn("AsyncLoadingView: View load with invalid model. ", this.model, this.args, this.copyFrom);
      },
-     
+
      function mergeWithCopyFrom(other) {
        /* Override/Append to args, typically
           used to merge in $$DOC{ref:'.model'} if it is a JSON object. */
@@ -134,44 +134,44 @@
          this.finishRender(view);
        }.bind(this));
      },
-     
+
      function requireModelName(name, args) {
        this.X.arequire(name)(function(m) {
          this.finishRender(m.create(args, this.Y));
        }.bind(this));
      },
-     
+
      function finishRender(view) {
        if ( this.copyFrom ) {
          // don't copy a few special cases
          var skipKeysCopyFromDecorator = Object.create(this.copyFrom);
          skipKeysCopyFromDecorator.hasOwnProperty = this.skipKeysFn_hasOwnProperty;
          skipKeysCopyFromDecorator.inner = this.copyFrom;
-         
+
          view.copyFrom(skipKeysCopyFromDecorator);
        }
        this.view = view.toView_();
        this.addDataChild(this.view);
-       
+
        var el = this.X.$(this.id);
        if ( el ) {
          el.outerHTML = this.toHTML();
          this.initHTML();
        }
      },
-     
+
      function toHTML() {
        /* If the view is ready, pass through to it. Otherwise create a place
           holder tag with our id, which we replace later. */
        return this.view ? this.view.toHTML() : ('<div id="'+this.id+'"></div>');
      },
-     
+
      function initHTML() {
        this.view && this.view.initHTML();
      },
-     
+
      function toString() { /* Name info. */ return 'AsyncLoadingView(' + this.model + ', ' + this.view + ')'; },
-     
+
      function fromElement(e) { /* passthru */
        this.view.fromElement(e);
        return this;

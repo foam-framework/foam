@@ -31,6 +31,10 @@ CLASS({
       name: 'title',
       defaultValue: 'Create your Data Model',
     },
+    {
+      name: 'scrollContent',
+      defaultValue: true,
+    },
   ],
 
   actions: [

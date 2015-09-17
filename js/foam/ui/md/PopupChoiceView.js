@@ -196,7 +196,7 @@ CLASS({
       }
 
       .popupChoiceView.md-style-trait-standard {
-        padding: 24px 0px 8px 0px;
+        padding: 8px 0px 8px 0px;
         margin: 8px 16px;
       }
       .popupChoiceView.md-style-trait-inline {
