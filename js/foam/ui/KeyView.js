@@ -35,16 +35,10 @@ CLASS({
       name: 'data',
       postSet: function(_, value) {
         var self = this;
-        this.X.lookup(this.subType).getPrototype();
         var subKey = this.X.lookup(this.subType + '.' + this.subKey);
         var sink = { put: function(o) { self.innerData = o; } };
-        //console.log('KeyView.data dao='+this.dao+' this.subType='+this.subType+' this.subKey='+this.subKey+' subKey='+subKey+' subKey.name='+this.subKey.name+' value='+value);
-        if (subKey) {
-          if ( subKey.name === 'id' ) this.dao.find(value, sink);
-          else this.dao.where(EQ(subKey, value)).limit(1).select(sink);
-        } else if (value) {
-          this.dao.find(value, sink);
-        }
+        if ( subKey.name === 'id' ) this.dao.find(value, sink);
+        else this.dao.where(EQ(subKey, value)).limit(1).select(sink);
       }
     },
     {
@@ -65,7 +59,7 @@ CLASS({
 
   methods: {
     toHTML: function() {
-        this.children = [];
+      this.children = [];
       var view = this.innerView({
         id: this.id,
         model: this.model,
