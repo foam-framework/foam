@@ -452,19 +452,7 @@ CLASS({
     {
       name: 'adapt',
       defaultValue: function(_, value) {
-        if ( typeof value === 'function' ) {
-          value = multiline(value);
-        }
-
-        if ( typeof value === 'string' ) {
-          var f = TemplateUtil.compile(
-            Template.create({
-              template: value
-            }));
-          f.toString = function() { return value; };
-          return f;
-        }
-        return value;
+        return TemplateUtil.expandTemplate(this, value);
       }
     },
     {
@@ -474,6 +462,18 @@ CLASS({
           return TemplateProperty.ADAPT.defaultValue.call(this, _, value);
         }
         return value;
+      }
+    },
+    {
+      name: 'install',
+      defaultValue: function(prop) {
+        defineLazyProperty(this, prop.name + '$f', function() {
+          var f = TemplateUtil.lazyCompile(this[prop.name])
+          return {
+            get: function() { return f; },
+            configurable: true
+          };
+        });
       }
     }
   ]

@@ -21,6 +21,10 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
   traits: ['foam.ui.md.MDStyleTrait'],
 
+  imports: [
+    'document',
+  ],
+
   documentation: "A single radio button. Used by $$DOC{ref:'foam.ui.md.ChoiceRadioView'}",
 
   requires: [ 'foam.ui.md.HaloView' ],
@@ -91,9 +95,17 @@ CLASS({
       code: function() {
        this.halo.color = equals(this.data, this.value) ? "#5a5a5a" : "#4285f4";
       }
-    }
+    },
+    {
+      name: 'onClick',
+      code: function() {
+        var active = this.document.activeElement;
+        if (active) active.blur();
 
-
+        if ( this.enabled ) this.data = this.value;
+        this.setHaloColor();
+      }
+    },
   ],
 
   templates: [
@@ -221,7 +233,7 @@ CLASS({
         </div>
       </div>
       <%
-        this.on('click', function() { if ( self.enabled ) self.data = self.value; self.setHaloColor(); }, this.id);
+        this.on('click', this.onClick, this.id);
         this.setClass('checked', function() { return equals(self.data, self.value); },
             this.id + '-background');
         this.setClass('disabled', function() { return !self.enabled; },

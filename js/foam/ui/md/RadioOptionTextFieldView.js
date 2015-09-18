@@ -63,7 +63,7 @@ CLASS({
         </div>
       </div>
       <%
-        this.on('click', function() { if ( self.enabled ) self.data = self.value; }, this.id);
+        this.on('click', this.onClick, this.id);
         this.setClass('checked', function() { return equals(self.data, self.value); },
             this.id + '-background');
         this.setClass('disabled', function() { return !self.enabled; },

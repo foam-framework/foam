@@ -100,7 +100,7 @@ var TemplateOutput = {
         var o = arguments[i];
         if ( typeof o === 'string' ) {
           buf.push(o);
-        } else if ( 'Element' === o.name_ ) {
+        } else if ( o && 'Element' === o.name_ ) {
           // Temporary bridge for working with foam.u2 Views
           buf.push(o.toString());
           // Needs to be bound, since o is a loop variable and will otherwise

@@ -185,12 +185,14 @@ CLASS({
           <% this.titleHTML(out); %>
         </div>
         <div class="md-card-heading-content-spacer"></div>
-        <div class="md-card-content">
-          <% this.instructionHTML(out); %>
      <% if ( this.scrollContent ) { %>
+        <div class="md-card-content no-shrink">
+          <% this.instructionHTML(out); %>
         </div>
         <% this.contentHTML(out); %>
      <% } else { %>
+        <div class="md-card-content">
+          <% this.instructionHTML(out); %>
           <% this.contentHTML(out); %>
         </div>
         <div class="md-card-content-footer-spacer"></div>
@@ -207,6 +209,10 @@ CLASS({
         display: flex;
         flex-direction: column;
         height: 100%
+      }
+
+      wizard .no-shrink {
+        flex-shrink: 0;
       }
 
     */},

@@ -22,6 +22,11 @@ CLASS({
 
   requires: [
     'foam.ui.md.PopupChoiceView',
+    'foam.ui.md.DAOListView',
+  ],
+
+  exports: [
+    'selection$',
   ],
 
   extendsModel: 'foam.meta.types.EditView',
@@ -31,8 +36,16 @@ CLASS({
       name: 'className',
       defaultValue: 'md-meta-descriptor-view',
     },
+    {
+      name: 'selection',
+      postSet: function(old,nu) {
+        if ( nu && this.data ) {
+          this.data.model = nu.id;
+        }
+      }
+    },
   ],
-  
+
   methods: [
     function init() {
       this.SUPER();
@@ -43,17 +56,43 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="meta-edit-heading md-style-trait-standard">
-          $$metaEditPropertyTitle{ model_: foam.ui.TextFieldView, mode:'read-only' }
+        <div class="name-editor">
+          $$name
         </div>
-        $$name
-        $$model
+        <div class="md-card-heading-content-spacer"></div>
+        <div class="scroll-container">
+          $$selectionsDAO
+        </div>
       </div>
     */},
     function CSS() {/*
       .md-meta-descriptor-view {
         flex-grow: 1;
-        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .md-meta-descriptor-view .name-editor {
+        padding: 0 24px;
+      }
+
+      .md-meta-descriptor-view .scroll-container {
+        position: relative;
+        flex-grow: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        background-color: #e9e9e9;
+        border-top: 1px solid rgba(0,0,0,0.25);
+        border-bottom: 1px solid rgba(0,0,0,0.25);
+        padding: 0 24px;
+      }
+      .md-meta-descriptor-view .scroll-container > :first-child {
+        width: 100%;
+        overflow-y: hidden;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
       }
     */}
   ]

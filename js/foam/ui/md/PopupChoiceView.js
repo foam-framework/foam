@@ -24,6 +24,10 @@ CLASS({
 
   requires: ['foam.ui.md.ChoiceMenuView', 'foam.ui.md.TextFieldView'],
 
+  imports: [
+    'document',
+  ],
+
   traits: ['foam.ui.md.MDStyleTrait'],
 
   documentation: function() {/* This is very closely related to
@@ -75,6 +79,10 @@ CLASS({
       name: 'launch',
       code: function() {
         if ( this.opened ) return;
+
+        // blur any other active input element
+        var active = this.document.activeElement;
+        if (active) active.blur();
 
         var self = this;
         // Setting the popup's view id causes it to collide with the DOM element
