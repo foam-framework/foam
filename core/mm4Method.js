@@ -903,21 +903,20 @@ CLASS({
         '%>var <%= method.args[i].name %>: <%= method.args[i].swiftType %><%' +
         'if ( i != method.args.length - 1 ) { %>, <% }' +
         '} %>)<% if ( method.swiftReturnType ) { %> -> <%= method.swiftReturnType %><% } %> {}\n'
+    },
+    {
+      model_: 'TemplateProperty',
+      name: 'javaSource',
+      labels: ['java'],
+      defaultValue: function() {/*
+    <%= this.returnType || "void" %> <%= this.name %>(<%
+ for ( var i = 0 ; this.args && i < this.args.length ; i++ ) { var arg = this.args[i];
+%><%= arg.javaSource() %><% if ( i < this.args.length-1 ) out(", ");
+%><% } %>) {}\n*/}
     }
   ],
 
   templates:[
-    {
-      model_: 'Template',
-
-      name: 'javaSource',
-      description: 'Java Source',
-      template: '<%= this.returnType || "void" %> <%= this.name %>(' +
-        '<% for ( var i = 0 ; i < this.args.length ; i++ ) { var arg = this.args[i]; %>' +
-        '<%= arg.javaSource() %><% if ( i < this.args.length-1 ) out(", ");%>' +
-        '<% } %>' +
-        ')'
-    },
     {
       model_: 'Template',
 

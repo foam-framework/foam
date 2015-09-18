@@ -458,10 +458,7 @@ CLASS({
     {
       name: 'defaultValue',
       adapt: function(_, value) {
-        if ( typeof value === 'string' ) {
-          return TemplateProperty.ADAPT.defaultValue.call(this, _, value);
-        }
-        return value;
+        return TemplateProperty.ADAPT.defaultValue.call(this, _, value);
       }
     },
     {

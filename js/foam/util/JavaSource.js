@@ -141,6 +141,14 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
     c.set<%= prop.name.capitalize() %>(get<%= prop.name.capitalize() %>());<% } %>
     return c;
   }
+<%
+  function feature(f) {
+    f.javaSource$f && f.javaSource$f(out, self);
+  }
+
+  this.methods.forEach(feature);
+  this.listeners.forEach(feature);
+%>
 }
 */},
   function propertySource(out, prop) {/*<%
