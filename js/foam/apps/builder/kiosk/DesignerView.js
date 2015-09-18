@@ -17,12 +17,13 @@ CLASS({
   requires: [
     'foam.apps.builder.AppConfigDetailView',
     'foam.apps.builder.AppConfigSheetView',
-    'foam.apps.builder.Preview',
     'foam.apps.builder.kiosk.KioskView',
     'foam.ui.md.FlatButton',
     'foam.ui.md.HaloView',
   ],
-
+  imports: [
+    'stack',
+  ],
   exports: [
     'url$',
   ],
@@ -49,20 +50,20 @@ CLASS({
       name: 'panel',
       defaultValue: {
         factory_: 'foam.ui.md.PopupView',
-        cardClass: '',
+        cardClass: 'kiosk-designer-config',
         layoutPosition: 'bottom',
         animationStrategy: 'bottom',
-        delegate: {
-          factory_: 'foam.apps.builder.AppConfigSheetView',
-          minHeight: 400,
-          innerView: 'foam.apps.builder.AppConfigDetailView',
-        },
+        dragHandleHeight: 56,
+        delegate: 'foam.apps.builder.AppConfigSheetView',
       },
     },
     {
       model_: 'ViewFactoryProperty',
       name: 'app',
-      defaultValue: 'foam.apps.builder.kiosk.KioskView',
+      defaultValue: {
+        factory_: 'foam.apps.builder.AppConfigDetailView',
+        innerView: 'foam.apps.builder.kiosk.KioskView',
+      },
     },
   ],
 
@@ -72,7 +73,12 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAbElEQVQ4y2NgGHrgv/f/L//7SVH+4z8ITCZWQ8V/GOgnxvRYIFkD1fCWGMf8/R8H1fLtvyt+5V5Qt0O0VBCrHKIllpBjkJUT4RhPSpR/H1jlHpQpdyMUlKQpB2ogTTmShu//3YlLxqQpH1wAAKOW8ZUUAHC/AAAAAElFTkSuQmCC',
       ligature: 'mode_edit',
       code: function() {
-        this.panelView.open(this.$);
+        // TODO(markdittmer): This generally renders inside an UpdateDetailView
+        // that occupies the full height we wish to overlay. We should probably
+        // have a more rigerous way of selecting the right view/DOM element
+        // here.
+        var overlayParent = (this.parent ? this.parent.$ : this.$) || this.$;
+        this.panelView.open(overlayParent);
       },
     },
   ],
@@ -118,7 +124,7 @@ CLASS({
                return this.panelView.state === 'closed';
              }.bind(this), this.editButtonView.id); %>
           <% this.setClass('hide', function() {
-               return this.panelView.state === 'open';
+               return this.panelView.state !== 'closed';
              }.bind(this), this.editButtonView.id); %>
         </div>
       </designer>
@@ -130,6 +136,9 @@ CLASS({
       }
       designer.kiosk-designer .md-popup-view-content app-config {
         position: initial;
+      }
+      .popup-view-container .kiosk-designer-config {
+        max-width: initial;
       }
       @keyframes zoom-in {
         0% {
