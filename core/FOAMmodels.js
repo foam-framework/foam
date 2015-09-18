@@ -51,7 +51,7 @@ var files = [
   'BootstrapModel',
   'mm1Model',
   'mm2Property',
-  [ __EXTRA_PROPERTIES__, function() { return __EXTRA_PROPERTIES__ != undefined; } ],
+  [ __EXTRA_PROPERTIES__, function() { return __EXTRA_PROPERTIES__; } ],
   'mm3Types',
   'mm4Method',
   'mm5Debug',
