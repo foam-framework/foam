@@ -105,7 +105,7 @@ CLASS({
         right: calc(-26px + 50%);
         z-index: 10;
         background: rgba(0,0,0,0);
-        box-shadow: 3px 3px 3px #aaa;
+        box-shadow: 3px 3px 3px rgba(0,0,0,0.33);
         border-radius: 30px;
       }
       .md-button.wizard-createButton {
@@ -133,4 +133,3 @@ CLASS({
   ]
 
 });
-

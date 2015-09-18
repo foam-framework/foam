@@ -20,9 +20,13 @@ CLASS({
   package: 'foam.ui.md',
   extendsModel: 'foam.ui.SimpleView',
 
+  requires: [
+    'foam.input.touch.GestureTarget'
+  ],
   exports: [ 'as popup' ],
   imports: [
     'clearTimeout',
+    'gestureManager',
     'setTimeout',
     'document'
   ],
@@ -32,9 +36,9 @@ CLASS({
     TRANSITION_DURATION: 0.3,
 
     // Animation strategies:
+
+    // Fade in/out: Supports -> open ->  close.
     FADE: {
-      initialContentOpacity: 0,
-      initialBlockerOpacity: 0,
       animateToHidden: function() {
         if ( this.$content ) {
           this.setTransition(this.$content,
@@ -50,9 +54,7 @@ CLASS({
           this.$blocker.style.pointerEvents = 'none';
         }
       },
-      animateToExpanded: function() {
-        //this.$content.style.transition = 'transform cubic-bezier(0.0, 0.0, 0.2, 1) ' + this.TRANSITION_DURATION + 's';
-        //this.$content.style.transform = 'translateY(0)';
+      animateToOpen: function() {
         this.setTransition(this.$content,
                            'opacity', 'cubic-bezier(0.0, 0.0, 0.2, 1) ' +
                                this.TRANSITION_DURATION + 's');
@@ -63,73 +65,140 @@ CLASS({
                                this.TRANSITION_DURATION + 's', '0.4');
       },
     },
-    BOTTOM: {
-      initialContentOpacity: 0,
-      initialBlockerOpacity: 0,
-      animateToHidden: function() {
-        if ( this.$content ) {
-          // Current location before animation begins.
-          var rect = this.$content.getBoundingClientRect();
 
-          // Switch to fixed layout strategy without moving element.
-          this.$content.style.position = 'fixed';
-          this.$content.style.top = rect.top;
-          this.$content.style.left = rect.left;
-          this.$content.style.width = rect.width;
-          this.$content.style.height = rect.height;
+    // Appear from bottom: Supports -> open     <-> expanded,
+    //                                 open      -> close,
+    //                                 expanded  -> close.
+    BOTTOM: {
+      animateToHidden: function(opt_transitionTime) {
+        var transitionTime = opt_transitionTime || this.TRANSITION_DURATION;
+        if ( this.$content ) {
           this.setTransition(this.$content,
                              'top', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
-                                 this.TRANSITION_DURATION + 's',
-                             '' + this.document.documentElement.clientHeight);
+                                 transitionTime + 's', '100%');
           this.$content.style.pointerEvents = 'none';
         }
         if ( this.$blocker ) {
           this.setTransition(this.$blocker,
                              'opacity', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
-                                 this.TRANSITION_DURATION + 's', '0');
+                                 transitionTime + 's', '0');
           this.$blocker.style.pointerEvents = 'none';
         }
       },
-      animateToExpanded: function() {
-        // Target location based on current layout.
-        var rect = this.$content.getBoundingClientRect();
-        // Target layout to restore after animation completes.
-        var style = this.X.window.getComputedStyle(this.$content);
-        var position = style.position;
-        var top = style.top;
-        var left = style.left;
-        var width = style.width;
-        var height = style.height;
-
-        // Switch to fixed layout situated beneath the viewport.
-        this.$content.style.position = 'fixed';
-        this.$content.style.top = this.document.documentElement.clientHeight;
-        this.$content.style.left = rect.left;
-        this.$content.style.width = rect.width;
-        this.$content.style.height = rect.height;
+      animateToOpen: function(opt_transitionTime) {
+        var transitionTime = opt_transitionTime || this.TRANSITION_DURATION;
+        this.$content.style.position = 'absolute';
+        this.$content.style.top = '100%';
+        this.$content.style.left = '0';
+        this.$content.style.width = '100%';
+        this.$content.style.height = '50%';
         this.$content.style.opacity = '1';
-        // Transition to target location.
         this.setTransition(this.$content,
                            'top', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
-                               this.TRANSITION_DURATION + 's', '' + rect.top);
-        // Restore initial styling after animation completes.
-        var listener = function() {
-          var rect2 = this.$content.getBoundingClientRect();
-          if ( rect2.top !== rect.top ) return;
-          this.setTransition(this.$content,
-                             'none');
-          this.$content.style.top = top;
-          this.$content.style.left = left;
-          this.$content.style.width = width;
-          this.$content.style.height = height;
-          this.$content.style.position = position;
-          this.$content.removeEventListener('transitionend', listener);
-        }.bind(this);
-        this.$content.addEventListener('transitionend', listener);
+                               transitionTime + 's', '50%');
 
         this.setTransition(this.$blocker,
                            'opacity', 'cubic-bezier(0.0, 0.0, 0.2, 1) ' +
-                               this.TRANSITION_DURATION + 's', '0.4');
+                               transitionTime + 's', '0.4');
+      },
+      animateToExpanded: function(opt_transitionTime) {
+        var transitionTime = opt_transitionTime || this.TRANSITION_DURATION;
+        this.$content.style.bottom = '0';
+        this.$content.style.height = '';
+        this.setTransition(this.$content,
+                           'top', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
+                               transitionTime + 's', '0');
+
+        this.setLatch(function() {
+          this.$content.height = '100%';
+          this.$content.bottom = '';
+        }.bind(this));
+      },
+      animateToCollapsed: function(opt_transitionTime) {
+        var transitionTime = opt_transitionTime || this.TRANSITION_DURATION;
+        this.$content.style.bottom = '0';
+        this.$content.style.height = '';
+        this.setTransition(this.$content,
+                           'top', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
+                               transitionTime + 's', '50%');
+
+        this.setLatch(function() {
+          this.$content.height = '50%';
+          this.$content.bottom = '';
+        }.bind(this));
+      },
+      dragStart: function(point) {
+        var self = this.animationStrategy;
+        if ( self.dragging_ ) return;
+        var contentRect = this.$content.getBoundingClientRect();
+        if ( point.y0 < contentRect.top ||
+            point.y0 > (contentRect.top + this.dragHandleHeight) ) return;
+
+        var parentRect = this.$.getBoundingClientRect();
+        var delta = parentRect.top + point.y0 - contentRect.top;
+        this.setTransition(this.$content, 'top', '');
+        self.onDrag = function() {
+          this.$content.style.top = point.y - delta;
+        }.bind(this);
+        point.y$.addListener(self.onDrag);
+        self.onDrag();
+        self.dragging_ = true;
+      },
+      dragEnd: function(point) {
+        var self = this.animationStrategy;
+        if ( ! self.dragging_ ) return;
+
+        point.y$.removeListener(self.onDrag);
+        self.onDrag = nop;
+        var parentRect = this.$.getBoundingClientRect();
+        var contentRect = this.$content.getBoundingClientRect();
+        var bounds = self.bounds[this.state];
+        if ( ! bounds ) return;
+
+        // Using drag bounds for current state, calculate linear interpolation
+        // of remaining transition time and call appropriate transition fn.
+        var transitionTime;
+        if ( bounds[0](contentRect, parentRect) ) {
+          transitionTime = this.TRANSITION_DURTION *
+              ((contentRect.top - parentRect.top) / parentRect.height);
+          this.expand(transitionTime);
+        } else if ( bounds[1](contentRect, parentRect) ) {
+          var halfSize = parentRect.height / 2;
+          transitionTime = this.TRANSITION_DURTION *
+              (Math.abs(contentRect.top - parentRect.top - halfSize) /
+              halfSize);
+          this.collapse(transitionTime);
+        } else {
+          transitionTime = this.TRANSITION_DURTION *
+              (1 - ((contentRect.top - parentRect.top) / parentRect.height));
+          this.close(transitionTime);
+        }
+        self.dragging_ = false;
+      },
+      onDrag: nop,
+      dragging_: false,
+      bounds: {
+        open: [
+          function(contentRect, parentRect) {
+            return contentRect.top <= parentRect.top +
+                (2 * parentRect.height / 5);
+          },
+          function(contentRect, parentRect) {
+            return contentRect.top <= parentRect.top +
+            (3 * parentRect.height / 5);
+          }
+        ],
+        expanded: [
+          function(contentRect, parentRect) {
+
+            return contentRect.top <= parentRect.top +
+                (parentRect.height / 10);
+          },
+          function(contentRect, parentRect) {
+            return contentRect.top <= parentRect.top +
+            (2 * parentRect.height / 10);
+          }
+        ]
       }
     }
   },
@@ -203,76 +272,115 @@ CLASS({
       defaultValue: 'closed'
     },
     {
-      name: 'closeLatch_'
+      name: 'latch_'
+    },
+    {
+      name: 'latchID',
+      defaultValue: ''
     },
     {
       name: 'width',
-      help: 'If set, specifies the CSS width of the content container.',
+      help: 'If set, specifies the CSS width of the content container.'
     },
     {
       name: 'height',
-      help: 'If set, specifies the CSS height of the content container.',
+      help: 'If set, specifies the CSS height of the content container.'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'dragHandleHeight',
+      help: function() {/* If set, specifies the CSS height of the handle at
+          the top of the popup that can be used for dragging the popup. */},
+      defaultValue: 0
     },
     {
       name: 'animationStrategy',
-      help: 'A strategy that implements animateToHidden() and animateToExpanded()',
+      help: 'A strategy that implements animateToHidden() and animateToOpen()',
       lazyFactory: function() { return this.FADE; },
       adapt: function(old, nu) {
         if ( old === nu ) return nu;
         if ( typeof nu === 'string' && this[nu.toUpperCase()] )
           nu = this[nu.toUpperCase()];
-        if ( ! nu || ! nu.animateToHidden || ! nu.animateToExpanded )
+        if ( ! nu || ! nu.animateToHidden || ! nu.animateToOpen )
           return this.FADE;
         return nu;
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'gestureTargetsInstalled_',
+      help: 'Track whether gesture targets are installed to avoid duplication.',
+      defaultValue: false
     }
   ],
 
   methods: {
     open: function(sourceElement) {
-      if ( this.closeLatch_ ) this.closeLatch_();
+      this.latch();
 
       if ( this.state == 'closed' ) {
         this.delegateView = this.delegate({ data$: this.data$ }, this.Y);
 
         this.layoutMode = sourceElement ? 'relative' : 'fixed';
 
-        if ( this.$ ) this.$.outerHTML = '';  // clean up old copy, in case of rapid re-activation
+        // Clean up old copy, in case of rapid re-activation.
+        if ( this.$ ) this.$.outerHTML = '';
+
         var parentElement = sourceElement || this.document.body;
         parentElement.insertAdjacentHTML('beforeend', this.toHTML());
         this.initializePosition();
-        this.setTimeout(function() {  this.animateToExpanded(); }.bind(this), 100);
+        this.setTimeout(function() {  this.animateToOpen(); }.bind(this), 100);
         this.initHTML();
         this.state = 'open';
       }
     },
+    expandOrCollapse: function(opt_transitionTime) {
+      this.latch();
+      if ( this.state === 'open' ) this.expand(opt_transitionTime);
+      else if ( this.state === 'expanded' ) this.collapse(opt_transitionTime);
+    },
+    expand: function(opt_transitionTime) {
+      this.setTimeout(function() {
+        this.animateToExpanded(opt_transitionTime);
+      }.bind(this), 100);
+      this.state = 'expanded';
+    },
+    collapse: function(opt_transitionTime) {
+      this.setTimeout(function() {
+        this.animateToCollapsed(opt_transitionTime);
+      }.bind(this), 100);
+      this.state = 'open';
+    },
     initializePosition: function() {
       this.$content.style.zIndex = "1010";
-      //this.$content.style.transform = "translateY("+this.viewportSize().height+"px)";
-      this.$content.style.opacity = this.animationStrategy.initialContentOpacity;
-      this.$blocker.style.opacity = this.animationStrategy.initialBlockerOpacity;
+      this.$content.style.opacity = this.$blocker.style.opacity = '0';
       if ( this.width ) this.$content.style.width = this.width;
       if ( this.height ) this.$content.style.height = this.height;
     },
-    animateToExpanded: function() {
-      this.animationStrategy.animateToExpanded.call(this);
+    animateToOpen: function(opt_transitionTime) {
+      this.animationStrategy.animateToOpen.call(this, opt_transitionTime);
       this.isHidden = false;
     },
-    animateToHidden: function() {
-      this.isHidden = true;
-      this.animationStrategy.animateToHidden.call(this);
+    animateToExpanded: function(opt_transitionTime) {
+      this.animationStrategy.animateToExpanded &&
+          this.animationStrategy.animateToExpanded.call(
+              this, opt_transitionTime);
     },
-    close: function() {
+    animateToCollapsed: function(opt_transitionTime) {
+      this.animationStrategy.animateToCollapsed &&
+          this.animationStrategy.animateToCollapsed.call(
+              this, opt_transitionTime);
+    },
+    animateToHidden: function(opt_transitionTime) {
+      this.isHidden = true;
+      this.animationStrategy.animateToHidden.call(this, opt_transitionTime);
+    },
+    close: function(opt_transitionTime) {
+      this.latch();
       this.state = 'closing';
 
-      this.animateToHidden();
-      var id = this.setTimeout(function() { this.destroy(); }.bind(this),
-                               this.TRANSITION_DURATION * 1000 + 150);
-      this.closeLatch_ = function() {
-        this.clearTimeout(id);
-        this.closeLatch_ = '';
-        this.destroy();
-      }.bind(this);
+      this.animateToHidden(opt_transitionTime);
+      this.setLatch(function() { this.destroy(); }.bind(this));
     },
     destroy: function(p) {
       if ( this.$ ) this.$.outerHTML = '';
@@ -284,8 +392,46 @@ CLASS({
       e.style.transition = prop + ' ' + transition;
       e.offsetLeft = e.offsetLeft;
       if ( value ) e.style[prop] = value;
+    },
+    setLatch: function(f) {
+      if ( this.latchID !== '' ) this.latch();
+      this.latch_ = f;
+      this.latchID = this.setTimeout(f, this.TRANSITION_DURATION * 1000 + 150);
+    },
+    latch: function() {
+      if ( this.latchID !== '' ) this.clearTimeout(this.latchID);
+      if ( this.latch_ ) this.latch_();
+      this.latchID = this.latch_ = '';
+    },
+    initHTML: function() {
+      this.SUPER();
+      if ( this.gestureManager && ! this.gestureTargetsInstalled_ ) {
+        this.gestureManager.install(this.GestureTarget.create({
+          containerID: this.id,
+          handler: this,
+          gesture: 'drag'
+        }));
+        this.gestureTargetsInstalled_ = true;
+      }
     }
   },
+
+  listeners: [
+    {
+      name: 'dragStart',
+      code: function(point) {
+        this.animationStrategy.dragStart &&
+            this.animationStrategy.dragStart.call(this, point);
+      }
+    },
+    {
+      name: 'dragEnd',
+      code: function(point) {
+        this.animationStrategy.dragEnd &&
+            this.animationStrategy.dragEnd.call(this, point);
+      }
+    }
+  ],
 
   templates: [
     function toInnerHTML() {/*
@@ -347,9 +493,6 @@ CLASS({
       }
       .popup-view-container.top {
         align-items: flex-start;
-      }
-      .popup-view-content {
-        background: white;
       }
     */}
   ]

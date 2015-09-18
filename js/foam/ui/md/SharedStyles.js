@@ -294,12 +294,11 @@ input[name=q]::-webkit-input-placeholder {
   right: 20px;
   z-index: 10;
   background: rgba(0,0,0,0);
-  box-shadow: 3px 3px 3px #aaa;
+  box-shadow: 3px 3px 3px rgba(0,0,0,0.33);
   border-radius: 30px;
   margin: 0;
   height: initial;
 }
-
 
 .md-card-shell {
   display: block;
