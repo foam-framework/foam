@@ -33,7 +33,7 @@ requires: [ 'foam.u2.Element' ],  //////////// Added this line HERE
         return '<span class="' + c + '">' + c + '</span>';
       },
       tableFormatter: function(c, owner) {
-        var e = owner.Element.create({ nodeName: 'span'});
+        var e = E('span');
         this.X.setTimeout(function() { e.cls(c); e.c(c); }, 100+Math.random()*500);
         return e;
       },

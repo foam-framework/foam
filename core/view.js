@@ -200,3 +200,10 @@ CLASS({
     }
   }
 });
+
+// Utility function for creating U2 elements in a short format.
+function E(opt_nodeName) {
+  var e = foam.u2.Element.create();
+  if ( opt_nodeName ) e.nodeName = opt_nodeName;
+  return e;
+}
