@@ -332,7 +332,7 @@ CLASS({
           function() {
             file = myfiles[i++];
             if ( Array.isArray(file) ) {
-              if ( file[1] == IN_NODEJS || file[1] == IN_CHROME_APP )
+              if ( ! file[0] || file[1] == IN_NODEJS || file[1] == IN_CHROME_APP )
                 return false;
               file = file[0];
             }
@@ -406,7 +406,7 @@ CLASS({
             }
             model.models.forEach(precompile)
           }
-          
+
           precompile(model);
         }
         contents += 'CLASS(';
