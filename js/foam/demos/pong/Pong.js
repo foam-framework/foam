@@ -35,8 +35,8 @@ CLASS({
   extendsModel: 'foam.graphics.Circle',
   traits: ['foam.physics.Physical', 'foam.graphics.Shadow'],
   properties: [
-    { name: 'color', defaultValue: 'white' },
-    { name: 'r',     defaultValue: 30 },
+    [ 'color', 'white' ],
+    [ 'r', 30 ],
     { name: 'mass',  factory: function() { return this.INFINITE_MASS; } }
   ]
 });
@@ -60,14 +60,8 @@ CLASS({
   },
 
   properties: [
-    {
-      name: 'width',
-      defaultValue: 800
-    },
-    {
-      name: 'height',
-      defaultValue: 300
-    },
+    [ 'width',  800 ],
+    [ 'height', 300 ],
     {
       name: 'ball',
       view: 'foam.ui.DetailView',

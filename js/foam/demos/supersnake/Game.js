@@ -38,11 +38,11 @@ CLASS({
 
   properties: [
 //    { name: 'scales', factory: function() { return []; } },
-    { name: 'sx', defaultValue: 240 },
-    { name: 'sy', defaultValue: 240 },
-    { name: 'vx', defaultValue: 1 },
-    { name: 'vy', defaultValue: 0 },
-    { name: 'length', defaultValue: 5 }
+    [ 'sx', 240 },
+    [ 'sy', 240 },
+    [ 'vx', 1 },
+    [ 'vy', 0 },
+    [ 'length', 5 }
   ],
   methods: [
     function init() {
@@ -85,7 +85,7 @@ CLASS({
   name: 'Food',
   extendsModel: 'foam.graphics.Circle',
   properties: [
-    { name: 'color', defaultValue: 'darkblue' }
+    [ 'color', 'darkblue' ]
   ],
   methods: [
     function init() {
@@ -106,8 +106,8 @@ CLASS({
   requires: [ 'foam.graphics.Rectangle' ],
   imports: [ 'R as r' ],
   properties: [
-    { name: 'color',    defaultValue: 'red' },
-    { name: 'endAngle', defaultValue: Math.PI },
+    [ 'color',    'red' ],
+    [ 'endAngle', Math.PI ],
     'stem'
   ],
   methods: [
@@ -141,9 +141,10 @@ CLASS({
   extendsModel: 'foam.graphics.Circle',
   imports: [ 'game' ],
   properties: [
-    { name: 'color',  defaultValue: 'yellow' },
-    { name: 'r',      defaultValue: 12 },
-    'vx', 'vy'
+    [ 'color', 'yellow' },
+    [ 'r', 12 },
+    'vx',
+    'vy'
   ],
   methods: [
     function init() {
@@ -189,14 +190,8 @@ CLASS({
       name: 'timer',
       factory: function() { return this.Timer.create(); }
     },
-    {
-      name: 'width',
-      defaultValue: 1600
-    },
-    {
-      name: 'height',
-      defaultValue: 800
-    },
+    [ 'width', 1600 ],
+    [ 'height', 800 ],
     {
       name: 'snake',
       factory: function() { return this.Snake.create(); }
