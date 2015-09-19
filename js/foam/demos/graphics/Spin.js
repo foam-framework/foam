@@ -24,8 +24,8 @@ CLASS({
   requires: [ 'foam.util.Timer', 'foam.graphics.Arc' ],
 
   properties: [
-    { name: 'width',  defaultValue: 500 },
-    { name: 'height', defaultValue: 500 },
+    [ 'width', 500 ],
+    [ 'height', 500 ],
     { name: 'timer',  factory: function() { return this.Timer.create(); } }
   ],
 
