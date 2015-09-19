@@ -30,7 +30,7 @@ CLASS({
 
   properties: [
     [ 'i', 1 ],
-    [ 'blowBubbles', true ]
+    [ 'blowBubbles', true ],
     {
       name:  'eyes',
       type:  'EyesCView',
@@ -39,7 +39,7 @@ CLASS({
         return this.EyesCView.create({x:-50, y: -160, r: 25});
       }
     },
-    [ 'color', 'red' ]
+    [ 'color', 'red' ],
     {
       model_: 'IntProperty',
       name:  'r',

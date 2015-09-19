@@ -131,7 +131,7 @@ CLASS({
   exports: [ 'text$', 'font$', 'colors$', 'width$', 'height$' ],
 
   properties: [
-    [ 'duration', 0 ]
+    [ 'duration', 0 ],
     {
       model_: 'StringArrayProperty',
       name: 'colors',
