@@ -27,10 +27,10 @@ CLASS({
   ],
 
   properties: [
-    { name: 'n',          defaultValue: 7 },
-    { name: 'width',      defaultValue: 1500 },
-    { name: 'height',     defaultValue: 1000 },
-    { name: 'background', defaultValue: 'white' },
+    [ 'n',          7 ],
+    [ 'width',      1500 ],
+    [ 'height',     1000 ],
+    [ 'background', 'white' ],
     { name: 'mouse',      lazyFactory: function() { return this.Mouse.create(); } },
     { name: 'collider',   factory: function() {
       return this.Collider.create();
