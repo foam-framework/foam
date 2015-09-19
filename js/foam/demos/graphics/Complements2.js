@@ -29,8 +29,8 @@ CLASS({
   imports: [ 'timer' ],
 
   properties: [
-    { name: 'width', defaultValue: 1000 },
-    { name: 'height', defaultValue: 1000 },
+    [ 'width', 1000 ],
+    [ 'height', 1000 ],
     {
       name: 'timer',
       factory: function() { return this.Timer.create(); }
