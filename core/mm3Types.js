@@ -811,8 +811,8 @@ CLASS({
           }
         }
         if ( typeof value === 'string' ) return this.X.lookup(value);
-        else if  ( Model.isInstance(value) ) return value;
-        else return '';
+        if ( Model.isInstance(value)   ) return value;
+        return '';
       }
     },
     {
