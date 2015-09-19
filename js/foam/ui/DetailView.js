@@ -73,9 +73,8 @@ CLASS({
     {
       name: 'model',
       // TODO: Add declarative runtime type checking
-      preSet: function(_, model) {
+      postSet: function(_, model) {
         console.assert(Model.isInstance(model), 'Invalid model specified for ' + this.name_);
-        return model;
       }
     },
     {
