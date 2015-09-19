@@ -784,10 +784,7 @@ CLASS({
   label: 'Data Model definition',
 
   properties: [
-    {
-      name: 'type',
-      defaultValue: 'Model'
-    },
+    [ 'type', 'Model' ],
     {
       name: 'getter',
       defaultValue: function(name) {
@@ -810,8 +807,13 @@ CLASS({
             value = '';
           }
         }
-        if ( typeof value === 'string' ) return this.X.lookup(value);
-        if ( Model.isInstance(value)   ) return value;
+        if ( typeof value === 'string' ) {
+          if ( ! value ) return '';
+          var ret = this.X.lookup(value);
+          // console.assert(Model.isInstance(ret), 'Invalid model specified for ' + this.name_);
+          return ret;
+        }
+        if ( Model.isInstance(value) ) return value;
         return '';
       }
     },
