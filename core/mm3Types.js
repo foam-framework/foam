@@ -995,7 +995,7 @@ CLASS({
             return m.create(f, opt_X || this.Y).copyFrom(map);
           };
 
-          ret.toString = function() { return JSON.stringify(f); };
+          ret.toString = function() { return JSONUtil.compact.stringify(f); };
           return ret;
         }
 
