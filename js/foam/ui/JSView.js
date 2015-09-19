@@ -22,8 +22,8 @@ CLASS({
   extendsModel: 'foam.ui.TextFieldView',
 
   properties: [
-    { name: 'displayWidth',  defaultValue: 100 },
-    { name: 'displayHeight', defaultValue: 53 }
+    [ 'displayWidth',  100 ],
+    [ 'displayHeight', 53 ]
   ],
 
   methods: {
