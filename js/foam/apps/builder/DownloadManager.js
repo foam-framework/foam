@@ -90,7 +90,8 @@ CLASS({
       // ChromeFileSystemDAO behaviour.
       if ( status ) {
         this.data.state = 'COMPLETED';
-        this.data.details = 'Source download complete.';
+        this.data.details = (this.mode === 'PACKAGED' ? 'Package' : 'Source') +
+            ' download complete.';
         this.metricsDAO.put(this.Event.create({
           name: 'Action:export:finish',
           label: this.data.config.model_.id || this.data.config.name_,

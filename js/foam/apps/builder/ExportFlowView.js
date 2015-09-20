@@ -67,7 +67,9 @@ CLASS({
       ligature: 'dashboard',
       isAvailable: function() {
         return this.data &&
-            (this.data.state === 'FAILED' || this.data.state === 'COMPLETED');
+            (this.data.state === 'FAILED' || this.data.state === 'COMPLETED') &&
+            (this.data.actionName === 'uploadApp' ||
+            this.data.actionName === 'publishApp');
       },
       code: function() {
         this.window.open('https://chrome.google.com/webstore/developer/dashboard');

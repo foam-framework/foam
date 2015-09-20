@@ -25,6 +25,11 @@ CLASS({
       defaultValue: 'Exporting App',
     },
     {
+      model_: 'StringProperty',
+      name: 'actionName',
+      defaultValue: 'exportApp',
+    },
+    {
       model_: 'foam.core.types.StringEnumProperty',
       name: 'state',
       defaultValue: 'AUTHENTICATING',
