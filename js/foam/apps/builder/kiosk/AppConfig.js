@@ -24,6 +24,10 @@ CLASS({
 
   properties: [
     {
+      name: 'appName',
+      defaultValue: 'New Kiosk App',
+    },
+    {
       model_: 'StringProperty',
       name: 'homepage',
       label: 'Homepage',
