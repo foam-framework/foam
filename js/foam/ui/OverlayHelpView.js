@@ -81,22 +81,23 @@ CLASS({
       var closeActionView = this.closeActionView;
 
       helpSnippetView.alpha = 0;
-      this.constructContent();
-      this.actionLocation = helpSnippetView.actionLocation;
-      this.animate(
-          250,
-          function() {
-            var os = this.overlays_;
-            for ( var i = 0; i < os.length; ++i ) {
-              os[i].alpha = 0.7;
-            }
-            helpSnippetView.alpha = 1;
-            closeActionView.alpha = 1;
-          }.bind(this),
-          Movement.easeOut(0.25),
-          function() {
-            this.state = 'OPEN';
-          }.bind(this))();
+      this.aconstructContent(function() {
+        this.actionLocation = helpSnippetView.actionLocation;
+        this.animate(
+            250,
+            function() {
+              var os = this.overlays_;
+              for ( var i = 0; i < os.length; ++i ) {
+                os[i].alpha = 0.7;
+              }
+              helpSnippetView.alpha = 1;
+              closeActionView.alpha = 1;
+            }.bind(this),
+            Movement.easeOut(0.25),
+            function() {
+              this.state = 'OPEN';
+            }.bind(this))();
+      }.bind(this));
     },
     function closing() {
       var helpSnippetView = this.helpSnippets[this.index];
@@ -139,12 +140,14 @@ CLASS({
       }
       this.overlays_ = [];
       this.destroyView_(this.helpSnippets[this.index]);
-      this.helpSnippets[this.index].afterDestroy();
+      this.helpSnippets[this.index].aafterDestroy();
     },
-    function constructContent() {
-      this.helpSnippets[this.index].beforeInit();
-      this.constructOverlays();
-      this.constructView_(this.helpSnippets[this.index]);
+    function aconstructContent(ret) {
+      this.helpSnippets[this.index].abeforeInit(function() {
+        this.constructOverlays();
+        this.constructView_(this.helpSnippets[this.index]);
+        ret && ret();
+      }.bind(this));
     },
     function constructOverlays() {
       var helpSnippet = this.helpSnippets[this.index];
