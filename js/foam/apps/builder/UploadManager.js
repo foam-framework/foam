@@ -209,7 +209,7 @@ CLASS({
         this.data.message = 'Oops! Something went wrong during the file upload.';
         this.data.details = (data && data.itemError) ?
             // TODO(markdittmer): These may not be internationalized.
-            data.itemError.map(function(err) { return err.itemError; }).join(' ') :
+            data.itemError.map(function(err) { return err.error_detail; }).join(' ') :
             'Failed to connect to Chrome Web Store.';
         this.data.state = 'FAILED';
         this.metricsDAO.put(this.Error.create({

@@ -100,7 +100,7 @@ CLASS({
       ]
     }
   },
-  "permissions": <%= JSON.stringify(this.chromePermissions) %>,
+  "permissions": <%= JSON.stringify(this.getChromePermissions()) %>,
   "kiosk_enabled": %%kioskEnabled
 }*/}
   ],

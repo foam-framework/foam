@@ -48,14 +48,6 @@ CLASS({
       name: '$label',
       defaultValueFn: function() { return this.$ && this.$.querySelector('state-label'); }
     },
-    {
-      name: '$message',
-      defaultValueFn: function() { return this.$ && this.$.querySelector('#' + this.id + '-message'); }
-    },
-    {
-      name: '$details',
-      defaultValueFn: function() { return this.$ && this.$.querySelector('details'); }
-    },
   ],
 
   methods: [
@@ -102,8 +94,6 @@ CLASS({
         if ( ! this.$ ) return;
         this.$icon.src = this.STATE_ICONS[this.data.state];
         this.$label.textContent = this.stateLabel();
-        this.$message.textContent = this.data.message;
-        this.$details.textContent = this.data.details;
       },
     },
   ],
@@ -120,8 +110,8 @@ CLASS({
             <img id="%%id-icon" src="{{this.STATE_ICONS[this.data.state]}}">
             <state-label class="md-grey">{{this.stateLabel()}}</state-label>
           </flow-state>
-          <span id="%%id-message" class="md-subhead md-grey">{{this.data.message}}</span>
-          <details class="md-subhead md-grey">{{this.data.details}}</details>
+          <span id="%%id-message" class="md-subhead md-grey"><%# this.data.message %></span>
+          <details class="md-subhead md-grey"><%# this.data.details %></details>
         </div>
         <div class="md-card-content-footer-spacer"></div>
         <actions class="md-actions md-card-footer vertical">
