@@ -139,14 +139,12 @@ CLASS({
       }
       app-config .swipeAltHeader li {
         font-size: 14px;
-        opacity: 0.8;
         line-height: 46px;
         padding-bottom: 14px;
       }
       app-config .swipeAltHeader .selected {
         border-bottom: 2px solid rgba(0,0,0,.87);
         font-weight: 500;
-        opacity: 1;
       }
       app-config.expanded .swipeAltHeader .selected {
         border-bottom: 2px solid #ff3f80;
@@ -169,6 +167,7 @@ CLASS({
         background-color: #3e50b4;
       }
       app-config .foamChoiceListView.horizontal .choice {
+        text-transform: uppercase;
         padding: 14px 16px;
         margin: 0;
       }

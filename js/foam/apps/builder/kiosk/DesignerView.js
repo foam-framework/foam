@@ -242,39 +242,6 @@ CLASS({
         overflow-y: auto;
         overflow-x: hidden;
       }
-      .swipeAltHeader {
-        padding-left: 3px !important;
-        height: 36px;
-      }
-      .swipeAltHeader li {
-        font-size: 14px;
-        opacity: 0.8;
-        line-height: 46px;
-        padding-bottom: 14px;
-      }
-      .swipeAltHeader .selected {
-        border-bottom: 2px solid #ff3f80;
-        font-weight: 500;
-        opacity: 1;
-      }
-      ul.swipeAltHeader {
-        background: #3e50b4;
-        box-shadow: 0 1px 1px rgba(0,0,0,.25);
-        height: 47px;
-        margin: 0;
-        overflow: hidden;
-        padding: 0 0 0 56px;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: -moz-none;
-        -o-user-select: none;
-        user-select: none;
-      }
-      .foamChoiceListView.horizontal .choice {
-        text-transform: uppercase;
-        padding: 14px 16px;
-        margin: 0;
-      }
     */},
   ],
 });
