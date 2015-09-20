@@ -46,6 +46,7 @@ CLASS({
                                  this.TRANSITION_DURATION + 's');
           this.$content.style.opacity = '0';
           this.$content.style.pointerEvents = 'none';
+          this.setLatch('closed');
         }
         if ( this.$blocker ) {
           this.setTransition(this.$blocker,
@@ -53,6 +54,9 @@ CLASS({
                                  this.TRANSITION_DURATION + 's', '0');
           this.$blocker.style.pointerEvents = 'none';
         }
+        this.setLatch('closed', function() {
+          this.destroy();
+        }.bind(this));
       },
       animateToOpen: function() {
         this.setTransition(this.$content,
@@ -63,6 +67,7 @@ CLASS({
         this.setTransition(this.$blocker,
                            'opacity', 'cubic-bezier(0.0, 0.0, 0.2, 1) ' +
                                this.TRANSITION_DURATION + 's', '0.4');
+        this.setLatch('open');
       },
     },
 
@@ -84,6 +89,9 @@ CLASS({
                                  transitionTime + 's', '0');
           this.$blocker.style.pointerEvents = 'none';
         }
+        this.setLatch('closed', function() {
+          this.destroy();
+        }.bind(this));
       },
       animateToOpen: function(opt_transitionTime) {
         var transitionTime = opt_transitionTime || this.TRANSITION_DURATION;
@@ -100,31 +108,23 @@ CLASS({
         this.setTransition(this.$blocker,
                            'opacity', 'cubic-bezier(0.0, 0.0, 0.2, 1) ' +
                                transitionTime + 's', '0.4');
+        this.setLatch('open');
       },
       animateToExpanded: function(opt_transitionTime) {
         var transitionTime = opt_transitionTime || this.TRANSITION_DURATION;
-        this.$content.style.bottom = '0';
-        this.$content.style.height = '';
+        this.$content.style.height = '100%';
         this.setTransition(this.$content,
                            'top', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
                                transitionTime + 's', '0');
-
-        this.setLatch(function() {
-          this.$content.height = '100%';
-          this.$content.bottom = '';
-        }.bind(this));
+        this.setLatch('expanded');
       },
       animateToCollapsed: function(opt_transitionTime) {
         var transitionTime = opt_transitionTime || this.TRANSITION_DURATION;
-        this.$content.style.bottom = '0';
-        this.$content.style.height = '';
         this.setTransition(this.$content,
                            'top', 'cubic-bezier(0.4, 0.0, 1, 1) ' +
                                transitionTime + 's', '50%');
-
-        this.setLatch(function() {
-          this.$content.height = '50%';
-          this.$content.bottom = '';
+        this.setLatch('open', function() {
+          this.$content.style.height = '50%';
         }.bind(this));
       },
       dragStart: function(point) {
@@ -136,7 +136,8 @@ CLASS({
 
         var parentRect = this.$.getBoundingClientRect();
         var delta = parentRect.top + point.y0 - contentRect.top;
-        this.setTransition(this.$content, 'top', '');
+        this.setTransition(this.$content, 'top');
+        this.$content.style.height = '100%';
         self.onDrag = function() {
           this.$content.style.top = point.y - delta;
         }.bind(this);
@@ -213,7 +214,7 @@ CLASS({
         view to control the popup.</p>
         <p>The ViewContainerController interface includes methods to control
         your containing view, including .accept() and .reject()
-        for standard dialogs. */}
+        for standard dialogs. */},
     },
     {
       name: 'delegateView',
@@ -275,8 +276,7 @@ CLASS({
       name: 'latch_'
     },
     {
-      name: 'latchID',
-      defaultValue: ''
+      name: 'latchState_'
     },
     {
       name: 'width',
@@ -317,7 +317,6 @@ CLASS({
   methods: {
     open: function(sourceElement) {
       this.latch();
-
       if ( this.state == 'closed' ) {
         this.delegateView = this.delegate({ data$: this.data$ }, this.Y);
 
@@ -331,31 +330,34 @@ CLASS({
         this.initializePosition();
         this.setTimeout(function() {  this.animateToOpen(); }.bind(this), 100);
         this.initHTML();
-        this.state = 'open';
+        this.state = 'opening';
       }
     },
     expandOrCollapse: function(opt_transitionTime) {
-      this.latch();
       if ( this.state === 'open' ) this.expand(opt_transitionTime);
       else if ( this.state === 'expanded' ) this.collapse(opt_transitionTime);
     },
     expand: function(opt_transitionTime) {
+      this.latch();
       this.setTimeout(function() {
         this.animateToExpanded(opt_transitionTime);
       }.bind(this), 100);
-      this.state = 'expanded';
+      this.state = 'expanding';
     },
     collapse: function(opt_transitionTime) {
+      this.latch();
       this.setTimeout(function() {
         this.animateToCollapsed(opt_transitionTime);
       }.bind(this), 100);
-      this.state = 'open';
+      this.state = 'collapsing';
     },
     initializePosition: function() {
       this.$content.style.zIndex = "1010";
       this.$content.style.opacity = this.$blocker.style.opacity = '0';
       if ( this.width ) this.$content.style.width = this.width;
-      if ( this.height ) this.$content.style.height = this.height;
+      if ( this.height ) {
+        this.$content.style.height = this.height;
+      }
     },
     animateToOpen: function(opt_transitionTime) {
       this.animationStrategy.animateToOpen.call(this, opt_transitionTime);
@@ -380,7 +382,6 @@ CLASS({
       this.state = 'closing';
 
       this.animateToHidden(opt_transitionTime);
-      this.setLatch(function() { this.destroy(); }.bind(this));
     },
     destroy: function(p) {
       if ( this.$ ) this.$.outerHTML = '';
@@ -389,19 +390,26 @@ CLASS({
       this.SUPER(p);
     },
     setTransition: function(e, prop, transition, value) {
-      e.style.transition = prop + ' ' + transition;
+      e.style.transition = transition ? prop + ' ' + transition : '';
       e.offsetLeft = e.offsetLeft;
       if ( value ) e.style[prop] = value;
+
+      var listener = function(evt) {
+        if ( evt.propertyName === prop ) {
+          this.latch();
+          e.removeEventListener('transitionend', listener);
+        }
+      }.bind(this);
+      e.addEventListener('transitionend', listener);
     },
-    setLatch: function(f) {
-      if ( this.latchID !== '' ) this.latch();
-      this.latch_ = f;
-      this.latchID = this.setTimeout(f, this.TRANSITION_DURATION * 1000 + 150);
+    setLatch: function(state, opt_f) {
+      this.latch_ = opt_f || '';
+      this.latchState_ = state;
     },
     latch: function() {
-      if ( this.latchID !== '' ) this.clearTimeout(this.latchID);
       if ( this.latch_ ) this.latch_();
-      this.latchID = this.latch_ = '';
+      if ( this.latchState_ ) this.state = this.latchState_;
+      this.latchState_ = this.latch_ = '';
     },
     initHTML: function() {
       this.SUPER();
@@ -445,20 +453,20 @@ CLASS({
         </div>
         <% this.setClass('center', function() {
              return this.layoutPosition === 'center';
-           }, this.id); %>
-        <% this.setClass('top', function() {
+           }, this.id);
+           this.setClass('top', function() {
              return this.layoutPosition === 'top';
-           }, this.id); %>
-        <% this.setClass('bottom', function() {
+           }, this.id);
+           this.setClass('bottom', function() {
              return this.layoutPosition === 'bottom';
-           }, this.id); %>
-        <% this.setClass('fixed', function() {
+           }, this.id);
+           this.setClass('fixed', function() {
              return this.layoutMode === 'fixed';
-           }, this.id); %>
-        <% this.setClass('relative', function() {
+           }, this.id);
+           this.setClass('relative', function() {
              return this.layoutMode === 'relative';
-           }, this.id); %>
-      <% } %>
+           }, this.id);
+         } %>
     */},
     function CSS() {/*
       .fixed .popup-view-modal-blocker, .fixed.popup-view-container {

@@ -17,7 +17,13 @@ CLASS({
   requires: [
     'foam.apps.builder.AppConfigDetailView',
     'foam.apps.builder.AppConfigSheetView',
+    'foam.apps.builder.kiosk.AdvancedInfoWizard',
+    'foam.apps.builder.kiosk.BasicInfoWizard',
+    'foam.apps.builder.kiosk.ChromeWizard',
+    'foam.apps.builder.kiosk.DeviceInfoWizard',
     'foam.apps.builder.kiosk.KioskView',
+    'foam.ui.SwipeAltView',
+    'foam.ui.ViewChoice',
     'foam.ui.md.FlatButton',
     'foam.ui.md.HaloView',
   ],
@@ -54,7 +60,39 @@ CLASS({
         layoutPosition: 'bottom',
         animationStrategy: 'bottom',
         dragHandleHeight: 56,
-        delegate: 'foam.apps.builder.AppConfigSheetView',
+        delegate: {
+          factory_: 'foam.apps.builder.AppConfigSheetView',
+          innerView: function() {
+            // this = foam.apps.builder.AppConfigSheetView instance.
+            var viewModels = [
+              'foam.apps.builder.kiosk.BasicInfoWizard',
+              'foam.apps.builder.kiosk.ChromeWizard',
+              'foam.apps.builder.kiosk.DeviceInfoWizard',
+              'foam.apps.builder.kiosk.AdvancedInfoWizard',
+            ];
+            var SwipeAltView = this.Y.lookup('foam.ui.SwipeAltView');
+            var ViewChoice = this.Y.lookup('foam.ui.ViewChoice');
+            // SwipeAltView (but NOT its "views" array): Lookup non-MD
+            // ChoiceListView for slider header.
+            var swipeAltViewX = this.Y.sub();
+            swipeAltViewX.registerModel(X.lookup('foam.ui.ChoiceListView'),
+                                        'foam.ui.ChoiceListView');
+            return SwipeAltView.create({
+              views: viewModels.map(function(modelName) {
+                var view = this.Y.lookup(modelName).create({
+                  showWizardHeading: false,
+                  showWizardInstructions: false,
+                  showWizardActions: false,
+                  data$: this.data$
+                }, this.Y); // this.Y: Default MD/non-MD views
+                return ViewChoice.create({
+                  label: view.title,
+                  view: view,
+                }, this.Y);
+              }.bind(this)),
+            }, swipeAltViewX);
+          },
+        },
       },
     },
     {
@@ -62,7 +100,7 @@ CLASS({
       name: 'app',
       defaultValue: {
         factory_: 'foam.apps.builder.AppConfigDetailView',
-        innerView: 'foam.apps.builder.kiosk.KioskView',
+        delegate: 'foam.apps.builder.kiosk.KioskView',
       },
     },
   ],
@@ -199,6 +237,10 @@ CLASS({
         animation-duration: .2s;
         animation-timing-function: cubic-bezier(.5,.5,.2,1);
         animation-fill-mode: forwards;
+      }
+      .swipeAltInner wizard {
+        overflow-y: auto;
+        overflow-x: hidden;
       }
     */},
   ],

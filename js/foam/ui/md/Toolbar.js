@@ -64,9 +64,6 @@ CLASS({
       model_: 'ArrayProperty',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'rightActions',
-      postSet: function(old,nu) {
-        console.log('right actions set', old, nu);
-      }
     },
     {
       name: '$leftActions',

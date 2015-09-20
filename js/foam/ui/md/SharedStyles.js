@@ -249,11 +249,9 @@ input[name=q]::-webkit-input-placeholder {
   margin-left: 16px;
 }
 
-.md-popup-view-content .md-headline {
-  margin: 0 0 20px 0;
-}
-
 .md-popup-view-content {
+  display: flex;
+  flex-direction: column;
   max-width: calc(100% - 80px);
 }
 
@@ -365,7 +363,7 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .md-heading.md-headline {
-  padding: 0 12px;
+  padding: 0 0 0 12px;
 }
 
 .md-style-trait-standard {

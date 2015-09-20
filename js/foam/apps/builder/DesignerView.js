@@ -90,7 +90,7 @@ CLASS({
   listeners: [
     {
       name: 'constructHelpSnippets',
-      isMerged: 500,
+      isMerged: 1000,
       code: function () {
         var self = this;
         this.OverlayHelpView.create({
@@ -99,17 +99,27 @@ CLASS({
               data: 'Configure your app using the options listed in the config view',
               extraClassName: 'md-body',
               target: this.panelView,
-              beforeInit: function() {
+              abeforeInit: function(ret) {
                 // If panel view is openable, target its contents.
                 if ( self.panelView && self.panelView.open ) {
                   self.panelView.open(self.$);
                   this.target = self.panelView.delegateView ||
                       self.panelView.innerView || self.panelView;
+                  var listener = function() {
+                    if ( self.panelView.state !== 'open' &&
+                        self.panelView.state !== 'expanded' ) return;
+                    self.panelView.state$.removeListener(listener);
+                    ret && ret();
+                  };
+                  self.panelView.state$.addListener(listener);
+                } else {
+                  ret && ret();
                 }
               },
-              afterDestroy: function() {
+              aafterDestroy: function(ret) {
                 self.panelView && self.panelView.close &&
                     self.panelView.close();
+                ret && ret();
               },
               location: 'ABOVE',
               actionLocation: 'TOP_RIGHT',
@@ -118,6 +128,15 @@ CLASS({
               data: 'See how your app looks with the live preview',
               extraClassName: 'md-body',
               target: this.appView,
+              abeforeInit: function(ret) {
+                // While view has no DOM element, try contents delegate/inner
+                // contents.
+                var view;
+                for ( view = this.target; view && ! view.$;
+                      view = view.delegateView || view.innerView || null );
+                if ( view ) this.target = view;
+                ret && ret();
+              },
               location: 'ABOVE',
               actionLocation: 'TOP_RIGHT',
             }, this.Y),

@@ -54,13 +54,13 @@ CLASS({
     },
     {
       model_: 'FunctionProperty',
-      name: 'beforeInit',
-      defaultValue: nop,
+      name: 'abeforeInit',
+      defaultValue: anop,
     },
     {
       model_: 'FunctionProperty',
-      name: 'afterDestroy',
-      defaultValue: nop,
+      name: 'aafterDestroy',
+      defaultValue: anop,
     },
   ],
 
