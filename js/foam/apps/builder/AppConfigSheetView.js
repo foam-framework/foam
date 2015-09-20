@@ -20,57 +20,23 @@ CLASS({
 
   properties: [
     'data',
-    'popup',
+    {
+      name: 'popup',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$style ) return;
+        this.$style.outerHTML = this.styleHTML();
+      },
+    },
     {
       model_: 'ViewFactoryProperty',
       name: 'innerView',
       defaultValue: 'foam.ui.md.DetailView'
     },
     {
-      name: '$headings',
+      name: '$style',
       getter: function() {
-        if ( ! this.$ ) return [];
-        var mainHeading = this.$.querySelector('#' + this.id + '-heading');
-        var swipeHeadings = this.$.querySelectorAll('app-config ul.swipeAltHeader');
-        var headings = [mainHeading];
-        for ( var i = 0; i < swipeHeadings.length; ++i ) {
-          headings.push(swipeHeadings[i]);
-        }
-        return headings;
+        return this.$ ? this.$.querySelector('#' + this.id + '-style') : null;
       },
-    },
-    {
-      name: '$choices',
-      getter: function() {
-        if ( ! this.$ ) return [];
-        var choiceList = this.$.querySelectorAll('app-config ul.swipeAltHeader .choice');
-        var choices = [];
-        for ( var i = 0; i < choiceList.length; ++i ) {
-          choices.push(choiceList[i]);
-        }
-        return choices;
-      },
-    },
-  ],
-
-  methods: [
-    function initHTML() {
-      this.SUPER();
-      // TODO(markdittmer): This is really only needed when we're in a popup or
-      // other view that supports 'open' and 'expanded' (with CSS class:
-      // .expanded). We should have a clearer way of indicating and detecting
-      // these conditions.
-      var duration = (this.popup ?
-          this.popup.TRANSITION_DURATION : '.3') || '.3';
-      this.$headings.forEach(function($heading) {
-        $heading.style.transition =
-            'background-color cubic-bezier(0.4, 0.0, 1, 1) ' + duration + 's' +
-            ', color cubic-bezier(0.4, 0.0, 1, 1) ' + duration + 's';
-      });
-      this.$choices.forEach(function($choice) {
-        $choice.style.transition =
-            'border cubic-bezier(0.4, 0.0, 1, 1) ' + duration + 's';
-      });
     },
   ],
 
@@ -89,7 +55,8 @@ CLASS({
   templates: [
     function toHTML() {/*
       <app-config id="%%id" %%cssClassAttr()>
-        <div id="%%id-heading" class="md-heading md-headline">
+        <% this.styleHTML(out); %>
+        <div id="%%id-heading" class="md-heading md-headline app-config-heading">
           <div class="heading-content">
             <span><%# (this.data ? this.data.appName : 'App') + ' Configuration' %></span>
             <span>$$close</span>
@@ -107,6 +74,21 @@ CLASS({
          this.on('click', function() {
            this.popup && this.popup.expandOrCollapse();
          }.bind(this), this.id + '-heading'); %>
+    */},
+    function styleHTML() {/*
+      <style id="%%id-style">
+        <% if ( this.popup ) {
+             var duration = (this.popup ?
+                 this.popup.TRANSITION_DURATION : '.3') || '.3'; %>
+        .app-config-heading, .swipeAltHeader {
+          transition: background-color cubic-bezier(0.4, 0.0, 1, 1) {{{duration}}}s,
+                      color cubic-bezier(0.4, 0.0, 1, 1) {{{duration}}}s;
+        }
+        .swipeAltHeader .choice {
+          transition: border cubic-bezier(0.4, 0.0, 1, 1) {{{duration}}}s;
+        }
+        <% } %>
+      </style>
     */},
     function CSS() {/*
       app-config {
@@ -149,7 +131,7 @@ CLASS({
       app-config.expanded .swipeAltHeader .selected {
         border-bottom: 2px solid #ff3f80;
       }
-      app-config ul.swipeAltHeader {
+      app-config .swipeAltHeader {
         background-color: transparent;
         box-shadow: 0 1px 1px rgba(0,0,0,.25);
         height: 47px;
@@ -162,7 +144,7 @@ CLASS({
         -o-user-select: none;
         user-select: none;
       }
-      app-config.expanded ul.swipeAltHeader {
+      app-config.expanded .swipeAltHeader {
         color: #fff;
         background-color: #3e50b4;
       }
