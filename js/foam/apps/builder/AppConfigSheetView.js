@@ -85,7 +85,7 @@ CLASS({
                       color cubic-bezier(0.4, 0.0, 1, 1) {{{duration}}}s;
         }
         .swipeAltHeader .choice {
-          transition: border cubic-bezier(0.4, 0.0, 1, 1) {{{duration}}}s;
+          transition: border-color cubic-bezier(0.4, 0.0, 1, 1) {{{duration}}}s;
         }
         <% } %>
       </style>
