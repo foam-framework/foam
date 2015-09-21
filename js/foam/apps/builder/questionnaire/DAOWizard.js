@@ -36,7 +36,7 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Set the following options for your Data Source:
+        <p>Set the following options for your Data Source:
         </p>
     */},
   ],

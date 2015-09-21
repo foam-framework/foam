@@ -46,7 +46,7 @@ CLASS({
 
   templates: [
     function instructionHTML() {/*
-      <span class="md-style-trait-standard">
+      <span>
         Your kiosk will have a navigation bar that appears above the web
         content. Use the settings below to customize the navigation bar
         controls. A preview of what the navigation bar looks like is shown

@@ -29,8 +29,9 @@ CLASS({
       defaultValue: 'App Export',
     },
     {
-      model_: 'FunctionProperty',
-      name: 'exportApp',
+      model_: 'StringProperty',
+      name: 'actionName',
+      defaultValue: 'exportApp',
     },
     {
       name: 'result',
@@ -48,8 +49,12 @@ CLASS({
 
   actions: [
     {
+      model_: 'foam.metrics.TrackedAction',
       name: 'confirm',
       label: 'Confirm',
+      trackingNameFn: function(X, self) {
+        return this.name + ':' + self.actionName;
+      },
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAJ1BMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfTHmrhGAAAADHRSTlMAKlT7gAWqUVj6UlNPDCTdAAAAO0lEQVQY02NgoBpgROYoOyDYTDZIHOUjJEiwpiNJcJxcgKTDxwpJB8vhTUhG+RgjGcVyBskOBhdqeRYAA6EM6OizgiUAAAAASUVORK5CYII=',
       ligature: 'done',
       code: function() {
@@ -58,8 +63,12 @@ CLASS({
       },
     },
     {
+      model_: 'foam.metrics.TrackedAction',
       name: 'cancel',
       label: 'Cancel',
+      trackingNameFn: function(X, self) {
+        return this.name + ':' + self.actionName;
+      },
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAdklEQVQ4y+WTuQ3AIBAEaQKK8NN/BEUArmccgGyj43MMIZo5TqtFqbUPJxYtbg2OvS44IJQKhguwdUETSiXjXr77KhGICRjihWKm8Dw3KXP4Z5VZ/Lfw7B5kyD1cy5C7uAx5iJcht6vhRTUi4OrC0Szftvi/vAFNdbZ2Dp661QAAAABJRU5ErkJggg==',
       ligature: 'close',
       code: function() {

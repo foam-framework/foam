@@ -42,7 +42,7 @@ CLASS({
 
   templates: [
     function instructionHTML() {/*
-      <span class="md-style-trait-standard">
+      <span>
         Every kiosk app needs a name and a homepage. App Builder can keep track
         of multiple kiosk apps, so choose a unique name for this app. Your
         homepage should include "http://" or "https://". Note that App Builder

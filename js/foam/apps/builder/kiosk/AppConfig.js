@@ -24,6 +24,10 @@ CLASS({
 
   properties: [
     {
+      name: 'appName',
+      defaultValue: 'New Kiosk App',
+    },
+    {
       model_: 'StringProperty',
       name: 'homepage',
       label: 'Homepage',
@@ -100,7 +104,7 @@ CLASS({
       ]
     }
   },
-  "permissions": <%= JSON.stringify(this.chromePermissions) %>,
+  "permissions": <%= JSON.stringify(this.getChromePermissions()) %>,
   "kiosk_enabled": %%kioskEnabled
 }*/}
   ],

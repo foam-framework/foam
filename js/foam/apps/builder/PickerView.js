@@ -147,7 +147,7 @@ CLASS({
           innerView: this.editViewType,
           liveEdit: true,
         }));
-      } 
+      }
     },
     {
       name: 'add',
@@ -185,7 +185,7 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-model-picker-view-name">
-          <div class="md-model-picker-view-edit md-style-trait-standard">
+          <div class="md-model-picker-view-edit">
             $$modelLabel{ model_: 'foam.ui.md.TextFieldView', mode:'read-only', floatingLabel: false, inlineStyle: true }
           </div>
           <div class="md-model-picker-view-combo">

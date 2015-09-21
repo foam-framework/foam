@@ -45,7 +45,7 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Here is a preview of
+        <p>Here is a preview of
         <%= this.data.name %>
         </p>
     */},
