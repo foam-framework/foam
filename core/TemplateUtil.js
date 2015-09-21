@@ -252,7 +252,7 @@ MODEL({
         '(function() { ' +
           'var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput); ' +
           'return function(' + args.join(',') + '){' + code + '};})()' +
-          model ? ('\n\n//# sourceURL=' + model.id.split('.').join('/') + '.' + t.name + '\n' ) : '');
+          (model ? '\n\n//# sourceURL=' + model.id.split('.').join('/') + '.' + t.name + '\n' : ''));
     },
     compile: function(t, model) {
       // Parse result: [isSimple, maybeCode]: [true, null] or [false, codeString].
