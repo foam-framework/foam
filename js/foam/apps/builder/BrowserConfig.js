@@ -40,9 +40,7 @@ CLASS({
         }, this.Y.sub({
           selection$: this.menuSelection$,
         }));
-        view.subscribe(view.ROW_CLICK, function() {
-          this.publish.bind(this, this.MENU_CLOSE);
-        }.bind(this));
+        view.subscribe(view.ROW_CLICK, this.publish.bind(this, this.MENU_CLOSE));
         return view;
       },
     },
