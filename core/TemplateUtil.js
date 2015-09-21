@@ -232,7 +232,7 @@ MODEL({
           if ( ! t.template )
             throw 'Must arequire() template model before use for ' + this.name_ + '.' + t.name;
           else
-            delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t));
+            delegate = TemplateUtil.compile(Template.isInstance(t) ? t : Template.create(t), this.model_);
         }
 
         return delegate.apply(this, arguments);
@@ -243,14 +243,18 @@ MODEL({
       return f;
     },
 
-    compile_: function(t, code) {
+    compile_: function(t, code, model) {
       var args = ['opt_out'];
       for ( var i = 0 ; i < t.args.length ; i++ ) {
         args.push(t.args[i].name);
       }
-      return eval('(function() { var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput); return function(' + args.join(',') + '){' + code + '};})()');
+      return eval(
+        '(function() { ' +
+          'var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput); ' +
+          'return function(' + args.join(',') + '){' + code + '};})()' +
+          model ? ('\n\n//# sourceURL=' + model.id.split('.').join('/') + '.' + t.name + '\n' ) : '');
     },
-    compile: function(t) {
+    compile: function(t, model) {
       // Parse result: [isSimple, maybeCode]: [true, null] or [false, codeString].
       var parseResult = TemplateCompiler.parseString(t.template);
 
@@ -264,7 +268,7 @@ MODEL({
 
       // Need to compile an actual method
       try {
-        return this.compile_(t, code);
+        return this.compile_(t, code, model);
       } catch (err) {
         console.log('Template Error: ', err);
         console.log(parseResult);
