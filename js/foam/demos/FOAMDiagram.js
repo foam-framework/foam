@@ -30,11 +30,11 @@ CLASS({
   ],
 
   properties: [
-    { name: 'x',          defaultValue: 50      },
-    { name: 'y',          defaultValue: 50      },
-    { name: 'width',      defaultValue: 1500    },
-    { name: 'height',     defaultValue: 800     },
-    { name: 'background', defaultValue: 'black' }
+    [ 'x',          50      ],
+    [ 'y',          50      ],
+    [ 'width',      1500    ],
+    [ 'height',     800     ],
+    [ 'background', 'black' ]
   ],
 
   methods: {

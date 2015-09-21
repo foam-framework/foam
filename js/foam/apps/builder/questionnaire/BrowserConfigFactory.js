@@ -63,7 +63,7 @@ CLASS({
           preferredWidth: 10000
         },
         innerDetailView: { factory_: 'foam.apps.builder.AppConfigDetailView',
-          innerView: 'foam.apps.builder.questionnaire.DesignerView'
+          delegate: 'foam.apps.builder.questionnaire.DesignerView'
         },
       }, X);
     },

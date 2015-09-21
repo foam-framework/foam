@@ -64,7 +64,9 @@ CLASS({
           var t = this.model_.templates[i];
           if ( t.name === 'CSS' ) {
             t.futureTemplate(function() {
-              X.addStyle(this.CSS());
+              X.addStyle(
+                this.CSS(),
+                this.model_.id.split('.').join('/') + '.CSS');
             }.bind(this));
             return;
           }

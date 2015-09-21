@@ -30,9 +30,9 @@ CLASS({
   ],
 
   properties: [
-    { name: 'width',      defaultValue: 1500    },
-    { name: 'height',     defaultValue: 1400    },
-    { name: 'background', defaultValue: 'black' },
+    [ 'width', 1500 ],
+    [ 'height', 1400 ],
+    [ 'background', 'black' ],
     {
       name: 'timer',
       view: { factory_: 'foam.ui.DetailView', showActions: true },

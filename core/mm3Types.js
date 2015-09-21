@@ -51,10 +51,7 @@ CLASS({
       defaultValue: 'String',
       help: 'The Java type of this property.'
     },
-    {
-      name: 'view',
-      defaultValue: 'foam.ui.TextFieldView'
-    },
+    [ 'view', 'foam.ui.TextFieldView' ],
     {
       name: 'pattern',
       help: 'Regex pattern for property.'
@@ -98,18 +95,9 @@ CLASS({
       defaultValue: 'boolean',
       help: 'The Java type of this property.'
     },
-    {
-      name: 'view',
-      defaultValue: 'foam.ui.BooleanView',
-    },
-    {
-      name: 'defaultValue',
-      defaultValue: false
-    },
-    {
-      name: 'adapt',
-      defaultValue: function (_, v) { return !!v; }
-    },
+    [ 'view', 'foam.ui.BooleanView' ],
+    [ 'defaultValue', false ],
+    [ 'adapt', function (_, v) { return !!v; } ],
     {
       name: 'prototag',
       label: 'Protobuf tag',
@@ -148,21 +136,14 @@ CLASS({
       defaultValue: 'Date',
       help: 'The FOAM type of this property.'
     },
-    {
-      name: 'displayWidth',
-      defaultValue: 50
-    },
+    [ 'displayWidth', 50 ],
     {
       name: 'javaType',
       type: 'String',
       defaultValue: 'java.util.Date',
       help: 'The Java type of this property.'
     },
-    {
-      name: 'view',
-      // TODO: create custom DateView
-      defaultValue: 'foam.ui.DateFieldView'
-    },
+    [ 'view', 'foam.ui.DateFieldView' ],
     {
       name: 'prototag',
       label: 'Protobuf tag',
@@ -176,21 +157,15 @@ CLASS({
         return (typeof d === 'string' || typeof d === 'number') ? new Date(d) : d;
       }
     },
-    {
-      name: 'tableFormatter',
-      defaultValue: function(d) {
-        return d ? d.toRelativeDateString() : '';
-      }
-    },
-    {
-      name: 'compareProperty',
-      defaultValue: function(o1, o2) {
+    [ 'tableFormatter', function(d) { return d ? d.toRelativeDateString() : ''; } ],
+    [ 'compareProperty',
+      function(o1, o2) {
         if ( ! o1 ) return ( ! o2 ) ? 0: -1;
         if ( ! o2 ) return 1;
 
         return o1.compareTo(o2);
       }
-    }
+    ]
   ]
 });
 
@@ -218,10 +193,7 @@ CLASS({
         return d;
       }
     },
-    {
-      name: 'view',
-      defaultValue: 'foam.ui.DateTimeFieldView'
-    }
+    [ 'view', 'foam.ui.DateTimeFieldView' ]
   ]
 });
 
@@ -241,10 +213,7 @@ CLASS({
       defaultValue: 'Int',
       help: 'The FOAM type of this property.'
     },
-    {
-      name: 'displayWidth',
-      defaultValue: 10
-    },
+    [ 'displayWidth', 10 ],
     {
       name: 'javaType',
       type: 'String',
@@ -252,20 +221,12 @@ CLASS({
       defaultValue: 'int',
       help: 'The Java type of this property.'
     },
-    {
-      name: 'view',
-      defaultValue: 'foam.ui.IntFieldView'
-    },
-    {
-      name: 'adapt',
-      defaultValue: function (_, v) {
+    [ 'view', 'foam.ui.IntFieldView' ],
+    [ 'adapt', function (_, v) {
         return typeof v === 'number' ? Math.round(v) : v ? parseInt(v) : 0 ;
       }
-    },
-    {
-      name: 'defaultValue',
-      defaultValue: 0
-    },
+    ],
+    [ 'defaultValue', 0 ],
     {
       name: 'prototag',
       label: 'Protobuf tag',
@@ -287,12 +248,7 @@ CLASS({
       required: false,
       help: 'The maximum value this property accepts.'
     },
-    {
-      name: 'compareProperty',
-      defaultValue: function(o1, o2) {
-        return o1 === o2 ? 0 : o1 > o2 ? 1 : -1;
-      }
-    }
+    [ 'compareProperty', function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; } ]
   ]
 });
 
@@ -458,10 +414,7 @@ CLASS({
     {
       name: 'defaultValue',
       adapt: function(_, value) {
-        if ( typeof value === 'string' ) {
-          return TemplateProperty.ADAPT.defaultValue.call(this, _, value);
-        }
-        return value;
+        return TemplateProperty.ADAPT.defaultValue.call(this, _, value);
       }
     },
     {
@@ -787,10 +740,7 @@ CLASS({
   label: 'Data Model definition',
 
   properties: [
-    {
-      name: 'type',
-      defaultValue: 'Model'
-    },
+    [ 'type', 'Model' ],
     {
       name: 'getter',
       defaultValue: function(name) {
@@ -813,9 +763,14 @@ CLASS({
             value = '';
           }
         }
-        if ( typeof value === 'string' ) return this.X.lookup(value);
-        else if  ( Model.isInstance(value) ) return value;
-        else return '';
+        if ( typeof value === 'string' ) {
+          if ( ! value ) return '';
+          var ret = this.X.lookup(value);
+          // console.assert(Model.isInstance(ret), 'Invalid model specified for ' + this.name_);
+          return ret;
+        }
+        if ( Model.isInstance(value) ) return value;
+        return '';
       }
     },
     {
@@ -996,7 +951,7 @@ CLASS({
             return m.create(f, opt_X || this.Y).copyFrom(map);
           };
 
-          ret.toString = function() { return JSON.stringify(f); };
+          ret.toString = function() { return JSONUtil.compact.stringify(f); };
           return ret;
         }
 

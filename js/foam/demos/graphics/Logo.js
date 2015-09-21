@@ -32,7 +32,7 @@ CLASS({
         timer.time$.addListener(function() { this.addBubble(); }.bind(this));
       }
     },
-    { name: 'className', defaultValue: 'logo-background' }
+    [ 'className', 'logo-background' ]
   ],
 
   methods: {
@@ -90,7 +90,7 @@ CLASS({
   imports: [ 'text$', 'font$', 'width$', 'height$' ],
 
   properties: [
-    { name: 'className', defaultValue: 'logo-foreground' }
+    [ 'className', 'logo-foreground' ]
   ],
 
   methods: {
@@ -131,26 +131,17 @@ CLASS({
   exports: [ 'text$', 'font$', 'colors$', 'width$', 'height$' ],
 
   properties: [
-    {
-      name: 'duration',
-      defaultValue: 0
-    },
+    [ 'duration', 0 ],
     {
       model_: 'StringArrayProperty',
       name: 'colors',
       singular: 'color',
       factory: function() { return this.COLORS; }
     },
-    {
-      name: 'text',
-      defaultValue: 'FOAM'
-    },
-    {
-      name: 'font',
-      defaultValue: '120px Georgia'
-    },
-    { name: 'width',     defaultValue: 400 },
-    { name: 'height',    defaultValue: 103 },
+    [ 'text', 'FOAM' ],
+    [ 'font', '120px Georgia' ],
+    [ 'width', 400 ],
+    [ 'height', 103 ],
     {
       name: 'foreground',
       factory: function() {
@@ -163,7 +154,7 @@ CLASS({
         return this.LogoBackground.create();
       }
     },
-    { name: 'className', defaultValue: 'logo' }
+    [ 'className', 'logo' ]
   ],
 
   methods: {

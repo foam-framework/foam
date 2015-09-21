@@ -400,7 +400,11 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         for ( var i = 0 ; i < newValue.length ; i++ ) {
           var p = newValue[i];
 
-          if ( typeof p === 'string' ) newValue[i] = p = { name: p };
+          if ( typeof p === 'string' ) {
+            newValue[i] = p = { name: p };
+          } else if ( Array.isArray(p) ) {
+            newValue[i] = p = { name: p[0], defaultValue: p[1] };
+          }
 
           if ( p.labels && ! FEATURE_ENABLED(p.labels) ) {
             newValue.splice(i,1);

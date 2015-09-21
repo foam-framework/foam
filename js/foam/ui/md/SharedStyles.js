@@ -249,11 +249,9 @@ input[name=q]::-webkit-input-placeholder {
   margin-left: 16px;
 }
 
-.md-popup-view-content .md-headline {
-  margin: 0 0 20px 0;
-}
-
 .md-popup-view-content {
+  display: flex;
+  flex-direction: column;
   max-width: calc(100% - 80px);
 }
 
@@ -294,12 +292,11 @@ input[name=q]::-webkit-input-placeholder {
   right: 20px;
   z-index: 10;
   background: rgba(0,0,0,0);
-  box-shadow: 3px 3px 3px #aaa;
+  box-shadow: 3px 3px 3px rgba(0,0,0,0.33);
   border-radius: 30px;
   margin: 0;
   height: initial;
 }
-
 
 .md-card-shell {
   display: block;
@@ -366,7 +363,7 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .md-heading.md-headline {
-  padding: 0 12px;
+  padding: 0 0 0 12px;
 }
 
 .md-style-trait-standard {

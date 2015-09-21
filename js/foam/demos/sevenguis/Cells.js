@@ -221,14 +221,8 @@ MODEL({
     }
   ],
   properties: [
-    {
-      name: 'rows',
-      defaultValue: 99
-    },
-    {
-      name: 'columns',
-      defaultValue: 26
-    },
+    [ 'rows',    99 ],
+    [ 'columns', 26 ],
     {
       name: 'cells',
       factory: function() { return {}; }

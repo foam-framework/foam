@@ -89,7 +89,11 @@ CLASS({
   ],
 
   methods: {
-    addStyle: function(css) {
+    addStyle: function(css, opt_source) {
+      console.log('source: ', opt_source);
+      if ( opt_source )
+        css += '\n\n/*# sourceURL=' + opt_source + ' */\n'
+
       if ( ! this.document || ! this.document.createElement ) return;
       var s = this.document.createElement('style');
       s.innerHTML = css;

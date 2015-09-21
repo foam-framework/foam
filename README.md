@@ -62,3 +62,7 @@ grunt
 ```
 
 Currently these files are bloated by rarely-used optional features like Canvas views, Google protobuffer support, and others. We plan to cut these out into separate files eventually.
+
+### Contributing
+
+Before contributing code to FOAM, you must complete the [Google Individual Contributor License Agreement](https://cla.developers.google.com/about/google-individual?csw=1).

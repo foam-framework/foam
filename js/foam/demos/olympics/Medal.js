@@ -19,8 +19,6 @@ CLASS({
   package: 'foam.demos.olympics',
   name: 'Medal',
 
-requires: [ 'foam.u2.Element' ],  //////////// Added this line HERE
-
   properties: [
     { name: 'id', hidden: true },
     { name: 'year', shortName: 'y'  },
@@ -29,13 +27,8 @@ requires: [ 'foam.u2.Element' ],  //////////// Added this line HERE
       defaultValue: 'Gold',
       shortName: 'c',
       aliases: ['colour', 'medal'],
-      xxxtableFormatter: function(c) {
+      tableFormatter: function(c) {
         return '<span class="' + c + '">' + c + '</span>';
-      },
-      tableFormatter: function(c, owner) {
-        var e = owner.Element.create({ nodeName: 'span'});
-        this.X.setTimeout(function() { e.cls(c); e.c(c); }, 100+Math.random()*500);
-        return e;
       },
       compareProperty: function(o1, o2) {
         return o1 === o2       ?  0 :

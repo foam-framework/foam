@@ -96,7 +96,24 @@ CLASS({
       documentation: 'If true, contentHTML will not be padded and occupy the full page width',
       defaultValue: false,
     },
-
+    {
+      model_: 'BooleanProperty',
+      name: 'showWizardHeading',
+      documentation: 'If true, heading is shown.',
+      defaultValue: true,
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showWizardInstructions',
+      documentation: 'If true, instructions are shown.',
+      defaultValue: true,
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showWizardActions',
+      documentation: 'If true, exit/back/next actions are shown.',
+      defaultValue: true,
+    },
   ],
 
   actions: [
@@ -181,28 +198,41 @@ CLASS({
     */},
     function toHTML() {/*
       <wizard id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-card-heading">
-          <% this.titleHTML(out); %>
+        <div id="%%id-heading" class="wizard-section">
+          <div class="md-card-heading">
+            <% this.titleHTML(out); %>
+          </div>
+          <div class="md-card-heading-content-spacer"></div>
         </div>
-        <div class="md-card-heading-content-spacer"></div>
      <% if ( this.scrollContent ) { %>
-        <div class="md-card-content no-shrink">
+        <div id="%%id-instructions" class="md-card-content no-shrink wizard-section">
           <% this.instructionHTML(out); %>
         </div>
         <% this.contentHTML(out); %>
      <% } else { %>
         <div class="md-card-content">
-          <% this.instructionHTML(out); %>
+          <div id="%%id-instructions" class="wizard-section">
+            <% this.instructionHTML(out); %>
+          </div>
           <% this.contentHTML(out); %>
         </div>
         <div class="md-card-content-footer-spacer"></div>
      <% } %>
-        <div class="md-actions md-card-footer horizontal">
+        <div id="%%id-actions" class="wizard-section md-actions md-card-footer horizontal">
             $$exit{ model_: 'foam.ui.md.FlatButton' }
             $$back{ model_: 'foam.ui.md.FlatButton' }
             $$nextAction{ model_: 'foam.ui.md.FlatButton' }
         </div>
       </wizard>
+      <% this.setClass('hidden', function() {
+           return ! this.showWizardHeading;
+         }.bind(this), this.id + '-heading');
+         this.setClass('hidden', function() {
+           return ! this.showWizardInstructions;
+         }.bind(this), this.id + '-instructions');
+         this.setClass('hidden', function() {
+           return ! this.showWizardActions;
+         }.bind(this), this.id + '-actions'); %>
     */},
     function CSS() {/*
       wizard {
@@ -215,8 +245,9 @@ CLASS({
         flex-shrink: 0;
       }
 
+      .wizard-section.hidden {
+        display: none;
+      }
     */},
   ],
-
-
 });

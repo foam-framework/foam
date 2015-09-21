@@ -125,7 +125,7 @@ MODEL({
               }.bind(this));
           }.bind(this);
           GLOBAL.__DATACALLBACK.sourcePath = url;
-          eval(data);
+          eval(data + '\n\n//# sourceURL=' + key.split('.').join('/') + '.js\n');
           GLOBAL.__DATACALLBACK = oldCb;
         }.bind(this))(function() {
           if ( looking ) {

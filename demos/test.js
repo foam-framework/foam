@@ -225,7 +225,7 @@ var o = Model.create({ name: 'User', label: 'User' });
   document.writeln("Model: " + o.model_);
   document.writeln("Model.name: " + o.name_);
 */
-var example = $('uml');
+var example = X.$('uml');
 var ctx     = example.getContext('2d');
 
 drawUML(ctx,100,100,Model);

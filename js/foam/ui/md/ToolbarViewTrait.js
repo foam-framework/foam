@@ -21,9 +21,11 @@ CLASS({
       name: 'toolbar',
       postSet: function(old, nu) {
         old && old.removeRightActions &&
-            old.removeRightActions(this.toolbarActions_.concat(this.dataToolbarActions_));
+            old.removeRightActions(
+                this.toolbarActions_.concat(this.dataToolbarActions_));
         nu && nu.addRightActions &&
-            nu.addRightActions(this.toolbarActions_.concat(this.dataToolbarActions_));
+            nu.addRightActions(
+                this.toolbarActions_.concat(this.dataToolbarActions_));
       },
     },
     {
@@ -41,8 +43,14 @@ CLASS({
       name: 'toolbarActions_',
       postSet: function(old, nu) {
         if ( old === nu || ! this.toolbar ) return;
-        if ( old ) this.toolbar.removeRightActions && this.toolbar.removeRightActions(old);
-        if ( nu ) this.toolbar.addRightActions && this.toolbar.addRightActions(nu);
+        if ( old ) {
+          this.toolbar.removeRightActions &&
+              this.toolbar.removeRightActions(old);
+        }
+        if ( nu ) {
+          this.toolbar.addRightActions &&
+              this.toolbar.addRightActions(nu);
+        }
       },
     },
     {
@@ -67,12 +75,22 @@ CLASS({
     function init() {
       this.SUPER();
       if ( ! this.hideOwnActions ) {
-        this.toolbarActions_ = this.wrapToolbarActions(this, this.model_.getRuntimeActions());
+        var initializer = function() {
+          this.toolbarActions_ = this.wrapToolbarActions(
+              this, this.model_.getRuntimeActions());
+          this.addDestructor(destructor);
+        }.bind(this);
+        var destructor = function() {
+          this.removeToolbarActions();
+          this.addInitializer(initializer);
+        }.bind(this);
+        this.addInitializer(initializer);
       }
     },
     function removeToolbarActions() {
       if ( ! this.toolbar ) return;
-      this.toolbar.removeRightActions(this.toolbarActions_.concat(this.dataToolbarActions_));
+      this.toolbar.removeRightActions(
+          this.toolbarActions_.concat(this.dataToolbarActions_));
     },
     function wrapToolbarActions(data, actions) {
       return actions.map(this.wrapToolbarAction.bind(this, data));

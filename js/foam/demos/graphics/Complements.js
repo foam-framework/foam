@@ -33,7 +33,6 @@ CLASS({
       name: 'timer',
       factory: function() { return this.Timer.create(); }
     },
-    { name: 'background', defaultValue: 'pink' },
     {
       name:  'r',
       defaultValue: 140,

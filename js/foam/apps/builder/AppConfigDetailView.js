@@ -32,9 +32,10 @@ CLASS({
     'data',
     {
       model_: 'ViewFactoryProperty',
-      name: 'innerView',
-      defaultValue: 'foam.ui.md.DetailView'
+      name: 'delegate',
+      defaultValue: 'foam.ui.md.DetailView',
     },
+    'delegateView',
   ],
 
   methods: [
@@ -143,7 +144,8 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <%= this.innerView({ data$: this.data$ }, this.Y) %>
+     <% this.delegateView = this.delegate({ data$: this.data$ }, this.Y); %>
+     <%= this.delegateView %>
     */},
-  ]
+  ],
 });

@@ -22,8 +22,8 @@ CLASS({
   label: 'XML View',
 
   properties: [
-    { name: 'displayWidth',  defaultValue: 100 },
-    { name: 'displayHeight', defaultValue: 100 }
+    [ 'displayWidth',  100 ],
+    [ 'displayHeight', 100 ]
   ],
 
   methods: {
