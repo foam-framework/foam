@@ -38,6 +38,7 @@ CLASS({
 
   templates: [
     function contentHTML() {/*
+      <div class="md-card-heading-content-spacer"></div>
       <div class="new-existing-wizard-dao-page-scroller">
       <div class="new-existing-wizard-dao-page">
         $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',

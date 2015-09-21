@@ -52,6 +52,10 @@ CLASS({
       name: 'title',
       defaultValue: 'New or Existing',
     },
+    {
+      name: 'scrollContent',
+      defaultValue: true,
+    },
   ],
 
   actions: [
@@ -74,6 +78,7 @@ CLASS({
     */},
 
     function contentHTML() {/*
+      <div class="md-card-heading-content-spacer"></div>
       <div class="new-existing-wizard-dao-page-scroller">
         <div class="new-existing-wizard-dao-page">
           $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
@@ -100,11 +105,12 @@ CLASS({
         display: flex;
         flex-direction: row;
         flex-grow: 1;
+        padding: 0 24px;
       }
       .new-existing-wizard-dao-page-scroller {
         overflow-y: hidden;
         overflow-x: hidden;
-        flex-grow: 1;
+        flex-grow: 99999;
         flex-shrink: 1;
         display: flex;
       }
@@ -118,6 +124,7 @@ CLASS({
       .existing-hidden {
         opacity: 0;
         pointer-events: none;
+        height: 0;
       }
 
       @media (max-width: 600px) {
@@ -128,7 +135,7 @@ CLASS({
 
       @media (min-width: 600px) {
         .new-existing-wizard-dao-container {
-          padding: 0px 8px 16px 60px;
+          padding: 0px 8px 16px 16px;
         }
       }
 

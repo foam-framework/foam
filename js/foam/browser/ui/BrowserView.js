@@ -221,6 +221,7 @@ CLASS({
       listeners: [
         {
           name: 'onMenuTouch',
+          isMerged: 200,
           code: function() {
             this.menuOpen = false;
           }

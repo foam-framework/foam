@@ -31,6 +31,7 @@ CLASS({
 
   templates: [
     function contentHTML() {/*
+      <div class="md-card-heading-content-spacer"></div>
       <div class="new-existing-wizard-dao-page-scroller">
       <div class="new-existing-wizard-dao-page">
         <% var choiceList = ( this.data.dao && this.data.dao.requiresUserConfiguration )  ?
