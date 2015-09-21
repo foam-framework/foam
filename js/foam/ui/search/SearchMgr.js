@@ -100,6 +100,7 @@ CLASS({
 
       if (!this.views[name]) return;
 
+      view.clear();
       view.predicate$.removeListener(this.onViewUpdate);
       if (this.memento && this.memento[name]) {
         delete this.memento[name];
@@ -108,6 +109,7 @@ CLASS({
       delete this.views[name];
     },
     function removeAll() {
+      this.clear();
       Object_forEach(this.views, function(v) {
         v.predicate$.removeListener(this.onViewUpdate);
       }.bind(this));

@@ -35,7 +35,7 @@ CLASS({
       var IDBDAO = X.lookup('foam.dao.IDBDAO') || this.IDBDAO;
       return this.BrowserConfig.create({
         title: 'Kiosk Apps',
-        label: 'Kiosk App',
+        label: 'Kiosk Apps',
         model: AppConfig,
         dao: EasyDAO.create({
           model: AppConfig,

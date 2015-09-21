@@ -31,7 +31,7 @@ CLASS({
       factory: function() {
         return this.ChoiceView.create({
           label: this.label,
-          floatingLabel: true,
+          floatingLabel: this.floatingLabel,
           size: this.size,
           cssClass: 'foamSearchChoiceView'
         });
@@ -87,7 +87,11 @@ CLASS({
       name: 'label',
       type: 'String',
       defaultValueFn: function() { return this.property.label; }
-    }
+    },
+    {
+      name: 'floatingLabel',
+      defaultValue: true
+    },
   ],
 
   methods: [
@@ -149,7 +153,8 @@ CLASS({
           if (typeof selected !== 'undefined') {
             var oldData = self.view.data;
             self.view.data = selected;
-            if (!oldData) self.updatePredicate(null, null, null, selected);
+            if (typeof oldData === 'undefined')
+              self.updatePredicate(null, null, null, selected);
           }
         });
       }
