@@ -61,7 +61,6 @@ CLASS({
           postSet: function(old, nu) {
             if (old) old.unsubscribe(old.MENU_CLOSE, this.onMenuTouch);
             if (nu) nu.subscribe(nu.MENU_CLOSE, this.onMenuTouch);
-            this.updateHTML();
             this.onMenuTouch();
           },
         },
@@ -108,7 +107,7 @@ CLASS({
               }
               this.menuView_ = this.data.menuFactory();
               html += this.menuView_.toHTML();
-              this.X.$(this.id + '-menu-body').innerHTML = html;
+              this.$menuBody.innerHTML = html;
               if (this.menuHeaderView_) this.menuHeaderView_.initHTML();
               this.menuView_.initHTML();
             } else if (this.menuView_) {
@@ -163,6 +162,18 @@ CLASS({
           name: 'maxWidth',
           getter: function() { return this.listView_.maxWidth; }
         },
+        {
+          name: '$menuContainer',
+          getter: function() {
+            return this.X.$(this.id + '-menu-container');
+          },
+        },
+        {
+          name: '$menuBody',
+          getter: function() {
+            return this.X.$(this.id + '-menu-body');
+          },
+        },
       ],
 
       methods: [
@@ -170,12 +181,15 @@ CLASS({
           var out = TemplateOutput.create(this);
           this.menuHTML(out);
           this.document.body.insertAdjacentHTML('afterbegin', out.toString());
+          this.$menuBody.addEventListener('transitionend', this.onMenuClosed);
           this.SUPER();
         },
         function destroy(s) {
           this.SUPER(s);
 
-          var menuElem = this.X.document.getElementById(this.id +"-menu-container");
+          var menuBodyElem = this.$menuBody;
+          if ( menuBodyElem ) this.$menuBody.removeEventListener('transitionend', this.onMenuClosed);
+          var menuElem = this.$menuContainer;
           if ( menuElem ) menuElem.outerHTML = "";
         }
       ],
@@ -225,6 +239,12 @@ CLASS({
           code: function() {
             this.menuOpen = false;
           }
+        },
+        {
+          name: 'onMenuClosed',
+          code: function(evt) {
+            if ( evt.propertyName && ! this.menuOpen ) this.updateHTML();
+          },
         },
       ],
       templates: [
