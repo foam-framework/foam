@@ -47,7 +47,7 @@ CLASS({
       model_:  'BooleanProperty',
       name: 'localeAware',
       help: 'allow editing of date time in local timezone',
-      defaultValue: false,
+      defaultValue: true
     },
   ],
 
