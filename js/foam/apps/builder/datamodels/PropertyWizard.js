@@ -61,7 +61,7 @@ CLASS({
 
   templates: [
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Choose a name to describe the purpose,
+        <p>Choose a name to describe the purpose,
         such as "first name", "catalogue number" or "home phone". Choose the type
         that most closely matches the value you expect, such as a number, text,
         yes/no, or web URL.

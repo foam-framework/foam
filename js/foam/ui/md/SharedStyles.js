@@ -374,6 +374,13 @@ input[name=q]::-webkit-input-placeholder {
   margin: 8px;
 }
 
+.md-card-shell.md-popup-view-content .md-style-trait-standard {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .md-style-trait-inline {
   padding: 0;
 }

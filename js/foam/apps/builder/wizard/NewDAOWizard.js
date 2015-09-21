@@ -99,7 +99,7 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">The data source is where your App will store its data.
+        <p>The data source is where your App will store its data.
         This could be inside the device where it is running, in the cloud with Google Drive, or
         on another device on your network.
         </p>

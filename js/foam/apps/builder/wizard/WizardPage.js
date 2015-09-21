@@ -173,7 +173,7 @@ CLASS({
 
   templates: [
     function titleHTML() {/*
-      <p class="md-style-trait-standard md-title"><%# this.title %></p>
+      <p class="md-title"><%# this.title %></p>
     */},
     function instructionHTML() {/*
     */},

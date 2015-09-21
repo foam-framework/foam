@@ -70,7 +70,7 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-      <p class="md-style-trait-standard">Choose one of the following options:</p>
+      <p>Choose one of the following options:</p>
     */},
 
     function contentHTML() {/*

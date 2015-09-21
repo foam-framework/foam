@@ -49,7 +49,7 @@ CLASS({
       this.wizardStack.push(this.modelViewFactory);
       this.SUPER();
     },
-    
+
     function onNext() {
       this.SUPER(); // puts the app into the main dao
       this.selection = this.data; // imported selection from browser's main list
@@ -57,10 +57,10 @@ CLASS({
   ],
 
   templates: [
-   
+
 
     function instructionHTML() {/*
-      <p class="md-style-trait-standard">Choose a name for your new Questionnaire. The name should
+      <p>Choose a name for your new Questionnaire. The name should
         be a few words to indicate the purpose, such as &quot;new patient&quot;
         or &quot;customer service survey&quot;
       </p>

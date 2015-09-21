@@ -55,7 +55,7 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Add properties with the large '+' button.
+        <p>Add properties with the large '+' button.
         </p>
     */},
 

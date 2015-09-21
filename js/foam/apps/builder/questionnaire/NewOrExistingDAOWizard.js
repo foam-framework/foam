@@ -40,7 +40,7 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">When a user completes their Questionnaire, it will
+        <p>When a user completes their Questionnaire, it will
         be saved into a Data Source. This could be inside the tablet the user is holding,
         in the cloud with Google Drive, or on another device on your network.
         You can create a new Data Source, or share

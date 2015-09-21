@@ -31,7 +31,7 @@ CLASS({
 
   templates: [
     function instructionHTML() {/*
-      <span class="md-style-trait-standard">
+      <span>
         In order to load your app properly, you'll need to configure some basic
         device-level info. For example, if users shouldn't be able to switch
         apps (i.e., this is the only app that runs on the device), then you want
