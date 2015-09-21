@@ -31,7 +31,7 @@ CLASS({
       var X = opt_X || this.X;
       return this.BrowserConfig.create({
         title: 'Questionnaire Apps',
-        label: 'Questionnaire App',
+        label: 'Questionnaire Apps',
         model: this.QuestionnaireAppConfig,
         dao:
         this.SeqNoDAO.create({ delegate:
