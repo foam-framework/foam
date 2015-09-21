@@ -54,6 +54,7 @@ CLASS({
         </p>
     */},
     function contentHTML() {/*
+        <div class="md-card-heading-content-spacer"></div>
         $$dao{ model_: 'foam.apps.builder.dao.EditView', model: this.data.dao.model_ }
     */},
   ],

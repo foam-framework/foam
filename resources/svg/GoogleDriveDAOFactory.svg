@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="542"
+   height="435"
+   id="svg2"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="GoogleDriveDAOFactory.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1855"
+     inkscape:window-height="1176"
+     id="namedview3003"
+     showgrid="false"
+     inkscape:zoom="1.2685914"
+     inkscape:cx="101.85026"
+     inkscape:cy="136.58387"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <defs
+     id="defs4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     style="fill:#000000"
+     id="g3076"
+     transform="matrix(14.696294,0,0,14.696294,94.644472,41.144472)">
+    <path
+       id="path3066"
+       d="M 0,0 H 24 V 24 H 0 z"
+       inkscape:connector-curvature="0"
+       style="fill:none" />
+    <path
+       id="path3068"
+       d="M 19.35,10.04 C 18.67,6.59 15.64,4 12,4 9.11,4 6.6,5.64 5.35,8.04 2.34,8.36 0,10.91 0,14 c 0,3.31 2.69,6 6,6 h 13 c 2.76,0 5,-2.24 5,-5 0,-2.64 -2.05,-4.78 -4.65,-4.96 z"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

@@ -74,6 +74,10 @@ CLASS({
       name: 'title',
       defaultValue: 'Choose the type of Data Source',
     },
+    {
+      name: 'scrollContent',
+      defaultValue: true,
+    }
   ],
 
   listeners: [
@@ -106,7 +110,10 @@ CLASS({
     */},
 
     function contentHTML() {/*
+      <div class="md-card-heading-content-spacer"></div>
+      <div style="flex-grow: 999; display: flex">
         $$daoDescriptor
+      </div>
     */},
   ],
 

@@ -11,13 +11,13 @@
 
 CLASS({
   package: 'foam.meta.descriptor',
-  name: 'PropertyTypeCitationView',
+  name: 'DAOFactoryCitationView',
   extendsModel: 'foam.ui.md.DetailView',
 
   properties: [
     {
       name: 'className',
-      defaultValue: 'md-property-type-citation-view',
+      defaultValue: 'md-dao-factory-citation-view',
     },
     {
       model_: 'ImageProperty',
@@ -50,11 +50,11 @@ CLASS({
       </div>
     */},
     function CSS() {/*
-      .md-property-type-citation-view {
+      .md-dao-factory-citation-view {
         width: 200px;
         transition: transform 250ms ease;
       }
-      .md-property-type-citation-view .citation-content {
+      .md-dao-factory-citation-view .citation-content {
         display: flex;
         flex-direction: column;
         align-items: stretch;
@@ -63,11 +63,11 @@ CLASS({
         margin: 16px;
       }
 
-      .md-property-type-citation-view .label-content {
+      .md-dao-factory-citation-view .label-content {
         margin: 8px;
       }
 
-      .md-property-type-citation-view .image-area {
+      .md-dao-factory-citation-view .image-area {
         background-color: lightblue;
         width: 100%;
         flex-grow: 1;
@@ -78,16 +78,16 @@ CLASS({
         padding: 16px;
       }
 
-      .md-property-type-citation-view .image-area > :first-child {
+      .md-dao-factory-citation-view .image-area > :first-child {
         flex-grow: 0;
         flex-shrink: 1;
         transition: border 250ms ease;
       }
 
-      .dao-selected .md-property-type-citation-view {
+      .dao-selected .md-dao-factory-citation-view {
         transform: scale(1.1);
       }
-      .dao-selected .md-property-type-citation-view .image-area > :first-child {
+      .dao-selected .md-dao-factory-citation-view .image-area > :first-child {
         border: 6px solid black;
         border-radius: 12px;
       }
