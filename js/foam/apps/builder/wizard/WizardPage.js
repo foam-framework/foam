@@ -128,8 +128,8 @@ CLASS({
         var nextV = this.nextView;
         if ( ! nextV ) {
           // no next view, so we're finished
-          this.popup && this.popup.close();
-          this.stack.popView();
+          if ( this.popup ) this.popup.close();
+          else              this.stack.popView();
           return;
         }
         if ( nextV.hidden ) {
