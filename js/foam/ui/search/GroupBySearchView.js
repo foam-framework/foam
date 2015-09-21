@@ -31,7 +31,7 @@ CLASS({
       factory: function() {
         return this.ChoiceView.create({
           label: this.label,
-          floatingLabel: true,
+          floatingLabel: this.floatingLabel,
           size: this.size,
           cssClass: 'foamSearchChoiceView'
         });
@@ -87,7 +87,11 @@ CLASS({
       name: 'label',
       type: 'String',
       defaultValueFn: function() { return this.property.label; }
-    }
+    },
+    {
+      name: 'floatingLabel',
+      defaultValue: true
+    },
   ],
 
   methods: [
