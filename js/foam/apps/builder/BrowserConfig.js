@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.BrowserConfigCitationView',
+    'foam.apps.builder.MenuView',
     'foam.ui.DAOListView',
   ],
   imports: [
@@ -30,7 +31,7 @@ CLASS({
   properties: [
     {
       model_: 'FunctionProperty',
-      name: 'menuFactory',
+      name: 'menuListFactory',
       defaultValue: function() {
         var view = this.DAOListView.create({
           data: this.menuDAO,
@@ -40,9 +41,18 @@ CLASS({
           selection$: this.menuSelection$,
         }));
         view.subscribe(view.ROW_CLICK, function() {
-          this.publish(this.MENU_CLOSE);
+          this.publish.bind(this, this.MENU_CLOSE);
         }.bind(this));
         return view;
+      },
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'menuFactory',
+      defaultValue: function() {
+        return this.MenuView.create({
+          list: this.menuListFactory.bind(this),
+        }, this.Y);
       },
     },
     {
