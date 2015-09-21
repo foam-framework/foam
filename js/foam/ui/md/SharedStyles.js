@@ -26,6 +26,14 @@ body, .md-font, .md-quote {
   -webkit-font-smoothing: antialiased;
 }
 
+p {
+  margin: 0;
+}
+
+p + p {
+  margin-top: 1em;
+}
+
 table {
   border-spacing: 0;
 }
