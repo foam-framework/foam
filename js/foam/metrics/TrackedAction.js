@@ -21,11 +21,24 @@ CLASS({
     'metricsDAO',
   ],
 
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'trackingName',
+      defaultValueFn: function() { return this.name; },
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'trackingNameFn',
+      defaultValue: function(X, that) { return this.trackingName; },
+    },
+  ],
+
   methods: [
     function maybeCall(X, that) {
       if ( ! this.SUPER(X, that) ) return false;
       X.metricsDAO && X.metricsDAO.put(this.Event.create({
-        name: 'Action:' + this.name,
+        name: 'Action:' + this.trackingNameFn(X, that),
         label: (that.model_.id || that.name_),
       }));
       return true;

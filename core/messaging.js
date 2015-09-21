@@ -134,12 +134,12 @@ CLASS({
             args[0] = ret;
             delegate.apply(self, args);
           },
-          function(ret, response, xhr) {
+          function(ret, response, xhr, status) {
             if ( ( xhr.status >= 200 && xhr.status < 300 ) ||
                  xhr.status === 404 ||
                  ++attempts >= decorator.maxAttempts ) {
               finished = true;
-              originalRet(response, xhr);
+              originalRet(response, xhr, status);
               return;
             }
             ret();
