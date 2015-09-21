@@ -111,9 +111,7 @@ CLASS({
 
     function contentHTML() {/*
       <div class="md-card-heading-content-spacer"></div>
-      <div style="flex-grow: 999; display: flex">
-        $$daoDescriptor
-      </div>
+      $$daoDescriptor
     */},
   ],
 

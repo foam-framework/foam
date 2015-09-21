@@ -67,7 +67,7 @@ CLASS({
     */},
     function CSS() {/*
       .md-meta-descriptor-view {
-        flex-grow: 1;
+        flex-grow: 9999999;
         display: flex;
         flex-direction: column;
         overflow: hidden;
