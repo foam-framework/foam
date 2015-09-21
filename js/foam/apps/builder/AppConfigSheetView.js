@@ -124,11 +124,14 @@ CLASS({
         line-height: 46px;
         padding-bottom: 14px;
       }
-      app-config .swipeAltHeader .selected {
+      app-config .swipeAltHeader .choice {
+        border-bottom-color: transparent;
+      }
+      app-config .swipeAltHeader .choice.selected {
         border-bottom: 2px solid rgba(0,0,0,.87);
         font-weight: 500;
       }
-      app-config.expanded .swipeAltHeader .selected {
+      app-config.expanded .swipeAltHeader .choice.selected {
         border-bottom: 2px solid #ff3f80;
       }
       app-config .swipeAltHeader {
