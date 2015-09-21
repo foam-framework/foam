@@ -39,6 +39,7 @@ CLASS({
             <icons>
               <wrench><i class="material-icons-extended" style="font-size: 90px;color:#fff;">build</i></wrench>
               <display><i class="material-icons-extended" style="font-size: 225px;color:#000">campaign_display</i></display>
+              <dot></dot>
             </icons>
           </content>
         </logo>
@@ -76,9 +77,25 @@ CLASS({
         display: block;
         position: absolute;
         transform: rotate(180deg);
-        top: -10px;
-        left: -10px;
+        transform-origin: 15px 15px;
+        animation: torque 300ms ease 0s 5 alternate;
+        top: 55px;
+        left: 55px;
       }
+      @keyframes torque { from { transform: rotate(120deg); } to { transform: rotate(180deg); }  }
+
+      logo dot {
+        display: block;
+        position: absolute;
+        top: 62px;
+        left: 62px;
+        width: 16px;
+        height: 16px;
+        border-radius: 8px;
+        background: grey;
+
+      }
+
       logo display {
         display: block;
         padding-top: 4px;
