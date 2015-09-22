@@ -109,7 +109,7 @@ CLASS({
               }
 
               var buffer = new Buffer(
-                self.apache2Header() + "CLASS(" + JSONUtil.where(NOT_TRANSIENT).stringify(obj) + ");\n");
+                self.apache2Header() + "CLASS(" + JSONUtil.prettyModel.where(NOT_TRANSIENT).stringify(obj) + ");\n");
               var offset = 0;
 
               awhile(
