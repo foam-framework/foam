@@ -29,7 +29,6 @@ CLASS({
     'foam.core.dao.SyncDAO',
     'foam.core.dao.MergeDAO',
     'foam.core.dao.VersionNoDAO',
-    'foam.core.dao.TimestampDAO',
     'foam.dao.EasyClientDAO',
     'foam.dao.CachingDAO',
     'foam.dao.ContextualizingDAO',
