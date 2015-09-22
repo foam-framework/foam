@@ -17,6 +17,9 @@
 CLASS({
   package: 'foam.node.server',
   name: 'NodeServer',
+  requires: [
+    'foam.node.server.DAOHandler',
+  ],
   properties: [
     {
       name: 'port',
@@ -30,6 +33,9 @@ CLASS({
       name: 'server',
       hidden: true,
       transient: true
+    },
+    {
+      name: 'daoHandler_',
     }
   ],
 
@@ -46,6 +52,15 @@ CLASS({
     },
     attachHandler: function(h) {
       this.handlers.push(h);
+    },
+    exportDAO: function(dao, opt_name) {
+      if ( ! this.daoHandler_ ) {
+        this.daoHandler_ = this.DAOHandler.create();
+        this.attachHandler(this.daoHandler_);
+      }
+
+      opt_name = opt_name || (dao.model.id + 'DAO');
+      this.daoHandler_.daoMap[opt_name] = dao;
     }
   },
 
