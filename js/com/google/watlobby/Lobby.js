@@ -423,7 +423,7 @@ CLASS({
 
       document.body.addEventListener('click', this.onClick);
 
-      var foam = this.ImageCView.create({x: 10, y: this.height-100, width: 837/2.9, height: 269/2.9, src: 'img/foampowered_red.png'});
+      var foam = this.ImageCView.create({x: 10, y: this.height-60, width: 837/5, height: 269/5, src: 'img/foampowered_red.png'});
       this.addChild(foam);
 
       var clock = this.ClockView.create({x: this.width-120, y: 120, r: 120-10});
