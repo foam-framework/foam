@@ -71,7 +71,7 @@ CLASS({
     function initCView() {
       this.SUPER();
 
-      this.addChild(this.img = this.ImageCView.create({src: this.image}));
+      this.addChild(this.img = this.ImageCView.create({src: 'img/' + this.image}));
       this.addChild(this.textArea = this.SimpleRectangle.create({alpha: 0, background: this.border}));
     },
     function setSelected(selected) {
@@ -157,7 +157,7 @@ CLASS({
   properties: [
     {
       name: 'playIcon',
-      factory: function() { return this.ImageCView.create({src: 'play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
+      factory: function() { return this.ImageCView.create({src: 'img/play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
     }
   ],
 
@@ -423,7 +423,7 @@ CLASS({
 
       document.body.addEventListener('click', this.onClick);
 
-      var foam = this.ImageCView.create({x: 10, y: this.height-100, width: 837/2.9, height: 269/2.9, src: 'foampowered_red.png'});
+      var foam = this.ImageCView.create({x: 10, y: this.height-100, width: 837/2.9, height: 269/2.9, src: 'img/foampowered_red.png'});
       this.addChild(foam);
 
       var clock = this.ClockView.create({x: this.width-120, y: 120, r: 120-10});
