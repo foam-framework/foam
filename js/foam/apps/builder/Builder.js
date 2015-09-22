@@ -16,6 +16,7 @@ CLASS({
   requires: [
     'Model',
     'com.google.analytics.AnalyticsDAO',
+    'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.ExportManager',
     'foam.apps.builder.dao.DAOFactory',

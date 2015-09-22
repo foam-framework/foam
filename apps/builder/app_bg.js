@@ -1,7 +1,23 @@
+// Use global context.
+var X = window.X;
+
+// Fetch config file via XHR.
+function agetConfig(ret) {
+  var CONFIG_PATH = 'config.json';
+  X.XHR.create().asend(function(str, xhr, status) {
+    if ( ! status ) console.error('Failed to load app configuration from', CONFIG_PATH);
+    // TODO(markdittmer): Shouldn't JSONUtil provide a Chrome App-friendly
+    // API for this?
+    aeval('(' + str + ')')(function(data) {
+      ret(X.JSONUtil.mapToObj(X, data));
+    });
+  }, CONFIG_PATH);
+}
+
 // When window loads: Add window to FOAM context.
 function onWindowLoad(window) {
   this.$addWindow(window);
-  var Y = this.X.subWindow(window, 'Kiosk Window');
+  var Y = X.subWindow(window, X.appConfig.appWindow.name);
   this.DOM.init(Y);
 }
 
@@ -12,7 +28,7 @@ function onWindowClose(window) {
 
 // When window created: Bind load and close callbacks.
 function onWindowCreate(win) {
-  if ( ! this.X ) { return; }
+  if ( ! X ) { return; }
   var window = win.contentWindow;
   window.onload = onWindowLoad.bind(this, window);
   win.onClosed.addListener(onWindowClose.bind(this, window));
@@ -25,20 +41,23 @@ function onWindowCreate(win) {
  */
 function runApp() {
   var chrome = this.chrome;
-  var config = this.config;
-  if (chrome.power) {
-    chrome.power.requestKeepAwake('display');
-  }
-  chrome.app.window.create(
-      'kiosk_view.html',
-      {
-        id: 'KioskWindow',
-        width: 800,
-        height: 700,
-        minWidth: 400,
-        minHeight: 600
-      },
-      onWindowCreate.bind(this));
+  agetConfig(function(config) {
+    X.appConfig = config;
+    if ( chrome.power && config.kioskEnabled ) {
+      chrome.power.requestKeepAwake('display');
+    }
+    var w = config.appWindow;
+    chrome.app.window.create(
+        'app_view.html',
+        {
+          id: w.id,
+          width: w.width,
+          height: w.height,
+          minWidth: w.minWidth,
+          minHeight: w.minHeight,
+        },
+        onWindowCreate.bind(this));
+  });
 }
 
 /**

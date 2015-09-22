@@ -26,8 +26,8 @@ CLASS({
   constants: {
     EXISTING_SOURCES: [
       'foam.js',
-      'questionnaire_bg.js',
-      'kiosk_view.html',
+      'app_bg.js',
+      'app_view.html',
     ],
   },
 
@@ -47,7 +47,18 @@ CLASS({
     {
       name: 'model',
       label: 'Questions',
-    }
+    },
+    {
+      type: 'foam.apps.builder.AppWindow',
+      name: 'appWindow',
+      lazyFactory: function() {
+        return this.AppWindow.create({
+          id: this.model_.id,
+          name: 'Questionnaire Window',
+        }, this.Y);
+      },
+      hidden: true,
+    },
   ],
 
   templates: [
@@ -60,7 +71,7 @@ CLASS({
     "background": {
       "scripts": [
         "foam.js",
-        "questionnaire_bg.js"
+        "app_bg.js"
       ]
     }
   },

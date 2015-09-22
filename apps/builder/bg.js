@@ -34,9 +34,6 @@ function onWindowCreate(win) {
 function runApp() {
   var chrome = this.chrome;
   var config = this.config;
-  if (chrome.power) {
-    chrome.power.requestKeepAwake('display');
-  }
   chrome.app.window.create(
       'designer_view.html',
       {

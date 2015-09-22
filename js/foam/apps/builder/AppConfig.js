@@ -16,6 +16,9 @@ CLASS({
 
   label: 'Chrome Application Configuration',
 
+  requires: [
+    'foam.apps.builder.AppWindow',
+  ],
   ids: ['appName'],
 
   properties: [
@@ -130,6 +133,16 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'chromeId',
+      hidden: true,
+    },
+    {
+      type: 'foam.apps.builder.AppWindow',
+      name: 'appWindow',
+      lazyFactory: function() {
+        return this.AppWindow.create({
+          id: this.model_.id,
+        }, this.Y);
+      },
       hidden: true,
     },
   ],
