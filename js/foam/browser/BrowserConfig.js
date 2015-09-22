@@ -46,7 +46,7 @@ CLASS({
       name: 'dao',
       documentation: 'The master DAO to browse. Will default to an MDAO if not provided.',
       lazyFactory: function() {
-        return this.EasyDAO.create({
+        return this.instance_.model && this.EasyDAO.create({
           model: this.model,
           daoType: 'MDAO',
           seqNo: true,
@@ -57,7 +57,7 @@ CLASS({
       model_: 'ModelProperty',
       name: 'model',
       required: true,
-      factory: function() { return this.dao.model; }
+      factory: function() { return this.instance_.dao && this.dao.model; }
     },
     {
       name: 'filteredDAO',
