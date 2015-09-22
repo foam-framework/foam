@@ -33,15 +33,30 @@ CLASS({
   ],
 
   properties: [
-    'data',
     'toolbar',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old ) old.removeListener(this.onDataChange);
+        if ( nu ) nu.addListener(this.onDataChange);
+        // TODO(jacksonic): Bind this better.
+        if ( this.data && this.data.model )
+          this.data.model.instance_.prototype_ = null;
+      },
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'autoUpdatePreviewHTML',
+      help: 'If true, call updateHTML() on preview view on every data-related change.',
+      defaultValue: true,
+    },
     {
       model_: 'ViewFactoryProperty',
       name: 'panel',
       defaultValue: {
         factory_: 'foam.apps.builder.Panel',
         innerView: 'foam.apps.builder.AppConfigActionsView',
-      }
+      },
     },
     {
       model_: 'ViewFactoryProperty',
@@ -88,6 +103,16 @@ CLASS({
   ],
 
   listeners: [
+    {
+      name: 'onDataChange',
+      code: function() {
+        if ( ! (this.appView && this.data && this.data.model &&
+            this.autoUpdatePreviewHTML ) ) return;
+        // TODO(jacksonic): Bind this better.
+        this.data.model.instance_.prototype_ = null;
+        this.appView.updateHTML();
+      },
+    },
     {
       name: 'constructHelpSnippets',
       isMerged: 1000,
@@ -176,9 +201,10 @@ CLASS({
     */},
     function CSS() {/*
       designer {
+        flex-grow: 1;
         position: relative;
         display: flex;
-        flex-grow: 1;
+        flex-direction: column;
       }
     */},
   ],

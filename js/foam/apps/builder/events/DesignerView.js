@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.questionnaire',
+  package: 'foam.apps.builder.events',
   name: 'DesignerView',
   extendsModel: 'foam.apps.builder.DesignerView',
 
@@ -19,16 +19,36 @@ CLASS({
   ],
 
   requires: [
-    'foam.apps.builder.questionnaire.ChangeDAOWizard',
-    'foam.apps.builder.questionnaire.ChangeModelWizard',
-    'foam.apps.builder.questionnaire.EditView',
-    'foam.apps.builder.questionnaire.QuestionnaireView',
+    'foam.apps.builder.events.ChangeDAOWizard',
+    'foam.apps.builder.events.EventsView',
     'foam.apps.builder.templates.AppView',
     'foam.apps.builder.templates.PanelView',
   ],
 
+  listeners: [
+    {
+      name: 'dataChange',
+      code: function() {
+        if (this.dataView) {
+          // bind this better
+          this.dataView.updateHTML();
+        }
+      }
+    }
+  ],
+
   properties: [
-    'data',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if (nu) {
+          nu.addListener(this.dataChange);
+        }
+        if (old) {
+          old.removeListener(this.dataChange);
+        }
+      },
+    },
     {
       model_: 'ViewFactoryProperty',
       name: 'panel',
@@ -39,7 +59,7 @@ CLASS({
       name: 'app',
       defaultValue: {
         factory_: 'foam.apps.builder.templates.AppView',
-        delegate: 'foam.apps.builder.questionnaire.QuestionnaireView',
+        delegate: 'foam.apps.builder.events.EventsView',
       },
     },
   ],
@@ -47,8 +67,6 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      // ModelSummaryView will use this, redirect to Questionnaire version
-      this.Y.registerModel(this.ChangeModelWizard, 'foam.apps.builder.wizard.ChangeModelWizard');
       this.Y.registerModel(this.ChangeDAOWizard, 'foam.apps.builder.wizard.ChangeDAOWizard');
 
       this.Y.set('mdToolbar', null);

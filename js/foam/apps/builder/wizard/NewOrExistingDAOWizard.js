@@ -16,10 +16,11 @@ CLASS({
 
   requires: [
     'foam.apps.builder.wizard.NewDAOWizard',
+    'foam.apps.builder.dao.DAOFactory',
   ],
 
   imports: [
-    'daoConfigDAO as existingDAO',
+    'daoConfigDAO as unfilteredExistingDAO',
   ],
 
   exports: [
@@ -45,12 +46,33 @@ CLASS({
       name: 'selection',
     },
     {
+      name: 'unfilteredExistingDAO',
+      postSet: function(old, nu) {
+        if ( this.data ) {
+          this.filterExistingDAO();
+        } else {
+          this.data$.addListener(EventService.oneTime(this.filterExistingDAO));
+        }
+      }
+    },
+    {
       name: 'existingDAO',
       view: {
         factory_: 'foam.ui.md.DAOListView',
         rowView: 'foam.apps.builder.dao.DAOFactoryView',
       }
     }
+  ],
+
+  listeners: [
+    {
+      name: 'filterExistingDAO',
+      code: function() {
+        this.existingDAO = this.unfilteredExistingDAO.where(
+          EQ(this.DAOFactory.MODEL_TYPE, this.data.baseModelId)
+        );
+      }
+    },
   ],
 
   methods: [

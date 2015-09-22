@@ -31,11 +31,16 @@ CLASS({
       name: 'model'
     },
     {
+      name: 'subject',
+      defaultValueFn: function() { return this.model.id + 'DAO'; }
+    },
+    {
       name: 'delegate',
       factory: function() {
 	return this.ClientDAO.create({
 	  asend: this.asend.bind(this),
-	  model: this.model
+	  model: this.model,
+          subject: this.subject
 	});
       }
     }
