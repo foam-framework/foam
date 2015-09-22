@@ -168,11 +168,7 @@ CLASS({
       </designer>
     */},
     function CSS() {/*
-      designer.kiosk-designer .md-popup-view-content {
-        flex-grow: 1;
-        max-width: initial;
-      }
-      designer.kiosk-designer .md-popup-view-content app-config {
+      .kiosk-designer-config app-config {
         position: initial;
       }
       .popup-view-container .kiosk-designer-config {
