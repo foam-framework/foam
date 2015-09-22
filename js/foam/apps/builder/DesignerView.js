@@ -20,7 +20,7 @@ CLASS({
   requires: [
     'Binding',
     'PersistentContext',
-    'foam.apps.builder.AppConfigDetailView',
+    'foam.apps.builder.AppConfigActionsView',
     'foam.apps.builder.DesignerViewContext',
     'foam.apps.builder.kiosk.KioskView',
     'foam.apps.builder.Panel',
@@ -40,7 +40,7 @@ CLASS({
       name: 'panel',
       defaultValue: {
         factory_: 'foam.apps.builder.Panel',
-        innerView: 'foam.apps.builder.AppConfigDetailView',
+        innerView: 'foam.apps.builder.AppConfigActionsView',
       }
     },
     {

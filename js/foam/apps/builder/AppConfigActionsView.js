@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'AppConfigDetailView',
+  name: 'AppConfigActionsView',
   extendsModel: 'foam.ui.SimpleView',
   traits: [ 'foam.ui.md.ToolbarViewTrait' ],
 

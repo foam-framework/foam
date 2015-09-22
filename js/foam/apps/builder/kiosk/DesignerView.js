@@ -15,7 +15,7 @@ CLASS({
   extendsModel: 'foam.apps.builder.DesignerView',
 
   requires: [
-    'foam.apps.builder.AppConfigDetailView',
+    'foam.apps.builder.AppConfigActionsView',
     'foam.apps.builder.AppConfigSheetView',
     'foam.apps.builder.kiosk.AdvancedInfoWizard',
     'foam.apps.builder.kiosk.BasicInfoWizard',
@@ -99,7 +99,7 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'app',
       defaultValue: {
-        factory_: 'foam.apps.builder.AppConfigDetailView',
+        factory_: 'foam.apps.builder.AppConfigActionsView',
         delegate: 'foam.apps.builder.kiosk.KioskView',
       },
     },

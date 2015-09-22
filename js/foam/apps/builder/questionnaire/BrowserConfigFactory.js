@@ -62,7 +62,7 @@ CLASS({
           minWidth: 600,
           preferredWidth: 10000
         },
-        innerDetailView: { factory_: 'foam.apps.builder.AppConfigDetailView',
+        innerDetailView: { factory_: 'foam.apps.builder.AppConfigActionsView',
           delegate: 'foam.apps.builder.questionnaire.DesignerView'
         },
       }, X);
