@@ -30,7 +30,10 @@ CLASS({
     {
       model_: 'foam.core.types.StringEnumProperty',
       name: 'mode',
-      defaultValue: 'CHROME_IDENTITY',
+      defaultValueFn: function() {
+        if ( chrome && chrome.identity ) return 'CHROME_IDENTITY';
+        return 'WEB';
+      },
       choices: [
         ['CHROME_IDENTITY', 'Chrome Identity'],
         ['WEB', 'Web'],
@@ -64,6 +67,12 @@ CLASS({
   methods: [
     function withOAuth(ret, opt_err) {
       this.oauthFuture(function(oauth) {
+        if ( ! oauth ) {
+          if ( opt_err && typeof opt_err === 'function' ) opt_err(false);
+          else                                            ret(false);
+          return;
+        }
+
         if ( oauth.accessToken ) {
           ret(true, oauth);
           return;
