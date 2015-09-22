@@ -20,28 +20,23 @@ CLASS({
 
   properties: [
     'data',
-    'popup',
+    {
+      name: 'popup',
+      postSet: function(old, nu) {
+        if ( old === nu || ! this.$style ) return;
+        this.$style.outerHTML = this.styleHTML();
+      },
+    },
     {
       model_: 'ViewFactoryProperty',
       name: 'innerView',
       defaultValue: 'foam.ui.md.DetailView'
     },
     {
-      name: '$heading',
+      name: '$style',
       getter: function() {
-        return this.$ ? this.$.querySelector('#' + this.id + '-heading') : null;
+        return this.$ ? this.$.querySelector('#' + this.id + '-style') : null;
       },
-    },
-  ],
-
-  methods: [
-    function initHTML() {
-      this.SUPER();
-      var duration = (this.popup ?
-          this.popup.TRANSITION_DURATION : '.3') || '.3';
-      this.$heading.style.transition =
-          'background-color cubic-bezier(0.4, 0.0, 1, 1) ' + duration + 's' +
-          ', color cubic-bezier(0.4, 0.0, 1, 1) ' + duration + 's';
     },
   ],
 
@@ -60,7 +55,8 @@ CLASS({
   templates: [
     function toHTML() {/*
       <app-config id="%%id" %%cssClassAttr()>
-        <div id="%%id-heading" class="md-heading md-headline">
+        <% this.styleHTML(out); %>
+        <div id="%%id-heading" class="md-heading md-headline app-config-heading">
           <div class="heading-content">
             <span><%# (this.data ? this.data.appName : 'App') + ' Configuration' %></span>
             <span>$$close</span>
@@ -68,15 +64,31 @@ CLASS({
         </div>
         <%= this.innerView({
               data$: this.data$,
-              extraClassName: 'overflow-vertical',
             }, this.Y) %>
       </app-config>
       <% this.setClass('expanded', function() {
-           return ( ! this.popup ) || this.popup.state === 'expanded';
+           return ( ! this.popup ) ||
+               this.popup.state === 'expanding' ||
+               this.popup.state === 'expanded';
          }.bind(this), this.id);
          this.on('click', function() {
            this.popup && this.popup.expandOrCollapse();
          }.bind(this), this.id + '-heading'); %>
+    */},
+    function styleHTML() {/*
+      <style id="%%id-style">
+        <% if ( this.popup ) {
+             var duration = (this.popup ?
+                 this.popup.TRANSITION_DURATION : '.3') || '.3'; %>
+        .app-config-heading, .swipeAltHeader {
+          transition: background-color cubic-bezier(0.4, 0.0, 1, 1) {{{duration}}}s,
+                      color cubic-bezier(0.4, 0.0, 1, 1) {{{duration}}}s;
+        }
+        .swipeAltHeader .choice {
+          transition: border-color cubic-bezier(0.4, 0.0, 1, 1) {{{duration}}}s;
+        }
+        <% } %>
+      </style>
     */},
     function CSS() {/*
       app-config {
@@ -96,15 +108,53 @@ CLASS({
       app-config .md-heading {
         display: flex;
         background-color: transparent;
-        transition:
       }
       app-config.expanded .md-heading {
         color: #fff;
         background-color: #3e50b4;
       }
-      app-config .overflow-vertical {
-        overflow-x: hidden;
-        overflow-y: auto;
+
+
+      app-config .swipeAltHeader {
+        padding-left: 3px !important;
+        height: 36px;
+      }
+      app-config .swipeAltHeader li {
+        font-size: 14px;
+        line-height: 46px;
+        padding-bottom: 14px;
+      }
+      app-config .swipeAltHeader .choice {
+        border-bottom-color: transparent;
+      }
+      app-config .swipeAltHeader .choice.selected {
+        border-bottom: 2px solid rgba(0,0,0,.87);
+        font-weight: 500;
+      }
+      app-config.expanded .swipeAltHeader .choice.selected {
+        border-bottom: 2px solid #ff3f80;
+      }
+      app-config .swipeAltHeader {
+        background-color: transparent;
+        box-shadow: 0 1px 1px rgba(0,0,0,.25);
+        height: 47px;
+        margin: 0;
+        overflow: hidden;
+        padding: 0 0 0 56px;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: -moz-none;
+        -o-user-select: none;
+        user-select: none;
+      }
+      app-config.expanded .swipeAltHeader {
+        color: #fff;
+        background-color: #3e50b4;
+      }
+      app-config .foamChoiceListView.horizontal .choice {
+        text-transform: uppercase;
+        padding: 14px 16px;
+        margin: 0;
       }
     */},
   ],

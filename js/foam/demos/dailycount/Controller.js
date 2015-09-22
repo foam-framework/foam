@@ -35,7 +35,7 @@ CLASS({
       view: 'foam.ui.DAOListView',
       factory: function() {
         return this.EasyDAO.create({
-          model: foam.demos.dailycount.DailyThing,
+          model: this.DailyThing,
           cache: true,
           seqNo: true});
       }
@@ -45,7 +45,7 @@ CLASS({
       view: 'foam.ui.TableView',
       factory: function() {
         return this.EasyDAO.create({
-          model: foam.demos.dailycount.DailyCount,
+          model: this.DailyCount,
           cache: true,
           seqNo: true});
       }
@@ -55,9 +55,7 @@ CLASS({
   actions: [
     {
       name: 'add',
-      code: function() {
-        this.things.put(this.DailyThing.create());
-      }
+      code: function() { this.things.put(this.DailyThing.create()); }
     }
   ],
 

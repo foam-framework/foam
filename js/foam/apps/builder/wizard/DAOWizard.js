@@ -50,10 +50,11 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Set the following options for your Data Source:
+        <p>Set the following options for your Data Source:
         </p>
     */},
     function contentHTML() {/*
+        <div class="md-card-heading-content-spacer"></div>
         $$dao{ model_: 'foam.apps.builder.dao.EditView', model: this.data.dao.model_ }
     */},
   ],

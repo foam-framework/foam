@@ -18,6 +18,7 @@ CLASS({
     'foam.apps.builder.dao.LocalDAOFactory',
     'foam.apps.builder.dao.GoogleDriveDAOFactory',
     'foam.apps.builder.dao.IDBDAOFactory',
+    'foam.meta.descriptor.DAOFactoryCitationView',
   ],
 
   label: 'Data Store',
@@ -30,22 +31,21 @@ CLASS({
 
   properties: [
     {
-      label: 'The Type of the DAO',
-      name: 'model',
-      defaultValueFn: function() { return this.LocalDAOFactory.id; },
-      view: function(args, opt_X) {
-        var X = opt_X || this.X;
-        var v = X.lookup('foam.ui.ChoiceView').create(args, X);
-        v.objToChoice = function(obj) { 
-          return [obj.id, obj.label]; 
-        };
-        v.dao = [
+      name: 'selectionsDAO',
+      view: {
+        factory_: 'foam.ui.DAOListView',
+        rowView: 'foam.meta.descriptor.DAOFactoryCitationView',
+      },
+      defaultValueFn: function() { return [
           X.lookup('foam.apps.builder.dao.LocalDAOFactory'),
           X.lookup('foam.apps.builder.dao.GoogleDriveDAOFactory'),
           X.lookup('foam.apps.builder.dao.IDBDAOFactory'),
         ];
-        return v;
-      },
+      }
+    },
+    {
+      name: 'model',
+      defaultValue: 'foam.apps.builder.dao.LocalDAOFactory',
     },
     {
       label: 'The name of the new DAO',

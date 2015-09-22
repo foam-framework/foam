@@ -29,11 +29,11 @@ CLASS({
   imports: [ 'timer' ],
 
   properties: [
-    { name: 'timer' },
-    { name: 'n',          defaultValue: 7 },
-    { name: 'width',      defaultValue: 800 },
-    { name: 'height',     defaultValue: 600 },
-    { name: 'background', defaultValue: '#ccf' },
+    'timer',
+    [ 'n',          7 ],
+    [ 'width',      800 ],
+    [ 'height',     600 ],
+    [ 'background', '#ccf' ],
     { name: 'collider',   factory: function() {
       return this.Collider.create();
     }},

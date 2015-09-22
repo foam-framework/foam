@@ -37,7 +37,7 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Edit the current Data Source,
+        <p>Edit the current Data Source,
         Create a new one, or share
         an existing Data Srouce with one of your other Questionnaire Apps.
         If you pick an existing Data Source, changes to the settings will

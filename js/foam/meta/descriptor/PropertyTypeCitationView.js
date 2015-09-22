@@ -45,7 +45,7 @@ CLASS({
           <div class="image-area">
             $$image
           </div>
-          $$label{ mode: 'read-only', floatingLabel: false }
+          <div class="label-content">$$label{ mode: 'read-only', floatingLabel: false }</div>
         </div>
       </div>
     */},
@@ -60,6 +60,11 @@ CLASS({
         align-items: stretch;
         position: relative;
         height: 200px;
+        margin: 16px;
+      }
+
+      .md-property-type-citation-view .label-content {
+        margin: 8px;
       }
 
       .md-property-type-citation-view .image-area {

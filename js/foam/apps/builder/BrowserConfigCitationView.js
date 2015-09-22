@@ -13,23 +13,46 @@ CLASS({
   package: 'foam.apps.builder',
   name: 'BrowserConfigCitationView',
   extendsModel: 'foam.ui.View',
-  
+
+  requires: [
+    'foam.ui.md.HaloView'
+  ],
+
   properties: [
     {
       name: 'className',
       defaultValue: 'browser-citation',
     },
+    {
+      name: 'halo',
+      lazyFactory: function() {
+        return this.HaloView.create({
+          className: 'halo',
+          recentering: false,
+          pressedAlpha: 0.2,
+          startAlpha: 0.2,
+          finishAlpha: 0
+        }, this.Y);
+      }
+    },
   ],
-  
+
   templates: [
     function CSS() {/*
       .browser-citation {
+        position: relative;
         align-items: center;
         display: flex;
         font-size: 16px;
         height: 42px;
         line-height: 42px;
         padding: 8px 16px;
+      }
+      .browser-citation .halo {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 2;
       }
       .browser-citation img {
         flex-grow: 0;
@@ -48,6 +71,7 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
+        %%halo
         <% if ( this.data.iconUrl ) { %>
           $$iconUrl
         <% } %>

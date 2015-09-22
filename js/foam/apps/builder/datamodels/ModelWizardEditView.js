@@ -122,7 +122,7 @@ CLASS({
       }
 
       wizard .model-edit-view-list .meta-citation-view {
-        padding-left: calc(24px + 16px);
+        padding-left: 24px;
         padding-right: 24px;
       }
 

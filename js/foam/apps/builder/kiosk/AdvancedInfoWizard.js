@@ -23,7 +23,7 @@ CLASS({
 
   templates: [
     function instructionHTML() {/*
-      <span class="md-style-trait-standard">
+      <span>
         Use the controls below to configure advanced settings for your kiosk
         app. For example, if you input Terms of Service, then the user must
         accept the terms before using the app, or any time the user logs out

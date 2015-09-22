@@ -31,7 +31,7 @@ CLASS({
       var X = opt_X || this.X;
       return this.BrowserConfig.create({
         title: 'Questionnaire Apps',
-        label: 'Questionnaire App',
+        label: 'Questionnaire Apps',
         model: this.QuestionnaireAppConfig,
         dao:
         this.SeqNoDAO.create({ delegate:
@@ -62,8 +62,8 @@ CLASS({
           minWidth: 600,
           preferredWidth: 10000
         },
-        innerDetailView: { factory_: 'foam.apps.builder.AppConfigDetailView',
-          innerView: 'foam.apps.builder.questionnaire.DesignerView'
+        innerDetailView: { factory_: 'foam.apps.builder.AppConfigActionsView',
+          delegate: 'foam.apps.builder.questionnaire.DesignerView'
         },
       }, X);
     },

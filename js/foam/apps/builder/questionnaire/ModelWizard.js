@@ -24,7 +24,7 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-        <div class="md-style-trait-standard">
+        <div>
           <p>Add new questions with the red
           '+' button, click the sandwich to re-order a question, or
           click the pencil to edit the details.

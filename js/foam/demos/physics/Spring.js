@@ -23,11 +23,11 @@ CLASS({
   requires: [ 'foam.demos.physics.PhysicalCircle', 'foam.input.Mouse' ],
 
   properties: [
-    { name: 'n',          defaultValue: 17 },
-    { name: 'width',      defaultValue: 1000 },
-    { name: 'height',     defaultValue: 1000 },
-    { name: 'background', defaultValue: 'white' },
-    { name: 'mouse',      lazyFactory: function() { return this.Mouse.create(); } }
+    [ 'n',          17 ],
+    [ 'width',      1000 ],
+    [ 'height',     1000 ],
+    [ 'background', 'white' ],
+    { name: 'mouse', lazyFactory: function() { return this.Mouse.create(); } }
   ],
 
   methods: {

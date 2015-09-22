@@ -11,6 +11,8 @@ md "%BUILD_DIR%"
 
 node --harmony "%FOAM_DIR%\tools\foam.js" foam.build.BuildApp appDefinition=%APP_DEF% "targetPath=%BUILD_DIR%"
 copy "%FOAM_DIR%\core\foam.css" "%BUILD_DIR%\foam.css"
+md "%BUILD_DIR%\resources\svg"
+copy "%FOAM_DIR%\resources\svg\*.svg" "%BUILD_DIR%\resources\svg"
 echo "%BASEDIR_FILES%"
 for %%f in (%BASEDIR_FILES%) do (
   del /Q /F /A %BUILD_DIR%\%%f

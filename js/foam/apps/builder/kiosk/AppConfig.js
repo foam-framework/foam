@@ -17,12 +17,27 @@ CLASS({
   constants: {
     EXISTING_SOURCES: [
       'foam.js',
-      'kiosk_bg.js',
-      'kiosk_view.html',
+      'app_bg.js',
+      'app_view.html',
     ],
   },
 
   properties: [
+    {
+      name: 'appName',
+      defaultValue: 'New Kiosk App',
+    },
+    {
+      type: 'foam.apps.builder.AppWindow',
+      name: 'appWindow',
+      lazyFactory: function() {
+        return this.AppWindow.create({
+          id: this.model_.id,
+          name: 'Kiosk Window',
+        }, this.Y);
+      },
+      hidden: true,
+    },
     {
       model_: 'StringProperty',
       name: 'homepage',
@@ -96,11 +111,11 @@ CLASS({
     "background": {
       "scripts": [
         "foam.js",
-        "kiosk_bg.js"
+        "app_bg.js"
       ]
     }
   },
-  "permissions": <%= JSON.stringify(this.chromePermissions) %>,
+  "permissions": <%= JSON.stringify(this.getChromePermissions()) %>,
   "kiosk_enabled": %%kioskEnabled
 }*/}
   ],

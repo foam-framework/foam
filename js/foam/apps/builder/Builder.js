@@ -16,11 +16,13 @@ CLASS({
   requires: [
     'Model',
     'com.google.analytics.AnalyticsDAO',
+    'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.ExportManager',
     'foam.apps.builder.dao.DAOFactory',
     'foam.apps.builder.kiosk.BrowserConfigFactory as KioskBCFactory',
     'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
+    'foam.apps.builder.events.BrowserConfigFactory as EventsBCFactory',
     'foam.browser.ui.BrowserView',
     'foam.dao.ContextualizingDAO',
     'foam.dao.IDBDAO',
@@ -61,6 +63,7 @@ CLASS({
         var dao = [
           this.KioskBCFactory.create({}, this.Y).factory(),
           this.QuestionnaireBCFactory.create({}, this.Y).factory(),
+          this.EventsBCFactory.create({}, this.Y).factory(),
         ].dao;
         dao.model = this.BrowserConfig;
         return dao;

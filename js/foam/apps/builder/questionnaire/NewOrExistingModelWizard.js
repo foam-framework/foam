@@ -44,7 +44,7 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Create a new set of questions, or share
+        <p>Create a new set of questions, or share
         an existing set of questions with one of your other Questionnaire Apps.
         If you pick an existing set of questions, changes to the questions will
         also show up in the other apps that use that set.

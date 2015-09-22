@@ -29,8 +29,8 @@ CLASS({
   imports: [ 'timer' ],
 
   properties: [
-    { name: 'i', defaultValue: 1 },
-    { name: 'blowBubbles', defaultValue: true },
+    [ 'i', 1 ],
+    [ 'blowBubbles', true ],
     {
       name:  'eyes',
       type:  'EyesCView',
@@ -39,24 +39,24 @@ CLASS({
         return this.EyesCView.create({x:-50, y: -160, r: 25});
       }
     },
-    { name:  'color', defaultValue: 'red' },
+    [ 'color', 'red' ],
     {
       model_: 'IntProperty',
       name:  'r',
       label: 'Radius',
       defaultValue: 10
     },
-    { name:  'width',  defaultValue: 1000 },
-    { name:  'height', defaultValue: 800  },
-    { name:  'x',      defaultValue: 500  },
-    { name:  'y',      defaultValue: 350  },
+    [ 'width', 1000 ],
+    [ 'height', 800 ],
+    [ 'x', 500 ],
+    [ 'y', 350 ],
     {
       name:  'backgroundColor',
       label: 'Background',
       type:  'String',
       defaultValue: 'gray'
     },
-    { name:  'timer' }
+    'timer'
   ],
 
   methods: {

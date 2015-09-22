@@ -110,6 +110,13 @@ CLASS({
       },
     },
     {
+      name: 'placeholder',
+      documentation: 'When floatingLabel is false, an editable view will ' +
+          'have a placeholder instead. Set this to empty string to hide the ' +
+          'placeholder as well.',
+      defaultValueFn: function() { return this.label; }
+    },
+    {
       model_: 'BooleanProperty',
       name: 'growable',
       documentation: 'Set true if this text area should grow with the text.',
@@ -333,7 +340,7 @@ CLASS({
         <% } else { %>
           <input id="{{{input}}}" type="text" <% out(( ! this.enabled ) ? 'disabled' : ''); %>
               class="md-text-field-input <%= this.underline ? '' : 'md-text-field-borderless' %>"
-              <%= this.floatingLabel ? '' : 'placeholder="' + this.label + '"' %><%= this.mode == 'read-only' ? ' disabled' : '' %> />
+              <%= (this.floatingLabel) ? '' : 'placeholder="' + this.placeholder + '"' %><%= this.mode == 'read-only' ? ' disabled' : '' %> />
           <% if ( this.clearAction ) { %>
             $$clear{ iconUrl: this.clearIcon, ligature: 'cancel' }
           <% } %>

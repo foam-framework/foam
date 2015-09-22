@@ -15,6 +15,7 @@ CLASS({
   extendsModel: 'foam.flow.Element',
 
   requires: [
+    'foam.ui.Color',
     'foam.ui.Icon',
     'foam.ui.md.HaloView'
   ],
@@ -150,7 +151,15 @@ CLASS({
       model_: 'foam.ui.ColorProperty',
       name: 'currentColor_',
       hidden: true,
-      defaultValueFn: function() { return this.color; }
+      defaultValueFn: function() { return this.color; },
+      preSet: function(old, nu) {
+        if ( old === nu || ! nu || ! this.Color.isInstance(nu) ) return nu;
+        // Move alpha value to this.alpha (controls opacity). Display color as
+        // same rgba(...) with a=1.
+        this.alpha = nu.alpha;
+        nu.alpha = 1;
+        return nu;
+      },
     },
     {
       model_: 'foam.ui.ColorProperty',
@@ -216,7 +225,7 @@ CLASS({
           if ( self.action.isEnabled.call(self.data, self.action) ) {
             self.currentColor_ = self.color;
           } else {
-            self.currentColor_ = "#5a5a5a";
+            self.currentColor_ = "rgba(0,0,0,0.65)";
           }
         }
       );

@@ -49,7 +49,7 @@ CLASS({
   templates: [
 
     function instructionHTML() {/*
-        <p class="md-style-trait-standard">Edit the current set of questions,
+        <p>Edit the current set of questions,
         Create a new set, or share
         an existing set of questions with one of your other Questionnaire Apps.
         If you pick an existing set of questions, changes to the questions will

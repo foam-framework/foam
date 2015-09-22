@@ -42,12 +42,23 @@ CLASS({
     },
     {
       name: 'data',
-    }
+    },
+    {
+      model_:  'BooleanProperty',
+      name: 'localeAware',
+      help: 'allow editing of date time in local timezone',
+      defaultValue: true
+    },
   ],
 
   methods: {
-    valueToDom: function(value) { return value ? value.getTime() : 0; },
-    domToValue: function(dom) { return new Date(dom); },
+    valueToDom: function(value) {
+      return value ? this.localeAware ? value.getTime() - value.getTimezoneOffset() * 60000 : value.getTime() : 0;
+    },
+    domToValue: function(dom) {
+      var d = new Date(dom);
+      return this.localeAware ? new Date(d.getTime() + d.getTimezoneOffset() * 60000) : d;
+    },
 
     toHTML: function() {
       // TODO: Switch type to just datetime when supported.

@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'AppConfigDetailView',
+  name: 'AppConfigActionsView',
   extendsModel: 'foam.ui.SimpleView',
   traits: [ 'foam.ui.md.ToolbarViewTrait' ],
 
@@ -32,35 +32,38 @@ CLASS({
     'data',
     {
       model_: 'ViewFactoryProperty',
-      name: 'innerView',
-      defaultValue: 'foam.ui.md.DetailView'
+      name: 'delegate',
+      defaultValue: 'foam.ui.md.DetailView',
     },
+    'delegateView',
   ],
 
   methods: [
     function doExportAction(name, title) {
-      var confirm = this.aconfirmExportAction.bind(this, title);
-      var setup = this.asetupExportAction.bind(this, title);
+      var confirm = this.aconfirmExportAction.bind(this, name, title);
+      var setup = this.asetupExportAction.bind(this, name, title);
       aaif(confirm, aseq(setup, function(ret, exportFlow) {
         this.exportManager[name](exportFlow);
         ret();
       }.bind(this)))(nop);
     },
-    function aconfirmExportAction(title, ret) {
+    function aconfirmExportAction(name, title, ret) {
       var confirmPopup = this.PopupView.create({
         cardClass: 'md-card-shell',
         data: this.data,
         blockerMode: 'modal',
         delegate: this.ExportConfirmView.xbind({
+          actionName: name,
           title: title + '?',
         }, this.Y),
       }, this.Y);
       confirmPopup.open();
       confirmPopup.delegateView.result(ret);
     },
-    function asetupExportAction(title, ret) {
+    function asetupExportAction(name, title, ret) {
       var exportFlow = this.ExportFlow.create({
         config$: this.data$,
+        actionName: name,
         title: title,
       }, this.Y);
       var popup = this.PopupView.create({
@@ -143,7 +146,8 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <%= this.innerView({ data$: this.data$ }, this.Y) %>
+     <% this.delegateView = this.delegate({ data$: this.data$ }, this.Y); %>
+     <%= this.delegateView %>
     */},
-  ]
+  ],
 });

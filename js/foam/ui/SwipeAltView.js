@@ -130,7 +130,7 @@ CLASS({
       }
 
       str.push('<div id="' + this.id + '" class="swipeAltOuter">');
-      str.push('<div class="swipeAltSlider" style="width: 100%">');
+      str.push('<div class="swipeAltSlider">');
       str.push('<div class="swipeAltInner" style="left: 0px">');
       str.push(viewChoice.view().toHTML());
 
@@ -192,7 +192,7 @@ CLASS({
     snapToCurrent: function(sizeOfMove) {
       var self = this;
       var time = 150 + sizeOfMove * 150;
-      Movement.animate(time, function(evt) {
+      this.X.animate(time, function(evt) {
         self.x = self.index * self.width;
       }, Movement.ease(150/time, 150/time), function() {
         self.views[self.index].view().deepPublish(self.ON_SHOW);
@@ -213,7 +213,7 @@ CLASS({
         }
 
         var self = this;
-        var frame = window.requestAnimationFrame(function() {
+        var frame = this.X.requestAnimationFrame(function() {
           self.x = self.index * self.width;
 
           for ( var i = 0 ; i < self.slider.children.length ; i++ ) {
@@ -264,6 +264,7 @@ CLASS({
       }
 
       .swipeAltOuter {
+        flex-grow: 1;
         display: flex;
         overflow: hidden;
         min-width: 240px;

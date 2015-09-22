@@ -20,7 +20,7 @@ CLASS({
   requires: [
     'Binding',
     'PersistentContext',
-    'foam.apps.builder.AppConfigDetailView',
+    'foam.apps.builder.AppConfigActionsView',
     'foam.apps.builder.DesignerViewContext',
     'foam.apps.builder.kiosk.KioskView',
     'foam.apps.builder.Panel',
@@ -33,15 +33,29 @@ CLASS({
   ],
 
   properties: [
-    'data',
     'toolbar',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old ) old.removeListener(this.onDataChange);
+        if ( nu ) nu.addListener(this.onDataChange);
+        // TODO(jacksonic): Bind this better.
+        this.data.model.instance_.prototype_ = null;
+      },
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'autoUpdatePreviewHTML',
+      help: 'If true, call updateHTML() on preview view on every data-related change.',
+      defaultValue: true,
+    },
     {
       model_: 'ViewFactoryProperty',
       name: 'panel',
       defaultValue: {
         factory_: 'foam.apps.builder.Panel',
-        innerView: 'foam.apps.builder.AppConfigDetailView',
-      }
+        innerView: 'foam.apps.builder.AppConfigActionsView',
+      },
     },
     {
       model_: 'ViewFactoryProperty',
@@ -89,8 +103,19 @@ CLASS({
 
   listeners: [
     {
+      name: 'onDataChange',
+      code: function() {
+        if ( this.appView && this.autoUpdatePreviewHTML ) {
+          console.log('Data reset');
+          // TODO(jacksonic): Bind this better.
+          this.data.model.instance_.prototype_ = null;
+          this.appView.updateHTML();
+        }
+      },
+    },
+    {
       name: 'constructHelpSnippets',
-      isMerged: 500,
+      isMerged: 1000,
       code: function () {
         var self = this;
         this.OverlayHelpView.create({
@@ -99,17 +124,27 @@ CLASS({
               data: 'Configure your app using the options listed in the config view',
               extraClassName: 'md-body',
               target: this.panelView,
-              beforeInit: function() {
+              abeforeInit: function(ret) {
                 // If panel view is openable, target its contents.
                 if ( self.panelView && self.panelView.open ) {
                   self.panelView.open(self.$);
                   this.target = self.panelView.delegateView ||
                       self.panelView.innerView || self.panelView;
+                  var listener = function() {
+                    if ( self.panelView.state !== 'open' &&
+                        self.panelView.state !== 'expanded' ) return;
+                    self.panelView.state$.removeListener(listener);
+                    ret && ret();
+                  };
+                  self.panelView.state$.addListener(listener);
+                } else {
+                  ret && ret();
                 }
               },
-              afterDestroy: function() {
+              aafterDestroy: function(ret) {
                 self.panelView && self.panelView.close &&
                     self.panelView.close();
+                ret && ret();
               },
               location: 'ABOVE',
               actionLocation: 'TOP_RIGHT',
@@ -118,6 +153,15 @@ CLASS({
               data: 'See how your app looks with the live preview',
               extraClassName: 'md-body',
               target: this.appView,
+              abeforeInit: function(ret) {
+                // While view has no DOM element, try contents delegate/inner
+                // contents.
+                var view;
+                for ( view = this.target; view && ! view.$;
+                      view = view.delegateView || view.innerView || null );
+                if ( view ) this.target = view;
+                ret && ret();
+              },
               location: 'ABOVE',
               actionLocation: 'TOP_RIGHT',
             }, this.Y),
@@ -157,9 +201,10 @@ CLASS({
     */},
     function CSS() {/*
       designer {
+        flex-grow: 1;
         position: relative;
         display: flex;
-        flex-grow: 1;
+        flex-direction: column;
       }
     */},
   ],

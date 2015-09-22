@@ -72,7 +72,7 @@ CLASS({
   templates: [
     function titleHTML() {/* %%toolbar */},
     function instructionHTML() {/*
-      <div class="md-style-trait-standard">
+      <div>
         Change details, such as the label the user will see, below. Click the
         trash can icon to delete this item.
       </div>
