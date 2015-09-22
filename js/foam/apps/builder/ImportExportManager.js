@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'ExportManager',
+  name: 'ImportExportManager',
 
   requires: [
     'foam.apps.builder.DownloadManager',

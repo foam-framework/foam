@@ -48,7 +48,7 @@ CLASS({
       hidden: true,
       name: 'factory', //TODO(jacksonic): Should be named .create, but can't until Model.create is moved
       defaultValue: function(X) {
-        var identityManager = X.exportManager$.get().identityManager;
+        var identityManager = X.importExportManager$.get().identityManager;
         var future = afuture();
 // TODO: aLoadModel
         identityManager.withOAuth(function(oauthStatus, authAgent) {
