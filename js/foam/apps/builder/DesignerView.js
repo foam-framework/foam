@@ -41,7 +41,7 @@ CLASS({
       defaultValue: {
         factory_: 'foam.apps.builder.Panel',
         innerView: 'foam.apps.builder.AppConfigActionsView',
-      }
+      },
     },
     {
       model_: 'ViewFactoryProperty',
@@ -176,9 +176,10 @@ CLASS({
     */},
     function CSS() {/*
       designer {
+        flex-grow: 1;
         position: relative;
         display: flex;
-        flex-grow: 1;
+        flex-direction: column;
       }
     */},
   ],

@@ -12,19 +12,19 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'DesignerView',
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.apps.builder.DesignerView',
 
   traits: [
     'foam.metrics.ScreenViewTrait',
   ],
 
   requires: [
+    'foam.apps.builder.questionnaire.ChangeDAOWizard',
+    'foam.apps.builder.questionnaire.ChangeModelWizard',
     'foam.apps.builder.questionnaire.EditView',
     'foam.apps.builder.questionnaire.QuestionnaireView',
-    'foam.apps.builder.datamodels.ModelSummaryView',
-    'foam.apps.builder.dao.DAOSummaryView',
-    'foam.apps.builder.questionnaire.ChangeModelWizard',
-    'foam.apps.builder.questionnaire.ChangeDAOWizard',
+    'foam.apps.builder.templates.AppView',
+    'foam.apps.builder.templates.PanelView',
   ],
 
   listeners: [
@@ -42,10 +42,6 @@ CLASS({
 
   properties: [
     {
-      name: 'className',
-      defaultValue: 'questionnaire-designer',
-    },
-    {
       name: 'data',
       postSet: function(old, nu) {
         if (nu) {
@@ -58,8 +54,17 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.ExportManager',
-      name: 'exportManager',
+      model_: 'ViewFactoryProperty',
+      name: 'panel',
+      defaultValue: 'foam.apps.builder.templates.PanelView',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'app',
+      defaultValue: {
+        factory_: 'foam.apps.builder.templates.AppView',
+        delegate: 'foam.apps.builder.questionnaire.QuestionnaireView',
+      },
     },
   ],
 
@@ -72,81 +77,5 @@ CLASS({
 
       this.Y.set('mdToolbar', null);
     }
-  ],
-
-  templates: [
-    function toHTML() {/*
-      <designer id="%%id" <%= this.cssClassAttr() %>>
-        <div class="flex-row">
-          $$appName
-          $$version
-        </div>
-        <div class="flex-row-wrap">
-          $$data{ model_: 'foam.apps.builder.datamodels.ModelSummaryView' }
-          $$data{ model_: 'foam.apps.builder.dao.DAOSummaryView' }
-        </div>
-        <div class="preview-frame">
-          $$data{ model_: 'foam.apps.builder.questionnaire.QuestionnaireView' }
-        </div>
-      </designer>
-    */},
-    function CSS() {/*
-      designer.questionnaire-designer {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        overflow-y: auto;
-        overflow-x: hidden;
-      }
-      designer.questionnaire-designer .flex-row-wrap {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        flex-shrink: 0;
-      }
-      designer.questionnaire-designer .flex-row-wrap > * {
-        flex-grow: 1;
-      }
-
-      designer.questionnaire-designer .flex-row {
-        display: flex;
-        flex-direction: row;
-        flex-shrink: 0;
-      }
-      designer.questionnaire-designer .flex-row :first-child {
-        flex-grow: 1;
-      }
-
-      designer.questionnaire-designer .preview-frame {
-        position: relative;
-        margin: 16px;
-        border: 16px solid grey;
-        border-radius: 16px;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0px 3px 4px #444;
-        overflow-y: auto;
-        min-height: 400px;
-        max-height: 100%;
-      }
-
-      @media (min-width: 600px) {
-
-      }
-      @media (max-width: 600px) {
-        designer.questionnaire-designer .preview-frame {
-          margin: 0px;
-          border: 8px solid grey;
-          border-radius: 8px;
-        }
-
-
-      }
-
-
-    */},
-
   ],
 });
