@@ -37,6 +37,10 @@ CLASS({
       help: 'The store of events.',
       lazyFactory: function() {
         return this.appConfig.dao.factory(this.Y);
+      },
+      view: {
+        factory_: 'foam.ui.md.DAOListView',
+        rowView: 'foam.apps.builder.events.EventsDetailView'
       }
     },
 //     {
