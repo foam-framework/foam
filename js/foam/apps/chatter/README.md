@@ -4,6 +4,4 @@ From the top level foam directory, run the server with:
 
     node --harmony tools/foam.js foam.node.tools.Server agents=foam.apps.chatter.Server
 
-Then run the client by connecting to
-
-    [http://localhost:8080/index.html?model=foam.apps.chatter.Client](http://localhost:8080/index.html?model=foam.apps.chatter.Client)
+Then run the client by connecting to [http://localhost:8080/index.html?model=foam.apps.chatter.Client](http://localhost:8080/index.html?model=foam.apps.chatter.Client)
