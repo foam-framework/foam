@@ -23,14 +23,24 @@ CLASS({
   requires: [
     'MDAO',
     'foam.core.dao.CloningDAO',
+    'foam.core.dao.SyncTrait',
     'foam.core.dao.MigrationDAO',
     'foam.core.dao.StorageDAO',
+    'foam.core.dao.SyncDAO',
+    'foam.core.dao.MergeDAO',
+    'foam.core.dao.VersionNoDAO',
+    'foam.core.dao.TimestampDAO',
+    'foam.dao.EasyClientDAO',
     'foam.dao.CachingDAO',
     'foam.dao.ContextualizingDAO',
     'foam.dao.DeDupDAO',
     'foam.dao.GUIDDAO',
     'foam.dao.IDBDAO',
     'foam.dao.SeqNoDAO'
+  ],
+
+  imports: [
+    'document'
   ],
 
   help: 'A facade for easy DAO setup.',
@@ -133,6 +143,28 @@ CLASS({
       name: 'migrationRules',
       subType: 'foam.core.dao.MigrationRule',
       documentation: "Creates an internal $$DOC{ref:'MigrationDAO'} and applies the given array of $$DOC{ref:'MigrationRule'}."
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'syncWithServer'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'serverUri',
+      defaultValueFn: function() {
+        return this.document.location.origin + '/api'
+      }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'isServer',
+      defaultValue: false
+    },
+    {
+      name: 'syncProperty'
+    },
+    {
+      name: 'deletedProperty'
     }
   ],
 
@@ -166,7 +198,7 @@ CLASS({
       var params   = { model: this.model, autoIndex: this.autoIndex };
 
       if ( ! daoModel ) {
-        console.warn("EasyDAO: Unknown DAO Type.  Add '" + daoType + "' to requires: list."); 
+        console.warn("EasyDAO: Unknown DAO Type.  Add '" + daoType + "' to requires: list.");
       }
 
       if ( this.name  ) params.name = this.name;
@@ -217,6 +249,49 @@ CLASS({
       if ( this.cloning ) dao = this.CloningDAO.create({
         delegate: dao
       });
+
+      var model = this.model;
+
+      if ( this.syncWithServer && this.isServer ) throw "isServer and syncWithServer are mutually exclusive.";
+
+      if ( this.syncWithServer || this.isServer ) {
+        if ( ! this.syncProperty || ! this.deletedProperty ) {
+          if ( model.traits.indexOf('foam.core.dao.SyncTrait') != -1 ) {
+            this.syncProperty = model.SYNC_PROPERTY;
+            this.deletedProperty = model.DELETED;
+          } else {
+            throw "Syncing with server requires the foam.core.dao.SyncTrait be applied to your model.";
+          }
+        }
+      }
+
+      if ( this.syncWithServer ) {
+        dao = this.SyncDAO.create({
+          model: model,
+          delegate: dao,
+          remoteDAO: this.EasyClientDAO.create({
+            serverUri: this.serverUri,
+            model: model,
+          }),
+          syncProperty: this.syncProperty,
+          deletedProperty: this.deletedProperty,
+          syncRecordDAO: foam.dao.EasyDAO.create({
+            model: this.SyncDAO.SyncRecord,
+            cache: true,
+            daoType: this.daoType,
+            name: this.name + '_SyncRecords'
+          })
+        });
+        window.setInterval(function() { this.sync(); }.bind(dao), 1000);
+      }
+
+      if ( this.isServer ) {
+        dao = this.VersionNoDAO.create({
+          delegate: dao,
+          property: this.syncProperty,
+          version: 2
+        });
+      }
 
       if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
       if ( this.logging ) dao = LoggingDAO.create(dao);

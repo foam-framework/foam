@@ -23,10 +23,14 @@ CLASS({
     'foam.node.server.StaticFileHandler',
     'foam.node.server.FileHandler'
   ],
+  exports: [
+    'server as HTTPServer'
+  ],
   properties: [
     {
       model_: 'IntProperty',
       name: 'port',
+      help: 'Port to run the server on',
       adapt: function(_, v) {
         if ( typeof v === "string" ) return parseInt(v);
         return v;
@@ -34,11 +38,17 @@ CLASS({
       defaultValue: 8080
     },
     {
-      model_: 'StringProperty',
-      name: 'filepath'
+      model_: 'StringArrayProperty',
+      name: 'agents',
+      adapt: function(_, v) {
+        if ( typeof v === "string" ) return v.split(',');
+        return v;
+      },
+      help: 'Name of agents to run or services to create'
     },
     {
       name: 'server',
+      hidden: true,
       factory: function() {
         console.log("boot dir is: ", global.FOAM_BOOT_DIR);
 
@@ -49,6 +59,15 @@ CLASS({
   methods: [
     function execute() {
       this.configure();
+      var self = this;
+      for ( var i = 0 ; i < this.agents.length ; i++ ) {
+        console.log("Loading ", this.agents[i]);
+        arequire(this.agents[i])(function(m) {
+          var agent = m.create(undefined, self.Y);
+          if ( agent.execute ) agent.execute();
+          console.log("Loaded ", m.id);
+        });
+      }
       this.server.launch();
     },
     function configure() {
