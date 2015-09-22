@@ -22,13 +22,14 @@ CLASS({
   traits: [ 'com.google.misc.Colors' ],
 
   requires: [
+    'com.google.watlobby.Remote',
+
     'com.google.watlobby.Bubble',
     'com.google.watlobby.TopicBubble',
     'com.google.watlobby.PhotoAlbumBubble',
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
     'foam.demos.ClockView',
-    'foam.demos.graphics.Logo',
     'foam.demos.physics.PhysicalCircle',
     'foam.graphics.ImageCView',
     'foam.physics.PhysicsEngine as Collider',
@@ -98,7 +99,8 @@ CLASS({
       name: 'onClick',
       code: function(evt) {
         var self = this;
-        var child = this.collider.findChildAt(evt.clientX, evt.clientY);
+        // TODO: don't use collider
+        var child = this.findChildAt(evt.clientX, evt.clientY);
         if ( child === this.selected ) return;
 
         if ( this.selected ) {
@@ -118,6 +120,8 @@ CLASS({
     function initCView() {
       this.SUPER();
 
+      GLOBAL.lobby = this;
+
       if ( ! this.timer ) {
         this.timer = this.Timer.create();
         this.timer.start();
@@ -130,8 +134,6 @@ CLASS({
         remove: this.removeTopic.bind(this)
       });
 
-      // this.addTopicBubbles();
-
       document.body.addEventListener('click', this.onClick);
 
       var foam = this.ImageCView.create({x: 10, y: this.height-60, width: 837/5, height: 269/5, src: 'img/foampowered_red.png'});
@@ -142,7 +144,6 @@ CLASS({
 
       this.collider.start();
     },
-
     function addTopic(t) {
       var color = this.COLORS[this.children.length % this.COLORS.length];
       var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
@@ -186,7 +187,14 @@ CLASS({
         this.collider.add(c);
       }
     },
-
+    function openRemoteUI() {
+      var w = foam.ui.Window.create({window: window.open("", "Remote Window", "width=800, height=600")});
+      var r = this.Remote.create({topics: this.topics}, w.Y);
+      r.write(w.Y);
+    },
+    function openAdminUI() {
+      
+    },
     function destroy() {
       this.SUPER();
       this.collider.destroy();
