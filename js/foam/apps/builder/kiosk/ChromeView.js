@@ -91,7 +91,7 @@ CLASS({
     },
     {
       name: 'home',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAZklEQVR4AWOgIQhg8CekJJ3hDxCm4VPSyPAfChuwK2BmmAmURMAZQBE0wMmwASqJgOsZOJCVCDIcAQpiwiNAGSiQZbgKFcSEVxhkEGY5YFXiAJLCVHSAoQEID+BWhPB6w8Apoj8AADuwY8lEA+JQAAAAAElFTkSuQmCC',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAeElEQVR4Ae3Lr9WCABxA0UugaWUB3YAZdAgdgzncQpdghs8NWIBMI/DTQOBw+Bcser778vMtErd3iY1SDyHcpTbYK0VfaWdF5ikG/cksOKrEqMrBjFwtJqrlJpw1YqbGychVKxZqXQwUOrFSpzASC4EPDr3/4Ye8AFVvsVUqqgZTAAAAAElFTkSuQmCC',
       ligature: 'home',
       isAvailable: function() { return this.data.enableHomeBttn; },
       code: function() { this.webview && this.webview.home(); }
