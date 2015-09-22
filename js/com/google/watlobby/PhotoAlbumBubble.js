@@ -55,7 +55,7 @@ CLASS({
             var b = this.Bubble.create({
               r: 0, x: this.x, y: this.y, border: '#f00'
             });
-            Movement.animate(2000, function(i, j) {
+            Movement.animate(1500, function(i, j) {
               this.r = Math.min(w, h) / 2 - 16;
               this.x = ( i + 0.5 ) * w;
               this.y = ( j + 0.5 ) * h;
