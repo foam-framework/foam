@@ -22,7 +22,6 @@ CLASS({
   extendsModel: 'foam.node.tools.Server',
   requires: [
     'foam.dao.EasyDAO',
-    'foam.node.server.DAOHandler',
     'foam.demos.olympics.Medal'
   ],
   properties: [
@@ -62,11 +61,7 @@ CLASS({
   methods: [
     function configure() {
       this.SUPER();
-      this.server.attachHandler(this.DAOHandler.create({
-        daoMap: {
-          'MedalDAO': this.dao
-        }
-      }));
+      this.server.exportDAO(this.dao);
     }
   ]
 });
