@@ -30,11 +30,16 @@ CLASS({
     'foam.graphics.ImageCView'
   ],
 
+  imports: [
+    'document',
+    'window'
+  ],
+
   properties: [
     { name: 'n',          defaultValue: 25 },
     { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
-    { name: 'width',      defaultValue: window.innerWidth },
-    { name: 'height',     defaultValue: window.innerHeight },
+    { name: 'width',      factory: function() { return this.window.innerWidth; } },
+    { name: 'height',     factory: function() { return this.window.innerHeight } },
     { name: 'background', defaultValue: '#ccf' },
     { name: 'topics' }
   ],
@@ -43,8 +48,13 @@ CLASS({
     {
       name: 'onClick',
       code: function(evt) {
-        var self = this;
+        var self  = this;
         var child = this.findChildAt(evt.clientX, evt.clientY);
+
+        this.topics.where(EQ(this.Topic.SELECTED, true)).update(function(t) { t.selected = false; })(function() {
+          self.topics.where(EQ(self.Topic.TOPIC, child.topic.topic)).update(function(t) { t.selected = true; });
+        });
+
         if ( child === this.selected ) return;
 
         if ( this.selected ) {
@@ -69,26 +79,31 @@ CLASS({
         remove: this.removeTopic.bind(this)
       });
 
-      document.body.addEventListener('click', this.onClick);
+      this.document.body.addEventListener('click', this.onClick);
     },
 
     function addTopic(t) {
+      t = t.clone();
+
+      var h = (this.height-26) / 4;
+      var i = this.children.length;
+
+//      t.r = 80;
+//      h = 200;
+
       var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
-        x: Math.random() * this.width,
-        y: Math.random() * this.height
+        x: Math.floor(i / 4) * h + h/2,
+        y: ( i % 4 ) * h + h/2
       }, this.Y);
       c.topic = t;
       c.image = t.image;
-      var r = t.r;
-      t.r = 1;
-      Movement.animate(2000, function() { t.r = r; })();
+      var r = h/2-20;
+      t.r = r;
+      c.r = r;
       c.roundImage = t.roundImage;
       if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
       this.addChild(c);
-      c.mass = r/150;
-      c.gravity = 0;
-      c.friction = 0.94;
     },
     function removeTopic(t) {
       // TODO

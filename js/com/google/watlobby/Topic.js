@@ -23,6 +23,7 @@ CLASS({
 
   properties: [
     { name: 'topic' },
+    { model_: 'BooleanProperty', name: 'selected' },
     { name: 'image' },
     {
       name: 'color',
