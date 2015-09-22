@@ -23,7 +23,7 @@ CLASS({
     'foam.ui.md.PopupView',
   ],
   imports: [
-    'exportManager$',
+    'importExportManager$',
     'dao',
     'stack',
   ],
@@ -43,7 +43,7 @@ CLASS({
       var confirm = this.aconfirmExportAction.bind(this, name, title);
       var setup = this.asetupExportAction.bind(this, name, title);
       aaif(confirm, aseq(setup, function(ret, exportFlow) {
-        this.exportManager[name](exportFlow);
+        this.importExportManager[name](exportFlow);
         ret();
       }.bind(this)))(nop);
     },

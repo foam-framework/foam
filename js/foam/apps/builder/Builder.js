@@ -18,7 +18,7 @@ CLASS({
     'com.google.analytics.AnalyticsDAO',
     'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
-    'foam.apps.builder.ExportManager',
+    'foam.apps.builder.ImportExportManager',
     'foam.apps.builder.dao.DAOFactory',
     'foam.apps.builder.kiosk.BrowserConfigFactory as KioskBCFactory',
     'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
@@ -37,7 +37,7 @@ CLASS({
     'metricsDAO',
     'menuSelection$',
     'menuDAO$',
-    'exportManager$',
+    'importExportManager$',
     'modelDAO',
     'daoConfigDAO',
   ],
@@ -105,10 +105,10 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.ExportManager',
-      name: 'exportManager',
+      type: 'foam.apps.builder.ImportExportManager',
+      name: 'importExportManager',
       factory: function() {
-        return this.ExportManager.create({}, this.Y);
+        return this.ImportExportManager.create({}, this.Y);
       },
     },
     {
