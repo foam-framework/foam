@@ -27,8 +27,12 @@ CLASS({
           $$version
         </div>
         <div class="flex-row-wrap">
+      <% if ( this.data && this.data.model ) { %>
           $$data{ model_: 'foam.apps.builder.datamodels.ModelSummaryView' }
+      <% } %>
+      <% if ( this.data && this.data.dao ) { %>
           $$data{ model_: 'foam.apps.builder.dao.DAOSummaryView' }
+      <% } %>
         </div>
       </template-panel>
     */},
