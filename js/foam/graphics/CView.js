@@ -270,7 +270,7 @@ CLASS({
       // Start from the end to find the child in the foreground
       for ( var i = cs.length-1 ; i >= 0 ; i-- ) {
         var c1 = cs[i];
-        if ( c1.intersects(c2) ) return c1;
+        if ( c1.intersects && c1.intersects(c2) ) return c1;
       }
     },
 
