@@ -27,32 +27,8 @@ CLASS({
     'foam.apps.builder.templates.PanelView',
   ],
 
-  listeners: [
-    {
-      name: 'dataChange',
-      code: function() {
-        if (this.dataView) {
-          // bind this better
-          this.data.model.instance_.prototype_ = null;
-          this.dataView.updateHTML();
-        }
-      }
-    }
-  ],
-
   properties: [
-    {
-      name: 'data',
-      postSet: function(old, nu) {
-        if (nu) {
-          nu.addListener(this.dataChange);
-        }
-        if (old) {
-          old.removeListener(this.dataChange);
-        }
-        this.data.model.instance_.prototype_ = null;
-      },
-    },
+    'data',
     {
       model_: 'ViewFactoryProperty',
       name: 'panel',

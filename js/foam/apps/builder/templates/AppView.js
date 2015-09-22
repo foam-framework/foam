@@ -28,10 +28,13 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <preview-frame>
-       <% this.delegateView = this.delegate({ data$: this.data$ }, this.Y); %>
-       <%= this.delegateView %>
+      <preview-frame id="%%id" %%cssClassAttr()>
+        <% this.toInnerHTML(out); %>
       </preview-frame>
+    */},
+    function toInnerHTML() {/*
+      <% this.delegateView = this.delegate({ data$: this.data$ }, this.Y); %>
+      <%= this.delegateView %>
     */},
     function CSS() {/*
       preview-frame {
