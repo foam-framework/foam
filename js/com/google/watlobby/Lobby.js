@@ -80,25 +80,17 @@ CLASS({
       return c;
     }},
     {
-      name: 'topics',   factory: function() {
-      return JSONUtil.arrayToObjArray(this.X, [
-        { topic: 'chrome',       image: 'chrome.png',       r: 180, color: this.RED,   roundImage: true },
-        { topic: 'flip',         image: 'flip.png',         r: 110, color: this.RED },
-        { topic: 'pixel',        image: 'pixel.png',        r: 110, color: this.RED },
-        { topic: 'googlecanada', image: 'googlecanada.png', r: 200, color: this.RED,   roundImage: true },
-        { topic: 'onhub',        image: 'onhub.png',        r: 120, color: this.GREEN, roundImage: true },
-        { topic: 'onhubvideo',   image: 'onhublogo.png',    r: 120, color: this.BLUE,  roundImage: true, video: 'HNnfHP7VDP8', model: 'Video' },
-        { topic: 'inbox',        image: 'inbox.png',        r: 160, color: this.BLUE },
-        { topic: 'android',      image: 'android.png',      r: 100, color: this.GREEN },
-        { topic: 'calc',         image: 'calculator.png',   r: 100, color: this.GREEN },
-        { topic: 'gmailoffline', image: 'gmailoffline.png', r: 160, color: this.BLUE },
-        { topic: 'fiber',        image: 'fiber.png',        r: 180, color: this.BLUE },
-        { topic: 'foam',         image: 'foam_whiteontransparent.png', r: 80, color: 'red', roundImage: true, background: 'red' },
-        { topic: 'inwatvideo',   image: 'inwatvideo.png',   r: 120, model: 'Video', video: '1Bb29KxXzDs', roundImage: true },
-        { topic: 'appbuilder',   image: 'appbuilder.png',   r: 120, model: 'Video', video: 'HvxKHj9QmMI' },
-        { topic: 'photos',       image: 'photoalbum.png',   r: 110, model: 'PhotoAlbum', color: this.YELLOW, roundImage: true }
-      ], this.Topic);
-    }}
+      name: 'topics',
+      factory: function() {
+        var dao = [].dao;
+
+        axhr('topics.json')(function(topics) {
+          JSONUtil.arrayToObjArray(this.X, topics, this.Topic).select(dao);
+        }.bind(this));
+
+        return dao;
+      }
+    }
   ],
 
   listeners: [
@@ -106,7 +98,6 @@ CLASS({
       name: 'onClick',
       code: function(evt) {
         var self = this;
-        // console.log('********************* onClick', evt);
         var child = this.collider.findChildAt(evt.clientX, evt.clientY);
         if ( child === this.selected ) return;
 
@@ -133,7 +124,13 @@ CLASS({
       }
 
       this.addBubbles();
-      this.addTopicBubbles();
+
+      this.topics.pipe({
+        put:    this.addTopic.bind(this),
+        remove: this.removeTopic.bind(this)
+      });
+
+      // this.addTopicBubbles();
 
       document.body.addEventListener('click', this.onClick);
 
@@ -146,30 +143,30 @@ CLASS({
       this.collider.start();
     },
 
-    function addTopicBubbles() {
-      for ( var i = 0 ; i < this.topics.length ; i++ ) {
-        var color = this.COLORS[i % this.COLORS.length];
-        var t = this.topics[i];
-        var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
-          x: Math.random() * this.width,
-          y: Math.random() * this.height,
-          border: color
-        }, this.Y);
-        c.topic = t;
-        c.image = t.image;
-        c.r = t.r;
-        c.roundImage = t.roundImage;
-        if ( t.color ) c.border = t.color;
-        if ( t.background ) c.color = t.background;
-        this.addChild(c);
-
-        c.mass = c.r/150;
-        c.gravity = 0;
-        c.friction = 0.94;
-        this.collider.add(c);
-      }
+    function addTopic(t) {
+      var color = this.COLORS[this.children.length % this.COLORS.length];
+      var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
+        x: Math.random() * this.width,
+        y: Math.random() * this.height,
+        border: color
+      }, this.Y);
+      c.topic = t;
+      c.image = t.image;
+      var r = t.r;
+      t.r = 1;
+      Movement.animate(2000, function() { t.r = r; })();
+      c.roundImage = t.roundImage;
+      if ( t.color ) c.border = t.color;
+      if ( t.background ) c.color = t.background;
+      this.addChild(c);
+      c.mass = r/150;
+      c.gravity = 0;
+      c.friction = 0.94;
+      this.collider.add(c);
     },
-
+    function removeTopic(t) {
+      // TODO
+    },
     function addBubbles() {
       var N = this.n;
       for ( var i = 0 ; i < N ; i++ ) {
