@@ -25,7 +25,7 @@ CLASS({
     },
     {
       name: 'daoMap',
-      required: true
+      lazyFactory: function() { return {}; }
     }
   ],
   constants: {
