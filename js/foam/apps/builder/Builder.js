@@ -23,6 +23,7 @@ CLASS({
     'foam.apps.builder.kiosk.BrowserConfigFactory as KioskBCFactory',
     'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
     'foam.apps.builder.events.BrowserConfigFactory as EventsBCFactory',
+    'foam.apps.builder.administrator.BrowserConfigFactory as AdminBCFactory',
     'foam.browser.ui.BrowserView',
     'foam.dao.ContextualizingDAO',
     'foam.dao.IDBDAO',
@@ -64,6 +65,7 @@ CLASS({
           this.KioskBCFactory.create({}, this.Y).factory(),
           this.QuestionnaireBCFactory.create({}, this.Y).factory(),
           this.EventsBCFactory.create({}, this.Y).factory(),
+          this.AdminBCFactory.create({}, this.Y).factory(),
         ].dao;
         dao.model = this.BrowserConfig;
         return dao;
