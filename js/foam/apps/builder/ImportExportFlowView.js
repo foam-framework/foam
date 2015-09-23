@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'ExportFlowView',
+  name: 'ImportExportFlowView',
   extendsModel: 'foam.ui.SimpleView',
 
   imports: [
@@ -32,7 +32,7 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.ExportFlow',
+      type: 'foam.apps.builder.ImportExportFlow',
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;
