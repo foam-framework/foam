@@ -29,6 +29,7 @@ CLASS({
       lazyFactory: function() {
         return this.LocalDAOFactory.create({
           name: this.appName,
+          label: this.appName,
           modelType: this.model.id,
         });
       },
@@ -41,15 +42,16 @@ CLASS({
       preSet: function(old, nu) {
         if ( nu && old !== nu ) {
           // name change is primary key change for the DAOFactory
-          this.daoConfigDAO.remove(this.dao);
-          this.dao.name = nu;
-        }        
+          //this.daoConfigDAO && this.daoConfigDAO.remove(this.dao);
+          this.dao.label = nu;
+        }
+        return nu;
       },
       postSet: function(old, nu) {
         if ( nu && old !== nu ) {
-          this.daoConfigDAO.put(this.dao);
+          this.daoConfigDAO && this.daoConfigDAO.put(this.dao);
         }
-      } 
+      }
     },
   ],
 

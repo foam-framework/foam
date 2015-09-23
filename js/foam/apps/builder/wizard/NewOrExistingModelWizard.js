@@ -60,7 +60,7 @@ CLASS({
     },
     {
       name: 'existingViewFactory',
-      label: 'Use existing Data Model',
+      label: 'Copy an existing Data Model',
       defaultValue: null,
     },
     {
