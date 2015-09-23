@@ -21,6 +21,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.questionnaire.Questionnaire',
+    'foam.apps.builder.AppWindow',
   ],
 
   constants: {

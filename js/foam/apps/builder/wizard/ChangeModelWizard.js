@@ -45,7 +45,6 @@ CLASS({
           orientation: 'vertical',
           choices: [
             [this.editViewFactory, this.model_.EDIT_VIEW_FACTORY.label],
-            [this.newViewFactory, this.model_.NEW_VIEW_FACTORY.label],
             [this.existingViewFactory, this.model_.EXISTING_VIEW_FACTORY.label ],
           ]
         }

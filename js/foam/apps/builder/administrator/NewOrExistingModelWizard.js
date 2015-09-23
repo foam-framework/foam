@@ -28,7 +28,7 @@ CLASS({
     },
     {
       name: 'existingViewFactory',
-      label: 'Use existing Question Set',
+      label: 'Copy existing Question Set',
       defaultValue: null, // no-op function constant?
     },
     {

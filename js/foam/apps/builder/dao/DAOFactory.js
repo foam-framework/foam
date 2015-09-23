@@ -15,6 +15,10 @@ CLASS({
 
   documentation: "Holds a serializable description of a DAO type.",
 
+  imports: [
+    'modelDAO',
+  ],
+
   properties: [
     {
       name: 'name',
@@ -42,6 +46,20 @@ CLASS({
       help: 'True if the user should be shown an EditView to configure this DAOFactory',
       defaultValue: false,
     }
+  ],
+
+  methods: [
+    function aLoadModel(ret) {
+      /* afunc to load the model referenced by $$DOC(ref:'.modelType'). Calls ret(model). */
+      this.modelDAO.select(EQ(Model.ID, this.modelType), {
+        put: function(m) {
+          ret && ret(m);
+        },
+        error: function() {
+          arequire(this.modelType)(ret);
+        }
+      })
+    },
   ],
 
 });

@@ -24,11 +24,6 @@ CLASS({
       name: 'model',
       documentation: function() {/* The model id of the new item. */},
     },
-    {
-      model_: 'StringProperty',
-      name: 'name',
-      documentation: function() {/* The name of the new item. */},
-    },
   ],
   
   methods: [

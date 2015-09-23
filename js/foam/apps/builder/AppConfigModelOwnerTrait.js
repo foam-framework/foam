@@ -35,18 +35,21 @@ CLASS({
     },
     {
       name: 'appName',
-      postSet: function(old,nu) {
-        if ( nu && this.defaultModel_ ) {
-          this.model.name = capitalize(camelize(this.appName))+'Questionnaire';
+      preSet: function(old, nu) {
+        // preset-postset split to allow both DAO and model to update this.dao before writing
+        if ( nu && (old !== nu) ) {
+          // primary key change for the model
+          this.modelRemove(this.model);
+          this.model.name = capitalize(camelize(nu));
+          if ( this.dao ) this.dao.modelType = this.model.id;
         }
+        return nu;
       },
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'defaultModel_',
-      hidden: true,
-      transient: true,
-      documentation: 'Indicates that .model is still not saved, and the name can be changed.',
+      postSet: function(old, nu) {
+        if ( nu && (old !== nu) ) {
+          this.modelPut(this.model);
+        }
+      }
     },
     {
       name: 'model',
@@ -56,12 +59,20 @@ CLASS({
       },
       preSet: function(old,nu) {
         if ( ! nu ) return old;
-        if ( old ) this.defaultModel_ = false; // it's been set at least once
-        return nu;
+        if ( old && (old.id !== nu.id) ) {
+          this.modelRemove(old);
+        }
+        var ret = nu.deepClone();
+        // copy the other model but use our name
+        if ( this.appName ) ret.name = capitalize(camelize(this.appName));
+        return ret;
       },
       postSet: function(old,nu) {
+        if ( nu ) {
+          this.modelPut(nu);
+          nu.addListener(this.modelChange);
+        }
         if ( old ) old.removeListener(this.modelChange);
-        if ( nu ) nu.addListener(this.modelChange);
         this.modelChange();
       },
    },
@@ -73,6 +84,7 @@ CLASS({
       name: 'modelChange',
       code: function() {
         this.propertyChange('model', null, this.model);
+        this.modelPut(this.model);
       }
     }
   ],
@@ -83,8 +95,25 @@ CLASS({
         extendsModel: this.baseModelId,
         name: capitalize(camelize(this.appName)),
       });
-      this.defaultModel_ = true;
     },
+
+    function modelPut(model) {
+      this.modelDAO && this.modelDAO.put(model, {
+        put: function(o) { console.log("put ok", o.id); },
+        error: function(o) {
+          console.log("put error", o);
+        },
+      });
+    },
+    function modelRemove(model) {
+      this.modelDAO && this.modelDAO.remove(model, {
+        remove: function(o) { console.log("remove ok", o.id); },
+        error: function(func, o) {
+          console.log("remove error", o);
+        },
+      });
+    },
+
   ],
 
 });

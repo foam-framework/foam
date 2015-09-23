@@ -50,7 +50,7 @@ CLASS({
       defaultValue: function(X) {
         var identityManager = X.exportManager$.get().identityManager;
         var future = afuture();
-
+// TODO: aLoadModel
         identityManager.withOAuth(function(oauthStatus, authAgent) {
           var authX = this.Y.sub();
           authX.registerModel(this.XHR.xbind({ authAgent: authAgent }));
