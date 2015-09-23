@@ -56,9 +56,11 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
+      <% if ( this.data.model_.NAME ) { %>
         <div class="name-editor">
           $$name
         </div>
+      <% } %>
         <div class="md-card-heading-content-spacer"></div>
         <div class="scroll-container">
           $$selectionsDAO
@@ -98,4 +100,3 @@ CLASS({
   ]
 
 });
-

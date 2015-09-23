@@ -35,11 +35,20 @@ CLASS({
     },
     {
       name: 'appName',
-      postSet: function(old,nu) {
-        if ( nu && this.defaultModel_ ) {
-          this.model.name = capitalize(camelize(this.appName))+'Questionnaire';
-        }
+      preSet: function(old, nu) {
+        // preset-postset split to allow both DAO and model to update this.dao before writing
+        if ( nu && old !== nu ) {
+          // primary key change for the model
+          this.modelDAO.remove(this.model);
+          this.model.name = capitalize(camelize(this.appName));
+          if ( this.dao ) this.dao.modelType = this.model.id;
+        }        
       },
+      postSet: function(old, nu) {
+        if ( nu && old !== nu ) {
+          this.modelDAO.put(this.model);
+        }
+      } 
     },
     {
       model_: 'BooleanProperty',
