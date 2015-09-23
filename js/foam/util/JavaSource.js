@@ -39,12 +39,7 @@ CLASS({
       model = this.prepModel_(model);
 
       var filter = function(m) {
-        console.log("filtering", m.name);
-        if ( m.name === 'onUpdate_' ) {
-          console.log("labels: ", m.labels);
-        }
         if ( m.labels && m.labels.indexOf('java') == -1 ) {
-          console.log("removing");
           return false;
         }
         return true;
