@@ -27,12 +27,16 @@ CLASS({
       // Swift doesn't support traits, so we'll copy traits into the model directly.
       model = this.InlineTrait.create().inlineTraits(model);
 
-      model.properties = model.properties.filter(function(p) {
-        if ( p.labels && p.labels.indexOf('swift') == -1 ) {
+      var filter = function(m) {
+        if ( m.labels && m.labels.indexOf('swift') == -1 ) {
           return false;
         }
         return true;
-      });
+      };
+
+      model.properties = model.properties.filter(filter);
+      model.methods = model.methods.filter(filter);
+      model.listeners = model.listeners.filter(filter);
 
       return model;
     },

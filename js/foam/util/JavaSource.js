@@ -37,6 +37,23 @@ CLASS({
 
     function generate(model) {
       model = this.prepModel_(model);
+
+      var filter = function(m) {
+        console.log("filtering", m.name);
+        if ( m.name === 'onUpdate_' ) {
+          console.log("labels: ", m.labels);
+        }
+        if ( m.labels && m.labels.indexOf('java') == -1 ) {
+          console.log("removing");
+          return false;
+        }
+        return true;
+      };
+
+      model.properties = model.properties.filter(filter);
+      model.methods = model.methods.filter(filter);
+      model.listeners = model.listeners.filter(filter);
+
       return this.javaSource.call(model, null, this);
     },
   ],
