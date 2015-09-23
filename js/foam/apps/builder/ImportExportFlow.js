@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'ExportFlow',
+  name: 'ImportExportFlow',
 
   imports: [
     'mdToolbar as toolbar',
