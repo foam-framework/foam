@@ -312,7 +312,13 @@ CLASS({
       name:  'count',
       type:  'int',
       defaultValue: 0
-    }
+    },
+    {
+      name: 'value',
+      getter: function() {
+        return this.count;
+      }
+    },
   ],
 
   methods: {

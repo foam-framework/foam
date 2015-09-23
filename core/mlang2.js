@@ -539,7 +539,13 @@ CLASS({
       type:  'int',
       help:  'Sum of values.',
       factory: function() { return 0; }
-    }
+    },
+    {
+      name: 'value',
+      getter: function() {
+        return this.sum;
+      }
+    },
   ],
 
   methods: {
@@ -573,7 +579,13 @@ CLASS({
       type:  'floag',
       help:  'Average of values.',
       getter: function() { return this.sum / this.count; }
-    }
+    },
+    {
+      name: 'value',
+      getter: function() {
+        return this.avg;
+      }
+    },
   ],
 
   methods: {
@@ -596,7 +608,13 @@ CLASS({
       type:  'int',
       help:  'Minimum value.',
       defaultValue: undefined
-    }
+    },
+    {
+      name: 'value',
+      getter: function() {
+        return this.min;
+      }
+    },
   ],
 
   methods: {
@@ -630,7 +648,13 @@ CLASS({
       name:  'values',
       help:  'Distinct values.',
       factory: function() { return {}; }
-    }
+    },
+    {
+      name: 'value',
+      getter: function() {
+        return this.arg2.value;
+      }
+    },
   ],
 
   methods: {
@@ -672,7 +696,7 @@ CLASS({
       // sort groups.
       name: 'groupKeys',
       factory: function() { return [] }
-    }
+    },
   ],
 
   methods: {
@@ -954,6 +978,15 @@ CLASS({
   name: 'SeqExpr',
 
   extendsModel: 'NARY',
+
+  properties: [
+    {
+      name: 'value',
+      getter: function() {
+        return this.args.map(function(x) { return x.value; });
+      }
+    },
+  ],
 
   methods: {
     pipe: function(sink) { sink.put(this); },
