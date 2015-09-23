@@ -21,6 +21,7 @@ CLASS({
 
   requires: [
     'foam.core.types.StringEnumProperty',
+    'foam.util.InlineTrait'
   ],
 
   documentation: function() {/* Generates Java source code from a FOAM
@@ -30,29 +31,7 @@ CLASS({
   methods: [
     function prepModel_(model) {
       // Java doesn't support traits, so we'll copy traits into the model directly.
-      model = model.deepClone();
-
-      var properties = model.properties;
-      for ( var i = 0; i < model.traits.length; i++ ) {
-        var trait = this.X.lookup(model.traits[i]);
-
-        for ( var j = 0; j < trait.properties.length; j++ ) {
-          var traitProp = trait.properties[j];
-
-          for ( var k = 0; k < properties.length; k++ ) {
-            var prop = properties[k];
-            if ( prop.name === traitProp.name ) {
-              properties[k] = traitProp.deepClone().copyFrom(prop);
-              break;
-            }
-          }
-          if ( k === properties.length ) {
-            properties.push(traitProp);
-          }
-        }
-      }
-      model.properties = properties;
-
+      model = this.InlineTrait.create().inlineTraits(model);
       return model;
     },
 

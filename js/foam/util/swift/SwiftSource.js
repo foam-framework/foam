@@ -18,33 +18,16 @@
 CLASS({
   package: 'foam.util.swift',
   name: 'SwiftSource',
+  requires: [
+    'foam.util.InlineTrait'
+  ],
 
   methods: [
     function prepModel(model) {
       // Swift doesn't support traits, so we'll copy traits into the model directly.
-      model = model.deepClone();
+      model = this.InlineTrait.create().inlineTraits(model);
 
-      var properties = model.properties;
-      for ( var i = 0; i < model.traits.length; i++ ) {
-        var trait = this.X.lookup(model.traits[i]);
-
-        for ( var j = 0; j < trait.properties.length; j++ ) {
-          var traitProp = trait.properties[j];
-
-          for ( var k = 0; k < properties.length; k++ ) {
-            var prop = properties[k];
-            if ( prop.name === traitProp.name ) {
-              properties[k] = traitProp.deepClone().copyFrom(prop);
-              break;
-            }
-          }
-          if ( k === properties.length ) {
-            properties.push(traitProp);
-          }
-        }
-      }
-
-      model.properties = properties.filter(function(p) {
+      model.properties = model.properties.filter(function(p) {
         if ( p.labels && p.labels.indexOf('swift') == -1 ) {
           return false;
         }
@@ -53,12 +36,12 @@ CLASS({
 
       return model;
     },
-      function generate(model) {
-        return this.swiftSource.call(this.prepModel(model), undefined, this);
-      },
-      function genDetailView(model) {
-        return this.detailView.call(this.prepModel(model), undefined, this);
-      },
+    function generate(model) {
+      return this.swiftSource.call(this.prepModel(model), undefined, this);
+    },
+    function genDetailView(model) {
+      return this.detailView.call(this.prepModel(model), undefined, this);
+    },
   ],
 
   templates: [
