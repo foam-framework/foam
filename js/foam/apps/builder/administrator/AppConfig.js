@@ -20,7 +20,6 @@ CLASS({
   ],
 
   requires: [
-    'foam.apps.builder.administrator.Admin',
     'foam.browser.BrowserConfig',
   ],
 
