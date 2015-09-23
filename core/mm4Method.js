@@ -894,6 +894,9 @@ CLASS({
         */}
     },
     {
+      name: 'labels'
+    },
+    {
       model_: 'TemplateProperty',
       name: 'swiftSource',
       labels: ['swift'],
