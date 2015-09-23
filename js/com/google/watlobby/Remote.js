@@ -51,21 +51,9 @@ CLASS({
         var self  = this;
         var child = this.findChildAt(evt.clientX, evt.clientY);
 
-        this.topics.where(EQ(this.Topic.SELECTED, true)).update(function(t) { t.selected = false; })(function() {
-          self.topics.where(EQ(self.Topic.TOPIC, child.topic.topic)).update(function(t) { t.selected = true; });
+        this.topics.where(EQ(this.Topic.SELECTED, true)).update(SET(this.Topic.SELECTED, false))(function() {
+          self.topics.where(EQ(self.Topic.TOPIC, child.topic.topic)).update(SET(self.Topic.SELECTED, true));
         });
-
-        if ( child === this.selected ) return;
-
-        if ( this.selected ) {
-          this.selected.setSelected(false);
-          this.selected = null;
-        }
-
-        if ( child && child.setSelected ) {
-          this.selected = child
-          child.setSelected(true);
-        }
       }
     }
   ],
