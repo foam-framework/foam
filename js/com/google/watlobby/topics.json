@@ -1,0 +1,17 @@
+[
+  { "topic": "chrome",       "image": "chrome.png",       "r": 180, "color": "RED",   "roundImage": true },
+  { "topic": "flip",         "image": "flip.png",         "r": 110, "color": "RED" },
+  { "topic": "pixel",        "image": "pixel.png",        "r": 110, "color": "RED" },
+  { "topic": "googlecanada", "image": "googlecanada.png", "r": 200, "color": "RED",   "roundImage": true },
+  { "topic": "onhub",        "image": "onhub.png",        "r": 120, "color": "GREEN", "roundImage": true },
+  { "topic": "onhubvideo",   "image": "onhublogo.png",    "r": 120, "color": "BLUE",  "roundImage": true, "video": "HNnfHP7VDP8", "model": "Video" },
+  { "topic": "inbox",        "image": "inbox.png",        "r": 160, "color": "BLUE" },
+  { "topic": "android",      "image": "android.png",      "r": 100, "color": "GREEN" },
+  { "topic": "calc",         "image": "calculator.png",   "r": 100, "color": "GREEN" },
+  { "topic": "gmailoffline", "image": "gmailoffline.png", "r": 160, "color": "BLUE" },
+  { "topic": "fiber",        "image": "fiber.png",        "r": 180, "color": "BLUE" },
+  { "topic": "foam",         "image": "foam_whiteontransparent.png", "r": 80, "color": "red", "roundImage": true, "background": "red" },
+  { "topic": "inwatvideo",   "image": "inwatvideo.png",   "r": 120, "model": "Video", "video": "1Bb29KxXzDs", "roundImage": true },
+  { "topic": "appbuilder",   "image": "appbuilder.png",   "r": 120, "model": "Video", "video": "HvxKHj9QmMI" },
+  { "topic": "photos",       "image": "photoalbum.png",   "r": 110, "model": "PhotoAlbum", "color": "YELLOW", "roundImage": true }
+]

@@ -53,20 +53,20 @@ CLASS({
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
-        this.cancel_ = Movement.animate(2000, function() {
+        this.cancel_ = Movement.animate(1000, function() {
           var w = this.lobby.width;
           var h = this.lobby.height;
           this.x = w/2;
           this.y = h/2;
           this.zoom = 1;
           this.textArea.alpha = 0.1;
-        }.bind(this), Movement.easy)();
+        }.bind(this), Movement.easey)();
       } else {
         this.mass = this.oldMass_;
-        this.cancel_ = Movement.animate(2000, function() {
+        this.cancel_ = Movement.animate(1000, function() {
           this.zoom = 0;
           this.textArea.alpha = 0;
-        }.bind(this), Movement.easy)();
+        }.bind(this), Movement.easey)();
       }
     },
     function layout() {

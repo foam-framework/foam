@@ -19,10 +19,17 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Topic',
 
+  traits: [ 'com.google.misc.Colors' ],
+
   properties: [
     { name: 'topic' },
+    { model_: 'BooleanProperty', name: 'selected' },
     { name: 'image' },
-    { name: 'color' },
+    {
+      name: 'color',
+      // Convert capitalized colour names to standard Google colours
+      preSet: function(_, c) { return this[c] || c; }
+    },
     { name: 'background' },
     { name: 'r' },
     { name: 'model', defaultValue: 'Topic' },
