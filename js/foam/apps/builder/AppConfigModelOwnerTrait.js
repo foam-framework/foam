@@ -24,6 +24,8 @@ CLASS({
     'foam.ui.TableView',
   ],
 
+  documentation: 'X.modelDAO should exist and be shared with any DAOFactory instances.',
+
   imports: [
     'modelDAO',
   ],
@@ -35,18 +37,9 @@ CLASS({
     },
     {
       name: 'appName',
-      preSet: function(old, nu) {
-        // preset-postset split to allow both DAO and model to update this.dao before writing
-        if ( nu && (old !== nu) ) {
-          // primary key change for the model
-          this.modelRemove(this.model);
-          this.model.name = capitalize(camelize(nu));
-          if ( this.dao ) this.dao.modelType = this.model.id;
-        }
-        return nu;
-      },
       postSet: function(old, nu) {
-        if ( nu && (old !== nu) ) {
+        if ( nu && ( old !== nu )) {
+          this.model.label = capitalize(camelize(nu));
           this.modelPut(this.model);
         }
       }
@@ -59,24 +52,26 @@ CLASS({
       },
       preSet: function(old,nu) {
         if ( ! nu ) return old;
-        if ( old && (old.id !== nu.id) ) {
-          this.modelRemove(old);
-        }
+        // copy the mew model but use our old model's id
+        // if deserializing this, there's no old so just keep the model as given
         var ret = nu.deepClone();
-        // copy the other model but use our name
-        if ( this.appName ) ret.name = capitalize(camelize(this.appName));
+        if ( old ) {
+          ret.package = old.package;
+          ret.name = old.name;
+        }
         return ret;
       },
       postSet: function(old,nu) {
+        if ( old ) old.removeListener(this.modelChange);
         if ( nu ) {
+          // if copying, id was forced to be the same, so we're overwriting the old model
+          // if deserializing this, populate the possibly empty modelDAO
           this.modelPut(nu);
           nu.addListener(this.modelChange);
         }
-        if ( old ) old.removeListener(this.modelChange);
         this.modelChange();
       },
-   },
-
+    },
   ],
 
   listeners: [
@@ -84,6 +79,7 @@ CLASS({
       name: 'modelChange',
       code: function() {
         this.propertyChange('model', null, this.model);
+        // update the saved copy of the model
         this.modelPut(this.model);
       }
     }
@@ -91,6 +87,7 @@ CLASS({
 
   methods: [
     function resetModel() {
+      // this initialization case is the only time the name is synced to appName
       this.model = this.Model.create({
         extendsModel: this.baseModelId,
         name: capitalize(camelize(this.appName)),
