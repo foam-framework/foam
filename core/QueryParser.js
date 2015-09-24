@@ -95,10 +95,10 @@ var QueryParserFactory = function(model, opt_enableKeyword) {
     equals: seq(sym('fieldname'), alt(':', '='), sym('valueList')),
 
     // TODO: merge with 'equals'
-    before: seq(sym('fieldname'), alt('<', '<=', '-before:'), sym('value')),
+    before: seq(sym('fieldname'), alt('<=', '<', '-before:'), sym('value')),
 
     // TODO: merge with 'equals'
-    after: seq(sym('fieldname'), alt('>', '>=', '-after:'), sym('value')),
+    after: seq(sym('fieldname'), alt('>=', '>', '-after:'), sym('value')),
 
     value: alt(
       sym('me'),
