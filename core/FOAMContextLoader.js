@@ -41,7 +41,8 @@ for (var loadingLoopIndex = 0; loadingLoopIndex < files.length; loadingLoopIndex
     filename = filename + '.js';
   }
 
-  if ( path.isAbsolute(filename) ) {
+  // Poor mans workaround for path.isAbsolute on older nodejs versions.
+  if ( filename[0] === '/' ) {
     var filedata = fs.readFileSync(filename);
   } else {
     filedata = fs.readFileSync(path.join(FOAM_BOOT_DIR, filename));
