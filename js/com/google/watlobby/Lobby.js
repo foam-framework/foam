@@ -100,6 +100,8 @@ CLASS({
         if ( o ) o.setSelected(false);
 
         if ( n && n.setSelected ) {
+          this.children.remove(n);
+          this.children.push(n);
           n.setSelected(true);
           return n;
         }
