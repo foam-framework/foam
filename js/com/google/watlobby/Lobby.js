@@ -100,8 +100,9 @@ CLASS({
         if ( o ) o.setSelected(false);
 
         if ( n && n.setSelected ) {
-          this.children.splice(this.children.indexOf(n), 1);
-          this.children.push(n);
+          var i = this.children.indexOf(n);
+          this.children[i] = this.children[this.children.length-1];
+          this.children[this.children.length-1] = n;
           n.setSelected(true);
           return n;
         }
