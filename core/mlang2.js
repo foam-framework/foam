@@ -1007,7 +1007,15 @@ CLASS({
       return ret;
     },
     clone: function() {
-      return SeqExpr.create({args:this.args.deepClone()});
+      // We do a slightly-deep clone: shallow clone each of our arguments.
+      // This makes the clone have separate mlangs configured the same way, but
+      // they don't inherit the data and so on.
+      return SeqExpr.create({
+        args: this.args.map(function(o) { return o.clone(); })
+      });
+    },
+    deepClone: function() {
+      return SeqExpr.create({ args: this.args.deepClone() });
     },
     toString: function(obj) {
       var out = [];
