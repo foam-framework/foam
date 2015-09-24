@@ -51,6 +51,8 @@ CLASS({
         var self  = this;
         var child = this.findChildAt(evt.clientX, evt.clientY);
 
+        if ( ! child || ! child.topic ) return;
+
         this.topics.where(EQ(this.Topic.SELECTED, true)).update(SET(this.Topic.SELECTED, false))(function() {
           self.topics.where(EQ(self.Topic.TOPIC, child.topic.topic)).update(SET(self.Topic.SELECTED, true));
         });
@@ -63,21 +65,28 @@ CLASS({
       this.SUPER();
 
       this.topics.pipe({
-        put:    this.addTopic.bind(this),
+        put:    this.putTopic.bind(this),
         remove: this.removeTopic.bind(this)
       });
 
       this.document.body.addEventListener('click', this.onClick);
     },
 
-    function addTopic(t) {
+    function putTopic(t) {
+      // console.log('*** putTopic: ', t, t.topic && t.topic.topic);
+      // Don't add if we already have topic
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        var c = this.children[i];
+        if ( c.topic && c.topic.topic === t.topic ) {
+          this.selected = c;
+          return;
+        }
+      }
+
       t = t.clone();
 
       var h = (this.height-26) / 4;
       var i = this.children.length;
-
-//      t.r = 80;
-//      h = 200;
 
       var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
         x: Math.floor(i / 4) * h + h/2,

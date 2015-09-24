@@ -78,7 +78,11 @@ MODEL({
       factory: function() { return { create: true, exclusive: false }; }
     },
     {
-      name: 'getFileConfig',
+      name: 'readFileConfig',
+      factory: function() { return { create: false }; }
+    },
+    {
+      name: 'writeFileConfig',
       factory: function() { return { create: true, exclusive: false }; }
     }
   ],
@@ -167,7 +171,7 @@ MODEL({
         for ( var i = 0; i < path.length - 1; ++i ) {
           seq.push(this.getDirectory.bind(this, writeCtx, path[i]));
         }
-        seq.push(this.getFile.bind(this, writeCtx, path[path.length - 1]));
+        seq.push(this.getFile.bind(this, writeCtx, path[path.length - 1], this.writeFileConfig));
         seq.push(this.createWriter.bind(this, writeCtx));
         seq.push(this.truncateFile.bind(this, writeCtx));
         seq.push(this.writeFile.bind(this, writeCtx, data));
@@ -187,7 +191,7 @@ MODEL({
         for ( var i = 0; i < path.length - 1; ++i ) {
           seq.push(this.getDirectory.bind(this, readCtx, path[i]));
         }
-        seq.push(this.getFile.bind(this, readCtx, path[path.length - 1]));
+        seq.push(this.getFile.bind(this, readCtx, path[path.length - 1], this.readFileConfig));
         seq.push(this.getFile_.bind(this, readCtx));
         seq.push(this.readFile.bind(this, readCtx));
         return aseq.apply(null, seq);
@@ -315,13 +319,13 @@ MODEL({
     },
     {
       name: 'getFile',
-      code: function(X, fileName, ret, dirEntry) {
+      code: function(X, fileName, config, ret, dirEntry) {
         console.log('getFile', fileName, dirEntry);
         var source = dirEntry || this.root;
         if ( this.checkForError(source, ret, 'getFile') ) return source;
         return source.getFile(
             fileName,
-            this.getFileConfig,
+            config,
             ret,
             ret);
       }

@@ -318,7 +318,7 @@ CLASS({
       getter: function() {
         return this.count;
       }
-    },
+    }
   ],
 
   methods: {

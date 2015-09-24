@@ -284,7 +284,7 @@ CLASS({
       var notHas = value === undefined || value === null || value === '' ||
           (Array.isArray(value) && value.length === 0);
       return !notHas;
-    },
+    }
   ]
 });
 
@@ -545,7 +545,7 @@ CLASS({
       getter: function() {
         return this.sum;
       }
-    },
+    }
   ],
 
   methods: {
@@ -585,7 +585,7 @@ CLASS({
       getter: function() {
         return this.avg;
       }
-    },
+    }
   ],
 
   methods: {
@@ -614,7 +614,7 @@ CLASS({
       getter: function() {
         return this.min;
       }
-    },
+    }
   ],
 
   methods: {
@@ -654,7 +654,7 @@ CLASS({
       getter: function() {
         return this.arg2.value;
       }
-    },
+    }
   ],
 
   methods: {
@@ -696,7 +696,7 @@ CLASS({
       // sort groups.
       name: 'groupKeys',
       factory: function() { return [] }
-    },
+    }
   ],
 
   methods: {
@@ -985,7 +985,7 @@ CLASS({
       getter: function() {
         return this.args.map(function(x) { return x.value; });
       }
-    },
+    }
   ],
 
   methods: {
@@ -1007,7 +1007,15 @@ CLASS({
       return ret;
     },
     clone: function() {
-      return SeqExpr.create({args:this.args.deepClone()});
+      // We do a slightly-deep clone: shallow clone each of our arguments.
+      // This makes the clone have separate mlangs configured the same way, but
+      // they don't inherit the data and so on.
+      return SeqExpr.create({
+        args: this.args.map(function(o) { return o.clone(); })
+      });
+    },
+    deepClone: function() {
+      return SeqExpr.create({ args: this.args.deepClone() });
     },
     toString: function(obj) {
       var out = [];
@@ -1238,7 +1246,7 @@ CLASS({
 
       // Remove temporary holder this.items_.
       this.items_ = {};
-    },
+    }
   }
 });
 

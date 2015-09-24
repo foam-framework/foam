@@ -11,11 +11,12 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'ExportManager',
+  name: 'ImportExportManager',
 
   requires: [
     'foam.apps.builder.DownloadManager',
     'foam.apps.builder.IdentityManager',
+    'foam.apps.builder.ImportManager',
     'foam.apps.builder.SourceManager',
     'foam.apps.builder.UploadManager',
     'foam.apps.builder.XHRManager',
@@ -98,6 +99,11 @@ CLASS({
       this.UploadManager.create({
         data: exportFlow,
       }, this.Y).publishApp(exportFlow);
+    },
+    function importApp(importFlow) {
+      this.ImportManager.create({
+        data: importFlow,
+      }, this.Y).importApp(importFlow);
     },
   ],
 });

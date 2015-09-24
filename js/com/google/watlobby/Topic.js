@@ -35,6 +35,7 @@ CLASS({
     { name: 'model', defaultValue: 'Topic' },
     { name: 'roundImage' },
     { name: 'video' },
-    { name: 'text' }
+    { name: 'text' },
+    { name: 'timeout', defaultValue: 60, units: 'seconds' }
   ]
 });

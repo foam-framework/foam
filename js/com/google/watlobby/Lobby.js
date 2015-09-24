@@ -36,7 +36,7 @@ CLASS({
     'foam.util.Timer'
   ],
 
-  imports: [ 'timer' ],
+  imports: [ 'timer', 'clearTimeout', 'setTimeout' ],
   exports: [ 'as lobby' ],
 
   properties: [
@@ -100,7 +100,16 @@ CLASS({
         if ( o ) o.setSelected(false);
 
         if ( n && n.setSelected ) {
+          // Move-to-Front
+          var i = this.children.indexOf(n);
+          this.children[i] = this.children[this.children.length-1];
+          this.children[this.children.length-1] = n;
+
           n.setSelected(true);
+
+          this.clearTimeout(this.timeout_);
+          this.timeout_ = this.setTimeout(function() { this.selected = null; }.bind(this), n.topic.timeout * 1000);
+
           return n;
         }
 
@@ -147,15 +156,12 @@ CLASS({
       this.collider.start();
     },
     function putTopic(t) {
-      if ( t.selected ) {
-        for ( var i = 0 ; i < this.children.length ; i++ ) {
-          var c = this.children[i];
-          if ( c.topic && c.topic.topic === t.topic ) {
-            this.selected = c;
-            return;
-          }
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        var c = this.children[i];
+        if ( c.topic && c.topic.topic === t.topic ) {
+          if ( t.selected ) this.selected = c;
+          return;
         }
-        return;
       }
 
       var color = this.COLORS[this.children.length % this.COLORS.length];

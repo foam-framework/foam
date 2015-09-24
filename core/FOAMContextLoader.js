@@ -37,7 +37,15 @@ for (var loadingLoopIndex = 0; loadingLoopIndex < files.length; loadingLoopIndex
     else continue;
   }
 
-  var filename = filename + '.js';
-  var filedata = fs.readFileSync(path.join(FOAM_BOOT_DIR, filename));
+  if ( filename.lastIndexOf('.js') != filename.length - 3 ) {
+    filename = filename + '.js';
+  }
+
+  // Poor mans workaround for path.isAbsolute on older nodejs versions.
+  if ( filename[0] === '/' ) {
+    var filedata = fs.readFileSync(filename);
+  } else {
+    filedata = fs.readFileSync(path.join(FOAM_BOOT_DIR, filename));
+  }
   vm.runInThisContext(filedata, filename);
 }
