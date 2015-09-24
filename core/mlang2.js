@@ -1007,7 +1007,7 @@ CLASS({
       return ret;
     },
     clone: function() {
-      return SeqExpr.create({args:this.args.clone()});
+      return SeqExpr.create({args:this.args.deepClone()});
     },
     toString: function(obj) {
       var out = [];
