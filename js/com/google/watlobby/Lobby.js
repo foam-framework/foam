@@ -164,11 +164,10 @@ CLASS({
         }
       }
 
-      var color = this.COLORS[this.children.length % this.COLORS.length];
       var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
         x: Math.random() * this.width,
         y: Math.random() * this.height,
-        border: color
+        border: t.color
       }, this.Y);
       c.topic = t;
       c.image = t.image;
@@ -176,7 +175,7 @@ CLASS({
       t.r = 1;
       Movement.animate(2000, function() { t.r = r; })();
       c.roundImage = t.roundImage;
-      if ( t.color ) c.border = t.color;
+     // if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
       this.addChild(c);
       c.mass = r/150;
