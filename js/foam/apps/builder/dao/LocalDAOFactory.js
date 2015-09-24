@@ -35,10 +35,10 @@ CLASS({
       model_: 'FactoryProperty',
       hidden: true,
       name: 'factory', //TODO(jacksonic): Should be named .create, but can't until Model.create is moved
-      defaultValue: function() {
+      defaultValue: function(name, model, X) {
         return this.EasyDAO.create({
-          model: this.X.lookup(this.modelType),
-          name: this.name,
+          model: model,
+          name: name,
           daoType: this.IDBDAO,
           cache: true,
           seqNo: true,

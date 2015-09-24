@@ -42,7 +42,6 @@ CLASS({
           name: 'KioskAppConfigs',
           daoType: IDBDAO,
           cache: true,
-          seqNo: true,
           logging: true,
         }, X),
         createFunction: function() {

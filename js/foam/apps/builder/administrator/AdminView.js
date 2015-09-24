@@ -28,13 +28,6 @@ CLASS({
 
   properties: [
     {
-      name: 'dao',
-      help: 'The store of items to administer.',
-      lazyFactory: function() {
-        return this.data.dao.factory(this.Y);
-      }
-    },
-    {
       name: 'content',
       help: 'The current administrator app configuration being edited',
       view: 'foam.browser.ui.BrowserView',
@@ -47,6 +40,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <app-body id="%%id" <%= this.cssClassAttr() %>>
+        $$targetAppId
         $$content
       </app-body>
     */},

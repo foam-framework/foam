@@ -40,6 +40,7 @@ CLASS({
     'importExportManager$',
     'modelDAO',
     'daoConfigDAO',
+    'masterAppDAO',
   ],
 
   properties: [
@@ -91,6 +92,17 @@ CLASS({
         return this.IDBDAO.create({
               model: this.DAOFactory,
               name: 'DAOFactories',
+              useSimpleSerialization: false,
+          }, this.Y)
+      },
+    },
+    {
+      name: 'masterAppDAO',
+      help: 'The store of defined apps and their dao and custom model usage.',
+      lazyFactory: function() {
+        return this.IDBDAO.create({
+              model: this.AppConfig,
+              name: 'CreatedAppsDAO',
               useSimpleSerialization: false,
           }, this.Y)
       },

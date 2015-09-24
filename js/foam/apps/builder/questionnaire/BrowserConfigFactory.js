@@ -34,13 +34,11 @@ CLASS({
         label: 'Questionnaire Apps',
         model: this.QuestionnaireAppConfig,
         dao:
-        this.SeqNoDAO.create({ delegate:
-          this.ContextualizingDAO.create({ delegate:
-            this.IDBDAO.create({
-              model: this.QuestionnaireAppConfig,
-              name: 'QuestionnaireAppConfigs',
-              useSimpleSerialization: false,
-            })
+        this.ContextualizingDAO.create({ delegate:
+          this.IDBDAO.create({
+            model: this.QuestionnaireAppConfig,
+            name: 'QuestionnaireAppConfigs',
+            useSimpleSerialization: false,
           })
         }),
         createFunction: function() {
