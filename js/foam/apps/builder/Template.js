@@ -12,9 +12,6 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'Template',
-  traits: [
-    'foam.apps.builder.IntIDTrait'
-  ],
 
   properties: [
     {

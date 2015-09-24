@@ -32,6 +32,8 @@ CLASS({
     ],
   },
 
+  ids: ['appId'],
+
   properties: [
     {
       name: 'baseModelId',

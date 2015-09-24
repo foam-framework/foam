@@ -47,16 +47,16 @@ CLASS({
       model_: 'FactoryProperty',
       hidden: true,
       name: 'factory', //TODO(jacksonic): Should be named .create, but can't until Model.create is moved
-      defaultValue: function(X) {
+      defaultValue: function(name, model, X) {
         var identityManager = X.exportManager$.get().identityManager;
         var future = afuture();
-// TODO: aLoadModel
+
         identityManager.withOAuth(function(oauthStatus, authAgent) {
           var authX = this.Y.sub();
           authX.registerModel(this.XHR.xbind({ authAgent: authAgent }));
           future.set(this.EasyDAO.create({
-            model: this.X.lookup(this.modelType),
-            name: this.name,
+            model: model,
+            name: name,
             daoType: this.FileDAO,
             cache: true,
             guid: true,

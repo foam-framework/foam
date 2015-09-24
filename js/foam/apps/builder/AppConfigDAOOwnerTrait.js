@@ -29,37 +29,35 @@ CLASS({
       lazyFactory: function() {
         return this.LocalDAOFactory.create({
           name: this.appName,
-          label: this.appName,
-          modelType: this.model.id,
         });
       },
       postSet: function(old,nu) {
         if ( ! nu ) debugger;
       }
     },
-    {
-      name: 'appName',
-      preSet: function(old, nu) {
-        if ( nu && old !== nu ) {
-          // name change is primary key change for the DAOFactory
-          //this.daoConfigDAO && this.daoConfigDAO.remove(this.dao);
-          this.dao.label = nu;
-        }
-        return nu;
-      },
-      postSet: function(old, nu) {
-        if ( nu && old !== nu ) {
-          this.daoConfigDAO && this.daoConfigDAO.put(this.dao);
-        }
-      }
-    },
+// TODO: DAOInstance put instead
+//     {
+//       name: 'appName',
+//       preSet: function(old, nu) {
+//         if ( nu && old !== nu ) {
+//           // name change is primary key change for the DAOFactory
+//           //this.daoConfigDAO && this.daoConfigDAO.remove(this.dao);
+//           this.dao.label = nu;
+//         }
+//         return nu;
+//       },
+//       postSet: function(old, nu) {
+//         if ( nu && old !== nu ) {
+//           this.daoConfigDAO && this.daoConfigDAO.put(this.dao);
+//         }
+//       }
+//     },
   ],
 
   methods: [
     function resetDAO() {
       this.dao = this.LocalDAOFactory.create({
         name: this.appName,
-        modelType: this.model.id,
       });
     }
   ],

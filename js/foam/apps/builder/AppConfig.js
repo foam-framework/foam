@@ -19,9 +19,20 @@ CLASS({
   requires: [
     'foam.apps.builder.AppWindow',
   ],
-  ids: ['appName'],
+
+  ids: ['appId'],
 
   properties: [
+    {
+      model_: 'StringProperty',
+      name: 'appId',
+      label: 'Unique App ID',
+      mode: 'read-only',
+      help: "The hidden unique id for the app that links DAO instances and models to the owner app.",
+      factory: function() {
+        return camelize(this.appName) + '-' + createGUID();
+      }
+    },
     {
       model_: 'StringProperty',
       name: 'appName',
@@ -38,6 +49,15 @@ CLASS({
         placeholder: 'My App',
         required: true
       }
+    },
+    {
+      name: 'model',
+      defaultValue: null,
+    },
+    {
+      name: 'dao',
+      type: 'foam.apps.builder.dao.DAOFactory',
+      defaultValue: null,
     },
     {
       model_: 'StringProperty',
@@ -155,6 +175,12 @@ CLASS({
         // TODO(markdittmer): Add accessibilityFeatures.(read, modify) once
         // virtual keyboard integration is implemented.
       return ps;
+    },
+    function createDAO() {
+      if ( this.dao && this.model ) {
+        return this.dao.factory(this.appId, this.model, this.Y);
+      }
+      return null;
     },
   ],
 });

@@ -45,7 +45,7 @@ CLASS({
       name: 'dao',
       help: 'The store of questionnaires filled in by users.',
       lazyFactory: function() {
-        return this.appConfig.dao.factory(this.Y);
+        return this.appConfig.dao.factory(this.appConfig.appId, this.appConfig.model, this.Y);
       }
     },
     {

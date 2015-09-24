@@ -35,13 +35,11 @@ CLASS({
         label: 'Event Calendar Apps',
         model: this.EventAppConfig,
         dao:
-        this.SeqNoDAO.create({ delegate:
-          this.ContextualizingDAO.create({ delegate:
-            this.IDBDAO.create({
-              model: this.EventAppConfig,
-              name: 'EventAppConfigs',
-              useSimpleSerialization: false,
-            })
+        this.ContextualizingDAO.create({ delegate:
+          this.IDBDAO.create({
+            model: this.EventAppConfig,
+            name: 'EventAppConfigs',
+            useSimpleSerialization: false,
           })
         }),
         createFunction: function() {
