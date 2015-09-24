@@ -47,13 +47,13 @@ CLASS({
       name: 'model',
       defaultValue: 'foam.apps.builder.dao.LocalDAOFactory',
     },
-    {
-      label: 'The name of the new DAO',
-      name: 'name',
-      preSet: function(old,nu) {
-        return capitalize(camelize(nu));
-      }
-    },
+//    {
+//      label: 'The name of the new DAO',
+//      name: 'name',
+//      preSet: function(old,nu) {
+//        return capitalize(camelize(nu));
+//      }
+//    },
   ],
 
 });

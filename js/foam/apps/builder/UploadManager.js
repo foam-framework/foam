@@ -46,7 +46,7 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.ExportFlow',
+      type: 'foam.apps.builder.ImportExportFlow',
       name: 'data',
     },
     {

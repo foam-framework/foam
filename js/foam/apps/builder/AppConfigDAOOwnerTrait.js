@@ -18,7 +18,7 @@ CLASS({
   ],
 
   imports: [
-
+    'daoConfigDAO',
   ],
 
   properties: [
@@ -28,26 +28,38 @@ CLASS({
       label: 'Data storage',
       lazyFactory: function() {
         return this.LocalDAOFactory.create({
-          name: 'newDAO',
-          modelType: this.baseModelId,
+          name: this.appName,
+          label: this.appName,
+          modelType: this.model.id,
         });
       },
       postSet: function(old,nu) {
         if ( ! nu ) debugger;
       }
-   },
-   {
-     name: 'baseModelId',
-     help: 'The model name of the base type for models this trait stores.',
-   },
-
+    },
+    {
+      name: 'appName',
+      preSet: function(old, nu) {
+        if ( nu && old !== nu ) {
+          // name change is primary key change for the DAOFactory
+          //this.daoConfigDAO && this.daoConfigDAO.remove(this.dao);
+          this.dao.label = nu;
+        }
+        return nu;
+      },
+      postSet: function(old, nu) {
+        if ( nu && old !== nu ) {
+          this.daoConfigDAO && this.daoConfigDAO.put(this.dao);
+        }
+      }
+    },
   ],
 
   methods: [
     function resetDAO() {
       this.dao = this.LocalDAOFactory.create({
-        name: 'newDAO',
-        modelType: this.baseModelId,
+        name: this.appName,
+        modelType: this.model.id,
       });
     }
   ],

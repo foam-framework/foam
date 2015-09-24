@@ -17,13 +17,13 @@ CLASS({
 
   requires: [
     'foam.apps.builder.ExportConfirmView',
-    'foam.apps.builder.ExportFlow',
-    'foam.apps.builder.ExportFlowView',
+    'foam.apps.builder.ImportExportFlow',
+    'foam.apps.builder.ImportExportFlowView',
     'foam.ui.md.FlatButton',
     'foam.ui.md.PopupView',
   ],
   imports: [
-    'exportManager$',
+    'importExportManager$',
     'dao',
     'stack',
   ],
@@ -43,7 +43,7 @@ CLASS({
       var confirm = this.aconfirmExportAction.bind(this, name, title);
       var setup = this.asetupExportAction.bind(this, name, title);
       aaif(confirm, aseq(setup, function(ret, exportFlow) {
-        this.exportManager[name](exportFlow);
+        this.importExportManager[name](exportFlow);
         ret();
       }.bind(this)))(nop);
     },
@@ -61,7 +61,7 @@ CLASS({
       confirmPopup.delegateView.result(ret);
     },
     function asetupExportAction(name, title, ret) {
-      var exportFlow = this.ExportFlow.create({
+      var exportFlow = this.ImportExportFlow.create({
         config$: this.data$,
         actionName: name,
         title: title,
@@ -69,7 +69,7 @@ CLASS({
       var popup = this.PopupView.create({
         cardClass: 'md-card-shell',
         blockerMode: 'modal',
-        delegate: 'foam.apps.builder.ExportFlowView',
+        delegate: 'foam.apps.builder.ImportExportFlowView',
         data: exportFlow,
       }, this.Y);
       popup.open();

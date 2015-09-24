@@ -33,7 +33,7 @@ CLASS({
     },
     {
       name: 'existingViewFactory',
-      label: 'Use existing Question Set',
+      label: 'Copy existing Question Set',
       defaultValue: null, //function() { },
     },
     {

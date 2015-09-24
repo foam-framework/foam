@@ -68,9 +68,10 @@ CLASS({
     {
       name: 'filterExistingDAO',
       code: function() {
-        this.existingDAO = this.unfilteredExistingDAO.where(
-          EQ(this.DAOFactory.MODEL_TYPE, this.data.baseModelId)
-        );
+        this.existingDAO = this.unfilteredExistingDAO;
+//         .where(
+//           EQ(this.DAOFactory.MODEL_TYPE, this.data.baseModelId)
+//         );
       }
     },
   ],

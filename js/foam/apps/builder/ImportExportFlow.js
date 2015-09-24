@@ -11,13 +11,14 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'ExportFlow',
+  name: 'ImportExportFlow',
 
   imports: [
     'mdToolbar as toolbar',
   ],
   properties: [
     'config',
+    'dao',
     'toolbar',
     {
       model_: 'StringProperty',
@@ -37,6 +38,7 @@ CLASS({
         ['AUTHENTICATING', 'Authenticating'],
         ['UPLOADING', 'Uploading'],
         ['DOWNLOADING', 'Downloading'],
+        ['IMPORTING', 'Importing'],
         ['PUBLISHING', 'Publishing'],
         ['FAILED', 'Failed'],
         ['COMPLETED', 'Completed'],

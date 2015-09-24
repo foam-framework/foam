@@ -34,7 +34,7 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="dao-factory-container">
           <div class="dao-factory-title md-subhead">
-            $$name{ model_: 'foam.ui.StringElideTextualView' }
+            $$label{ model_: 'foam.ui.StringElideTextualView' }
           </div>
           <div class="dao-factory-description">
             $$myModelName{ model_: 'foam.ui.StringElideTextualView' }

@@ -40,12 +40,16 @@ CLASS({
             height: 16,
             fontSize: 16
           }, this.Y),
+          rowView: this.rowView,
           rowHeight: this.rowHeight,
           model$: this.model$,
           data$: this.data$,
           properties$: this.properties$
         });
       }
+    },
+    {
+      name: 'rowView',
     },
     {
       name: 'rowHeight',

@@ -21,7 +21,6 @@ CLASS({
   requires: [
     'foam.apps.builder.questionnaire.ChangeDAOWizard',
     'foam.apps.builder.questionnaire.ChangeModelWizard',
-    'foam.apps.builder.questionnaire.EditView',
     'foam.apps.builder.questionnaire.QuestionnaireView',
     'foam.apps.builder.templates.AppView',
     'foam.apps.builder.templates.PanelView',

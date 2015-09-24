@@ -15,6 +15,10 @@ CLASS({
 
   documentation: "Holds a serializable description of a DAO type.",
 
+  imports: [
+    'modelDAO',
+  ],
+
   properties: [
     {
       name: 'name',
@@ -28,7 +32,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'modelType',
-      help: 'The model type to store in this DAO.',
+      help: 'The model id of the type to store in this DAO.',
       defaultValue: 'Model',
     },
     {
@@ -42,6 +46,34 @@ CLASS({
       help: 'True if the user should be shown an EditView to configure this DAOFactory',
       defaultValue: false,
     }
+  ],
+
+  methods: [
+    function aLoadModel(ret) {
+      /* afunc to load the model referenced by $$DOC(ref:'.modelType'). Calls ret(model). */
+      var self = this;
+      var found = false;
+      if ( self.modelDAO ) {
+        self.modelDAO.select(EQ(Model.ID, self.modelType), {
+          put: function(m) {
+            if ( ! found ) {
+              found = true;
+              ret && ret(m);
+            }
+          },
+          eof: function() {
+            if ( ! found ) {
+              arequire(self.modelType)(ret);
+            }
+          },
+          error: function() {
+            arequire(self.modelType)(ret);
+          }
+        });
+      } else {
+        arequire(self.modelType)(ret);
+      }
+    },
   ],
 
 });

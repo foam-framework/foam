@@ -15,6 +15,7 @@ CLASS({
   extendsModel: 'foam.ui.AbstractDAOView',
 
   requires: [
+    'foam.ui.FlexTableRowView',
     'foam.ui.ScrollView',
   ],
   imports: [
@@ -118,6 +119,17 @@ CLASS({
       name: 'filteredDAO',
       dynamicValue: function() {
         return this.data.orderBy(this.sortOrder);
+      }
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'rowView',
+      defaultValue: 'foam.ui.FlexTableRowView',
+      documentation: 'Set this to override the row view. It should be a ' +
+          'subclass of $$DOC{ref:"foam.ui.FlexTableRowView"} unless you ' +
+          'really know what you\'re doing.',
+      adapt: function(old, nu) {
+        return nu ? nu : 'foam.ui.FlexTableRowView';
       }
     },
     {
@@ -330,72 +342,13 @@ CLASS({
     },
   ],
 
-  models: [
-    {
-      name: 'RowView',
-      extendsModel: 'foam.ui.View',
-      imports: ['hardSelection$'],
-      properties: [
-        {
-          name: 'properties',
-        },
-      ],
-      methods: [
-        function isPropNumeric(prop) {
-          return IntProperty.isInstance(prop) || FloatProperty.isInstance(prop);
-        },
-        function shouldDestroy(old, nu) {
-          if (!old || !nu) return true;
-          return !nu.equals(old);
-        },
-        function getBodyCellClass(prop, i) {
-          var cssClasses = ['col-' + i];
-          if ( this.isPropNumeric(prop) )
-            cssClasses.push('numeric');
-          return cssClasses.join(' ');
-        },
-      ],
-      listeners: [
-        {
-          name: 'onClick',
-          code: function() {
-            this.hardSelection = this.data;
-          }
-        },
-      ],
-      templates: [
-        function toHTML() {/*
-          <% var props = this.properties; %>
-          <flex-table-row id="<%= this.id %>">
-            <% for (var i = 0; i < props.length; i++) { %>
-              <flex-table-cell class="<%= this.getBodyCellClass(props[i], i) %>">
-                <% this.bodyCellHTML(out, props[i]); %>
-              </flex-table-cell>
-            <% } %>
-          </flex-table-row>
-          <%
-            this.on('click', this.onClick, this.id);
-            this.setClass('rowSelected',
-                function() { return self.hardSelection === self.data; },
-                this.id);
-          %>
-        */},
-        function bodyCellHTML(out, prop) {/*
-          <%= prop.tableFormatter ?
-              prop.tableFormatter(this.data[prop.name], this.data, this) :
-              this.data[prop.name] %>
-        */},
-      ]
-    }
-  ],
-
   listeners: [
     {
       name: 'makeRow',
       code: function(map, Y) {
         map = map || {};
         map.properties = this.getProperties();
-        return this.RowView.create(map, Y);
+        return this.rowView(map, Y);
       }
     },
   ],

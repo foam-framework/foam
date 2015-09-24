@@ -22,6 +22,10 @@ CLASS({
       defaultValue: { factory_: 'foam.apps.builder.wizard.DAOWizard' },
     },
     {
+      name: 'newViewFactory',
+      label: 'Create different kind of Data Source',
+    },
+    {
       name: 'nextViewFactory',
       lazyFactory: function() {
         return ( this.data.dao && this.data.dao.requiresUserConfiguration ) ?

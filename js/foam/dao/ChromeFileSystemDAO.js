@@ -79,7 +79,7 @@ MODEL({
     {
       name: 'find',
       code: function(hash, sink) {
-        if ( ! this.cfs.ready ) {
+        if ( this.cfs.readyState === 'LOADING' ) {
           this.backlog_.push(['find', arguments]);
           return;
         }
@@ -98,13 +98,13 @@ MODEL({
           return o;
         }.bind(this, sink));
       }
-    }// ,
-    // {
-    //   name: 'select',
-    //   code: function(sink, options) {
-    //     return this.cfs.aentriesAll(this.decorateSink_(sink, options));
-    //   }
-    // }
+    },
+    {
+      name: 'isFileError',
+      code: function(err) {
+        return this.cfs.isFileError(err);
+      }
+    }
   ],
 
   listeners: [

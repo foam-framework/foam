@@ -91,6 +91,24 @@ CLASS({
 
         return dao;
       }
+    },
+    {
+      name: 'selected',
+      preSet: function(o, n) {
+        if ( o === n ) return o;
+
+        if ( o ) o.setSelected(false);
+
+        if ( n && n.setSelected ) {
+          var i = this.children.indexOf(n);
+          this.children[i] = this.children[this.children.length-1];
+          this.children[this.children.length-1] = n;
+          n.setSelected(true);
+          return n;
+        }
+
+        return null;
+      }
     }
   ],
 
@@ -98,20 +116,7 @@ CLASS({
     {
       name: 'onClick',
       code: function(evt) {
-        var self = this;
-        // TODO: don't use collider
-        var child = this.findChildAt(evt.clientX, evt.clientY);
-        if ( child === this.selected ) return;
-
-        if ( this.selected ) {
-          this.selected.setSelected(false);
-          this.selected = null;
-        }
-
-        if ( child && child.setSelected ) {
-          this.selected = child
-          child.setSelected(true);
-        }
+        this.selected = this.findChildAt(evt.clientX, evt.clientY);
       }
     }
   ],
@@ -130,7 +135,7 @@ CLASS({
       this.addBubbles();
 
       this.topics.pipe({
-        put:    this.addTopic.bind(this),
+        put:    this.putTopic.bind(this),
         remove: this.removeTopic.bind(this)
       });
 
@@ -144,7 +149,18 @@ CLASS({
 
       this.collider.start();
     },
-    function addTopic(t) {
+    function putTopic(t) {
+      if ( t.selected ) {
+        for ( var i = 0 ; i < this.children.length ; i++ ) {
+          var c = this.children[i];
+          if ( c.topic && c.topic.topic === t.topic ) {
+            this.selected = c;
+            return;
+          }
+        }
+        return;
+      }
+
       var color = this.COLORS[this.children.length % this.COLORS.length];
       var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
         x: Math.random() * this.width,
@@ -166,6 +182,7 @@ CLASS({
       this.collider.add(c);
     },
     function removeTopic(t) {
+      console.log('remove ************** ', arguments);
       // TODO
     },
     function addBubbles() {
@@ -188,12 +205,13 @@ CLASS({
       }
     },
     function openRemoteUI() {
-      var w = foam.ui.Window.create({window: window.open("", "Remote Window", "width=800, height=600")});
+      var w = foam.ui.Window.create({window: window.open("", "Remote Window", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
+      w.document.body.innerHTML = '';
       var r = this.Remote.create({topics: this.topics}, w.Y);
       r.write(w.Y);
     },
     function openAdminUI() {
-      
+
     },
     function destroy() {
       this.SUPER();

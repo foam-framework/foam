@@ -284,7 +284,7 @@ CLASS({
       var notHas = value === undefined || value === null || value === '' ||
           (Array.isArray(value) && value.length === 0);
       return !notHas;
-    },
+    }
   ]
 });
 
@@ -539,6 +539,12 @@ CLASS({
       type:  'int',
       help:  'Sum of values.',
       factory: function() { return 0; }
+    },
+    {
+      name: 'value',
+      getter: function() {
+        return this.sum;
+      }
     }
   ],
 
@@ -573,6 +579,12 @@ CLASS({
       type:  'floag',
       help:  'Average of values.',
       getter: function() { return this.sum / this.count; }
+    },
+    {
+      name: 'value',
+      getter: function() {
+        return this.avg;
+      }
     }
   ],
 
@@ -596,6 +608,12 @@ CLASS({
       type:  'int',
       help:  'Minimum value.',
       defaultValue: undefined
+    },
+    {
+      name: 'value',
+      getter: function() {
+        return this.min;
+      }
     }
   ],
 
@@ -630,6 +648,12 @@ CLASS({
       name:  'values',
       help:  'Distinct values.',
       factory: function() { return {}; }
+    },
+    {
+      name: 'value',
+      getter: function() {
+        return this.arg2.value;
+      }
     }
   ],
 
@@ -955,6 +979,15 @@ CLASS({
 
   extendsModel: 'NARY',
 
+  properties: [
+    {
+      name: 'value',
+      getter: function() {
+        return this.args.map(function(x) { return x.value; });
+      }
+    }
+  ],
+
   methods: {
     pipe: function(sink) { sink.put(this); },
     put: function(obj) {
@@ -974,7 +1007,15 @@ CLASS({
       return ret;
     },
     clone: function() {
-      return SeqExpr.create({args:this.args.clone()});
+      // We do a slightly-deep clone: shallow clone each of our arguments.
+      // This makes the clone have separate mlangs configured the same way, but
+      // they don't inherit the data and so on.
+      return SeqExpr.create({
+        args: this.args.map(function(o) { return o.clone(); })
+      });
+    },
+    deepClone: function() {
+      return SeqExpr.create({ args: this.args.deepClone() });
     },
     toString: function(obj) {
       var out = [];
@@ -1205,7 +1246,7 @@ CLASS({
 
       // Remove temporary holder this.items_.
       this.items_ = {};
-    },
+    }
   }
 });
 
