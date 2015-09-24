@@ -197,6 +197,22 @@ var QueryParserFactory = function(model, opt_enableKeyword) {
 
   g.fieldname = alt.apply(null, fields);
 
+  g.maybeConvertYearToDateRange = function(prop, num) {
+    var isDateField = DateProperty.isInstance(prop) || DateTimeProperty.isInstance(prop);
+    var isDateRange = Array.isArray(num) && num[0] instanceof Date;
+
+    if ( isDateField && ! isDateRange ) {
+      // Convert the number, a single year, into a date. Fortunately, years
+      // are easy to add.
+      var start = new Date(0); // Jan 1 1970 at midnight UTC.
+      var end   = new Date(0);
+      start.setUTCFullYear(num);
+      end.setUTCFullYear(+num + 1);
+      return [start, end];
+    }
+    return num;
+  };
+
   g.addActions({
     id: function(v) { return EQ(model.ID, v); },
 
@@ -215,6 +231,10 @@ var QueryParserFactory = function(model, opt_enableKeyword) {
     is: function(v) { return EQ(v[1], TRUE); },
 
     before: function(v) {
+      // If the property (v[0]) is a DateProperty, and the value (v[2]) is a
+      // single number, expand it into a Date range for that year.
+      v[2] = this.maybeConvertYearToDateRange(v[0], v[2]);
+
       // If the value (v[2]) is a Date range, we take the appropriate end.
       if ( Array.isArray(v[2]) && v[2][0] instanceof Date ) {
         v[2] = v[1] === '<=' ? v[2][1] : v[2][0];
@@ -223,6 +243,10 @@ var QueryParserFactory = function(model, opt_enableKeyword) {
     },
 
     after: function(v) {
+      // If the property (v[0]) is a DateProperty, and the value (v[2]) is a
+      // single number, expand it into a Date range for that year.
+      v[2] = this.maybeConvertYearToDateRange(v[0], v[2]);
+
       // If the value (v[2]) is a Date range, we take the appropriate end.
       if ( Array.isArray(v[2]) && v[2][0] instanceof Date ) {
         v[2] = v[1] === '>=' ? v[2][0] : v[2][1];
