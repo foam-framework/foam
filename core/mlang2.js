@@ -284,7 +284,7 @@ CLASS({
       var notHas = value === undefined || value === null || value === '' ||
           (Array.isArray(value) && value.length === 0);
       return !notHas;
-    },
+    }
   ]
 });
 
@@ -545,7 +545,7 @@ CLASS({
       getter: function() {
         return this.sum;
       }
-    },
+    }
   ],
 
   methods: {
@@ -585,7 +585,7 @@ CLASS({
       getter: function() {
         return this.avg;
       }
-    },
+    }
   ],
 
   methods: {
@@ -614,7 +614,7 @@ CLASS({
       getter: function() {
         return this.min;
       }
-    },
+    }
   ],
 
   methods: {
@@ -654,7 +654,7 @@ CLASS({
       getter: function() {
         return this.arg2.value;
       }
-    },
+    }
   ],
 
   methods: {
@@ -696,7 +696,7 @@ CLASS({
       // sort groups.
       name: 'groupKeys',
       factory: function() { return [] }
-    },
+    }
   ],
 
   methods: {
@@ -985,7 +985,7 @@ CLASS({
       getter: function() {
         return this.args.map(function(x) { return x.value; });
       }
-    },
+    }
   ],
 
   methods: {
@@ -1238,7 +1238,7 @@ CLASS({
 
       // Remove temporary holder this.items_.
       this.items_ = {};
-    },
+    }
   }
 });
 
