@@ -19,17 +19,18 @@ CLASS({
     'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.ImportExportManager',
+    'foam.apps.builder.administrator.BrowserConfigFactory as AdminBCFactory',
     'foam.apps.builder.dao.DAOFactory',
+    'foam.apps.builder.events.BrowserConfigFactory as EventsBCFactory',
     'foam.apps.builder.kiosk.BrowserConfigFactory as KioskBCFactory',
     'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
-    'foam.apps.builder.events.BrowserConfigFactory as EventsBCFactory',
-    'foam.apps.builder.administrator.BrowserConfigFactory as AdminBCFactory',
     'foam.browser.ui.BrowserView',
     'foam.dao.ContextualizingDAO',
     'foam.dao.IDBDAO',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.metrics.Metric',
+    'foam.ui.md.FlatButton',
   ],
   exports: [
     'touchManager',
@@ -46,7 +47,7 @@ CLASS({
   properties: [
     {
       name: 'metricsDAO',
-      factory: function() {
+      lazyFactory: function() {
         return this.AnalyticsDAO.create({
           daoType: 'XHR',
           debug: true,
@@ -55,13 +56,13 @@ CLASS({
           appVersion: '2.0',
           endpoint: 'https://www.google-analytics.com/collect',
           debugEndpoint: 'https://www.google-analytics.com/debug/collect',
-        });
+        }, this.Y);
       },
     },
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'menuDAO',
-      factory: function() {
+      lazyFactory: function() {
         var dao = [
           this.KioskBCFactory.create({}, this.Y).factory(),
           this.QuestionnaireBCFactory.create({}, this.Y).factory(),
@@ -138,6 +139,9 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
+      this.Y.registerModel(this.FlatButton.xbind({
+        displayMode: 'LABEL_ONLY',
+      }), 'foam.ui.ActionButton');
       this.metricsDAO.put(this.Metric.create({
         name: 'launchApp',
       }, this.Y));

@@ -219,9 +219,9 @@ CLASS({
         <div class="md-card-content-footer-spacer"></div>
      <% } %>
         <div id="%%id-actions" class="wizard-section md-actions md-card-footer horizontal">
-            $$exit{ model_: 'foam.ui.md.FlatButton' }
-            $$back{ model_: 'foam.ui.md.FlatButton' }
-            $$nextAction{ model_: 'foam.ui.md.FlatButton' }
+            $$exit
+            $$back
+            $$nextAction
         </div>
       </wizard>
       <% this.setClass('hidden', function() {
