@@ -12,7 +12,6 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'AppConfig',
-  extendsModel: 'foam.apps.builder.Template',
 
   label: 'Chrome Application Configuration',
 
@@ -58,6 +57,18 @@ CLASS({
       name: 'dao',
       type: 'foam.apps.builder.dao.DAOFactory',
       defaultValue: null,
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'designerView',
+      hidden: true,
+      transient: true
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'appView',
+      hidden: true,
+      transient: true
     },
     {
       model_: 'StringProperty',
