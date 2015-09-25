@@ -8,6 +8,7 @@
   { "topic": "inbox",        "image": "inbox.png",        "r": 160, "color": "BLUE" },
   { "topic": "android",      "image": "android.png",      "r": 100, "color": "GREEN" },
   { "topic": "calc",         "image": "calculator.png",   "r": 100, "color": "GREEN" },
+  { "topic": "cardboard",    "image": "cardboard.png",    "r": 100, "color": "YELLOW" },
   { "topic": "gmailoffline", "image": "gmailoffline.png", "r": 160, "color": "BLUE" },
   { "topic": "fiber",        "image": "fiber.png",        "r": 180, "color": "BLUE" },
   { "topic": "foam",         "image": "foam_whiteontransparent.png", "r": 80, "color": "red", "roundImage": true, "background": "red" },
