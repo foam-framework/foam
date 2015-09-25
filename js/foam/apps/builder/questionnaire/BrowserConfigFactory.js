@@ -37,13 +37,12 @@ CLASS({
         title: 'Questionnaire Apps',
         label: 'Questionnaire Apps',
         model: this.QuestionnaireAppConfig,
-        dao: this.SplitWriteDAO.create({ remote: this.masterAppDAO, delegate:
-          this.ContextualizingDAO.create({ delegate:
-            this.IDBDAO.create({
-              model: this.QuestionnaireAppConfig,
-              name: 'QuestionnaireAppConfigs',
-              useSimpleSerialization: false,
-            })
+        dao:
+        this.ContextualizingDAO.create({ delegate:
+          this.IDBDAO.create({
+            model: this.QuestionnaireAppConfig,
+            name: 'QuestionnaireAppConfigs',
+            useSimpleSerialization: false,
           })
         }),
         createFunction: function() {
