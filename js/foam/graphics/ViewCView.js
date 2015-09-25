@@ -23,11 +23,7 @@ CLASS({
 
   help: "View to CView adapter. Let's you display Views in a CView.",
 
-  properties: [
-    {
-      name: 'innerView'
-    }
-  ],
+  properties: [ 'innerView' ],
 
   methods: [
     function element() {
@@ -42,12 +38,16 @@ CLASS({
     },
     function paintSelf() {
       var e = this.element();
+      e.style.opacity = this.alpha;
+      // e.style.background = this.background;
       e.style.top = 0;
       e.style.position = 'absolute';
       e.style.overflow = 'hidden';
       e.style.width = this.width;
       e.style.height = this.height;
-      e.style.webkitTransform = 'translate3d(' + this.x + 'px,' + this.y + 'px,0)'
+      var x = this.parent.x + this.x;
+      var y = this.parent.y + this.y;
+      e.style.webkitTransform = 'translate3d(' + x + 'px,' + y + 'px,0)'
     },
     function destroy() {
       this.SUPER();
