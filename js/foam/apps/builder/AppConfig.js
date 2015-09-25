@@ -164,6 +164,13 @@ CLASS({
       // view: 'RangeDefaultTextFieldView'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'virtualKeyboardEnabled',
+      label: 'Virtual keyboard enabled',
+      help: 'Enables the on-screen virtual keyboard.',
+      defaultValue: true
+    },
+    {
       model_: 'StringProperty',
       name: 'chromeId',
       hidden: true,
@@ -212,10 +219,10 @@ CLASS({
   methods: [
     function getChromePermissions() {
       var ps = [];
-        if ( this.kioskEnabled ) ps.push('power');            // To keep the display awake.
-        if ( this.rotation !== 0 ) ps.push('system.display'); // To rotate displays.
-        // TODO(markdittmer): Add accessibilityFeatures.(read, modify) once
-        // virtual keyboard integration is implemented.
+      if ( this.kioskEnabled ) ps.push('power');            // To keep the display awake.
+      if ( this.rotation !== 0 ) ps.push('system.display'); // To rotate displays.
+      if ( this.virtualKeyboardEnabled )
+        ps.push('accessibilityFeatures.read', 'accessibilityFeatures.modify');
       return ps;
     },
     function createDAO() {

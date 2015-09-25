@@ -41,30 +41,26 @@ CLASS({
       name: 'data',
       factory: function() {
         return this.BrowserConfig.create({
+          title: 'WAT Lobby Admin',
           model: this.Topic,
-          dao: this.dao /*this.EasyDAO.create({
-            model: this.Topic,
-            daoType: 'LOCAL',
-            cache: true,
-            seqNo: true
-          })*/,
+          dao: this.dao,
           listView: {
             factory_: 'foam.ui.DAOListView',
             rowView: 'com.google.watlobby.TopicCitationView'
           },
           cannedQueryDAO: [
             this.CannedQuery.create({
-              label: 'Enabled',
-              expression: EQ(this.Topic.ENABLED, false)
-            }),
-            this.CannedQuery.create({
-              label: 'Disabled',
-              expression: EQ(this.Topic.ENABLED, true)
-            }),
-            this.CannedQuery.create({
               label: 'Everything',
               expression: TRUE
             }),
+            this.CannedQuery.create({
+              label: 'Enabled',
+              expression: EQ(this.Topic.ENABLED, true)
+            }),
+            this.CannedQuery.create({
+              label: 'Disabled',
+              expression: EQ(this.Topic.ENABLED, false)
+            })
           ]
         });
       }

@@ -41,6 +41,7 @@ CLASS({
     */},
     function contentHTML() {/*
       $$kioskEnabled
+      $$virtualKeyboardEnabled
       $$rotation
       $$defaultWindowWidth
       $$defaultWindowHeight

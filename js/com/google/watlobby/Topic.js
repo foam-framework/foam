@@ -30,9 +30,20 @@ CLASS({
           this.color = this.COLORS[Math.abs(t.hashCode()) % this.COLORS.length];
       }
     },
-    { model_: 'BooleanProperty', name: 'enabled', defaultValue: 'true' },
-    { model_: 'BooleanProperty', name: 'selected' },
-    { name: 'image' },
+    {
+      model_: 'BooleanProperty',
+      name: 'enabled',
+      defaultValue: 'true'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'selected',
+      hidden: true
+    },
+    {
+      model_: 'ImageProperty',
+      name: 'image'
+    },
     {
       name: 'color',
       // Convert capitalized colour names to standard Google colours
@@ -43,7 +54,17 @@ CLASS({
     { name: 'model', defaultValue: 'Topic' },
     { name: 'roundImage' },
     { name: 'video' },
-    { name: 'text' },
-    { name: 'timeout', defaultValue: 60, units: 'seconds' }
+    {
+      model_: 'IntProperty',
+      name: 'timeout',
+      defaultValue: 60,
+      help: 'Time before automatically closing this topic, in seconds.',
+      units: 'seconds'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'text',
+      displayHeight: 12
+    },
   ]
 });
