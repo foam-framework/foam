@@ -50,13 +50,13 @@ CLASS({
       defaultValue: function(X) {
         var identityManager = X.importExportManager$.get().identityManager;
         var future = afuture();
-// TODO: aLoadModel
+
         identityManager.withOAuth(function(oauthStatus, authAgent) {
           var authX = this.Y.sub();
           authX.registerModel(this.XHR.xbind({ authAgent: authAgent }));
           future.set(this.EasyDAO.create({
-            model: this.X.lookup(this.modelType),
-            name: this.name,
+            model: model,
+            name: name,
             daoType: this.FileDAO,
             cache: true,
             guid: true,

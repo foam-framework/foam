@@ -32,12 +32,12 @@ CLASS({
 
   properties: [
     {
-      name: 'baseModelId',
-      defaultValue: 'foam.apps.builder.events.Event',
-    },
-    {
       name: 'appName',
       defaultValue: 'New Event Calendar App'
+    },
+    {
+      name: 'model',
+      defaultValue: 'foam.apps.builder.events.Event',
     },
     {
       name: 'defaultView',

@@ -48,7 +48,11 @@ CLASS({
       name: 'model',
       view: 'foam.ui.md.DetailView',
       lazyFactory: function() {
-        this.resetModel();
+        return this.Model.create({
+          extendsModel: this.baseModelId,
+          name: this.appId,
+          label: capitalize(camelize(this.appName))
+        });
       },
       preSet: function(old,nu) {
         if ( ! nu ) return old;
@@ -80,7 +84,7 @@ CLASS({
       code: function() {
         this.propertyChange('model', null, this.model);
         // update the saved copy of the model
-        this.modelPut(this.model);
+        //this.modelPut(this.model);
       }
     }
   ],
@@ -90,12 +94,13 @@ CLASS({
       // this initialization case is the only time the name is synced to appName
       this.model = this.Model.create({
         extendsModel: this.baseModelId,
-        name: capitalize(camelize(this.appName)),
+        name: this.appId,
+        label: capitalize(camelize(this.appName))
       });
     },
 
     function modelPut(model) {
-      this.modelDAO && this.modelDAO.put(model, {
+      this.modelDAO && model && this.modelDAO.put(model, {
         put: function(o) { console.log("put ok", o.id); },
         error: function(o) {
           console.log("put error", o);
@@ -103,14 +108,13 @@ CLASS({
       });
     },
     function modelRemove(model) {
-      this.modelDAO && this.modelDAO.remove(model, {
+      this.modelDAO && model && this.modelDAO.remove(model, {
         remove: function(o) { console.log("remove ok", o.id); },
         error: function(func, o) {
           console.log("remove error", o);
         },
       });
     },
-
   ],
 
 });

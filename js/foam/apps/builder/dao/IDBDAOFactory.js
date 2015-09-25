@@ -29,12 +29,12 @@ CLASS({
       model_: 'FactoryProperty',
       hidden: true,
       name: 'factory',
-      defaultValue: function() {
+      defaultValue: function(name, model, X) {
         return this.IDBDAO.create({
-          name: this.name,
-          model: this.X.lookup(this.modelType),
+          name: name,
+          model: model,
           useSimpleSerialization: ! this.storesModels,
-        });
+        }, X);
       },
     },
     {
