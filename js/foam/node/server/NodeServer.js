@@ -35,6 +35,15 @@ CLASS({
       transient: true
     },
     {
+      name: 'io',
+      hidden: true,
+      transient: true
+    },
+    {
+      name: 'clients',
+      factory: function() { return []; }
+    },
+    {
       name: 'daoHandler_',
     }
   ],
@@ -42,8 +51,22 @@ CLASS({
   methods: {
     launch: function() {
       this.server = require('http').createServer(this.onRequest);
-      this.server.listen(this.port);
+      console.log("About to listen on " + process.env.IP + ":" + process.env.PORT);
+      this.server.listen(process.env.PORT, process.env.IP);
       console.log('Server running on port ' + this.port);
+      
+      this.io = require('socket.io').listen(this.server);
+      var sockets = this.clients;
+      this.io.on('connection', function(client) {
+        sockets.push(client);
+        console.log("** CONNECT: " + sockets.length + " connections active");
+        client.on('disconnect', function() {
+          if (sockets.indexOf(client) > -1) {
+            sockets.splice(sockets.indexOf(client), 1);
+          }
+          console.log("** DISCONNECT: " + sockets.length + " connections remain");
+        });
+      })
     },
     // This method allows NodeServer (and subclasses) to be launched directly
     // by tools/foam.js.
@@ -61,6 +84,12 @@ CLASS({
 
       opt_name = opt_name || (dao.model.id + 'DAO');
       this.daoHandler_.daoMap[opt_name] = dao;
+    },
+    broadcast: function(event, data) {
+      // this.io.emit(event, data)
+      this.clients.forEach(function(socket) {
+        socket.emit(event, data);
+      });
     }
   },
 
