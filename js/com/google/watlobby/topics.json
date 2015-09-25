@@ -109,7 +109,7 @@
     "topic": "photos",
     "image": "photoalbum.png",
     "r": 110,
-    "model": "PhotoAlbum",
+    "model": "Album",
     "color": "YELLOW",
     "roundImage": true
   }

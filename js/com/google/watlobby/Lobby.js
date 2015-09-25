@@ -27,7 +27,7 @@ CLASS({
 
     'com.google.watlobby.Bubble',
     'com.google.watlobby.TopicBubble',
-    'com.google.watlobby.PhotoAlbumBubble',
+    'com.google.watlobby.AlbumBubble',
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
     'foam.demos.ClockView',

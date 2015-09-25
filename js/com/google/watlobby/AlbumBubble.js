@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'com.google.watlobby',
-  name: 'PhotoAlbumBubble',
+  name: 'AlbumBubble',
 
   extendsModel: 'com.google.watlobby.TopicBubble',
 
