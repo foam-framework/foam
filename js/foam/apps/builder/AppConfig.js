@@ -167,11 +167,40 @@ CLASS({
       hidden: true,
     },
     {
+      model_: 'IntProperty',
+      name: 'defaultWindowWidth',
+      label: 'Default app window width',
+      defaultValue: 800,
+    },
+    {
+      model_: 'IntProperty',
+      name: 'defaultWindowHeight',
+      label: 'Default app window height',
+      defaultValue: 700,
+    },
+    {
+      model_: 'IntProperty',
+      name: 'minWindowWidth',
+      label: 'Minimum app window width',
+      defaultValue: 400,
+    },
+    {
+      model_: 'IntProperty',
+      name: 'minWindowHeight',
+      label: 'Minimum app window height',
+      defaultValue: 600,
+    },
+    {
       type: 'foam.apps.builder.AppWindow',
       name: 'appWindow',
       lazyFactory: function() {
         return this.AppWindow.create({
           id: this.model_.id,
+          name$: this.appName$,
+          width$: this.defaultWindowWidth$,
+          height$: this.defaultWindowHeight$,
+          minWidth$: this.minWindowWidth$,
+          minHeight$: this.minWindowHeight$,
         }, this.Y);
       },
       hidden: true,
