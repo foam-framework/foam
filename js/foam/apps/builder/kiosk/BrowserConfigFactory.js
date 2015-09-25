@@ -16,7 +16,7 @@ CLASS({
   requires: [
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.kiosk.AppConfig',
-    'foam.apps.builder.kiosk.BasicInfoWizard',
+    'foam.apps.builder.kiosk.NewOrExistingWizard',
     'foam.apps.builder.kiosk.DesignerView',
     'foam.apps.builder.wizard.WizardStackView',
     'foam.dao.EasyDAO',
@@ -48,7 +48,7 @@ CLASS({
           var newObj = this.data.model.create({}, X);
           var view = WizardStackView.create({
             firstPage: {
-              factory_: 'foam.apps.builder.kiosk.BasicInfoWizard',
+              factory_: 'foam.apps.builder.kiosk.NewOrExistingWizard',
               data: newObj,
             }}, X.sub({
               dao: this.data.dao,
