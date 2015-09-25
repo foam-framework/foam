@@ -42,6 +42,18 @@ CLASS({
       },
     },
     {
+      model_: 'BooleanProperty',
+      name: 'showHeader',
+      documentation: 'If true, header content is shown.',
+      defaultValue: true,
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showFooter',
+      documentation: 'If true, footer actions are shown.',
+      defaultValue: true,
+    },
+    {
       name: '$icon',
       defaultValueFn: function() { return this.$ && this.$.querySelector('img'); }
     },
@@ -104,10 +116,12 @@ CLASS({
   templates: [
     function toHTML() {/*
       <export-flow id="%%id">
-        <div class="md-card-heading">
-          <span class="md-headline">{{this.data.title}}</span>
+        <div id="%%id-header">
+          <div class="md-card-heading">
+            <span class="md-headline">{{this.data.title}}</span>
+          </div>
+          <div class="md-card-heading-content-spacer"></div>
         </div>
-        <div class="md-card-heading-content-spacer"></div>
         <div class="md-card-content">
           <flow-state class="md-subhead">
             <img id="%%id-icon" src="{{this.STATE_ICONS[this.data.state]}}">
@@ -116,17 +130,19 @@ CLASS({
           <span id="%%id-message" class="md-subhead md-grey"><%# this.data.message %></span>
           <details class="md-subhead md-grey"><%# this.data.details %></details>
         </div>
-        <div class="md-card-content-footer-spacer"></div>
-        <actions class="md-actions md-card-footer vertical">
-          $$openDevDashboard{
-            model_: 'foam.ui.md.FlatButton',
-            displayMode: 'LABEL_ONLY',
-          }
-          $$close{
-            model_: 'foam.ui.md.FlatButton',
-            displayMode: 'LABEL_ONLY',
-          }
-        </actions>
+        <div id="%%id-footer">
+          <div class="md-card-content-footer-spacer"></div>
+          <actions class="md-actions md-card-footer vertical">
+            $$openDevDashboard{
+              model_: 'foam.ui.md.FlatButton',
+              displayMode: 'LABEL_ONLY',
+            }
+            $$close{
+              model_: 'foam.ui.md.FlatButton',
+              displayMode: 'LABEL_ONLY',
+            }
+          </actions>
+        </div>
       </export-flow>
       <% this.setClass('processing', function() {
            return this.data && this.data.state !== 'FAILED' &&
@@ -134,7 +150,13 @@ CLASS({
          }.bind(this), this.id + '-icon');
          this.setClass('hidden', function() {
            return ( ! this.data ) || ( ! this.data.message );
-         }.bind(this), this.id + '-message'); %>
+         }.bind(this), this.id + '-message');
+         this.setClass('hidden', function() {
+           return ! this.showHeader;
+         }.bind(this), this.id + '-header');
+         this.setClass('hidden', function() {
+           return ! this.showFooter;
+         }.bind(this), this.id + '-footer'); %>
     */},
     function CSS() {/*
       @keyframes pulseopacity {
@@ -150,6 +172,7 @@ CLASS({
           min-width: 570px;
         }
       }
+      export-flow { flex-grow: 1; }
       export-flow, export-flow flow-state, export-flow actions {
         display: flex;
       }
