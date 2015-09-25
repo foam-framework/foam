@@ -32,7 +32,7 @@ CLASS({
     'foam.ui.Tooltip',
     'foam.ui.md.CannedQueryCitationView',
     'foam.ui.md.CheckboxView',
-    'foam.ui.md.PopupView',
+    'foam.ui.md.PopupView'
   ],
   properties: [
     {
