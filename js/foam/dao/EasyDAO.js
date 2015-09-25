@@ -23,24 +23,22 @@ CLASS({
   requires: [
     'MDAO',
     'foam.core.dao.CloningDAO',
-    'foam.core.dao.SyncTrait',
+    'foam.core.dao.MergeDAO',
     'foam.core.dao.MigrationDAO',
     'foam.core.dao.StorageDAO',
     'foam.core.dao.SyncDAO',
-    'foam.core.dao.MergeDAO',
+    'foam.core.dao.SyncTrait',
     'foam.core.dao.VersionNoDAO',
-    'foam.dao.EasyClientDAO',
     'foam.dao.CachingDAO',
     'foam.dao.ContextualizingDAO',
     'foam.dao.DeDupDAO',
+    'foam.dao.EasyClientDAO',
     'foam.dao.GUIDDAO',
     'foam.dao.IDBDAO',
     'foam.dao.SeqNoDAO'
   ],
 
-  imports: [
-    'document'
-  ],
+  imports: [ 'document' ],
 
   help: 'A facade for easy DAO setup.',
 
