@@ -170,6 +170,10 @@ CLASS({
       this.SUPER();
       this.nextViewFactory = this.nextViewFactory;
     },
+    function initHTML() {
+      this.SUPER();
+      if ( this.popup ) this.popup.subscribe(this.popup.CANCEL, this.onCancel.bind(this));
+    },
     function onNext() {
       /* if you need to do anything when the user picks the 'next' action,
         implement this method. Remember to call this.SUPER() at the end of your
