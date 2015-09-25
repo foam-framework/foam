@@ -56,7 +56,6 @@ CLASS({
       this.addChild(this.textArea);
       this.textArea.innerView.data = this.topic.text || 'INSERT TEXT HERE';
       this.textArea.alpha = 0;
-      this.textArea.background = this.border;
     },
     function setSelected(selected) {
       if ( this.cancel_ ) {
@@ -78,10 +77,10 @@ CLASS({
         }.bind(this), Movement.easey)();
       } else {
         this.mass = this.oldMass_;
-        this.cancel_ = Movement.animate(1000, function() {
-          this.zoom = 0;
-          this.textArea.alpha = 0;
-        }.bind(this), Movement.easey)();
+        this.cancel_ = Movement.compile([[
+          [ 200,  function() { this.textArea.alpha = 0; }.bind(this) ],
+          [ 1000, function() { this.zoom = 0; }.bind(this) ]
+        ]])();
       }
     },
     function layout() {
@@ -100,7 +99,7 @@ CLASS({
 
         this.textArea.width = this.textArea.height = this.zoom * this.r*0.9;
         this.textArea.y = - this.textArea.height / 2;
-        this.textArea.x = -20;
+        this.textArea.x = 20;
       } else {
         this.textArea.width = this.textArea.height = 0;
       }
