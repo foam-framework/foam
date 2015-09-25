@@ -46,6 +46,11 @@ function runApp() {
     if ( chrome.power && config.kioskEnabled ) {
       chrome.power.requestKeepAwake('display');
     }
+    if ( chrome.accessibilityFeatures &&
+        chrome.accessibilityFeatures.virtualKeyboard &&
+        config.virtualKeyboardEnabled ) {
+       chrome.accessibilityFeatures.virtualKeyboard.set({ value: true });
+    }
     var w = config.appWindow;
     chrome.app.window.create(
         'app_view.html',

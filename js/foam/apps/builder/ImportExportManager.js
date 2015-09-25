@@ -100,10 +100,15 @@ CLASS({
         data: exportFlow,
       }, this.Y).publishApp(exportFlow);
     },
-    function importApp(importFlow) {
+    function importV1App(importFlow) {
       this.ImportManager.create({
         data: importFlow,
-      }, this.Y).importApp(importFlow);
+      }, this.Y).importV1App(importFlow);
+    },
+    function importV2App(importFlow) {
+      this.ImportManager.create({
+        data: importFlow,
+      }, this.Y).importV2App(importFlow);
     },
   ],
 });

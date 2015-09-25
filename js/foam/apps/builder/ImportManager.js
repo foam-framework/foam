@@ -15,6 +15,8 @@ CLASS({
   extendsModel: '',
 
   requires: [
+    'foam.apps.builder.ConfigParser',
+    'foam.apps.builder.ImportExportFlow',
     'foam.dao.ChromeFileSystemDAO',
   ],
   imports: [
@@ -27,41 +29,82 @@ CLASS({
       type: 'foam.apps.builder.ImportExportFlow',
       name: 'data',
     },
+    {
+      type: 'foam.apps.builder.ConfigParser',
+      name: 'configParser',
+      lazyFactory: function() {
+        return this.ConfigParser.create({}, this.Y).parser;
+      },
+    },
   ],
 
   methods: [
-    function importApp(data) {
+    function importV1App(data) {
       this.data = data;
       data.state = 'IMPORTING';
       var dao = this.ChromeFileSystemDAO.create({}, this.Y);
       dao.find({ path: 'config.js' }, {
         put: function(file) {
-          aeval('(function() { var window = {};' +
-              file.contents + 'return window.config; })()')
-          (function(config) {
-            if ( ( ! config ) || config.model_ !== 'AppConfig' ) {
-              this.failBadConfig();
-              return;
-            }
+          var match = (new RegExp('^window.config = ({[\\s\\S]*});\\n$'))
+              .exec(file.contents);
+          if ( ( ! match ) || ( ! match[1] ) ) {
+            this.failBadConfig();
+            return;
+          }
+          var objLiteralStr = match[1];
+          var config = this.configParser.parseString(objLiteralStr,
+                                                    this.configParser.obj);
+          if ( ! config ) {
+            this.failBadConfig();
+            return;
+          }
 
-            delete config.model_;
-            delete config.id;
-            config.rotation = parseInt(config.rotation);
-            config.rotation = isNaN(config.rotation) ? 0 : config.rotation;
-            this.data.config.copyFrom(config);
-            this.data.dao.put(this.data.config, {
-              put: function() {
-                this.succeed();
-              }.bind(this),
-              error: function() {
-                this.failBadConfig();
-              }.bind(this),
-            });
-          }.bind(this));
+          delete config.model_;
+          delete config.id;
+          config.rotation = parseInt(config.rotation);
+          config.rotation = isNaN(config.rotation) ? 0 : config.rotation;
+          this.data.config.copyFrom(config);
+          this.data.dao.put(this.data.config, {
+            put: function() {
+              this.succeed();
+            }.bind(this),
+            error: function() {
+              this.failBadConfig();
+            }.bind(this),
+          });
         }.bind(this),
         error: function(err) {
-          this.data.message = 'Oop! Looks like something went wrong.',
-          this.data.state = 'FAILED';
+          if ( dao.isFileError(err) ) this.failBadConfig();
+          else                        this.failUserAbort();
+        }.bind(this),
+      });
+    },
+    function importV2App(data) {
+      this.data = data;
+      data.state = 'IMPORTING';
+      var dao = this.ChromeFileSystemDAO.create({}, this.Y);
+      dao.find({ path: 'config.json' }, {
+        put: function(file) {
+          var objLiteralStr = file.contents;
+          var config = this.configParser.parseString(objLiteralStr,
+                                                    this.configParser.obj);
+          if ( ! config ) {
+            this.failBadConfig();
+            return;
+          }
+
+          delete config.model_;
+          this.data.config.copyFrom(config);
+          this.data.dao.put(this.data.config, {
+            put: function() {
+              this.succeed();
+            }.bind(this),
+            error: function() {
+              this.failBadConfig();
+            }.bind(this),
+          });
+        }.bind(this),
+        error: function(err) {
           if ( dao.isFileError(err) ) this.failBadConfig();
           else                        this.failUserAbort();
         }.bind(this),

@@ -35,8 +35,20 @@ CLASS({
     {
       model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'existingViewFactory',
-      label: 'Import existing Chrome App Builder app',
-      defaultValue: 'foam.apps.builder.kiosk.ImportWizard',
+      label: 'Import existing Chrome App Builder Version 1 app',
+      defaultValue: {
+        factory_: 'foam.apps.builder.kiosk.ImportWizard',
+        appBuilderVersion: 1,
+      },
+    },
+    {
+      model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
+      name: 'existingViewFactory2',
+      label: 'Import existing App Builder Version 2 app',
+      defaultValue: {
+        factory_: 'foam.apps.builder.kiosk.ImportWizard',
+        appBuilderVersion: 2,
+      },
     },
     {
       name: 'title',
@@ -53,5 +65,34 @@ CLASS({
         return true;
       },
     }
+  ],
+
+  templates: [
+    function contentHTML() {/*
+      <div class="md-card-heading-content-spacer"></div>
+      <div class="new-existing-wizard-dao-page-scroller">
+        <div class="new-existing-wizard-dao-page">
+          $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
+            orientation: 'vertical',
+            choices: [
+              [this.newViewFactory, this.model_.NEW_VIEW_FACTORY.label],
+              [this.existingViewFactory, this.model_.EXISTING_VIEW_FACTORY.label ],
+              [this.existingViewFactory2, this.model_.EXISTING_VIEW_FACTORY2.label ],
+            ]
+          }
+          <% if ( this.existingDAO ) { %>
+            <div id="<%= this.id %>-container">
+              $$existingDAO
+            </div>
+          <%  } %>
+        </div>
+      </div>
+      <%
+        if ( this.existingDAO ) {
+          this.setClass('existing-hidden', function() { return self.nextViewFactory === self.newViewFactory; }, this.id+'-container');
+          this.setClass('new-existing-wizard-dao-container', function() { return true; }, this.id+'-container');
+        }
+      %>
+    */},
   ],
 });
