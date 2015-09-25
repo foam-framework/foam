@@ -117,7 +117,8 @@ CLASS({
       // separate method to capture proper obj in closure
       this.X.setTimeout(function() { // clean up after animation
         obj.view.destroy();
-        obj.hideBinding(); // Destroys the Events.dynamic for the hidden class.
+        // Destroy the Events.dynamic for the hidden class.
+        obj.hideBinding && obj.hideBinding();
         var e = this.X.$(obj.id);
         if ( e ) e.outerHTML = '';
       }.bind(this), 1000);
