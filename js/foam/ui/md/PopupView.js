@@ -35,6 +35,9 @@ CLASS({
     // Duration of in/out transitions, in seconds.
     TRANSITION_DURATION: 0.3,
 
+    // Published event when close is a result of clicking outside popup.
+    CANCEL: 'cancel',
+
     // Animation strategies:
 
     // Fade in/out: Supports -> open ->  close.
@@ -446,7 +449,10 @@ CLASS({
       <% if ( this.delegateView ) { %>
         <div id="<%= this.id %>Blocker" class='popup-view-modal-blocker'></div>
         <% this.on('click', function() {
-             if ( this.blockerMode === 'cancellable' ) self.close();
+             if ( this.blockerMode === 'cancellable' ) {
+               self.close();
+               self.publish(self.CANCEL);
+             }
            }, this.id + 'Blocker'); %>
         <div id="<%= this.id %>Content" class='md-popup-view-content <%= this.cardClass %>'>
           %%delegateView
