@@ -25,3 +25,10 @@ global.console.profileEnd = function() {};
 global.window.performance = {};
 global.window.performance.now = function(){};
 global.console.markTimeline = function(){};
+
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var l = require('node-localstorage').LocalStorage;
+  if (l) {
+    global.localStorage = new l("./localstorage");
+  }
+}
