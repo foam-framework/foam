@@ -20,11 +20,10 @@ CLASS({
   name: 'TopicCitationView',
   extendsModel: 'foam.ui.md.DetailView',
 
+  requires: [ 'foam.ui.ImageView' ],
+
   properties: [
-    {
-      name: 'className',
-      defaultValue: 'topic-citation'
-    },
+    [ 'className', 'topic-citation' ]
   ],
 
   templates: [
@@ -39,7 +38,9 @@ CLASS({
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         $$enabled{ label: '' }
+        $$model{ mode: 'read-only', floatingLabel: false }
         $$topic{ mode: 'read-only', floatingLabel: false }
+        $$image{model_: 'foam.ui.ImageView'}
       </div>
     */},
   ]

@@ -214,7 +214,7 @@ CLASS({
       r.write(w.Y);
     },
     function openAdminUI() {
-      var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1000, height=600, location=no, menubar=no, ")});
+      var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1000, height=700, location=no, menubar=no, ")});
       w.document.body.innerHTML = '';
       var r = this.TopicApp.create({dao: this.topics}, w.Y);
       r.write(w.Y);
