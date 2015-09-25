@@ -23,6 +23,7 @@ CLASS({
 
   requires: [
     'com.google.watlobby.Remote',
+    'com.google.watlobby.TopicApp',
 
     'com.google.watlobby.Bubble',
     'com.google.watlobby.TopicBubble',
@@ -207,13 +208,16 @@ CLASS({
       }
     },
     function openRemoteUI() {
-      var w = foam.ui.Window.create({window: window.open("", "Remote Window", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
+      var w = foam.ui.Window.create({window: window.open("", "Remote", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
       w.document.body.innerHTML = '';
       var r = this.Remote.create({topics: this.topics}, w.Y);
       r.write(w.Y);
     },
     function openAdminUI() {
-
+      var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1000, height=600, location=no, menubar=no, ")});
+      w.document.body.innerHTML = '';
+      var r = this.TopicApp.create({dao: this.topics}, w.Y);
+      r.write(w.Y);
     },
     function destroy() {
       this.SUPER();

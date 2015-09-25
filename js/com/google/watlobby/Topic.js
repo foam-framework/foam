@@ -30,6 +30,7 @@ CLASS({
           this.color = this.COLORS[Math.abs(t.hashCode()) % this.COLORS.length];
       }
     },
+    { model_: 'BooleanProperty', name: 'enabled', defaultValue: 'true' },
     { model_: 'BooleanProperty', name: 'selected' },
     { name: 'image' },
     {
