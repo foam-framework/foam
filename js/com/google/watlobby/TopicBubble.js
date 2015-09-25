@@ -23,8 +23,9 @@ CLASS({
 
   requires: [
     'foam.graphics.Circle',
-    'foam.graphics.SimpleRectangle',
     'foam.graphics.ImageCView',
+    'foam.graphics.ViewCView',
+    'foam.ui.TextFieldView'
   ],
 
   imports: [ 'lobby' ],
@@ -33,7 +34,18 @@ CLASS({
     { name: 'topic' },
     { name: 'image' },
     { name: 'roundImage' },
-    { name: 'zoom', defaultValue: 0 }
+    { name: 'zoom', defaultValue: 0 },
+    {
+      name: 'textArea',
+      factory: function() {
+        return this.ViewCView.create({innerView: this.TextFieldView.create({
+          className: 'topic-bubble-text',
+          mode: 'read-only',
+          escapeHTML: false,
+          data: 'foobar\nblah\nblah\nblah'
+        })});
+      }
+    }
   ],
 
   methods: [
@@ -41,7 +53,10 @@ CLASS({
       this.SUPER();
 
       this.addChild(this.img = this.ImageCView.create({src: 'img/' + this.image}));
-      this.addChild(this.textArea = this.SimpleRectangle.create({alpha: 0, background: this.border}));
+      this.addChild(this.textArea);
+      this.textArea.innerView.data = this.topic.text || 'INSERT TEXT HERE';
+      this.textArea.alpha = 0;
+      this.textArea.background = this.border;
     },
     function setSelected(selected) {
       if ( this.cancel_ ) {
@@ -59,7 +74,7 @@ CLASS({
           this.x = w/2;
           this.y = h/2;
           this.zoom = 1;
-          this.textArea.alpha = 0.1;
+          this.textArea.alpha = 1;
         }.bind(this), Movement.easey)();
       } else {
         this.mass = this.oldMass_;

@@ -45,7 +45,8 @@
     "topic": "inbox",
     "image": "inbox.png",
     "r": 160,
-    "color": "BLUE"
+    "color": "BLUE",
+    "text": "Blah Blah Blah"
   },
   {
     "topic": "android",
@@ -86,7 +87,8 @@
     "r": 80,
     "color": "red",
     "roundImage": true,
-    "background": "red"
+    "background": "red",
+    "text": "<font color=white>FOAM FOAM FOAM FOAM!!!</font>"
   },
   {
     "topic": "inwatvideo",
