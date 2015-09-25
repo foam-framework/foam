@@ -31,16 +31,27 @@ CLASS({
       defaultValue: 'Import existing app',
     },
     {
+      model_: 'IntProperty',
+      name: 'appBuilderVersion',
+      defaultValue: 1,
+    },
+    {
       type: 'foam.apps.builder.ImportExportFlow',
       name: 'importFlow',
       lazyFactory: function() {
         return this.ImportExportFlow.create({
           config$: this.data$,
           dao$: this.dao$,
-          actionName: 'importApp',
+          actionName: this.getActionName(),
           title: 'Import App',
         }, this.Y);
       },
+    },
+  ],
+
+  methods: [
+    function getActionName() {
+      return 'importV' + this.appBuilderVersion.toString() + 'App';
     },
   ],
 
@@ -56,7 +67,7 @@ CLASS({
         var content = this.X.$(this.id + '-centered-content');
         content.innerHTML = view.toHTML();
         view.initHTML();
-        this.importExportManager.importApp(this.importFlow);
+        this.importExportManager[this.getActionName()](this.importFlow);
       },
     },
     {
@@ -73,8 +84,11 @@ CLASS({
     function instructionHTML() {/*
       <span>
         Click the button below to select the folder that contains the unpackaged
-        source of your Chrome App Builder app. App Builder will automatically
-        lookup your app configuration and upgrade it to App Builder 2.0.
+        source of your <% if ( this.appBuilderVersion === 1 ) { %>Chrome App
+        Builder Version 1<% } else { %>App Builder Version 2<% } %> app. App
+        Builder will automatically lookup your app configuration
+        <% if ( this.appBuilderVersion === 1 ) { %>and upgrade it to App Builder
+        2.0<% } %>.
       </span>
     */},
     function contentHTML() {/*
