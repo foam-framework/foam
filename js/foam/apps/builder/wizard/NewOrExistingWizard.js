@@ -46,7 +46,7 @@ CLASS({
           }.bind(this));
 
         }
-      }
+      },
     },
     {
       name: 'title',
@@ -55,6 +55,10 @@ CLASS({
     {
       name: 'scrollContent',
       defaultValue: true,
+    },
+    {
+      name: 'nextTitle',
+      defaultValue: 'Next',
     },
   ],
 
