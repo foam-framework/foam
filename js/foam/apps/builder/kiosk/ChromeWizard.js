@@ -31,19 +31,6 @@ CLASS({
     },
   ],
 
-  methods: [
-    function init() {
-      this.SUPER();
-      // Use standard iconic MD buttons in ChromeView.
-      this.Y.registerModel(this.FlatButton.xbind({
-        displayMode: 'ICON_ONLY',
-        height: 24,
-        width: 24,
-        color: 'black'
-      }), 'foam.ui.ActionButton');
-    },
-  ],
-
   templates: [
     function instructionHTML() {/*
       <span>
@@ -54,7 +41,17 @@ CLASS({
       </span>
     */},
     function contentHTML() {/*
-      $$data{ model_: 'foam.apps.builder.kiosk.ChromeView' }
+      <% var chromeViewX = this.Y.sub();
+         chromeViewX.registerModel(this.FlatButton.xbind({
+           displayMode: 'ICON_ONLY',
+           height: 24,
+           width: 24,
+           color: 'black'
+         }), 'foam.ui.ActionButton'); %>
+      $$data{
+        model_: 'foam.apps.builder.kiosk.ChromeView',
+        X: chromeViewX,
+      }
       $$enableNavBttns
       $$enableHomeBttn
       $$enableReloadBttn

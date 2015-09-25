@@ -19,6 +19,10 @@ CLASS({
 //    'foam.apps.builder.AppConfigDAOOwnerTrait',
   ],
 
+  imports: [
+    'masterAppDAO',
+  ],
+
   requires: [
     'foam.browser.BrowserConfig',
   ],
@@ -32,10 +36,6 @@ CLASS({
   },
 
   properties: [
-//     {
-//       name: 'baseModelId',
-//       defaultValue: 'Model',
-//     },
     {
       name: 'appName',
       defaultValue: 'New Admin App'
@@ -45,23 +45,22 @@ CLASS({
       defaultValue: 'foam.apps.builder.administrator.AdminView',
     },
     {
-      name: 'model',
-      label: 'Data Model',
-    },
-    {
-      name: 'dao',
+      name: 'targetAppId',
+      label: 'Administered App ID',
       postSet: function(old, nu) {
-        if ( nu ) {
-          this.daoInstance = nu.factory();
-          this.baseModelId = nu.modelType;
-        }
+        this.masterAppDAO && this.masterAppDAO.find(nu, {
+          put: this.loadedAppConfig,
+          error: function() {
+            console.warn(this.appName,"select failed for",this.targetAppId);
+          }.bind(this)
+        });
       }
     },
     {
-      name: 'daoInstance',
-      lazyFactory: function() {
-        return this.dao && this.dao.factory();
-      }
+      name: 'targetDAOInstance',
+    },
+    {
+      name: 'targetModel',
     },
     {
       name: 'browserConfig',
@@ -69,8 +68,8 @@ CLASS({
         return this.BrowserConfig.create({
           title$: this.appName$,
           label$: this.appName$,
-          model$: this.model$,
-          dao$: this.daoInstance$,
+          model$: this.targetModel$,
+          dao$: this.targetDAOInstance$,
           detailView: {
             factory_: 'foam.ui.md.UpdateDetailView',
             liveEdit: true,
@@ -93,6 +92,20 @@ CLASS({
         }, this.Y);
       },
       hidden: true,
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'loadedAppConfig',
+      code: function(cfg) {
+        if ( ! cfg ) {
+          console.warn(this.appName,"Could not load",this.targetAppId);
+          return;
+        }
+        this.targetDAOInstance = cfg.createDAO();
+        this.targetModel = cfg.model;
+      }
     },
   ],
 

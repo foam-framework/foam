@@ -22,7 +22,14 @@ CLASS({
   traits: [ 'com.google.misc.Colors' ],
 
   properties: [
-    { name: 'topic' },
+    {
+      name: 'topic',
+      postSet: function(_, t) {
+        // Assign a random but consistent colour if not set
+        if ( ! this.hasOwnProperty('color' ) )
+          this.color = this.COLORS[Math.abs(t.hashCode()) % this.COLORS.length];
+      }
+    },
     { model_: 'BooleanProperty', name: 'selected' },
     { name: 'image' },
     {
@@ -35,6 +42,7 @@ CLASS({
     { name: 'model', defaultValue: 'Topic' },
     { name: 'roundImage' },
     { name: 'video' },
-    { name: 'text' }
+    { name: 'text' },
+    { name: 'timeout', defaultValue: 60, units: 'seconds' }
   ]
 });

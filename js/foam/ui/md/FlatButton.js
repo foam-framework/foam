@@ -47,7 +47,9 @@ CLASS({
       model_: 'foam.ui.ColorProperty',
       name: 'color',
       help: 'The text and background color to use for the active state',
-      defaultValueFn: function() { return this.displayMode == 'ICON_ONLY' ? 'currentColor' : '#02A8F3'; }
+      defaultValueFn: function() {
+        return this.displayMode_ == 'ICON_ONLY' ? 'currentColor' : '#02A8F3';
+      }
     },
     {
       model_: 'StringProperty',

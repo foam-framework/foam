@@ -12,16 +12,26 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'AppConfig',
-  extendsModel: 'foam.apps.builder.Template',
 
   label: 'Chrome Application Configuration',
 
   requires: [
     'foam.apps.builder.AppWindow',
   ],
-  ids: ['appName'],
+
+  ids: ['appId'],
 
   properties: [
+    {
+      model_: 'StringProperty',
+      name: 'appId',
+      label: 'Unique App ID',
+      mode: 'read-only',
+      help: "The hidden unique id for the app that links DAO instances and models to the owner app.",
+      factory: function() {
+        return camelize(this.appName) + '-' + createGUID();
+      }
+    },
     {
       model_: 'StringProperty',
       name: 'appName',
@@ -38,6 +48,27 @@ CLASS({
         placeholder: 'My App',
         required: true
       }
+    },
+    {
+      name: 'model',
+      defaultValue: null,
+    },
+    {
+      name: 'dao',
+      type: 'foam.apps.builder.dao.DAOFactory',
+      defaultValue: null,
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'designerView',
+      hidden: true,
+      transient: true
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'appView',
+      hidden: true,
+      transient: true
     },
     {
       model_: 'StringProperty',
@@ -136,11 +167,40 @@ CLASS({
       hidden: true,
     },
     {
+      model_: 'IntProperty',
+      name: 'defaultWindowWidth',
+      label: 'Default app window width',
+      defaultValue: 800,
+    },
+    {
+      model_: 'IntProperty',
+      name: 'defaultWindowHeight',
+      label: 'Default app window height',
+      defaultValue: 700,
+    },
+    {
+      model_: 'IntProperty',
+      name: 'minWindowWidth',
+      label: 'Minimum app window width',
+      defaultValue: 400,
+    },
+    {
+      model_: 'IntProperty',
+      name: 'minWindowHeight',
+      label: 'Minimum app window height',
+      defaultValue: 600,
+    },
+    {
       type: 'foam.apps.builder.AppWindow',
       name: 'appWindow',
       lazyFactory: function() {
         return this.AppWindow.create({
           id: this.model_.id,
+          name$: this.appName$,
+          width$: this.defaultWindowWidth$,
+          height$: this.defaultWindowHeight$,
+          minWidth$: this.minWindowWidth$,
+          minHeight$: this.minWindowHeight$,
         }, this.Y);
       },
       hidden: true,
@@ -155,6 +215,12 @@ CLASS({
         // TODO(markdittmer): Add accessibilityFeatures.(read, modify) once
         // virtual keyboard integration is implemented.
       return ps;
+    },
+    function createDAO() {
+      if ( this.dao && this.model ) {
+        return this.dao.factory(this.appId, this.model, this.Y);
+      }
+      return null;
     },
   ],
 });

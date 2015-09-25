@@ -46,7 +46,7 @@ CLASS({
           }.bind(this));
 
         }
-      }
+      },
     },
     {
       name: 'title',
@@ -55,6 +55,10 @@ CLASS({
     {
       name: 'scrollContent',
       defaultValue: true,
+    },
+    {
+      name: 'nextTitle',
+      defaultValue: 'Next',
     },
   ],
 
@@ -96,8 +100,10 @@ CLASS({
         </div>
       </div>
       <%
-        this.setClass('existing-hidden', function() { return self.nextViewFactory === self.newViewFactory; }, this.id+'-container');
-        this.setClass('new-existing-wizard-dao-container', function() { return true; }, this.id+'-container');
+        if ( this.existingDAO ) {
+          this.setClass('existing-hidden', function() { return self.nextViewFactory === self.newViewFactory; }, this.id+'-container');
+          this.setClass('new-existing-wizard-dao-container', function() { return true; }, this.id+'-container');
+        }
       %>
     */},
     function CSS() {/*

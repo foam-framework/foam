@@ -42,6 +42,10 @@ CLASS({
     function contentHTML() {/*
       $$kioskEnabled
       $$rotation
+      $$defaultWindowWidth
+      $$defaultWindowHeight
+      $$minWindowWidth
+      $$minWindowHeight
     */},
   ],
 });

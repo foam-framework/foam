@@ -30,15 +30,10 @@ CLASS({
       defaultValueFn: function() { return this.name; },
     },
     {
-      model_: 'StringProperty',
-      name: 'modelType',
-      help: 'The model id of the type to store in this DAO.',
-      defaultValue: 'Model',
-    },
-    {
       model_: 'FactoryProperty',
       hidden: true,
       name: 'factory',
+      documentation: "Your factory is called as: factory(name, model, X). The name will be unique to the app, and model is the model to store in the dao.",
     },
     {
       model_: 'BooleanProperty',
@@ -48,32 +43,5 @@ CLASS({
     }
   ],
 
-  methods: [
-    function aLoadModel(ret) {
-      /* afunc to load the model referenced by $$DOC(ref:'.modelType'). Calls ret(model). */
-      var self = this;
-      var found = false;
-      if ( self.modelDAO ) {
-        self.modelDAO.select(EQ(Model.ID, self.modelType), {
-          put: function(m) {
-            if ( ! found ) {
-              found = true;
-              ret && ret(m);
-            }
-          },
-          eof: function() {
-            if ( ! found ) {
-              arequire(self.modelType)(ret);
-            }
-          },
-          error: function() {
-            arequire(self.modelType)(ret);
-          }
-        });
-      } else {
-        arequire(self.modelType)(ret);
-      }
-    },
-  ],
 
 });

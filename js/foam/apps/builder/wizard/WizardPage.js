@@ -170,6 +170,10 @@ CLASS({
       this.SUPER();
       this.nextViewFactory = this.nextViewFactory;
     },
+    function initHTML() {
+      this.SUPER();
+      if ( this.popup ) this.popup.subscribe(this.popup.CANCEL, this.onCancel.bind(this));
+    },
     function onNext() {
       /* if you need to do anything when the user picks the 'next' action,
         implement this method. Remember to call this.SUPER() at the end of your
@@ -178,6 +182,7 @@ CLASS({
     },
     function onCancel() {
       /* if you need to do anything when the user picks the 'cancel' action, implement this method */
+      this.dao && this.dao.remove(this.data);
     },
     function onBack() {
       /* if you need to do anything when the user picks the 'back' action, implement this method */
@@ -219,9 +224,9 @@ CLASS({
         <div class="md-card-content-footer-spacer"></div>
      <% } %>
         <div id="%%id-actions" class="wizard-section md-actions md-card-footer horizontal">
-            $$exit{ model_: 'foam.ui.md.FlatButton' }
-            $$back{ model_: 'foam.ui.md.FlatButton' }
-            $$nextAction{ model_: 'foam.ui.md.FlatButton' }
+            $$exit
+            $$back
+            $$nextAction
         </div>
       </wizard>
       <% this.setClass('hidden', function() {

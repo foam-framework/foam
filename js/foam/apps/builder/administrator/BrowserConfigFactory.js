@@ -34,13 +34,11 @@ CLASS({
         label: 'Admin Apps',
         model: this.AdminAppConfig,
         dao:
-        this.SeqNoDAO.create({ delegate:
-          this.ContextualizingDAO.create({ delegate:
-            this.IDBDAO.create({
-              model: this.AdminAppConfig,
-              name: 'AdminAppConfigs',
-              useSimpleSerialization: false,
-            })
+        this.ContextualizingDAO.create({ delegate:
+          this.IDBDAO.create({
+            model: this.AdminAppConfig,
+            name: 'AdminAppConfigs',
+            useSimpleSerialization: false,
           })
         }),
         createFunction: function() {
