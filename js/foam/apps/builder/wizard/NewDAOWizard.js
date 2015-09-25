@@ -92,7 +92,6 @@ CLASS({
   methods: [
     function onNext() {
       this.data.dao = this.daoFactory;
-      this.data.dao.modelType = this.data.baseModelId;
       this.daoConfigDAO.put(this.data.dao);
 
       this.SUPER();

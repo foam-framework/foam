@@ -24,9 +24,12 @@ CLASS({
     'foam.apps.builder.events.BrowserConfigFactory as EventsBCFactory',
     'foam.apps.builder.kiosk.BrowserConfigFactory as KioskBCFactory',
     'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
+    'foam.apps.builder.AppConfig',
     'foam.browser.ui.BrowserView',
     'foam.dao.ContextualizingDAO',
     'foam.dao.IDBDAO',
+    'foam.dao.EasyDAO',
+    'MDAO',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.metrics.Metric',
@@ -77,13 +80,12 @@ CLASS({
       name: 'modelDAO',
       help: 'The store of models for all apps.',
       lazyFactory: function() {
-        return this.ContextualizingDAO.create({
-            delegate: this.IDBDAO.create({
-              model: this.Model,
-              name: 'DataModels',
-              useSimpleSerialization: false,
-          }, this.Y)
+        // extract the models out of the master list of apps
+        var dao = this.MDAO.create({
+          model: Model,
         }, this.Y);
+        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL, dao));
+        return dao;
       },
     },
     {
