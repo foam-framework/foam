@@ -22,7 +22,6 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.dao.SeqNoDAO',
-    'foam.core.dao.SplitWriteDAO',
     'foam.apps.builder.BrowserConfig',
   ],
 
