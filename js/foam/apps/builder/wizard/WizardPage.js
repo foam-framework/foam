@@ -178,6 +178,7 @@ CLASS({
     },
     function onCancel() {
       /* if you need to do anything when the user picks the 'cancel' action, implement this method */
+      this.dao && this.dao.remove(this.data);
     },
     function onBack() {
       /* if you need to do anything when the user picks the 'back' action, implement this method */
