@@ -73,6 +73,13 @@ CLASS({
           this.AdminBCFactory.create({}, this.Y).factory(),
         ].dao;
         dao.model = this.BrowserConfig;
+        
+        // pipe each app type's dao into our master list
+        var master = this.masterAppDAO;
+        dao.forEach(function(d) {
+          d.dao && d.dao.pipe(master);
+        });
+        
         return dao;
       }
     },
@@ -101,13 +108,12 @@ CLASS({
     },
     {
       name: 'masterAppDAO',
-      help: 'The store of defined apps and their dao and custom model usage.',
+      help: 'All defined apps, with their dao and custom model usage.',
       lazyFactory: function() {
-        return this.IDBDAO.create({
-              model: this.AppConfig,
-              name: 'CreatedAppsDAO',
-              useSimpleSerialization: false,
-          }, this.Y)
+        var dao = this.MDAO.create({
+          model: this.AppConfig,
+        }, this.Y);
+        return dao;
       },
     },
     {
