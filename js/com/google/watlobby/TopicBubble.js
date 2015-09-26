@@ -52,7 +52,7 @@ CLASS({
     function initCView() {
       this.SUPER();
 
-      this.addChild(this.img = this.ImageCView.create({src: 'img/' + this.image}));
+      this.addChild(this.img = this.ImageCView.create({src: this.image}));
       this.addChild(this.textArea);
       this.textArea.innerView.data = this.topic.text || 'INSERT TEXT HERE';
       this.textArea.alpha = 0;
