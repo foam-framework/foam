@@ -38,7 +38,7 @@ CLASS({
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         $$enabled{ label: '' }
-        $$image{model_: 'foam.ui.ImageView', mode: 'read-only', displayWidth: 30, displayHeight: 30}
+        $$image{model_: 'foam.ui.ImageView', mode: 'read-only', displayWidth: 40, displayHeight: 40}
         $$model{mode: 'read-only', floatingLabel: false}
         $$topic{mode: 'read-only', floatingLabel: false}
       </div>
