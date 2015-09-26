@@ -51,11 +51,13 @@ CLASS({
     },
     {
       name: 'model',
+      help: 'The primary data model this app operates on.',
       defaultValue: null,
     },
     {
       name: 'dao',
       type: 'foam.apps.builder.dao.DAOFactory',
+      help: 'The data source type and location.',
       defaultValue: null,
     },
     {

@@ -25,6 +25,9 @@ CLASS({
     'foam.apps.builder.BrowserConfig',
   ],
 
+  imports: [
+    'masterAppDAO',
+  ],
 
   methods: [
     function factory(opt_X) {

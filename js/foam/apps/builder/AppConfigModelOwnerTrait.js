@@ -24,12 +24,6 @@ CLASS({
     'foam.ui.TableView',
   ],
 
-  documentation: 'X.modelDAO should exist and be shared with any DAOFactory instances.',
-
-  imports: [
-    'modelDAO',
-  ],
-
   properties: [
     {
       name: 'baseModelId',
@@ -83,8 +77,6 @@ CLASS({
       name: 'modelChange',
       code: function() {
         this.propertyChange('model', null, this.model);
-        // update the saved copy of the model
-        //this.modelPut(this.model);
       }
     }
   ],
@@ -100,20 +92,10 @@ CLASS({
     },
 
     function modelPut(model) {
-      this.modelDAO && model && this.modelDAO.put(model, {
-        put: function(o) { console.log("put ok", o.id); },
-        error: function(o) {
-          console.log("put error", o);
-        },
-      });
+      /* implement if separate copies of models are to be stored in their own DAO */
     },
     function modelRemove(model) {
-      this.modelDAO && model && this.modelDAO.remove(model, {
-        remove: function(o) { console.log("remove ok", o.id); },
-        error: function(func, o) {
-          console.log("remove error", o);
-        },
-      });
+      /* implement if separate copies of models are to be stored in their own DAO */
     },
   ],
 

@@ -24,9 +24,12 @@ CLASS({
     'foam.apps.builder.events.BrowserConfigFactory as EventsBCFactory',
     'foam.apps.builder.kiosk.BrowserConfigFactory as KioskBCFactory',
     'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
+    'foam.apps.builder.AppConfig',
     'foam.browser.ui.BrowserView',
     'foam.dao.ContextualizingDAO',
     'foam.dao.IDBDAO',
+    'foam.dao.EasyDAO',
+    'MDAO',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.metrics.Metric',
@@ -70,6 +73,13 @@ CLASS({
           this.AdminBCFactory.create({}, this.Y).factory(),
         ].dao;
         dao.model = this.BrowserConfig;
+        
+        // pipe each app type's dao into our master list
+        var master = this.masterAppDAO;
+        dao.forEach(function(d) {
+          d.dao && d.dao.pipe(master);
+        });
+        
         return dao;
       }
     },
@@ -77,13 +87,12 @@ CLASS({
       name: 'modelDAO',
       help: 'The store of models for all apps.',
       lazyFactory: function() {
-        return this.ContextualizingDAO.create({
-            delegate: this.IDBDAO.create({
-              model: this.Model,
-              name: 'DataModels',
-              useSimpleSerialization: false,
-          }, this.Y)
+        // extract the models out of the master list of apps
+        var dao = this.MDAO.create({
+          model: Model,
         }, this.Y);
+        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL, dao));
+        return dao;
       },
     },
     {
@@ -99,13 +108,12 @@ CLASS({
     },
     {
       name: 'masterAppDAO',
-      help: 'The store of defined apps and their dao and custom model usage.',
+      help: 'All defined apps, with their dao and custom model usage.',
       lazyFactory: function() {
-        return this.IDBDAO.create({
-              model: this.AppConfig,
-              name: 'CreatedAppsDAO',
-              useSimpleSerialization: false,
-          }, this.Y)
+        var dao = this.MDAO.create({
+          model: this.AppConfig,
+        }, this.Y);
+        return dao;
       },
     },
     {
