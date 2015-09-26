@@ -1264,7 +1264,7 @@ CLASS({
 
   methods: {
     toSQL: function() {
-      return this.arg1.toSQL() + 'DESC';
+      return this.arg1.toSQL() + ' DESC';
     },
     toMQL: function() {
       return '-' + this.arg1.toMQL();
