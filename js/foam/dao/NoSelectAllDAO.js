@@ -28,7 +28,7 @@ CLASS({
   methods: [
     function select(sink, options) {
       if ( options &&
-          ( typeof options.query !== 'undefined' ||
+           ( (typeof options.query !== 'undefined' && options.query !== TRUE) ||
             typeof options.limit !== 'undefined' ||
             typeof options.skip !== 'undefined' ) ) {
         return this.delegate.select(sink, options);
