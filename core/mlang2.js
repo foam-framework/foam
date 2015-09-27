@@ -973,6 +973,23 @@ CLASS({
   }
 });
 
+CLASS({
+  name: 'DiscardInvalidExpr',
+
+  extendsModel: 'UNARY',
+
+  methods: {
+    pipe: function(sink) { },
+    put: function(obj) {
+      if ( obj && obj.id ) this.arg1.put(obj);
+    },
+    remove: function(obj) {
+      if ( obj && obj.id ) this.arg1.remove(obj);
+    },
+  }
+});
+
+
 
 CLASS({
   name: 'SeqExpr',
@@ -1159,6 +1176,10 @@ function GRID_BY(xFunc, yFunc, acc) {
 
 function MAP(fn, opt_sink) {
   return MapExpr.create({arg1: fn, arg2: opt_sink || [].sink});
+}
+
+function DISCARD_INVALID(sink) {
+  return DiscardInvalidExpr.create({ arg1: sink });
 }
 
 function DISTINCT(fn, sink) {
