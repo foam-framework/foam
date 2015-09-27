@@ -954,7 +954,7 @@ CLASS({
     put: function(obj) {
       var val = this.arg1.f ? this.arg1.f(obj) : this.arg1(obj);
       var acc = this.arg2;
-      acc.put(val);
+      if ( val && val.id ) acc.put(val);
     },
     clone: function() {
       // Don't use default clone because we don't want to copy 'groups'
@@ -972,23 +972,6 @@ CLASS({
     }
   }
 });
-
-CLASS({
-  name: 'DiscardInvalidExpr',
-
-  extendsModel: 'UNARY',
-
-  methods: {
-    pipe: function(sink) { },
-    put: function(obj) {
-      if ( obj && obj.id ) this.arg1.put(obj);
-    },
-    remove: function(obj) {
-      if ( obj && obj.id ) this.arg1.remove(obj);
-    },
-  }
-});
-
 
 
 CLASS({
@@ -1176,10 +1159,6 @@ function GRID_BY(xFunc, yFunc, acc) {
 
 function MAP(fn, opt_sink) {
   return MapExpr.create({arg1: fn, arg2: opt_sink || [].sink});
-}
-
-function DISCARD_INVALID(sink) {
-  return DiscardInvalidExpr.create({ arg1: sink });
 }
 
 function DISTINCT(fn, sink) {

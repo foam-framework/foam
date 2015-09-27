@@ -91,7 +91,7 @@ CLASS({
         var dao = this.MDAO.create({
           model: Model,
         }, this.Y);
-        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL, DISCARD_INVALID(dao)));
+        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL, dao));
         return dao;
       },
     },
