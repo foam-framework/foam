@@ -215,7 +215,7 @@ CLASS({
     },
     function openAdminUI() {
       var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1000, height=700, location=no, menubar=no, ")});
-      w.document.body.innerHTML = '';
+      w.document.write('<html><head><title>Wat Lobby Admin</title><base href="/js/com/google/watlobby/"></head><body></body></html>');
       var r = this.TopicApp.create({dao: this.topics}, w.Y);
       r.write(w.Y);
     },

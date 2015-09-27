@@ -1,40 +1,40 @@
 [
   {
     "topic": "chrome",
-    "image": "chrome.png",
+    "image": "img/chrome.png",
     "r": 180,
     "color": "RED",
     "roundImage": true
   },
   {
     "topic": "flip",
-    "image": "flip.png",
+    "image": "img/flip.png",
     "r": 110,
     "color": "RED"
   },
   {
     "topic": "pixel",
-    "image": "pixel.png",
+    "image": "img/pixel.png",
     "r": 110,
     "color": "RED"
   },
   {
     "topic": "googlecanada",
-    "image": "googlecanada.png",
+    "image": "img/googlecanada.png",
     "r": 200,
     "color": "RED",
     "roundImage": true
   },
   {
     "topic": "onhub",
-    "image": "onhub.png",
+    "image": "img/onhub.png",
     "r": 120,
     "color": "GREEN",
     "roundImage": true
   },
   {
     "topic": "onhubvideo",
-    "image": "onhublogo.png",
+    "image": "img/onhublogo.png",
     "r": 120,
     "color": "BLUE",
     "roundImage": true,
@@ -43,27 +43,27 @@
   },
   {
     "topic": "inbox",
-    "image": "inbox.png",
+    "image": "img/inbox.png",
     "r": 160,
     "color": "BLUE",
     "text": "Blah Blah Blah"
   },
   {
     "topic": "android",
-    "image": "android.png",
+    "image": "img/android.png",
     "r": 100,
     "color": "GREEN"
   },
   {
     "topic": "calc",
-    "image": "calculator.png",
+    "image": "img/calculator.png",
     "r": 100,
     "color": "GREEN"
   },
   {
     "topic": "cardboard",
     "model": "Video",
-    "image": "cardboard.png",
+    "image": "img/cardboard.png",
     "r": 100,
     "color": "YELLOW",
     "video": "mlYJdZeA9w4",
@@ -71,19 +71,19 @@
   },
   {
     "topic": "gmailoffline",
-    "image": "gmailoffline.png",
+    "image": "img/gmailoffline.png",
     "r": 160,
     "color": "BLUE"
   },
   {
     "topic": "fiber",
-    "image": "fiber.png",
+    "image": "img/fiber.png",
     "r": 180,
     "color": "BLUE"
   },
   {
     "topic": "foam",
-    "image": "foam_whiteontransparent.png",
+    "image": "img/foam_whiteontransparent.png",
     "r": 80,
     "color": "red",
     "roundImage": true,
@@ -92,7 +92,7 @@
   },
   {
     "topic": "inwatvideo",
-    "image": "inwatvideo.png",
+    "image": "img/inwatvideo.png",
     "r": 120,
     "model": "Video",
     "video": "1Bb29KxXzDs",
@@ -100,14 +100,14 @@
   },
   {
     "topic": "appbuilder",
-    "image": "appbuilder.png",
+    "image": "img/appbuilder.png",
     "r": 120,
     "model": "Video",
     "video": "HvxKHj9QmMI"
   },
   {
     "topic": "photos",
-    "image": "photoalbum.png",
+    "image": "img/photoalbum.png",
     "r": 110,
     "model": "Album",
     "color": "YELLOW",
