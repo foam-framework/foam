@@ -54,6 +54,10 @@ CLASS({
       name: 'title',
       defaultValue: 'Create or Import Kiosk App',
     },
+    {
+      name: 'scrollContent',
+      defaultValue: false,
+    },
   ],
 
   methods: [ function onNext() {}, ],
@@ -70,29 +74,14 @@ CLASS({
   templates: [
     function contentHTML() {/*
       <div class="md-card-heading-content-spacer"></div>
-      <div class="new-existing-wizard-dao-page-scroller">
-        <div class="new-existing-wizard-dao-page">
-          $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
-            orientation: 'vertical',
-            choices: [
-              [this.newViewFactory, this.model_.NEW_VIEW_FACTORY.label],
-              [this.existingViewFactory, this.model_.EXISTING_VIEW_FACTORY.label ],
-              [this.existingViewFactory2, this.model_.EXISTING_VIEW_FACTORY2.label ],
-            ]
-          }
-          <% if ( this.existingDAO ) { %>
-            <div id="<%= this.id %>-container">
-              $$existingDAO
-            </div>
-          <%  } %>
-        </div>
-      </div>
-      <%
-        if ( this.existingDAO ) {
-          this.setClass('existing-hidden', function() { return self.nextViewFactory === self.newViewFactory; }, this.id+'-container');
-          this.setClass('new-existing-wizard-dao-container', function() { return true; }, this.id+'-container');
-        }
-      %>
+      $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
+        orientation: 'vertical',
+        choices: [
+          [ this.newViewFactory, this.model_.NEW_VIEW_FACTORY.label ],
+          [ this.existingViewFactory, this.model_.EXISTING_VIEW_FACTORY.label ],
+          [ this.existingViewFactory2, this.model_.EXISTING_VIEW_FACTORY2.label ],
+        ]
+      }
     */},
   ],
 });
