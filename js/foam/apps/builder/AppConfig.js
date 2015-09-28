@@ -19,7 +19,7 @@ CLASS({
     'foam.apps.builder.AppWindow',
   ],
 
-  ids: ['appId'],
+  ids: [ 'appId' ],
 
   properties: [
     {
@@ -212,6 +212,12 @@ CLASS({
           minHeight$: this.minWindowHeight$,
         }, this.Y);
       },
+      hidden: true,
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'appBuilderAnalyticsEnabled',
+      defaultValue: true,
       hidden: true,
     },
   ],

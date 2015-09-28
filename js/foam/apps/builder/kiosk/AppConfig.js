@@ -14,6 +14,10 @@ CLASS({
   name: 'AppConfig',
   extendsModel: 'foam.apps.builder.AppConfig',
 
+  requires: [
+    'foam.apps.builder.AppWindow',
+  ],
+
   constants: {
     EXISTING_SOURCES: [
       'foam.js',

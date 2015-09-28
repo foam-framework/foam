@@ -47,8 +47,47 @@ CLASS({
     {
       name: 'targetAppId',
       label: 'Administered App ID',
-      postSet: function(old, nu) {
-        this.masterAppDAO && this.masterAppDAO.find(nu, {
+      postSet: function(old,nu) {
+        this.findAppConfig();
+      }
+    },
+    {
+      name: 'targetDAOInstance',
+      transient: true,
+      hidden: true,
+    },
+    {
+      name: 'targetModel',
+      transient: true,
+      hidden: true,
+    },
+    {
+      name: 'browserConfig',
+    },
+    {
+      type: 'foam.apps.builder.AppWindow',
+      name: 'appWindow',
+      lazyFactory: function() {
+        return this.AppWindow.create({
+          id: this.model_.id,
+          name: 'Admin Window',
+        }, this.Y);
+      },
+      hidden: true,
+    },
+    {
+      name: 'masterAppDAO',
+      postSet: function(old,nu) {
+        this.findAppConfig();
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'findAppConfig',
+      code: function() {
+        this.masterAppDAO && this.targetAppId && this.masterAppDAO.find(this.targetAppId, {
           put: this.loadedAppConfig,
           error: function() {
             console.warn(this.appName,"select failed for",this.targetAppId);
@@ -57,15 +96,16 @@ CLASS({
       }
     },
     {
-      name: 'targetDAOInstance',
-    },
-    {
-      name: 'targetModel',
-    },
-    {
-      name: 'browserConfig',
-      lazyFactory: function() {
-        return this.BrowserConfig.create({
+      name: 'loadedAppConfig',
+      code: function(cfg) {
+        if ( ! cfg ) {
+          console.warn(this.appName,"Could not load",this.targetAppId);
+          return;
+        }
+        this.targetDAOInstance = cfg.createDAO();
+        this.targetModel = cfg.model;
+
+        this.browserConfig = this.BrowserConfig.create({
           title$: this.appName$,
           label$: this.appName$,
           model$: this.targetModel$,
@@ -80,31 +120,7 @@ CLASS({
             delegate: 'foam.ui.md.DetailView' // per app editor view, or specialized per model?
           },
         });
-      }
-    },
-    {
-      type: 'foam.apps.builder.AppWindow',
-      name: 'appWindow',
-      lazyFactory: function() {
-        return this.AppWindow.create({
-          id: this.model_.id,
-          name: 'Admin Window',
-        }, this.Y);
-      },
-      hidden: true,
-    },
-  ],
 
-  listeners: [
-    {
-      name: 'loadedAppConfig',
-      code: function(cfg) {
-        if ( ! cfg ) {
-          console.warn(this.appName,"Could not load",this.targetAppId);
-          return;
-        }
-        this.targetDAOInstance = cfg.createDAO();
-        this.targetModel = cfg.model;
       }
     },
   ],

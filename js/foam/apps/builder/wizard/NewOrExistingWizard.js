@@ -56,10 +56,6 @@ CLASS({
       name: 'scrollContent',
       defaultValue: true,
     },
-    {
-      name: 'nextTitle',
-      defaultValue: 'Next',
-    },
   ],
 
   actions: [

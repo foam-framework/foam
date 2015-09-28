@@ -16,9 +16,6 @@ CLASS({
   extendsModel: 'foam.ui.md.DetailView',
 
   requires: [
-    'foam.apps.builder.administrator.AdminDetailView',
-    'foam.dao.EasyDAO',
-    'foam.dao.IDBDAO',
     'foam.browser.ui.BrowserView',
   ],
 
@@ -28,11 +25,18 @@ CLASS({
 
   properties: [
     {
-      name: 'content',
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old ) Events.unfollow(old.browserConfig$);
+        if ( nu )  Events.follow(nu.browserConfig$);
+      }
+    },
+    {
+      name: 'browserConfig',
       help: 'The current administrator app configuration being edited',
       view: 'foam.browser.ui.BrowserView',
-      getter: function() {
-        return this.data.browserConfig;
+      postSet: function(old, nu) {
+        this.updateHTML();
       }
     },
   ],
@@ -41,7 +45,9 @@ CLASS({
     function toHTML() {/*
       <app-body id="%%id" <%= this.cssClassAttr() %>>
         $$targetAppId
-        $$content
+        <% if ( this.browserConfig ) { %>
+          $$browserConfig
+        <% } %>
       </app-body>
     */},
     function CSS() {/*
