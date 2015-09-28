@@ -36,6 +36,15 @@ CLASS({
       defaultValue: 'true'
     },
     {
+      name: 'model',
+      defaultValue: 'Topic',
+      view: {
+///        factory_: 'foam.ui.md.ChoiceMenuView',
+        factory_: 'foam.ui.md.ChoiceRadioView',
+        choices: [ 'Album', 'Topic', 'Video' ]
+      }
+    },
+    {
       model_: 'BooleanProperty',
       name: 'selected',
       hidden: true
@@ -45,14 +54,16 @@ CLASS({
       name: 'image'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'roundImage'
+    },
+    {
       name: 'color',
       // Convert capitalized colour names to standard Google colours
       preSet: function(_, c) { return this[c] || c; }
     },
     { name: 'background' },
     { name: 'r' },
-    { name: 'model', defaultValue: 'Topic' },
-    { name: 'roundImage' },
     { name: 'video' },
     {
       model_: 'IntProperty',
