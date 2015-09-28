@@ -48,8 +48,8 @@ CLASS({
       this.SUPER.apply(this, arguments);
       this.graph_ && this.graph_.paint();
     },
-    clone: function() {
-      var p = this.create({arg1: this.arg1, arg2: this.arg2.clone()});
+    exprClone: function() {
+      var p = this.SUPER();
       p.opt_args = this.opt_args;
       return p;
     }
