@@ -1206,13 +1206,6 @@ function MAP(fn, opt_sink) {
   return MapExpr.create({arg1: fn, arg2: opt_sink || [].sink});
 }
 
-function NOT_NULL(sink) {
-  return FilterExpr.create({
-    arg1: function(o) { return o && o.id; },
-    arg2: sink
-  });
-}
-
 function FILTER(fn, sink) {
   return FilterExpr.create({ arg1: fn, arg2: sink });
 }

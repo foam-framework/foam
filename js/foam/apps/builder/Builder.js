@@ -91,7 +91,8 @@ CLASS({
         var dao = this.MDAO.create({
           model: Model,
         }, this.Y);
-        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL, NOT_NULL(dao)));
+        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL,
+          FILTER(function(o) { return o && o.id; }, dao)));
         return dao;
       },
     },
