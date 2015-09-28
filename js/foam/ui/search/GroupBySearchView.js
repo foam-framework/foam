@@ -153,7 +153,7 @@ CLASS({
           if (typeof selected !== 'undefined') {
             var oldData = self.view.data;
             self.view.data = selected;
-            if (typeof oldData === 'undefined')
+            if (typeof oldData === 'undefined' || oldData === '')
               self.updatePredicate(null, null, null, selected);
           }
         });

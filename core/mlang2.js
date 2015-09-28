@@ -960,7 +960,52 @@ CLASS({
       // Don't use default clone because we don't want to copy 'groups'
       return MapExpr.create({arg1: this.arg1, arg2: this.arg2.clone()});
     },
-    remove: function(obj) { /* TODO: */ },
+    remove: function(obj) {
+      var acc = this.arg2;
+      if ( acc.remove ) {
+        var val = this.arg1.f ? this.arg1.f(obj) : this.arg1(obj);
+        acc.remove(val);
+      }
+    },
+    toString: function() { return this.arg2.toString(); },
+    deepClone: function() {
+    },
+    toHTML: function() {
+      return this.arg2.toHTML ? this.arg2.toHTML() : this.toString();
+    },
+    initHTML: function() {
+      this.arg2.initHTML && this.arg2.initHTML();
+    }
+  }
+});
+
+
+
+CLASS({
+  name: 'FilterExpr',
+
+  extendsModel: 'BINARY',
+
+  methods: {
+    reduce: function(other) {
+      // TODO:
+    },
+    reduceI: function(other) {
+    },
+    pipe: function(sink) {
+    },
+    put: function(obj) {
+      var discard = ! (this.arg1.f ? this.arg1.f(obj) : this.arg1(obj));
+      var acc = this.arg2;
+      if ( ! discard ) acc.put(obj);
+    },
+    remove: function(obj) {
+      var acc = this.arg2;
+      if ( acc.remove ) {
+        var discard = ! (this.arg1.f ? this.arg1.f(obj) : this.arg1(obj));
+        if ( ! discard ) acc.remove(obj);
+      }
+    },
     toString: function() { return this.arg2.toString(); },
     deepClone: function() {
     },
@@ -1159,6 +1204,10 @@ function GRID_BY(xFunc, yFunc, acc) {
 
 function MAP(fn, opt_sink) {
   return MapExpr.create({arg1: fn, arg2: opt_sink || [].sink});
+}
+
+function FILTER(fn, sink) {
+  return FilterExpr.create({ arg1: fn, arg2: sink });
 }
 
 function DISTINCT(fn, sink) {

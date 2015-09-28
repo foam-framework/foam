@@ -14,8 +14,13 @@ CLASS({
   name: 'Builder',
 
   requires: [
+    'Binding',
+    'MDAO',
     'Model',
+    'PersistentContext',
     'com.google.analytics.AnalyticsDAO',
+    'foam.apps.builder.AppBuilderContext',
+    'foam.apps.builder.AppConfig',
     'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.ImportExportManager',
@@ -24,27 +29,26 @@ CLASS({
     'foam.apps.builder.events.BrowserConfigFactory as EventsBCFactory',
     'foam.apps.builder.kiosk.BrowserConfigFactory as KioskBCFactory',
     'foam.apps.builder.questionnaire.BrowserConfigFactory as QuestionnaireBCFactory',
-    'foam.apps.builder.AppConfig',
     'foam.browser.ui.BrowserView',
     'foam.dao.ContextualizingDAO',
-    'foam.dao.IDBDAO',
     'foam.dao.EasyDAO',
-    'MDAO',
+    'foam.dao.IDBDAO',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.metrics.Metric',
     'foam.ui.md.FlatButton',
   ],
   exports: [
-    'touchManager',
-    'gestureManager',
-    'metricsDAO',
-    'menuSelection$',
-    'menuDAO$',
-    'importExportManager$',
-    'modelDAO',
     'daoConfigDAO',
+    'gestureManager',
+    'importExportManager$',
     'masterAppDAO',
+    'menuDAO$',
+    'menuSelection$',
+    'metricsDAO',
+    'modelDAO',
+    'ctx$ as persistentContext$',
+    'touchManager',
   ],
 
   properties: [
@@ -73,13 +77,13 @@ CLASS({
           this.AdminBCFactory.create({}, this.Y).factory(),
         ].dao;
         dao.model = this.BrowserConfig;
-        
+
         // pipe each app type's dao into our master list
         var master = this.masterAppDAO;
         dao.forEach(function(d) {
           d.dao && d.dao.pipe(master);
         });
-        
+
         return dao;
       }
     },
@@ -91,7 +95,8 @@ CLASS({
         var dao = this.MDAO.create({
           model: Model,
         }, this.Y);
-        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL, dao));
+        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL,
+          FILTER(function(o) { return o && o.id; }, dao)));
         return dao;
       },
     },
@@ -142,6 +147,23 @@ CLASS({
       name: 'gestureManager',
       lazyFactory: function() { return this.GestureManager.create(); },
     },
+    {
+      name: 'persistentContext',
+      transient: true,
+      lazyFactory: function() {
+        return this.PersistentContext.create({
+          dao: this.IDBDAO.create({ model: this.Binding }),
+          predicate: NOT_TRANSIENT,
+          context: this
+        });
+      },
+    },
+    {
+      type: 'foam.apps.builder.AppBuilderContext',
+      name: 'ctx',
+      transient: true,
+      defaultValue: null,
+    },
   ],
 
   methods: [
@@ -153,6 +175,8 @@ CLASS({
       this.metricsDAO.put(this.Metric.create({
         name: 'launchApp',
       }, this.Y));
+      this.persistentContext.bindObject('ctx', this.AppBuilderContext,
+                                        undefined, 1);
     },
   ],
 });

@@ -401,6 +401,22 @@ CLASS({
       });
     },
 
+    setStyle: function(styleName, valueFn, opt_id) {
+      /* Set a dynamic attribute on the DOM element. */
+      var self = this;
+      opt_id = opt_id || this.nextID();
+      valueFn = valueFn.bind(this);
+      this.addInitializer(function() {
+        self.X.dynamic(valueFn, function(value) {
+          var e = self.X.$(opt_id);
+          if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+          e.style[styleName] = value;
+        })
+      });
+
+      return opt_id;
+    },
+
     setClass: function(className, predicate, opt_id) {
       var self = this;
       /* Set a dynamic CSS class on the DOM element. */

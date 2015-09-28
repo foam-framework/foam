@@ -20,16 +20,12 @@ CLASS({
   ],
 
   requires: [
-    'foam.apps.builder.administrator.NewDAOWizard',
-    'foam.apps.builder.administrator.NewOrExistingDAOWizard',
   ],
 
   properties: [
     {
       name: 'nextViewFactory',
-      defaultValue: {
-        factory_: 'foam.apps.builder.administrator.NewOrExistingDAOWizard',
-      },
+      defaultValue: null,
     },
     {
       name: 'title',
@@ -38,9 +34,7 @@ CLASS({
     {
       model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'modelViewFactory',
-      defaultValue: {
-        factory_: 'foam.apps.builder.administrator.NewOrExistingModelWizard',
-      },
+      defaultValue: null,
     },
   ],
 
@@ -53,7 +47,15 @@ CLASS({
     function onNext() {
       this.SUPER(); // puts the app into the main dao
       this.selection = this.data; // imported selection from browser's main list
-    }
+    },
+
+    function onCancel() {
+      this.SUPER();
+      // remove the unfinished app. The user must have backed out of
+      // every other wizard page to get back here.
+      this.dao && this.dao.remove(this.data);
+    },
+
   ],
 
   templates: [
