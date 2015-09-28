@@ -73,13 +73,13 @@ CLASS({
           this.AdminBCFactory.create({}, this.Y).factory(),
         ].dao;
         dao.model = this.BrowserConfig;
-        
+
         // pipe each app type's dao into our master list
         var master = this.masterAppDAO;
         dao.forEach(function(d) {
           d.dao && d.dao.pipe(master);
         });
-        
+
         return dao;
       }
     },
@@ -91,7 +91,7 @@ CLASS({
         var dao = this.MDAO.create({
           model: Model,
         }, this.Y);
-        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL, dao));
+        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL, NOT_NULL(dao)));
         return dao;
       },
     },
