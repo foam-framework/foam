@@ -22,6 +22,8 @@ CLASS({
 
   requires: [ 'foam.graphics.PieGraph' ],
 
+  properties: ['graph_'],
+
   methods: {
     toCView: function() {
       if ( ! this.graph_ ) {
@@ -32,6 +34,9 @@ CLASS({
     },
     toView_: function() {
       return this.toCView().toView_();
+    },
+    toHTML: function() {
+      return this.toView_().toHTML();
     },
     write: function(opt_X) {
       var X = opt_X || this.X;
@@ -49,20 +54,11 @@ CLASS({
       this.graph_ && this.graph_.paint();
     },
     exprClone: function() {
-      var p = this.SUPER();
-      p.opt_args = this.opt_args;
-      return p;
+      return this.model_.create({
+        arg1: this.arg1,
+        arg2: this.arg2.exprClone(),
+        opt_args: this.opt_args
+      });
     }
   }
 });
-
-
-var PIE = function(f, opt_args) {
-  var p = foam.glang.PieExpr.create({arg1: f, arg2: COUNT()});
-
-  // TODO: opt_args is a little hackish, better to either make into a real
-  // property or take a PieGraph prototype as an argument/property.
-  p.opt_args = opt_args;
-
-  return p;
-};
