@@ -65,6 +65,10 @@ CLASS({
       name: 'cardClass',
       defaultValue: 'md-card-shell',
     },
+    {
+      name: 'blockerMode',
+      defaultValue: 'modal',
+    },
   ],
 
   templates: [

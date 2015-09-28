@@ -19,8 +19,6 @@ CLASS({
   ],
 
   requires: [
-    'foam.apps.builder.administrator.ChangeDAOWizard',
-    'foam.apps.builder.administrator.ChangeModelWizard',
     'foam.apps.builder.administrator.AdminView',
     'foam.apps.builder.templates.AppView',
     'foam.apps.builder.templates.PanelView',
@@ -46,9 +44,6 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      // ModelSummaryView will use this, redirect to Admin version
-      this.Y.registerModel(this.ChangeModelWizard, 'foam.apps.builder.wizard.ChangeModelWizard');
-      this.Y.registerModel(this.ChangeDAOWizard, 'foam.apps.builder.wizard.ChangeDAOWizard');
 
       this.Y.set('mdToolbar', null);
     }

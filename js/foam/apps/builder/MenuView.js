@@ -27,7 +27,11 @@ CLASS({
   properties: [
     {
       model_:'ViewFactoryProperty',
-      name: 'list',
+      name: 'selectionList',
+    },
+    {
+      model_:'ViewFactoryProperty',
+      name: 'viewList',
     },
   ],
 
@@ -43,7 +47,11 @@ CLASS({
             </icons>
           </content>
         </logo>
-        %%list()
+        %%selectionList()
+        <% if ( this.viewList ) { %>
+          <hr />
+          %%viewList()
+        <% } %>
       </div>
     */},
     function CSS() {/*

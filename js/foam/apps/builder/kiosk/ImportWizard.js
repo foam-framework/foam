@@ -53,6 +53,13 @@ CLASS({
     function getActionName() {
       return 'importV' + this.appBuilderVersion.toString() + 'App';
     },
+    function onCancel() {
+      this.SUPER();
+      // remove the unfinished app. The user must have backed out of
+      // every other wizard page to get back here.
+      this.dao && this.dao.remove(this.data);
+    },
+
   ],
 
   actions: [

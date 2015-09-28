@@ -11,13 +11,20 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'DesignerViewContext',
+  name: 'ViewMenuItem',
 
   properties: [
     {
-      model_: 'BooleanProperty',
-      name: 'firstRun',
-      defaultValue: true,
-    }
+      model_: 'StringProperty',
+      name: 'iconUrl',
+    },
+    {
+      model_: 'StringProperty',
+      name: 'label',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'viewFactory',
+    },
   ],
 });
