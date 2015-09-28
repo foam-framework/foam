@@ -21,6 +21,10 @@ CLASS({
     'foam.apps.builder.UploadManager',
     'foam.apps.builder.XHRManager',
   ],
+  imports: [
+    'warn',
+    'persistentContext$ as ctx$',
+  ],
   exports: [
     'identityManager',
     'sourceManager',
@@ -31,6 +35,10 @@ CLASS({
     {
       name: 'config',
       required: true,
+    },
+    {
+      type: 'foam.apps.builder.AppBuilderContext',
+      name: 'ctx',
     },
     {
       type: 'foam.apps.builder.XHRManager',
@@ -82,22 +90,22 @@ CLASS({
     function downloadPackage(exportFlow) {
       this.DownloadManager.create({
         mode: 'PACKAGED',
-        data: exportFlow,
+        data: this.prepareExport(exportFlow),
       }, this.Y).exportApp(exportFlow);
     },
     function downloadApp(exportFlow) {
       this.DownloadManager.create({
-        data: exportFlow,
+        data: this.prepareExport(exportFlow),
       }, this.Y).exportApp(exportFlow);
     },
     function uploadApp(exportFlow) {
       this.UploadManager.create({
-        data: exportFlow,
+        data: this.prepareExport(exportFlow),
       }, this.Y).exportApp(exportFlow);
     },
     function publishApp(exportFlow) {
       this.UploadManager.create({
-        data: exportFlow,
+        data: this.prepareExport(exportFlow),
       }, this.Y).publishApp(exportFlow);
     },
     function importV1App(importFlow) {
@@ -109,6 +117,16 @@ CLASS({
       this.ImportManager.create({
         data: importFlow,
       }, this.Y).importV2App(importFlow);
+    },
+    function prepareExport(exportFlow) {
+      if ( ! this.ctx ) {
+        this.warn('ImportExportManager: missing persistent context');
+        return exportFlow;
+      }
+
+      exportFlow.config.appBuilderAnalyticsEnabled =
+          this.ctx.appBuilderAnalyticsEnabled;
+      return exportFlow;
     },
   ],
 });
