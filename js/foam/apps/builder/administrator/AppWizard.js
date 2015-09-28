@@ -20,16 +20,12 @@ CLASS({
   ],
 
   requires: [
-    'foam.apps.builder.administrator.NewDAOWizard',
-    'foam.apps.builder.administrator.NewOrExistingDAOWizard',
   ],
 
   properties: [
     {
       name: 'nextViewFactory',
-      defaultValue: {
-        factory_: 'foam.apps.builder.administrator.NewOrExistingDAOWizard',
-      },
+      defaultValue: null,
     },
     {
       name: 'title',
@@ -38,9 +34,7 @@ CLASS({
     {
       model_: 'foam.apps.builder.wizard.WizardViewFactoryProperty',
       name: 'modelViewFactory',
-      defaultValue: {
-        factory_: 'foam.apps.builder.administrator.NewOrExistingModelWizard',
-      },
+      defaultValue: null,
     },
   ],
 
