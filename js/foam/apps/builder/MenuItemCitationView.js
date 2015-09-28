@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'BrowserConfigCitationView',
+  name: 'MenuItemCitationView',
   extendsModel: 'foam.ui.View',
 
   requires: [
@@ -21,7 +21,7 @@ CLASS({
   properties: [
     {
       name: 'className',
-      defaultValue: 'browser-citation',
+      defaultValue: 'menu-item-citation',
     },
     {
       name: 'halo',
@@ -39,7 +39,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .browser-citation {
+      .menu-item-citation {
         position: relative;
         align-items: center;
         display: flex;
@@ -48,13 +48,13 @@ CLASS({
         line-height: 42px;
         padding: 8px 16px;
       }
-      .browser-citation .halo {
+      .menu-item-citation .halo {
         position: absolute;
         left: 0;
         top: 0;
         z-index: 2;
       }
-      .browser-citation img {
+      .menu-item-citation img {
         flex-grow: 0;
         flex-shrink: 0;
         height: 24px;

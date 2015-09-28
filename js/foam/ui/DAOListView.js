@@ -89,6 +89,11 @@ CLASS({
       name: 'repaintRequired',
       defaultValue: false,
       transient: true
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'propertyListeners_',
+      lazyFactory: function() { return []; }
     }
   ],
 
@@ -152,14 +157,7 @@ CLASS({
         // TODO: Something isn't working with the Context, fix
         view.DAO = this.dao;
         if ( this.mode === 'read-write' ) {
-          o.addPropertyListener(null, function(o, topic) {
-            var prop = o.model_.getProperty(topic[1]);
-            // TODO(kgr): remove the deepClone when the DAO does this itself.
-            if ( ! prop.transient ) {
-              // TODO: if o.id changed, remove the old one?
-              view.DAO.put(o.deepClone());
-            }
-          });
+          this.addRowPropertyListener(o, view);
         }
         this.addChild(view);
 
@@ -200,6 +198,15 @@ CLASS({
       }.bind(this));
     },
 
+    destroy: function(isParentDestroyed) {
+      var listeners = this.propertyListeners_;
+      for ( var i = 0; i < listeners.length; ++i ) {
+        listeners[i].data.removePropertyListener(null, listeners[i].listener);
+      }
+      this.propertyListeners_ = [];
+      return this.SUPER(isParentDestroyed);
+    },
+
     /** Allow rowView to be optional when defined using HTML. **/
     fromElement: function(e) {
       var children = e.children;
@@ -215,6 +222,19 @@ CLASS({
       /* Template method. Override to provide a separator if required. This
       method is called <em>before</em> each list item, except the first. Use
       out.push("<myhtml>...") for efficiency. */
+    },
+
+    addRowPropertyListener: function(data, view) {
+      var listener = function(o, topic) {
+        var prop = o.model_.getProperty(topic[1]);
+        // TODO(kgr): remove the deepClone when the DAO does this itself.
+        if ( ! prop.transient ) {
+          // TODO: if o.id changed, remove the old one?
+          view.DAO.put(o.deepClone());
+        }
+      };
+      data.addPropertyListener(null, listener);
+      this.propertyListeners_.push({ data: data, listener: listener });
     }
   },
 

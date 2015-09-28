@@ -21,7 +21,6 @@ CLASS({
     'Binding',
     'PersistentContext',
     'foam.apps.builder.AppConfigActionsView',
-    'foam.apps.builder.DesignerViewContext',
     'foam.apps.builder.kiosk.KioskView',
     'foam.apps.builder.Panel',
     'foam.dao.IDBDAO',
@@ -29,7 +28,8 @@ CLASS({
     'foam.ui.HelpSnippetView',
   ],
   imports: [
-    'mdToolbar as toolbar'
+    'mdToolbar as toolbar',
+    'persistentContext$ as ctx$',
   ],
 
   properties: [
@@ -66,24 +66,12 @@ CLASS({
     'panelView',
     'appView',
     {
-      name: 'persistentContext',
-      transient: true,
-      lazyFactory: function() {
-        return this.PersistentContext.create({
-          dao: this.IDBDAO.create({ model: this.Binding }),
-          predicate: NOT_TRANSIENT,
-          context: this
-        });
-      },
-    },
-    {
-      type: 'foam.apps.builder.DesignerViewContext',
+      type: 'foam.apps.builder.AppBuilderContext',
       name: 'ctx',
       transient: true,
-      defaultValue: null,
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( this.$ && nu && nu.firstRun ) {
+        if ( this.$ && nu && ! nu.hasSeenDesignerView ) {
           this.constructHelpSnippets();
         }
       },
@@ -91,14 +79,10 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      this.persistentContext.bindObject(
-          'ctx', this.DesignerViewContext, undefined, 1);
-    },
     function initHTML() {
       this.SUPER();
-      if ( this.ctx && this.ctx.firstRun ) this.constructHelpSnippets();
+      if ( this.ctx && ! this.ctx.hasSeenDesignerView )
+        this.constructHelpSnippets();
     },
   ],
 
@@ -174,7 +158,7 @@ CLASS({
             }, this.Y),
           ],
           onComplete: function() {
-            this.ctx.firstRun = false;
+            this.ctx.hasSeenDesignerView = true;
           }.bind(this)
         }, this.Y).construct();
       },
