@@ -2,40 +2,40 @@
   {
     "topic": "chrome",
     "image": "img/chrome.png",
-    "r": 180,
+    "priority": 5,
     "color": "RED",
     "roundImage": true
   },
   {
     "topic": "flip",
     "image": "img/flip.png",
-    "r": 110,
+    "priority": 1,
     "color": "RED"
   },
   {
     "topic": "pixel",
     "image": "img/pixel.png",
-    "r": 110,
+    "priority": 1,
     "color": "RED"
   },
   {
     "topic": "googlecanada",
     "image": "img/googlecanada.png",
-    "r": 200,
+    "priority": 5,
     "color": "RED",
     "roundImage": true
   },
   {
     "topic": "onhub",
     "image": "img/onhub.png",
-    "r": 120,
+    "priority": 3,
     "color": "GREEN",
     "roundImage": true
   },
   {
     "topic": "onhubvideo",
     "image": "img/onhublogo.png",
-    "r": 120,
+    "priority": 3,
     "color": "BLUE",
     "roundImage": true,
     "video": "HNnfHP7VDP8",
@@ -44,27 +44,27 @@
   {
     "topic": "inbox",
     "image": "img/inbox.png",
-    "r": 160,
+    "priority": 4,
     "color": "BLUE",
     "text": "Blah Blah Blah"
   },
   {
     "topic": "android",
     "image": "img/android.png",
-    "r": 100,
+    "priority": 2,
     "color": "GREEN"
   },
   {
     "topic": "calc",
     "image": "img/calculator.png",
-    "r": 100,
+    "priority": 1,
     "color": "GREEN"
   },
   {
     "topic": "cardboard",
     "model": "Video",
     "image": "img/cardboard.png",
-    "r": 100,
+    "priority": 3,
     "color": "YELLOW",
     "video": "mlYJdZeA9w4",
     "duration": 100
@@ -72,19 +72,19 @@
   {
     "topic": "gmailoffline",
     "image": "img/gmailoffline.png",
-    "r": 160,
+    "priority": 3,
     "color": "BLUE"
   },
   {
     "topic": "fiber",
     "image": "img/fiber.png",
-    "r": 180,
+    "priority": 5,
     "color": "BLUE"
   },
   {
     "topic": "foam",
     "image": "img/foam_whiteontransparent.png",
-    "r": 80,
+    "priority": 3,
     "color": "red",
     "roundImage": true,
     "background": "red",
@@ -93,7 +93,7 @@
   {
     "topic": "inwatvideo",
     "image": "img/inwatvideo.png",
-    "r": 120,
+    "priority": 5,
     "model": "Video",
     "video": "1Bb29KxXzDs",
     "roundImage": true
@@ -101,14 +101,14 @@
   {
     "topic": "appbuilder",
     "image": "img/appbuilder.png",
-    "r": 120,
+    "priority": 1,
     "model": "Video",
     "video": "HvxKHj9QmMI"
   },
   {
     "topic": "photos",
     "image": "img/photoalbum.png",
-    "r": 110,
+    "priority": 3,
     "model": "Album",
     "color": "YELLOW",
     "roundImage": true

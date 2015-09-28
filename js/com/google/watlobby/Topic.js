@@ -36,6 +36,20 @@ CLASS({
       defaultValue: 'true'
     },
     {
+      name: 'priority',
+      defaultValue: 3,
+      view: {
+        factory_: 'foam.ui.md.ChoiceRadioView',
+        choices: [
+          [ 1, 'Low' ],
+//          [ 2, '' ],
+          [ 3, 'Medium' ],
+//          [ 4, '' ],
+          [ 5, 'High' ]
+        ]
+      }
+    },
+    {
       name: 'model',
       defaultValue: 'Topic',
       view: {
@@ -63,7 +77,13 @@ CLASS({
       preSet: function(_, c) { return this[c] || c; }
     },
     { name: 'background' },
-    { name: 'r' },
+    {
+      name: 'r',
+      hidden: true,
+      getter: function() {
+        return ([110, 130, 150, 180, 200])[this.priority-1];
+      }
+    },
     { name: 'video' },
     {
       model_: 'IntProperty',

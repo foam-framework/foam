@@ -39,6 +39,7 @@ CLASS({
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         $$enabled{ label: '' }
         <span id="<%= this.setStyle('background', function() { return this.data.background; }) %>" class="image-background">$$image{model_: 'foam.ui.ImageView', mode: 'read-only', displayWidth: 40, displayHeight: 40}</span>
+        <span style="margin-left: 30px; margin-right: -10px;">Priority</span> $$priority{model_: 'foam.ui.TextFieldView', mode: 'read-only', floatingLabel: false}
         $$model{model_: 'foam.ui.TextFieldView', mode: 'read-only', floatingLabel: false}
         $$topic{mode: 'read-only', floatingLabel: false}
       </div>
