@@ -11,13 +11,21 @@
 
 CLASS({
   package: 'foam.apps.builder',
-  name: 'DesignerViewContext',
+  name: 'AppBuilderContext',
 
   properties: [
     {
       model_: 'BooleanProperty',
-      name: 'firstRun',
+      name: 'hasSeenDesignerView',
+      defaultValue: false,
+      hidden: true,
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'appBuilderAnalyticsEnabled',
+      label: 'Send anonymous usage data from my apps to the App Builder team ' +
+          'to help make App Builder better',
       defaultValue: true,
-    }
+    },
   ],
 });
