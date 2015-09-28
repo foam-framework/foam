@@ -65,6 +65,8 @@ CLASS({
     {
       name: 'browserConfig',
       lazyFactory: function() {
+        if ( ! this.targetDAOInstance || ! this.targetModel) return null;
+
         return this.BrowserConfig.create({
           title$: this.appName$,
           label$: this.appName$,
