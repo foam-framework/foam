@@ -15,7 +15,7 @@ CLASS({
   extendsModel: 'foam.browser.BrowserConfig',
 
   requires: [
-    'foam.apps.builder.BrowserConfigCitationView',
+    'foam.apps.builder.MenuItemCitationView',
     'foam.apps.builder.MenuView',
     'foam.apps.builder.SettingsView',
     'foam.apps.builder.ViewMenuItem',
@@ -39,7 +39,7 @@ CLASS({
       defaultValue: function() {
         var view = this.DAOListView.create({
           data: this.menuDAO,
-          rowView: this.BrowserConfigCitationView,
+          rowView: this.MenuItemCitationView,
           mode: 'read-only',
         }, this.Y.sub({
           selection$: this.menuSelection$,
@@ -63,8 +63,7 @@ CLASS({
               },
             }, this.Y),
           ].dao,
-          // TODO(markdittmer): Give this model a more general name.
-          rowView: this.BrowserConfigCitationView,
+          rowView: this.MenuItemCitationView,
           mode: 'read-only',
         }, this.Y.sub({
           selection$: this.viewSelection$,
