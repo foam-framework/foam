@@ -960,7 +960,13 @@ CLASS({
       // Don't use default clone because we don't want to copy 'groups'
       return MapExpr.create({arg1: this.arg1, arg2: this.arg2.clone()});
     },
-    remove: function(obj) { /* TODO: */ },
+    remove: function(obj) {
+      var acc = this.arg2;
+      if ( acc.remove ) {
+        var val = this.arg1.f ? this.arg1.f(obj) : this.arg1(obj);
+        acc.remove(val);
+      }
+    },
     toString: function() { return this.arg2.toString(); },
     deepClone: function() {
     },
@@ -993,7 +999,13 @@ CLASS({
       var acc = this.arg2;
       if ( ! discard ) acc.put(obj);
     },
-    remove: function(obj) { /* TODO: */ },
+    remove: function(obj) {
+      var acc = this.arg2;
+      if ( acc.remove ) {
+        var discard = ! (this.arg1.f ? this.arg1.f(obj) : this.arg1(obj));
+        if ( ! discard ) acc.remove(obj);
+      }
+    },
     toString: function() { return this.arg2.toString(); },
     deepClone: function() {
     },
