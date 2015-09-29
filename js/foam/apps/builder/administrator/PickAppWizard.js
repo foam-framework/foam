@@ -74,7 +74,7 @@ CLASS({
 
   methods: [
     function onNext() {
-      this.data.targetAppId = this.selection.appId;
+      this.data.targetAppConfig = this.selection;
       this.SUPER();
     },
   ],

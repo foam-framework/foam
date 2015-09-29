@@ -37,7 +37,9 @@ CLASS({
     },
     {
       name: 'model',
-      defaultValue: 'foam.apps.builder.events.Event',
+      lazyFactory: function() {
+        return this.Event;
+      }
     },
     {
       name: 'defaultView',

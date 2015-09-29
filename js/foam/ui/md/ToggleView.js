@@ -129,7 +129,7 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <span class="toggle-label noselect"><%# this.label %></span>
+        <span class="toggle-label noselect md-grey"><%# this.label %></span>
         <span class="toggle-text-indicator noselect"><%# this.data ? "ON" : "OFF" %></span>
         <div class="toggle-outer noselect">
           <span id="<%=this.id%>-background" class="toggle-background">

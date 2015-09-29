@@ -51,7 +51,14 @@ var ArraySink = {
     return this.slice().sink;
   },
   deepClone: function() {
-    return Array.prototype.call(this).sink;
+    var r = new Array(this.length);
+    for (var i = 0; i < this.length; i++) {
+      r[i] = this[i].deepClone();
+    }
+    return r.sink;
+  },
+  exprClone: function() {
+    return this.deepClone();
   }
 };
 

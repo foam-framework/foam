@@ -70,7 +70,7 @@ CLASS({
       var group = this.groups.hasOwnProperty(key) && this.groups[key];
 
       if ( ! group ) {
-        group = value.clone();
+        group = value.exprClone();
         if ( this.expanded[key] ) group.children = [];
         this.groups[key] = group;
         group.count = 1;
