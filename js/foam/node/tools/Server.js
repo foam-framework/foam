@@ -28,14 +28,9 @@ CLASS({
   ],
   properties: [
     {
-      model_: 'IntProperty',
-      name: 'port',
-      help: 'Port to run the server on',
-      adapt: function(_, v) {
-        if ( typeof v === "string" ) return parseInt(v);
-        return v;
-      },
-      defaultValue: 8080
+      name: 'config',
+      documentation: 'A $$DOC{ref:"foam.node.server.ServerConfig"} that ' +
+          'describes this server\'s models/DAOs, port, static files, etc.',
     },
     {
       model_: 'StringArrayProperty',
@@ -44,7 +39,8 @@ CLASS({
         if ( typeof v === "string" ) return v.split(',');
         return v;
       },
-      help: 'Name of agents to run or services to create'
+      documentation: 'Name of agents to run or services to create. Usually ' +
+          'built from the $$DOC{ref:".config"}.'
     },
     {
       name: 'server',
@@ -71,33 +67,29 @@ CLASS({
       this.server.launch();
     },
     function configure() {
-      this.server.port = this.port;
-      this.server.handlers = [
-        this.StaticFileHandler.create({
-          dir: global.FOAM_BOOT_DIR,
-          prefix: '/core/'
-        }),
-        this.StaticFileHandler.create({
-          dir: global.FOAM_BOOT_DIR + '/../demos/',
-          prefix: '/demos/'
-        }),
-        this.StaticFileHandler.create({
-          dir: global.FOAM_BOOT_DIR + '/../apps/',
-          prefix: '/apps/'
-        }),
-        this.StaticFileHandler.create({
-          dir: global.FOAM_BOOT_DIR + '/../js/',
-          prefix: '/js/'
-        }),
-	this.FileHandler.create({
-	  pathname: '/index.html',
-	  file: global.FOAM_BOOT_DIR + '/../index.html'
-	}),
-	this.FileHandler.create({
-	  pathname: '/index.js',
-	  file: global.FOAM_BOOT_DIR + '/../index.js'
-	})
-      ];
+      this.server.port = this.config.port;
+      var handlers = [];
+
+      // First serve the static files, then static dirs, then DAOs.
+      for (var i = 0; i < this.config.staticFiles.length; i++) {
+        handlers.push(this.FileHandler.create({
+          pathname: this.config.staticFiles[i][0],
+          file: this.config.staticFiles[i][1]
+        }));
+      }
+
+      for (var i = 0; i < this.config.staticDirs.length; i++) {
+        handlers.push(this.StaticFileHandler.create({
+          prefix: this.config.staticDirs[i][0],
+          dir: this.config.staticDirs[i][1]
+        }));
+      }
+
+      this.server.handlers = handlers;
+
+      for (var i = 0; i < this.config.daos.length; i++) {
+        this.server.exportDAO(this.config.daos[i]);
+      }
     }
   ]
 });
