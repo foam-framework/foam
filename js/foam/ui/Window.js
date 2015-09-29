@@ -90,7 +90,6 @@ CLASS({
 
   methods: {
     addStyle: function(css, opt_source) {
-      console.log('source: ', opt_source);
       if ( opt_source )
         css += '\n\n/*# sourceURL=' + opt_source + ' */\n'
 
