@@ -220,6 +220,12 @@ CLASS({
       defaultValue: true,
       hidden: true,
     },
+    {
+      model_: 'StringProperty',
+      name: 'analyticsId',
+      label: 'Google Analytics Property Tracking ID',
+      help: 'When set, reports app usage statistics through Google Analytics.',
+    },
   ],
 
   methods: [
