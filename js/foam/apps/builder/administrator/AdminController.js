@@ -11,39 +11,42 @@
 
 CLASS({
   package: 'foam.apps.builder.administrator',
-  name: 'AppConfig',
-  extendsModel: 'foam.apps.builder.AppConfig',
+  name: 'AdminController',
 
-  constants: {
-    EXISTING_SOURCES: [
-      'foam.js',
-      'app_bg.js',
-      'app_view.html',
-    ],
-  },
+  imports: [
+    'masterAppDAO',
+  ],
+
+  requires: [
+    'foam.browser.BrowserConfig',
+  ],
 
   properties: [
     {
-      name: 'appName',
-      defaultValue: 'New Admin App'
-    },
-    {
-      name: 'defaultView',
-      defaultValue: 'foam.apps.builder.administrator.AdminView',
+      name: 'targetAppId',
+      label: 'Administered App ID',
+      postSet: function(old,nu) {
+        if ( old !== nu ) this.findAppConfig();
+      }
     },
     {
       name: 'targetAppConfig',
+      postSet: function(old, nu) {
+        if ( nu && old !== nu &&
+            old.appId !== nu.appId ) {
+          this.loadedAppConfig(nu);
+          this.targetAppId = nu.appId;
+        }
+      }
     },
     {
-      type: 'foam.apps.builder.AppWindow',
-      name: 'appWindow',
-      lazyFactory: function() {
-        return this.AppWindow.create({
-          id: this.model_.id,
-          name: 'Admin Window',
-        }, this.Y);
-      },
-      hidden: true,
+      name: 'targetDAOInstance',
+    },
+    {
+      name: 'targetModel',
+    },
+    {
+      name: 'browserConfig',
     },
     {
       name: 'masterAppDAO',

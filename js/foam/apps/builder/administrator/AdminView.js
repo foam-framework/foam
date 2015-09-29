@@ -17,6 +17,7 @@ CLASS({
 
   requires: [
     'foam.browser.ui.BrowserView',
+    'foam.apps.builder.administrator.AdminController',
   ],
 
   exports: [
@@ -27,9 +28,19 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
-        if ( old ) Events.unfollow(old.browserConfig$, this.browserConfig$);
-        if ( nu )  Events.follow(nu.browserConfig$, this.browserConfig$);
-        nu.findAppConfig();
+        if ( this.controller && nu && nu.targetAppConfig ) {
+          this.controller.targetAppConfig = nu.targetAppConfig;
+        }
+      }
+    },
+    {
+      name: 'controller',
+      lazyFactory: function() {
+        var c = this.AdminController.create();
+        Events.follow(c.browserConfig$, this.browserConfig$);
+        if ( this.data && this.data.targetAppConfig ) {
+          c.targetAppConfig = this.data.targetAppConfig;
+        }
       }
     },
     {
