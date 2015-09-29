@@ -105,12 +105,10 @@ CLASS({
         return this.AnalyticsDAO.create({
           storageName: 'AppBuilder-' + data.appId + '-operations',
           daoType: 'XHR',
-          debug: true,
           propertyId: 'UA-47217230-7',
           appName: data.appName,
           appVersion: data.version,
           endpoint: 'https://www.google-analytics.com/collect',
-          debugEndpoint: 'https://www.google-analytics.com/debug/collect',
         }, this.Y);
       },
     },
