@@ -41,8 +41,8 @@ CLASS({
         return this.ViewCView.create({innerView: this.TextFieldView.create({
           className: 'topic-bubble-text',
           mode: 'read-only',
-          escapeHTML: false,
-          data: 'foobar\nblah\nblah\nblah'
+          escapeHTML: false
+//          data: 'foobar\nblah\nblah\nblah'
         })});
       }
     }
@@ -54,7 +54,7 @@ CLASS({
 
       this.addChild(this.img = this.ImageCView.create({src: this.image}));
       this.addChild(this.textArea);
-      this.textArea.innerView.data = this.topic.text || 'INSERT TEXT HERE';
+      this.textArea.innerView.data = '<font style="color:' + this.topic.color + ';">' + ( this.topic.text || 'INSERT TEXT HERE' ) + '</font>';
       this.textArea.alpha = 0;
     },
     function setSelected(selected) {
@@ -106,7 +106,8 @@ CLASS({
 
       var r2 = this.roundImage ?
         (1-0.15*this.zoom)*this.r + 2 :
-        Math.SQRT1_2 * this.r;
+        Math.SQRT1_2 * this.r ;
+
       this.img.x      = this.roundImage ? -r2 - 0.15*this.zoom*this.r/1.5 : -r2 * (1+this.zoom/4);
       this.img.y      = -r2 / (1+this.zoom);
       this.img.width  = (2-this.zoom) * r2;

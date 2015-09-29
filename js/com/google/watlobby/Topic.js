@@ -33,7 +33,30 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'enabled',
-      defaultValue: 'true'
+      defaultValue: true
+    },
+    {
+      name: 'priority',
+      defaultValue: 3,
+      view: {
+        factory_: 'foam.ui.md.ChoiceRadioView',
+        choices: [
+          [ 1, 'Low' ],
+//          [ 2, '' ],
+          [ 3, 'Medium' ],
+//          [ 4, '' ],
+          [ 5, 'High' ]
+        ]
+      }
+    },
+    {
+      name: 'model',
+      defaultValue: 'Topic',
+      view: {
+///        factory_: 'foam.ui.md.ChoiceMenuView',
+        factory_: 'foam.ui.md.ChoiceRadioView',
+        choices: [ 'Album', 'Topic', 'Video' ]
+      }
     },
     {
       model_: 'BooleanProperty',
@@ -45,14 +68,22 @@ CLASS({
       name: 'image'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'roundImage'
+    },
+    {
       name: 'color',
       // Convert capitalized colour names to standard Google colours
       preSet: function(_, c) { return this[c] || c; }
     },
     { name: 'background' },
-    { name: 'r' },
-    { name: 'model', defaultValue: 'Topic' },
-    { name: 'roundImage' },
+    {
+      name: 'r',
+      hidden: true,
+      defaultValueFn: function() {
+        return ([110, 130, 150, 180, 200])[this.priority-1];
+      }
+    },
     { name: 'video' },
     {
       model_: 'IntProperty',
