@@ -542,6 +542,7 @@ CLASS({
     },
     {
       name: 'value',
+      compareProperty: function() { return 0; },
       getter: function() {
         return this.sum;
       }
@@ -582,6 +583,7 @@ CLASS({
     },
     {
       name: 'value',
+      compareProperty: function() { return 0; },
       getter: function() {
         return this.avg;
       }
@@ -611,6 +613,7 @@ CLASS({
     },
     {
       name: 'value',
+      compareProperty: function() { return 0; },
       getter: function() {
         return this.min;
       }
@@ -651,6 +654,7 @@ CLASS({
     },
     {
       name: 'value',
+      compareProperty: function() { return 0; },
       getter: function() {
         return this.arg2.value;
       }
@@ -723,7 +727,7 @@ CLASS({
     putInGroup_: function(key, obj) {
       var group = this.groups.hasOwnProperty(key) && this.groups[key];
       if ( ! group ) {
-        group = this.arg2.clone();
+        group = this.arg2.exprClone();
         this.groups[key] = group;
         this.groupKeys.push(key);
       }
@@ -746,6 +750,12 @@ CLASS({
     clone: function() {
       // Don't use default clone because we don't want to copy 'groups'
       return GroupByExpr.create({arg1: this.arg1, arg2: this.arg2});
+    },
+    exprClone: function() {
+      return GroupByExpr.create({
+        arg1: this.arg1.exprClone(),
+        arg2: this.arg2.exprClone()
+      });
     },
     remove: function(obj) { /* TODO: */ },
     toString: function() { return this.groups; },
@@ -861,14 +871,16 @@ CLASS({
       this.rows.put(obj);
       this.cols.put(obj);
     },
-    clone: function() {
-      // Don't use default clone because we don't want to copy 'groups'
-      return this.model_.create({xFunc: this.xFunc, yFunc: this.yFunc, acc: this.acc});
+    exprClone: function() {
+      // Don't use default clone because we don't want to copy 'rows' or 'cols'.
+      return this.model_.create({
+        xFunc: this.xFunc,
+        yFunc: this.yFunc,
+        acc: this.acc.exprClone()
+      });
     },
     remove: function(obj) { /* TODO: */ },
     toString: function() { return this.groups; },
-    deepClone: function() {
-    },
     renderCell: function(x, y, value) {
       var str = value ? (value.toHTML ? value.toHTML() : value) : '';
       if ( value && value.toHTML && value.initHTML ) this.children.push(value);
@@ -956,9 +968,12 @@ CLASS({
       var acc = this.arg2;
       acc.put(val);
     },
-    clone: function() {
+    exprClone: function() {
       // Don't use default clone because we don't want to copy 'groups'
-      return MapExpr.create({arg1: this.arg1, arg2: this.arg2.clone()});
+      return MapExpr.create({
+        arg1: this.arg1,
+        arg2: this.arg2.exprClone()
+      });
     },
     remove: function(obj) {
       var acc = this.arg2;
@@ -1007,6 +1022,13 @@ CLASS({
       }
     },
     toString: function() { return this.arg2.toString(); },
+    exprClone: function() {
+      // Don't use default clone because we don't want to copy 'groups'
+      return FilterExpr.create({
+        arg1: this.arg1,
+        arg2: this.arg2.exprClone()
+      });
+    },
     deepClone: function() {
     },
     toHTML: function() {
@@ -1027,6 +1049,7 @@ CLASS({
   properties: [
     {
       name: 'value',
+      compareProperty: function() { return 0; },
       getter: function() {
         return this.args.map(function(x) { return x.value; });
       }
@@ -1051,12 +1074,9 @@ CLASS({
       }
       return ret;
     },
-    clone: function() {
-      // We do a slightly-deep clone: shallow clone each of our arguments.
-      // This makes the clone have separate mlangs configured the same way, but
-      // they don't inherit the data and so on.
+    exprClone: function() {
       return SeqExpr.create({
-        args: this.args.map(function(o) { return o.clone(); })
+        args: this.args.map(function(o) { return o.exprClone(); })
       });
     },
     deepClone: function() {
