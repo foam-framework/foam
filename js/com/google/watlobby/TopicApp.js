@@ -28,7 +28,7 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.mlang.CannedQuery',
     'com.google.watlobby.Topic',
-    'foam.ui.DAOListView',
+    'foam.ui.md.DAOListView',
     'foam.ui.TextFieldView',
     'foam.ui.Tooltip',
     'foam.ui.md.CannedQueryCitationView',
@@ -45,7 +45,7 @@ CLASS({
           model: this.Topic,
           dao: this.dao,
           listView: {
-            factory_: 'foam.ui.DAOListView',
+            factory_: 'foam.ui.md.DAOListView',
             rowView: 'com.google.watlobby.TopicCitationView'
           },
           cannedQueryDAO: [

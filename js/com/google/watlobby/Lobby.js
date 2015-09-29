@@ -156,14 +156,26 @@ CLASS({
 
       this.collider.start();
     },
-    function putTopic(t) {
+    function findTopic(t) {
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var c = this.children[i];
-        if ( c.topic && c.topic.topic === t.topic ) {
-          if ( t.selected ) this.selected = c;
+        if ( c.topic && c.topic.topic === t.topic ) return i;
+      }
+      return -1;
+    },
+    function putTopic(t) {
+      console.log('***** putTopic: ', t.topic);
+      var i = this.findTopic(t);
+      if ( i != -1 ) {
+        if ( t.selected ) {
+          this.selected = this.children[i];
           return;
+        } else {
+          this.children.splice(i, 1);
         }
       }
+
+      if ( ! t.enabled ) return;
 
       var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
         x: Math.random() * this.width,
@@ -185,7 +197,7 @@ CLASS({
       this.collider.add(c);
     },
     function removeTopic(t) {
-      console.log('remove ************** ', arguments);
+      console.log('removeTopic ************** ', arguments);
       // TODO
     },
     function addBubbles() {
