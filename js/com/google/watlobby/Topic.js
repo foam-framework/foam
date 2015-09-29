@@ -33,7 +33,7 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'enabled',
-      defaultValue: 'true'
+      defaultValue: true
     },
     {
       name: 'priority',
