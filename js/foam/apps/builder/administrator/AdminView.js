@@ -44,7 +44,6 @@ CLASS({
   templates: [
     function toHTML() {/*
       <app-body id="%%id" <%= this.cssClassAttr() %>>
-        $$targetAppId
         <% if ( this.browserConfig ) { %>
           $$browserConfig{ model_: 'foam.browser.ui.BrowserView' }
         <% } %>

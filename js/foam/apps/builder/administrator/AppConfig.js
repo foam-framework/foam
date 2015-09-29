@@ -47,24 +47,39 @@ CLASS({
     {
       name: 'targetAppId',
       label: 'Administered App ID',
+      transient: true,
+      hidden: true,
       postSet: function(old,nu) {
         if ( old !== nu ) this.findAppConfig();
+      }
+    },
+    {
+      name: 'targetAppConfig',
+      postSet: function(old, nu) {
+        if ( nu && old !== nu &&
+            old.appId !== nu.appId ) {
+          this.loadedAppConfig(nu);
+          this.targetAppId = nu.appId;
+        }
       }
     },
     {
       name: 'targetDAOInstance',
       transient: true,
       hidden: true,
+      compareProperty: function() { return 0; },
     },
     {
       name: 'targetModel',
       transient: true,
       hidden: true,
+      compareProperty: function() { return 0; },
     },
     {
       name: 'browserConfig',
       propertyToJSON: function() { return ''; },
       transient: true,
+      compareProperty: function() { return 0; },
     },
     {
       type: 'foam.apps.builder.AppWindow',
@@ -110,6 +125,7 @@ CLASS({
           console.warn(this.appName,"Could not load",this.targetAppId);
           return;
         }
+        if ( this.targetAppConfig.appId !== cfg.appId ) this.targetAppConfig = cfg;
         this.targetDAOInstance = cfg.createDAO();
         this.targetModel = cfg.model;
 
