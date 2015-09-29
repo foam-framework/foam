@@ -28,7 +28,7 @@ CLASS({
       label: 'Unique App ID',
       mode: 'read-only',
       help: "The hidden unique id for the app that links DAO instances and models to the owner app.",
-      factory: function() {
+      lazyFactory: function() {
         return camelize(this.appName) + '-' + createGUID();
       }
     },
@@ -47,6 +47,10 @@ CLASS({
         factory_: 'foam.ui.md.TextFieldView',
         placeholder: 'My App',
         required: true
+      },
+      postSet: function() {
+        // ensure appId is set from our new value in its lazyFactory
+        this.appId;
       }
     },
     {

@@ -45,18 +45,6 @@ CLASS({
       },
       hidden: true,
     },
-    {
-      name: 'masterAppDAO',
-      transient: true,
-      hidden: true,
-      postSet: function(old,nu) {
-        if ( old !== nu ) this.findAppConfig();
-      },
-      propertyToJSON: function() { return ''; },
-      getter: function() {
-        return this.X.masterAppDAO;
-      },
-    }
   ],
 
   listeners: [

@@ -13,29 +13,17 @@ CLASS({
   package: 'foam.apps.builder.administrator',
   name: 'AdminController',
 
-  imports: [
-    'masterAppDAO',
-  ],
-
   requires: [
     'foam.browser.BrowserConfig',
   ],
 
   properties: [
     {
-      name: 'targetAppId',
-      label: 'Administered App ID',
-      postSet: function(old,nu) {
-        if ( old !== nu ) this.findAppConfig();
-      }
-    },
-    {
       name: 'targetAppConfig',
       postSet: function(old, nu) {
         if ( nu && old !== nu &&
             old.appId !== nu.appId ) {
           this.loadedAppConfig(nu);
-          this.targetAppId = nu.appId;
         }
       }
     },
@@ -48,32 +36,9 @@ CLASS({
     {
       name: 'browserConfig',
     },
-    {
-      name: 'masterAppDAO',
-      transient: true,
-      hidden: true,
-      postSet: function(old,nu) {
-        if ( old !== nu ) this.findAppConfig();
-      },
-      propertyToJSON: function() { return ''; },
-      getter: function() {
-        return this.X.masterAppDAO;
-      },
-    }
   ],
 
   listeners: [
-    {
-      name: 'findAppConfig',
-      code: function() {
-        this.masterAppDAO && this.targetAppId && this.masterAppDAO.find(this.targetAppId, {
-          put: this.loadedAppConfig,
-          error: function() {
-            console.warn(this.appName,"select failed for",this.targetAppId);
-          }.bind(this)
-        });
-      }
-    },
     {
       name: 'loadedAppConfig',
       code: function(cfg) {
