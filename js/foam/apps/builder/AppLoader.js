@@ -88,6 +88,7 @@ CLASS({
       defaultValue: function(data) {
         if ( ! data ) return this.NullDAO.create({}, this.Y);
         return this.AnalyticsDAO.create({
+          storageName: 'App-' + data.appId + '-operations',
           daoType: 'XHR',
           propertyId: data.analyticsId,
           appName: data.appName,
@@ -102,6 +103,7 @@ CLASS({
       defaultValue: function(data) {
         if ( ! data ) return this.NullDAO.create({}, this.Y);
         return this.AnalyticsDAO.create({
+          storageName: 'AppBuilder-' + data.appId + '-operations',
           daoType: 'XHR',
           debug: true,
           propertyId: 'UA-47217230-7',
