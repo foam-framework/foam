@@ -223,7 +223,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'analyticsId',
-      label: 'Google Analytics Property Tracking ID',
+      label: 'Google Analytics property tracking ID',
       help: 'When set, reports app usage statistics through Google Analytics.',
     },
   ],
