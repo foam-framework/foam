@@ -36,6 +36,7 @@ CLASS({
   ],
   exports: [
     'metricsDAO',
+    'urlDAO',
   ],
 
   constants: {
@@ -57,6 +58,11 @@ CLASS({
     },
     {
       model_: 'foam.core.types.DAOProperty',
+      name: 'urlDAO',
+      factory: function() { return this.ProxyDAO.create({}, this.Y); },
+    },
+    {
+      model_: 'foam.core.types.DAOProperty',
       name: 'metricsDAO',
       factory: function() { return this.ProxyDAO.create({}, this.Y); },
     },
@@ -71,6 +77,13 @@ CLASS({
       name: 'appBuilderMetricsDAO',
     },
     {
+      name: 'hasURLDAO',
+      getter: function() {
+        return this.data && this.data.analyticsId &&
+            this.data.enableURLTracking;
+      },
+    },
+    {
       name: 'hasAppBuilderMetricsDAO',
       getter: function() {
         return this.data && this.data.appBuilderAnalyticsEnabled;
@@ -80,6 +93,21 @@ CLASS({
       name: 'hasAppMetricsDAO',
       getter: function() {
         return this.data && this.data.analyticsId;
+      },
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'urlDAOFactory',
+      defaultValue: function(data) {
+        if ( ! data ) return this.NullDAO.create({}, this.Y);
+        return this.AnalyticsDAO.create({
+          storageName: 'App-' + data.appId + '-url-operations',
+          daoType: 'XHR',
+          propertyId: data.analyticsId,
+          appName: data.appName,
+          appVersion: data.version,
+          endpoint: 'https://www.google-analytics.com/collect',
+        }, this.Y);
       },
     },
     {
@@ -153,6 +181,10 @@ CLASS({
         this.metricsDAO.delegate = this.appBuilderMetricsDAOFactory(data);
       } else {
         this.metricsDAO.delegate = this.NullDAO.create({}, this.Y);
+      }
+
+      if ( this.hasURLDAO ) {
+        this.urlDAO.delegate = this.urlDAOFactory(data);
       }
     },
     function updateView(data) {

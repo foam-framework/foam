@@ -21,8 +21,14 @@ CLASS({
     'foam.apps.builder.Timeout',
     'foam.apps.builder.WebView',
     'foam.apps.builder.kiosk.ChromeView',
+    'foam.metrics.Event',
+    'foam.metrics.Metric',
     'foam.ui.md.FlatButton',
     'foam.ui.md.PopupView',
+  ],
+  imports: [
+    'metricsDAO',
+    'urlDAO',
   ],
   exports: [
     'as kiosk',
@@ -31,6 +37,8 @@ CLASS({
   ],
 
   properties: [
+    'metricsDAO',
+    'urlDAO',
     {
       name: 'data',
       view: 'foam.apps.builder.kiosk.ChromeView',
@@ -172,7 +180,19 @@ CLASS({
     },
     {
       name: 'onWebviewAction',
-      code: function() {
+      code: function(webview, topic, url) {
+        if ( topic && topic[1] === 'navigate' ) {
+          url && this.urlDAO && this.urlDAO.put(this.Metric.create({
+            // App Builder apps are "mobile apps" (not web properties); use
+            // "screenview" instead of "pageview" to report analytics in a
+            // useful place for mobile apps.
+            type: 'screenview',
+            name: url,
+          }, this.Y));
+          this.metricsDAO && this.metricsDAO.put(this.Event.create({
+            name: 'Action:kiosk:navigate',
+          }, this.Y));
+        }
         this.cacheTimeout.restart();
         this.homeTimeout.restart();
       },
