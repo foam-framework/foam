@@ -542,6 +542,7 @@ CLASS({
     },
     {
       name: 'value',
+      compareProperty: function() { return 0; },
       getter: function() {
         return this.sum;
       }
@@ -582,6 +583,7 @@ CLASS({
     },
     {
       name: 'value',
+      compareProperty: function() { return 0; },
       getter: function() {
         return this.avg;
       }
@@ -611,6 +613,7 @@ CLASS({
     },
     {
       name: 'value',
+      compareProperty: function() { return 0; },
       getter: function() {
         return this.min;
       }
@@ -651,6 +654,7 @@ CLASS({
     },
     {
       name: 'value',
+      compareProperty: function() { return 0; },
       getter: function() {
         return this.arg2.value;
       }
@@ -1045,6 +1049,7 @@ CLASS({
   properties: [
     {
       name: 'value',
+      compareProperty: function() { return 0; },
       getter: function() {
         return this.args.map(function(x) { return x.value; });
       }
