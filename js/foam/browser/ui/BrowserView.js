@@ -385,16 +385,21 @@ CLASS({
                 <%= this.sortOrderView_ %>
               <% } %>
             </div>
-            <div id="<%= this.id %>-header-search" class="browser-header search-header browser-header-color">
+            <div id="<%= this.id %>-header-search" class="browser-header search-header browser-header-color hidden">
               $$backButton
               $$search{ extraClassName: 'expand search-field' }
             </div>
-            <%
-              this.setClass('hidden', function() { return self.searchMode; },
-                  this.id + '-header');
-              this.setClass('hidden', function() { return ! self.searchMode; },
-                  this.id + '-header-search');
-            %>
+            <% this.searchMode$.addListener(function() {
+              // The setClass() must be done manually here because setting the
+              // class first (so it becomes visible) and then calling .focus()
+              // must occur inside the real DOM event handler, so the mobile
+              // keyboard opens properly on input focus.
+              DOM.setClass(self.X.$(self.id + '-header'), 'hidden',
+                  self.searchMode);
+              DOM.setClass(self.X.$(self.id + '-header-search'), 'hidden',
+                  !self.searchMode);
+              if ( self.searchMode ) self.searchView.focus();
+            }); %>
             <div class="browser-body">
               <%= this.listView_ = this.data.listView({ data$: this.data.filteredDAO$ }, this.Y) %>
             </div>

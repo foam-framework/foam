@@ -33,7 +33,7 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'enabled',
-      defaultValue: 'true'
+      defaultValue: true
     },
     {
       name: 'priority',
@@ -80,7 +80,7 @@ CLASS({
     {
       name: 'r',
       hidden: true,
-      getter: function() {
+      defaultValueFn: function() {
         return ([110, 130, 150, 180, 200])[this.priority-1];
       }
     },
