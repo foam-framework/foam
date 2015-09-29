@@ -1,4 +1,4 @@
-BASEDIR=$(readlink -f "$(dirname "$0")")
+BASEDIR=$PWD/$(dirname "$0")
 cd "$BASEDIR"
 
 #   Templates.js \
