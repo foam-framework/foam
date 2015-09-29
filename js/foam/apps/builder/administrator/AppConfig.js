@@ -63,6 +63,7 @@ CLASS({
     },
     {
       name: 'browserConfig',
+      propertyToJSON: function() { return ''; },
     },
     {
       type: 'foam.apps.builder.AppWindow',
@@ -77,9 +78,12 @@ CLASS({
     },
     {
       name: 'masterAppDAO',
+      transient: true,
+      hidden: true,
       postSet: function(old,nu) {
         this.findAppConfig();
-      }
+      },
+      propertyToJSON: function() { return ''; },
     }
   ],
 

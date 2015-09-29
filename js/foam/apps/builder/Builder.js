@@ -95,8 +95,8 @@ CLASS({
         var dao = this.MDAO.create({
           model: Model,
         }, this.Y);
-        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL,
-          FILTER(function(o) { return o && o.id; }, dao)));
+        this.masterAppDAO.where(HAS(this.AppConfig.MODEL)).pipe(MAP(this.AppConfig.MODEL,
+          dao));
         return dao;
       },
     },
@@ -108,15 +108,17 @@ CLASS({
               model: this.DAOFactory,
               name: 'DAOFactories',
               useSimpleSerialization: false,
-          }, this.Y)
+          }, this.Y);
       },
     },
     {
       name: 'masterAppDAO',
       help: 'All defined apps, with their dao and custom model usage.',
       lazyFactory: function() {
-        var dao = this.MDAO.create({
-          model: this.AppConfig,
+        var dao = this.ContextualizingDAO.create({ delegate:
+            this.MDAO.create({
+              model: this.AppConfig
+            }, this.Y)
         }, this.Y);
         return dao;
       },

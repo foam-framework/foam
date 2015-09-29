@@ -53,6 +53,15 @@ CLASS({
       name: 'model',
       help: 'The primary data model this app operates on.',
       defaultValue: null,
+      adapt: function(old, nu) {
+        if ( typeof nu === 'string' ) {
+          if ( ! nu ) return old;
+          var ret = this.X.lookup(nu);
+          return ret;
+        }
+        if ( Model.isInstance(nu) ) return nu;
+        return old;
+      }
     },
     {
       name: 'dao',
