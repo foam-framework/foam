@@ -38,6 +38,10 @@ CLASS({
     'foam.metrics.Metric',
     'foam.ui.md.FlatButton',
   ],
+  imports: [
+    'onWindowClosed',
+    'performance',
+  ],
   exports: [
     'daoConfigDAO',
     'gestureManager',
@@ -52,6 +56,8 @@ CLASS({
   ],
 
   properties: [
+    'onWindowClosed',
+    'performance',
     {
       name: 'metricsDAO',
       lazyFactory: function() {
@@ -164,6 +170,10 @@ CLASS({
       transient: true,
       defaultValue: null,
     },
+    {
+      name: 'launchTime',
+      lazyFactory: function() { return this.getCurrentTime(); },
+    },
   ],
 
   methods: [
@@ -174,9 +184,32 @@ CLASS({
       }), 'foam.ui.ActionButton');
       this.metricsDAO.put(this.Metric.create({
         name: 'launchApp',
+        value: this.launchTime,
       }, this.Y));
+      this.onWindowClosed(this.onAppWindowClosed);
       this.persistentContext.bindObject('ctx', this.AppBuilderContext,
                                         undefined, 1);
+    },
+    function getCurrentTime() {
+      return (this.performance && this.performance.now) ?
+          Math.round(this.performance.now() / 1000) : 0;
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'onAppWindowClosed',
+      code: function() {
+        var closeTime = this.getCurrentTime();
+        this.metricsDAO.put(this.Metric.create({
+          name: 'openTime',
+          value: closeTime - this.launchTime,
+        }, this.Y));
+        this.metricsDAO.put(this.Metric.create({
+          name: 'closeApp',
+          value: closeTime,
+        }, this.Y));
+      }
     },
   ],
 });
