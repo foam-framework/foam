@@ -164,7 +164,7 @@ CLASS({
       return -1;
     },
     function putTopic(t) {
-      console.log('***** putTopic: ', t.topic);
+//      console.log('***** putTopic: ', t.topic);
       var i = this.findTopic(t);
       if ( i != -1 ) {
         if ( t.selected ) {
@@ -221,12 +221,12 @@ CLASS({
     },
     function openRemoteUI() {
       var w = foam.ui.Window.create({window: window.open("", "Remote", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
-      w.document.body.innerHTML = '';
+      w.document.write('<html><head><title>Wat Lobby Remote</title></head><body></body></html>');
       var r = this.Remote.create({topics: this.topics}, w.Y);
       r.write(w.Y);
     },
     function openAdminUI() {
-      var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1000, height=700, location=no, menubar=no, ")});
+      var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1100, height=700, location=no, menubar=no, ")});
       w.document.write('<html><head><title>Wat Lobby Admin</title><base href="/js/com/google/watlobby/"></head><body></body></html>');
       var r = this.TopicApp.create({dao: this.topics}, w.Y);
       r.write(w.Y);
