@@ -13,6 +13,9 @@ CLASS({
   package: 'foam.apps.builder',
   name: 'AppLoader',
   extendsModel: 'foam.ui.View',
+  traits: [
+    'foam.apps.builder.TrackLaunchCloseTrait',
+  ],
 
   documentation: function() {/*
     Used by exported App Builder apps to load the desired model and view.
