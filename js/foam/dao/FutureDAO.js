@@ -27,13 +27,7 @@ CLASS({
   properties: [
     {
       name: 'delegate',
-      factory: function() { return null; },
-      postSet: function(oldDAO, newDAO) {
-        if ( this.daoListeners_.length ) {
-          if ( oldDAO ) oldDAO.unlisten(this.relay());
-          newDAO.listen(this.relay());
-        }
-      }
+      factory: function() { return null; }
     },
     {
       name: 'future',

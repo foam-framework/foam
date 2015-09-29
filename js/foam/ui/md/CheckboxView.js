@@ -176,7 +176,7 @@ CLASS({
           },this.id+'-border');
 
           } else { %>
-          <span class="checkbox-label noselect"><%# this.label %></span>
+          <span class="checkbox-label noselect md-grey"><%# this.label %></span>
           <div class="checkbox-data-outer noselect">
             <div class="checkbox-data-container checkbox-data">
               <%= this.checkIcon() %>

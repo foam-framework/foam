@@ -53,6 +53,7 @@ CLASS({
     'foam.apps.quickbug.ui.ItemCount',
     'foam.apps.quickbug.ui.DragAndDropGrid',
     'foam.core.dao.WaitCursorDAO',
+    'foam.glang.PieExpr',
     'foam.metrics.Metric',
     'foam.ui.ViewChoice'
   ],
@@ -653,15 +654,18 @@ CLASS({
                       }
                     }, browser.ColExpr.create()), 'IDs' ],
                   [ browser.ItemCount.create({browser: browser}),                          'Counts' ],
-                  [ PIE(browser.QIssue.STATUS),                                            'Pie(Status)'  ],
+                  [ browser.PieExpr.create({ arg1: browser.QIssue.STATUS }),                                            'Pie(Status)'  ],
                   [
-                    PIE(browser.QIssue.PRIORITY, {
-                      colorMap: {
-                        Critical: 'hsl(   0, 100%, 70%)',
-                        High:     'hsl(-340, 100%, 70%)',
-                        Medium:   'hsl(-320, 100%, 70%)',
-                        Low:      'hsl(-300, 100%, 70%)',
-                        '':       'lightgray'
+                    browser.PieExpr.create({
+                      arg1: browser.QIssue.PRIORITY,
+                      opt_args: {
+                        colorMap: {
+                          Critical: 'hsl(   0, 100%, 70%)',
+                          High:     'hsl(-340, 100%, 70%)',
+                          Medium:   'hsl(-320, 100%, 70%)',
+                          Low:      'hsl(-300, 100%, 70%)',
+                          '':       'lightgray'
+                        }
                       }
                     }), 'Pie(Priority)' ]
                 ],

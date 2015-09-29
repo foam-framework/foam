@@ -47,7 +47,7 @@ CLASS({
       model_: 'FactoryProperty',
       hidden: true,
       name: 'factory', //TODO(jacksonic): Should be named .create, but can't until Model.create is moved
-      defaultValue: function(X) {
+      defaultValue: function(name, model, X) {
         var identityManager = X.importExportManager$.get().identityManager;
         var future = afuture();
 

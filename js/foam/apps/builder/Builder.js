@@ -12,6 +12,9 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'Builder',
+  traits: [
+    'foam.apps.builder.TrackLaunchCloseTrait',
+  ],
 
   requires: [
     'Binding',
@@ -52,6 +55,8 @@ CLASS({
   ],
 
   properties: [
+    'onWindowClosed',
+    'performance',
     {
       name: 'metricsDAO',
       lazyFactory: function() {
@@ -95,8 +100,8 @@ CLASS({
         var dao = this.MDAO.create({
           model: Model,
         }, this.Y);
-        this.masterAppDAO.pipe(MAP(this.AppConfig.MODEL,
-          FILTER(function(o) { return o && o.id; }, dao)));
+        this.masterAppDAO.where(HAS(this.AppConfig.MODEL)).pipe(MAP(this.AppConfig.MODEL,
+          dao));
         return dao;
       },
     },
@@ -108,15 +113,17 @@ CLASS({
               model: this.DAOFactory,
               name: 'DAOFactories',
               useSimpleSerialization: false,
-          }, this.Y)
+          }, this.Y);
       },
     },
     {
       name: 'masterAppDAO',
       help: 'All defined apps, with their dao and custom model usage.',
       lazyFactory: function() {
-        var dao = this.MDAO.create({
-          model: this.AppConfig,
+        var dao = this.ContextualizingDAO.create({ delegate:
+            this.MDAO.create({
+              model: this.AppConfig
+            }, this.Y)
         }, this.Y);
         return dao;
       },
@@ -172,9 +179,6 @@ CLASS({
       this.Y.registerModel(this.FlatButton.xbind({
         displayMode: 'LABEL_ONLY',
       }), 'foam.ui.ActionButton');
-      this.metricsDAO.put(this.Metric.create({
-        name: 'launchApp',
-      }, this.Y));
       this.persistentContext.bindObject('ctx', this.AppBuilderContext,
                                         undefined, 1);
     },

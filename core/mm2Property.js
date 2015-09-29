@@ -756,6 +756,9 @@ GLOBAL.Property = {
     function deepCloneProperty(/* this=prop, */ value) {
       return ( value && value.deepClone ) ? value.deepClone() : value;
     },
+    function exprClone() {
+      return this;
+    },
     function initPropertyAgents(proto, fastInit) {
       var prop   = this;
       var name   = prop.name;
