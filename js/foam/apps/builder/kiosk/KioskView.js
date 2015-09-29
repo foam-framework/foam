@@ -143,6 +143,22 @@ CLASS({
     function closeTOS() { this.tosView.close(); },
   ],
 
+  actions: [
+    {
+      model_: 'foam.metrics.TrackedAction',
+      name: 'clearCache',
+      code: function() { this.webview.clearCache(); },
+    },
+    {
+      model_: 'foam.metrics.TrackedAction',
+      name: 'returnHome',
+      code: function() {
+        this.url = this.data.homepage;
+        if ( this.data.termsOfService ) this.openTOS();
+      },
+    },
+  ],
+
   listeners: [
     {
       name: 'onTOSChange',
@@ -181,14 +197,11 @@ CLASS({
     },
     {
       name: 'onCacheTimeout',
-      code: function() { this.webview.clearCache(); },
+      code: function() { this.clearCache(); },
     },
     {
       name: 'onHomeTimeout',
-      code: function() {
-        this.url = this.data.homepage;
-        if ( this.data.termsOfService ) this.openTOS();
-      },
+      code: function() { this.returnHome(); },
     },
     {
       name: 'onRotationChange',

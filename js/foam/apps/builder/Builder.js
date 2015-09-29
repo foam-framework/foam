@@ -12,6 +12,9 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'Builder',
+  traits: [
+    'foam.apps.builder.TrackLaunchCloseTrait',
+  ],
 
   requires: [
     'Binding',
@@ -52,6 +55,8 @@ CLASS({
   ],
 
   properties: [
+    'onWindowClosed',
+    'performance',
     {
       name: 'metricsDAO',
       lazyFactory: function() {
@@ -174,9 +179,6 @@ CLASS({
       this.Y.registerModel(this.FlatButton.xbind({
         displayMode: 'LABEL_ONLY',
       }), 'foam.ui.ActionButton');
-      this.metricsDAO.put(this.Metric.create({
-        name: 'launchApp',
-      }, this.Y));
       this.persistentContext.bindObject('ctx', this.AppBuilderContext,
                                         undefined, 1);
     },
