@@ -48,7 +48,7 @@ CLASS({
       name: 'targetAppId',
       label: 'Administered App ID',
       postSet: function(old,nu) {
-        this.findAppConfig();
+        if ( old !== nu ) this.findAppConfig();
       }
     },
     {
@@ -64,6 +64,7 @@ CLASS({
     {
       name: 'browserConfig',
       propertyToJSON: function() { return ''; },
+      transient: true,
     },
     {
       type: 'foam.apps.builder.AppWindow',
@@ -81,9 +82,12 @@ CLASS({
       transient: true,
       hidden: true,
       postSet: function(old,nu) {
-        this.findAppConfig();
+        if ( old !== nu ) this.findAppConfig();
       },
       propertyToJSON: function() { return ''; },
+      getter: function() {
+        return this.X.masterAppDAO;
+      },
     }
   ],
 

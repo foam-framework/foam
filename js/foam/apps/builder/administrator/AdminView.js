@@ -27,14 +27,14 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
-        if ( old ) Events.unfollow(old.browserConfig$);
-        if ( nu )  Events.follow(nu.browserConfig$);
+        if ( old ) Events.unfollow(old.browserConfig$, this.browserConfig$);
+        if ( nu )  Events.follow(nu.browserConfig$, this.browserConfig$);
+        nu.findAppConfig();
       }
     },
     {
       name: 'browserConfig',
       help: 'The current administrator app configuration being edited',
-      view: 'foam.browser.ui.BrowserView',
       postSet: function(old, nu) {
         this.updateHTML();
       }
@@ -46,7 +46,7 @@ CLASS({
       <app-body id="%%id" <%= this.cssClassAttr() %>>
         $$targetAppId
         <% if ( this.browserConfig ) { %>
-          $$browserConfig
+          $$browserConfig{ model_: 'foam.browser.ui.BrowserView' }
         <% } %>
       </app-body>
     */},
