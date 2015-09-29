@@ -753,7 +753,7 @@ CLASS({
     },
     exprClone: function() {
       return GroupByExpr.create({
-        arg1: this.arg1.exprClone(),
+        arg1: this.arg1,
         arg2: this.arg2.exprClone()
       });
     },
