@@ -24,8 +24,9 @@ CLASS({
       var X = this.Y;
       this.delegate.find(id, {
         put: function(o) {
-          var copy = o.model_.create(o, X);
-          sink && sink.put && sink.put(copy);
+          if ( sink && sink.put ) {
+            sink.put(o.model_.create(o, X));
+          }
         },
         error: function() {
           sink && sink.error && sink.error.apply(sink, arguments);
