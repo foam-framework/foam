@@ -17,6 +17,7 @@ CLASS({
 
   requires: [
     'foam.browser.ui.BrowserView',
+    'foam.apps.builder.administrator.AdminController',
   ],
 
   exports: [
@@ -27,14 +28,24 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
-        if ( old ) Events.unfollow(old.browserConfig$);
-        if ( nu )  Events.follow(nu.browserConfig$);
+        if ( this.controller && nu && nu.targetAppConfig ) {
+          this.controller.targetAppConfig = nu.targetAppConfig;
+        }
+      }
+    },
+    {
+      name: 'controller',
+      lazyFactory: function() {
+        var c = this.AdminController.create();
+        Events.follow(c.browserConfig$, this.browserConfig$);
+        if ( this.data && this.data.targetAppConfig ) {
+          c.targetAppConfig = this.data.targetAppConfig;
+        }
       }
     },
     {
       name: 'browserConfig',
       help: 'The current administrator app configuration being edited',
-      view: 'foam.browser.ui.BrowserView',
       postSet: function(old, nu) {
         this.updateHTML();
       }
@@ -44,9 +55,8 @@ CLASS({
   templates: [
     function toHTML() {/*
       <app-body id="%%id" <%= this.cssClassAttr() %>>
-        $$targetAppId
         <% if ( this.browserConfig ) { %>
-          $$browserConfig
+          $$browserConfig{ model_: 'foam.browser.ui.BrowserView' }
         <% } %>
       </app-body>
     */},

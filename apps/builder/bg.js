@@ -1,3 +1,6 @@
+// Use global context.
+var X = window.X;
+
 // When window loads: Add window to FOAM context.
 function onWindowLoad(window) {
   this.$addWindow(window);
@@ -13,8 +16,19 @@ function onWindowLoad(window) {
   this.DOM.init(Y);
 }
 
+// Simple window closed event listener support.
+X.onWindowClosed = function(f) {
+  arguments.callee.listeners_ = arguments.callee.listeners_ || [];
+  arguments.callee.listeners_.push(f);
+};
 // When window closes: Remove window from FOAM context.
 function onWindowClose(window) {
+  if ( X.onWindowClosed.listeners_ ) {
+    var listeners = X.onWindowClosed.listeners_ || [];
+    for ( var i = 0; i < listeners.length; ++i ) {
+      listeners[i]();
+    }
+  }
   this.$removeWindow(window);
 }
 

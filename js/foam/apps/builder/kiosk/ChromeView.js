@@ -70,6 +70,7 @@ CLASS({
 
   actions: [
     {
+      model_: 'foam.metrics.TrackedAction',
       name: 'back',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAOUlEQVR4AWMYxqABCElS/p/hN4MWacpDSFMeSlPlYaQo/0OScnyQYg0IJ4XjcsLI0KJFmpa64Zt3AdTaQlFOlKYFAAAAAElFTkSuQmCC',
       ligature: 'arrow_back',
@@ -80,6 +81,7 @@ CLASS({
       code: function() { this.webview && this.webview.back(); }
     },
     {
+      model_: 'foam.metrics.TrackedAction',
       name: 'forward',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAOUlEQVR4AWMYxqCRoYEU5boMfxj+k6YlgnQtkXTREkW6lmjcWv7jhQ3kayDspGGrnPLE1wCEwxYAABNmQoikBfhoAAAAAElFTkSuQmCC',
       ligature: 'arrow_forward',
@@ -90,6 +92,7 @@ CLASS({
       code: function() { this.webview && this.webview.forward(); }
     },
     {
+      model_: 'foam.metrics.TrackedAction',
       name: 'home',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAeElEQVR4Ae3Lr9WCABxA0UugaWUB3YAZdAgdgzncQpdghs8NWIBMI/DTQOBw+Bcser778vMtErd3iY1SDyHcpTbYK0VfaWdF5ikG/cksOKrEqMrBjFwtJqrlJpw1YqbGychVKxZqXQwUOrFSpzASC4EPDr3/4Ye8AFVvsVUqqgZTAAAAAElFTkSuQmCC',
       ligature: 'home',
@@ -97,6 +100,7 @@ CLASS({
       code: function() { this.webview && this.webview.home(); }
     },
     {
+      model_: 'foam.metrics.TrackedAction',
       name: 'reload',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVR4Ad3SP04CURDA4a8RlpNYEP5zQbBGIYT4Ck5iZbwEcStj9AQW7JrI2LLxuYmx45tuMr9uXKSJpFT7VErGgIWsnr1ozElSWIr8+ZNwtDLV1TGzUQsvIh/shVd958Y+RD6YCEd9TTciH5CElaal+D0ohalzC9EW1EJXi38Hz8LMH9wLd3K2wq0fRk4qg8y+9uVaRhLeDJ0behfWsgqPQmVtrqcwt1EJD64gnyQnzefb6mg1snNQqR3sDFygb3rVYPgYJpUVAAAAAElFTkSuQmCC',
       ligature: 'refresh',
@@ -104,6 +108,7 @@ CLASS({
       code: function() { this.webview && this.webview.reload(); }
     },
     {
+      model_: 'foam.metrics.TrackedAction',
       name: 'logout',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAcklEQVR4AWMYvCCQ4SXDfzzwFYM/inqQcgLwJYp6sBAqwJCnqgZFhgMMCqRoWAnkPUBoIewCPobjCC0IDfi1nIBoweMkTAjXQrkGTMCP6SQSlBMO1lUw5cRqUMAWcfROS68IJu8XqBoCGF4SUO47aDM/AFyMnK0wQYLQAAAAAElFTkSuQmCC',
       ligature: 'exit_to_app',
@@ -165,4 +170,3 @@ CLASS({
     */},
   ]
 });
-//# sourceURL=js/foam/apps/builder/kiosk/KioskChromeView.js

@@ -1,6 +1,6 @@
 <html>
  <head>
-  <link rel="stylesheet" type="text/css" href="..//core/foam.css" />
+  <link rel="stylesheet" type="text/css" href="../core/foam.css" />
   <script language="javascript" src="../core/bootFOAM.js"></script>
   <title>DAO</title>
   <style>
@@ -205,19 +205,26 @@ dao.select(GROUP_BY(Person.AGE, MAP(Person.NAME, [].sink)))(console.log.json);
 dao.select(GROUP_BY(Person.AGE, COUNT()))(console.log.json);
 
 // Pie Graph
+var PIE = function(prop, opt_args) {
+  var p = foam.glang.PieExpr.create({ arg1: prop, arg2: COUNT() });
+  p.opt_args = opt_args;
+  return p;
+};
+
+var pieX = X.sub({
+  writeView: function(view, opt_X) { (opt_X || X).console.log(view.toHTML()); }
+});
+
 dao.select(PIE(Person.AGE,{r:120}))(function(p) { console.log(p.toHTML()); });
 
 // Live Pie Graph, notice that it shows data added after
 var pie = PIE(Person.AGE);
 dao.pipe(pie);
-pie.write(
-  X.sub({
-    writeView: function(view, opt_X) { (opt_X || X).console.log(view.toHTML()); }
-  })
-);
+pie.write(pieX);
 
 // Group+Pies
-dao.select(GROUP_BY(Person.AGE, PIE(Person.SEX, {colorMap: {M: 'lightblue', F: 'pink'}})))(function(g) { console.log(g.toHTML()); g.initHTML(); });
+dao.select(GROUP_BY(Person.AGE, PIE(Person.SEX, {colorMap: {M: 'lightblue', F:
+          'pink'}})))(function(g) { console.log(g.toHTML()); g.initHTML(); });
 
 // Grid By, like 2-dimensional Group By
 // works, but produces lots of JSON output

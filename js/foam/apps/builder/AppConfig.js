@@ -28,7 +28,7 @@ CLASS({
       label: 'Unique App ID',
       mode: 'read-only',
       help: "The hidden unique id for the app that links DAO instances and models to the owner app.",
-      factory: function() {
+      lazyFactory: function() {
         return camelize(this.appName) + '-' + createGUID();
       }
     },
@@ -47,12 +47,25 @@ CLASS({
         factory_: 'foam.ui.md.TextFieldView',
         placeholder: 'My App',
         required: true
+      },
+      postSet: function() {
+        // ensure appId is set from our new value in its lazyFactory
+        this.appId;
       }
     },
     {
       name: 'model',
       help: 'The primary data model this app operates on.',
       defaultValue: null,
+      adapt: function(old, nu) {
+        if ( typeof nu === 'string' ) {
+          if ( ! nu ) return old;
+          var ret = this.X.lookup(nu);
+          return ret;
+        }
+        if ( Model.isInstance(nu) ) return nu;
+        return old;
+      }
     },
     {
       name: 'dao',
@@ -219,6 +232,12 @@ CLASS({
       name: 'appBuilderAnalyticsEnabled',
       defaultValue: true,
       hidden: true,
+    },
+    {
+      model_: 'StringProperty',
+      name: 'analyticsId',
+      label: 'Google Analytics property tracking ID',
+      help: 'When set, reports app usage statistics through Google Analytics.',
     },
   ],
 
