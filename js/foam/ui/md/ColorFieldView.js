@@ -23,6 +23,9 @@ CLASS({
   properties: [
     [ 'type', 'color' ],
     [ 'underline', false ],
+    {
+      name: 'choices'
+    }
   ],
 
   methods: {
@@ -77,7 +80,19 @@ CLASS({
         <% if (this.floatingLabel) { %>
           <label id="{{{label}}}" class="md-text-field-label">%%label</label>
         <% } %>
-        <input id="{{{input}}}" type="%%type" class="md-text-field-input md-text-field-borderless" /> $$data{model_: 'foam.ui.TextFieldView', mode: 'read-only', floatingLabel: false}
+        <input
+          id="{{{input}}}"
+          type="%%type"
+          class="md-text-field-input md-text-field-borderless"
+          <% if ( this.choices ) { %> list="{{{input}}}list" <% } %>
+        /> $$data{model_: 'foam.ui.TextFieldView', mode: 'read-only', floatingLabel: false}
+        <% if ( this.choices ) { %>
+          <datalist id="{{{input}}}list">
+          <% for ( var i = 0 ; i < this.choices.length ; i++ ) { %>
+            <option>{{{this.choices[i]}}}</option>
+          <% } %>
+          </datalist>
+        <% } %>
       </div>
     */}
   ]
