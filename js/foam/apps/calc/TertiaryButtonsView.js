@@ -43,12 +43,12 @@ CLASS({
           </div>
           <%
             var l = function(_, _, _, degrees) {
+              this.degView.font = degrees ? '600 18px RobotoDraft' : '300 18px RobotoDraft';
+              this.radView.font = degrees ? '300 18px RobotoDraft' : '600 18px RobotoDraft';
               if ( this.degView.view ) {
                 this.degView.view.paint();
                 this.radView.view.paint();
               }
-              this.degView.font = degrees ? '600 18px RobotoDraft' : '300 18px RobotoDraft';
-              this.radView.font = degrees ? '300 18px RobotoDraft' : '600 18px RobotoDraft';
             }.bind(this);
             this.data.degreesMode$.addListener(l);
             l();
