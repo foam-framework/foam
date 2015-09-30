@@ -589,8 +589,11 @@ CLASS({
             // First, lookup named codes, then convert numbers to char codes,
             // otherwise, assume we have a single character string treated as
             // a character to be recognized.
-            if ( self.NAMED_CODES[key] ) key = self.NAMED_CODES[key];
-            else if ( typeof key === 'number' ) key = String.fromCharCode(key);
+            if ( self.NAMED_CODES[key] )
+              key = self.NAMED_CODES[key];
+            else if ( typeof key === 'number' )
+              key = String.fromCharCode(key);
+
             keyMap[key] = opt_value ?
               function() { action.maybeCall(self.X, opt_value.get()); } :
               action.maybeCall.bind(action, self.X, self) ;
