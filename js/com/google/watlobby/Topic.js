@@ -76,7 +76,8 @@ CLASS({
     },
     {
       model_: 'ColorProperty',
-      name: 'background'
+      name: 'background',
+      defaultValue: '#FFFFFF'
     },
     {
       model_: 'ColorProperty',
