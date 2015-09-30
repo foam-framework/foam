@@ -460,16 +460,15 @@ CLASS({
           function(ret) { this.buildCoreJS_(ret); }.bind(this),
           function(ret) { this.buildAppJS_(ret); }.bind(this)),
         function(ret, corejs, appjs) {
-          appjs += "window.addEventListener('load', function() { X.writeView(";
-          if ( this.defaultView ) {
-            appjs += "X.lookup('" + this.defaultView + "').create({ data: ";
-          }
-          appjs += "X.lookup('" + this.controller + "').create()";
-          if ( this.defaultView ) {
-            appjs += "})";
-          }
-          appjs += ");});";
+          appjs += "window.addEventListener('load', function() {";
 
+          if ( this.defaultView ) {
+            appjs += "apar(X.arequire('" + this.defaultView + "'), X.arequire('" + this.controller + "'))(function(v, c) {";
+            appjs += "X.writeView(v.create({ data: c.create() }))});"
+          } else {
+            appjs += "X.arequire('" + this.controller + "')(function(c) { X.writeView(c.create()); });"
+          }
+          appjs += "});"
             var file = this.File.create({
               path: this.targetPath + this.path.sep + this.jsFileName,
               contents: corejs + appjs
