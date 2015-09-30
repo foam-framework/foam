@@ -23,7 +23,6 @@ CLASS({
       model_: 'DateTimeProperty',
       name: 'date',
       help: 'The date and time of the event.',
-      hidden: true,
     },
     {
       model_: 'StringProperty',

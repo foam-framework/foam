@@ -54,6 +54,7 @@ CLASS({
       }
     },
     {
+      model_: 'foam.apps.builder.datamodels.CustomModelProperty',
       name: 'model',
       help: 'The primary data model this app operates on.',
       defaultValue: null,

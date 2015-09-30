@@ -39,7 +39,7 @@ CLASS({
         return this.appConfig.dao.factory(this.appConfig.appId, this.Event, this.Y);
       },
       view: {
-        factory_: 'foam.ui.md.DAOListView',
+        factory_: 'foam.ui.DAOListView',
         rowView: 'foam.apps.builder.events.EventsDetailView'
       }
     },

@@ -41,7 +41,7 @@ CLASS({
         if ( nu ) nu.addListener(this.onDataChange);
         // TODO(jacksonic): Bind this better.
         if ( this.data && this.data.model )
-          this.data.model.instance_.prototype_ = null;
+          this.data.model = Model.create(this.data.model);
       },
     },
     {
@@ -93,7 +93,7 @@ CLASS({
         if ( ! (this.appView && this.data && this.data.model &&
             this.autoUpdatePreviewHTML ) ) return;
         // TODO(jacksonic): Bind this better.
-        this.data.model.instance_.prototype_ = null;
+        this.data.model = Model.create(this.data.model);
         this.appView.updateHTML();
       },
     },

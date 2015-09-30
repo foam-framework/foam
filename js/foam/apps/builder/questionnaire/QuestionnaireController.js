@@ -70,7 +70,7 @@ CLASS({
     {
       name: 'modelChange',
       code: function(obj, topic, old, nu) {
-        this.appConfig.model.instance_.prototype_ = null; // rebuild changes to model
+        this.appConfig.model = Model.create(this.appConfig.model);
         this.content = this.appConfig.model.create({}, this.Y);
         this.updateHTML();
       }
