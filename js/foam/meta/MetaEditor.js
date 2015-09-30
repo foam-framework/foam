@@ -91,11 +91,11 @@ CLASS({
 
   templates: [
     function toDetailHTML() {/*
-      <div id="%%id" style="display: flex">
-        <div style="padding: 20px; flex-grow: 1">
+      <div id="%%id" style="display: flex; display: -webkit-flex">
+        <div style="padding: 20px; flex-grow: 1; -webkit-flex-grow: 1">
           $$modelDefinition
         </div>
-        <div style="padding: 20px; flex-grow: 1">
+        <div style="padding: 20px; flex-grow: 1; -webkit-flex-grow: 1">
           $$modelView
         </div>
       </div>
@@ -103,4 +103,3 @@ CLASS({
   ]
 
 });
-

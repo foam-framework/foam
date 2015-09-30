@@ -36,7 +36,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <task-manager id="%%id">
-        <tm-body class="md-card-shell" style="display: flex">
+        <tm-body class="md-card-shell" style="display: flex; display: -webkit-flex">
           $$tasks{
             title: 'Tasks',
             editColumnsEnabled: true,

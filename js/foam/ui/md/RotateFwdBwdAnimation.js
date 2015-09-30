@@ -95,7 +95,8 @@ CLASS({
     {
       name: 'initHTML',
       code: function() {
-        var initialTransform = this.element.style.transform;
+        var initialTransform = this.element.style.transform ||
+            this.element.style.webkitTransform;
 
         this.popup.alpha = 1;
         this.popup.zoom = 1;

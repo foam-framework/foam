@@ -25,7 +25,7 @@
 
   <slide>
     <h1>History Lesson</h1>
-    <iframe style="transform: scale(1.32);transform-origin:0 0;width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
+    <iframe style="transform: scale(1.32);-webkit-transform: scale(1.32);transform-origin:0 0;-webkit-transform-origin:0 0;width:100%;height:100%;border:none;" src="./demos/UnixSimulator.html"></iframe>
   </slide>
 
   <slide>
@@ -46,7 +46,7 @@
 
   <slide>
     <h1>Dependency Injection</h1>
-    <div style="display:flex;">
+    <div style="display:flex;-webkit-display:flex">
       <pre style="border:1px solid;margin-left:50px;padding:10px;width:45%;">
 <a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Game.js">com.google.sweeper.Game</a>
 
@@ -85,7 +85,7 @@ CLASS({
 
   <slide>
     <h1>Model Types</h1>
-    <div style="display:flex;">
+    <div style="display:flex;-webkit-display:flex">
       <div style="width: 1000px;margin-left:32px;font-size: 40px;">
         <ul style="color:gray;">
           <li>Entities (default)</li>
@@ -109,7 +109,7 @@ CLASS({
 
   <slide>
     <h1>Architecture</h1>
-    <div style="transform:scale(0.85);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram"/></div>
+    <div style="transform:scale(0.85);-webkit-transform:scale(0.85);transform-origin: 0 0;-webkit-transform-origin: 0 0"><foam model="foam.demos.ArchitectureDiagram"/></div>
   </slide>
 
   <slide>
@@ -123,7 +123,7 @@ CLASS({
 
   <slide>
     <h1>Data Access Objects (DAO's)</h1>
-    <div style="display:flex;">
+    <div style="display:flex;-webkit-display:flex">
       <pre style="border:1px solid;margin-left:50px;padding:10px;">
 <pre class="theme-light prettyprint prettyprinted"><span class="kwd">interface</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
   </span><span class="kwd">void</span><span class="pln"> put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
@@ -186,7 +186,7 @@ CLASS({
       <views>
         <viewChoice>
           <label>Data-Binding</label>
-          <p:view><div id="%%id" style="transform:scale(1.2);transform-origin: 0 0;width:367px;margin-left:64px;">
+          <p:view><div id="%%id" style="transform:scale(1.2);-webkit-transform:scale(1.2);transform-origin: 0 0;-webkit-transform-origin: 0 0;width:367px;margin-left:64px;">
             <%
               CLASS({
                 name: 'DataBindingDemo',
@@ -232,7 +232,7 @@ CLASS({
         </viewChoice>
         <viewChoice>
           <label>Configuration</label>
-          <p:view><div id="%%id" style="width:500px;margin-left:64px;display: flex;">
+          <p:view><div id="%%id" style="width:500px;margin-left:64px;display: flex;display: -webkit-flex">
             <%
               var circle = foam.graphics.Circle.create({x:400, y:300});
               circle.addListener(function() { circle.view.paint(); });
@@ -344,7 +344,7 @@ CLASS({
 
   <slide>
     <h1>Live-Coding</h1>
-    <div style="transform: scale(1); transform-origin: 0 0;">
+    <div style="transform: scale(1); -webkit-transform: scale(1); transform-origin: 0 0; -webkit-transform-origin: 0 0">
       <foam model="foam.demos.DragonLiveCoding"/>
     </div>
   </slide>
@@ -353,14 +353,14 @@ CLASS({
     <h1>Reusable Controllers</h1>
     <br>
     <center style="margin-top:25px;">
-    <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;max-height:530px" src="./demos/democat/MBug.png"></a>
-    <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/GMail.png"></a>
+    <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;-webkit-box-shadow: 0 5px 15px #aaa;max-height:530px" src="./demos/democat/MBug.png"></a>
+    <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;-webkit-box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/GMail.png"></a>
     </center>
   </slide>
 
   <slide>
     <h1>Toolability (meta-programming)</h1>
-      <div style="display:flex;margin-left:64px;color:gray;">
+      <div style="display:flex;display:-webkit-flex;margin-left:64px;color:gray;">
         <div>
         <ul>
           <li><a href="./apps/docs/docbrowser.html">API Browsers</a></li>
@@ -431,7 +431,7 @@ CLASS({
 
   <slide>
         <h1>Summary</h1>
-        <div style="display:flex;">
+        <div style="display:flex;display:-webkit-flex">
           <div style="width:800px;color:gray;">
             <ul>
               <li style="color:#33f;">Model-Oriented</li>

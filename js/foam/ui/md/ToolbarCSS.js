@@ -52,7 +52,6 @@ CLASS({
       }
 
       .header .actionButton {
-        -webkit-box-shadow: none;
         background: #3e50b4;
         border: none;
         box-shadow: none;
@@ -79,6 +78,3 @@ CLASS({
     */}
   ]
 });
-
-
-

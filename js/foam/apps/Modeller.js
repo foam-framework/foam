@@ -109,7 +109,7 @@ CLASS({
       }
     */},
     function toHTML() {/*
-      <div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;flex: 0 0 auto;">
+      <div style="height:40px;background:whitesmoke;border-width: 0 0 1px;border: 0 solid #e5e5e5;flex: 0 0 auto;-webkit-flex: 0 0 auto">
         <font size=+3 face="catull" style="text-shadow:rgba(64,64,64,0.3) 3px 3px 4px;">
         <font color="#3333FF">F</font><font color="#FF0000">O</font><font color="#FFCC00">A</font><font color="#33CC00">M</font>
         <font color="#555555" >Modeller</font></font>
@@ -117,7 +117,7 @@ CLASS({
         <a href="/core/issue.html">Issues</a>
         <br/>
         <br/>
-        <div style="display:flex;flex: 1 1 auto;"><%= this.panel %></div>
+        <div style="display: flex;display: -webkit-flex;flex: 1 1 auto;-webkit-flex: 1 1 auto"><%= this.panel %></div>
       </div>
     */}
   ]

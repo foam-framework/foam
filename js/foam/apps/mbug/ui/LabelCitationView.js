@@ -45,7 +45,7 @@ CLASS({
     */},
     function toInnerHTML() {/*
       <div class="IssueLabel" <%= this.generateColorStyle(this.data.match(/[^-]+/)[0]) %>>
-        <div style="flex: 1 0 auto;">{{ this.data }}</div>
+        <div style="flex: 1 0 auto; -webkit-flex: 1 0 auto">{{ this.data }}</div>
         $$removeRow{width: 20, height: 20, iconUrl: 'images/ic_clear_24dp.png'}
       </div>
     */}

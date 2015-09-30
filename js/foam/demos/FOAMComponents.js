@@ -328,7 +328,7 @@ CLASS({
             <div class="flex-grow content small-heading">FOAM Features and Models</div>
           </div>
         </div>
-        <div class="flex-row" style="align-items: stretch; height: 100%;">
+        <div class="flex-row flex-stretch" style="height: 100%">
           <div class="card flex-grow" style="width: 50%;">
             <div>%%space</div>
           </div>

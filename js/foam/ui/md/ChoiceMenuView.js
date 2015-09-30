@@ -204,12 +204,13 @@ CLASS({
       this.$.style.zIndex = "1010";
 
       var verticalDiff = startFromClientRect.top - finalRect.top + startFromClientRect.height/2;
-      this.$.style.transformOrigin = "0 "+(verticalDiff)+"px";
-      this.$.style.transform = "scaleY(0.2)";
+      this.$.style.transformOrigin = this.$.style.webkitTransformOrigin =
+          "0 "+(verticalDiff)+"px";
+      this.$.style.transform = this.$.style.webkitTransform = "scaleY(0.2)";
     },
     animateToExpanded: function() {
       this.$.style.transition = "transform cubic-bezier(0.0, 0.0, 0.2, 1) .1s";
-      this.$.style.transform = "scaleY(1)";
+      this.$.style.transform = this.$.style.webkitTransform = "scaleY(1)";
       this.isHidden = false;
     },
     animateToHidden: function() {
