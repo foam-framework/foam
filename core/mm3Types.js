@@ -1017,6 +1017,9 @@ CLASS({
   name: 'ColorProperty',
   extendsModel: 'StringProperty',
   label: 'Color',
+  properties: [
+    [ 'view', 'foam.ui.md.ColorFieldView' ]
+  ]
 });
 
 CLASS({

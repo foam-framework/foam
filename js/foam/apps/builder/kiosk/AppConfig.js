@@ -92,6 +92,12 @@ CLASS({
       label: 'Enable navigation bar',
       defaultValue: false,
     },
+    {
+      model_: 'BooleanProperty',
+      name: 'enableURLTracking',
+      label: 'Enable URL tracking (requires Google Analytics)',
+      defaultValue: false,
+    },
   ],
 
   methods: [

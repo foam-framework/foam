@@ -45,7 +45,7 @@ CLASS({
         createFunction: function() {
           /* 'this' is the browser view, this.data is the BrowserConfig */
           var X = this.X;
-          var newObj = this.data.model.create();
+          var newObj = this.data.model.create({}, X);
           var view = X.lookup('foam.apps.builder.wizard.WizardStackView').create({
               firstPage: {
                 factory_: 'foam.apps.builder.events.AppWizard',

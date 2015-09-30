@@ -51,6 +51,23 @@ CLASS({
       /* Converts to a string form for debugging; defaults to $$DOC{ref: ".toMQL", text: "MQL"}. */
       return this.toMQL();
     },
+    function exprClone() {
+      /* Expression-friendly cloning method. Basically a deepClone(), but many
+         expressions override it with custom logic. */
+      var c = Object.create(this.__proto__);
+      c.instance_ = {};
+      c.X = this.X;
+      for ( var key in this.instance_ ) {
+        var value = this[key];
+        if ( value !== undefined ) {
+          if ( typeof value.exprClone === 'function' )
+            c.instance_[key] = value.exprClone();
+          else
+            c.instance_[key] = value;
+        }
+      }
+      return c;
+    },
     function collectInputs(terms) {
       /* Recursively adds all inputs of an expression to an array. */
       terms.push(this);
@@ -116,6 +133,7 @@ var TRUE = (FOAM({
   methods: [
     function clone() { return this; },
     function deepClone() { return this; },
+    function exprClone() { return this; },
     function toString() { return '<true>'; },
     function toSQL() { return '( 1 = 1 )'; },
     function toMQL() { return ''; },
@@ -135,6 +153,7 @@ var FALSE = (FOAM({
   methods: [
     function clone() { return this; },
     function deepClone() { return this; },
+    function exprClone() { return this; },
     function toSQL(out) { return '( 1 <> 1 )'; },
     function toMQL(out) { return '<false>'; },
     function toBQL(out) { return '<false>'; },
@@ -153,6 +172,7 @@ var IDENTITY = (FOAM({
   methods: {
     clone:     function() { return this; },
     deepClone: function() { return this; },
+    exprClone: function() { return this; },
     f: function(obj) { return obj; },
     toString: function() { return 'IDENTITY'; }
   }

@@ -728,9 +728,11 @@ CLASS({
         copyFrom: opt_args
       }, X);
 
+      // TODO: Fix this race condition
       if ( v.view ) v = v.view;
 
-      this[action.name + 'View'] = v;
+      this[action.name + 'View'] = v.cview || v;;
+
       return v;
     },
 

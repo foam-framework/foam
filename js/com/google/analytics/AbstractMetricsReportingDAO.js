@@ -112,10 +112,14 @@ CLASS({
       var n = this.endpoints.length;
       var c = 0;
       var done = false;
+      var notify = this.notify_.bind(this);
       var multiSink = {
         put: function(o) {
           ++c;
-          if ( c === n && ! done ) sink && sink.put && sink.put(o);
+          if ( c === n && ! done ) {
+            notify('put', [o]);
+            sink && sink.put && sink.put(o);
+          }
         },
         error: function(e) {
           if ( ! done ) sink && sink.error && sink.error(e);

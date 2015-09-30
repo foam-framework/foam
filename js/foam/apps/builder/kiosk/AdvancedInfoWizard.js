@@ -37,6 +37,8 @@ CLASS({
       $$termsOfService
       $$sessionDataTimeoutTime
       $$sessionTimeoutTime
+      $$analyticsId
+      $$enableURLTracking
     */},
   ],
 });
