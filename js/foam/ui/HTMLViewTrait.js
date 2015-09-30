@@ -237,9 +237,9 @@ CLASS({
     {
       name: 'onKeyboardShortcut',
       code: function(evt) {
-        if ( evt.srcElement !== this.$parent ||
-            (evt.type === 'keydown' && ! this.KEYPRESS_CODES[evt.which]) )
-          return;
+        // Why was this here?  It was breaking Calculator.
+        // if ( evt.srcElement !== this.$parent ) return;
+        if ( evt.type === 'keydown' && ! this.KEYPRESS_CODES[evt.which] ) return;
         var action = this.keyMap_[this.evtToCharCode(evt)];
         if ( action ) {
           action();
