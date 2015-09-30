@@ -45,8 +45,8 @@ CLASS({
   templates: [
     function CSS() {/*
       .md-text-field-input[type="color"] {
-        max-width: 200px;
-        height: 30px;
+        max-width: 250px;
+        height: 32px;
       }
     */},
     function toHTML() {/*
