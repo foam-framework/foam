@@ -22,8 +22,7 @@ CLASS({
 
   requires: [
     'foam.graphics.PositionedCViewView',
-    'foam.graphics.CViewView',
-    'foam.graphics.webgl.CViewGLView'
+    'foam.graphics.CViewView'
   ],
 
   traits: [ 'foam.patterns.ChildTreeTrait' ],
@@ -216,7 +215,9 @@ CLASS({
       return this.view;
     },
     toGLView_: function() { /* internal, creates a CViewGLView wrapper for 3d canvases */
-      return this.CViewGLView.create({ sourceView: this });
+      var model = this.X.lookup('foam.graphics.webgl.CViewGLView')
+      if ( model ) return model.create({ sourceView: this });
+      return '';
     },
     toPositionedView_: function() { /* Internal. Creates a PositionedCViewView wrapper. */
       if ( ! this.view ) {

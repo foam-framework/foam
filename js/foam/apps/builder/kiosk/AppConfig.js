@@ -89,7 +89,7 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'enableNavBar',
-      label: 'Enable navigation bar',
+      label: 'Enable address bar',
       defaultValue: false,
     },
     {

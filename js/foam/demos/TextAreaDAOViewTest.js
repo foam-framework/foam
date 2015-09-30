@@ -51,9 +51,9 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <div style="display:flex;height:700;">
-        <pre id="%%id" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;"></pre>
-        <span style="width:22px;flex:none;overflow:hidden;">
+      <div style="display:flex;-webkit-display:flex;height:700;">
+        <pre id="%%id" style="flex:1 1 100%;-webkit-flex:1 1 100%;overflow-x:auto;overflow-y:hidden;"></pre>
+        <span style="width:22px;flex:none;-webkit-flex:none;overflow:hidden;">
           <%= this.scrollbar %>
         </span>
       </div>

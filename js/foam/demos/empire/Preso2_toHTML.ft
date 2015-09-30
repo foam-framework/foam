@@ -48,7 +48,7 @@
         <div class="flex-grow content small-heading">Overview</div>
       </div>
     </div>
-    <div class="flex-row flex-grow" style="align-items: stretch">
+    <div class="flex-row flex-grow flex-stretch">
       <div class="card flex-grow">
         <foam model="foam.demos.FOAMDiagram" />
       </div>
@@ -93,7 +93,7 @@
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
-      <div style="transform:scale(0.85);transform-origin: 0 0;"><foam model="foam.demos.ArchitectureDiagram" /></div>
+      <div class="scale085 origin0"><foam model="foam.demos.ArchitectureDiagram" /></div>
     </div>
   </slide>
 
@@ -117,7 +117,7 @@
       </div>
     </div>
 
-    <div class="flex-row flex-grow" style="align-items: stretch">
+    <div class="flex-row flex-grow flex-stretch">
       <div class="card flex-grow" style="overflow: auto">
         <pre class="theme-light prettyprint prettyprinted"><span class="kwd">interface</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
           </span><span class="kwd">void</span><span class="pln"> put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
@@ -184,7 +184,7 @@
         <div class="flex-grow content small-heading">DAO Strategies &amp; Decorators</div>
       </div>
     </div>
-    <div class="card flex-col flex-grow" style="justify-content: flex-start; overflow: auto">
+    <div class="card flex-col flex-grow flex-start" style="overflow: auto">
       <foam model="foam.demos.DAOStrategies" />
     </div>
   </slide>
@@ -223,7 +223,7 @@
         <div class="flex-grow content small-heading">Language-Like Features</div>
       </div>
     </div>
-    <div class="card flex-col center" id="pong-container" style="flex-shrink: 0;">
+    <div class="card flex-col center flex-no-shrink" id="pong-container">
       <foam model="foam.demos.pong.Pong" />
     </div>
     <div class="card flex-col flex-grow" style="overflow: auto">
@@ -238,7 +238,7 @@
         <div class="flex-grow content small-heading">Dependency Injection</div>
       </div>
     </div>
-    <div class="flex-row flex-grow" style="align-items: stretch">
+    <div class="flex-row flex-grow flex-stretch">
       <div class="card flex-grow" style="overflow: auto">
         <code><a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Game.js">com.google.sweeper.Game</a>
 
@@ -287,7 +287,7 @@ CLASS({
         <views>
           <viewChoice>
             <label>Data-Binding</label>
-            <p:view><div id="%%id" style="transform:scale(1.2);transform-origin: 0 0;width:367px;margin-left:64px;">
+            <p:view><div id="%%id" class="scale12 origin0" style="width:367px;margin-left:64px;">
                 <%
                    CLASS({
                    name: 'DataBindingDemo',
@@ -333,7 +333,7 @@ CLASS({
           </viewChoice>
           <viewChoice>
             <label>Configuration</label>
-            <p:view><div id="%%id" style="width:500px;margin-left:64px;display: flex;">
+            <p:view><div id="%%id" class="flex" style="width:500px;margin-left:64px">
                 <%
                    var circle = foam.graphics.Circle.create({x:400, y:300});
                    circle.addListener(function() { circle.view.paint(); });
@@ -370,7 +370,7 @@ CLASS({
           <viewChoice>
             <label>Animation</label>
             <p:view>
-<div style="margin-left:100px;transform:scale(0.5);transform-origin: 0 0;">
+<div class="scale05 origin0" style="margin-left:100px">
 <table>
 <tr>
  <td align="center"><foam model="foam.demos.graphics.Dragon" timer=""/></td>
@@ -420,7 +420,7 @@ CLASS({
         <views>
           <viewChoice>
             <label>Spreadsheets</label>
-            <p:view><div style="margin-left: 100px;transform:scale(1.5);transform-origin: 0 0;"><foam model="foam.demos.sevenguis.Cells" rows="9" columns="6" /></div></p:view>
+            <p:view><div class="scale15 origin0" style="margin-left: 100px"><foam model="foam.demos.sevenguis.Cells" rows="9" columns="6" /></div></p:view>
           </viewChoice>
           <viewChoice>
             <label>Graphical</label>
@@ -517,7 +517,7 @@ CLASS({
         <div class="flex-grow content small-heading">Calculator App</div>
       </div>
     </div>
-    <div class="card flex-col center flex-grow" style="align-items: stretch; justify-content: space-around;">
+    <div class="card flex-col center flex-grow flex-stretch flex-space-around">
       <div>
         <iframe src="./apps/acalc/Calc.html" style="height: 70%; width: 80%"></iframe>
       </div>
@@ -535,9 +535,9 @@ CLASS({
       </div>
     </div>
     <div class="card flex-row center flex-grow" style="overflow: auto">
-      <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;max-height:530px" src="./demos/democat/MBug.png"></a>
-      <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/GMail.png"></a>
-      <a href="/index.html?model=foam.tutorials.todo.TodoApp" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/TodoBrowser.png"></a>
+      <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img class="shadow0515" style="max-height:530px" src="./demos/democat/MBug.png"></a>
+      <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img class="shadow0515" style="margin-left: 200px;border:1px solid;max-height:530px" src="./demos/democat/GMail.png"></a>
+      <a href="/index.html?model=foam.tutorials.todo.TodoApp" target="_blank"><img class="shadow0515" style="margin-left: 200px;border:1px solid;max-height:530px" src="./demos/democat/TodoBrowser.png"></a>
     </div>
   </slide>
 
@@ -548,7 +548,7 @@ CLASS({
         <div class="flex-grow content small-heading">Tutorial</div>
       </div>
     </div>
-    <div class="flex-row flex-grow" style="align-items: stretch">
+    <div class="flex-row flex-grow flex-stretch">
       <div class="card flex-grow">
         <iframe src="./index.html?model=foam.tutorials.phonecat.Controller" style="height: initial"></iframe>
       </div>
@@ -565,7 +565,7 @@ CLASS({
         <div class="flex-grow content small-heading">Toolability (meta-programming)</div>
       </div>
     </div>
-    <div class="flex-row flex-grow" style="align-items: stretch">
+    <div class="flex-row flex-grow flex-stretch">
       <div class="card flex-grow" style="overflow: auto">
         <ul>
           <li><a href="./apps/docs/docbrowser.html">API Browsers</a></li>
@@ -596,8 +596,8 @@ CLASS({
         <div class="flex-grow content small-heading">OS for The World's Information</div>
       </div>
     </div>
-    <div class="flex-row" style="align-items: stretch; flex-shrink: 1">
-      <div class="card flex-col flex-grow" style="flex-grow: 3">
+    <div class="flex-row flex-stretch flex-shrink">
+      <div class="card flex flex-col flex-grow3">
       <center style="width:1100px">
         <iframe src="./demos/GoogleSimulator.html"></iframe>
       </center>
@@ -613,7 +613,7 @@ CLASS({
         <div class="flex-grow content small-heading">Summary</div>
       </div>
     </div>
-    <div style="align-items: stretch; flex-grow: 1">
+    <div class="flex-grow1 flex-stretch">
       <center>
         <foam model="foam.demos.FOAMDiagram" x="2" y="2" width="1600" height="800" />
       </center>

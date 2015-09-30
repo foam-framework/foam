@@ -425,8 +425,7 @@ CLASS({
         vertical-align: middle;
         background: #db4437;
         border: none;
-        -webkit-box-shadow: none;
-        box-shadown: none;
+        box-shadow: none;
         opacity: 0.76;
         outline: none;
       }

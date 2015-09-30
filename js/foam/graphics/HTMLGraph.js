@@ -89,8 +89,8 @@ CLASS({
                Math.round(10000 * (this.data[i] - this.min) / this.max) / 100);
              var bgHeight = 100 - dataHeight; %>
           <graph-row style="width: {{rowWidth}}%">
-            <graph-row-bg style="background: {{this.backgroundColor}}; flex-grow: {{bgHeight}}"></graph-row-bg>
-            <graph-row-data style="background: {{this.graphColor}}; flex-grow: {{dataHeight}}"></graph-row-data>
+            <graph-row-bg style="background: {{this.backgroundColor}}; flex-grow: {{bgHeight}}; -webkit-flex-grow: {{bgHeight}}"></graph-row-bg>
+            <graph-row-data style="background: {{this.graphColor}}; flex-grow: {{dataHeight}}; -webkit-flex-grow: {{dataHeight}}"></graph-row-data>
           </graph-row>
         <% } %>
       </graph>

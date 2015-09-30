@@ -15,6 +15,7 @@ CLASS({
 
   requires: [
     'foam.dao.ZipArchiveDAO',
+    'foam.util.zip.Archive',
     'foam.util.zip.Chunk',
     'foam.util.zip.File as ZipFile',
   ],
@@ -27,9 +28,13 @@ CLASS({
   ],
 
   methods: [
-    function prepareSources(ret /* ... sources ... */) {
+    function prepareSources(config, ret /* ... sources ... */) {
       var sources = argsToArray(arguments).slice(1);
-      var dao = this.ZipArchiveDAO.create({}, this.Y);
+      var dao = this.ZipArchiveDAO.create({
+        archive: this.Archive.create({
+          path: config.appName + ' - ' + config.version + '.zip',
+        }, this.Y),
+      }, this.Y);
       var archive = this.archive = dao.archive;
       var ZipFile = this.ZipFile;
       var Chunk = this.Chunk;

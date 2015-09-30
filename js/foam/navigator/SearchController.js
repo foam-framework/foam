@@ -232,8 +232,8 @@ CLASS({
     */},
     function expandedHTML() {/*
       <div id="<%= this.id %>">
-        <div style="background: #f1f1f1; height: 60px; display:flex; align-items: center;">
-          <div style="display: inline-block; flex-grow: 0; flex-shrink: 0; padding-right: 12px; margin-left: 12px; background: url('<%= this.logo %>') no-repeat; background-size: 92px 33px; height: 33px; width: 92px"></div>
+        <div style="background: #f1f1f1; height: 60px; display: flex; display: -webkit-flex; align-items: center; -webkit-align-items: center">
+          <div style="display: inline-block; flex-grow: 0; -webkit-flex-grow: 0; flex-shrink: 0; -webkit-flex-shrink: 0; padding-right: 12px; margin-left: 12px; background: url('<%= this.logo %>') no-repeat; background-size: 92px 33px; height: 33px; width: 92px"></div>
           $$query{ onKeyMode: true, extraClassName: 'searchBox' }
         </div>
         <div class="filters">$$modelFilter{ choices: this.modelNames }</div>

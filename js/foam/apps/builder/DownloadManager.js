@@ -57,7 +57,7 @@ CLASS({
         this.sourceManager.aloadSources.bind(this.sourceManager, data.config),
       ];
       if ( this.mode === 'PACKAGED' ) seq.push(
-          this.packageManager.prepareSources.bind(this.packageManager));
+          this.packageManager.prepareSources.bind(this.packageManager, data.config));
       seq.push(
           this.downloadApp.bind(this),
           this.packageManager.checkSources.bind(this));

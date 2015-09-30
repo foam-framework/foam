@@ -186,7 +186,7 @@
         <div class="flex-grow content small-heading">FOAM: Full-Stack + Meta</div>
       </div>
     </div>
-    <div style="transform:scale(0.8); transform-origin: 0 0"><foam model="foam.demos.ArchitectureDiagram"/></div>
+    <div style="transform:scale(0.8); -webkit-transform:scale(0.8); transform-origin: 0 0; -webkit-transform-origin: 0 0"><foam model="foam.demos.ArchitectureDiagram"/></div>
   </slide>
 
   <slide>
@@ -209,8 +209,8 @@
       </div>
     </div>
     <div class="card flex-row center flex-grow" style="overflow: auto">
-      <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;max-height:530px" src="./demos/democat/MBug.png"></a>
-      <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/GMail.png"></a>
+      <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img style="box-shadow: 0 5px 15px #aaa;-webkit-box-shadow: 0 5px 15px #aaa;max-height:530px" src="./demos/democat/MBug.png"></a>
+      <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img style="margin-left: 200px;border:1px solid;box-shadow: 0 5px 15px #aaa;-webkit-box-shadow: 0 5px 15px #aaa;max-height:530px;" src="./demos/democat/GMail.png"></a>
     </div>
   </slide>
 
@@ -247,8 +247,8 @@
       <span><br /></span>
       <span>FOAM demos by Kevin Greer</span>
     </div>
-      <div class="flex-row" style="justify-content: flex-end">
-        <div class="flex-row" style="transform:scale(0.55)">
+      <div class="flex-row" style="justify-content: flex-end; -webkit-justify-content: flex-end">
+        <div class="flex-row" style="transform:scale(0.55); -webkit-transform:scale(0.55)">
           <foam model="foam.demos.graphics.Logo" text="FOAM" width="360" height="140"/>
           <span class="small-heading">Powered</span>
         </div>

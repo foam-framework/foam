@@ -535,7 +535,7 @@
         <div id="%%id">
           <h2>Toggle Card View</h2>
           $$data{ model_: 'foam.sandbox.RedPersonView' }
-          <div style="display: flex; align-items: flex-start; margin: 1em;">
+          <div style="display: flex; display: -webkit-flex; align-items: flex-start; -webkit-align-items: flex-start; margin: 1em">
             $$isCardStyle{ model_: 'foam.ui.md.CheckboxView',  label: 'Toggle Card Styling' }
           </div>
         </div>

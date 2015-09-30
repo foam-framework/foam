@@ -314,7 +314,7 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .md-card {
-  background: #fff;
+  backgrounds: #fff;
   display: block;
   margin: 10px;
   padding: 24px 16px;
