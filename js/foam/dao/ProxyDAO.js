@@ -44,11 +44,7 @@ CLASS({
           if ( oldDAO ) oldDAO.unlisten(this.relay());
           newDAO.listen(this.relay());
           // FutureDAOs will put via the future. In that case, don't put here.
-          if ( this.X.lookup('foam.dao.FutureDAO') && this.X.lookup('foam.dao.FutureDAO').isInstance(oldDAO) ) {
-            // do nothing
-          } else {
-            this.notify_('reset', []);
-          }
+          this.notify_('reset', []);
         }
       }
     },
