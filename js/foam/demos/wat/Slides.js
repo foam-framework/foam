@@ -120,7 +120,7 @@ CLASS({
       }
       slides > controls input {
         font-size: 20px;
-        margin-right: 10px;
+        margin: 0 10px 0 0;
         width: 50px;
       }
       slides > controls .of {
@@ -135,8 +135,8 @@ CLASS({
     */},
     function toInnerHTML() {/*
       <deck></deck>
-      <controls style="display:flex;">
-        $$position <span class="of">of {{this.slides.length}}</span> <span style="flex-grow:1;"></span>
+      <controls style="display:flex;display:-webkit-flex">
+        $$position <span class="of">of {{this.slides.length}}</span> <span style="flex-grow:1;-webkit-flex-grow:1"></span>
         $$legend{model_:'foam.graphics.ActionButtonCView', radius: 20, font: '28px Aria'}
         $$back{model_:'foam.graphics.ActionButtonCView',   radius: 20, font: '28px Aria'}
         $$forth{model_:'foam.graphics.ActionButtonCView',  radius: 20, font: '28px Aria'}
