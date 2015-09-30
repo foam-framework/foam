@@ -48,6 +48,12 @@ CLASS({
       help: 'Tags on the event indicate what type of event it is (fundraiser, picnic, meeting) or who can see it (public, members-only, private). Use whatever tag names you want, and specify the appropriate ones in your Events Calendar app.',
       defaultValue: '',
     },
+    {
+      model_: 'ColorProperty',
+      name: 'color',
+      help: 'The highlight color to use for this event.',
+      defaultValue: '#77F',
+    },
 
   ],
 

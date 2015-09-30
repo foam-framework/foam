@@ -92,8 +92,6 @@ CLASS({
       code: function() {
         if ( ! (this.appView && this.data && this.data.model &&
             this.autoUpdatePreviewHTML ) ) return;
-        // TODO(jacksonic): Bind this better.
-        this.data.model = Model.create(this.data.model);
         this.appView.updateHTML();
       },
     },

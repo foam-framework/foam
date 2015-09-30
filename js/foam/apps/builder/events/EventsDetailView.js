@@ -28,10 +28,12 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class='md-card-shell'>
           $$image{ model_: 'foam.ui.ImageView' }
-          $$name
-          $$date
-          $$description
-          $$tags
+          $$name{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only', extraClassName: 'md-subhead' }
+          $$date{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only' }
+          <div class="description-box">
+            $$description{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only' }
+          </div>
+          $$tags{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only' }
         </div>
       </div>
     */},
@@ -40,8 +42,13 @@ CLASS({
         display: flex;
         flex-direction: column;
         padding: 16px;
+        background: #c9c9c9;
       }
 
+      .events-detail-view .description-box {
+        background: #77F;
+        color: white;
+      }
 
     */},
   ],
