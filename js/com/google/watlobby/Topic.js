@@ -77,13 +77,15 @@ CLASS({
     {
       model_: 'ColorProperty',
       name: 'background',
-      defaultValue: '#FFFFFF'
+      defaultValue: '#FFFFFF',
+      view: { factory_: 'foam.ui.md.ColorFieldView', choices: [ '#FFFFFF', '#EA4335', '#34A853', '#4285F4', '#FBBC05' ] }
     },
     {
       model_: 'ColorProperty',
       name: 'color',
       // Convert capitalized colour names to standard Google colours
-      preSet: function(_, c) { return this[c] || c; }
+      preSet: function(_, c) { return this[c] || c; },
+      view: { factory_: 'foam.ui.md.ColorFieldView', choices: [ '#FFFFFF', '#EA4335', '#34A853', '#4285F4', '#FBBC05' ] }
     },
     {
       name: 'r',
