@@ -79,7 +79,7 @@ CLASS({
   methods: [
     function onNext() {
       if ( this.selection && this.nextViewFactory === this.existingViewFactory ) {
-        this.data.dao = this.selection;
+        this.data.getDataConfig().dao = this.selection;
       }
       if ( this.nextViewFactory === this.newViewFactory ) {
         this.data.resetDAO();

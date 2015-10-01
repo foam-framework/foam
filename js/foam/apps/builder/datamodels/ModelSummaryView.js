@@ -31,7 +31,7 @@ CLASS({
     {
       name: 'citationViewFactory',
       defaultValue: function() {
-        return this.ModelCitationView.create({ data: this.data.model });
+        return this.ModelCitationView.create({ data: this.data.getDataConfig().model });
       }
     },
   ],

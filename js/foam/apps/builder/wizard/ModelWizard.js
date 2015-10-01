@@ -35,6 +35,15 @@ CLASS({
       name: 'scrollContent',
       defaultValue: true,
     },
+    {
+      name: 'model',
+    },
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        if ( nu ) this.model = nu.getDataConfig().model;
+      },
+    },
   ],
 
   actions: [
@@ -47,7 +56,7 @@ CLASS({
 
   methods: [
     function onNext() {
-      this.modelDAO && this.modelDAO.put(this.data.model);
+      //this.modelDAO && this.modelDAO.put(this.data.model);
       this.SUPER();
     }
   ],

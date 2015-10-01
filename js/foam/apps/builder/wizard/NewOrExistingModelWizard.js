@@ -93,7 +93,7 @@ CLASS({
     function onNext() {
       this.SUPER();
       if ( this.selection && this.nextViewFactory === this.existingViewFactory ) {
-        this.data.model = this.selection;
+        this.data.getDataConfig().model = this.selection;
       }
     }
   ],
