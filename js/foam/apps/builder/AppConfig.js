@@ -251,6 +251,14 @@ CLASS({
       var dc = this.getDataConfig(opt_name);
       return dc && dc.createDAO();
     },
+    function resetDAO(opt_name) {
+      var dc = this.getDataConfig(opt_name);
+      return dc && dc.resetDAO();
+    },
+    function resetModel(opt_name) {
+      var dc = this.getDataConfig(opt_name);
+      return dc && dc.resetModel();
+    },
     function getDataConfig(opt_name) {
       // TODO(jacksonic): consider a map of DataConfigs
       var dc = this.dataConfigs[0];

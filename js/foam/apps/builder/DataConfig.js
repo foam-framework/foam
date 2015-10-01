@@ -39,6 +39,7 @@ CLASS({
           if ( this.model && this.model.name !== id ) {
             this.model.name = id;
             this.model.label = capitalize(camelize(name));
+            this.model.extendsModel = nu.baseModelId;
           }
           if ( this.dao && this.dao.name !== name ) this.dao.name = name;
         }
@@ -60,7 +61,7 @@ CLASS({
       },
       lazyFactory: function() {
         return this.Model.create({
-          extendsModel: this.baseModelId,
+          extendsModel: this.parent.baseModelId,
           name: this.parent.appId,
           label: capitalize(camelize(this.appName+" "+this.name))
         });
@@ -82,10 +83,6 @@ CLASS({
         if ( nu ) nu.addListener(this.modelChange);
         this.modelChange();
       },
-    },
-    {
-      name: 'baseModelId',
-      help: 'The model id of the base type for models this trait owns.',
     },
     {
       name: 'dao',
@@ -122,7 +119,7 @@ CLASS({
     function resetModel() {
       // this initialization case is the only time the name is synced to appName
       this.model = this.Model.create({
-        extendsModel: this.baseModelId,
+        extendsModel: this.parent.baseModelId,
         name: this.parent.appId + "_" + this.name,
         label: capitalize(camelize(this.parent.appName+" "+this.name))
       });
