@@ -369,6 +369,11 @@ CLASS({
     },
 
     function c() {
+      console.warn('deprecated use of c(), use add() instead.');
+      return this.add.apply(this, arguments);
+    },
+
+    function add() {
       this.childNodes.push.apply(this.childNodes, arguments);
       this.onAddChildren.apply(this, arguments);
       return this;
