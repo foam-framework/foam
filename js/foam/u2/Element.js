@@ -172,7 +172,7 @@ CLASS({
       onAddChildren: function() { },
       toString:      function() { return 'UNLOADED'; }
     },
-    DESTROYED: { // Needed?
+    DESTROYED: {
       output:        function() { throw 'Attempt to output() destroyed Element.'; },
       load:          function() { throw 'Attempt to load() destroyed Element.'; },
       unload:        function() { throw 'Attempt to unload() destroyed Element.';},
@@ -317,6 +317,13 @@ CLASS({
     },
 
     //
+    // Focus
+    //
+    function focus() { },
+
+    function blur() { },
+
+    //
     // Lifecycle
     //
     function load() { this.state.load.call(this); },
@@ -350,7 +357,7 @@ CLASS({
     function appendChild(c) { this.childNodes.push(c); },
 
     function removeChild(c) {
-      for ( var i = 0; i < this.childNodes.length; ++i ) {
+      for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === c ) {
           this.childNodes.splice(i, 1);
           break;
