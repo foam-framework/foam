@@ -14,11 +14,8 @@ CLASS({
   name: 'AppConfig',
   extendsModel: 'foam.apps.builder.AppConfig',
 
-  traits: [
-    'foam.apps.builder.AppConfigDAOOwnerTrait',
-  ],
-
   requires: [
+    'foam.apps.builder.DataConfig',
     'foam.apps.builder.events.Event',
   ],
 
@@ -36,9 +33,14 @@ CLASS({
       defaultValue: 'New Event Calendar App'
     },
     {
-      name: 'model',
+      name: 'dataConfigs',
       lazyFactory: function() {
-        return this.Event;
+        var dc = this.DataConfig.create({
+          name: 'events',
+          parent: this,
+          model: this.Event,
+        });
+        return [dc];
       }
     },
     {

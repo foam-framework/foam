@@ -14,14 +14,10 @@ CLASS({
   name: 'AppConfig',
   extendsModel: 'foam.apps.builder.AppConfig',
 
-  traits: [
-    'foam.apps.builder.AppConfigModelOwnerTrait',
-    'foam.apps.builder.AppConfigDAOOwnerTrait',
-  ],
-
   requires: [
     'foam.apps.builder.questionnaire.Questionnaire',
     'foam.apps.builder.AppWindow',
+    'foam.apps.builder.DataConfig',
   ],
 
   constants: {
@@ -48,8 +44,15 @@ CLASS({
       defaultValue: 'foam.apps.builder.questionnaire.QuestionnaireView',
     },
     {
-      name: 'model',
-      label: 'Questions',
+      name: 'dataConfigs',
+      lazyFactory: function() {
+        var dc = this.DataConfig.create({
+          parent: this,
+          name: 'questions',
+          model: this.Event,
+        });
+        return [dc];
+      }
     },
     {
       type: 'foam.apps.builder.AppWindow',

@@ -54,25 +54,21 @@ CLASS({
       }
     },
     {
-      model_: 'foam.apps.builder.datamodels.CustomModelProperty',
-      name: 'model',
-      help: 'The primary data model this app operates on.',
-      defaultValue: null,
-      adapt: function(old, nu) {
-        if ( typeof nu === 'string' ) {
-          if ( ! nu ) return old;
-          var ret = this.X.lookup(nu);
-          return ret;
+      name: 'dataConfigs',
+      help: 'The data and dao definitions this app uses.',
+      type: 'DataConfig[]',
+      factory: function() { return []; },
+      adapt: function(old,nu) {
+        if ( Array.isArray(nu) ) {
+          nu.forEach(function(dc) {
+            dc.parent = this;
+          }.bind(this));
+          return nu;
+        } else {
+          nu.parent = this;
+          return [nu];
         }
-        if ( Model.isInstance(nu) ) return nu;
-        return old;
       }
-    },
-    {
-      name: 'dao',
-      type: 'foam.apps.builder.dao.DAOFactory',
-      help: 'The data source type and location.',
-      defaultValue: null,
     },
     {
       model_: 'ViewFactoryProperty',
@@ -251,11 +247,19 @@ CLASS({
         ps.push('accessibilityFeatures.read', 'accessibilityFeatures.modify');
       return ps;
     },
-    function createDAO() {
-      if ( this.dao && this.model ) {
-        return this.dao.factory(this.appId, this.model, this.Y);
+    function createDAO(opt_name) {
+      var dc = this.getDataConfig(opt_name);
+      return dc && dc.createDAO();
+    },
+    function getDataConfig(opt_name) {
+      // TODO(jacksonic): consider a map of DataConfigs
+      var dc = this.dataConfigs[0];
+      if ( opt_name ) {
+        this.dataConfigs.forEach(function(d) {
+          if ( d.name == opt_name ) dc = d;
+        });
       }
-      return null;
+      return dc;
     },
   ],
 });
