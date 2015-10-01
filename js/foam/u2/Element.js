@@ -25,19 +25,45 @@ CLASS({
         out('<', this.nodeName);
         if ( this.id ) out(' id="', this.id, '"');
 
-        for ( key in this.attributeMap ) {
+        var first = true;
+        for ( var key in this.classes ) {
+          if ( first ) {
+            out(' class="');
+            first = false;
+          } else {
+            out(' ');
+          }
+          out(key);
+        }
+        if ( ! first ) out('"');
+
+        first = true;
+        for ( var key in this.css ) {
+          var value = this.css[key];
+
+          if ( first ) {
+            out(' style="');
+            first = false;
+          }
+          out(key, ':', value, ';');
+        }
+        if ( ! first ) out('"');
+
+        for ( var key in this.attributeMap ) {
           var value = this.attributeMap[key];
 
           out(' ', key);
           if ( value !== undefined )
             out('="', value, '"');
         }
+
         if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
              ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
           out('>');
           this.outputInnerHTML(out);
           out('</', this.nodeName);
         }
+
         out('>');
 
         this.state = this.OUTPUT;
@@ -55,12 +81,12 @@ CLASS({
       toString:      function() { return 'INITIAL'; }
     },
     OUTPUT: {
-      output:        function(out) {
+      output: function(out) {
         // Only warn because it could be useful for debugging.
-        console.error('Duplicate output.');
+        console.warn('Duplicate output.');
         return this.INITIAL.output.call(this, out);
       },
-      load:          function() {
+      load: function() {
         this.state = this.LOADED;
         for ( var i = 0 ; i < this.elListeners.length ; i++ ) {
           var l = this.elListeners[i];
@@ -223,11 +249,11 @@ CLASS({
     },
     {
       name: 'classes',
-      factory: function() { return []; }
+      factory: function() { return {}; }
     },
     {
       name: 'css',
-      factory: function() { return []; }
+      factory: function() { return {}; }
     },
     {
       name: 'childNodes',
@@ -346,25 +372,25 @@ CLASS({
       return this;
     },
 
-    function attr(key, value) {
+    function attr_(key, value) {
       this.attributeMap[key] = value;
       this.onSetAttr(key, value);
       return this;
     },
 
     function attrs(map) {
-      for ( key in map ) this.attr(key, map[key]);
+      for ( var key in map ) this.attr_(key, map[key]);
       return this;
     },
 
-    function style(key, value) {
-      this.css.push([key, value]);
+    function style_(key, value) {
+      this.css[key] = value;
       this.onSetStyle(key, value);
       return this;
     },
 
-    function styles(map) {
-      for ( key in map ) this.style(key, map[key]);
+    function style(map) {
+      for ( var key in map ) this.style_(key, map[key]);
       return this;
     },
 

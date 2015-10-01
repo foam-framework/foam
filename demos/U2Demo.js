@@ -2,17 +2,19 @@ E('b').add('bold', E('br')).write();
 
 E('b').add(
   'color: ',
-  E('font').attr('color', 'red').add('red', E('br'))).write();
+  E('font').attrs({color: 'red'}).add('red', E('br'))).write();
 
 var e = E('font').add('text', E('br'));
 console.log('id: ', e.id);
 
 e.write();
 
-e.attr('color', 'orange');
+e.attrs({color: 'orange'});
 
-e.style('fontWeight', 'bold');
-e.style('fontSize',   '32pt');
+e.style({
+  fontWeight: 'bold',
+  fontSize:  '32pt'
+});
 
 e.on('click', function() { console.log('clicked'); });
 
@@ -24,3 +26,19 @@ e2.cls('important');
 var e3 = E('div').add('first line');
 e3.write();
 e3.add(E('br'),'second line');
+
+
+var e4 = E('div').add('add style before').style({color: 'blue'});
+e4.write();
+
+var e5 = E('div').add('add style after');
+e5.write();
+e5.style({color: 'blue'});
+
+var e6 = E('div').add('add class before').cls(['important']);
+e6.write();
+
+var e7 = E('div').add('add class after');
+e7.write();
+e7.cls(['important']);
+
