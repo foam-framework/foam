@@ -768,7 +768,7 @@ MODEL({
                   // Since this is called asynchronously, there might be a new
                   // animation. If so, queue up the tasks again.
                   var i;
-                  if (Movement.liveAnimations_ > 0) {
+                  if ( Movement.liveAnimations_ > 0 ) {
                     for ( i = 0 ; i < tasks.length ; i++ )
                       Movement.idleTasks_.push(tasks[i]);
                   } else {
