@@ -116,7 +116,8 @@ CLASS({
           var value = Array.isArray(d) ? d[1] : d;
           var h = Math.floor(yScale * value);
           var colorKey = Array.isArray(d) ? d[0] : j - 1;
-          out += '<rect fill="' + this.colors[colorKey] +
+          var color = this.colors[colorKey] || this.colors[j - 1];
+          out += '<rect fill="' + color +
               '" width="' + barWidth + 'px" height="' + h + 'px" ' +
               'x="' + x + 'px" y="' + (this.height - baseY - h) + 'px" />';
           baseY += h;
