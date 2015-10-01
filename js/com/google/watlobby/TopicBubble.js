@@ -58,29 +58,33 @@ CLASS({
       this.textArea.alpha = 0;
     },
     function setSelected(selected) {
-      if ( this.cancel_ ) {
-        this.cancel_();
-        this.cancel_ = null;
-      }
+      var self = this;
       if ( selected ) {
         this.oldMass_ = this.oldMass_ || this.mass;
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
         this.cancel_ = Movement.animate(1000, function() {
-          var w = this.lobby.width;
-          var h = this.lobby.height;
-          this.x = w/2;
-          this.y = h/2;
-          this.zoom = 1;
-          this.textArea.alpha = 1;
-        }.bind(this), Movement.easey)();
+          var w = self.lobby.width;
+          var h = self.lobby.height;
+          self.x = w/2;
+          self.y = h/2;
+          self.zoom = 1;
+          self.textArea.alpha = 1;
+        }, Movement.easey)();
       } else {
         this.mass = this.oldMass_;
-        this.cancel_ = Movement.compile([[
-          [ 200,  function() { this.textArea.alpha = 0; }.bind(this) ],
-          [ 1000, function() { this.zoom = 0; }.bind(this) ]
-        ]])();
+        Movement.compile([
+          [
+            [ 200,  function() { self.textArea.alpha = 0; } ],
+            [ 1000, function() { self.zoom = 0; } ]
+          ],
+          // This is needed for the rare case that the tab was hidden until
+          // after the timeout and then CView aborts in paint() because width
+          // and height are zero so layout doesn't get called and the textArea
+          // isn't resized.
+          function() { self.layout(); self.textArea.paintSelf(); },
+        ])();
       }
     },
     function layout() {
@@ -101,6 +105,7 @@ CLASS({
         this.textArea.y = - this.textArea.height / 2;
         this.textArea.x = 20;
       } else {
+        this.textArea.alpha = 0;
         this.textArea.width = this.textArea.height = 0;
       }
 

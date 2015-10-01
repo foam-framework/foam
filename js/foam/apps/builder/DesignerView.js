@@ -39,9 +39,6 @@ CLASS({
       postSet: function(old, nu) {
         if ( old ) old.removeListener(this.onDataChange);
         if ( nu ) nu.addListener(this.onDataChange);
-        // TODO(jacksonic): Bind this better.
-        if ( this.data && this.data.model )
-          this.data.model = Model.create(this.data.model);
       },
     },
     {

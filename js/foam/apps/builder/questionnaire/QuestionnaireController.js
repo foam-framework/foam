@@ -45,7 +45,7 @@ CLASS({
       name: 'dao',
       help: 'The store of questionnaires filled in by users.',
       lazyFactory: function() {
-        return this.appConfig.dao.factory(this.appConfig.appId, this.appConfig.model, this.Y);
+        return this.appConfig.createDAO();
       }
     },
     {
@@ -53,7 +53,7 @@ CLASS({
       help: 'The current questionnaire being edited',
       view: 'foam.apps.builder.questionnaire.QuestionnaireDetailView',
       lazyFactory: function() {
-        return this.appConfig.model.create({}, this.Y);
+        return this.appConfig.dataConfigs[0].model.create({}, this.Y);
       }
     },
   ],
@@ -70,8 +70,8 @@ CLASS({
     {
       name: 'modelChange',
       code: function(obj, topic, old, nu) {
-        this.appConfig.model.instance_.prototype_ = null;
-        this.content = this.appConfig.model.create({}, this.Y);
+        this.appConfig.dataConfigs[0].model.instance_.prototype_ = null;
+        this.content = this.appConfig.dataConfigs[0].model.create({}, this.Y);
         this.updateHTML();
       }
     },
