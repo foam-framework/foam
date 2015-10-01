@@ -46,7 +46,7 @@ CLASS({
           model: this.Topic,
           dao: this.dao,
           listView: {
-            factory_: 'foam.ui.DAOListView',
+            factory_: 'foam.ui.md.DAOListView',
             rowView: 'com.google.watlobby.TopicCitationView',
             minWidth: 450,
             preferredWidth: 600,
