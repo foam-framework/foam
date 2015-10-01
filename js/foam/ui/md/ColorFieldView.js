@@ -45,6 +45,13 @@ CLASS({
       this.setupAutocomplete();
     }
   },
+  listeners: [
+    {
+      name: 'onKeyPress',
+      documentation: 'Prevent shortcut keys from firing on <input> element',
+      code: function(e) { e.stopPropagation(); }
+    }
+  ],
   templates: [
     function CSS() {/*
       .md-text-field-input[type="color"] {
@@ -73,6 +80,7 @@ CLASS({
             return self.mode == 'read-only';
           }, this.id
         );
+        this.on('keypress', this.onKeyPress, input);
 
         this.setMDClasses();
       %>

@@ -36,17 +36,19 @@ CLASS({
     },
     {
       name: 'nextView',
+      label: 'Next',
       lazyFactory: function() {
         return ( this.nextViewFactory ) ? this.nextViewFactory({ data$: this.data$ }, this.X) : null;
       },
       postSet: function(old,nu) {
         if ( old ) {
-          Events.unfollow(old.title$, this.nextTitle$);
+          //Events.unfollow(old.title$, this.nextTitle$);
           old.destroy();
           if ( old.$ ) old.$.outerHTML = '';
         }
         if ( nu ) {
-          Events.follow(nu.title$, this.nextTitle$);
+          //Events.follow(nu.title$, this.nextTitle$);
+          this.nextTitle = this.model_.NEXT_VIEW.label; // use 'Next' text instead of page title
           if ( this.hidden ) {
             this.propertyChange('title', null, this.title); // notify title listeners it might have changed
           }
@@ -225,6 +227,7 @@ CLASS({
         <div id="%%id-actions" class="wizard-section md-actions md-card-footer horizontal">
             $$exit
             $$back
+            <div class="spacer"></div>
             $$nextAction
         </div>
       </wizard>
@@ -252,6 +255,17 @@ CLASS({
       .wizard-section.hidden {
         display: none;
       }
+
+      .wizard-section.md-actions.md-card-footer.horizontal flat-button {
+        margin: 8px;
+        padding: 8px;
+      }
+
+      .wizard-section.md-card-footer .spacer {
+        flex-grow: 9999;
+        flex-basis: 0;
+      }
+
     */},
   ],
 });

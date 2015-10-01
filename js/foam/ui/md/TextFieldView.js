@@ -311,6 +311,7 @@ CLASS({
           this.on('change',  this.onChange,  input);
           this.on('click',   this.onClick,   input);
           this.on('keydown', this.onKeyDown, input);
+          this.on('keypress', this.onKeyPress, input);
         }
 
         if ( this.floatingLabel ) {
@@ -412,6 +413,11 @@ CLASS({
         if ( e.keyCode === 13 && ! this.growable && this.displayHeight <= 1 )
           this.data = this.softData;
       }
+    },
+    {
+      name: 'onKeyPress',
+      documentation: 'Prevent shortcut keys from firing on <input> element',
+      code: function(e) { e.stopPropagation(); }
     },
     {
       name: 'onClick',
