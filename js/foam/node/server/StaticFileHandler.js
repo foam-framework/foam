@@ -69,7 +69,6 @@ CLASS({
 
       // Check the URL for the prefix.
       var target = req.url; // eg. /foo/bar/baz.jpg
-      console.log("Static", target, this.prefix);
       if ( target.indexOf(this.prefix) !== 0 ) return false;
 
       target = target.substring(this.prefix.length);

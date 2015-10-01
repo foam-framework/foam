@@ -48,7 +48,7 @@ CLASS({
         }
         if ( this.targetAppConfig.appId !== cfg.appId ) this.targetAppConfig = cfg;
         this.targetDAOInstance = cfg.createDAO();
-        this.targetModel = cfg.model;
+        this.targetModel = cfg.getDataConfig().model;
 
         this.browserConfig = this.BrowserConfig.create({
           title$: this.appName$,

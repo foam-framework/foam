@@ -141,6 +141,7 @@ CLASS({
       var map = opt_map || {};
       map.property = prop;
       map.size = map.size || 1;
+      map.floatingLabel = false;
       this[opt_name || prop.name] = this.searchMgr.add(this.GroupBySearchView.create(map));
     }
   ],
@@ -181,7 +182,12 @@ CLASS({
       .MedalTable { width: auto !important; }
       .searchPanel {
         margin: 15px;
+        display: flex;
+        flex-direction: column;
         flex-shrink: 0;
+      }
+      .searchPanel flat-button {
+        align-self: flex-end;
       }
       .searchResults {
         margin-left: 40px;
@@ -210,7 +216,6 @@ CLASS({
       .Gold   { color: #C98910; }
       .Silver { color: #A8A8A8; }
       .Bronze { color: #965A38; }
-      flat-button { margin-left: 230px; }
     */},
     function toHTML() {/*
       <div class="medalController">

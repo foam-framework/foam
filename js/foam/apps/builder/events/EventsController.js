@@ -36,7 +36,7 @@ CLASS({
       name: 'dao',
       help: 'The store of events.',
       lazyFactory: function() {
-        return this.appConfig.dao.factory(this.appConfig.appId, this.Event, this.Y);
+        return this.appConfig.createDAO();
       },
       view: {
         factory_: 'foam.ui.DAOListView',
