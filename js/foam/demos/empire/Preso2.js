@@ -154,6 +154,14 @@ CLASS({
       li.d2 { margin-left: 32px; font-size: 28px; }
       li.d3 { margin-left: 48px; font-size: 26px; }
       li.d4 { margin-left: 64px; font-size: 24px; }
+      .scale05 { transform: scale(0.5); }
+      .scale085 { transform: scale(0.85); }
+      .scale12 { transform: scale(1.2); }
+      .scale15 { transform: scale(1.5); }
+      .origin0 { transform-origin: 0 0; }
+      .shadow0515 { box-shadow: 0 5px 15px rgba(0,0,0,0.33); }
+      .flex-grow1 { flex-grow: 1; }
+      .flex-grow3 { flex-grow: 3; }
     */}
   ]
 });

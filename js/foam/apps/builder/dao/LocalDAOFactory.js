@@ -36,6 +36,7 @@ CLASS({
       hidden: true,
       name: 'factory', //TODO(jacksonic): Should be named .create, but can't until Model.create is moved
       defaultValue: function(name, model, X) {
+        model.getPrototype();
         return this.EasyDAO.create({
           model: model,
           name: name,

@@ -137,10 +137,10 @@ CLASS({
         if ( v.$ ) {
           var otherOffset = ( this.orientation == 'vertical' ) ?  -v.$.offsetWidth : -v.$.offsetHeight;
           if (  this.orientation == 'vertical' ) {
-            v.$.style.transform =
+            v.$.style.transform = v.$.style.webkitTransform =
               "translate3d("+otherOffset+"px, "+r.offset+"px, 0px)";
           } else {
-            v.$.style.transform =
+            v.$.style.transform = v.$.style.webkitTransform =
               "translate3d("+r.offset+"px, "+otherOffset+"px, 0px)";
           }
           this.X.setTimeout(function() { if (v.$) v.$.outerHTML = ""; }, 500);
@@ -318,10 +318,10 @@ CLASS({
           if ( r.offset !== pos ) {
             r.offset = pos;
             if (  this.orientation == 'vertical' ) {
-              v.style.transform =
+              v.style.transform = v.style.webkitTransform =
                 "translate3d("+otherOffset+"px, "+r.offset+"px, 0px)";
             } else {
-              v.style.transform =
+              v.style.transform = v.style.webkitTransform =
                 "translate3d("+r.offset+"px, "+otherOffset+"px, 0px)";
             }
             v.style.display = '';
@@ -390,10 +390,10 @@ CLASS({
             r.placed = true;
             v.style.transition = "transform 300ms ease";
             if (  this.orientation == 'vertical' ) {
-              v.style.transform =
+              v.style.transform = v.style.webkitTransform =
                 "translate3d(0px, "+r.offset+"px, 0px)";
             } else {
-              v.style.transform =
+              v.style.transform = v.style.webkitTransform =
                 "translate3d("+r.offset+"px, 0px, 0px)";
             }
             v.style.display = '';

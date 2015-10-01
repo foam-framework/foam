@@ -57,6 +57,7 @@ p, h1, form, button {
 .stackview-slidearea {
   background: white;
   box-shadow: 0 0 30px black;
+  -webkit-box-shadow: 0 0 30px black;
   height: 100%;
   position: fixed;
   z-index: 4;
@@ -618,6 +619,7 @@ div.gridViewControl select {
   background: #4d90fe;
   border-radius: 3px;
   box-shadow: none;
+  -webkit-box-shadow: none;
   color: white;
   margin-left: 7px;
   padding: 10px 16px;

@@ -145,7 +145,7 @@ CLASS({
       description: 'TileView',
       template: '<div class="column expand">' +
         '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %><br/></div>' +
-        '<div id="<%= this.id%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
+        '<div id="<%= this.id%>" class="gridViewArea column" style="flex: 1 1 100%; -webkit-flex: 1 1 100%"></div>' +
         '</div>'
     },
     */
@@ -156,7 +156,7 @@ CLASS({
       description: 'TileView',
       template: '<div class="column expand">' +
         '<div class="gridViewControl">Rows: <%= this.row.toHTML() %> &nbsp;Cols: <%= this.col.toHTML() %> &nbsp;Cells: <%= this.acc.toHTML() %> &nbsp;Scroll: $$scrollMode <br/></div>' +
-        '<div id="<%= this.id%>" class="gridViewArea column" style="flex: 1 1 100%"></div>' +
+        '<div id="<%= this.id%>" class="gridViewArea column" style="flex: 1 1 100%; -webkit-flex: 1 1 100%"></div>' +
         '</div>'
     }
   ]

@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500" />
     <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons+Extended" />
+  </head>
+  <body>
+    <div id="_DEBUG_OUTPUT_" style="position:fixed; z-index:1000; width: 200px; height: 20px; background-color: rgba(200,200,255,0.9); display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; overflow-x: hidden; overflow-y: auto;"
+     onclick="window._DEBUG_OUTPUT_toggleSize()" >DEBUG Log</div>
+  </body>
     <script language="javascript">
       DEBUG = true;
       (function() {
@@ -27,8 +32,10 @@
         function appendMessage(text, stack, color) {
           var out = document.getElementById('_DEBUG_OUTPUT_');
           var e = document.createElement('div');
+          e.style.display = '-webkit-flex';
           e.style.display = 'flex';
           e.style.flexDirection = 'row';
+          e.style.webkitFlexDirection = 'row';
           if ( color ) e.style.backgroundColor = color;
           e.innerHTML = "<div style='flex-basis: 30%'>"+text+"</div>" +
             ( stack ? "<pre style='font: inherit; font-size: inherit; margin: 0; padding: 0px 8px; flex-grow:1; overflow-x: auto;'>"+stack.substring(7)+"</pre>" : "");
@@ -96,10 +103,5 @@
     </script>
     <script src="core/bootFOAM.js"></script>
     <script src="demos/demos.js"></script>
-  </head>
-  <body>
-    <script src="index.js"></script>
-    <div id="_DEBUG_OUTPUT_" style="position:fixed; z-index:1000; width: 200px; height: 20px; background-color: rgba(200,200,255,0.9); display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto;"
-     onclick="window._DEBUG_OUTPUT_toggleSize()" >DEBUG Log</div>
-  </body>
+    <script src="index.js"></script>  
 </html>

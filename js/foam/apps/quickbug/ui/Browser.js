@@ -150,7 +150,7 @@ CLASS({
               this.on('click', function() {
                 self.bookmarkDAO.remove(choice[2]);
               }, id2);
-              return '<li style="display:flex;" class="choice"><span style="width:100%;" id="' + id + '">' + choice[1] + '</span><span id="' + id2 + '" class="DeleteBookmark">X</span></li>';
+              return '<li style="display:flex;display:-webkit-flex" class="choice"><span style="width:100%;" id="' + id + '">' + choice[1] + '</span><span id="' + id2 + '" class="DeleteBookmark">X</span></li>';
             }
           }
         }));
@@ -868,21 +868,21 @@ Please use labels and text to provide additional information.
   var forthButton  = this.ActionButton.create({action: this.MementoMgr.FORTH,           data: this.mementoMgr});
 %>
 <body id="{{this.id}}" class="column"><div class="column expand" style="height:100%;">
- <div class="topHeader row" style="align-items:center;">
+ <div class="topHeader row" style="align-items:center;-webkit-align-items:center">
   <%= backButton, forthButton %> %%refreshImg <span class="expand"></span> <span>$$newIssue{model_: 'foam.ui.ActionLink'} | $$changeUser{model_: 'foam.ui.ActionLink'} | $$favourites{model_: 'foam.ui.ActionLink'} | %%bookmarksMenu | <%= syncLink %> | <%= browserLink %> |<%= linkButton %></span>
  </div>
  <div class="stack" style="display:none;">
  </div>
- <div class="header row" style="align-items:baseline;">
+ <div class="header row" style="align-items:baseline;-webkit-align-items:baseline">
   <span class="logo">%%logo</span>
   <div>
     <span class="title">%%projectName</span>
     <div class="subtitle">%%summary</div>
   </div>
-  <span style="width:60px;flex-shrink:10000"></span>
+  <span style="width:60px;flex-shrink:10000;-webkit-flex-shrink:10000"></span>
   <span>Search %%searchChoice for </span>
   <span class="expand" style="padding-left:4px;">%%searchField</span> $$addBookmark
-  <span class="link" style="align-self:center;"> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search&nbsp;tips</a></span>
+  <span class="link" style="align-self:center;-webkit-align-self:center"> &nbsp; <a target="_blank" href="<%= this.url %>/issues/searchtips">Search&nbsp;tips</a></span>
  </div>
  <div class="BrowserView expand column">%%view</div>
  <div class="footer"><%= FOAM_POWERED %> <span class="appName"><%= manifest.name %> v<%= manifest.version%></span></div>

@@ -87,7 +87,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <task-manager id="%%id">
-        <tm-header class="md-card-shell" style="display: flex">
+        <tm-header class="md-card-shell">
           <header-text>Task Manager</header-text>
           <search-box>
             <chrome>
@@ -96,7 +96,7 @@ CLASS({
             $$search{ height: 30 }
           </search-box>
         </tm-header>
-        <tm-body class="md-card-shell" style="display: flex">
+        <tm-body class="md-card-shell">
           $$filteredTasks{
             title: 'Tasks',
             editColumnsEnabled: true,
@@ -219,8 +219,8 @@ CLASS({
         overflow: hidden;
       }
       task-manager,
-      task-manager tm-body,
-      task-manager tm-header,
+      task-manager tm-body, task-manager tm-body.md-card-shell,
+      task-manager tm-header, task-manager tm-header.md-card-shell,
       task-manager tm-footer actions,
       task-manager tm-footer stats,
       task-manager tm-footer stats global-stats,

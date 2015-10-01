@@ -96,8 +96,14 @@ CLASS({
     {
       name: 'autocompleteView',
     },
-    { model_: 'IntProperty', name: 'displayHeight' },
     { model_: 'IntProperty', name: 'displayWidth' },
+    { model_: 'IntProperty', name: 'displayHeight' },
+    {
+      model_: 'StringProperty',
+      name: 'type',
+      defaultValue: 'text',
+      documentation: function() { /* The type of field to create. */}
+    },
     {
       model_: 'BooleanProperty',
       name: 'floatingLabel',
@@ -305,6 +311,7 @@ CLASS({
           this.on('change',  this.onChange,  input);
           this.on('click',   this.onClick,   input);
           this.on('keydown', this.onKeyDown, input);
+          this.on('keypress', this.onKeyPress, input);
         }
 
         if ( this.floatingLabel ) {
@@ -334,11 +341,11 @@ CLASS({
           <div id="{{{input}}}" class="md-text-field-input"<%= this.mode == 'read-write' ? ' contenteditable' : '' %>>
           </div>
         <% } else if ( this.displayHeight > 1 ) { %>
-          <textarea id="{{{input}}}" type="text" <% out(( ! this.enabled ) ? 'disabled' : ''); %> class="md-text-field-input" rows="{{{this.displayHeight}}}"<%= this.mode == 'read-only' ? ' disabled' : '' %>></textarea>
+          <textarea id="{{{input}}}" type="%%type" <% out(( ! this.enabled ) ? 'disabled' : ''); %> class="md-text-field-input" rows="{{{this.displayHeight}}}"<%= this.mode == 'read-only' ? ' disabled' : '' %>></textarea>
         <% } else if ( this.mode === 'read-only' ) { %>
           <span id="{{{input}}}" class="md-text-field-read-only"><%# this.data %></span>
         <% } else { %>
-          <input id="{{{input}}}" type="text" <% out(( ! this.enabled ) ? 'disabled' : ''); %>
+          <input id="{{{input}}}" type="%%type" <% out(( ! this.enabled ) ? 'disabled' : ''); %>
               class="md-text-field-input <%= this.underline ? '' : 'md-text-field-borderless' %>"
               <%= (this.floatingLabel) ? '' : 'placeholder="' + this.placeholder + '"' %><%= this.mode == 'read-only' ? ' disabled' : '' %> />
           <% if ( this.clearAction ) { %>
@@ -406,6 +413,11 @@ CLASS({
         if ( e.keyCode === 13 && ! this.growable && this.displayHeight <= 1 )
           this.data = this.softData;
       }
+    },
+    {
+      name: 'onKeyPress',
+      documentation: 'Prevent shortcut keys from firing on <input> element',
+      code: function(e) { e.stopPropagation(); }
     },
     {
       name: 'onClick',

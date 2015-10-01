@@ -305,6 +305,7 @@ CLASS({
           this.$.addEventListener('blur', this.onBlur);
 
         this.$.addEventListener('keydown', this.onKeyDown);
+        this.$.addEventListener('keypress', this.onKeyPress);
 
         this.setupAutocomplete();
       } else {
@@ -345,6 +346,11 @@ CLASS({
           this.publish(['keydown'], e);
         }
       }
+    },
+    {
+      name: 'onKeyPress',
+      documentation: 'Prevent shortcut keys from firing on <input> element',
+      code: function(e) { e.stopPropagation(); }
     },
     {
       name: 'onBlur',

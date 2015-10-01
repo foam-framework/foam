@@ -96,6 +96,7 @@ html, body { overflow: initial; }
   width: 100%;
   -webkit-transform: translate3d(0,0,10px);
   box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.15);
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.15);
 }
 
 .issue-edit .body, .issue-edit .md-autocomplete-list-body {
@@ -165,8 +166,7 @@ html, body { overflow: initial; }
   vertical-align: middle;
   background: #3e50b4;
   border: none;
-  -webkit-box-shadow: none;
-  box-shadown: none;
+  box-shadow: none;
   opacity: 0.76;
   outline: none;
 }

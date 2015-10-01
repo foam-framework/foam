@@ -21,6 +21,7 @@ CLASS({
   extendsModel: 'foam.browser.ui.BrowserView',
   requires: [
     'com.google.watlobby.Topic',
+    'com.google.watlobby.Topic',
     'com.google.watlobby.TopicCitationView',
     'foam.browser.BrowserConfig',
     'foam.browser.ui.DAOController',
@@ -45,8 +46,11 @@ CLASS({
           model: this.Topic,
           dao: this.dao,
           listView: {
-            factory_: 'foam.ui.md.DAOListView',
-            rowView: 'com.google.watlobby.TopicCitationView'
+            factory_: 'foam.ui.DAOListView',
+            rowView: 'com.google.watlobby.TopicCitationView',
+            minWidth: 450,
+            preferredWidth: 600,
+            maxWidth: 600
           },
           cannedQueryDAO: [
             this.CannedQuery.create({

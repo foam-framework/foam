@@ -73,6 +73,7 @@ CLASS({
   methods: {
     toHTML: function() {
       this.on('keydown', this.onKeyDown, this.id);
+      this.on('keypress', this.onKeyPress, this.id);
       this.on('blur',    this.framed(this.delay(200, this.framed(this.framed(this.onBlur)))), this.id);
       this.on('focus',   this.onInput, this.id);
 
@@ -160,6 +161,11 @@ CLASS({
           this.popValue();
         }
       }
+    },
+    {
+      name: 'onKeyPress',
+      documentation: 'Prevent shortcut keys from firing on <input> element',
+      code: function(e) { e.stopPropagation(); }
     },
     {
       name: 'onBlur',

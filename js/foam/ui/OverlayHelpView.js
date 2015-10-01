@@ -246,9 +246,10 @@ CLASS({
            console.log('Bounce');
            var e = this.$.querySelector('.close-action');
            if ( e && e.style.animation === '' ) {
-             e.style.animation = 'bounce 0.5s ease-in-out';
+             e.style.animation = e.style.webkitAnimation =
+                 'bounce 0.5s ease-in-out';
              e.addEventListener('animationend', function() {
-               e.style.animation = '';
+               e.style.animation = e.style.webkitAnimation = '';
              });
            }
          }.bind(this), this.id);

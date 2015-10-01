@@ -716,12 +716,12 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <div tabindex="99" class="tableView" style="display:flex;width:100%;">
-        <span id="%%id" style="flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">
+      <div tabindex="99" class="tableView" style="display:flex;display:-webkit-flex;width:100%;">
+        <span id="%%id" style="flex:1 1 100%;-webkit-flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">
           <% this.tableToHTML(out); %>
         </span>
         <%= this.scrollEnabled ?
-            ('<span style="margin-left:2px;margin-right:2px;width:20px;flex:none;overflow:hidden;padding-top:48px;" class="scrollbar">' +
+            ('<span style="margin-left:2px;margin-right:2px;width:20px;flex:none;-webkit-flex:none;overflow:hidden;padding-top:48px;" class="scrollbar">' +
             this.scrollbar.toView_().toHTML() + '</span>') : '' %>
       </div>
     */},

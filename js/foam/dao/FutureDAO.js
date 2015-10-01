@@ -48,7 +48,10 @@ CLASS({
       this.SUPER();
 
       this.future(function(delegate) {
+        var listeners = this.daoListeners_;
+        this.daoListeners_ = [];
         this.delegate = delegate;
+        this.daoListeners_ = listeners;
       }.bind(this));
     },
 
@@ -102,6 +105,6 @@ CLASS({
       }.bind(this));
 
       return f.get;
-    }
+    },
   }
 });

@@ -78,7 +78,7 @@ CLASS({
     function exportApp_(ret) {
       aseq(
           this.sourceManager.aloadSources.bind(this.sourceManager, this.data.config),
-          this.packageManager.prepareSources.bind(this.packageManager),
+          this.packageManager.prepareSources.bind(this.packageManager, this.data.config),
           apar(
               this.identityManager.withOAuth.bind(this.identityManager),
               this.prepareUpload.bind(this)),
