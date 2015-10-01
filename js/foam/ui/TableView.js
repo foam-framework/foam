@@ -652,7 +652,7 @@ CLASS({
           self.publish(self.CLICK, obj);
         };
         e.ondblclick = function() {
-          self.publish(self.DOUBLE_CLICK, obj);
+          self.publish(self.DOUBLE_CLICK, self.selected);
         };
 
         // Adjust soft selection according to last known mouse location.
