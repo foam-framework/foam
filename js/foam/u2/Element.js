@@ -229,10 +229,12 @@ CLASS({
       name: 'id'
     },
     {
-      name: 'nodeName'/*,
+      name: 'nodeName',
       preSet: function(_, v) {
-        return v.toLowerCase();
-      }*/
+        // Convert to uppercase so that checks against OPTIONAL_CLOSE_TAGS
+        // and ILLEGAL_CLOSE_TAGS work.
+        return v.toUpperCase();
+      }
     },
     {
       name: 'attributeMap',

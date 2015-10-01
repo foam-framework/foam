@@ -18,14 +18,18 @@ e.style({
 
 e.on('click', function() { console.log('clicked'); });
 
-var e2 = E('font').add('(click me, important)');
-e2.on('click', function() { console.log('clicked, but listener added before.'); });
-e2.write();
-e2.cls('important');
 
-var e3 = E('div').add('first line');
+var e2 = E('font').add('on click, before', E('br')).on('click', function() { console.log('clicked, before'); });
+e2.write();
+
+var e2b = E('font').add('on click, after');
+e2b.write();
+e2b.on('click', function() { console.log('clicked, after'); });
+
+
+var e3 = E('div').add('first line, added before');
 e3.write();
-e3.add(E('br'),'second line');
+e3.add(E('br'),'second line, added after');
 
 
 var e4 = E('div').add('add style before').style({color: 'blue'});
@@ -34,6 +38,7 @@ e4.write();
 var e5 = E('div').add('add style after');
 e5.write();
 e5.style({color: 'blue'});
+
 
 var e6 = E('div').add('add class before').cls(['important']);
 e6.write();
