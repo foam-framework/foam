@@ -83,7 +83,7 @@ CLASS({
         this.search; this.cannedQuery; this.searchWithinCannedQuery;
         var canned = this.cannedQuery.expression;
         if (this.search !== '') {
-          var query = this.queryParser(this.search);
+          var query = this.queryParser.parseString(this.search);
           return this.searchWithinCannedQuery ? AND(query, canned) : query;
         } else {
           return canned;
@@ -94,7 +94,7 @@ CLASS({
       name: 'queryParser',
       documentation: 'Parser for user-entered search strings. Should return ' +
           'an mlang suitable for searching $$DOC{ref:".dao"}. Defaults to KEYWORD.',
-      defaultValue: KEYWORD,
+      defaultValue: { parseString: KEYWORD }
     },
     {
       model_: 'foam.core.types.DAOProperty',
