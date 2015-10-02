@@ -22,19 +22,16 @@ CLASS({
   extendsModel: 'foam.node.tools.Server',
   requires: [
     'foam.dao.EasyDAO',
-    'foam.demos.olympics.Medal'
+    'foam.demos.olympics.Medal',
+    'foam.node.server.ServerConfig'
   ],
   properties: [
-    {
-      name: 'path',
-      factory: function() { return require('path'); }
-    },
     {
       name: 'fs',
       factory: function() { return require('fs'); }
     },
     {
-      name: 'dao',
+      name: 'config',
       factory: function() {
 	var result =
 	    this.fs.readFileSync(global.FOAM_BOOT_DIR + '/../js/foam/demos/olympics/MedalData.json');
@@ -47,21 +44,23 @@ CLASS({
 
 	var dao = foam.dao.EasyDAO.create({
 	  daoType: 'MDAO',
-	  model: foam.demos.olympics.Medal,
+	  model: this.Medal,
 	  dedup: true,
 	  seqNo: true,
 	  autoIndex: true
 	});
 
 	result.select(dao);
-	return dao;
+        return this.ServerConfig.create({
+          port: 8888,
+          staticDirs: ['apps', 'core', 'demos', 'js'],
+          staticFiles: [
+            ['/index.html', global.FOAM_BOOT_DIR + '/../index.html'],
+            ['/index.js', global.FOAM_BOOT_DIR + '/../index.js']
+          ],
+          daos: [dao]
+        });
       }
-    }
-  ],
-  methods: [
-    function configure() {
-      this.SUPER();
-      this.server.exportDAO(this.dao);
-    }
+    },
   ]
 });

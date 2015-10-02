@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'node.dao',
+  package: 'foam.node.dao',
   name: 'JSONFileDAO',
   extendsModel: 'MDAO',
 

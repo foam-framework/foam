@@ -31,7 +31,7 @@ CLASS({
     {
       name: 'citationViewFactory',
       defaultValue: function() {
-        return this.DAOFactoryView.create({ data: this.data.dao });
+        return this.DAOFactoryView.create({ data: this.data.getDataConfig().dao });
       }
     },
     {

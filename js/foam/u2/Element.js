@@ -25,19 +25,45 @@ CLASS({
         out('<', this.nodeName);
         if ( this.id ) out(' id="', this.id, '"');
 
-        for ( key in this.attributeMap ) {
+        var first = true;
+        for ( var key in this.classes ) {
+          if ( first ) {
+            out(' class="');
+            first = false;
+          } else {
+            out(' ');
+          }
+          out(key);
+        }
+        if ( ! first ) out('"');
+
+        first = true;
+        for ( var key in this.css ) {
+          var value = this.css[key];
+
+          if ( first ) {
+            out(' style="');
+            first = false;
+          }
+          out(key, ':', value, ';');
+        }
+        if ( ! first ) out('"');
+
+        for ( var key in this.attributeMap ) {
           var value = this.attributeMap[key];
 
           out(' ', key);
           if ( value !== undefined )
             out('="', value, '"');
         }
+
         if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
              ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
           out('>');
           this.outputInnerHTML(out);
           out('</', this.nodeName);
         }
+
         out('>');
 
         this.state = this.OUTPUT;
@@ -55,12 +81,12 @@ CLASS({
       toString:      function() { return 'INITIAL'; }
     },
     OUTPUT: {
-      output:        function(out) {
+      output: function(out) {
         // Only warn because it could be useful for debugging.
-        console.error('Duplicate output.');
+        console.warn('Duplicate output.');
         return this.INITIAL.output.call(this, out);
       },
-      load:          function() {
+      load: function() {
         this.state = this.LOADED;
         for ( var i = 0 ; i < this.elListeners.length ; i++ ) {
           var l = this.elListeners[i];
@@ -146,7 +172,7 @@ CLASS({
       onAddChildren: function() { },
       toString:      function() { return 'UNLOADED'; }
     },
-    DESTROYED: { // Needed?
+    DESTROYED: {
       output:        function() { throw 'Attempt to output() destroyed Element.'; },
       load:          function() { throw 'Attempt to load() destroyed Element.'; },
       unload:        function() { throw 'Attempt to unload() destroyed Element.';},
@@ -203,10 +229,12 @@ CLASS({
       name: 'id'
     },
     {
-      name: 'nodeName'/*,
+      name: 'nodeName',
       preSet: function(_, v) {
-        return v.toLowerCase();
-      }*/
+        // Convert to uppercase so that checks against OPTIONAL_CLOSE_TAGS
+        // and ILLEGAL_CLOSE_TAGS work.
+        return v.toUpperCase();
+      }
     },
     {
       name: 'attributeMap',
@@ -223,11 +251,11 @@ CLASS({
     },
     {
       name: 'classes',
-      factory: function() { return []; }
+      factory: function() { return {}; }
     },
     {
       name: 'css',
-      factory: function() { return []; }
+      factory: function() { return {}; }
     },
     {
       name: 'childNodes',
@@ -289,6 +317,13 @@ CLASS({
     },
 
     //
+    // Focus
+    //
+    function focus() { },
+
+    function blur() { },
+
+    //
     // Lifecycle
     //
     function load() { this.state.load.call(this); },
@@ -322,7 +357,7 @@ CLASS({
     function appendChild(c) { this.childNodes.push(c); },
 
     function removeChild(c) {
-      for ( var i = 0; i < this.childNodes.length; ++i ) {
+      for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === c ) {
           this.childNodes.splice(i, 1);
           break;
@@ -346,29 +381,34 @@ CLASS({
       return this;
     },
 
-    function attr(key, value) {
+    function attr_(key, value) {
       this.attributeMap[key] = value;
       this.onSetAttr(key, value);
       return this;
     },
 
     function attrs(map) {
-      for ( key in map ) this.attr(key, map[key]);
+      for ( var key in map ) this.attr_(key, map[key]);
       return this;
     },
 
-    function style(key, value) {
-      this.css.push([key, value]);
+    function style_(key, value) {
+      this.css[key] = value;
       this.onSetStyle(key, value);
       return this;
     },
 
-    function styles(map) {
-      for ( key in map ) this.style(key, map[key]);
+    function style(map) {
+      for ( var key in map ) this.style_(key, map[key]);
       return this;
     },
 
     function c() {
+      console.warn('deprecated use of c(), use add() instead.');
+      return this.add.apply(this, arguments);
+    },
+
+    function add() {
       this.childNodes.push.apply(this.childNodes, arguments);
       this.onAddChildren.apply(this, arguments);
       return this;
