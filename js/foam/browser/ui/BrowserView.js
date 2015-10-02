@@ -409,11 +409,7 @@ CLASS({
                    createButtonX.registerModel(this.FlatButton.xbind({
                      haloColor: 'black',
                      displayMode: 'ICON_ONLY',
-                   }), 'foam.ui.ActionButton');
-                   createButtonX.registerModel(this.HaloView.xbind({
-                     easeInTime: 0,
-                     easeOutTime: 0,
-                   }), 'foam.ui.md.HaloView'); %>
+                   }), 'foam.ui.ActionButton'); %>
                 $$createButton{
                   extraClassName: 'floatingActionButton',
                   color: 'white',
