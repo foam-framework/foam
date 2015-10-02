@@ -54,7 +54,7 @@ CLASS({
 
       this.addChild(this.img = this.ImageCView.create({src: this.image}));
       this.addChild(this.textArea);
-      this.textArea.innerView.data = '<font style="color:' + this.topic.color + ';">' + ( this.topic.text || 'INSERT TEXT HERE' ) + '</font>';
+      this.textArea.innerView.data = '<font style="color:' + this.topic.color + ';"><b>' + ( this.topic.text || 'INSERT TEXT HERE' ) + '</b></font>';
       this.textArea.alpha = 0;
     },
     function setSelected(selected) {
