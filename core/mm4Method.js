@@ -900,12 +900,7 @@ CLASS({
       model_: 'TemplateProperty',
       name: 'swiftSource',
       labels: ['swift'],
-      defaultValue: '<% var method = arguments[1]; %>' +
-        '    func <%= method.name %> (<%'+
-        'for ( var i = 0; i < method.args.length; i++ ) {' +
-        '%>var <%= method.args[i].name %>: <%= method.args[i].swiftType %><%' +
-        'if ( i != method.args.length - 1 ) { %>, <% }' +
-        '} %>)<% if ( method.swiftReturnType ) { %> -> <%= method.swiftReturnType %><% } %> {}\n'
+      defaultValue: '<% true; %>',
     },
     {
       model_: 'TemplateProperty',

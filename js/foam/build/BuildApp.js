@@ -97,6 +97,7 @@ CLASS({
       name: 'extraModels',
       help: 'Extra models to include in the image regardless of if they were arequired or not.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; },
+      factory: function() { return ['foam.ui.FoamTagView']; }
     },
     {
       model_: 'StringArrayProperty',
@@ -459,16 +460,7 @@ CLASS({
         apar(
           function(ret) { this.buildCoreJS_(ret); }.bind(this),
           function(ret) { this.buildAppJS_(ret); }.bind(this)),
-        function(ret, corejs, appjs) {
-          appjs += "window.addEventListener('load', function() {";
-
-          if ( this.defaultView ) {
-            appjs += "apar(X.arequire('" + this.defaultView + "'), X.arequire('" + this.controller + "'))(function(v, c) {";
-            appjs += "X.writeView(v.create({ data: c.create() }))});"
-          } else {
-            appjs += "X.arequire('" + this.controller + "')(function(c) { X.writeView(c.create()); });"
-          }
-          appjs += "});"
+          function(ret, corejs, appjs) {
             var file = this.File.create({
               path: this.targetPath + this.path.sep + this.jsFileName,
               contents: corejs + appjs
@@ -496,7 +488,7 @@ CLASS({
     }
   },
   templates: [
-    function HTML() {/*<html<% if ( this.appcacheManifest ) { %> manifest="%%getManifestFileName"<% } %>><head><meta charset="utf-8"><%= this.htmlHeaders.join('') %><% if ( this.includeFoamCSS ) { %><link rel="stylesheet" type="text/css" href="foam.css"/><% } %><% if ( this.icon ) { %><link rel="icon" sizes="128x128" href="<%= this.icon %>"/><% } %><script src="%%jsFileName"></script></head><body></body></html>*/},
+    function HTML() {/*<html<% if ( this.appcacheManifest ) { %> manifest="%%getManifestFileName"<% } %>><head><meta charset="utf-8"><%= this.htmlHeaders.join('') %><% if ( this.includeFoamCSS ) { %><link rel="stylesheet" type="text/css" href="foam.css"/><% } %><% if ( this.icon ) { %><link rel="icon" sizes="128x128" href="<%= this.icon %>"/><% } %><script src="%%jsFileName"></script></head><body><foam model="<%= this.controller %>"<% if ( this.defaultView ) { %> view="<%= this.defaultView %>"<% } %>></foam></body></html>*/},
     function MANIFEST() {/*CACHE MANIFEST
 # version <%= this.version %>
 <% if ( this.appDefinition ) { %># hash: <%= this.appDefinition.hashCode() %><% } %>

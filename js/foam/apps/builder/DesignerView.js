@@ -37,8 +37,10 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
-        if ( old ) old.removeListener(this.onDataChange);
-        if ( nu ) nu.addListener(this.onDataChange);
+        var oldM = old && old.getDataConfig() && old.getDataConfig().model;
+        var nuM = nu && nu.getDataConfig() && nu.getDataConfig().model;
+        if ( oldM ) oldM.removeListener(this.onDataModelChange);
+        if ( nuM ) nuM.addListener(this.onDataModelChange);
       },
     },
     {
@@ -85,10 +87,9 @@ CLASS({
 
   listeners: [
     {
-      name: 'onDataChange',
+      name: 'onDataModelChange',
       code: function() {
-        if ( ! (this.appView && this.data && this.data.model &&
-            this.autoUpdatePreviewHTML ) ) return;
+        if ( ! (this.appView && this.autoUpdatePreviewHTML ) ) return;
         this.appView.updateHTML();
       },
     },

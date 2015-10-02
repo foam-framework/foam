@@ -100,13 +100,13 @@ CLASS({
         var dao = this.MDAO.create({
           model: Model,
         }, this.Y);
-        this.masterAppDAO.where(HAS(function(appCfg) { // detect models
-          return ! ! appCfg.dataConfigs.length;
-        })).pipe(MAP(function(appCfg) { // dump models
-          for (var i = 0; i < appCfg.dataConfigs.length; ++i) {
-            dao.put(appCfg.dataConfigs[i].model);
-          }
-        }));
+        this.masterAppDAO
+          .where(HAS(this.AppConfig.DATA_CONFIGS))
+          .pipe(MAP(function(appCfg) { // dump models
+            for (var i = 0; i < appCfg.dataConfigs.length; ++i) {
+              dao.put(appCfg.dataConfigs[i].model);
+            }
+          }));
         return dao;
       },
     },

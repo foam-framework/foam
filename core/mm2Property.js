@@ -61,7 +61,7 @@ GLOBAL.Property = {
       name: 'labels',
       type: 'Array',
       subType: 'String',
-      labels: ['debug'],
+      labels: ['debug', 'javascript'],
     },
     {
       name: 'label',
@@ -151,6 +151,7 @@ GLOBAL.Property = {
       name: 'swiftDefaultValue',
       labels: ['swift'],
       defaultValueFn: function() {
+        if (this.defaultValue == undefined) return 'nil';
         switch(typeof this.defaultValue) {
         case "string":
           return '"' + this.defaultValue + '"';
@@ -190,7 +191,15 @@ GLOBAL.Property = {
       type: 'String',
       required: false,
       labels: ['swift'],
-      defaultValueFn: function() { return this.type; },
+      defaultValueFn: function() {
+        var type = this.type;
+        if (this.type == 'Boolean') {
+          type = 'Bool';
+        } else if (this.type == 'int') {
+          type = 'Int';
+        }
+        return type + (!this.required ? '?' : '');
+      },
       help: 'The Swift type that represents this type of property.',
     },
     {
@@ -212,6 +221,7 @@ GLOBAL.Property = {
     {
       name: 'aliases',
       type: 'Array[String]',
+      labels: ['javascript'],
       view: 'foam.ui.StringArrayView',
       factory: function() { return []; },
       help: 'Alternate names for this property.',
@@ -244,6 +254,7 @@ GLOBAL.Property = {
     {
       name: 'subKey',
       type: 'EXPR',
+      labels: ['javascript'],
       displayWidth: 20,
       defaultValue: 'ID',
       help: 'The foreign key that this property references.',
@@ -312,7 +323,7 @@ GLOBAL.Property = {
       type: 'int',
       displayWidth: 8,
       displayHeight: 1,
-      defaultValue: '30',
+      defaultValue: 30,
       help: 'The display width of the property.',
       documentation: function() { /*
         A width suggestion for views that automatically render the $$DOC{ref:'Property'}.
@@ -333,6 +344,7 @@ GLOBAL.Property = {
 //      model_: 'ViewFactoryProperty',
       name: 'view',
       type: 'view',
+      labels: ['javascript'],
       defaultValue: 'foam.ui.TextFieldView',
       help: 'View component for the property.',
       documentation: function() { /*
@@ -344,6 +356,7 @@ GLOBAL.Property = {
 //      model_: 'ViewFactoryProperty',
       name: 'detailView',
       type: 'view',
+      labels: ['javascript'],
       defaultValueFn: function() { return this.view; },
       help: 'View component for the property when rendering within a DetailView.',
       documentation: function() { /*
@@ -356,6 +369,7 @@ GLOBAL.Property = {
 //      model_: 'ViewFactoryProperty',
       name: 'citationView',
       type: 'view',
+      labels: ['javascript'],
       defaultValueFn: function() { return this.view; },
       help: 'View component for the property when rendering within a CitationView.',
       documentation: function() { /*
@@ -374,6 +388,7 @@ GLOBAL.Property = {
     {
 //      model_: 'FunctionProperty',
       name: 'detailViewPreRow',
+      labels: ['javascript'],
       defaultValue: function() { return ""; },
       help: 'Inject HTML before row in DetailView.',
       documentation: function() { /*
@@ -384,6 +399,7 @@ GLOBAL.Property = {
     {
 //      model_: 'FunctionProperty',
       name: 'detailViewPostRow',
+      labels: ['javascript'],
       defaultValue: function() { return ""; },
       help: 'Inject HTML before row in DetailView.',
       documentation: function() { /*
@@ -411,6 +427,7 @@ GLOBAL.Property = {
       name: 'defaultValueFn',
       label: 'Default Value Function',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -430,6 +447,7 @@ GLOBAL.Property = {
       name: 'dynamicValue',
       label: "Value's Dynamic Function",
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -447,6 +465,7 @@ GLOBAL.Property = {
     {
       name: 'factory',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -463,6 +482,7 @@ GLOBAL.Property = {
     {
       name: 'lazyFactory',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       view: 'foam.ui.FunctionView',
       help: 'Factory for creating the initial value. Only called when the property is accessed for the first time.',
@@ -474,6 +494,7 @@ GLOBAL.Property = {
     {
       name: 'validate',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       view: 'foam.ui.FunctionView',
       help: 'Function for validating property value.',
@@ -502,6 +523,7 @@ GLOBAL.Property = {
     {
       name: 'getter',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -517,6 +539,7 @@ GLOBAL.Property = {
     {
       name: 'adapt',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -531,6 +554,7 @@ GLOBAL.Property = {
     {
       name: 'preSet',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -545,6 +569,7 @@ GLOBAL.Property = {
     {
       name: 'postSet',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -560,6 +585,7 @@ GLOBAL.Property = {
     {
       name: 'setter',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -576,6 +602,7 @@ GLOBAL.Property = {
       name: 'tableFormatter',
       label: 'Table Cell Formatter',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -589,6 +616,7 @@ GLOBAL.Property = {
       name: 'summaryFormatter',
       label: 'Summary Formatter',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -626,6 +654,7 @@ GLOBAL.Property = {
       name: 'prototag',
       label: 'Protobuf tag',
       type: 'Int',
+      defaultValue: 0,
       required: false,
       help: 'The protobuf tag number for this field.',
       documentation: 'The protobuf tag number for this field.'
@@ -633,6 +662,7 @@ GLOBAL.Property = {
     {
       name: 'actionFactory',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -645,6 +675,7 @@ GLOBAL.Property = {
     {
       name: 'compareProperty',
       type: 'Function',
+      labels: ['javascript'],
       view: 'foam.ui.FunctionView',
       displayWidth: 70,
       displayHeight: 5,
@@ -662,11 +693,13 @@ GLOBAL.Property = {
     },
     {
       name: 'fromString',
+      labels: ['javascript'],
       defaultValue: function(s, p) { this[p.name] = s; },
       help: 'Function to extract value from a String.'
     },
     {
       name: 'fromElement',
+      labels: ['javascript'],
       defaultValue: function propertyFromElement(e, p) {
         if ( ! p.type || ! this.X.lookup || p.type === 'String' ) {
           p.fromString.call(this, e.innerHTML, p);
@@ -689,6 +722,7 @@ GLOBAL.Property = {
     },
     {
       name: 'propertyToJSON',
+      labels: ['javascript'],
       defaultValue: function(visitor, output, o) {
         if ( ! this.transient ) output[this.name] = visitor.visit(o[this.name]);
       },
@@ -698,6 +732,7 @@ GLOBAL.Property = {
     {
       name: 'autocompleter',
       subType: 'Autocompleter',
+      labels: ['javascript'],
       help: 'Name or model for the autocompleter for this property.',
       documentation: function() { /*
         Name or $$DOC{ref:'Model'} for the $$DOC{ref:'Autocompleter'} for this $$DOC{ref:'Property'}.
@@ -706,6 +741,7 @@ GLOBAL.Property = {
     {
       name: 'install',
       type: 'Function',
+      labels: ['javascript'],
       required: false,
       displayWidth: 70,
       displayHeight: 3,
@@ -739,9 +775,35 @@ GLOBAL.Property = {
 
   methods: [
     function partialEval() { return this; },
-    function f(obj) { return obj[this.name] },
-    function compare(o1, o2) {
-      return this.compareProperty(this.f(o1), this.f(o2));
+    {
+      name: 'f',
+      code: function(obj) { return obj[this.name] },
+      swiftSource: function() {/*
+    func f(obj: AnyObject?) -> AnyObject? {
+      if obj == nil { return nil }
+      if let fobj = obj as? FObject {
+        return fobj.get(self.name)
+      }
+      return nil
+    }*/},
+    },
+    {
+      name: 'compare',
+      code: function(o1, o2) {
+        return this.compareProperty(this.f(o1), this.f(o2));
+      },
+      swiftSource: function() {/*
+    func compare(var o1: AnyObject?, var o2: AnyObject?) -> Int {
+      o1 = self.f(o1)
+      o2 = self.f(o2)
+      if o1 === o2 { return 0 }
+      if o1 == nil && o2 == nil { return 0 }
+      if o1 == nil { return -1 }
+      if o2 == nil { return 1 }
+      if o1!.isEqual(o2) { return 0 }
+      return o1?.hashValue > o2?.hashValue ? 1 : -1
+    }
+*/}
     },
     function readResolve() {
       return this.modelId ?
