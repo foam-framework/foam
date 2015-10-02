@@ -18,8 +18,7 @@ CLASS({
   package: 'foam.node.server',
   name: 'ServerConfig',
   requires: [
-    'MDAO',
-    'foam.dao.CachingDAO',
+    'foam.dao.EasyDAO',
     'foam.node.dao.JSONFileDAO',
   ],
 
@@ -51,12 +50,14 @@ CLASS({
 
         var daos = [];
         for (var i = 0; i < this.models.length; i++) {
-          daos.push(this.CachingDAO.create({
+          daos.push(this.EasyDAO.create({
             model: this.models[i],
-            cache: this.MDAO.create({ model: this.models[i] }),
-            src: this.JSONFileDAO.create({ model: this.models[i] })
+            cache: true,
+            seqNo: true,
+            daoType: this.JSONFileDAO
           }));
         }
+        return daos;
       }
     },
     {

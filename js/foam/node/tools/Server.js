@@ -33,6 +33,29 @@ CLASS({
           'describes this server\'s models/DAOs, port, static files, etc.',
     },
     {
+      name: 'configModel',
+      documentation: 'If set, the server will attempt to load this model and ' +
+          'use it as the config. Ignored if $$DOC{ref:".config"} is set.',
+    },
+    {
+      name: 'configFuture',
+      factory: function() {
+        if (this.config) {
+          var c = this.config;
+          return function(ret) { ret(c); };
+        } else {
+          return aseq(
+            arequire(this.configModel),
+            function(ret, model) {
+              var config = model.create();
+              this.config = config;
+              ret(config);
+            }.bind(this)
+          );
+        }
+      }
+    },
+    {
       model_: 'StringArrayProperty',
       name: 'agents',
       adapt: function(_, v) {
@@ -54,17 +77,19 @@ CLASS({
   ],
   methods: [
     function execute() {
-      this.configure();
-      var self = this;
-      for ( var i = 0 ; i < this.agents.length ; i++ ) {
-        console.log("Loading ", this.agents[i]);
-        arequire(this.agents[i])(function(m) {
-          var agent = m.create(undefined, self.Y);
-          if ( agent.execute ) agent.execute();
-          console.log("Loaded ", m.id);
-        });
-      }
-      this.server.launch();
+      this.configFuture(function() {
+        this.configure();
+        var self = this;
+        for ( var i = 0 ; i < this.agents.length ; i++ ) {
+          console.log("Loading ", this.agents[i]);
+          arequire(this.agents[i])(function(m) {
+            var agent = m.create(undefined, self.Y);
+            if ( agent.execute ) agent.execute();
+            console.log("Loaded ", m.id);
+          });
+        }
+        this.server.launch();
+      }.bind(this));
     },
     function configure() {
       this.server.port = this.config.port;
@@ -86,7 +111,6 @@ CLASS({
       }
 
       this.server.handlers = handlers;
-
       for (var i = 0; i < this.config.daos.length; i++) {
         this.server.exportDAO(this.config.daos[i]);
       }

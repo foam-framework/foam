@@ -142,11 +142,7 @@ CLASS({
              editButtonX.registerModel(this.FlatButton.xbind({
                haloColor: 'black',
                displayMode: 'ICON_ONLY',
-             }), 'foam.ui.ActionButton');
-             editButtonX.registerModel(this.HaloView.xbind({
-               easeInTime: 0,
-               easeOutTime: 0,
-             }), 'foam.ui.md.HaloView'); %>
+             }), 'foam.ui.ActionButton'); %>
           $$editButton{
             extraClassName: 'floatingActionButton designerEditButton',
             color: 'white',
