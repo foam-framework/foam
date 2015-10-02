@@ -19,6 +19,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'TopicApp',
   extendsModel: 'foam.browser.ui.BrowserView',
+
   requires: [
     'com.google.watlobby.Topic',
     'com.google.watlobby.Topic',
@@ -36,7 +37,18 @@ CLASS({
     'foam.ui.md.CheckboxView',
     'foam.ui.md.PopupView'
   ],
+
   imports: [ 'dao' ],
+
+  templates: [
+    function CSS() {/*
+      body{ color: #555; }
+      .md-text-field-label { color: #999; }
+      .radioLabel, .toggle-text-indicator { font-size: 16px !important; }
+      .toggle-label { color: #333; font-size: 17px; }
+    */}
+  ],
+
   properties: [
     {
       name: 'data',
