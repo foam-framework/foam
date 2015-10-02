@@ -22,19 +22,18 @@ CLASS({
 
   requires: [
     'com.google.watlobby.Topic',
-    'com.google.watlobby.Topic',
     'com.google.watlobby.TopicCitationView',
+    'com.google.watlobby.TopicDetailView',
     'foam.browser.BrowserConfig',
     'foam.browser.ui.DAOController',
     'foam.core.dao.ChromeStorageDAO',
     'foam.dao.EasyDAO',
     'foam.mlang.CannedQuery',
-    'com.google.watlobby.Topic',
-    'foam.ui.md.DAOListView',
     'foam.ui.TextFieldView',
     'foam.ui.Tooltip',
     'foam.ui.md.CannedQueryCitationView',
     'foam.ui.md.CheckboxView',
+    'foam.ui.md.DAOListView',
     'foam.ui.md.PopupView'
   ],
 
@@ -57,6 +56,7 @@ CLASS({
           title: 'WAT Lobby Admin',
           model: this.Topic,
           dao: this.dao,
+          detailView: 'com.google.watlobby.TopicDetailView',
           listView: {
             factory_: 'foam.ui.md.DAOListView',
             rowView: 'com.google.watlobby.TopicCitationView',
