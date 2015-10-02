@@ -32,7 +32,7 @@ CLASS({
       name: 'existingDAO',
       documentation: 'Administratable apps.',
       lazyFactory: function() {
-        return this.masterAppDAO.where(HAS(this.AppConfig.DAO));
+        return this.masterAppDAO.where(HAS(this.AppConfig.DATA_CONFIGS));
       },
       postSet: function(old,nu) {
         if ( nu ) {

@@ -135,7 +135,7 @@ CLASS({
 
     function createDAO() {
       if ( this.dao && this.model ) {
-        return this.dao.factory(appId, this.model, this.Y);
+        return this.dao.factory(this.parent.appId+"_"+this.name, this.model, this.Y);
       }
       return null;
     },
