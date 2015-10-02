@@ -23,7 +23,7 @@ CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'foam.demos.olympics.Medal',
-    'foam.node.server.ServerConfig'
+    'foam.node.server.RepoServerConfig'
   ],
   properties: [
     {
@@ -51,13 +51,8 @@ CLASS({
 	});
 
 	result.select(dao);
-        return this.ServerConfig.create({
+        return this.RepoServerConfig.create({
           port: 8888,
-          staticDirs: ['apps', 'core', 'demos', 'js'],
-          staticFiles: [
-            ['/index.html', global.FOAM_BOOT_DIR + '/../index.html'],
-            ['/index.js', global.FOAM_BOOT_DIR + '/../index.js']
-          ],
           daos: [dao]
         });
       }
