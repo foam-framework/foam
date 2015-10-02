@@ -151,7 +151,7 @@ CLASS({
       var foam = this.ImageCView.create({x: 10, y: this.height-60, width: 837/5, height: 269/5, src: 'img/foampowered_red.png'});
       this.addChild(foam);
 
-      var clock = this.ClockView.create({x: this.width-120, y: 120, r: 120-10});
+      var clock = this.ClockView.create({x: this.width-240, y: 240, r: (120-10)/2, scaleX: 4, scaleY: 4});
       this.addChild(clock);
 
       this.collider.start();
