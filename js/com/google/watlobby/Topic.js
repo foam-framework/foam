@@ -91,7 +91,11 @@ CLASS({
       name: 'r',
       hidden: true
     },
-    { name: 'video' },
+    {
+      name: 'video',
+      help: 'YouTube URL',
+      preSet: function(_, v) { return v.substring(v.lastIndexOf('=')+1); }
+    },
     {
       model_: 'IntProperty',
       name: 'timeout',
