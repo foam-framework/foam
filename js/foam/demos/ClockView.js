@@ -87,7 +87,7 @@ CLASS({
 
       this.secondHand.a = Math.PI/2 - Math.PI*2 * date.getSeconds() / 60 ;
       this.minuteHand.a = Math.PI/2 - Math.PI*2 * date.getMinutes() / 60 ;
-      this.hourHand.a   = Math.PI/2 - Math.PI*2 * (date.getHours() % 12) / 12;
+      this.hourHand.a   = Math.PI/2 - Math.PI*2 * (date.getHours() % 12) / 12 + this.minuteHand.a / 12;
 
       var c = this.canvas;
       
