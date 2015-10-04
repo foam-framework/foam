@@ -281,13 +281,15 @@ MODEL({
     },
 
     unsub_: function(map, topicIndex, topic, listener) {
+      /**
+        map: topicMap, topicIndex: index into 'topic', topic: array of topic path
+        return: true iff there are no subscritions for this topic left
+      **/
       if ( topicIndex == topic.length ) {
         if ( ! map[null] ) return true;
 
         if ( ! map[null].deleteI(listener) ) {
           console.warn('phantom unsubscribe, size: ', map[null].length);
-        } else {
-          //        console.log('remove', topic);
         }
 
         if ( ! map[null].length ) delete map[null];
