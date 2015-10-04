@@ -638,6 +638,7 @@ CLASS({
       this.resetRowListeners_(trs);
       trs.forEach(function(e, i) {
         var obj = self.objs[i];
+        var timer;
 
         e.onmouseover = function() {
           self.mouseOverRow = true;
@@ -647,12 +648,18 @@ CLASS({
           self.mouseOverRow = false;
           self.selection = '';
         };
-        e.onclick = function(evt) {
-          self.hardSelection = self.selection = obj;
-          self.publish(self.CLICK, obj);
+        e.onclick = function() {
+          if (timer) window.clearTimeout(timer);
+          timer = window.setTimeout(function() {
+            console.log('onclick');
+            self.hardSelection = self.selection = obj;
+            self.publish(self.CLICK, obj);
+          }.bind(self), 250);
         };
         e.ondblclick = function() {
-          self.publish(self.DOUBLE_CLICK, self.selected);
+          if (timer) window.clearTimeout(timer);
+          console.log('ondblclick');
+          self.publish(self.DOUBLE_CLICK, obj);
         };
 
         // Adjust soft selection according to last known mouse location.
