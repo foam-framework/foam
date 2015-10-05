@@ -75,7 +75,7 @@ CLASS({
         if ( e.__DAO_ERROR )
           throw e.exception;
         else
-          sink && sink.error && sink.error('Error loading model', key, e);
+          sink && sink.error && sink.error('Error loading model', key, e, e.stack);
       } finally {
         global.__DATACALLBACK = old;
       }
