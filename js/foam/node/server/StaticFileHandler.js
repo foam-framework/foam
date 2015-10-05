@@ -55,7 +55,8 @@ CLASS({
       '.js': 'text/javascript',
       '.css': 'text/css',
       '.html': 'text/html',
-      __default: 'application/octet-stream'
+      __default: 'application/octet-stream',
+      '.ft': 'application/x.foam-template'
     }
   },
 
