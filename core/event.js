@@ -450,7 +450,13 @@ var FunctionStack = {
 };
 
 
+var Value = {
+  __isValue__: true,
+  isValue: function(o) { return o.__isValue__; }
+};
+
 var PropertyValue = {
+  __proto__: Value,
   create: function(obj, prop) {
     var o = Object.create(this);
     o.$UID = obj.$UID + '.' + prop;

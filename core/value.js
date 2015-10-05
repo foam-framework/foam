@@ -18,15 +18,18 @@
 // TODO: standardize on either get()/set() or .value
 CLASS({
   name: 'SimpleValue',
-
   properties: [ { name: 'value' } ],
 
-  methods: {
-    init: function(value) { this.value = value || ''; },
-    get: function() { return this.value; },
-    set: function(val) { this.value = val; },
-    toString: function() { return 'SimpleValue(' + this.value + ')'; }
-  }
+  constants: {
+    __isValue__: true
+  },
+
+  methods: [
+    function init(value) { this.value = value || ''; },
+    function get() { return this.value; },
+    function set(val) { this.value = val; },
+    function toString() { return 'SimpleValue(' + this.value + ')'; }
+  ]
 });
 
 // TODO(kgr): Experimental. Remove in future if not used.
