@@ -296,7 +296,6 @@ MODEL({
         if ( i == -1 ) {
           console.warn('phantom unsubscribe, size: ', map[null].length);
         } else {
-          console.log('unsub: ', topic.join('.'));
           map[null] = map[null].spliceF(i, 1);
         }
 
