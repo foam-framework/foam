@@ -15,6 +15,18 @@ CLASS({
 
   properties: [
     {
+      type: 'foam.apps.builder.Identity',
+      name: 'identity',
+      defaultValue: null,
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.apps.builder.Identity',
+      name: 'identities',
+      lazyFactory: function() { return []; },
+      adapt: function(old, nu) { if ( nu ) return nu.dao; else return nu; },
+    },
+    {
       model_: 'BooleanProperty',
       name: 'hasSeenDesignerView',
       defaultValue: false,
