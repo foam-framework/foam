@@ -36,11 +36,11 @@ CLASS({
       this.softValue.set(this.data);
       Events.link(this.softValue, this.softData$);
 
-      if ( this.updateMode === this.EACH_KEYSTROKE ) {
+//      if ( this.updateMode === this.EACH_KEYSTROKE ) {
         Events.link(this.data$, this.softData$);
-      } else {
-        Events.follow(this.data$, this.softData$);
-      }
+//       } else {
+//         Events.follow(this.data$, this.softData$);
+//       }
 
       this.setupAutocomplete();
     }
