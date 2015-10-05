@@ -19,6 +19,10 @@ CLASS({
   package: 'foam.u2',
   name: 'Element',
 
+  requires: [
+    'foam.u2.ElementValue'
+  ],
+
   constants: {
     INITIAL: {
       output: function(out) {
@@ -285,6 +289,14 @@ CLASS({
   ],
 
   methods: [
+    function value(opt_event, opt_property) {
+      var args = {element: this};
+
+      if ( opt_event    ) v.event    = opt_event;
+      if ( opt_property ) v.property = opt_property;
+
+      return this.ElementValue.create(args);
+    },
 
     //
     // State
