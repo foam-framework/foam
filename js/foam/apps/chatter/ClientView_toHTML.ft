@@ -1,0 +1,10 @@
+<div>
+Nickname: $$nickname
+</div>
+<div>
+Channels
+$$channelDAO{ model_: 'foam.ui.DAOListView', rowView: 'foam.apps.chatter.ChannelCitationView' }
+</div>
+<div>
+Create channel: $$newChannel
+</div>

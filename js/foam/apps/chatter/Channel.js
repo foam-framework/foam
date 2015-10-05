@@ -17,24 +17,24 @@
 
 CLASS({
   package: 'foam.apps.chatter',
-  name: 'Message',
+  name: 'Channel',
   traits: [
     'foam.core.dao.SyncTrait'
   ],
   properties: [
-    'id',
-    'from',
-    'content',
-    'channelId',
     {
-      model_: 'DateTimeProperty',
-      name: 'timestamp',
-      factory: function() {
-        return Date.now();
-      }
-    }
+      name: 'id',
+    },
+    {
+      model_: 'StringProperty',
+      name: 'name'
+    },
   ],
-  templates: [
-    function toDetailHTML() {/*$$timestamp{ model_: 'foam.ui.RelativeDateTimeFieldView', mode: 'read-only'}: $$from{ mode: 'read-only' }&gt; $$content{ mode: 'read-only' }<br/>*/}
+  relationships: [
+    {
+      name: 'messages',
+      relatedModel: 'foam.apps.chatter.Message',
+      relatedProperty: 'channelId'
+    }
   ]
 });

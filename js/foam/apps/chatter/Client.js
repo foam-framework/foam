@@ -21,40 +21,48 @@ CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'foam.apps.chatter.Message',
-    'foam.ui.TableView'
+    'foam.apps.chatter.Channel',
+  ],
+  exports: [
+    'messageDAO',
+    'channelDAO',
+    'nickname$',
   ],
   properties: [
     {
+      model_: 'StringProperty',
+      name: 'nickname',
+      defaultValue: 'Anonymous'
+    },
+    {
       name: 'messageDAO',
       label: 'Messages',
-      view: 'foam.ui.DAOListView',
+      hidden: true,
       factory: function() {
         return this.EasyDAO.create({
           daoType: 'MDAO',
           model: this.Message,
           guid: true,
+          cloning: true,
+          contextualize: true,
           dedup: true,
           syncWithServer: true
-        }).orderBy(this.Message.TIMESTAMP);
+        });
       }
     },
     {
-      model_: 'StringProperty',
-      name: 'nick',
-      defaultValue: 'Anonymous'
-    },
-    {
-      model_: 'StringProperty',
-      name: 'message',
-      postSet: function(_, message) {
-        if ( message && this.nick ) {
-          this.messageDAO.put(
-            this.Message.create({
-              from: this.nick,
-              content: message
-            }));
-          this.message = '';
-        }
+      name: 'channelDAO',
+      label: 'Channels',
+      view: 'foam.ui.DAOListView',
+      factory: function() {
+        return this.EasyDAO.create({
+          daoType: 'MDAO',
+          model: this.Channel,
+          cloning: true,
+          contextualize: true,
+          guid: true,
+          syncWithServer: true
+        });
       }
     }
   ]

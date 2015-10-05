@@ -20,6 +20,7 @@ CLASS({
   name: 'Server',
   requires: [
     'foam.apps.chatter.Message',
+    'foam.apps.chatter.Channel',
     'foam.dao.EasyDAO'
   ],
   imports: [
@@ -39,9 +40,22 @@ CLASS({
       }
     },
     {
+      name: 'channelDAO',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.Channel,
+          guid: true,
+          dedup: true,
+          daoType: 'MDAO',
+          isServer: true
+        })
+      }
+    },
+    {
       name: 'HTTPServer',
       postSet: function(_, server) {
         server.exportDAO(this.messageDAO);
+        server.exportDAO(this.channelDAO);
       }
     }
   ]

@@ -1,0 +1,9 @@
+<div id="%%id">
+<div style="font-size: 36px">
+$$name{ model: 'read-only' }
+</div>
+$$orderedMessages{ model_: 'foam.ui.DAOListView' }
+<div>
+Message: $$input{ updateMode: 'ENTER_ONLY' }
+</div>
+</div>
