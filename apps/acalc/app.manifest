@@ -1,10 +1,10 @@
 CACHE MANIFEST
-# version 2.1.6
+# version 2.1.6-rc1
 # hash: -1423137629
 
 CACHE:
 foam.js
-main.html
+index.html
 
 icons/32.png
 icons/48.png
