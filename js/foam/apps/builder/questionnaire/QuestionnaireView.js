@@ -91,7 +91,7 @@ CLASS({
     {
       name: 'controller',
       lazyFactory: function() {
-        return this.QuestionnaireController.create({ appConfig$: this.data$ }, this.Y);
+        return this.QuestionnaireController.create({ data$: this.data$ }, this.Y);
       },
       postSet: function(old, nu) {
         if ( old ) old.unsubscribe(['action'], this.onControllerAction);

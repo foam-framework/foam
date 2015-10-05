@@ -29,14 +29,14 @@ CLASS({
 
   properties: [
     {
-      name: 'appConfig',
+      name: 'data',
       help: 'The configuration for app parameters, question set, etc.',
       postSet: function(old,nu) {
         if ( old ) {
-          old.model$.removeListener(this.configChange);
+          old.getDataConfig().model$.removeListener(this.configChange);
         }
         if ( nu ) {
-          nu.model$.addListener(this.configChange);
+          nu.getDataConfig().model$.addListener(this.configChange);
           this.configChange(null, null, null, nu.model);
         }
       }
@@ -45,7 +45,7 @@ CLASS({
       name: 'dao',
       help: 'The store of questionnaires filled in by users.',
       lazyFactory: function() {
-        return this.appConfig.createDAO();
+        return this.Y.submissionsDAO;
       }
     },
     {
@@ -53,7 +53,7 @@ CLASS({
       help: 'The current questionnaire being edited',
       view: 'foam.apps.builder.questionnaire.QuestionnaireDetailView',
       lazyFactory: function() {
-        return this.appConfig.getDataConfig().model.create({}, this.Y);
+        return this.data.getDataConfig().model.create({}, this.Y);
       }
     },
   ],
@@ -70,8 +70,9 @@ CLASS({
     {
       name: 'modelChange',
       code: function(obj, topic, old, nu) {
-        this.appConfig.dataConfigs[0].model.instance_.prototype_ = null;
-        this.content = this.appConfig.getDataConfig().model.create({}, this.Y);
+        var model = this.data.getDataConfig().model;
+        model.instance_.prototype_ = null;
+        this.content = model.create({}, this.Y);
         this.updateHTML();
       }
     },
@@ -99,7 +100,7 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVR4Ad3SP04CURDA4a8RlpNYEP5zQbBGIYT4Ck5iZbwEcStj9AQW7JrI2LLxuYmx45tuMr9uXKSJpFT7VErGgIWsnr1ozElSWIr8+ZNwtDLV1TGzUQsvIh/shVd958Y+RD6YCEd9TTciH5CElaal+D0ohalzC9EW1EJXi38Hz8LMH9wLd3K2wq0fRk4qg8y+9uVaRhLeDJ0behfWsgqPQmVtrqcwt1EJD64gnyQnzefb6mg1snNQqR3sDFygb3rVYPgYJpUVAAAAAElFTkSuQmCC',
       //isAvailable: function() { return this.data.enableReloadBttn; },
       code: function() {
-        this.content = this.appConfig.getDataConfig().model.create({}, this.Y);
+        this.content = this.data.getDataConfig().model.create({}, this.Y);
       }
     },
   ],
