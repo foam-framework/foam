@@ -38,9 +38,11 @@ var JSONParser = SkipGrammar.create({
           alpha: alt(range('a','z'), range('A','Z'), '_', '$', /* sym('char') */ range('0', '9')),
 
   // TODO(kgr): This should just be 'alt' but that isn't working for some
-  // unknown reason. Probably related to SkipGrammar.  Fix and change to 
+  // unknown reason. Probably related to SkipGrammar.  Fix and change to
   // just 'alt'.
   value: simpleAlt(
+    sym('null'),
+    sym('undefined'),
     sym('function literal'),
     sym('expr'),
     sym('number'),
@@ -49,6 +51,9 @@ var JSONParser = SkipGrammar.create({
     sym('bool'),
     sym('array')
   ),
+
+  "null": literal("null"),
+  "undefined": literal("undefined"),
 
   expr: str(seq(
     sym('symbol'), optional(str(alt(
@@ -102,7 +107,9 @@ var JSONParser = SkipGrammar.create({
     var m = {};
     for ( var i = 0 ; i < v.length ; i++ ) m[v[i][0]] = v[i][2];
     return m;
-  }
+  },
+  "null": function() { return null; },
+  "undefined": function() { return undefined; }
 }), repeat0(alt(' ', '\t', '\n', '\r')));
 
 /*

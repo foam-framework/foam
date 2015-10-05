@@ -16,25 +16,20 @@
  */
 
 CLASS({
-  package: 'foam.apps.chatter',
-  name: 'Message',
-  traits: [
-    'foam.core.dao.SyncTrait'
-  ],
+  package: 'foam.node2',
+  name: 'NodeRequireProperty',
+  extendsModel: 'Property',
   properties: [
-    'id',
-    'from',
-    'content',
-    'channelId',
     {
-      model_: 'DateTimeProperty',
-      name: 'timestamp',
-      factory: function() {
-        return Date.now();
+      name: 'moduleName',
+      defaultValueFn: function(prop) { return this.name; }
+    },
+    {
+      name: 'factory',
+      defaultValue: function(prop) {
+        return require(prop.moduleName);
       }
-    }
-  ],
-  templates: [
-    function toDetailHTML() {/*$$timestamp{ model_: 'foam.ui.RelativeDateTimeFieldView', mode: 'read-only'}: $$from{ mode: 'read-only' }&gt; $$content{ mode: 'read-only' }<br/>*/}
+    },
+    ['hidden', true]
   ]
 });

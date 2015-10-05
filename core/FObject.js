@@ -405,7 +405,7 @@ var FObject = {
     }
   },
 
-  validate: function() {
+  validateObject: function() {
     var ret = null;
 
     var ps = this.model_.getRuntimeProperties();
@@ -422,7 +422,7 @@ var FObject = {
     return ret;
   },
 
-  isValid: function() { return ! this.validate(); },
+  isValid: function() { return ! this.validateObject(); },
 
   equals: function(other) { return this.compareTo(other) == 0; },
 

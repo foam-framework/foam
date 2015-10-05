@@ -126,10 +126,18 @@ CLASS({
               future.set(sink);
               return;
             }
+            if ( ! Array.isArray(response) ) {
+              sink.error && sink.error("Received response that wasn't an array.");
+              return;
+            }
             for ( var i = 0; i < response.length; i++ ) {
               if ( fc.stopped ) break;
               if ( fc.errorEvt ) {
                 sink.error && sink.error(fc.errorEvt);
+                break;
+              }
+              if ( ! response[i].model_ ) {
+                sink.error && sink.error("Received response that wasn't an object.");
                 break;
               }
               sink.put && sink.put(response[i], null, fc);
