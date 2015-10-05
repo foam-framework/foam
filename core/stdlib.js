@@ -569,9 +569,9 @@ MODEL({
       /** Functional version of splice. **/
       var r = [], i;
 
-      for ( i = 0   ; i < start            ; i++ ) r.push(this[i]);
-      for ( i = 2   ; i < arguments.length ; i++ ) r.push(arguments[i]);
-      for ( i = end ; i < this.length      ; i++ ) r.push(this[i]);
+      for ( i = 0   ; i < start             ; i++ ) r.push(this[i]);
+      for ( i = 2   ; i < arguments.length  ; i++ ) r.push(arguments[i]);
+      for ( i = start+end ; i < this.length ; i++ ) r.push(this[i]);
       
       return r;
     },
