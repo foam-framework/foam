@@ -45,15 +45,19 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <app-body id="%%id" <%= this.cssClassAttr() %>>
+      <events-body id="%%id" <%= this.cssClassAttr() %>>
         <% if ( this.dao ) { %>
           $$dao
         <% } %>
-      </app-body>
+      </events-body>
     */},
     function CSS() {/*
-      app-body {
+      events-body {
         overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        background: #c9c9c9;
       }
     */},
   ]

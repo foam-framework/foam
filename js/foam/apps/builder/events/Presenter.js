@@ -47,7 +47,7 @@ CLASS({
       model_: 'ColorProperty',
       name: 'color',
       help: 'The highlight color to use for this event.',
-      defaultValue: '#77F',
+      defaultValue: '#7777FF',
     },
   ],
 
