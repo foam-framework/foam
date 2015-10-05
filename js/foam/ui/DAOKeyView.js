@@ -26,6 +26,7 @@ CLASS({
       factory: function() {
         if (!this.subType) return undefined;
         var basename = this.subType.split('.').pop();
+        // TODO: camelize()
         var lowercase = basename[0].toLowerCase() + basename.substring(1);
         return this.X[lowercase + 'DAO'] || this.X[basename + 'DAO'];
       }
@@ -57,7 +58,7 @@ CLASS({
 
   methods: {
     toHTML: function() {
-      this.children = [];
+      this.destroy();
       var view = this.innerView({
         model: this.model,
         mode: this.mode,
