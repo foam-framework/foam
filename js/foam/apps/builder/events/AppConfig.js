@@ -17,6 +17,12 @@ CLASS({
   requires: [
     'foam.apps.builder.DataConfig',
     'foam.apps.builder.events.Event',
+    'foam.apps.builder.events.Presenter',
+  ],
+
+  exports: [
+    'presentersDAO',
+    'eventsDAO',
   ],
 
   constants: {
@@ -25,6 +31,8 @@ CLASS({
       'app_bg.js',
       'app_view.html',
     ],
+    DC_EVENTS: 'event',
+    DC_PRESENTERS: 'presenter',
   },
 
   properties: [
@@ -35,12 +43,19 @@ CLASS({
     {
       name: 'dataConfigs',
       lazyFactory: function() {
-        var dc = this.DataConfig.create({
-          name: 'events',
-          parent: this,
-          model: this.Event,
-        });
-        return [dc];
+        return [
+          this.DataConfig.create({
+            name: this.DC_EVENTS,
+            parent: this,
+            model: this.Event,
+
+          }),
+          this.DataConfig.create({
+            name: this.DC_PRESENTERS,
+            parent: this,
+            model: this.Presenter,
+          })
+        ];
       }
     },
     {

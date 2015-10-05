@@ -25,7 +25,14 @@ CLASS({
     [ 'underline', false ],
     {
       name: 'choices'
-    }
+    },
+    {
+      name: 'updateMode',
+      defaultValue: 'EACH_KEYSTROKE',
+      choices: [
+        ['EACH_KEYSTROKE', 'Every keystroke'],
+      ],
+    },
   ],
 
   methods: {
@@ -36,11 +43,10 @@ CLASS({
       this.softValue.set(this.data);
       Events.link(this.softValue, this.softData$);
 
-      if ( this.updateMode === this.EACH_KEYSTROKE ) {
-        Events.link(this.data$, this.softData$);
-      } else {
-        Events.follow(this.data$, this.softData$);
-      }
+      // Always use onKeyMode true, to automatically accept the color as the user
+      // moves the selector target in the picker (most users will never
+      // focus the text box in the picker)
+      Events.link(this.data$, this.softData$);
 
       this.setupAutocomplete();
     }

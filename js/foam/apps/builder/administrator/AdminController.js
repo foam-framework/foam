@@ -13,94 +13,54 @@ CLASS({
   package: 'foam.apps.builder.administrator',
   name: 'AdminController',
 
+  extendsModel: 'foam.apps.builder.AppController',
+
   requires: [
     'foam.browser.BrowserConfig',
+    'foam.browser.ui.BrowserView',
   ],
 
   properties: [
     {
-      name: 'targetAppConfig',
+      name: 'data',
       postSet: function(old, nu) {
         if ( nu && old !== nu &&
             old.appId !== nu.appId ) {
-          this.loadedAppConfig(nu);
+
+          // TODO(jacksonic): support multiple DataConfigs, not just the primary one
+          this.browserConfig = this.BrowserConfig.create({
+            title: nu.appName,
+            label: nu.appName,
+            model: nu.getDataConfig().model,
+            dao: nu.createDAO(),
+            detailView: {
+              factory_: 'foam.ui.md.UpdateDetailView',
+              liveEdit: true,
+              minWidth: 600,
+              preferredWidth: 10000
+            },
+            innerDetailView: { factory_: 'foam.apps.builder.AppConfigActionsView',
+              delegate: 'foam.ui.md.DetailView' // per app editor view, or specialized per model?
+            },
+          });
+
         }
       }
     },
     {
-      name: 'targetDAOInstance',
-    },
-    {
-      name: 'targetModel',
-    },
-    {
       name: 'browserConfig',
-    },
-  ],
-
-  listeners: [
-    {
-      name: 'loadedAppConfig',
-      code: function(cfg) {
-        if ( ! cfg ) {
-          console.warn(this.appName,"Could not load",this.targetAppId);
-          return;
-        }
-        if ( this.targetAppConfig.appId !== cfg.appId ) this.targetAppConfig = cfg;
-        this.targetDAOInstance = cfg.createDAO();
-        this.targetModel = cfg.getDataConfig().model;
-
-        this.browserConfig = this.BrowserConfig.create({
-          title$: this.appName$,
-          label$: this.appName$,
-          model$: this.targetModel$,
-          dao$: this.targetDAOInstance$,
-          detailView: {
-            factory_: 'foam.ui.md.UpdateDetailView',
-            liveEdit: true,
-            minWidth: 600,
-            preferredWidth: 10000
-          },
-          innerDetailView: { factory_: 'foam.apps.builder.AppConfigActionsView',
-            delegate: 'foam.ui.md.DetailView' // per app editor view, or specialized per model?
-          },
-        });
-
+      postSet: function(old,nu) {
+        this.updateHTML();
       }
     },
   ],
 
   templates: [
-    function toManifest() {/*{
-  "version": "%%version",
-  "manifest_version": 2,
-  "minimum_chrome_version": "43.0.0.0",
-  "name": "%%appName",
-  "app": {
-    "background": {
-      "scripts": [
-        "foam.js",
-        "app_bg.js"
-      ]
-    }
-  },
-  "permissions": [
-    "webview",
-    "power",
-    "storage",
-    "videoCapture",
-    "geolocation",
-    "pointerLock",
-    "system.display",
-    { "fileSystem": [
-      "write",
-      "retainEntries",
-      "directory"
-    ] },
-    "accessibilityFeatures.read",
-    "accessibilityFeatures.modify"
-  ]
-}*/}
+    function toHTML() {/*
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        $$browserConfig{ model_: 'foam.browser.ui.BrowserView' }
+      </div>
+    */},
   ],
 
 

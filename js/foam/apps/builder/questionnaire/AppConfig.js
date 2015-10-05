@@ -48,7 +48,7 @@ CLASS({
       lazyFactory: function() {
         var dc = this.DataConfig.create({
           parent: this,
-          name: 'questions',
+          name: 'submissions',
           model: this.Event,
         });
         return [dc];
