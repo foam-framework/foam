@@ -78,16 +78,26 @@ CLASS({
 
   methods: [
     function bindAuthAgent(pattern, authAgent) {
-      this.authBindings.push(this.Binding.create({
+      var binding = this.Binding.create({
         pattern: pattern,
         value: authAgent,
-      }, this.Y));
+      }, this.Y);
+      this.authBindings.push(binding);
+      return binding;
+    },
+    function unbindAuthAgent(binding) {
+      return this.authBindings.deleteI(binding);
     },
     function bindHeaders(pattern, headers) {
-      this.headerBindings.push(this.Binding.create({
+      var binding = this.Binding.create({
         pattern: pattern,
         value: headers,
-      }, this.Y));
+      }, this.Y);
+      this.headerBindings.push(binding);
+      return binding;
+    },
+    function unbindHeaders(binding) {
+      return this.headerBindings.deleteI(binding);
     },
     function getAuthAgent(url) {
       var authAgent = '';
