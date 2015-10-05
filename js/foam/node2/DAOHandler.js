@@ -31,15 +31,21 @@ CLASS({
   ],
   methods: [
     function handle(req, resp) {
-      if ( req.url == this.path ) return false;
+      if ( req.url != this.path ) return false;
       var body = '';
       req.on('data', function(data) { body += data; });
       req.on('end', function() {
+/*
+  Secure parser, requires JSONParser improvements
         var map = JSONParser.parseString(body, JSONParser.obj);
         if ( ! map ) {
           this.error('Failed to parse request.', body)
         }
-        var obj = JSONUtil.mapToObj(this.Y, body);
+        var msg = JSONUtil.mapToObj(this.Y, map);
+*/
+
+        // Warning insecure parser.
+        var msg = JSONUtil.parse(this.Y, body);
 
         var dao = this.daoMap[msg.subject];
         if ( ! dao ) {
@@ -55,7 +61,7 @@ CLASS({
         case 'removeAll':
           dao[msg.method].apply(dao, msg.params)(function(sink) {
             resp.statusCode = 200;
-            resp.setHeader("Content-Type", "application/x.foam_json");
+            resp.setHeader("Content-Type", "application/x.foam-json");
             resp.write(JSONUtil.stringify(sink));
             resp.end();
           });
@@ -66,7 +72,7 @@ CLASS({
           var sink = {
             send: function(method, x) {
               resp.statusCode = 200;
-              resp.setHeader("Content-Type", "application/x.foam_json");
+              resp.setHeader("Content-Type", "application/x.foam-json");
               var payload = {};
               payload[method] = x;
               resp.write(JSONUtil.stringify(payload));
@@ -76,7 +82,7 @@ CLASS({
             remove: function(x) { this.send('remove', x) },
             error: function(x) { this.send('error', x); }
           };
-          dao[msg.method].apply(msg.params[0], sink);
+          dao[msg.method](msg.params[0], sink);
           break;
         default:
           resp.statusCode = 400;

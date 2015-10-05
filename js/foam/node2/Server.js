@@ -61,6 +61,16 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'handlers',
       hidden: true
+    },
+    {
+      name: 'daoHandler_',
+      lazyFactory: function() { return this.DAOHandler.create({ path: '/api' }); },
+      postSet: function(old, handler) {
+        if ( old ) {
+          this.handlers.removeI(function(p) { return p === old; });
+        }
+        this.handlers.push(handler);
+      }
     }
   ],
   methods: [
@@ -89,10 +99,10 @@ CLASS({
         this.daoHandler_ = this.DAOHandler.create({
           path: '/api',
         });
+        this.handlers.push(this.daoHandler_);
       }
 
       this.daoHandler_.daoMap[opt_name] = dao;
-
       this.log("Exporting " + opt_name);
     },
     function exportFile(url, filepath) {
@@ -117,6 +127,10 @@ CLASS({
         for ( var i = 0 ; i < this.handlers.length ; i++ ) {
           if ( this.handlers[i].handle(req, resp) )
             break;
+        }
+        if ( i === this.handlers.length ) {
+          resp.statusCode = 404;
+          resp.end();
         }
       }
     }
