@@ -247,6 +247,10 @@ MODEL({
     /////////////////////////////////////////////////////
 
     pub_: function(map, topicIndex, topic, msg) {
+      /**
+        map: topicMap, topicIndex: index into 'topic', topic: array of topic path
+        return: number of listeners published to
+       **/
       var count = 0;
 
       // There are no subscribers, so nothing to do
@@ -281,13 +285,18 @@ MODEL({
     },
 
     unsub_: function(map, topicIndex, topic, listener) {
+      /**
+        map: topicMap, topicIndex: index into 'topic', topic: array of topic path
+        return: true iff there are no subscritions for this topic left
+      **/
       if ( topicIndex == topic.length ) {
         if ( ! map[null] ) return true;
 
-        if ( ! map[null].deleteI(listener) ) {
+        var i = map[null].indexOf(listener);
+        if ( i == -1 ) {
           console.warn('phantom unsubscribe, size: ', map[null].length);
         } else {
-          //        console.log('remove', topic);
+          map[null] = map[null].spliceF(i, 1);
         }
 
         if ( ! map[null].length ) delete map[null];
@@ -329,8 +338,7 @@ MODEL({
           var listener = listeners[i];
 
           if ( ! this.notifyListener_(topic, listener, msg) ) {
-            listeners.splice(i,1);
-            i--;
+            this.unsubscribe(topic, listener);
           }
         }
 
@@ -442,7 +450,13 @@ var FunctionStack = {
 };
 
 
+var Value = {
+  __isValue__: true,
+  isValue: function(o) { return o.__isValue__; }
+};
+
 var PropertyValue = {
+  __proto__: Value,
   create: function(obj, prop) {
     var o = Object.create(this);
     o.$UID = obj.$UID + '.' + prop;

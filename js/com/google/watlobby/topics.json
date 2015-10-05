@@ -88,7 +88,7 @@
     "color": "red",
     "roundImage": true,
     "background": "red",
-    "text": "<font color=white>FOAM is a revolutionary new approach to software development.  By automating the creation of software from high-level specifications, FOAM greatly increases developer productivity. FOAM is open-sourced and available at http://foamdev.com.<p>Supports: Android, iOS, Web, Node.js<p>This video wall is FOAM Powered.</font>"
+    "text": "<font color=white>FOAM is a revolutionary new approach to software development.  By automating the creation of software from high-level specifications, FOAM greatly increases developer productivity. FOAM is open-sourced and available at http://foamdev.com.<br><br>Supports: Android, iOS, Web, Node.js<br><br>This video wall is FOAM Powered.</font>"
   },
   {
     "topic": "inwatvideo",

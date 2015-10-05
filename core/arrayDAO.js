@@ -81,44 +81,6 @@ MODEL0({
     unlisten: AbstractDAO.getPrototype().unlisten,
     notify_:  AbstractDAO.getPrototype().notify_,
 
-    // Clone this Array and remove 'v' (only 1 instance)
-    // TODO: make faster by copying in one pass, without splicing
-    deleteF: function(v) {
-      var a = this.clone();
-      for ( var i = 0 ; i < a.length ; i++ ) {
-        if ( a[i] === v ) { a.splice(i, 1); break; }
-      }
-      return a;
-    },
-    // Remove 'v' from this array (only 1 instance removed)
-    // return true iff the value was removed
-    deleteI: function(v) {
-      for ( var i = 0 ; i < this.length ; i++ ) {
-        if ( this[i] === v ) { this.splice(i, 1); return true; }
-      }
-      return false;
-    },
-    // Clone this Array and remove first object where predicate 'p' returns true
-    // TODO: make faster by copying in one pass, without splicing
-    removeF: function(p) {
-      var a = this.clone();
-      for ( var i = 0 ; i < a.length ; i++ ) {
-        if ( p.f(a[i]) ) { a.splice(i, 1); break; }
-      }
-      return a;
-    },
-    // Remove first object in this array where predicate 'p' returns true
-    removeI: function(p) {
-      for ( var i = 0 ; i < this.length ; i++ ) {
-        if ( p.f(this[i]) ) { this.splice(i, 1); breeak; }
-      }
-      return this;
-    },
-    pushF: function(obj) {
-      var a = this.clone();
-      a.push(obj);
-      return a;
-    },
     id: function(obj) {
       return obj.id || obj.$UID;
     },

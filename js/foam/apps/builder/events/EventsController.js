@@ -13,14 +13,12 @@ CLASS({
   package: 'foam.apps.builder.events',
   name: 'EventsController',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.apps.builder.AppController',
 
   requires: [
-    'foam.ui.md.DetailView',
     'foam.apps.builder.events.Event',
     'foam.apps.builder.events.EventsDetailView',
-    'foam.dao.EasyDAO',
-    'foam.dao.IDBDAO',
+    'foam.ui.DAOListView',
   ],
 
   exports: [
@@ -29,52 +27,37 @@ CLASS({
 
   properties: [
     {
-      name: 'appConfig',
-      help: 'The configuration for app parameters, data store location, etc.',
-    },
-    {
       name: 'dao',
       help: 'The store of events.',
-      lazyFactory: function() {
-        return this.appConfig.createDAO();
-      },
       view: {
         factory_: 'foam.ui.DAOListView',
         rowView: 'foam.apps.builder.events.EventsDetailView'
       }
     },
-//     {
-//       name: 'content',
-//       help: 'The current event being edited',
-//       view: 'foam.apps.builder.events.EventsDetailView',
-//       lazyFactory: function() {
-//         return this.appConfig.model.create({}, this.Y);
-//       }
-//     },
   ],
 
-  listeners: [
-    {
-      name: 'configChange',
-      code: function(obj, topic, old, nu) {
-        this.updateHTML();
-      }
+  methods: [
+    function exportDAOs() {
+      this.SUPER();
+      this.dao = this.Y.eventDAO;
     },
-  ],
-
-  actions: [
-
   ],
 
   templates: [
     function toHTML() {/*
-      <app-body id="%%id" <%= this.cssClassAttr() %>>
-        $$dao
-      </app-body>
+      <events-body id="%%id" <%= this.cssClassAttr() %>>
+        <% if ( this.dao ) { %>
+          $$dao
+        <% } %>
+      </events-body>
     */},
     function CSS() {/*
-      app-body {
+      events-body {
         overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        background: #c9c9c9;
       }
     */},
   ]

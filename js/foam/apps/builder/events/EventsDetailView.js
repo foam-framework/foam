@@ -30,7 +30,7 @@ CLASS({
           $$image{ model_: 'foam.ui.ImageView' }
           $$name{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only', extraClassName: 'md-subhead' }
           $$date{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only' }
-          <div class="description-box">
+          <div class="description-box" style="background: <%= this.data.color %>">
             $$description{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only' }
           </div>
           $$tags{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only' }
@@ -42,11 +42,10 @@ CLASS({
         display: flex;
         flex-direction: column;
         padding: 16px;
-        background: #c9c9c9;
       }
 
       .events-detail-view .description-box {
-        background: #77F;
+        background: #7777FF;
         color: white;
       }
 

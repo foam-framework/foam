@@ -13,7 +13,7 @@ CLASS({
   package: 'foam.apps.builder.administrator',
   name: 'AdminView',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.apps.builder.AppController',
 
   requires: [
     'foam.browser.ui.BrowserView',
@@ -29,7 +29,7 @@ CLASS({
       name: 'data',
       postSet: function(old, nu) {
         if ( this.controller && nu && nu.targetAppConfig ) {
-          this.controller.targetAppConfig = nu.targetAppConfig;
+          this.controller.data = nu.targetAppConfig;
         }
       }
     },
@@ -37,17 +37,10 @@ CLASS({
       name: 'controller',
       lazyFactory: function() {
         var c = this.AdminController.create();
-        Events.follow(c.browserConfig$, this.browserConfig$);
         if ( this.data && this.data.targetAppConfig ) {
-          c.targetAppConfig = this.data.targetAppConfig;
+          c.data = this.data.targetAppConfig;
         }
-      }
-    },
-    {
-      name: 'browserConfig',
-      help: 'The current administrator app configuration being edited',
-      postSet: function(old, nu) {
-        this.updateHTML();
+        return c;
       }
     },
   ],
@@ -55,14 +48,14 @@ CLASS({
   templates: [
     function toHTML() {/*
       <app-body id="%%id" <%= this.cssClassAttr() %>>
-        <% if ( this.browserConfig ) { %>
-          $$browserConfig{ model_: 'foam.browser.ui.BrowserView' }
-        <% } %>
+        %%controller
       </app-body>
     */},
     function CSS() {/*
       app-body {
         overflow-y: auto;
+        position: relative;
+        display: flex;
       }
     */},
   ]

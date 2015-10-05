@@ -39,7 +39,7 @@ CLASS({
   templates: [
     function CSS() {/*
       .md-summary-view.model-summary-view {
-        background: #77F;
+        background: #7777FF;
       }
     */},
   ],

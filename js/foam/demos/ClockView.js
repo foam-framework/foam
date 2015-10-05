@@ -30,6 +30,10 @@ CLASS({
 
   properties: [
     {
+      model_: 'BooleanProperty',
+      name: 'drawTicks',
+    },
+    {
       model_: 'FloatProperty',
       name: 'r',
       label: 'Radius',
@@ -41,17 +45,10 @@ CLASS({
       factory: function() { return this.BLUE; }
     },
     {
-      name: 'white',
-      type: 'foam.graphics.Circle',
-      factory: function() {
-        return this.Circle.create({r:this.r-5, color:'white'});
-      }
-    },
-    {
       name: 'minuteHand',
       type: 'Hand',
       factory: function() {
-        return this.Hand.create({r:this.r-6, width:5, color:this.GREEN});
+        return this.Hand.create({r:this.r-6, width:5, color: this.GREEN});
       }
     },
     {
@@ -74,7 +71,10 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.addChild(this.white);
+      this.border = this.BLUE;
+      this.borderWidth = 5;
+      this.color = 'white';
+      
       this.addChild(this.hourHand);
       this.addChild(this.minuteHand);
       this.addChild(this.secondHand);
@@ -87,7 +87,25 @@ CLASS({
 
       this.secondHand.a = Math.PI/2 - Math.PI*2 * date.getSeconds() / 60 ;
       this.minuteHand.a = Math.PI/2 - Math.PI*2 * date.getMinutes() / 60 ;
-      this.hourHand.a   = Math.PI/2 - Math.PI*2 * (date.getHours() % 12) / 12;
+      this.hourHand.a   = Math.PI/2 - Math.PI*2 * (date.getHours() % 12) / 12 + this.minuteHand.a / 12;
+
+      var c = this.canvas;
+      
+      if ( ! this.drawTicks ) return;
+
+      for ( var i = 0 ; i < 12 ; i++ ) {
+        var a = Math.PI*2/12*i;
+        var l = i % 3 ? 6 : 10;
+        var w = i % 3 ? 2 : 3;
+        c.beginPath();
+        c.moveTo((this.r-l)*Math.cos(a),-(this.r-l)*Math.sin(a));
+        c.lineTo((this.r)*Math.cos(a),-(this.r)*Math.sin(a));
+        c.closePath();
+        
+        c.lineWidth = w;
+        c.strokeStyle = this.BLUE;
+        c.stroke();
+      }
     }
   },
 

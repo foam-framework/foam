@@ -523,6 +523,59 @@ MODEL({
       return 0;
     },
 
+    // Clone this Array and remove 'v' (only 1 instance)
+    // TODO: make faster by copying in one pass, without splicing
+    function deleteF(v) {
+      var a = this.clone();
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        if ( a[i] === v ) { a.splice(i, 1); break; }
+      }
+      return a;
+    },
+
+    // Remove 'v' from this array (only 1 instance removed)
+    // return true iff the value was removed
+    function deleteI(v) {
+      for ( var i = 0 ; i < this.length ; i++ ) {
+        if ( this[i] === v ) { this.splice(i, 1); return true; }
+      }
+      return false;
+    },
+    // Clone this Array and remove first object where predicate 'p' returns true
+    // TODO: make faster by copying in one pass, without splicing
+    function removeF(p) {
+      var a = this.clone();
+      for ( var i = 0 ; i < a.length ; i++ ) {
+        if ( p.f(a[i]) ) { a.splice(i, 1); break; }
+      }
+      return a;
+    },
+
+    // Remove first object in this array where predicate 'p' returns true
+    function removeI(p) {
+      for ( var i = 0 ; i < this.length ; i++ ) {
+        if ( p.f(this[i]) ) { this.splice(i, 1); breeak; }
+      }
+      return this;
+    },
+
+    function pushF(obj) {
+      var a = this.clone();
+      a.push(obj);
+      return a;
+    },
+
+    function spliceF(start, end /*, args */) {
+      /** Functional version of splice. **/
+      var r = [], i;
+
+      for ( i = 0   ; i < start             ; i++ ) r.push(this[i]);
+      for ( i = 2   ; i < arguments.length  ; i++ ) r.push(arguments[i]);
+      for ( i = start+end ; i < this.length ; i++ ) r.push(this[i]);
+      
+      return r;
+    },
+
     function fReduce(comparator, arr) {
       compare = toCompare(comparator);
       var result = [];

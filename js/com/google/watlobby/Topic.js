@@ -53,15 +53,6 @@ CLASS({
       }
     },
     {
-      name: 'model',
-      defaultValue: 'Topic',
-      view: {
-///        factory_: 'foam.ui.md.ChoiceMenuView',
-        factory_: 'foam.ui.md.ChoiceRadioView',
-        choices: [ 'Album', 'Topic', 'Video' ]
-      }
-    },
-    {
       model_: 'BooleanProperty',
       name: 'selected',
       hidden: true
@@ -91,13 +82,26 @@ CLASS({
       name: 'r',
       hidden: true
     },
-    { name: 'video' },
     {
       model_: 'IntProperty',
       name: 'timeout',
       defaultValue: 60,
       help: 'Time before automatically closing this topic, in seconds.',
       units: 'seconds'
+    },
+    {
+      name: 'model',
+      defaultValue: 'Topic',
+      view: {
+///        factory_: 'foam.ui.md.ChoiceMenuView',
+        factory_: 'foam.ui.md.ChoiceRadioView',
+        choices: [ 'Album', 'Topic', 'Video' ]
+      }
+    },
+    {
+      name: 'video',
+      help: 'YouTube URL',
+      preSet: function(_, v) { return v.substring(v.lastIndexOf('=')+1); }
     },
     {
       model_: 'StringProperty',

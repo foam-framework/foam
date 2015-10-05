@@ -11,29 +11,13 @@
 
 CLASS({
   package: 'foam.apps.builder.events',
-  name: 'Event',
+  name: 'Presenter',
 
   properties: [
     {
       name: 'id',
       help: 'The unique id for this record.',
       hidden: true,
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'showInMainList',
-      help: 'If true, this event will show up in the main event list. Otherwise it can be referenced as a sub-event of another event.',
-      defaultValue: true,
-    },
-    {
-      model_: 'DateTimeProperty',
-      name: 'date',
-      help: 'The date and time of the event.',
-    },
-    {
-      model_: 'DateTimeProperty',
-      name: 'endDate',
-      help: 'The date and time the event ends.',
     },
     {
       model_: 'StringProperty',
@@ -65,28 +49,6 @@ CLASS({
       help: 'The highlight color to use for this event.',
       defaultValue: '#7777FF',
     },
-    {
-      name: 'presenters',
-      model_: 'ReferenceArrayProperty',
-      subType: 'foam.apps.builder.events.Presenter',
-      subKey: 'ID',
-      view: {
-        factory_: 'foam.ui.DAOKeyView',
-        innerView: 'foam.ui.md.DAOListView',
-      },
-    },
-    {
-      name: 'events',
-      help: 'Sessions happening as part of this event.',
-      model_: 'ReferenceArrayProperty',
-      subType: 'foam.apps.builder.events.Event',
-      subKey: 'ID',
-      view: {
-        factory_: 'foam.ui.DAOKeyView',
-        innerView: 'foam.ui.md.DAOListView',
-      },
-    },
-
   ],
 
 });

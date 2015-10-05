@@ -151,7 +151,13 @@ CLASS({
       var foam = this.ImageCView.create({x: 10, y: this.height-60, width: 837/5, height: 269/5, src: 'img/foampowered_red.png'});
       this.addChild(foam);
 
-      var clock = this.ClockView.create({x: this.width-120, y: 120, r: 120-10});
+      var clock = this.ClockView.create({
+        drawTicks: true,
+        x: this.width-250,
+        y: 250,
+        r: (120-10)/2,
+        scaleX: 4,
+        scaleY: 4});
       this.addChild(clock);
 
       this.collider.start();
@@ -221,13 +227,15 @@ CLASS({
     },
     function openRemoteUI() {
       var w = foam.ui.Window.create({window: window.open("", "Remote", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
+      w.document.innerHTML = '';
       w.document.write('<html><head><title>Wat Lobby Remote</title></head><body></body></html>');
       var r = this.Remote.create({topics: this.topics}, w.Y);
       r.write(w.Y);
     },
     function openAdminUI() {
-      var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1100, height=700, location=no, menubar=no, ")});
-      w.document.write('<html><head><title>Wat Lobby Admin</title><style>body{color:#555;}</style><base href="/js/com/google/watlobby/"></head><body></body></html>');
+      var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1100, height=700, location=no, menubar=no")});
+      w.document.innerHTML = '';
+      w.document.write('<html><head><title>Wat Lobby Admin</title><base href="/js/com/google/watlobby/"></head><body></body></html>');
       var r = this.TopicApp.create({dao: this.topics}, w.Y);
       r.write(w.Y);
     },
