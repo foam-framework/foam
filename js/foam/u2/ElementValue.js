@@ -16,6 +16,7 @@
  */
 
 CLASS({
+  package: 'foam.u2',
   name: 'ElementValue',
 
   constants: {
@@ -36,10 +37,23 @@ CLASS({
     }
   ],
 
+  listeners: [
+    {
+      name: 'onAttrValueChange',
+      code: function() {
+        console.log('pre value change ', this.value);
+        this.value = this.element.id$el ?
+          this.element.id$el[this.property] :
+          this.element.getAttribute(this.property) ;
+        console.log('post value change ', this.value);
+      }
+    }
+  ],
+
   methods: {
     init: function() {
       this.SUPER();
-      this.value = this.element.getAttribute(this.property);
+      this.onAttrValueChange();
     },
 
     get: function() { return this.value; },
@@ -48,12 +62,8 @@ CLASS({
 
     addListener: function(listener) {
       if ( this.firstListener_ ) {
-        if ( this.event ) {
-          this.element.on(
-            this.event,
-            function() { debugger; }, 
-            false);
-        }
+        if ( this.event )
+          this.element.on(this.event, this.onAttrValueChange, false);
 
         this.firstListener_ = false;
       }
