@@ -54,15 +54,6 @@ CLASS({
       name: 'toolbarItems',
       lazyFactory: function() {
         return [];
-//         return [
-//           function() {
-//             return this.controller.createTemplateView('save');
-//           }.bind(this),
-//           function() {
-//             return this.controller.createTemplateView('reload');
-//           }.bind(this),
-//         ];
-//       },
       },
     },
     {
@@ -93,7 +84,7 @@ CLASS({
     {
       name: 'controller',
       lazyFactory: function() {
-        return this.EventsController.create({ appConfig$: this.data$ }, this.Y);
+        return this.EventsController.create({ data$: this.data$ }, this.Y);
       },
       postSet: function(old, nu) {
         if ( old ) old.unsubscribe(['action'], this.onControllerAction);

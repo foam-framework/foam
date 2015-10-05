@@ -15,6 +15,12 @@ CLASS({
 
   label: 'Chrome Application Configuration',
 
+  documentation: function() {/*
+    Describes an app. Specialize to create different app types,
+    and implement an $$DOC{ref:'foam.apps.builder.AppController'}
+    specialization for runtime inflation such as DAO creation.
+  */},
+
   requires: [
     'foam.apps.builder.AppWindow',
   ],
