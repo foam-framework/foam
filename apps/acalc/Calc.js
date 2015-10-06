@@ -44,7 +44,7 @@ MODEL({
   extendsModel: 'Action',
   properties: [
     'f',
-    'longName',
+    { name: 'longName', defaultValueFn: function() { return this.name; } },
     {
       name: 'translationHint',
       defaultValueFn: function() { return this.longName ? 'short form for mathematical function: "' + this.longName + '"' : '' ;}
@@ -66,6 +66,7 @@ MODEL({
     function init() {
       this.SUPER();
       this.f.label = '<span aria-label="' + this.speechLabel + '">' + this.label + '</span>';
+      this.f.binary = true;
     }
   ]
 });
@@ -111,7 +112,42 @@ function xxxbinaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   return action;
 }
 
-function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
+MODEL({
+  name: 'UnaryOp',
+  extendsModel: 'Action',
+  properties: [
+    'f',
+    { name: 'longName', defaultValueFn: function() { return this.name; } },
+    {
+      name: 'translationHint',
+      defaultValueFn: function() { return this.longName ? 'short form for mathematical function: "' + this.longName + '"' : '' ;}
+    },
+    [ 'code', function(_, action) {
+      this.op = action.f;
+      this.push(action.f.call(this, this.a2));
+      this.editable = false;
+    }]
+  ],
+  methods: [
+    function init() {
+      this.SUPER();
+      this.f.label = '<span aria-label="' + this.speechLabel + '">' + this.label + '</span>';
+      this.f.unary = true;
+    }
+  ]
+});
+
+function unaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
+  return UnaryOp.create({
+    name: name,
+    f: f,
+    keyboardShortcuts: keys,
+    label: sym,
+    speechLabel: opt_speechLabel
+  });
+}
+
+function xxxunaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
   var sym = opt_sym || name;
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
