@@ -15,6 +15,15 @@ CLASS({
 
   requires: [
     'XHR',
+    'foam.apps.builder.XHRBinding',
+  ],
+  imports: [
+    'xhrAuthBindings$ as inAuthBindings$',
+    'xhrHeaderBindings$ as inHeaderBindings$',
+  ],
+  exports: [
+    'authBindings$ as xhrAuthBindings$',
+    'headerBindings$ as xhrHeaderBindings$',
   ],
 
   constants: {
@@ -35,10 +44,6 @@ CLASS({
   },
 
   models: [
-    {
-      name: 'Binding',
-      properties: ['pattern', 'value'],
-    },
     {
       name: 'ManagedXHR',
       extendsModel: 'XHR',
@@ -66,38 +71,74 @@ CLASS({
   properties: [
     {
       model_: 'ArrayProperty',
-      name: 'authBindings',
+      subType: 'foam.apps.builder.XHRBinding',
+      name: 'inAuthBindings',
       lazyFactory: function() { return []; },
+      postSet: function() { this.onAuthBindingsChange(); },
     },
     {
       model_: 'ArrayProperty',
-      name: 'headerBindings',
+      subType: 'foam.apps.builder.XHRBinding',
+      name: 'inHeaderBindings',
       lazyFactory: function() { return []; },
+      postSet: function() { this.onHeaderBindingsChange(); },
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.apps.builder.XHRBinding',
+      name: 'authBindings',
+      lazyFactory: function() {
+        return this.inAuthBindings.concat(this.outAuthBindings);
+      },
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.apps.builder.XHRBinding',
+      name: 'headerBindings',
+      lazyFactory: function() {
+        return this.inHeaderBindings.concat(this.outHeaderBindings);
+      },
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.apps.builder.XHRBinding',
+      name: 'outAuthBindings',
+      lazyFactory: function() { return []; },
+      postSet: function() { this.onAuthBindingsChange(); },
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.apps.builder.XHRBinding',
+      name: 'outHeaderBindings',
+      lazyFactory: function() { return []; },
+      postSet: function() { this.onHeaderBindingsChange(); },
     },
   ],
 
   methods: [
     function bindAuthAgent(pattern, authAgent) {
-      var binding = this.Binding.create({
+      var binding = this.XHRBinding.create({
         pattern: pattern,
         value: authAgent,
       }, this.Y);
-      this.authBindings.push(binding);
+      this.outAuthBindings = this.outAuthBindings.pushF(binding);
       return binding;
     },
     function unbindAuthAgent(binding) {
-      return this.authBindings.deleteI(binding);
+      this.outAuthBindings = this.outAuthBindings.deleteF(binding);
+      return binding;
     },
     function bindHeaders(pattern, headers) {
-      var binding = this.Binding.create({
+      var binding = this.XHRBinding.create({
         pattern: pattern,
         value: headers,
       }, this.Y);
-      this.headerBindings.push(binding);
+      this.outHeaderBindings = this.outHeaderBindings.pushF(binding);
       return binding;
     },
     function unbindHeaders(binding) {
-      return this.headerBindings.deleteI(binding);
+      this.outHeaderBindings = this.outHeaderBindings.deleteF(binding);
+      return binding;
     },
     function getAuthAgent(url) {
       var authAgent = '';
@@ -146,6 +187,22 @@ CLASS({
         responseType: responseType,
         authAgent: authAgent,
       }, this.Y).asend(ret, url, data, method, headers);
+    },
+      ],
+
+  listeners: [
+    {
+      name: 'onAuthBindingsChange',
+      code: function() {
+        this.authBindings = this.inAuthBindings.concat(this.outAuthBindings);
+      },
+    },
+    {
+      name: 'onHeaderBindingsChange',
+      code: function() {
+        this.headerBindings =
+            this.inHeaderBindings.concat(this.outHeaderBindings);
+      },
     },
   ],
 });

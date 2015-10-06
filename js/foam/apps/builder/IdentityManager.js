@@ -14,16 +14,17 @@ CLASS({
   name: 'IdentityManager',
 
   requires: [
+    'foam.apps.builder.Identity',
     'foam.oauth2.OAuth2ChromeApp',
     'foam.oauth2.OAuth2ChromeIdentity',
     'foam.oauth2.OAuth2Redirect',
   ],
   imports: [
-    'xhrManager',
+    'persistentContext$ as ctx$',
   ],
 
   constants: {
-    GET_EMAIL: 'https://www.googleapis.com/plus/v1/people/me',
+    GET_IDENTITY: 'https://www.googleapis.com/plus/v1/people/me',
   },
 
   properties: [
@@ -39,9 +40,8 @@ CLASS({
         ['WEB', 'Web'],
       ],
       postSet: function(old, nu) {
-        if ( old === nu || ! this.oauth ) return;
+        if ( old === nu ) return;
         this.setupOAuth();
-        this.setupEmail();
       },
     },
     {
@@ -49,65 +49,160 @@ CLASS({
       name: 'oauthDataPath',
       defaultValue: 'oauth2.json',
       postSet: function(old, nu) {
-        if ( old === nu || this.mode !== 'WEB' || ! this.oauth ) return;
+        if ( old === nu || this.mode !== 'WEB' ) return;
         this.setupWebOAuth();
-        this.setupEmail();
       },
     },
     {
-      name: 'oauthFuture',
+      type: 'foam.apps.builder.AppBuilderContext',
+      name: 'ctx',
+      transient: true,
+      defaultValue: null,
+      postSet: function(old, nu) {
+        if ( old == nu ) return;
+        if ( old ) Events.unlink(old.identity$, this.identity_$);
+        if ( nu ) Events.link(nu.identity$, this.identity_$);
+      },
+    },
+    {
+      type: 'foam.apps.builder.XHRManager',
+      name: 'xhrManager',
+      required: true,
+      transient: true,
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'oauthFuture_',
+      documentation: function() {/* Future containing "base" OAuth object that
+        is cloned for authenticating new identities. */},
       defaultValue: function() { return null; },
     },
     {
-      name: 'emailFuture',
-      defaultValue: function() { return null; },
+      type: 'foam.apps.builder.Identity',
+      name: 'identity_',
+      documentation: function() {/* Current identity bound to
+        current $$DOC{ref:'.ctx'} identity. */},
+      defaultValue: null,
+      postSet: function(old, nu) {
+        if ( this.oauthBinding_ )
+          this.xhrManager.unbindAuthAgent(this.oauthBinding_);
+        if ( nu )
+          this.oauthBinding_ = this.xhrManager.bindAuthAgent(
+              /^https?:[/][/]www[.]googleapis[.]com/, nu.oauth);
+        else
+          this.oauthBinding_ = null;
+      },
+    },
+    {
+      type: 'foam.apps.builder.XHRBinding',
+      name: 'oauthBinding_',
+      documentation: function() {/*
+        $$DOC{ref:'foam.apps.builder.XHRBinding'} for current identity's
+        authentication. */},
+      defaultValue: null,
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'newIdentity_',
+      documentation: function() {/* Future for identity produced by
+        $$DOC{ref:'.createIdentity'}. */},
+      defaultValue: false,
     },
   ],
 
   methods: [
-    function withOAuth(ret, opt_err) {
-      this.oauthFuture(function(oauth) {
-        if ( ! oauth ) {
-          if ( opt_err && typeof opt_err === 'function' ) opt_err(false);
-          else                                            ret(false);
-          return;
-        }
+    function createIdentity(ret, opt_err) {
+      if ( this.newIdentity_ ) {
+        this.newIdentity_(function(ident) {
+          if ( this.Identity.isInstance(ident) || ! opt_err ) ret(ident);
+          else                                                opt_err(ident);
+        }.bind(this));
+        return;
+      }
 
-        if ( oauth.accessToken ) {
-          ret(true, oauth);
-          return;
-        }
+      var future = afuture();
+      this.newIdentity_ = future.get;
 
-        oauth.refresh(function(token) {
-          if ( token ) {
-            ret(true, oauth);
+      // Fetch base OAuth, which may vary according to OAuth strategy.
+      this.oauthFuture_(function(baseOAuth) {
+        // Create a copy of base OAuth and force authentication screen
+        // for establishing new identity.
+        var oauth = baseOAuth.clone();
+        var err;
+        oauth.refresh(function(success, maybeError) {
+          if ( ! success ) {
+            err = maybeError || new Error('Identity manager: OAuth failed');
+            if ( opt_err ) opt_err(err);
+            else           ret(err);
+            future.set(err);
+            this.newIdentity_ = null;
             return;
           }
-          // Convice Chrome Apps that we "checked the error".
-          chrome.runtime.lastError && chrome.runtime.lastError.message;
-          var err = chrome.runtime.lastError;
-          if ( opt_err && typeof opt_err === 'function' ) opt_err(false, err);
-          else                                            ret(false, err);
-        });
-      });
+
+          // Temporarily bind new oauth ("permanent" binding occurs when
+          // setting identity on ctx), then get user info, construct a new
+          // identity from it, save and set the identity.
+          var binding = this.xhrManager.bindAuthAgent(
+              /^https?:[/][/]www[.]googleapis[.]com/, oauth);
+          this.xhrManager.asend(function(data, xhr, status) {
+            this.xhrManager.unbindAuthAgent(binding);
+
+            if ( ! status ) {
+              err = new Error('Identity: Failed to reach identity service');
+              if ( opt_err ) opt_err(err);
+              else           ret(err);
+              this.newIdentity_ = null;
+              return;
+            }
+
+            var identity = this.Identity.create({
+              id: data.id,
+              displayName: data.displayName,
+              oauth: oauth,
+              authType: this.OAuth2ChromeApp.isInstance(oauth) ? 'WEB' :
+                  'CHROME_IDENTITY',
+            }, this.Y);
+            for ( var i = 0; i < data.emails.length; ++i ) {
+              if ( data.emails[i].type === 'account' ) {
+                var email = data.emails[i].value;
+                identity.email = email;
+                ret(this.setIdentity(identity));
+                future.set(identity);
+                this.newIdentity_ = null;
+                return;
+              }
+            }
+
+            err = new Error('No account email found');
+            if ( opt_err ) opt_err(err);
+            else           ret(err);
+            future.set(err);
+            this.newIdentity_ = null;
+          }.bind(this), this.GET_IDENTITY, undefined, 'GET');
+        }.bind(this), true);
+      }.bind(this));
     },
-    function withEmail(ret, opt_err) {
-      this.emailFuture(function(email) {
-        if ( email ) {
-          ret(true, email);
-          return;
-        }
-        // Convice Chrome Apps that we "checked the error".
-        chrome.runtime.lastError && chrome.runtime.lastError.message;
-        var err = chrome.runtime.lastError;
-        if ( opt_err  && typeof opt_err === 'function' ) opt_err(false, err);
-        else                                             ret(false, err);
+    function getIdentity(ret, opt_err) {
+      if ( this.identity_ ) ret(this.identity_);
+      else                  this.createIdentity(ret, opt_err);
+    },
+    function setIdentity(identity) {
+      if ( ! this.ctx ) return null;
+      var existingIdentities = this.ctx.identities.filter(function(ident) {
+        return ident.id === identity.id;
       });
+      if ( existingIdentities.length > 0 ) {
+        identity = existingIdentities[0];
+      } else {
+        this.ctx.identities = this.ctx.identities.pushF(identity);
+      }
+
+      this.ctx.identity = identity;
+      return identity;
     },
     function init() {
       this.SUPER();
       this.setupOAuth();
-      this.setupEmail();
     },
     function setupOAuth() {
         if ( this.mode === 'WEB' ) this.setupWebOAuth();
@@ -127,41 +222,15 @@ CLASS({
         // API for this?
         aeval(data)(function(map) {
           var oauth = JSONUtil.mapToObj(Y, map);
-          xhrManager.bindAuthAgent(/^https?:[/][/]www[.]googleapis[.]com/, oauth);
           future.set(oauth);
         });
       }, this.oauthDataPath);
 
-      this.oauthFuture = future.get;
+      this.oauthFuture_ = future.get;
     },
     function setupIdentityOAuth() {
       var oauth = this.OAuth2ChromeIdentity.create({}, this.Y);
-      this.xhrManager.bindAuthAgent(/^https?:[/][/]www[.]googleapis[.]com/, oauth);
-      this.oauthFuture = aconstant(oauth);
-    },
-    function setupEmail() {
-      var future = afuture();
-
-      this.withOAuth(function(status, oauth) {
-        if ( ! status ) return;
-        this.xhrManager.asend(function(data, xhr, status) {
-          if ( ! status ) {
-            future.set(null);
-            return;
-          }
-
-          for ( var i = 0; i < data.emails.length; ++i ) {
-            if ( data.emails[i].type === 'account' ) {
-              future.set(data.emails[i].value);
-              return;
-            }
-          }
-
-          future.set(null);
-        }, this.GET_EMAIL, undefined, 'GET');
-      }.bind(this));
-
-      this.emailFuture = future.get;
+      this.oauthFuture_ = aconstant(oauth);
     },
   ],
 });

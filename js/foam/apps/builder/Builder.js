@@ -26,7 +26,9 @@ CLASS({
     'foam.apps.builder.AppConfig',
     'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
+    'foam.apps.builder.IdentityManager',
     'foam.apps.builder.ImportExportManager',
+    'foam.apps.builder.XHRManager',
     'foam.apps.builder.administrator.BrowserConfigFactory as AdminBCFactory',
     'foam.apps.builder.dao.DAOFactory',
     'foam.apps.builder.events.BrowserConfigFactory as EventsBCFactory',
@@ -42,21 +44,43 @@ CLASS({
     'foam.ui.md.FlatButton',
   ],
   exports: [
+    'ctx$ as persistentContext$',
     'daoConfigDAO',
     'gestureManager',
+    'identityManager$',
     'importExportManager$',
     'masterAppDAO',
     'menuDAO$',
     'menuSelection$',
     'metricsDAO',
     'modelDAO',
-    'ctx$ as persistentContext$',
     'touchManager',
   ],
 
   properties: [
     'onWindowClosed',
     'performance',
+    {
+      type: 'foam.apps.builder.XHRManager',
+      name: 'xhrManager',
+      documentation: function() {/* Top-level XHR manager controlled by
+        $$DOC{ref:'.identityManager'}. Use $$DOC{ref:'.xhrManager.Y'} as context
+        for XHR-aware sub-components to ensure that its bindings make it into
+        sub-component contexts. */},
+      factory: function() {
+        return this.XHRManager.create({}, this.Y);
+      },
+    },
+    {
+      type: 'foam.apps.builder.IdentityManager',
+      name: 'identityManager',
+      factory: function() {
+        return this.IdentityManager.create({
+          mode: 'WEB',
+          xhrManager: this.xhrManager,
+        }, this.xhrManager.Y);
+      },
+    },
     {
       name: 'metricsDAO',
       lazyFactory: function() {
@@ -68,7 +92,7 @@ CLASS({
           appVersion: '2.0',
           endpoint: 'https://www.google-analytics.com/collect',
           debugEndpoint: 'https://www.google-analytics.com/debug/collect',
-        }, this.Y);
+        }, this.xhrManager.Y);
       },
     },
     {
@@ -76,10 +100,10 @@ CLASS({
       name: 'menuDAO',
       lazyFactory: function() {
         var dao = [
-          this.KioskBCFactory.create({}, this.Y).factory(),
-          this.QuestionnaireBCFactory.create({}, this.Y).factory(),
-          this.EventsBCFactory.create({}, this.Y).factory(),
-          this.AdminBCFactory.create({}, this.Y).factory(),
+          this.KioskBCFactory.create({}, this.xhrManager.Y).factory(),
+          this.QuestionnaireBCFactory.create({}, this.xhrManager.Y).factory(),
+          this.EventsBCFactory.create({}, this.xhrManager.Y).factory(),
+          this.AdminBCFactory.create({}, this.xhrManager.Y).factory(),
         ].dao;
         dao.model = this.BrowserConfig;
 
@@ -99,7 +123,7 @@ CLASS({
         // extract the models out of the master list of apps
         var dao = this.MDAO.create({
           model: Model,
-        }, this.Y);
+        }, this.xhrManager.Y);
         this.masterAppDAO
           .where(HAS(this.AppConfig.DATA_CONFIGS))
           .pipe(MAP(function(appCfg) { // dump models
@@ -118,7 +142,7 @@ CLASS({
               model: this.DAOFactory,
               name: 'DAOFactories',
               useSimpleSerialization: false,
-          }, this.Y);
+          }, this.xhrManager.Y);
       },
     },
     {
@@ -128,8 +152,8 @@ CLASS({
         var dao = this.ContextualizingDAO.create({ delegate:
             this.MDAO.create({
               model: this.AppConfig
-            }, this.Y)
-        }, this.Y);
+            }, this.xhrManager.Y)
+        }, this.xhrManager.Y);
         return dao;
       },
     },
@@ -146,7 +170,7 @@ CLASS({
       type: 'foam.apps.builder.ImportExportManager',
       name: 'importExportManager',
       factory: function() {
-        return this.ImportExportManager.create({}, this.Y);
+        return this.ImportExportManager.create({}, this.xhrManager.Y);
       },
     },
     {

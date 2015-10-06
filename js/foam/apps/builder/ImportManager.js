@@ -19,10 +19,6 @@ CLASS({
     'foam.apps.builder.ImportExportFlow',
     'foam.dao.ChromeFileSystemDAO',
   ],
-  imports: [
-    'metricsDAO',
-    'sourceManager',
-  ],
 
   properties: [
     {

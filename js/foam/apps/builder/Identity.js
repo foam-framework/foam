@@ -13,6 +13,8 @@ CLASS({
   package: 'foam.apps.builder',
   name: 'Identity',
 
+  ids: [ 'id' ],
+
   properties: [
     {
       model_: 'StringProperty',
