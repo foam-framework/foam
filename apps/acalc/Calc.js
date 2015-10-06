@@ -39,10 +39,52 @@ function createTranslatedAction(action, opt_longName) {
   return Action.create(action);
 }
 
+MODEL({
+  name: 'BinaryOp',
+  extendsModel: 'Action',
+  properties: [
+    'f',
+    { name: 'longName', defaultValueFn: function() { return this.name; } },
+    {
+      name: 'translationHint',
+      defaultValueFn: function() { return this.longName ? 'short form for mathematical function: "' + this.longName + '"' : '' ;}
+    },
+    [ 'code', function(_, action) {
+      if ( this.a2 == '' ) {
+        // the previous operation should be replaced, since we can't
+        // finish this one without a second arg. The user probably hit one
+        // binay op, followed by another.
+        this.replace(action.f);
+      } else {
+        if ( this.op != DEFAULT_OP ) this.equals();
+        this.push('', action.f);
+        this.editable = true;
+      }
+    }]
+  ],
+  methods: [
+    function init() {
+      this.SUPER();
+      this.f.label = '<span aria-label="' + this.speechLabel + '">' + this.label + '</span>';
+      this.f.binary = true;
+    }
+  ]
+});
+
+function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
+  return BinaryOp.create({
+    name: name,
+    f: f,
+    keyboardShortcuts: keys,
+    label: sym,
+    speechLabel: opt_speechLabel
+  });
+}
+
 // TODO(kgr): model binaryOp and unaryOp as new types of Actions
 // this will allow the model to be serialized and edited in a FOAM IDE
 /** Make a Binary Action. **/
-function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
+function xxxbinaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
   f.binary = true;
@@ -70,7 +112,42 @@ function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   return action;
 }
 
-function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
+MODEL({
+  name: 'UnaryOp',
+  extendsModel: 'Action',
+  properties: [
+    'f',
+    { name: 'longName', defaultValueFn: function() { return this.name; } },
+    {
+      name: 'translationHint',
+      defaultValueFn: function() { return this.longName ? 'short form for mathematical function: "' + this.longName + '"' : '' ;}
+    },
+    [ 'code', function(_, action) {
+      this.op = action.f;
+      this.push(action.f.call(this, this.a2));
+      this.editable = false;
+    }]
+  ],
+  methods: [
+    function init() {
+      this.SUPER();
+      this.f.label = '<span aria-label="' + this.speechLabel + '">' + this.label + '</span>';
+      this.f.unary = true;
+    }
+  ]
+});
+
+function unaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
+  return UnaryOp.create({
+    name: name,
+    f: f,
+    keyboardShortcuts: keys,
+    label: sym,
+    speechLabel: opt_speechLabel
+  });
+}
+
+function xxxunaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
   var sym = opt_sym || name;
   var longName = opt_longName || name;
   var speechLabel = opt_speechLabel || sym;
@@ -93,11 +170,15 @@ function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
 }
 
 /** Make a 0-9 Number Action. **/
-function num(n) {
-  return {
-    name: n.toString(),
-    keyboardShortcuts: [ n + '' ],
-    code: function() {
+MODEL({
+  name: 'Num',
+  extendsModel: 'Action',
+  properties: [
+    'n',
+    { name: 'name', defaultValueFn: function() { return this.n.toString(); } },
+    { name: 'keyboardShortcuts', factory: null, defaultValueFn: function() { return [ this.n + '' ]; } },
+    [ 'code', function(_, action) {
+      var n = action.n;
       if ( ! this.editable ) {
         this.push(n);
         this.editable = true;
@@ -106,13 +187,14 @@ function num(n) {
         if ( this.a2.length >= 18 ) return;
         this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
       }
-    }
-  };
-}
-
+    }]
+  ]
+});
 
 var DEFAULT_OP = function(a1, a2) { return a2; };
+DEFAULT_OP.label = '';
 DEFAULT_OP.toString = function() { return ''; };
+
 
 CLASS({
   name: 'Calc',
@@ -228,7 +310,7 @@ CLASS({
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         if ( Number.isNaN(this.a2) ) this.error();
         var a2 = this.numberFormatter.formatNumber(this.a2);
-        this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
+        this.row1 = this.op.label + ( a2 !== '' ? '&nbsp;' + a2 : '' );
       }.bind(this)));
     },
     push: function(a2, opt_op) {
@@ -247,7 +329,16 @@ CLASS({
   },
 
   actions: [
-    num(1), num(2), num(3), num(4), num(5), num(6), num(7), num(8), num(9), num(0),
+    { model_: 'Num', n: 1 },
+    { model_: 'Num', n: 2 },
+    { model_: 'Num', n: 3 },
+    { model_: 'Num', n: 4 },
+    { model_: 'Num', n: 5 },
+    { model_: 'Num', n: 6 },
+    { model_: 'Num', n: 7 },
+    { model_: 'Num', n: 8 },
+    { model_: 'Num', n: 9 },
+    { model_: 'Num', n: 0 },
     binaryOp('div',   ['/'], function(a1, a2) { return a1 / a2; }, '\u00F7', 'divide', 'divide'),
     binaryOp('mult',  ['*'], function(a1, a2) { return a1 * a2; }, '\u00D7', 'multiply', 'multiply'),
     binaryOp('plus',  ['+'], function(a1, a2) { return a1 + a2; }, '+', 'plus', 'plus'),

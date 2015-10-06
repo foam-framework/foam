@@ -15,25 +15,21 @@ CLASS({
   extendsModel: 'foam.ui.View',
 
   requires: [
-    'foam.apps.calc.HistoryCitationView',
-    'foam.ui.SlidePanel',
-    'foam.apps.calc.MainButtonsView',
-    'foam.apps.calc.SecondaryButtonsView',
-    'foam.apps.calc.TertiaryButtonsView',
     'foam.apps.calc.CalcButton',
     'foam.apps.calc.CalcSpeechView',
     'foam.apps.calc.Fonts',
+    'foam.apps.calc.HistoryCitationView',
+    'foam.apps.calc.MainButtonsView',
     'foam.apps.calc.NumberFormatter',
+    'foam.apps.calc.SecondaryButtonsView',
+    'foam.apps.calc.TertiaryButtonsView',
+    'foam.ui.SlidePanel',
     'foam.ui.animated.Label'
     // 'foam.chromeapp.ui.ZoomView'
   ],
 
-  imports: [
-    'document'
-  ],
-  exports: [
-    'data'
-  ],
+  imports: [ 'document' ],
+  exports: [ 'data' ],
 
   properties: [
     {
