@@ -19,19 +19,20 @@ CLASS({
   package: 'foam.node2',
   name: 'ServeFOAM',
   imports: [
-    'HTTPServer as server'
+    'exportFile',
+    'exportDirectory'
   ],
   methods: [
     function execute() {
-      this.server.exportFile('/index.html', global.FOAM_BOOT_DIR + '/../index.html');
-      this.server.exportFile('/index.js', global.FOAM_BOOT_DIR + '/../index.js');
+      this.exportFile('/index.html', global.FOAM_BOOT_DIR + '/../index.html');
+      this.exportFile('/index.js', global.FOAM_BOOT_DIR + '/../index.js');
       [
         'apps',
         'core',
         'demos',
         'js'
       ].forEach(function(d) {
-        this.server.exportDirectory('/' + d, global.FOAM_BOOT_DIR + '/../' + d);
+        this.exportDirectory('/' + d, global.FOAM_BOOT_DIR + '/../' + d);
       }.bind(this));
     }
   ]
