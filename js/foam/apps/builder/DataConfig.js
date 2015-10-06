@@ -82,6 +82,10 @@ CLASS({
         if ( old ) old.removeListener(this.modelChange);
         if ( nu ) nu.addListener(this.modelChange);
         this.modelChange();
+
+        // HACK until deserialization checks the right context,
+        // then registerModel in this.X instead
+        X.registerModel(nu, nu.id);
       },
     },
     {

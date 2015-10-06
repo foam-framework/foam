@@ -14,7 +14,7 @@
    height="435"
    id="svg2"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="LocalDAOFactory.svg">
+   sodipodi:docname="IDBDAOFactory.svg">
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -54,21 +54,6 @@
      inkscape:connector-curvature="0"
      d="M 121.05172,100.65931 H 420.94828 V 400.55587 H 121.05172 z"
      id="path3198" />
-  <g
-     id="g3298"
-     transform="translate(0,18.728728)">
-    <path
-       id="path3200"
-       d="m 158.53125,150.65625 c -13.74526,0 -24.96875,11.22349 -24.96875,24.96875 l 0,149.96875 c 0,13.74526 11.22349,24.96875 24.96875,24.96875 l 224.9375,0 c 13.74526,0 24.84375,-11.22349 24.84375,-24.96875 l 0.125,-149.96875 c 0,-13.74526 -11.22349,-24.96875 -24.96875,-24.96875 l -23.8125,0 -24.96875,24.96875 23.78125,0 0,149.96875 -174.9375,0 0,-149.96875 23.78125,0 -24.96875,-24.96875 -23.8125,0 z"
-       style="fill:#000000"
-       inkscape:connector-curvature="0" />
-    <path
-       sodipodi:nodetypes="cccccccc"
-       id="path3271"
-       d="m 360.83466,123.98118 -51.33409,0 0,-77.001137 -77.00114,0 0,77.001137 -51.33409,0 89.83465,89.83466 z"
-       inkscape:connector-curvature="0"
-       style="fill:#000000" />
-  </g>
   <path
      style="fill:none"
      inkscape:connector-curvature="0"
@@ -80,4 +65,18 @@
      d="M 113.16896,28.862037 H 428.83105 V 344.52413 H 113.16896 z"
      inkscape:connector-curvature="0"
      style="fill:none" />
+  <g
+     style="fill:#000000"
+     id="g3383"
+     transform="matrix(14.367845,0,0,14.367845,98.58586,45.08586)">
+    <path
+       id="path3373"
+       d="M 0,0 H 24 V 24 H 0 z"
+       inkscape:connector-curvature="0"
+       style="fill:none" />
+    <path
+       id="path3375"
+       d="M 11.99,18.54 4.62,12.81 3,14.07 l 9,7 9,-7 -1.63,-1.27 -7.38,5.74 z M 12,16 19.36,10.27 21,9 12,2 3,9 4.63,10.27 12,16 z"
+       inkscape:connector-curvature="0" />
+  </g>
 </svg>

@@ -24,8 +24,9 @@ CLASS({
     'foam.node2.DAOHandler'
   ],
   exports: [
-    'as Server',
-    'as HTTPServer'
+    'exportDAO',
+    'exportFile',
+    'exportDirectory',
   ],
   imports: [
     'log'
