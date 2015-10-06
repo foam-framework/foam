@@ -134,7 +134,7 @@ CLASS({
     },
     function childHTML(index) {
       var obj = this.views_[index];
-      var html = '<div id="' + obj.id + '" class="stackview-panel stackview-hidden">';
+      var html = '<div id="' + obj.id + '" class="stackview-panel stackview-hidden stackview-no-input">';
       html += obj.view.toHTML();
       html += '  <div id="' + obj.id + '-edge" class="stackview-edge"></div>';
       html += '</div>';
@@ -154,6 +154,8 @@ CLASS({
               // or being overlapped to the left
               DOM.setClass(e, 'stackview-hidden',
                   index < self.visibleStart_-1 || index > self.visibleEnd_+1);
+              DOM.setClass(e, 'stackview-no-input',
+                  index < self.visibleStart_ || index > self.visibleEnd_);
             }
         ).destroy;
       });
@@ -268,6 +270,10 @@ CLASS({
 
       .stackview-hidden {
         display: none;
+      }
+
+      .stackview-no-input {
+        pointer-events: none;
       }
     */},
     function toHTML() {/*
