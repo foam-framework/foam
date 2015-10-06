@@ -54,9 +54,7 @@ CLASS({
   listeners: [
     {
       name: 'onClick',
-      code: function(e) {
-        e.stopPropagation();
-      }
+      code: function(e) { e.stopPropagation(); }
     }
   ]
 });

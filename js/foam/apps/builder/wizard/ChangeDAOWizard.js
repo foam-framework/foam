@@ -28,7 +28,7 @@ CLASS({
     {
       name: 'nextViewFactory',
       lazyFactory: function() {
-        return ( this.data.dao && this.data.dao.requiresUserConfiguration ) ?
+        return ( this.data.getDataConfig() && this.data.getDataConfig().dao.requiresUserConfiguration ) ?
            this.editViewFactory : this.newViewFactory; },
     },
   ],
@@ -38,7 +38,7 @@ CLASS({
       <div class="md-card-heading-content-spacer"></div>
       <div class="new-existing-wizard-dao-page-scroller">
       <div class="new-existing-wizard-dao-page">
-        <% var choiceList = ( this.data.dao && this.data.dao.requiresUserConfiguration )  ?
+        <% var choiceList = ( this.data.getDataConfig() && this.data.getDataConfig().dao.requiresUserConfiguration )  ?
           [
             [this.editViewFactory, this.model_.EDIT_VIEW_FACTORY.label],
             [this.newViewFactory, this.model_.NEW_VIEW_FACTORY.label],

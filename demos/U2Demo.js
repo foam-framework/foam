@@ -47,3 +47,17 @@ var e7 = E('div').add('add class after');
 e7.write();
 e7.cls(['important']);
 
+var e8 = E('input');
+e8.write();
+var v8 = e8.attrValue();
+v8.set('foobar');
+// Will update on submit
+v8.addListener(function() { console.log('**change: ', arguments); });
+// Will update on the keystroke
+e8.attrValue(null, 'input').addListener(function() { console.log('**input: ', arguments); });
+
+var e9 = E('input');
+e9.write();
+var timer = foam.util.Timer.create();
+timer.start();
+timer.i$ = e9.attrValue();

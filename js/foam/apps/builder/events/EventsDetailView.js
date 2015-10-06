@@ -17,6 +17,9 @@ CLASS({
 
   requires: [
     'foam.ui.ImageView',
+    'foam.ui.StringArrayView',
+    'foam.ui.md.ColorFieldView',
+    'foam.ui.DAOKeyView',
   ],
 
   properties: [

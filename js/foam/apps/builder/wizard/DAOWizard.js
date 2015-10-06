@@ -29,20 +29,21 @@ CLASS({
     {
       name: 'nextViewFactory',
       defaultValue: null,
-      // {
-//         factory_: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
-//},
     },
     {
       name: 'title',
       defaultValue: 'Data Source Settings',
+    },
+    {
+      name: 'daoFactory',
+      getter: function() { return this.data.getDataConfig().dao; }
     },
   ],
 
 
   methods: [
     function onNext() {
-      this.daoConfigDAO && this.daoConfigDAO.put(this.data.dao);
+      this.daoConfigDAO && this.daoConfigDAO.put(this.daoFactory);
       this.SUPER();
     }
   ],
@@ -55,7 +56,7 @@ CLASS({
     */},
     function contentHTML() {/*
         <div class="md-card-heading-content-spacer"></div>
-        $$dao{ model_: 'foam.apps.builder.dao.EditView', model: this.data.dao.model_ }
+        $$daoFactory{ model_: 'foam.apps.builder.dao.EditView', model: this.daoFactory.model_ }
     */},
   ],
 
