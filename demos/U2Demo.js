@@ -47,3 +47,8 @@ var e7 = E('div').add('add class after');
 e7.write();
 e7.cls(['important']);
 
+var e8 = E('input');
+e8.write();
+var v8 = e8.attrValue();
+v8.set('foobar');
+v8.addListener(function() { console.log('**change: ', arguments); });

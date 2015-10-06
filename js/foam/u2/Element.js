@@ -19,6 +19,10 @@ CLASS({
   package: 'foam.u2',
   name: 'Element',
 
+  requires: [
+    'foam.u2.ElementValue'
+  ],
+
   constants: {
     INITIAL: {
       output: function(out) {
@@ -285,6 +289,14 @@ CLASS({
   ],
 
   methods: [
+    function attrValue(opt_name, opt_event) {
+      var args = { element: this };
+
+      if ( opt_name  ) v.property = opt_name;
+      if ( opt_event ) v.event    = opt_event;
+
+      return this.ElementValue.create(args);
+    },
 
     //
     // State
@@ -343,8 +355,10 @@ CLASS({
       } else {
         attr = {name: name, value: value};
         this.attributes.push(attr);
-        this.attributeMap[name] = attr;
       }
+
+      this.attributeMap[name] = attr;
+      this.onSetAttr(name, value);
     },
 
     function getAttributeNode(name) { return this.attributeMap[name]; },
@@ -381,14 +395,8 @@ CLASS({
       return this;
     },
 
-    function attr_(key, value) {
-      this.attributeMap[key] = value;
-      this.onSetAttr(key, value);
-      return this;
-    },
-
     function attrs(map) {
-      for ( var key in map ) this.attr_(key, map[key]);
+      for ( var key in map ) this.setAttribute(key, map[key]);
       return this;
     },
 

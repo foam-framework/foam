@@ -97,6 +97,8 @@ var DomValue = {
   DEFAULT_EVENT:    'change',
   DEFAULT_PROPERTY: 'value',
 
+  __isValue__: true,
+
   create: function(element, opt_event, opt_property) {
     if ( ! element ) {
       throw "Missing Element in DomValue";
@@ -143,6 +145,10 @@ var DomValue = {
 
 CLASS({
   name: 'DOMValue',
+
+  constants: {
+    __isValue__: true
+  },
 
   properties: [
     {
