@@ -51,9 +51,10 @@ CLASS({
       help: 'The type of DAOFactory to create',
       lazyFactory: function() {
          var ret = this.DAOFactoryMetaDescriptor.create();
-         if ( this.data.dao ) {
-           ret.name = this.data.dao.name;
-           ret.modelType = this.data.dao.model_.id;
+         var dc = this.data.getDataConfig();
+         if ( dc ) {
+           ret.name = dc.dao.name;
+           ret.modelType = dc.dao.model_.id;
          }
          return ret;
        },
@@ -91,8 +92,8 @@ CLASS({
 
   methods: [
     function onNext() {
-      this.data.dao = this.daoFactory;
-      this.daoConfigDAO.put(this.data.dao);
+      this.data.getDataConfig().dao = this.daoFactory;
+      this.daoConfigDAO.put(this.data.getDataConfig().dao);
 
       this.SUPER();
     },
