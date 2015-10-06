@@ -17,7 +17,7 @@ CLASS({
   requires: [
     'foam.apps.builder.dao.LocalDAOFactory',
     'foam.apps.builder.dao.GoogleDriveDAOFactory',
-    'foam.apps.builder.dao.IDBDAOFactory',
+    'foam.apps.builder.dao.EmbeddedDAOFactory',
     'foam.meta.descriptor.DAOFactoryCitationView',
   ],
 
@@ -37,9 +37,9 @@ CLASS({
         rowView: 'foam.meta.descriptor.DAOFactoryCitationView',
       },
       defaultValueFn: function() { return [
-          X.lookup('foam.apps.builder.dao.LocalDAOFactory'),
+          X.lookup('foam.apps.builder.dao.EmbeddedDAOFactory'),
           X.lookup('foam.apps.builder.dao.GoogleDriveDAOFactory'),
-          X.lookup('foam.apps.builder.dao.IDBDAOFactory'),
+          X.lookup('foam.apps.builder.dao.LocalDAOFactory'),
         ];
       }
     },
@@ -47,13 +47,6 @@ CLASS({
       name: 'model',
       defaultValue: 'foam.apps.builder.dao.LocalDAOFactory',
     },
-//    {
-//      label: 'The name of the new DAO',
-//      name: 'name',
-//      preSet: function(old,nu) {
-//        return capitalize(camelize(nu));
-//      }
-//    },
   ],
 
 });
