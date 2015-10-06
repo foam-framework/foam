@@ -18,13 +18,13 @@
 CLASS({
   package: 'foam.apps.chatter',
   name: 'Server',
+  imports: [
+    'exportDAO'
+  ],
   requires: [
     'foam.apps.chatter.Message',
     'foam.apps.chatter.Channel',
     'foam.dao.EasyDAO'
-  ],
-  imports: [
-    'HTTPServer'
   ],
   properties: [
     {
@@ -50,13 +50,12 @@ CLASS({
           isServer: true
         })
       }
-    },
-    {
-      name: 'HTTPServer',
-      postSet: function(_, server) {
-        server.exportDAO(this.messageDAO);
-        server.exportDAO(this.channelDAO);
-      }
+    }
+  ],
+  methods: [
+    function execute() {
+      this.exportDAO(this.messageDAO);
+      this.exportDAO(this.channelDAO);
     }
   ]
 });

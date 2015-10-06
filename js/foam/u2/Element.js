@@ -292,8 +292,8 @@ CLASS({
     function attrValue(opt_name, opt_event) {
       var args = { element: this };
 
-      if ( opt_name  ) v.property = opt_name;
-      if ( opt_event ) v.event    = opt_event;
+      if ( opt_name  ) args.property = opt_name;
+      if ( opt_event ) args.event    = opt_event;
 
       return this.ElementValue.create(args);
     },
@@ -481,5 +481,5 @@ CLASS({
 
 
 /*
-  TODO: focus?, compile, deepClone, pass data, don't clone if literal
+  TODO: focus?, compile, deepClone, pass data, computedStyle, don't clone if literal
 */
