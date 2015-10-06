@@ -21,18 +21,6 @@ function gamma(z) {
   return Math.sqrt(2 * Math.PI / z) * Math.pow((1 / Math.E) * (z + 1 / (12 * z - 1 / (10 * z))), z);
 }
 
-function trigFn(f) {
-  return function(a) {
-    return f(this.degreesMode ? a * Math.PI / 180 : a);
-  };
-}
-
-function invTrigFn(f) {
-  return function(a) {
-    return this.degreesMode ? f(a) / Math.PI * 180 : f(a);
-  };
-}
-
 function createTranslatedAction(action, opt_longName) {
   if ( opt_longName ) action.translationHint =
       'short form for mathematical function: "' + opt_longName + '"';
@@ -474,9 +462,9 @@ CLASS({
     binaryOp('root',  [], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
     binaryOp('pow',   ['^'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
 
-    unaryOp('sin',    [], trigFn(Math.sin), 'sin', 'sine',    'sine'),
-    unaryOp('cos',    [], trigFn(Math.cos), 'cos', 'cosine',  'cosine'),
-    unaryOp('tan',    [], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
+    unaryOp('sin',    [], function(a) { return Math.sin(this.degreesMode ? a * Math.PI / 180 : a) }, 'sin', 'sine',    'sine'),
+    unaryOp('cos',    [], function(a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }, 'cos', 'cosine',  'cosine'),
+    unaryOp('tan',    [], function(a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }, 'tan', 'tangent', 'tangent'),
 
     {
       name: 'deg',
@@ -493,9 +481,9 @@ CLASS({
       code: function() { this.degreesMode = false; }
     },
 
-    unaryOp('asin',   [], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arcsine'),
-    unaryOp('acos',   [], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arccosine'),
-    unaryOp('atan',   [], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
+    unaryOp('asin',   [], function(a) { return Math.asin(a) * ( this.degreesMode ? 180 / Math.PI : 1); }, 'asin', 'inverse-sine',    'arcsine'),
+    unaryOp('acos',   [], function(a) { return Math.acos(a) * ( this.degreesMode ? 180 / Math.PI : 1); }, 'acos', 'inverse-cosine',  'arccosine'),
+    unaryOp('atan',   [], function(a) { return Math.atan(a) * ( this.degreesMode ? 180 / Math.PI : 1); }, 'atan', 'inverse-tangent', 'arctangent'),
 
     unaryOp('fact',   ['!'], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
     binaryOp('mod',   [],    function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
