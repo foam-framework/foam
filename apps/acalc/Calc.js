@@ -422,7 +422,7 @@ CLASS({
       name: "sqroot",
       label: "√",
       speechLabel: "square root",
-      f: function sqrt(a) { return Math.sqrt(a); }
+      f: function(a) { return Math.sqrt(a); }
     },
     {
       model_: "UnaryOp",
@@ -437,28 +437,28 @@ CLASS({
       name: "ln",
       label: "ln",
       speechLabel: "natural logarithm",
-      f: function log(a) { return Math.log(a); }
+      f: function(a) { return Math.log(a); }
     },
     {
       model_: "UnaryOp",
       name: "exp",
       label: "eⁿ",
       speechLabel: "e to the power of n",
-      f: function exp(a) { return Math.exp(a); }
+      f: function(a) { return Math.exp(a); }
     },
     {
       model_: "UnaryOp",
       name: "log",
       label: "log",
       speechLabel: "log base 10",
-      f: function (a) { return Math.log(a) / Math.LN10; }
+      f: function(a) { return Math.log(a) / Math.LN10; }
     },
     {
       model_: "BinaryOp",
       name: "root",
       label: "ⁿ √Y",
       speechLabel: "the enth root of y",
-      f: function (a1, a2) { return Math.pow(a2, 1/a1); }
+      f: function(a1, a2) { return Math.pow(a2, 1/a1); }
     },
     {
       model_: "BinaryOp",
@@ -466,28 +466,28 @@ CLASS({
       label: "yⁿ",
       speechLabel: "y to the power of n",
       keyboardShortcuts: [ "^" ],
-      f: function pow(a1, a2) { return Math.pow(a1, a2); }
+      f: function(a1, a2) { return Math.pow(a1, a2); }
     },
     {
       model_: "UnaryOp",
       name: "sin",
       label: "sin",
       speechLabel: "sine",
-      f: function (a) { return Math.sin(this.degreesMode ? a * Math.PI / 180 : a) }
+      f: function(a) { return Math.sin(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
       model_: "UnaryOp",
       name: "cos",
       label: "cos",
       speechLabel: "cosine",
-      f: function (a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }
+      f: function(a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
       model_: "UnaryOp",
       name: "tan",
       label: "tan",
       speechLabel: "tangent",
-      f: function (a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }
+      f: function(a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
       name: 'deg',
@@ -508,21 +508,21 @@ CLASS({
       name: "asin",
       label: "asin",
       speechLabel: "arcsine",
-      f: function (a) { return Math.asin(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
+      f: function(a) { return Math.asin(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
       model_: "UnaryOp",
       name: "acos",
       label: "acos",
       speechLabel: "arccosine",
-      f: function (a) { return Math.acos(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
+      f: function(a) { return Math.acos(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
       model_: "UnaryOp",
       name: "atan",
       label: "atan",
       speechLabel: "arctangent",
-      f: function (a) { return Math.atan(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
+      f: function(a) { return Math.atan(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
       model_: "UnaryOp",
@@ -558,7 +558,7 @@ CLASS({
       name: "round",
       label: "rnd",
       speechLabel: "round",
-      f: function round(a) { return Math.round(a); }
+      f: function(a) { return Math.round(a); }
     },
     {
       name: 'rand',
