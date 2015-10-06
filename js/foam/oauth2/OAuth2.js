@@ -48,15 +48,17 @@ CLASS({
       model_: 'URLProperty',
       name: 'endpoint',
       defaultValue: "https://accounts.google.com/o/oauth2/"
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'refresh_',
+      lazyFactory: function() {
+        return this.refresh_ = amerged(this.refreshNow_.bind(this));
+      }
     }
   ],
 
   methods: {
-    init: function() {
-      this.SUPER();
-      this.refresh_ = amerged(this.refreshNow_.bind(this));
-    },
-
     refreshNow_: function(){},
 
     refresh: function(ret, opt_forceInteractive) {
