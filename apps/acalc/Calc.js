@@ -69,36 +69,6 @@ function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   });
 }
 
-// TODO(kgr): model binaryOp and unaryOp as new types of Actions
-// this will allow the model to be serialized and edited in a FOAM IDE
-/** Make a Binary Action. **/
-function xxxbinaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
-  var longName = opt_longName || name;
-  var speechLabel = opt_speechLabel || sym;
-  f.binary = true;
-  f.speechLabel = speechLabel;
-  var action = createTranslatedAction({
-    name: name,
-    label: sym,
-    translationHint: 'binary operator: ' + longName,
-    speechLabel: speechLabel,
-    keyboardShortcuts: keys,
-    code: function() {
-      if ( this.a2 == '' ) {
-        // the previous operation should be replaced, since we can't
-        // finish this one without a second arg. The user probably hit one
-        // binay op, followed by another.
-        this.replace(f);
-      } else {
-        if ( this.op != DEFAULT_OP ) this.equals();
-        this.push('', f);
-        this.editable = true;
-      }
-    }
-  }, opt_longName);
-  f.toString = function() { return '<span aria-label="' + action.speechLabel + '">' + action.label + '</span>'; };
-  return action;
-}
 
 MODEL({
   name: 'UnaryOp',
@@ -135,27 +105,6 @@ function unaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
   });
 }
 
-function xxxunaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
-  var sym = opt_sym || name;
-  var longName = opt_longName || name;
-  var speechLabel = opt_speechLabel || sym;
-  f.unary = true;
-  f.speechLabel = speechLabel;
-  var action = createTranslatedAction({
-    name: name,
-    label: sym,
-    translationHint: 'short form for mathematical function: "' + longName + '"',
-    speechLabel: speechLabel,
-    keyboardShortcuts: keys,
-    code: function() {
-      this.op = f;
-      this.push(f.call(this, this.a2));
-      this.editable = false;
-    }
-  }, opt_longName);
-  f.toString = function() { return action.label; };
-  return action;
-}
 
 /** Make a 0-9 Number Action. **/
 MODEL({
