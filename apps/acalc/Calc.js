@@ -21,12 +21,6 @@ function gamma(z) {
   return Math.sqrt(2 * Math.PI / z) * Math.pow((1 / Math.E) * (z + 1 / (12 * z - 1 / (10 * z))), z);
 }
 
-function createTranslatedAction(action, opt_longName) {
-  if ( opt_longName ) action.translationHint =
-      'short form for mathematical function: "' + opt_longName + '"';
-  return Action.create(action);
-}
-
 MODEL({
   name: 'BinaryOp',
   extendsModel: 'Action',
@@ -396,7 +390,6 @@ CLASS({
     },
     {
       name: 'e',
-      label: 'e',
       keyboardShortcuts: [ 'e' ],
       translationHint: 'mathematical constant, e',
       code: function() { this.a2 = Math.E; }
@@ -435,7 +428,6 @@ CLASS({
     {
       model_: "UnaryOp",
       name: "ln",
-      label: "ln",
       speechLabel: "natural logarithm",
       f: function(a) { return Math.log(a); }
     },
@@ -449,7 +441,6 @@ CLASS({
     {
       model_: "UnaryOp",
       name: "log",
-      label: "log",
       speechLabel: "log base 10",
       f: function(a) { return Math.log(a) / Math.LN10; }
     },
@@ -471,21 +462,18 @@ CLASS({
     {
       model_: "UnaryOp",
       name: "sin",
-      label: "sin",
       speechLabel: "sine",
       f: function(a) { return Math.sin(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
       model_: "UnaryOp",
       name: "cos",
-      label: "cos",
       speechLabel: "cosine",
       f: function(a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
       model_: "UnaryOp",
       name: "tan",
-      label: "tan",
       speechLabel: "tangent",
       f: function(a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }
     },
@@ -506,21 +494,18 @@ CLASS({
     {
       model_: "UnaryOp",
       name: "asin",
-      label: "asin",
       speechLabel: "arcsine",
       f: function(a) { return Math.asin(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
       model_: "UnaryOp",
       name: "acos",
-      label: "acos",
       speechLabel: "arccosine",
       f: function(a) { return Math.acos(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
       model_: "UnaryOp",
       name: "atan",
-      label: "atan",
       speechLabel: "arctangent",
       f: function(a) { return Math.atan(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
@@ -535,7 +520,6 @@ CLASS({
     {
       model_: "BinaryOp",
       name: "mod",
-      label: "mod",
       speechLabel: "modulo",
       f: function (a1, a2) { return a1 % a2; }
     },
@@ -562,7 +546,6 @@ CLASS({
     },
     {
       name: 'rand',
-      label: 'rand',
       speechLabel: 'random',
       translationHint: 'generate random number',
       code: function() { this.a2 = Math.random(); }
