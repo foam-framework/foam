@@ -151,6 +151,8 @@ CLASS({
     {
       name: 'addAccount',
       label: '+',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAZlBMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfQ98RT7AAAAIXRSTlMAKrT19LIo8fCx86/uJjB+uuT747l9Lz3Ixzta/fxY5+ZVMLMtAAAAb0lEQVR42r3Mxw6AIBBFUUVExd57mf//SRESEJXEFXczyTvJOLZzkYd98rEHwArfgoAXqQWAH08AfQE2gS8gliuPGQmvm6RPYBJRGotdvVL9hywvyqqqm7bTsB9ANk5qnxe4tW4SdtA6JMAjM9joBOOjEwuWikL8AAAAAElFTkSuQmCC',
+      ligature: 'person_add',
       code: function() {
         this.identityManager.createIdentity(nop);
 

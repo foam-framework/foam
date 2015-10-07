@@ -17,6 +17,7 @@ CLASS({
   requires: [
     'foam.ui.DAOListView',
     'foam.ui.ImageView',
+    'foam.ui.md.FlatButton',
   ],
 
   properties: [
@@ -54,7 +55,12 @@ CLASS({
         <% if ( this.accountList ) { %>
           <hr />
           %%accountList()
-          $$addAccount
+          <div class="flush-right">
+            $$addAccount{
+              model_: 'foam.ui.md.FlatButton',
+              displayMode: 'ICON_ONLY',
+            }
+          </div>
         <% } %>
         <% if ( this.viewList ) { %>
           <hr />
@@ -116,6 +122,12 @@ CLASS({
         display: block;
         padding-top: 4px;
         padding-left: 25px;
+      }
+
+      .flush-right {
+        display: flex;
+        justify-content: flex-end;
+        color: #02A8F3;
       }
 
       .profile-image { border-radius: 50%; }
