@@ -20,6 +20,8 @@ CLASS({
   package: 'foam.oauth2',
   help: 'Strategy for OAuth2 when running as a Chrome App',
 
+  requires: [ 'XHR' ],
+
   extendsModel: 'foam.oauth2.OAuth2',
 
   properties: [
@@ -43,38 +45,45 @@ CLASS({
       ];
 
       var self = this;
-      chrome.app.window.create(
-        'empty.html', { width: 800, height: 600 },
-        function(w) {
-          var success = false;
+      this.XHR.create({}, this.Y).asend(function(data, xhr, status) {
+        if ( xhr.status === 0 ) {
+          ret(false, new Error('OAuth: Failed to reach OAuth service'));
+          return;
+        }
 
-          w.onClosed.addListener(function() {
-            if ( ! success ) ret(false);
-          });
+        chrome.app.window.create(
+            'empty.html', { width: 800, height: 600 },
+            function(w) {
+              var success = false;
 
-          var window = w.contentWindow;
-          var document = w.contentWindow.document;
+              w.onClosed.addListener(function() {
+                if ( ! success ) ret(false, new Error('OAuth: Access denied'));
+              });
 
-          window.addEventListener('load', function() {
-            var webview = document.createElement('webview');
-            webview.style.width = '100%';
-            webview.style.height = '100%';
-            document.body.appendChild(webview);
+              var window = w.contentWindow;
+              var document = w.contentWindow.document;
 
-            webview.addEventListener('contentload', function() {
-              webview.executeScript({ code: 'window.document.title;' }, function(title) {
-                if ( title[0] && title[0].startsWith('Success code=') ) {
-                  self.authCode = title[0].substring(title[0].indexOf('=') + 1);
-                  success = true;
-                  w.close();
-                  self.updateRefreshToken(ret);
-                }
+              window.addEventListener('load', function() {
+                var webview = document.createElement('webview');
+                webview.style.width = '100%';
+                webview.style.height = '100%';
+                document.body.appendChild(webview);
+
+                webview.addEventListener('contentload', function() {
+                  webview.executeScript({ code: 'window.document.title;' }, function(title) {
+                    if ( title[0] && title[0].startsWith('Success code=') ) {
+                      self.authCode = title[0].substring(title[0].indexOf('=') + 1);
+                      success = true;
+                      w.close();
+                      self.updateRefreshToken(ret);
+                    }
+                  });
+                });
+
+                webview.src = self.endpoint + "auth" + queryparams.join('&');
               });
             });
-
-            webview.src = self.endpoint + "auth" + queryparams.join('&');
-          });
-        });
+      }, this.endpoint);
     },
     updateRefreshToken: function(ret) {
       var postdata = [
@@ -136,7 +145,7 @@ CLASS({
 
       aseq(
         (function(ret) {
-          this.updateAccessToken(ret)
+          this.updateAccessToken(ret);
         }).bind(this),
         (function(ret, result) {
           if ( ! result ) {

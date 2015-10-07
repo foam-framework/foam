@@ -13,10 +13,6 @@ CLASS({
   package: 'foam.apps.builder',
   name: 'SourceManager',
 
-  imports: [
-    'xhrManager',
-  ],
-
   models: [
     {
       name: 'File',
@@ -28,6 +24,12 @@ CLASS({
   ],
 
   properties: [
+    {
+      type: 'foam.apps.builder.XHRManager',
+      name: 'xhrManager',
+      required: true,
+      transient: true,
+    },
     {
       model_: 'ArrayProperty',
       name: 'sources',

@@ -14,17 +14,19 @@ CLASS({
   name: 'UploadManager',
 
   requires: [
+    'foam.apps.builder.Identity',
     'foam.apps.builder.PackageManager',
     'foam.apps.builder.Upload',
+    'foam.apps.builder.XHRManager',
     'foam.dao.EasyDAO',
     'foam.metrics.Error',
     'foam.metrics.Event',
   ],
+
   imports: [
-    'identityManager',
+    'identityManager$',
     'metricsDAO',
     'sourceManager',
-    'xhrManager',
   ],
 
   constants: {
@@ -48,6 +50,16 @@ CLASS({
     {
       type: 'foam.apps.builder.ImportExportFlow',
       name: 'data',
+    },
+    {
+      type: 'foam.apps.builder.XHRManager',
+      name: 'xhrManager',
+      documentation: function() {/* Construct own manager to ensure that
+        contextual bindings for this upload do not leak into higher-level
+        XHR management contexts. */},
+      factory: function() {
+        return this.XHRManager.create({}, this.Y);
+      },
     },
     {
       type: 'foam.apps.builder.PackageManager',
@@ -80,7 +92,9 @@ CLASS({
           this.sourceManager.aloadSources.bind(this.sourceManager, this.data.config),
           this.packageManager.prepareSources.bind(this.packageManager, this.data.config),
           apar(
-              this.identityManager.withOAuth.bind(this.identityManager),
+              // TODO(markdittmer): We should prompt the user to select an
+              // upload account here.
+              this.getIdentity.bind(this),
               this.prepareUpload.bind(this)),
           this.sendUpload.bind(this),
           this.finalizeUpload.bind(this))(ret);
@@ -88,7 +102,9 @@ CLASS({
     function publishApp(data) {
       aseq(
           apar(
-              this.identityManager.withOAuth.bind(this.identityManager),
+              // TODO(markdittmer): We should prompt the user to select an
+              // upload account here.
+              this.getIdentity.bind(this),
               aseq(
                   this.getUploadHash.bind(this),
                   aif(this.needsUpload.bind(this),
@@ -97,6 +113,7 @@ CLASS({
           this.sendPublish.bind(this))
       (this.completePublish.bind(this));
     },
+    function getIdentity(ret) { this.identityManager.getIdentity(ret); },
     function getUploadHash(ret) {
       this.uploadCache.find(this.data.config.chromeId, {
         put: function(obj) { ret(obj); },
@@ -106,10 +123,10 @@ CLASS({
     function needsUpload(hash) {
       return ( ! hash ) || this.data.config.hashCode() !== hash.objectHashCode;
     },
-    function sendPublish(ret, oauthStatus, oauth, config) {
-      if ( ! oauthStatus ) {
+    function sendPublish(ret, identity, config) {
+      if ( ! this.Identity.isInstance(identity) || ! identity.oauth ) {
         this.data.message = 'Oops! Looks like something went wrong.';
-        this.data.details = this.getOAuthErrorDetails(oauth);
+        this.data.details = this.getOAuthErrorDetails(identity);
         this.data.state = 'FAILED';
         this.metricsDAO.put(this.Error.create({
           name: 'Action:publish:fail - ' +
@@ -118,6 +135,11 @@ CLASS({
         }));
         return;
       }
+
+      // Bind-and-forget. UploadManager and its XHRManager only live for the
+      // length of one request.
+      this.xhrManager.bindAuthAgent(
+          /^https?:[/][/]www[.]googleapis[.]com/, identity.oauth);
 
       this.data.state = 'PUBLISHING';
 
@@ -181,12 +203,12 @@ CLASS({
 
       ret(data);
     },
-    function sendUpload(ret, oauthStatus, oauth, data) {
+    function sendUpload(ret, identity, data) {
       var config = this.data.config;
 
-      if ( ! oauthStatus ) {
+      if ( ! this.Identity.isInstance(identity) || ! identity.oauth ) {
         this.data.message = 'Oops! Looks like something went wrong.';
-        this.data.details = this.getOAuthErrorDetails(oauth);
+        this.data.details = this.getOAuthErrorDetails(identity);
         this.data.state = 'FAILED';
         this.metricsDAO.put(this.Error.create({
           name: 'Action:upload:fail - ' +
@@ -195,6 +217,11 @@ CLASS({
         }));
         return;
       }
+
+      // Bind-and-forget. UploadManager and its XHRManager only live for the
+      // length of one request.
+      this.xhrManager.bindAuthAgent(
+          /^https?:[/][/]www[.]googleapis[.]com/, identity.oauth);
 
       this.data.state = 'UPLOADING';
       var id = config.chromeId;
@@ -244,11 +271,14 @@ CLASS({
             "to upload your app.";
       }
 
-      if ( err.message.indexOf('request failed') >= 0 ) {
+      // TODO(markdittmer): We should implement a less frail means of detecting
+      // the type of error received.
+      if ( err.message.indexOf('request failed') >= 0 ||
+          err.message.indexOf('Failed to reach') >= 0 ) {
         return "Authentication failed: We couldn't reach the authentication " +
             "service.";
-
-      } else if ( err.message.indexOf('not approve') >= 0 ) {
+      } else if ( err.message.indexOf('not approve') >= 0 ||
+          err.message.indexOf('denied') >= 0 ) {
         return "Authentication failed: You denied the application permission " +
             "to upload your app.";
       } else {

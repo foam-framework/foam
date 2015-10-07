@@ -19,21 +19,11 @@ CLASS({
     'foam.ui.md.CheckboxView',
   ],
   imports: [
-    'persistentContext$ as ctx$',
+    'appBuilderAnalyticsEnabled$ as analyticsEnabled$',
     'popup',
   ],
 
   properties: [
-    {
-      type: 'foam.apps.builder.AppBuilderContext',
-      name: 'ctx',
-      postSet: function(old, nu) {
-        if ( old ) Events.unlink(old.appBuilderAnalyticsEnabled$,
-                                 this.analyticsEnabled$);
-        if ( nu ) Events.link(nu.appBuilderAnalyticsEnabled$,
-                              this.analyticsEnabled$);
-      },
-    },
     {
       model_: 'BooleanProperty',
       name: 'analyticsEnabled',

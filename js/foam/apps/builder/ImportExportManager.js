@@ -22,13 +22,11 @@ CLASS({
     'foam.apps.builder.XHRManager',
   ],
   imports: [
+    'appBuilderAnalyticsEnabled$',
     'warn',
-    'persistentContext$ as ctx$',
   ],
   exports: [
-    'identityManager',
     'sourceManager',
-    'xhrManager',
   ],
 
   properties: [
@@ -37,12 +35,17 @@ CLASS({
       required: true,
     },
     {
-      type: 'foam.apps.builder.AppBuilderContext',
-      name: 'ctx',
+      model_: 'BooleanProperty',
+      name: 'appBuilderAnalyticsEnabled',
+      defaultValue: true,
     },
     {
       type: 'foam.apps.builder.XHRManager',
       name: 'xhrManager',
+      documentation: function() {/* Used for registering shared XHR headers.
+        Also, use $$DOC{ref:'.xhrManager.Y'} as context for sub-components
+        to ensure that its bindings make it into sub-component contexts. */},
+      transient: true,
       factory: function() {
         return this.XHRManager.create({}, this.Y);
       },
@@ -50,15 +53,11 @@ CLASS({
     {
       type: 'foam.apps.builder.SourceManager',
       name: 'sourceManager',
+      transient: true,
       lazyFactory: function() {
-        return this.SourceManager.create({}, this.Y);
-      },
-    },
-    {
-      type: 'foam.apps.builder.IdentityManager',
-      name: 'identityManager',
-      lazyFactory: function() {
-        return this.IdentityManager.create({}, this.Y);
+        return this.SourceManager.create({
+          xhrManager: this.xhrManager,
+        }, this.xhrManager.Y);
       },
     },
   ],
@@ -91,41 +90,36 @@ CLASS({
       this.DownloadManager.create({
         mode: 'PACKAGED',
         data: this.prepareExport(exportFlow),
-      }, this.Y).exportApp(exportFlow);
+      }, this.xhrManager.Y).exportApp(exportFlow);
     },
     function downloadApp(exportFlow) {
       this.DownloadManager.create({
         data: this.prepareExport(exportFlow),
-      }, this.Y).exportApp(exportFlow);
+      }, this.xhrManager.Y).exportApp(exportFlow);
     },
     function uploadApp(exportFlow) {
       this.UploadManager.create({
         data: this.prepareExport(exportFlow),
-      }, this.Y).exportApp(exportFlow);
+      }, this.xhrManager.Y).exportApp(exportFlow);
     },
     function publishApp(exportFlow) {
       this.UploadManager.create({
         data: this.prepareExport(exportFlow),
-      }, this.Y).publishApp(exportFlow);
+      }, this.xhrManager.Y).publishApp(exportFlow);
     },
     function importV1App(importFlow) {
       this.ImportManager.create({
         data: importFlow,
-      }, this.Y).importV1App(importFlow);
+      }, this.xhrManager.Y).importV1App(importFlow);
     },
     function importV2App(importFlow) {
       this.ImportManager.create({
         data: importFlow,
-      }, this.Y).importV2App(importFlow);
+      }, this.xhrManager.Y).importV2App(importFlow);
     },
     function prepareExport(exportFlow) {
-      if ( ! this.ctx ) {
-        this.warn('ImportExportManager: missing persistent context');
-        return exportFlow;
-      }
-
       exportFlow.config.appBuilderAnalyticsEnabled =
-          this.ctx.appBuilderAnalyticsEnabled;
+          this.appBuilderAnalyticsEnabled;
       return exportFlow;
     },
   ],

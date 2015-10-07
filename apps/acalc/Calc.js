@@ -15,89 +15,16 @@
  * limitations under the License.
  */
 
-if ( ! 'log10' in Math ) Math.log10 = function(a) { return Math.log(a) / Math.LN10; };
-
-function gamma(z) {
-  return Math.sqrt(2 * Math.PI / z) * Math.pow((1 / Math.E) * (z + 1 / (12 * z - 1 / (10 * z))), z);
-}
-
-function trigFn(f) {
-  return function(a) {
-    return f(this.degreesMode ? a * Math.PI / 180 : a);
-  };
-}
-
-function invTrigFn(f) {
-  return function(a) {
-    return this.degreesMode ? f(a) / Math.PI * 180 : f(a);
-  };
-}
-
-function createTranslatedAction(action, opt_longName) {
-  if ( opt_longName ) action.translationHint =
-      'short form for mathematical function: "' + opt_longName + '"';
-  return Action.create(action);
-}
-
-// TODO(kgr): model binaryOp and unaryOp as new types of Actions
-// this will allow the model to be serialized and edited in a FOAM IDE
-/** Make a Binary Action. **/
-function binaryOp(name, keys, f, sym, opt_longName, opt_speechLabel) {
-  var longName = opt_longName || name;
-  var speechLabel = opt_speechLabel || sym;
-  f.binary = true;
-  f.speechLabel = speechLabel;
-  var action = createTranslatedAction({
-    name: name,
-    label: sym,
-    translationHint: 'binary operator: ' + longName,
-    speechLabel: speechLabel,
-    keyboardShortcuts: keys,
-    code: function() {
-      if ( this.a2 == '' ) {
-        // the previous operation should be replaced, since we can't
-        // finish this one without a second arg. The user probably hit one
-        // binay op, followed by another.
-        this.replace(f);
-      } else {
-        if ( this.op != DEFAULT_OP ) this.equals();
-        this.push('', f);
-        this.editable = true;
-      }
-    }
-  }, opt_longName);
-  f.toString = function() { return '<span aria-label="' + action.speechLabel + '">' + action.label + '</span>'; };
-  return action;
-}
-
-function unaryOp(name, keys, f, opt_sym, opt_longName, opt_speechLabel) {
-  var sym = opt_sym || name;
-  var longName = opt_longName || name;
-  var speechLabel = opt_speechLabel || sym;
-  f.unary = true;
-  f.speechLabel = speechLabel;
-  var action = createTranslatedAction({
-    name: name,
-    label: sym,
-    translationHint: 'short form for mathematical function: "' + longName + '"',
-    speechLabel: speechLabel,
-    keyboardShortcuts: keys,
-    code: function() {
-      this.op = f;
-      this.push(f.call(this, this.a2));
-      this.editable = false;
-    }
-  }, opt_longName);
-  f.toString = function() { return action.label; };
-  return action;
-}
-
 /** Make a 0-9 Number Action. **/
-function num(n) {
-  return {
-    name: n.toString(),
-    keyboardShortcuts: [ n + '' ],
-    code: function() {
+MODEL({
+  name: 'Num',
+  extendsModel: 'Action',
+  properties: [
+    'n',
+    { name: 'name', defaultValueFn: function() { return this.n.toString(); } },
+    { name: 'keyboardShortcuts', factory: null, defaultValueFn: function() { return [ this.n + '' ]; } },
+    [ 'code', function(_, action) {
+      var n = action.n;
       if ( ! this.editable ) {
         this.push(n);
         this.editable = true;
@@ -106,13 +33,63 @@ function num(n) {
         if ( this.a2.length >= 18 ) return;
         this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
       }
+    }]
+  ]
+});
+
+
+MODEL({
+  name: 'UnaryOp',
+  extendsModel: 'Action',
+  properties: [
+    'f',
+    { name: 'longName', defaultValueFn: function() { return this.name; } },
+    {
+      name: 'translationHint',
+      defaultValueFn: function() { return this.longName ? 'short form for mathematical function: "' + this.longName + '"' : '' ;}
+    },
+    [ 'code', function(_, action) {
+      this.op = action.f;
+      this.push(action.f.call(this, this.a2));
+      this.editable = false;
+    }]
+  ],
+  methods: [
+    function init() {
+      this.SUPER();
+      this.f.label = '<span aria-label="' + this.speechLabel + '">' + this.label + '</span>';
+      this.f.unary = true;
     }
-  };
-}
+  ]
+});
 
 
-var DEFAULT_OP = function(a1, a2) { return a2; };
-DEFAULT_OP.toString = function() { return ''; };
+MODEL({
+  name: 'BinaryOp',
+  extendsModel: 'UnaryOp',
+  properties: [
+    [ 'code', function(_, action) {
+      if ( this.a2 == '' ) {
+        // the previous operation should be replaced, since we can't
+        // finish this one without a second arg. The user probably hit one
+        // binay op, followed by another.
+        this.replace(action.f);
+      } else {
+        if ( this.op != Calc.DEFAULT_OP ) this.equals();
+        this.push('', action.f);
+        this.editable = true;
+      }
+    }]
+  ],
+  methods: [
+    function init() {
+      this.SUPER();
+      this.f.unary = false;
+      this.f.binary = true;
+    }
+  ]
+});
+
 
 CLASS({
   name: 'Calc',
@@ -138,7 +115,8 @@ CLASS({
   ],
 
   constants: {
-    MAX_HISTORY: 30
+    MAX_HISTORY: 30,
+    DEFAULT_OP: function(a1, a2) { return a2; }
   },
 
   messages: [
@@ -159,10 +137,7 @@ CLASS({
     { name: 'a1', defaultValue: 0 },
     { name: 'a2', defaultValue: '' },
     { name: 'editable', defaultValue: true },
-    {
-      name: 'op',
-      defaultValue: DEFAULT_OP
-    },
+    { name: 'op', factory: function() { return this.DEFAULT_OP } },
     {
       model_: 'ArrayProperty',
       name: 'history',
@@ -195,21 +170,37 @@ CLASS({
     }
   ],
 
-  methods: {
-    factorial: function(n) {
+  methods: [
+    function init() {
+      this.SUPER();
+
+      this.DEFAULT_OP.label = '';
+
+      if ( ! 'log10' in Math ) Math.log10 = function(a) { return Math.log(a) / Math.LN10; };
+
+      Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
+        if ( Number.isNaN(this.a2) ) this.error();
+        var a2 = this.numberFormatter.formatNumber(this.a2);
+        this.row1 = this.op.label + ( a2 !== '' ? '&nbsp;' + a2 : '' );
+      }.bind(this)));
+    },
+    function gamma(z) {
+      return Math.sqrt(2 * Math.PI / z) * Math.pow((1 / Math.E) * (z + 1 / (12 * z - 1 / (10 * z))), z);
+    },
+    function factorial(n) {
       if ( n > 170 ) {
         this.error();
         return 1/0;
       }
       n = parseFloat(n);
-      if ( ! Number.isInteger(n) ) return gamma(n+1);
+      if ( ! Number.isInteger(n) ) return this.gamma(n+1);
       var r = 1;
       while ( n > 0 ) r *= n--;
       return r;
     },
-    permutation: function(n, r) { return this.factorial(n) / this.factorial(n-r); },
-    combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
-    error: function() {
+    function permutation(n, r) { return this.factorial(n) / this.factorial(n-r); },
+    function combination(n, r) { return this.permutation(n, r) / this.factorial(r); },
+    function error() {
       // TODO(kgr): Move to CalcView
       if ( this.X.$$('calc-display')[0] ) setTimeout(this.Flare.create({
         element: this.X.$$('calc-display')[0],
@@ -218,40 +209,66 @@ CLASS({
       this.history.put(this.History.create(this));
       this.a1   = 0;
       this.a2   = '';
-      this.op   = DEFAULT_OP;
+      this.op   = this.DEFAULT_OP;
       this.row1 = '';
       this.editable = true;
     },
-    init: function() {
-      this.SUPER();
-
-      Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
-        if ( Number.isNaN(this.a2) ) this.error();
-        var a2 = this.numberFormatter.formatNumber(this.a2);
-        this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );
-      }.bind(this)));
-    },
-    push: function(a2, opt_op) {
+    function push(a2, opt_op) {
       if ( a2 != this.a2 ||
-           ( opt_op || DEFAULT_OP ) != this.op )
+           ( opt_op || this.DEFAULT_OP ) != this.op )
         this.row1 = '';
       this.history.put(this.History.create(this));
       while ( this.history.length > this.MAX_HISTORY ) this.history.shift();
       this.a1 = this.a2;
-      this.op = opt_op || DEFAULT_OP;
+      this.op = opt_op || this.DEFAULT_OP;
       this.a2 = a2;
     },
-    replace: function(op) {
-      this.op = op || DEFAULT_OP;
-    }
-  },
+    function replace(op) { this.op = op || this.DEFAULT_OP; }
+  ],
 
   actions: [
-    num(1), num(2), num(3), num(4), num(5), num(6), num(7), num(8), num(9), num(0),
-    binaryOp('div',   ['/'], function(a1, a2) { return a1 / a2; }, '\u00F7', 'divide', 'divide'),
-    binaryOp('mult',  ['*'], function(a1, a2) { return a1 * a2; }, '\u00D7', 'multiply', 'multiply'),
-    binaryOp('plus',  ['+'], function(a1, a2) { return a1 + a2; }, '+', 'plus', 'plus'),
-    binaryOp('minus', ['-'], function(a1, a2) { return a1 - a2; }, '–', 'minus', 'minus'),
+    { model_: 'Num', n: 1 },
+    { model_: 'Num', n: 2 },
+    { model_: 'Num', n: 3 },
+    { model_: 'Num', n: 4 },
+    { model_: 'Num', n: 5 },
+    { model_: 'Num', n: 6 },
+    { model_: 'Num', n: 7 },
+    { model_: 'Num', n: 8 },
+    { model_: 'Num', n: 9 },
+    { model_: 'Num', n: 0 },
+    {
+      model_: "BinaryOp",
+      name: "div",
+      label: "÷",
+      speechLabel: "divide",
+      keyboardShortcuts: [ "/" ],
+      f: function (a1, a2) { return a1 / a2; }
+    },
+    {
+      model_: "BinaryOp",
+      name: "mult",
+      label: "×",
+      speechLabel: "multiply",
+      keyboardShortcuts: [ "*" ],
+      f: function (a1, a2) { return a1 * a2; }
+    },
+    {
+      model_: "BinaryOp",
+      name: "plus",
+      label: "+",
+      speechLabel: "plus",
+      keyboardShortcuts: [ "+" ],
+      f: function (a1, a2) { return a1 + a2; }
+    },
+    {
+      model_: "BinaryOp",
+      name: "minus",
+      label: "–",
+      speechLabel: "minus",
+      keyboardShortcuts: [ "-" ],
+      f: function (a1, a2) { return a1 - a2; }
+    },
     {
       name: 'ac',
       label: 'AC',
@@ -265,7 +282,7 @@ CLASS({
         this.a1       = '0';
         this.a2       = '';
         this.editable = true;
-        this.op       = DEFAULT_OP;
+        this.op       = this.DEFAULT_OP;
         this.history = [].sink;
         // TODO(kgr): Move to CalcView
         if ( this.X.$$('calc-display')[0] ) {
@@ -312,9 +329,9 @@ CLASS({
       translationHint: 'compute operation and display result',
       code: function() {
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
-        if ( this.op == DEFAULT_OP ) {
+        if ( this.op == this.DEFAULT_OP ) {
           var last = this.history[this.history.length-1];
-          if ( ! last || last.op === DEFAULT_OP ) return;
+          if ( ! last || last.op === this.DEFAULT_OP ) return;
           if ( last.op.binary ) {
             this.push(this.a2);
             this.a2 = last.a2;
@@ -347,21 +364,20 @@ CLASS({
         if ( this.a2.toString().length ) {
           this.a2 = this.a2.toString().substring(0, this.a2.length-1);
         } else {
-          this.op = DEFAULT_OP;
+          this.op = this.DEFAULT_OP;
         }
       }
     },
     {
       name: 'pi',
       label: 'π',
-      keyboardShortcuts: ['p'],
+      keyboardShortcuts: [ 'p' ],
       translationHint: 'mathematical constant, pi',
       code: function() { this.a2 = Math.PI; }
     },
     {
       name: 'e',
-      label: 'e',
-      keyboardShortcuts: ['e'],
+      keyboardShortcuts: [ 'e' ],
       translationHint: 'mathematical constant, e',
       code: function() { this.a2 = Math.E; }
     },
@@ -373,58 +389,163 @@ CLASS({
       translationHint: 'convert number to percentage',
       code: function() { this.a2 /= 100.0; }
     },
-
-    unaryOp('inv',    ['i'], function(a) { return 1.0/a; }, '1/x', undefined, 'inverse', 'inverse'),
-    unaryOp('sqroot', [], Math.sqrt, '√', 'square root', 'square root'),
-    unaryOp('square', ['@'], function(a) { return a*a; }, 'x²', 'x squared', 'x squared'),
-    unaryOp('ln',     [], Math.log, 'ln', 'natural logarithm', 'natural logarithm'),
-    unaryOp('exp',    [], Math.exp, 'eⁿ', undefined, 'e to the power of n'),
-    unaryOp('log',    [], function(a) { return Math.log(a) / Math.LN10; }, 'log', 'logarithm', 'log base 10'),
-    binaryOp('root',  [], function(a1, a2) { return Math.pow(a2, 1/a1); }, '\u207F \u221AY', undefined, 'the enth root of y'),
-    binaryOp('pow',   ['^'], Math.pow, 'yⁿ', undefined, 'y to the power of n'),
-
-    unaryOp('sin',    [], trigFn(Math.sin), 'sin', 'sine',    'sine'),
-    unaryOp('cos',    [], trigFn(Math.cos), 'cos', 'cosine',  'cosine'),
-    unaryOp('tan',    [], trigFn(Math.tan), 'tan', 'tangent', 'tangent'),
-
+    {
+      model_: "UnaryOp",
+      name: "inv",
+      label: "1/x",
+      speechLabel: "inverse",
+      keyboardShortcuts: [ "i" ],
+      f: function (a) { return 1.0/a; }
+    },
+    {
+      model_: "UnaryOp",
+      name: "sqroot",
+      label: "√",
+      speechLabel: "square root",
+      f: function(a) { return Math.sqrt(a); }
+    },
+    {
+      model_: "UnaryOp",
+      name: "square",
+      label: "x²",
+      speechLabel: "x squared",
+      keyboardShortcuts: [ "@" ],
+      f: function (a) { return a*a; }
+    },
+    {
+      model_: "UnaryOp",
+      name: "ln",
+      speechLabel: "natural logarithm",
+      f: function(a) { return Math.log(a); }
+    },
+    {
+      model_: "UnaryOp",
+      name: "exp",
+      label: "eⁿ",
+      speechLabel: "e to the power of n",
+      f: function(a) { return Math.exp(a); }
+    },
+    {
+      model_: "UnaryOp",
+      name: "log",
+      speechLabel: "log base 10",
+      f: function(a) { return Math.log(a) / Math.LN10; }
+    },
+    {
+      model_: "BinaryOp",
+      name: "root",
+      label: "ⁿ √Y",
+      speechLabel: "the enth root of y",
+      f: function(a1, a2) { return Math.pow(a2, 1/a1); }
+    },
+    {
+      model_: "BinaryOp",
+      name: "pow",
+      label: "yⁿ",
+      speechLabel: "y to the power of n",
+      keyboardShortcuts: [ "^" ],
+      f: function(a1, a2) { return Math.pow(a1, a2); }
+    },
     {
       name: 'deg',
       speechLabel: 'switch to degrees',
-      keyboardShortcuts: [],
       translationHint: 'short form for "degrees" calculator mode',
       code: function() { this.degreesMode = true; }
     },
     {
       name: 'rad',
       speechLabel: 'switch to radians',
-      keyboardShortcuts: [],
       translationHint: 'short form for "radians" calculator mode',
       code: function() { this.degreesMode = false; }
     },
-
-    unaryOp('asin',   [], invTrigFn(Math.asin), 'asin', 'inverse-sine',    'arcsine'),
-    unaryOp('acos',   [], invTrigFn(Math.acos), 'acos', 'inverse-cosine',  'arccosine'),
-    unaryOp('atan',   [], invTrigFn(Math.atan), 'atan', 'inverse-tangent', 'arctangent'),
-
-    unaryOp('fact',   ['!'], function(n) { return this.factorial(n); }, 'x!', 'factorial', 'factorial'),
-    binaryOp('mod',   [],    function(a1, a2) { return a1 % a2; }, 'mod', 'modulo', 'modulo'),
-    binaryOp('p',     [],    function(n,r) { return this.permutation(n,r); }, 'nPr', 'permutations (n permute r)', 'permutation'),
-    binaryOp('c',     [],    function(n,r) { return this.combination(n,r); }, 'nCr', 'combinations (n combine r))', 'combination'),
-    unaryOp('round',  [], Math.round, 'rnd', 'round', 'round'),
+    {
+      model_: "UnaryOp",
+      name: "sin",
+      speechLabel: "sine",
+      f: function(a) { return Math.sin(this.degreesMode ? a * Math.PI / 180 : a) }
+    },
+    {
+      model_: "UnaryOp",
+      name: "cos",
+      speechLabel: "cosine",
+      f: function(a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }
+    },
+    {
+      model_: "UnaryOp",
+      name: "tan",
+      speechLabel: "tangent",
+      f: function(a) { return Math.tan(this.degreesMode ? a * Math.PI / 180 : a) }
+    },
+    {
+      model_: "UnaryOp",
+      name: "asin",
+      speechLabel: "arcsine",
+      f: function(a) { return Math.asin(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
+    },
+    {
+      model_: "UnaryOp",
+      name: "acos",
+      speechLabel: "arccosine",
+      f: function(a) { return Math.acos(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
+    },
+    {
+      model_: "UnaryOp",
+      name: "atan",
+      speechLabel: "arctangent",
+      f: function(a) { return Math.atan(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
+    },
+    {
+      model_: "UnaryOp",
+      name: "fact",
+      label: "x!",
+      speechLabel: "factorial",
+      keyboardShortcuts: [ "!" ],
+      f: function (n) { return this.factorial(n); }
+    },
+    {
+      model_: "BinaryOp",
+      name: "mod",
+      speechLabel: "modulo",
+      f: function (a1, a2) { return a1 % a2; }
+    },
+    {
+      model_: "BinaryOp",
+      name: "p",
+      label: "nPr",
+      speechLabel: "permutation",
+      f: function (n,r) { return this.permutation(n,r); }
+    },
+    {
+      model_: "BinaryOp",
+      name: "c",
+      label: "nCr",
+      speechLabel: "combination",
+      f: function (n,r) { return this.combination(n,r); }
+    },
+    {
+      model_: "UnaryOp",
+      name: "round",
+      label: "rnd",
+      speechLabel: "round",
+      f: function(a) { return Math.round(a); }
+    },
     {
       name: 'rand',
-      label: 'rand',
       speechLabel: 'random',
-      keyboardShortcuts: [],
       translationHint: 'generate random number',
       code: function() { this.a2 = Math.random(); }
     },
-    unaryOp('store',   [], function(n) { this.memory = n; return n; }, 'a=', 'store in memory', 'store in memory'),
+    {
+      model_: "UnaryOp",
+      name: "store",
+      label: "a=",
+      speechLabel: "store in memory",
+      f: function (n) { this.memory = n; return n; }
+    },
     {
       name: 'fetch',
       label: 'a',
       speechLabel: 'fetch from memory',
-      keyboardShortcuts: [],
       translationHint: 'load memorized number',
       code: function() { this.a2 = this.memory; }
     }

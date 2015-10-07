@@ -37,7 +37,7 @@ CLASS({
         }
         if ( nu ) {
           nu.getDataConfig().model$.addListener(this.configChange);
-          this.configChange(null, null, null, nu.model);
+          this.configChange(null, null, null, nu.getDataConfig().model);
         }
       }
     },

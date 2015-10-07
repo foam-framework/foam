@@ -210,7 +210,7 @@ apar(arequire('Calc'), arequire('foam.ui.TableView'))(function() {
   var tView = foam.ui.TableView.create({
     model: UnitTest,
     dao: tests.tests,
-    scrollEnabled: true,
+    scrollEnabled: false,
     rows: 1000,
     properties: ['name', 'description', 'results', 'passed', 'failed']
   });
