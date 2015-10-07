@@ -39,7 +39,7 @@ MODEL({
 
 
 MODEL({
-  name: 'UnaryOp',
+  name: 'Unary',
   extendsModel: 'Action',
   properties: [
     'f',
@@ -65,8 +65,8 @@ MODEL({
 
 
 MODEL({
-  name: 'BinaryOp',
-  extendsModel: 'UnaryOp',
+  name: 'Binary',
+  extendsModel: 'Unary',
   properties: [
     [ 'code', function(_, action) {
       if ( this.a2 == '' ) {
@@ -238,7 +238,7 @@ CLASS({
     { model_: 'Num', n: 9 },
     { model_: 'Num', n: 0 },
     {
-      model_: "BinaryOp",
+      model_: "Binary",
       name: "div",
       label: "÷",
       speechLabel: "divide",
@@ -246,7 +246,7 @@ CLASS({
       f: function (a1, a2) { return a1 / a2; }
     },
     {
-      model_: "BinaryOp",
+      model_: "Binary",
       name: "mult",
       label: "×",
       speechLabel: "multiply",
@@ -254,7 +254,7 @@ CLASS({
       f: function (a1, a2) { return a1 * a2; }
     },
     {
-      model_: "BinaryOp",
+      model_: "Binary",
       name: "plus",
       label: "+",
       speechLabel: "plus",
@@ -262,7 +262,7 @@ CLASS({
       f: function (a1, a2) { return a1 + a2; }
     },
     {
-      model_: "BinaryOp",
+      model_: "Binary",
       name: "minus",
       label: "–",
       speechLabel: "minus",
@@ -390,7 +390,7 @@ CLASS({
       code: function() { this.a2 /= 100.0; }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "inv",
       label: "1/x",
       speechLabel: "inverse",
@@ -398,14 +398,14 @@ CLASS({
       f: function (a) { return 1.0/a; }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "sqroot",
       label: "√",
       speechLabel: "square root",
       f: function(a) { return Math.sqrt(a); }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "square",
       label: "x²",
       speechLabel: "x squared",
@@ -413,33 +413,33 @@ CLASS({
       f: function (a) { return a*a; }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "ln",
       speechLabel: "natural logarithm",
       f: function(a) { return Math.log(a); }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "exp",
       label: "eⁿ",
       speechLabel: "e to the power of n",
       f: function(a) { return Math.exp(a); }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "log",
       speechLabel: "log base 10",
       f: function(a) { return Math.log(a) / Math.LN10; }
     },
     {
-      model_: "BinaryOp",
+      model_: "Binary",
       name: "root",
       label: "ⁿ √Y",
       speechLabel: "the enth root of y",
       f: function(a1, a2) { return Math.pow(a2, 1/a1); }
     },
     {
-      model_: "BinaryOp",
+      model_: "Binary",
       name: "pow",
       label: "yⁿ",
       speechLabel: "y to the power of n",
@@ -459,43 +459,43 @@ CLASS({
       code: function() { this.degreesMode = false; }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "sin",
       speechLabel: "sine",
       f: function(a) { return Math.sin(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "cos",
       speechLabel: "cosine",
       f: function(a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "tan",
       speechLabel: "tangent",
       f: function(a) { return Math.tan(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "asin",
       speechLabel: "arcsine",
       f: function(a) { return Math.asin(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "acos",
       speechLabel: "arccosine",
       f: function(a) { return Math.acos(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "atan",
       speechLabel: "arctangent",
       f: function(a) { return Math.atan(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "fact",
       label: "x!",
       speechLabel: "factorial",
@@ -503,27 +503,27 @@ CLASS({
       f: function (n) { return this.factorial(n); }
     },
     {
-      model_: "BinaryOp",
+      model_: "Binary",
       name: "mod",
       speechLabel: "modulo",
       f: function (a1, a2) { return a1 % a2; }
     },
     {
-      model_: "BinaryOp",
+      model_: "Binary",
       name: "p",
       label: "nPr",
       speechLabel: "permutation",
       f: function (n,r) { return this.permutation(n,r); }
     },
     {
-      model_: "BinaryOp",
+      model_: "Binary",
       name: "c",
       label: "nCr",
       speechLabel: "combination",
       f: function (n,r) { return this.combination(n,r); }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "round",
       label: "rnd",
       speechLabel: "round",
@@ -536,7 +536,7 @@ CLASS({
       code: function() { this.a2 = Math.random(); }
     },
     {
-      model_: "UnaryOp",
+      model_: "Unary",
       name: "store",
       label: "a=",
       speechLabel: "store in memory",
