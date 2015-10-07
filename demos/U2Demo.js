@@ -62,9 +62,9 @@ var timer = foam.util.Timer.create();
 timer.start();
 timer.i$ = e9.attrValue();
 
-var e10 = E('font').add('set attr before').attrs({color: 'red'});
+var e10 = E('font').add(E('br'), 'set attr before').attrs({color: 'red'});
 e10.write();
 
-var e11 = E('font').add('set attr after');
+var e11 = E('font').add(E('br'), 'set attr after',E('br'));
 e11.write();
 e11.attrs({color: 'red'});
