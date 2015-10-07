@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-/** Make a 0-9 Number Action. **/
 MODEL({
   name: 'Num',
+  documentation: 'Make a 0-9 Number Action.',
   extendsModel: 'Action',
   properties: [
     'n',
