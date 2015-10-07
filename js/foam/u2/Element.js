@@ -54,7 +54,7 @@ CLASS({
         if ( ! first ) out('"');
 
         for ( var key in this.attributeMap ) {
-          var value = this.attributeMap[key];
+          var value = this.attributeMap[key].value;
 
           out(' ', key);
           if ( value !== undefined )
@@ -355,9 +355,9 @@ CLASS({
       } else {
         attr = {name: name, value: value};
         this.attributes.push(attr);
+        this.attributeMap[name] = attr;
       }
 
-      this.attributeMap[name] = attr;
       this.onSetAttr(name, value);
     },
 
