@@ -28,6 +28,14 @@ CLASS({
       model_: 'StringProperty',
       name: 'email',
     },
+    {
+      model_: 'StringProperty',
+      name: 'iconUrl',
+      view: {
+        factory_: 'foam.ui.ImageView',
+        extraClassName: 'profile-image',
+      },
+    },
     'oauth',
     {
       model_: 'foam.core.types.StringEnumProperty',

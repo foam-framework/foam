@@ -18,10 +18,11 @@ CLASS({
     'foam.apps.builder.OAuth2ChromeApp',
     'foam.apps.builder.OAuth2ChromeIdentity',
     'foam.oauth2.OAuth2Redirect',
+    'foam.util.Base64Encoder',
   ],
 
   constants: {
-    GET_IDENTITY: 'https://www.googleapis.com/plus/v1/people/me',
+    GET_IDENTITY: 'https://www.googleapis.com/plus/v1/people/me?fields=displayName%2Cemails%2Cid%2Cimage',
   },
 
   properties: [
@@ -93,6 +94,11 @@ CLASS({
         $$DOC{ref:'.createIdentity'}. */},
       defaultValue: false,
     },
+    {
+      type: 'foam.util.Base64Encoder',
+      name: 'b64e_',
+      lazyFactory: function() { return this.Base64Encoder.create({}, this.Y); },
+    },
   ],
 
   methods: [
@@ -144,6 +150,7 @@ CLASS({
             id: data.id,
             displayName: data.displayName,
             oauth: oauth,
+            iconUrl: data.image && data.image.url ? data.image.url : '',
             authType: this.OAuth2ChromeApp.isInstance(oauth) ? 'WEB' :
                 'CHROME_IDENTITY',
           }, this.Y);
@@ -154,10 +161,10 @@ CLASS({
               ret(this.setIdentity(identity));
               future.set(identity);
               this.newIdentity_ = null;
+              this.encodeProfileImage_(identity);
               return;
             }
           }
-
           err = new Error('No account email found');
           if ( opt_err ) opt_err(err);
           else           ret(err);
@@ -169,7 +176,7 @@ CLASS({
     function getIdentity(ret, opt_err) {
       // TODO(markdittmer): This is a hack to support synchronousm mode.
       // We should make this API always sync insteadk.
-      return this.identity;
+      if ( ! ret ) return this.identity;
 
       if ( this.identity ) ret(this.identity);
       else                 this.createIdentity(ret, opt_err);
@@ -189,6 +196,18 @@ CLASS({
 
       this.identity = identity;
       return identity;
+    },
+    function encodeProfileImage_(identity) {
+      if ( ! (identity && identity.iconUrl &&
+          identity.iconUrl.indexOf('http') === 0) ) return;
+
+      // TODO(markdittmer): This flow should be available more generally.
+      this.xhrManager.asend(function(data, xhr, status) {
+        debugger;
+        var b64data = this.b64e_.encode(data);
+        var contentType = xhr.getResponseHeader('content-type') || 'image/png';
+        identity.iconUrl = 'data:' + contentType + ';base64,' + b64data;
+      }.bind(this), identity.iconUrl);
     },
   ],
 });

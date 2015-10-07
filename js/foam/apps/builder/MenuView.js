@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.ui.DAOListView',
+    'foam.ui.ImageView',
   ],
 
   properties: [
@@ -116,6 +117,8 @@ CLASS({
         padding-top: 4px;
         padding-left: 25px;
       }
+
+      .profile-image { border-radius: 50%; }
     */},
   ],
 });

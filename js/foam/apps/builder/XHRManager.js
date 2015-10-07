@@ -162,7 +162,7 @@ CLASS({
     function asend(ret, url, data, method) {
       // Getting files: Attempt to guess content and response types.
       if ( ( ! method ) || method.toUpperCase() === 'GET' ) {
-        var match = url.match(/[.]([^.]+)$/);
+        var match = url.match(/[.]([^.?]+)([?][^#]*)?([#].*)?$/);
         var xtn = ( match && match[1].toLowerCase() ) || null;
         var contentType = this.CONTENT_TYPES[xtn];
         var responseType = this.RESPONSE_TYPES[xtn];
