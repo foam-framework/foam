@@ -449,14 +449,12 @@ CLASS({
     {
       name: 'deg',
       speechLabel: 'switch to degrees',
-      keyboardShortcuts: [],
       translationHint: 'short form for "degrees" calculator mode',
       code: function() { this.degreesMode = true; }
     },
     {
       name: 'rad',
       speechLabel: 'switch to radians',
-      keyboardShortcuts: [],
       translationHint: 'short form for "radians" calculator mode',
       code: function() { this.degreesMode = false; }
     },
@@ -548,7 +546,6 @@ CLASS({
       name: 'fetch',
       label: 'a',
       speechLabel: 'fetch from memory',
-      keyboardShortcuts: [],
       translationHint: 'load memorized number',
       code: function() { this.a2 = this.memory; }
     }
