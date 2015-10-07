@@ -16,9 +16,9 @@
  */
 
 CLASS({
-  package: 'foam.node.server',
+  package: 'foam.node.handlers',
   name: 'FileHandler',
-  extendsModel: 'foam.node.server.Handler',
+  extendsModel: 'foam.node.handlers.Handler',
   properties: [
     {
       name: 'path',
@@ -48,7 +48,7 @@ CLASS({
 	  this.send(res, 200, data.toString());
         }
       }.bind(this));
-      
+
       return true;
     }
   }
