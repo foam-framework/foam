@@ -27,6 +27,8 @@ CLASS({
     'foam.apps.builder.AppLoader',
     'foam.apps.builder.BrowserConfig',
     'foam.apps.builder.IdentityManager',
+    'foam.apps.builder.ImportExportFlow',
+    'foam.apps.builder.ImportExportFlowView',
     'foam.apps.builder.ImportExportManager',
     'foam.apps.builder.XHRManager',
     'foam.apps.builder.administrator.BrowserConfigFactory as AdminBCFactory',
@@ -42,6 +44,7 @@ CLASS({
     'foam.input.touch.TouchManager',
     'foam.metrics.Metric',
     'foam.ui.md.FlatButton',
+    'foam.ui.md.PopupView',
   ],
   exports: [
     'appBuilderAnalyticsEnabled$',
@@ -241,6 +244,7 @@ CLASS({
         'hasSeenDesignerView$',
         'appBuilderAnalyticsEnabled$',
       ]);
+      if ( ! this.identity ) this.createFirstIdentity();
     },
     function rebindCtxProperties(old, nu, propValueNames) {
       var i;
@@ -254,6 +258,28 @@ CLASS({
           Events.link(nu[propValueNames[i]], this[propValueNames[i]]);
         }
       }
+    },
+    function createFirstIdentity() {
+      var flow = this.ImportExportFlow.create({
+        title: 'App Builder Login',
+        actionName: 'createIdentity',
+      }, this.xhrManager.Y);
+      var popup = this.PopupView.create({
+        cardClass: 'md-card-shell',
+        blockerMode: 'modal',
+        delegate: 'foam.apps.builder.ImportExportFlowView',
+        data: flow,
+      }, this.Y);
+      popup.open();
+      awhile(
+          function() { return ! this.identity; }.bind(this),
+          this.identityManager.createIdentity.bind(this.identityManager))
+      (function() {
+        flow.message = 'Logged in as ' + this.identity.displayName;
+        flow.details = 'App Builder successfully authenticated against your ' +
+            'account with email: "' + this.identity.email + '"';
+        flow.state = 'COMPLETED';
+      }.bind(this));
     },
   ],
 });

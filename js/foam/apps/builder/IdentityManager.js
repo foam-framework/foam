@@ -123,10 +123,10 @@ CLASS({
       oauth.refresh(function(success, maybeError) {
         if ( ! success ) {
           err = maybeError || new Error('Identity manager: OAuth failed');
-          if ( opt_err ) opt_err(err);
-          else           ret(err);
           future.set(err);
           this.newIdentity_ = null;
+          if ( opt_err ) opt_err(err);
+          else           ret(err);
           return;
         }
 
@@ -140,9 +140,9 @@ CLASS({
 
           if ( ! status ) {
             err = new Error('Identity: Failed to reach identity service');
+            this.newIdentity_ = null;
             if ( opt_err ) opt_err(err);
             else           ret(err);
-            this.newIdentity_ = null;
             return;
           }
 
@@ -158,32 +158,23 @@ CLASS({
             if ( data.emails[i].type === 'account' ) {
               var email = data.emails[i].value;
               identity.email = email;
-              ret(this.setIdentity(identity));
               future.set(identity);
               this.newIdentity_ = null;
+              ret(this.setIdentity(identity));
               this.encodeProfileImage_(identity);
               return;
             }
           }
           err = new Error('No account email found');
-          if ( opt_err ) opt_err(err);
-          else           ret(err);
           future.set(err);
           this.newIdentity_ = null;
+          if ( opt_err ) opt_err(err);
+          else           ret(err);
         }.bind(this), this.GET_IDENTITY, undefined, 'GET');
       }.bind(this), true);
     },
-    function getIdentity(ret, opt_err) {
-      // TODO(markdittmer): This is a hack to support synchronousm mode.
-      // We should make this API always sync insteadk.
-      if ( ! ret ) return this.identity;
-
-      if ( this.identity ) ret(this.identity);
-      else                 this.createIdentity(ret, opt_err);
-    },
-    function getIdentities() {
-      return this.identities.slice();
-    },
+    function getIdentity() { return this.identity.clone(); },
+    function getIdentities() { return this.identities.slice(); },
     function setIdentity(identity) {
       var existingIdentities = this.identities.filter(function(ident) {
         return ident.id === identity.id;
