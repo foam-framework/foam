@@ -153,7 +153,13 @@ CLASS({
       label: '+',
       code: function() {
         this.identityManager.createIdentity(nop);
-        this.publish(this.data.MENU_CLOSE);
+
+        // TODO(markdittmer): We should probably use an "Authenticating..."
+        // overlay at least until we are sure that views will not get confused
+        // while waiting for a new account. We might want one anyway to remind
+        // the user to switch out of any account already logged in.
+
+        this.publish(this.MENU_CLOSE);
       },
     },
   ],
