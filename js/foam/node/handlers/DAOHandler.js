@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  package: 'foam.node2',
+  package: 'foam.node.handlers',
   name: 'DAOHandler',
   properties: [
     'path',

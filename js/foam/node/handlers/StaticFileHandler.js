@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.node.server',
+  package: 'foam.node.handlers',
   name: 'StaticFileHandler',
-  extendsModel: 'foam.node.server.Handler',
+  extendsModel: 'foam.node.handlers.Handler',
   properties: [
     {
       name: 'path',

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.node.server',
+  package: 'foam.node.handlers',
   name: 'Handler',
   documentation: 'Abstract Handler class. handle() returns true if handled, ' +
       'false if the server should keep looking.',
@@ -59,7 +59,7 @@ CLASS({
       if ( this.logLevel < 1 ) return;
       console.error(this.mkLogMessage_('EE', msg));
     },
-    verbose: function(msg) { 
+    verbose: function(msg) {
       if ( this.logLevel < 4 ) return;
       console.log(this.mkLogMessage_('VV', msg));
     }

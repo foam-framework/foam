@@ -73,6 +73,10 @@ CLASS({
       name: 'extraModels'
     },
     {
+      model_: 'StringArrayProperty',
+      name: 'extraFiles'
+    },
+    {
       model_: 'StringProperty',
       name: 'defaultView'
     },

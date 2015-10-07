@@ -29,7 +29,7 @@ CLASS({
   ],
   imports: [
     'mdToolbar as toolbar',
-    'persistentContext$ as ctx$',
+    'hasSeenDesignerView$',
   ],
 
   properties: [
@@ -65,12 +65,12 @@ CLASS({
     'panelView',
     'appView',
     {
-      type: 'foam.apps.builder.AppBuilderContext',
-      name: 'ctx',
-      transient: true,
+      model_: 'BooleanProperty',
+      name: 'hasSeenDesignerView',
+      defaultValue: true,
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( this.$ && nu && ! nu.hasSeenDesignerView ) {
+        if ( this.$ && ! nu ) {
           this.constructHelpSnippets();
         }
       },
@@ -80,7 +80,7 @@ CLASS({
   methods: [
     function initHTML() {
       this.SUPER();
-      if ( this.ctx && ! this.ctx.hasSeenDesignerView )
+      if ( ! this.hasSeenDesignerView )
         this.constructHelpSnippets();
     },
   ],
@@ -154,7 +154,7 @@ CLASS({
             }, this.Y),
           ],
           onComplete: function() {
-            this.ctx.hasSeenDesignerView = true;
+            this.hasSeenDesignerView = true;
           }.bind(this)
         }, this.Y).construct();
       },

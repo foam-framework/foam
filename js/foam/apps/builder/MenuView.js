@@ -13,21 +13,25 @@ CLASS({
   package: 'foam.apps.builder',
   name: 'MenuView',
   extendsModel: 'foam.ui.SimpleView',
-  traits: [
-  ],
 
   requires: [
     'foam.ui.DAOListView',
-  ],
-  imports: [
-  ],
-  exports: [
+    'foam.ui.ImageView',
+    'foam.ui.md.FlatButton',
   ],
 
   properties: [
     {
+      type: 'foam.apps.builder.BrowserConfig',
+      name: 'data',
+    },
+    {
       model_:'ViewFactoryProperty',
       name: 'selectionList',
+    },
+    {
+      model_:'ViewFactoryProperty',
+      name: 'accountList',
     },
     {
       model_:'ViewFactoryProperty',
@@ -48,6 +52,16 @@ CLASS({
           </content>
         </logo>
         %%selectionList()
+        <% if ( this.accountList ) { %>
+          <hr />
+          %%accountList()
+          <div class="flush-right">
+            $$addAccount{
+              model_: 'foam.ui.md.FlatButton',
+              displayMode: 'ICON_ONLY',
+            }
+          </div>
+        <% } %>
         <% if ( this.viewList ) { %>
           <hr />
           %%viewList()
@@ -109,6 +123,14 @@ CLASS({
         padding-top: 4px;
         padding-left: 25px;
       }
+
+      .flush-right {
+        display: flex;
+        justify-content: flex-end;
+        color: #02A8F3;
+      }
+
+      .profile-image { border-radius: 50%; }
     */},
   ],
 });

@@ -24,8 +24,9 @@ CLASS({
   ],
   imports: [
     'document',
-    'menuSelection$',
+    'identityManager$',
     'menuDAO$',
+    'menuSelection$',
   ],
 
   constants: {
@@ -43,6 +44,21 @@ CLASS({
           mode: 'read-only',
         }, this.Y.sub({
           selection$: this.menuSelection$,
+        }));
+        view.subscribe(view.ROW_CLICK, this.publish.bind(this, this.MENU_CLOSE));
+        return view;
+      },
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'accountListFactory',
+      defaultValue: function() {
+        var view = this.DAOListView.create({
+          data: this.identityManager.getIdentities(),
+          rowView: this.MenuItemCitationView,
+          mode: 'read-only',
+        }, this.Y.sub({
+          selection$: this.accountSelection$,
         }));
         view.subscribe(view.ROW_CLICK, this.publish.bind(this, this.MENU_CLOSE));
         return view;
@@ -77,9 +93,22 @@ CLASS({
       name: 'menuFactory',
       defaultValue: function() {
         return this.MenuView.create({
+          data: this,
           selectionList: this.selectionListFactory.bind(this),
+          accountList: this.accountListFactory.bind(this),
           viewList: this.viewListFactory.bind(this),
         }, this.Y);
+      },
+    },
+    {
+      type: 'foam.apps.builder.BrowserConfig',
+      name: 'menuSelection',
+    },
+    {
+      type: 'foam.apps.builder.Identity',
+      name: 'accountSelection',
+      defaultValueFn: function() {
+        return this.identityManager.getIdentity();
       },
     },
     {
@@ -114,6 +143,25 @@ CLASS({
       defaultValue: {
         factory_: 'foam.ui.md.UpdateDetailView',
         showModelActions: false,
+      },
+    },
+  ],
+
+  actions: [
+    {
+      name: 'addAccount',
+      label: '+',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAZlBMVEVChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfRChfQ98RT7AAAAIXRSTlMAKrT19LIo8fCx86/uJjB+uuT747l9Lz3Ixzta/fxY5+ZVMLMtAAAAb0lEQVR42r3Mxw6AIBBFUUVExd57mf//SRESEJXEFXczyTvJOLZzkYd98rEHwArfgoAXqQWAH08AfQE2gS8gliuPGQmvm6RPYBJRGotdvVL9hywvyqqqm7bTsB9ANk5qnxe4tW4SdtA6JMAjM9joBOOjEwuWikL8AAAAAElFTkSuQmCC',
+      ligature: 'person_add',
+      code: function() {
+        this.identityManager.createIdentity(nop);
+
+        // TODO(markdittmer): We should probably use an "Authenticating..."
+        // overlay at least until we are sure that views will not get confused
+        // while waiting for a new account. We might want one anyway to remind
+        // the user to switch out of any account already logged in.
+
+        this.publish(this.MENU_CLOSE);
       },
     },
   ],

@@ -16,12 +16,12 @@
  */
 
 CLASS({
-  package: 'foam.node2',
+  package: 'foam.node',
   name: 'Server',
   requires: [
-    'foam.node.server.StaticFileHandler',
-    'foam.node.server.FileHandler',
-    'foam.node2.DAOHandler'
+    'foam.node.handlers.StaticFileHandler',
+    'foam.node.handlers.FileHandler',
+    'foam.node.handlers.DAOHandler'
   ],
   exports: [
     'exportDAO',
@@ -51,7 +51,7 @@ CLASS({
       }
     },
     {
-      model_: 'foam.node2.NodeRequireProperty',
+      model_: 'foam.node.NodeRequireProperty',
       name: 'http'
     },
     {
@@ -80,7 +80,7 @@ CLASS({
       this.server.listen(this.port);
 
       // TODO Find a better way to default these?
-      this.agents.push('foam.node2.ServeFOAM');
+      this.agents.push('foam.node.ServeFOAM');
 
       for( var i = 0 ; i < this.agents.length ; i++ ) {
         this.log("Loading ", this.agents[i]);

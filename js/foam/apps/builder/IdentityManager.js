@@ -14,16 +14,15 @@ CLASS({
   name: 'IdentityManager',
 
   requires: [
-    'foam.oauth2.OAuth2ChromeApp',
-    'foam.oauth2.OAuth2ChromeIdentity',
+    'foam.apps.builder.Identity',
+    'foam.apps.builder.OAuth2ChromeApp',
+    'foam.apps.builder.OAuth2ChromeIdentity',
     'foam.oauth2.OAuth2Redirect',
-  ],
-  imports: [
-    'xhrManager',
+    'foam.util.Base64Encoder',
   ],
 
   constants: {
-    GET_EMAIL: 'https://www.googleapis.com/plus/v1/people/me',
+    GET_IDENTITY: 'https://www.googleapis.com/plus/v1/people/me?fields=displayName%2Cemails%2Cid%2Cimage',
   },
 
   properties: [
@@ -39,129 +38,176 @@ CLASS({
         ['WEB', 'Web'],
       ],
       postSet: function(old, nu) {
-        if ( old === nu || ! this.oauth ) return;
-        this.setupOAuth();
-        this.setupEmail();
+        if ( old === nu ) return;
+        if ( nu === 'CHROME_IDENTITY' )
+          this.oauth2Model = this.OAuth2ChromeIdentity;
+        else
+          this.oauth2Model = this.OAuth2ChromeApp;
       },
     },
     {
-      model_: 'StringProperty',
-      name: 'oauthDataPath',
-      defaultValue: 'oauth2.json',
+      name: 'oauth2Model',
+      defaultValueFn: function() {
+        if ( this.mode === 'CHROME_IDENTITY' ) return this.OAuth2ChromeIdentity;
+        else                                   return this.OAuth2ChromeApp;
+      },
+    },
+    {
+      type: 'foam.apps.builder.XHRManager',
+      name: 'xhrManager',
+      required: true,
+      transient: true,
+    },
+    {
+      type: 'foam.apps.builder.Identity',
+      name: 'identity',
+      documentation: function() {/* Current identity. */},
+      defaultValue: null,
       postSet: function(old, nu) {
-        if ( old === nu || this.mode !== 'WEB' || ! this.oauth ) return;
-        this.setupWebOAuth();
-        this.setupEmail();
+        if ( this.oauthBinding_ )
+          this.xhrManager.unbindAuthAgent(this.oauthBinding_);
+        if ( nu )
+          this.oauthBinding_ = this.xhrManager.bindAuthAgent(
+              /^https?:[/][/]www[.]googleapis[.]com/, nu.oauth);
+        else
+          this.oauthBinding_ = null;
       },
     },
     {
-      name: 'oauthFuture',
-      defaultValue: function() { return null; },
+      model_: 'ArrayProperty',
+      subType: 'foam.apps.builder.Identity',
+      name: 'identities',
+      lazyFactory: function() { return []; },
     },
     {
-      name: 'emailFuture',
-      defaultValue: function() { return null; },
+      type: 'foam.apps.builder.XHRBinding',
+      name: 'oauthBinding_',
+      documentation: function() {/*
+        $$DOC{ref:'foam.apps.builder.XHRBinding'} for current identity's
+        authentication. */},
+      defaultValue: null,
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'newIdentity_',
+      documentation: function() {/* Future for identity produced by
+        $$DOC{ref:'.createIdentity'}. */},
+      defaultValue: false,
+    },
+    {
+      type: 'foam.util.Base64Encoder',
+      name: 'b64e_',
+      lazyFactory: function() { return this.Base64Encoder.create({}, this.Y); },
     },
   ],
 
   methods: [
-    function withOAuth(ret, opt_err) {
-      this.oauthFuture(function(oauth) {
-        if ( ! oauth ) {
-          if ( opt_err && typeof opt_err === 'function' ) opt_err(false);
-          else                                            ret(false);
-          return;
-        }
+    function createIdentity(ret, opt_err) {
+      if ( this.newIdentity_ ) {
+        this.newIdentity_(function(ident) {
+          if ( this.Identity.isInstance(ident) || ! opt_err ) ret(ident);
+          else                                                opt_err(ident);
+        }.bind(this));
+        return;
+      }
 
-        if ( oauth.accessToken ) {
-          ret(true, oauth);
-          return;
-        }
-
-        oauth.refresh(function(token) {
-          if ( token ) {
-            ret(true, oauth);
-            return;
-          }
-          // Convice Chrome Apps that we "checked the error".
-          chrome.runtime.lastError && chrome.runtime.lastError.message;
-          var err = chrome.runtime.lastError;
-          if ( opt_err && typeof opt_err === 'function' ) opt_err(false, err);
-          else                                            ret(false, err);
-        });
-      });
-    },
-    function withEmail(ret, opt_err) {
-      this.emailFuture(function(email) {
-        if ( email ) {
-          ret(true, email);
-          return;
-        }
-        // Convice Chrome Apps that we "checked the error".
-        chrome.runtime.lastError && chrome.runtime.lastError.message;
-        var err = chrome.runtime.lastError;
-        if ( opt_err  && typeof opt_err === 'function' ) opt_err(false, err);
-        else                                             ret(false, err);
-      });
-    },
-    function init() {
-      this.SUPER();
-      this.setupOAuth();
-      this.setupEmail();
-    },
-    function setupOAuth() {
-        if ( this.mode === 'WEB' ) this.setupWebOAuth();
-        else                       this.setupIdentityOAuth();
-    },
-    function setupWebOAuth() {
+      // Setup future for any createIdentity() calls made before this one
+      // completes. When the future is resolved, this.newIdentity_ is reset
+      // to allow subsequent createIdentities() to start a new flow.
       var future = afuture();
-      var xhrManager = this.xhrManager;
-      var Y = this.Y;
+      this.newIdentity_ = future.get;
 
-      this.xhrManager.asend(function(data, xhr, status) {
-        if ( ! status ) {
-          future.set(null);
+      // Construct OAuth2 agent, which may vary according to OAuth strategy.
+      var oauth = this.oauth2Model.create({}, this.Y);
+      var err;
+      oauth.refresh(function(success, maybeError) {
+        if ( ! success ) {
+          err = maybeError || new Error('Identity manager: OAuth failed');
+          if ( opt_err ) opt_err(err);
+          else           ret(err);
+          future.set(err);
+          this.newIdentity_ = null;
           return;
         }
-        // TODO(markdittmer): Shouldn't JSONUtil provide a Chrome App-friendly
-        // API for this?
-        aeval(data)(function(map) {
-          var oauth = JSONUtil.mapToObj(Y, map);
-          xhrManager.bindAuthAgent(/^https?:[/][/]www[.]googleapis[.]com/, oauth);
-          future.set(oauth);
-        });
-      }, this.oauthDataPath);
 
-      this.oauthFuture = future.get;
-    },
-    function setupIdentityOAuth() {
-      var oauth = this.OAuth2ChromeIdentity.create({}, this.Y);
-      this.xhrManager.bindAuthAgent(/^https?:[/][/]www[.]googleapis[.]com/, oauth);
-      this.oauthFuture = aconstant(oauth);
-    },
-    function setupEmail() {
-      var future = afuture();
-
-      this.withOAuth(function(status, oauth) {
-        if ( ! status ) return;
+        // Temporarily bind new oauth ("permanent" binding occurs when
+        // setting identity), then get user info, construct a new
+        // identity from it, save and set the identity.
+        var binding = this.xhrManager.bindAuthAgent(
+            /^https?:[/][/]www[.]googleapis[.]com/, oauth);
         this.xhrManager.asend(function(data, xhr, status) {
+          this.xhrManager.unbindAuthAgent(binding);
+
           if ( ! status ) {
-            future.set(null);
+            err = new Error('Identity: Failed to reach identity service');
+            if ( opt_err ) opt_err(err);
+            else           ret(err);
+            this.newIdentity_ = null;
             return;
           }
 
+          var identity = this.Identity.create({
+            id: data.id,
+            displayName: data.displayName,
+            oauth: oauth,
+            iconUrl: data.image && data.image.url ? data.image.url : '',
+            authType: this.OAuth2ChromeApp.isInstance(oauth) ? 'WEB' :
+                'CHROME_IDENTITY',
+          }, this.Y);
           for ( var i = 0; i < data.emails.length; ++i ) {
             if ( data.emails[i].type === 'account' ) {
-              future.set(data.emails[i].value);
+              var email = data.emails[i].value;
+              identity.email = email;
+              ret(this.setIdentity(identity));
+              future.set(identity);
+              this.newIdentity_ = null;
+              this.encodeProfileImage_(identity);
               return;
             }
           }
+          err = new Error('No account email found');
+          if ( opt_err ) opt_err(err);
+          else           ret(err);
+          future.set(err);
+          this.newIdentity_ = null;
+        }.bind(this), this.GET_IDENTITY, undefined, 'GET');
+      }.bind(this), true);
+    },
+    function getIdentity(ret, opt_err) {
+      // TODO(markdittmer): This is a hack to support synchronousm mode.
+      // We should make this API always sync insteadk.
+      if ( ! ret ) return this.identity;
 
-          future.set(null);
-        }, this.GET_EMAIL, undefined, 'GET');
-      }.bind(this));
+      if ( this.identity ) ret(this.identity);
+      else                 this.createIdentity(ret, opt_err);
+    },
+    function getIdentities() {
+      return this.identities.slice();
+    },
+    function setIdentity(identity) {
+      var existingIdentities = this.identities.filter(function(ident) {
+        return ident.id === identity.id;
+      });
+      if ( existingIdentities.length > 0 ) {
+        identity = existingIdentities[0];
+      } else {
+        this.identities = this.identities.pushF(identity);
+      }
 
-      this.emailFuture = future.get;
+      this.identity = identity;
+      return identity;
+    },
+    function encodeProfileImage_(identity) {
+      if ( ! (identity && identity.iconUrl &&
+          identity.iconUrl.indexOf('http') === 0) ) return;
+
+      // TODO(markdittmer): This flow should be available more generally.
+      this.xhrManager.asend(function(data, xhr, status) {
+        debugger;
+        var b64data = this.b64e_.encode(data);
+        var contentType = xhr.getResponseHeader('content-type') || 'image/png';
+        identity.iconUrl = 'data:' + contentType + ';base64,' + b64data;
+      }.bind(this), identity.iconUrl);
     },
   ],
 });
