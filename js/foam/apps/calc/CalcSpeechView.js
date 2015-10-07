@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.apps.calc',
   name: 'CalcSpeechView',
@@ -53,7 +54,7 @@ CLASS({
           this.say(this.calc.a2);
         } else {
           var unary = last && last.op.unary;
-          if ( this.calc.op !== DEFAULT_OP ) {
+          if ( this.calc.op !== this.calc.DEFAULT_OP ) {
             this.say(
               unary ?
                 this.calc.a2 + ' ' + last.op.speechLabel :
@@ -62,7 +63,7 @@ CLASS({
             this.say(
               unary ?
                 last.a2 + ' ' + last.op.speechLabel + ' ' + Calc.EQUALS.speechLabel + ' ' + this.calc.a2 :
-                last.op !== DEFAULT_OP ?
+                last.op !== this.calc.DEFAULT_OP ?
                   this.calc.history[this.calc.history.length-2].a2 + ' ' + last.op.speechLabel  + ' ' + last.a2 + ' ' + Calc.EQUALS.speechLabel + ' ' + this.calc.a2 :
                   this.calc.a2);
           }

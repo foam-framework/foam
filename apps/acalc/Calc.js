@@ -75,7 +75,7 @@ MODEL({
         // binay op, followed by another.
         this.replace(action.f);
       } else {
-        if ( this.op != DEFAULT_OP ) this.equals();
+        if ( this.op != Calc.DEFAULT_OP ) this.equals();
         this.push('', action.f);
         this.editable = true;
       }
@@ -89,10 +89,6 @@ MODEL({
     }
   ]
 });
-
-
-var DEFAULT_OP = function(a1, a2) { return a2; };
-DEFAULT_OP.label = '';
 
 
 CLASS({
@@ -119,7 +115,8 @@ CLASS({
   ],
 
   constants: {
-    MAX_HISTORY: 30
+    MAX_HISTORY: 30,
+    DEFAULT_OP: function(a1, a2) { return a2; }
   },
 
   messages: [
@@ -140,10 +137,7 @@ CLASS({
     { name: 'a1', defaultValue: 0 },
     { name: 'a2', defaultValue: '' },
     { name: 'editable', defaultValue: true },
-    {
-      name: 'op',
-      defaultValue: DEFAULT_OP
-    },
+    { name: 'op', factory: function() { return this.DEFAULT_OP } },
     {
       model_: 'ArrayProperty',
       name: 'history',
@@ -180,6 +174,8 @@ CLASS({
     function init() {
       this.SUPER();
 
+      this.DEFAULT_OP.label = '';
+
       if ( ! 'log10' in Math ) Math.log10 = function(a) { return Math.log(a) / Math.LN10; };
 
       Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
@@ -213,23 +209,21 @@ CLASS({
       this.history.put(this.History.create(this));
       this.a1   = 0;
       this.a2   = '';
-      this.op   = DEFAULT_OP;
+      this.op   = this.DEFAULT_OP;
       this.row1 = '';
       this.editable = true;
     },
     function push(a2, opt_op) {
       if ( a2 != this.a2 ||
-           ( opt_op || DEFAULT_OP ) != this.op )
+           ( opt_op || this.DEFAULT_OP ) != this.op )
         this.row1 = '';
       this.history.put(this.History.create(this));
       while ( this.history.length > this.MAX_HISTORY ) this.history.shift();
       this.a1 = this.a2;
-      this.op = opt_op || DEFAULT_OP;
+      this.op = opt_op || this.DEFAULT_OP;
       this.a2 = a2;
     },
-    function replace(op) {
-      this.op = op || DEFAULT_OP;
-    }
+    function replace(op) { this.op = op || this.DEFAULT_OP; }
   ],
 
   actions: [
@@ -288,7 +282,7 @@ CLASS({
         this.a1       = '0';
         this.a2       = '';
         this.editable = true;
-        this.op       = DEFAULT_OP;
+        this.op       = this.DEFAULT_OP;
         this.history = [].sink;
         // TODO(kgr): Move to CalcView
         if ( this.X.$$('calc-display')[0] ) {
@@ -335,9 +329,9 @@ CLASS({
       translationHint: 'compute operation and display result',
       code: function() {
         if ( typeof(this.a2) === 'string' && this.a2 == '' ) return; // do nothing if the user hits '=' prematurely
-        if ( this.op == DEFAULT_OP ) {
+        if ( this.op == this.DEFAULT_OP ) {
           var last = this.history[this.history.length-1];
-          if ( ! last || last.op === DEFAULT_OP ) return;
+          if ( ! last || last.op === this.DEFAULT_OP ) return;
           if ( last.op.binary ) {
             this.push(this.a2);
             this.a2 = last.a2;
@@ -370,7 +364,7 @@ CLASS({
         if ( this.a2.toString().length ) {
           this.a2 = this.a2.toString().substring(0, this.a2.length-1);
         } else {
-          this.op = DEFAULT_OP;
+          this.op = this.DEFAULT_OP;
         }
       }
     },
