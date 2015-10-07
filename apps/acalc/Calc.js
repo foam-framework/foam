@@ -15,35 +15,25 @@
  * limitations under the License.
  */
 
+/** Make a 0-9 Number Action. **/
 MODEL({
-  name: 'BinaryOp',
+  name: 'Num',
   extendsModel: 'Action',
   properties: [
-    'f',
-    { name: 'longName', defaultValueFn: function() { return this.name; } },
-    {
-      name: 'translationHint',
-      defaultValueFn: function() { return this.longName ? 'short form for mathematical function: "' + this.longName + '"' : '' ;}
-    },
+    'n',
+    { name: 'name', defaultValueFn: function() { return this.n.toString(); } },
+    { name: 'keyboardShortcuts', factory: null, defaultValueFn: function() { return [ this.n + '' ]; } },
     [ 'code', function(_, action) {
-      if ( this.a2 == '' ) {
-        // the previous operation should be replaced, since we can't
-        // finish this one without a second arg. The user probably hit one
-        // binay op, followed by another.
-        this.replace(action.f);
-      } else {
-        if ( this.op != DEFAULT_OP ) this.equals();
-        this.push('', action.f);
+      var n = action.n;
+      if ( ! this.editable ) {
+        this.push(n);
         this.editable = true;
+      } else {
+        if ( this.a2 == '0' && ! n ) return;
+        if ( this.a2.length >= 18 ) return;
+        this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
       }
     }]
-  ],
-  methods: [
-    function init() {
-      this.SUPER();
-      this.f.label = '<span aria-label="' + this.speechLabel + '">' + this.label + '</span>';
-      this.f.binary = true;
-    }
   ]
 });
 
@@ -74,31 +64,35 @@ MODEL({
 });
 
 
-/** Make a 0-9 Number Action. **/
 MODEL({
-  name: 'Num',
-  extendsModel: 'Action',
+  name: 'BinaryOp',
+  extendsModel: 'UnaryOp',
   properties: [
-    'n',
-    { name: 'name', defaultValueFn: function() { return this.n.toString(); } },
-    { name: 'keyboardShortcuts', factory: null, defaultValueFn: function() { return [ this.n + '' ]; } },
     [ 'code', function(_, action) {
-      var n = action.n;
-      if ( ! this.editable ) {
-        this.push(n);
-        this.editable = true;
+      if ( this.a2 == '' ) {
+        // the previous operation should be replaced, since we can't
+        // finish this one without a second arg. The user probably hit one
+        // binay op, followed by another.
+        this.replace(action.f);
       } else {
-        if ( this.a2 == '0' && ! n ) return;
-        if ( this.a2.length >= 18 ) return;
-        this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
+        if ( this.op != DEFAULT_OP ) this.equals();
+        this.push('', action.f);
+        this.editable = true;
       }
     }]
+  ],
+  methods: [
+    function init() {
+      this.SUPER();
+      this.f.unary = false;
+      this.f.binary = true;
+    }
   ]
 });
 
+
 var DEFAULT_OP = function(a1, a2) { return a2; };
 DEFAULT_OP.label = '';
-DEFAULT_OP.toString = function() { return ''; };
 
 
 CLASS({
