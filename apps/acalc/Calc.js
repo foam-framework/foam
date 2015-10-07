@@ -132,11 +132,11 @@ CLASS({
       name: 'numberFormatter',
       factory: function() { return this.NumberFormatter.create(); }
     },
-    { name: 'degreesMode', defaultValue: false },
-    { name: 'memory', defaultValue: 0 },
-    { name: 'a1', defaultValue: 0 },
-    { name: 'a2', defaultValue: '' },
-    { name: 'editable', defaultValue: true },
+    'degreesMode',
+    [ 'memory', 0 ],
+    [ 'a1', 0 ],
+    [ 'a2', '' ],
+    [ 'editable', true ],
     { name: 'op', factory: function() { return this.DEFAULT_OP } },
     {
       model_: 'ArrayProperty',
