@@ -22,7 +22,7 @@ CLASS({
     'foam.apps.builder.XHRManager',
   ],
   imports: [
-    'persistentContext$ as ctx$',
+    'appBuilderAnalyticsEnabled$',
     'warn',
   ],
   exports: [
@@ -35,8 +35,9 @@ CLASS({
       required: true,
     },
     {
-      type: 'foam.apps.builder.AppBuilderContext',
-      name: 'ctx',
+      model_: 'BooleanProperty',
+      name: 'appBuilderAnalyticsEnabled',
+      defaultValue: true,
     },
     {
       type: 'foam.apps.builder.XHRManager',
@@ -117,13 +118,8 @@ CLASS({
       }, this.xhrManager.Y).importV2App(importFlow);
     },
     function prepareExport(exportFlow) {
-      if ( ! this.ctx ) {
-        this.warn('ImportExportManager: missing persistent context');
-        return exportFlow;
-      }
-
       exportFlow.config.appBuilderAnalyticsEnabled =
-          this.ctx.appBuilderAnalyticsEnabled;
+          this.appBuilderAnalyticsEnabled;
       return exportFlow;
     },
   ],

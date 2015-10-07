@@ -44,9 +44,8 @@ CLASS({
     'foam.ui.md.FlatButton',
   ],
   exports: [
-    'ctx$ as persistentContext$',
-    'daoConfigDAO',
-    'gestureManager',
+    'appBuilderAnalyticsEnabled$',
+    'hasSeenDesignerView$',
     'identityManager$',
     'importExportManager$',
     'masterAppDAO',
@@ -76,6 +75,8 @@ CLASS({
       name: 'identityManager',
       factory: function() {
         return this.IdentityManager.create({
+          identity$: this.identity$,
+          identities$: this.identities$,
           mode: 'WEB',
           xhrManager: this.xhrManager,
         }, this.xhrManager.Y);
@@ -199,6 +200,28 @@ CLASS({
       name: 'ctx',
       transient: true,
       defaultValue: null,
+      postSet: function(old, nu) { this.rebindCtx(old, nu); },
+    },
+    {
+      type: 'foam.apps.builder.Identity',
+      name: 'identity',
+      defaultValue: null,
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.apps.builder.Identity',
+      name: 'identities',
+      lazyFactory: function() { return []; },
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'hasSeenDesignerView',
+      defaultValue: false,
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'appBuilderAnalyticsEnabled',
+      defaultValue: true,
     },
   ],
 
@@ -210,6 +233,27 @@ CLASS({
       }), 'foam.ui.ActionButton');
       this.persistentContext.bindObject('ctx', this.AppBuilderContext,
                                         undefined, 1);
+    },
+    function rebindCtx(old, nu) {
+      this.rebindCtxProperties(old, nu, [
+        'identity$',
+        'identities$',
+        'hasSeenDesignerView$',
+        'appBuilderAnalyticsEnabled$',
+      ]);
+    },
+    function rebindCtxProperties(old, nu, propValueNames) {
+      var i;
+      if ( old ) {
+        for ( i = 0; i < propValueNames.length; ++i ) {
+          Events.unlink(old[propValueNames[i]], this[propValueNames[i]]);
+        }
+      }
+      if ( nu ) {
+        for ( i = 0; i < propValueNames.length; ++i ) {
+          Events.link(nu[propValueNames[i]], this[propValueNames[i]]);
+        }
+      }
     },
   ],
 });

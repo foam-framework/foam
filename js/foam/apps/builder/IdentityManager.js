@@ -15,12 +15,9 @@ CLASS({
 
   requires: [
     'foam.apps.builder.Identity',
-    'foam.oauth2.OAuth2ChromeApp',
-    'foam.oauth2.OAuth2ChromeIdentity',
+    'foam.apps.builder.OAuth2ChromeApp',
+    'foam.apps.builder.OAuth2ChromeIdentity',
     'foam.oauth2.OAuth2Redirect',
-  ],
-  imports: [
-    'persistentContext$ as ctx$',
   ],
 
   constants: {
@@ -41,27 +38,17 @@ CLASS({
       ],
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        this.setupOAuth();
+        if ( nu === 'CHROME_IDENTITY' )
+          this.oauth2Model = this.OAuth2ChromeIdentity;
+        else
+          this.oauth2Model = this.OAuth2ChromeApp;
       },
     },
     {
-      model_: 'StringProperty',
-      name: 'oauthDataPath',
-      defaultValue: 'oauth2.json',
-      postSet: function(old, nu) {
-        if ( old === nu || this.mode !== 'WEB' ) return;
-        this.setupWebOAuth();
-      },
-    },
-    {
-      type: 'foam.apps.builder.AppBuilderContext',
-      name: 'ctx',
-      transient: true,
-      defaultValue: null,
-      postSet: function(old, nu) {
-        if ( old == nu ) return;
-        if ( old ) Events.unlink(old.identity$, this.identity_$);
-        if ( nu ) Events.link(nu.identity$, this.identity_$);
+      name: 'oauth2Model',
+      defaultValueFn: function() {
+        if ( this.mode === 'CHROME_IDENTITY' ) return this.OAuth2ChromeIdentity;
+        else                                   return this.OAuth2ChromeApp;
       },
     },
     {
@@ -71,17 +58,9 @@ CLASS({
       transient: true,
     },
     {
-      model_: 'FunctionProperty',
-      name: 'oauthFuture_',
-      documentation: function() {/* Future containing "base" OAuth object that
-        is cloned for authenticating new identities. */},
-      defaultValue: function() { return null; },
-    },
-    {
       type: 'foam.apps.builder.Identity',
-      name: 'identity_',
-      documentation: function() {/* Current identity bound to
-        current $$DOC{ref:'.ctx'} identity. */},
+      name: 'identity',
+      documentation: function() {/* Current identity. */},
       defaultValue: null,
       postSet: function(old, nu) {
         if ( this.oauthBinding_ )
@@ -92,6 +71,12 @@ CLASS({
         else
           this.oauthBinding_ = null;
       },
+    },
+    {
+      model_: 'ArrayProperty',
+      subType: 'foam.apps.builder.Identity',
+      name: 'identities',
+      lazyFactory: function() { return []; },
     },
     {
       type: 'foam.apps.builder.XHRBinding',
@@ -120,117 +105,90 @@ CLASS({
         return;
       }
 
+      // Setup future for any createIdentity() calls made before this one
+      // completes. When the future is resolved, this.newIdentity_ is reset
+      // to allow subsequent createIdentities() to start a new flow.
       var future = afuture();
       this.newIdentity_ = future.get;
 
-      // Fetch base OAuth, which may vary according to OAuth strategy.
-      this.oauthFuture_(function(baseOAuth) {
-        // Create a copy of base OAuth and force authentication screen
-        // for establishing new identity.
-        var oauth = baseOAuth.clone();
-        var err;
-        oauth.refresh(function(success, maybeError) {
-          if ( ! success ) {
-            err = maybeError || new Error('Identity manager: OAuth failed');
+      // Construct OAuth2 agent, which may vary according to OAuth strategy.
+      var oauth = this.oauth2Model.create({}, this.Y);
+      var err;
+      oauth.refresh(function(success, maybeError) {
+        if ( ! success ) {
+          err = maybeError || new Error('Identity manager: OAuth failed');
+          if ( opt_err ) opt_err(err);
+          else           ret(err);
+          future.set(err);
+          this.newIdentity_ = null;
+          return;
+        }
+
+        // Temporarily bind new oauth ("permanent" binding occurs when
+        // setting identity), then get user info, construct a new
+        // identity from it, save and set the identity.
+        var binding = this.xhrManager.bindAuthAgent(
+            /^https?:[/][/]www[.]googleapis[.]com/, oauth);
+        this.xhrManager.asend(function(data, xhr, status) {
+          this.xhrManager.unbindAuthAgent(binding);
+
+          if ( ! status ) {
+            err = new Error('Identity: Failed to reach identity service');
             if ( opt_err ) opt_err(err);
             else           ret(err);
-            future.set(err);
             this.newIdentity_ = null;
             return;
           }
 
-          // Temporarily bind new oauth ("permanent" binding occurs when
-          // setting identity on ctx), then get user info, construct a new
-          // identity from it, save and set the identity.
-          var binding = this.xhrManager.bindAuthAgent(
-              /^https?:[/][/]www[.]googleapis[.]com/, oauth);
-          this.xhrManager.asend(function(data, xhr, status) {
-            this.xhrManager.unbindAuthAgent(binding);
-
-            if ( ! status ) {
-              err = new Error('Identity: Failed to reach identity service');
-              if ( opt_err ) opt_err(err);
-              else           ret(err);
+          var identity = this.Identity.create({
+            id: data.id,
+            displayName: data.displayName,
+            oauth: oauth,
+            authType: this.OAuth2ChromeApp.isInstance(oauth) ? 'WEB' :
+                'CHROME_IDENTITY',
+          }, this.Y);
+          for ( var i = 0; i < data.emails.length; ++i ) {
+            if ( data.emails[i].type === 'account' ) {
+              var email = data.emails[i].value;
+              identity.email = email;
+              ret(this.setIdentity(identity));
+              future.set(identity);
               this.newIdentity_ = null;
               return;
             }
+          }
 
-            var identity = this.Identity.create({
-              id: data.id,
-              displayName: data.displayName,
-              oauth: oauth,
-              authType: this.OAuth2ChromeApp.isInstance(oauth) ? 'WEB' :
-                  'CHROME_IDENTITY',
-            }, this.Y);
-            for ( var i = 0; i < data.emails.length; ++i ) {
-              if ( data.emails[i].type === 'account' ) {
-                var email = data.emails[i].value;
-                identity.email = email;
-                ret(this.setIdentity(identity));
-                future.set(identity);
-                this.newIdentity_ = null;
-                return;
-              }
-            }
-
-            err = new Error('No account email found');
-            if ( opt_err ) opt_err(err);
-            else           ret(err);
-            future.set(err);
-            this.newIdentity_ = null;
-          }.bind(this), this.GET_IDENTITY, undefined, 'GET');
-        }.bind(this), true);
-      }.bind(this));
+          err = new Error('No account email found');
+          if ( opt_err ) opt_err(err);
+          else           ret(err);
+          future.set(err);
+          this.newIdentity_ = null;
+        }.bind(this), this.GET_IDENTITY, undefined, 'GET');
+      }.bind(this), true);
     },
     function getIdentity(ret, opt_err) {
-      if ( this.identity_ ) ret(this.identity_);
-      else                  this.createIdentity(ret, opt_err);
+      // TODO(markdittmer): This is a hack to support synchronousm mode.
+      // We should make this API always sync insteadk.
+      return this.identity;
+
+      if ( this.identity ) ret(this.identity);
+      else                 this.createIdentity(ret, opt_err);
+    },
+    function getIdentities() {
+      return this.identities.slice();
     },
     function setIdentity(identity) {
-      if ( ! this.ctx ) return null;
-      var existingIdentities = this.ctx.identities.filter(function(ident) {
+      var existingIdentities = this.identities.filter(function(ident) {
         return ident.id === identity.id;
       });
       if ( existingIdentities.length > 0 ) {
         identity = existingIdentities[0];
       } else {
-        this.ctx.identities = this.ctx.identities.pushF(identity);
+        this.identities = this.identities.pushF(identity);
       }
 
-      this.ctx.identity = identity;
+      this.identity = identity;
       return identity;
-    },
-    function init() {
-      this.SUPER();
-      this.setupOAuth();
-    },
-    function setupOAuth() {
-        if ( this.mode === 'WEB' ) this.setupWebOAuth();
-        else                       this.setupIdentityOAuth();
-    },
-    function setupWebOAuth() {
-      var future = afuture();
-      var xhrManager = this.xhrManager;
-      var Y = this.Y;
-
-      this.xhrManager.asend(function(data, xhr, status) {
-        if ( ! status ) {
-          future.set(null);
-          return;
-        }
-        // TODO(markdittmer): Shouldn't JSONUtil provide a Chrome App-friendly
-        // API for this?
-        aeval(data)(function(map) {
-          var oauth = JSONUtil.mapToObj(Y, map);
-          future.set(oauth);
-        });
-      }, this.oauthDataPath);
-
-      this.oauthFuture_ = future.get;
-    },
-    function setupIdentityOAuth() {
-      var oauth = this.OAuth2ChromeIdentity.create({}, this.Y);
-      this.oauthFuture_ = aconstant(oauth);
     },
   ],
 });

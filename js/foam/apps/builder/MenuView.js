@@ -13,21 +13,23 @@ CLASS({
   package: 'foam.apps.builder',
   name: 'MenuView',
   extendsModel: 'foam.ui.SimpleView',
-  traits: [
-  ],
 
   requires: [
     'foam.ui.DAOListView',
   ],
-  imports: [
-  ],
-  exports: [
-  ],
 
   properties: [
     {
+      type: 'foam.apps.builder.BrowserConfig',
+      name: 'data',
+    },
+    {
       model_:'ViewFactoryProperty',
       name: 'selectionList',
+    },
+    {
+      model_:'ViewFactoryProperty',
+      name: 'accountList',
     },
     {
       model_:'ViewFactoryProperty',
@@ -48,6 +50,11 @@ CLASS({
           </content>
         </logo>
         %%selectionList()
+        <% if ( this.accountList ) { %>
+          <hr />
+          %%accountList()
+          $$addAccount
+        <% } %>
         <% if ( this.viewList ) { %>
           <hr />
           %%viewList()

@@ -24,8 +24,9 @@ CLASS({
   ],
   imports: [
     'document',
-    'menuSelection$',
+    'identityManager$',
     'menuDAO$',
+    'menuSelection$',
   ],
 
   constants: {
@@ -43,6 +44,21 @@ CLASS({
           mode: 'read-only',
         }, this.Y.sub({
           selection$: this.menuSelection$,
+        }));
+        view.subscribe(view.ROW_CLICK, this.publish.bind(this, this.MENU_CLOSE));
+        return view;
+      },
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'accountListFactory',
+      defaultValue: function() {
+        var view = this.DAOListView.create({
+          data: this.identityManager.getIdentities(),
+          rowView: this.MenuItemCitationView,
+          mode: 'read-only',
+        }, this.Y.sub({
+          selection$: this.accountSelection$,
         }));
         view.subscribe(view.ROW_CLICK, this.publish.bind(this, this.MENU_CLOSE));
         return view;
@@ -77,9 +93,22 @@ CLASS({
       name: 'menuFactory',
       defaultValue: function() {
         return this.MenuView.create({
+          data: this,
           selectionList: this.selectionListFactory.bind(this),
+          accountList: this.accountListFactory.bind(this),
           viewList: this.viewListFactory.bind(this),
         }, this.Y);
+      },
+    },
+    {
+      type: 'foam.apps.builder.BrowserConfig',
+      name: 'menuSelection',
+    },
+    {
+      type: 'foam.apps.builder.Identity',
+      name: 'accountSelection',
+      defaultValueFn: function() {
+        return this.identityManager.getIdentity();
       },
     },
     {
@@ -114,6 +143,17 @@ CLASS({
       defaultValue: {
         factory_: 'foam.ui.md.UpdateDetailView',
         showModelActions: false,
+      },
+    },
+  ],
+
+  actions: [
+    {
+      name: 'addAccount',
+      label: '+',
+      code: function() {
+        this.identityManager.createIdentity(nop);
+        this.publish(this.data.MENU_CLOSE);
       },
     },
   ],

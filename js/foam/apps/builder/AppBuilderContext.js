@@ -24,7 +24,6 @@ CLASS({
       subType: 'foam.apps.builder.Identity',
       name: 'identities',
       lazyFactory: function() { return []; },
-      adapt: function(old, nu) { if ( nu ) return nu.dao; else return nu; },
     },
     {
       model_: 'BooleanProperty',

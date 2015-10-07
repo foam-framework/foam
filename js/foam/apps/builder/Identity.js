@@ -38,5 +38,10 @@ CLASS({
         ['WEB', 'Web'],
       ],
     },
+    {
+      model_: 'StringProperty',
+      name: 'label',
+      defaultValueFn: function() { return this.displayName; },
+    },
   ],
 });

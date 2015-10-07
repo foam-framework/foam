@@ -188,7 +188,7 @@ CLASS({
         authAgent: authAgent,
       }, this.Y).asend(ret, url, data, method, headers);
     },
-      ],
+  ],
 
   listeners: [
     {
