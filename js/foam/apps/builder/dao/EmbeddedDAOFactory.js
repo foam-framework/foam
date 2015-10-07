@@ -40,7 +40,10 @@ CLASS({
           seqNo: true,
           logging: true,
         });
-        this.store_ = [].dao;
+        if (! this.store_ ) {
+          this.store_ = [];
+        }
+        this.store_.dao;
 
         this.syncShared();
 
@@ -56,6 +59,44 @@ CLASS({
       model_: 'ArrayProperty',
       name: 'store_',
       hidden: true,
+      documentation: function() {/* Since we are potentially externally storing
+        the custom model needed to deserialize this content, we don't
+        set model_ on the items so they are not immediately FOAMalized when
+        deserializing. We have to come back and inflate them later. */},
+      propertyToJSON: function(visitor, output, o) {
+        if ( o[this.name].length ) {
+          // decorate visitor to rename model_
+          var DeflateObjectToJSON = {
+            __proto__: ObjectToJSON.create(),
+            visitObject: function(o) {
+              this.push({
+                // set model_ such that deserialize won't find it
+                __model_: (o.model_.package ? o.model_.package + '.' : '') + o.model_.name
+              });
+              Visitor.visitObject.call(this, o);
+              return this.pop();
+            },
+            // Substitute in-place
+            visitArray: Visitor.visitArray,
+            visitArrayElement: function (arr, i) { arr[i] = this.visit(arr[i]); }
+          };
+          output[this.name] = DeflateObjectToJSON.visitArray(o[this.name]);
+        }
+      },
+      getter: function(name) {
+        var val = this.instance_[name];
+        // we delayed deserialization by hiding model_ for our content
+        // if content not inflated yet, inflate it
+        if ( val && val[0] && val[0].__model_ ) {
+          console.warn("EmbeddedDAO Getter, not inflated yet:", val, (new Error()).stack);
+          val = this.inflate(val);
+        }
+        this.instance_[name] = val;
+        return val;
+      },
+       preSet: function(old,nu) {
+         return nu.slice();
+       },
     },
     {
       model_: 'foam.apps.builder.NoCloneProperty',
@@ -68,6 +109,20 @@ CLASS({
   ],
 
   methods: [
+    function inflate(val) {
+      var InflateJSONToObject = {
+        __proto__: JSONToObject,
+        visitMap: function(o) {
+          if ( o.__model_ ) {
+            o.model_ = o.__model_;
+            delete o.__model_;
+          }
+          return this.__proto__.visitObject(o);
+        },
+      };
+      return InflateJSONToObject.visit(val);
+    },
+
     function syncShared() {
       this.store_.dao;
 

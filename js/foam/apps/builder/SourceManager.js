@@ -67,9 +67,10 @@ CLASS({
       config.toManifest(out);
       sources.push(this.createFile('manifest.json', out.toString()));
 
+      var jsonConfig = ObjectToJSON.visit(config);
       sources.push(this.createFile(
           'config.json',
-          JSONUtil.compact.where(NOT_TRANSIENT).stringify(config)));
+          JSONUtil.compact.where(NOT_TRANSIENT).stringify(jsonConfig)));
 
       return sources;
     },

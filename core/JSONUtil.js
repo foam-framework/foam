@@ -139,8 +139,8 @@ var JSONUtil = {
 
           return obj;
         }
-	var ret = newObj ? newObj.create(obj, X) : obj;
-	return ret.readResolve ? ret.readResolve() : ret;
+        var ret = newObj ? newObj.create(obj, X) : obj;
+        return ret.readResolve ? ret.readResolve() : ret;
       }
       return obj
     }
@@ -170,7 +170,7 @@ var JSONUtil = {
         out(obj.toString());
       }
       else if ( obj instanceof Object ) {
-        if ( obj.model_ )
+        if ( obj.model_ && obj.model_.id )
           this.outputObject_(out, obj, opt_defaultModel);
         else
           this.outputMap_(out, obj);
