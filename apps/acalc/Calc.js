@@ -475,7 +475,7 @@ CLASS({
       model_: "UnaryOp",
       name: "tan",
       speechLabel: "tangent",
-      f: function(a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }
+      f: function(a) { return Math.tan(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
       name: 'deg',
