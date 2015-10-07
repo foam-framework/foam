@@ -53,10 +53,11 @@ CLASS({
         }
         if ( ! first ) out('"');
 
-        for ( var key in this.attributeMap ) {
-          var value = this.attributeMap[key].value;
-
-          out(' ', key);
+        for ( var i = 0 ; i < this.attributes.length ; i++ ) {
+          var attr = this.attributes[i];
+          var value = this.attributes[i].value;
+          
+          out(' ', attr.name);
           if ( value !== undefined )
             out('="', value, '"');
         }
@@ -249,6 +250,7 @@ CLASS({
       name: 'attributes',
       factory: function() { return []; },
       postSet: function(_, attrs) {
+        this.attributeMap = {};
         for ( var i = 0 ; i < attrs.length ; i++ )
           this.attributeMap[attrs[i].name] = attrs[i];
       }
