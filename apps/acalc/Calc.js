@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-if ( ! 'log10' in Math ) Math.log10 = function(a) { return Math.log(a) / Math.LN10; };
-
-function gamma(z) {
-  return Math.sqrt(2 * Math.PI / z) * Math.pow((1 / Math.E) * (z + 1 / (12 * z - 1 / (10 * z))), z);
-}
-
 MODEL({
   name: 'BinaryOp',
   extendsModel: 'Action',
@@ -188,21 +182,35 @@ CLASS({
     }
   ],
 
-  methods: {
-    factorial: function(n) {
+  methods: [
+    function init() {
+      this.SUPER();
+
+      if ( ! 'log10' in Math ) Math.log10 = function(a) { return Math.log(a) / Math.LN10; };
+
+      Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
+        if ( Number.isNaN(this.a2) ) this.error();
+        var a2 = this.numberFormatter.formatNumber(this.a2);
+        this.row1 = this.op.label + ( a2 !== '' ? '&nbsp;' + a2 : '' );
+      }.bind(this)));
+    },
+    function gamma(z) {
+      return Math.sqrt(2 * Math.PI / z) * Math.pow((1 / Math.E) * (z + 1 / (12 * z - 1 / (10 * z))), z);
+    },
+    function factorial(n) {
       if ( n > 170 ) {
         this.error();
         return 1/0;
       }
       n = parseFloat(n);
-      if ( ! Number.isInteger(n) ) return gamma(n+1);
+      if ( ! Number.isInteger(n) ) return this.gamma(n+1);
       var r = 1;
       while ( n > 0 ) r *= n--;
       return r;
     },
-    permutation: function(n, r) { return this.factorial(n) / this.factorial(n-r); },
-    combination: function(n, r) { return this.permutation(n, r) / this.factorial(r); },
-    error: function() {
+    function permutation(n, r) { return this.factorial(n) / this.factorial(n-r); },
+    function combination(n, r) { return this.permutation(n, r) / this.factorial(r); },
+    function error() {
       // TODO(kgr): Move to CalcView
       if ( this.X.$$('calc-display')[0] ) setTimeout(this.Flare.create({
         element: this.X.$$('calc-display')[0],
@@ -215,16 +223,7 @@ CLASS({
       this.row1 = '';
       this.editable = true;
     },
-    init: function() {
-      this.SUPER();
-
-      Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
-        if ( Number.isNaN(this.a2) ) this.error();
-        var a2 = this.numberFormatter.formatNumber(this.a2);
-        this.row1 = this.op.label + ( a2 !== '' ? '&nbsp;' + a2 : '' );
-      }.bind(this)));
-    },
-    push: function(a2, opt_op) {
+    function push(a2, opt_op) {
       if ( a2 != this.a2 ||
            ( opt_op || DEFAULT_OP ) != this.op )
         this.row1 = '';
@@ -234,10 +233,10 @@ CLASS({
       this.op = opt_op || DEFAULT_OP;
       this.a2 = a2;
     },
-    replace: function(op) {
+    function replace(op) {
       this.op = op || DEFAULT_OP;
     }
-  },
+  ],
 
   actions: [
     { model_: 'Num', n: 1 },
@@ -460,6 +459,20 @@ CLASS({
       f: function(a1, a2) { return Math.pow(a1, a2); }
     },
     {
+      name: 'deg',
+      speechLabel: 'switch to degrees',
+      keyboardShortcuts: [],
+      translationHint: 'short form for "degrees" calculator mode',
+      code: function() { this.degreesMode = true; }
+    },
+    {
+      name: 'rad',
+      speechLabel: 'switch to radians',
+      keyboardShortcuts: [],
+      translationHint: 'short form for "radians" calculator mode',
+      code: function() { this.degreesMode = false; }
+    },
+    {
       model_: "UnaryOp",
       name: "sin",
       speechLabel: "sine",
@@ -476,20 +489,6 @@ CLASS({
       name: "tan",
       speechLabel: "tangent",
       f: function(a) { return Math.tan(this.degreesMode ? a * Math.PI / 180 : a) }
-    },
-    {
-      name: 'deg',
-      speechLabel: 'switch to degrees',
-      keyboardShortcuts: [],
-      translationHint: 'short form for "degrees" calculator mode',
-      code: function() { this.degreesMode = true; }
-    },
-    {
-      name: 'rad',
-      speechLabel: 'switch to radians',
-      keyboardShortcuts: [],
-      translationHint: 'short form for "radians" calculator mode',
-      code: function() { this.degreesMode = false; }
     },
     {
       model_: "UnaryOp",
