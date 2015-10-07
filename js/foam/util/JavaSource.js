@@ -78,14 +78,24 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
 <% for ( var key in this.properties ) {
   var prop = this.properties[key];
   javaSource.propertySource.call(this, out, prop);
-} %>
-<% if (this.relationships && this.relationships.length) {
+}
+if (this.relationships && this.relationships.length) {
   for ( var i = 0; i < this.relationships.length; i++) {
     var rel = this.relationships[i];
     javaSource.relationshipSource.call(this, out, rel);
   }
-} %>
-final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] {<% var allProps = this.getRuntimeProperties(); for (var i = 0; i < allProps.length; i++) { var prop = allProps[i]; %> <%= constantize(prop.name) %>,<% } %>} , new Relationship[] {<% if (this.relationships && this.relationships.length) { for (var i = 0; i < this.relationships.length; i++) { %> <%= constantize(this.relationships[i].name) %>, <% } } %> }) {
+}
+
+var allProps = this.getRuntimeProperties();
+allProps = allProps.filter(function(m) {
+  if ( m.labels && m.labels.indexOf('java') == -1 ) {
+    return false;
+  }
+  return true;
+});
+
+ %>
+final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] {<% for (var i = 0; i < allProps.length; i++) { var prop = allProps[i]; %> <%= constantize(prop.name) %>,<% } %>} , new Relationship[] {<% if (this.relationships && this.relationships.length) { for (var i = 0; i < this.relationships.length; i++) { %> <%= constantize(this.relationships[i].name) %>, <% } } %> }) {
     public String getName() { return "<%= this.id %>"; }
     public String getShortName() { return "<%= this.name %>"; }
     public String getLabel() { return "<%= this.label %>"; }
