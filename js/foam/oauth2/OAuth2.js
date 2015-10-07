@@ -52,6 +52,7 @@ CLASS({
     {
       model_: 'FunctionProperty',
       name: 'refresh_',
+      transient: true,
       lazyFactory: function() {
         return this.refresh_ = amerged(this.refreshNow_.bind(this));
       }
