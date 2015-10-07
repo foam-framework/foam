@@ -13,7 +13,7 @@ CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'QuestionnaireController',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extendsModel: 'foam.apps.builder.AppController',
 
   requires: [
     'foam.ui.md.DetailView',
@@ -44,9 +44,6 @@ CLASS({
     {
       name: 'dao',
       help: 'The store of questionnaires filled in by users.',
-      lazyFactory: function() {
-        return this.Y.submissionsDAO;
-      }
     },
     {
       name: 'content',
@@ -55,6 +52,13 @@ CLASS({
       lazyFactory: function() {
         return this.data.getDataConfig().model.create({}, this.Y);
       }
+    },
+  ],
+
+  methods: [
+    function exportDAOs() {
+      this.SUPER();
+      this.dao = this.Y.submissionsDAO;
     },
   ],
 

@@ -64,7 +64,7 @@ CLASS({
         set model_ on the items so they are not immediately FOAMalized when
         deserializing. We have to come back and inflate them later. */},
       propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) {
+        if ( o[this.name] && o[this.name].length ) {
           // decorate visitor to rename model_
           var DeflateObjectToJSON = {
             __proto__: ObjectToJSON.create(),
@@ -88,7 +88,7 @@ CLASS({
         // we delayed deserialization by hiding model_ for our content
         // if content not inflated yet, inflate it
         if ( val && val[0] && val[0].__model_ ) {
-          console.warn("EmbeddedDAO Getter, not inflated yet:", val, (new Error()).stack);
+          //console.warn("EmbeddedDAO Getter, not inflated yet:", val, (new Error()).stack);
           val = this.inflate(val);
         }
         this.instance_[name] = val;
