@@ -16,12 +16,12 @@
  */
 
 CLASS({
-  package: 'foam.node2',
+  package: 'foam.node',
   name: 'Server',
   requires: [
-    'foam.node.server.StaticFileHandler',
-    'foam.node.server.FileHandler',
-    'foam.node2.DAOHandler'
+    'foam.node.handlers.StaticFileHandler',
+    'foam.node.handlers.FileHandler',
+    'foam.node.handlers.DAOHandler'
   ],
   exports: [
     'exportDAO',

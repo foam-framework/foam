@@ -16,24 +16,20 @@
  */
 
 CLASS({
-  package: 'foam.node2',
-  name: 'ServeFOAM',
-  imports: [
-    'exportFile',
-    'exportDirectory'
-  ],
-  methods: [
-    function execute() {
-      this.exportFile('/index.html', global.FOAM_BOOT_DIR + '/../index.html');
-      this.exportFile('/index.js', global.FOAM_BOOT_DIR + '/../index.js');
-      [
-        'apps',
-        'core',
-        'demos',
-        'js'
-      ].forEach(function(d) {
-        this.exportDirectory('/' + d, global.FOAM_BOOT_DIR + '/../' + d);
-      }.bind(this));
-    }
+  package: 'foam.node',
+  name: 'NodeRequireProperty',
+  extendsModel: 'Property',
+  properties: [
+    {
+      name: 'moduleName',
+      defaultValueFn: function(prop) { return this.name; }
+    },
+    {
+      name: 'factory',
+      defaultValue: function(prop) {
+        return require(prop.moduleName);
+      }
+    },
+    ['hidden', true]
   ]
 });

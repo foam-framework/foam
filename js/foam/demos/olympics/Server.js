@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-// Run server with: node --harmony tools/foam.js foam.demos.olympics.Server
 CLASS({
   package: 'foam.demos.olympics',
   name: 'Server',
-  extendsModel: 'foam.node.tools.Server',
   requires: [
     'foam.dao.EasyDAO',
     'foam.demos.olympics.Medal',
-    'foam.node.server.RepoServerConfig'
+  ],
+  imports: [
+    'exportDAO'
   ],
   properties: [
     {
@@ -31,7 +31,7 @@ CLASS({
       factory: function() { return require('fs'); }
     },
     {
-      name: 'config',
+      name: 'medalDAO',
       factory: function() {
 	var result =
 	    this.fs.readFileSync(global.FOAM_BOOT_DIR + '/../js/foam/demos/olympics/MedalData.json');
@@ -49,13 +49,10 @@ CLASS({
 	  seqNo: true,
 	  autoIndex: true
 	});
-
 	result.select(dao);
-        return this.RepoServerConfig.create({
-          port: 8888,
-          daos: [dao]
-        });
+
+        return dao;
       }
-    },
+    }
   ]
 });
