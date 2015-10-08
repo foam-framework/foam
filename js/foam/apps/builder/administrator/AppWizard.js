@@ -19,7 +19,6 @@ CLASS({
   ],
 
   imports: [
-    'selection$',
     'wizardStack',
   ],
 
@@ -37,13 +36,16 @@ CLASS({
   methods: [
     function onNext() {
       this.SUPER(); // puts the app into the main dao
-      this.selection = this.data; // imported selection from browser's main list
     },
     function onCancel() {
       this.SUPER();
       // remove the unfinished app. The user must have backed out of
       // every other wizard page to get back here.
-      this.dao && this.dao.remove(this.data);
+      this.dao && this.dao.remove(this.data, { remove: function(cfg) {
+        if ( this.appSelection && ( this.appSelection.appId == cfg.appId ) ) {
+          this.appSelection = '!';
+        }
+      }.bind(this) });
     },
   ],
 

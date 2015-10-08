@@ -21,8 +21,13 @@ CLASS({
   imports: [
     'setTimeout'
   ],
+  exports: [
+    'appSelection$ as selection$',
+    'appSelection$',
+  ],
 
   properties: [
+    'appSelection',
     {
       model_: 'ViewFactoryProperty',
       name: 'menuSelectionFuture',

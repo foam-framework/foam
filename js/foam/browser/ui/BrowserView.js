@@ -51,6 +51,7 @@ CLASS({
       imports: [
         'document',
         'stack',
+        'selection$',
       ],
       exports: [
         'selection$',

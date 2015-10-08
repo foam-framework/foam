@@ -20,7 +20,7 @@ CLASS({
   ],
 
   exports: [
-    'wizardStack'
+    'wizardStack',
   ],
 
   properties: [
