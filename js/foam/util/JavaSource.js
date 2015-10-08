@@ -77,6 +77,8 @@ public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
     extends <%= parentClassName %> {
 <% for ( var key in this.properties ) {
   var prop = this.properties[key];
+  if ( prop.labels && prop.labels.indexOf('compiletime') != -1  )
+    continue;
   javaSource.propertySource.call(this, out, prop);
 }
 if (this.relationships && this.relationships.length) {
@@ -88,7 +90,9 @@ if (this.relationships && this.relationships.length) {
 
 var allProps = this.getRuntimeProperties();
 allProps = allProps.filter(function(m) {
-  if ( m.labels && m.labels.indexOf('java') == -1 ) {
+  if ( m.labels &&
+        ( m.labels.indexOf('java') == -1 ||
+          m.labels.indexOf("compiletime') != -1 ) {
     return false;
   }
   return true;
