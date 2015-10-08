@@ -34,7 +34,7 @@
 /** Plan indicating that there are no matching records. **/
 var NOT_FOUND = {
   cost: 0,
-  execute: function(_, sink, _) { return anop; },
+  execute: function(_, sink, __) { return anop; },
   toString: function() { return "no-match(cost=0)"; }
 };
 

@@ -190,7 +190,7 @@ layout();
     var byModel = GroupBySearchView.create({width: 33, size: 15, dao: dao, property: Feature.MODEL});
     var byType = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.name_});
     var byName = GroupBySearchView.create({width: 33, size: 8, dao: dao, property: Feature.NAME});
-    Object.defineProperty(byModel, 'updateChoice', {value: (function(_, _, _, choice) {
+    Object.defineProperty(byModel, 'updateChoice', {value: (function(_, __, ___, choice) {
        if ( choice ) {
           this.predicate = EQ(this.property, choice);
 

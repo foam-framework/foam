@@ -68,3 +68,11 @@ e10.write();
 var e11 = E('font').add(E('br'), 'set attr after',E('br'));
 e11.write();
 e11.attrs({color: 'red'});
+
+var e12 = E('div').add('dynamic style');
+e12.write();
+e12.style({
+  background: '#ccc',
+  width: 200,
+  color: function() { return Math.floor(timer.i/20) % 2 ? 'black' : 'yellow'; }
+});

@@ -175,7 +175,7 @@ CLASS({
   listeners: [
     {
       name: 'onKeyDown',
-      code: function(_,_,e) {
+      code: function(_, __, e) {
         if ( ! this.view ) return;
 
         if ( e.keyCode === 38 /* arrow up */ ) {

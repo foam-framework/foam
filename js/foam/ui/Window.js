@@ -119,6 +119,7 @@ CLASS({
       return Events.dynamic(fn, opt_fn, this.Y);
     },
     // TODO(kgr): experimental, remove if never used
+    // avoids capturing nested accessess
     dynamic2: function(fn) {
       var listener = this.framed(fn);
       var propertyValues = [];
@@ -144,6 +145,7 @@ CLASS({
     },
     // TODO(kgr): experimental, remove if never used,
     // TODO(kgr): Move to a 'global' context above Window
+    // checks fn for its named dependencies
     dynamic3: function(obj, fn, opt_ret) {
       var values = fn.dependencies.map(function(name) { return obj.propertyValue(name); });
 

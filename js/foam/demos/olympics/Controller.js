@@ -150,7 +150,7 @@ CLASS({
     {
       name: 'onPredicateChange',
       isFramed: true,
-      code: function(_, _, _, predicate) {
+      code: function(_, __, ___, predicate) {
         this.sql = 'SELECT * FROM Medal' +
           (predicate !== TRUE ? ' WHERE (' + predicate.toSQL() + ')' : '');
 
