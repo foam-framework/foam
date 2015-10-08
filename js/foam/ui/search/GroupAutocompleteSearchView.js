@@ -145,7 +145,7 @@ CLASS({
     },
     {
       name: 'updatePredicate',
-      code: function(_, _, _, value) {
+      code: function(_, __, ___, value) {
         this.predicate = value ? this.op(this.property, value) : TRUE;
         this.memento = value;
       }

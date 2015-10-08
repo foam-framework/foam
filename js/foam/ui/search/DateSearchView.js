@@ -69,7 +69,7 @@ CLASS({
   listeners: [
     {
       name: 'updateValue',
-      code: function(_, _, _, date) {
+      code: function(_, __, ___, date) {
         this.predicate = date ? this.op(this.property, date) : TRUE ;
       }
     },

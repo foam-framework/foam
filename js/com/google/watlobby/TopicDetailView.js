@@ -29,7 +29,7 @@ CLASS({
   listeners: [
     {
       name: 'onModelChange',
-      code: function(_, _, _, model) {
+      code: function(_, __, ___, model) {
         this.videoView.$.style.display = model === 'Video' ? 'block' : 'none'; 
         this.textView.$.style.display = model !== 'Video' ? 'block' : 'none'; 
       }

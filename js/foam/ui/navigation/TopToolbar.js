@@ -69,7 +69,7 @@ CLASS({
   listeners: [
     {
       name: 'onResize',
-      code: function(_, _, old, nu) {
+      code: function(_, __, old, nu) {
         this.preferredHeight += nu - old;
       }
     }

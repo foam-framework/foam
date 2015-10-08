@@ -263,7 +263,7 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
       var cancel = null;
       if ( ! cell ) {
         cell = this.cells[name] = this.Cell.create();
-        cell.formula$.addListener(function(_, _, _, formula) {
+        cell.formula$.addListener(function(_, __, ___, formula) {
           var f = self.parser.parseString(formula);
           cancel && cancel.destroy();
           cancel = self.dynamic(f.bind(null, self), function(v) {

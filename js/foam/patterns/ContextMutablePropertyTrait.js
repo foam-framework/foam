@@ -40,7 +40,7 @@ CLASS({
         var propHiddenExport = prop.name + "$ExportedValue";
 
         var setUpListener = function() {
-          this.instance_[propListenerName] = function(_,_,old,nu) {
+          this.instance_[propListenerName] = function(_,__,old,nu) {
             // don't trigger our modified setter that captures non-inherited change events
             actualSetter.apply(this, [nu]);
           }.bind(this);

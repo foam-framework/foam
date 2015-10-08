@@ -162,7 +162,7 @@ CLASS({
     {
       name: 'updatePredicate',
 
-      code: function(_, _, _, choice) {
+      code: function(_, __, ___, choice) {
         var exists = typeof choice !== 'undefined' && choice !== '';
         this.predicate = exists ? this.op(this.property, choice) : TRUE ;
         this.memento = exists ? '' + choice : '';

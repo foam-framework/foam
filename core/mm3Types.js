@@ -529,7 +529,7 @@ CLASS({
         defineLazyProperty(this, prop.name + '$Proxy', function() {
           var proxy = this.X.lookup('foam.dao.ProxyDAO').create({delegate: this[prop.name].dao});
 
-          this.addPropertyListener(prop.name, function(_, _, _, a) {
+          this.addPropertyListener(prop.name, function(_, __, ___, a) {
             proxy.delegate = a.dao;
           });
 

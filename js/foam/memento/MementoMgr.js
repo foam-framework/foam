@@ -69,7 +69,7 @@ CLASS({
   listeners: [
     {
       name: 'onMementoChange',
-      code: function(_, _, oldValue, newValue) {
+      code: function(_, __, oldValue, newValue) {
         if ( this.ignore_ ) return;
 
         // console.log('MementoMgr.onChange', oldValue, newValue);

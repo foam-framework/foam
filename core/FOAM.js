@@ -188,18 +188,18 @@ function packagePath(X, path) {
 function registerModel(model, opt_name, fastMode) {
   var root    = model.package ? this : GLOBAL;
   var name    = model.name;
-  var package = model.package;
+  var pack = model.package;
 
   if ( opt_name ) {
     var a = opt_name.split('.');
     name = a.pop();
-    package = a.join('.');
+    pack = a.join('.');
   }
 
-  var modelRegName = (package ? package + '.' : '') + name;
+  var modelRegName = (pack ? pack + '.' : '') + name;
 
   if ( root === GLOBAL || root === X ) {
-    var path = packagePath(root, package);
+    var path = packagePath(root, pack);
     if ( fastMode )
       path[name] = model;
     else

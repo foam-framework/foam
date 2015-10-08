@@ -212,7 +212,7 @@ CLASS({
   listeners: [
     {
       name: 'tick',
-      code: function(_, _, _, t) {
+      code: function(_, __, ___, t) {
         if ( t % 100 == 0 ) this.addFood();
         if ( Math.random() < 0.02 ) this.addMushroom();
       }
