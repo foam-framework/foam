@@ -42,6 +42,7 @@ CLASS({
       getter: function() { return this.id + "-input"; },
     },
     ['hintText', 'Click to select an image or Drag & drop an image file here'],
+    ['mode', 'read-write'],
   ],
 
   methods: [
@@ -130,22 +131,25 @@ CLASS({
 
     */},
     function toHTML() {/*
-      <image-picker <%= this.cssClassAttr() %> id="%%id">
-        $$data{ model_: 'foam.ui.ImageView', extraClassName: 'image-picker-preview' }
-        <div class="content">
-          $$hintText{ mode: 'read-only' }
-        </div>
-        <input type="file" id="%%inputId" accept="image/*" style="display:none">
-      </image-picker>
-      <%
-      this.on('change', this.inputFileChange, this.inputId);
-      this.on('click', this.inputClick, this.id);
+      <% if ( this.mode == 'read-only' ) { %>
+        $$data{ model_: 'foam.ui.ImageView' }
+      <% } else { %>
+        <image-picker <%= this.cssClassAttr() %> id="%%id">
+          $$data{ model_: 'foam.ui.ImageView', extraClassName: 'image-picker-preview' }
+          <div class="content">
+            $$hintText{ mode: 'read-only' }
+          </div>
+          <input type="file" id="%%inputId" accept="image/*" style="display:none">
+        </image-picker>
+        <%
+        this.on('change', this.inputFileChange, this.inputId);
+        this.on('click', this.inputClick, this.id);
 
-      this.on("dragenter", this.squelchEvent, this.id);
-      this.on("dragover", this.squelchEvent, this.id);
-      this.on("drop", this.inputDrop, this.id);
-
-      this.setMDClasses();
+        this.on("dragenter", this.squelchEvent, this.id);
+        this.on("dragover", this.squelchEvent, this.id);
+        this.on("drop", this.inputDrop, this.id);
+        this.setMDClasses();
+      }
       %>
     */}
   ]
