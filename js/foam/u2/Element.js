@@ -401,8 +401,21 @@ CLASS({
       return this;
     },
 
+    function dynamicAttr_(key, fn) {
+      var self = this;
+      this.dynamic(fn, function(value) {
+        self.setAttribute(key, value);
+      });
+    },
+
     function attrs(map) {
-      for ( var key in map ) this.setAttribute(key, map[key]);
+      for ( var key in map ) {
+        var value = map[key];
+        if ( typeof value === 'function' )
+          this.dynamicAttr_(key, value);
+        else
+          this.setAttribute(key, value);
+      }
       return this;
     },
 

@@ -74,5 +74,13 @@ e12.write();
 e12.style({
   background: '#ccc',
   width: 200,
+  visibility: function() { return Math.floor(timer.i/30) % 2 ? 'hidden' : 'visible'; },
   color: function() { return Math.floor(timer.i/20) % 2 ? 'black' : 'yellow'; }
+});
+
+var e13 = E('font').add('dynamic attribute');
+e13.write();
+e13.attrs({
+  size: function() { return Math.floor(timer.i/20) % 9; },
+  color: 'black'
 });
