@@ -53,7 +53,7 @@ CLASS({
         var setUpListener = function() {
           this.instance_[propSourceName] = findParentValue(this.parent, prop.name);
           if ( this.instance_[propSourceName] ) {
-            this.instance_[propListenerName] = function(_,_,old,nu) {
+            this.instance_[propListenerName] = function(_, __,old,nu) {
               actualSetter.apply(this, [nu]);
             }.bind(this);
             this.instance_[propSourceName].addListener(this.instance_[propListenerName] );

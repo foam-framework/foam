@@ -292,7 +292,7 @@ CLASS({
   listeners: [
     {
       name: 'onSearch',
-      code: function(_,_,_,q) {
+      code: function(_, __, ___,q) {
         if ( ! this.maybeSetLegacyUrl(q) ) this.location.q = q;
       }
     },

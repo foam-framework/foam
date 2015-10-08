@@ -46,7 +46,7 @@ CLASS({
       {
          "model_": "Method",
          "name": "onChange",
-         "code": function (_, _, oldValue, newValue) {
+         "code": function (_, __, oldValue, newValue) {
         if ( newValue ) {
           if ( this.callback ) this.callback();
           this.callback = this.busyStatus.start();

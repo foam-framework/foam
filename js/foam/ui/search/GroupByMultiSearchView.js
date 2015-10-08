@@ -72,7 +72,7 @@ CLASS({
     {
       name: 'updatePredicate',
       isFramed: true,
-      code: function(_, _, _, choices) {
+      code: function(_, __, ___, choices) {
         if ( choices[''] ) { this.view.data = {}; return; }
         var keys = Object.keys(choices);
         this.predicate = keys.length ? this.op(this.property, keys) : TRUE ;

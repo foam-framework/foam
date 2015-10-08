@@ -159,7 +159,7 @@ CLASS({
   methods: {
     decorateObject: function(target) {
       var asend = adelay(target.asend.bind(target), this.delayMs);
-      target.decorate('asend', function(_, _, args) {
+      target.decorate('asend', function(_, __, args) {
         asend.apply(null, args);
       });
     }

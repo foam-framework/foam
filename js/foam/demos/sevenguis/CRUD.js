@@ -77,7 +77,7 @@ MODEL({
   methods: [
     function initHTML() {
       this.SUPER();
-      this.filteredDAOView.hardSelection$.addListener(function(_, _, _, selection) {
+      this.filteredDAOView.hardSelection$.addListener(function(_, __, ___, selection) {
         if ( selection ) this.data.copyFrom(selection);
       }.bind(this));
     }

@@ -43,7 +43,7 @@ CLASS({
     function decorateObject(object) {
       this.view.addPropertyListener(
         'predicate',
-        function(border, _, _, pred) {
+        function(border, _, __, pred) {
           object.dao = border.dao.where(pred);
         });
     },

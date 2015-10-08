@@ -72,7 +72,7 @@ CLASS({
     {
       name: 'onDataChange',
       isFramed: true,
-      code: function(_, _, oldValue, newValue) {
+      code: function(_, __, oldValue, newValue) {
         if ( ! this.$ ) return;
         var f1$ = this.$.querySelector('.f1');
         var f2$ = this.$.querySelector('.f2');

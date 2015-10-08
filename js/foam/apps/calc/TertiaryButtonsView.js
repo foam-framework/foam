@@ -42,7 +42,7 @@ CLASS({
             </div>
           </div>
           <%
-            var l = function(_, _, _, degrees) {
+            var l = function(_, __, ___, degrees) {
               this.degView.font = degrees ? '600 18px RobotoDraft' : '300 18px RobotoDraft';
               this.radView.font = degrees ? '300 18px RobotoDraft' : '600 18px RobotoDraft';
               if ( this.degView.view ) {
