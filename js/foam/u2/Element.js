@@ -23,6 +23,10 @@ CLASS({
     'foam.u2.ElementValue'
   ],
 
+  imports: [
+    'dynamic'
+  ],
+
   constants: {
     INITIAL: {
       output: function(out) {
@@ -402,6 +406,13 @@ CLASS({
       return this;
     },
 
+    function dynamicStyle_(key, fn) {
+      var self = this;
+      this.dynamic(fn, function(value) {
+        self.style_(key, value);
+      });
+    },
+
     function style_(key, value) {
       this.css[key] = value;
       this.onSetStyle(key, value);
@@ -409,7 +420,13 @@ CLASS({
     },
 
     function style(map) {
-      for ( var key in map ) this.style_(key, map[key]);
+      for ( var key in map ) {
+        var value = map[key];
+        if ( typeof value === 'function' )
+          this.dynamicStyle_(key, value);
+        else
+          this.style_(key, value);
+      }
       return this;
     },
 
