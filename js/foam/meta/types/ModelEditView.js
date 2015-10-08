@@ -109,6 +109,7 @@ CLASS({
   methods: [
     function put(o, sink) {
       /* TODO: this is only used by the create action's view */
+      if ( ! o.model ) return;
       var prop = this.X.lookup(o.model).create({ name: o.name });
       this.data.properties.put(prop);
       prop.addListener(this.subObjectChange);

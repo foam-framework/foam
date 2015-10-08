@@ -41,13 +41,17 @@ CLASS({
       <div class="md-card-heading-content-spacer"></div>
       <div class="new-existing-wizard-dao-page-scroller">
       <div class="new-existing-wizard-dao-page">
-        $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
-          orientation: 'vertical',
-          choices: [
-            [this.editViewFactory, this.model_.EDIT_VIEW_FACTORY.label],
-            [this.existingViewFactory, this.model_.EXISTING_VIEW_FACTORY.label ],
-          ]
-        }
+        <% if ( this.existingDAO ) { %>
+          $$nextViewFactory{ model_: 'foam.ui.md.ChoiceRadioView',
+            orientation: 'vertical',
+            choices: [
+              [this.editViewFactory, this.model_.EDIT_VIEW_FACTORY.label],
+              [this.existingViewFactory, this.model_.EXISTING_VIEW_FACTORY.label ],
+            ]
+          }
+        <% } else { %>
+          <p>Click Next to change your model, or cancel to leave it unchanged.</p>
+        <% } %>
         <% if ( this.existingDAO ) { %>
           <div id="<%= this.id %>-container">
             $$existingDAO
@@ -56,8 +60,10 @@ CLASS({
       </div>
       </div>
       <%
-        this.setClass('existing-hidden', function() { return self.nextViewFactory !== self.existingViewFactory; }, this.id+'-container');
-        this.setClass('new-existing-wizard-dao-container', function() { return true; }, this.id+'-container');
+        if ( this.existingDAO ) {
+          this.setClass('existing-hidden', function() { return self.nextViewFactory !== self.existingViewFactory; }, this.id+'-container');
+          this.setClass('new-existing-wizard-dao-container', function() { return true; }, this.id+'-container');
+        }
       %>
     */},
   ],
