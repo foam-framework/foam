@@ -28,6 +28,8 @@ CLASS({
     'foam.ui.md.ChoiceRadioView',
     'foam.ui.md.DateFieldView',
     'foam.ui.md.DateTimeFieldView',
+    'foam.ui.md.ColorFieldView',
+    'foam.ui.md.ImagePickerView',
   ],
 
   properties: [

@@ -137,7 +137,7 @@ CLASS({
         <image-picker <%= this.cssClassAttr() %> id="%%id">
           $$data{ model_: 'foam.ui.ImageView', extraClassName: 'image-picker-preview' }
           <div class="content">
-            $$hintText{ mode: 'read-only' }
+            $$hintText{ mode: 'read-only', floatingLabel: false }
           </div>
           <input type="file" id="%%inputId" accept="image/*" style="display:none">
         </image-picker>
