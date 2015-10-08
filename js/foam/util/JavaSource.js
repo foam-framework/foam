@@ -92,7 +92,7 @@ var allProps = this.getRuntimeProperties();
 allProps = allProps.filter(function(m) {
   if ( m.labels &&
         ( m.labels.indexOf('java') == -1 ||
-          m.labels.indexOf("compiletime') != -1 ) ) {
+          m.labels.indexOf("compiletime") != -1 ) ) {
     return false;
   }
   return true;
