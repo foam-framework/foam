@@ -1005,6 +1005,9 @@ CLASS({
   name: 'ImageProperty',
   extendsModel: 'StringProperty',
   label: 'Image data or link',
+  properties: [
+    [ 'view', 'foam.ui.md.ImagePickerView' ]
+  ]
 });
 
 CLASS({
