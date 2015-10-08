@@ -28,7 +28,7 @@ var FObject = {
     return Object.prototype.hasOwnProperty.call(this, 'Y_') ?
         this.Y_ :
         ( this.Y_ = DEBUG ?
-        this.X.sub({}, (this.X.NAME ? this.X.NAME : '') + 'Y') : this.X.sub() );
+        this.X.sub({}, (this.X.NAME ? this.X.NAME : '') + '_' + this.name_ ) : this.X.sub() );
   },
 
   replaceModel_: function(model, otherModel, X) {
