@@ -23,7 +23,7 @@ CLASS({
 
   requires: [
     'Property',
-    'foam.u2.Element'
+    'foam.u2.PropertyView'
   ],
 
   properties: [
@@ -78,7 +78,8 @@ CLASS({
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
 
-          f.add(prop.label, ' ', E('input'), E('br'));
+          //          f.add(prop.label, ' ', E('input'), E('br'));
+          f.add(self.PropertyView.create({data$: self.data$, property: prop}));
         }
 
         return f;
