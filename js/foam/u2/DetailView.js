@@ -40,10 +40,18 @@ CLASS({
         console.assert(Model.isInstance(model), 'Invalid model specified for ' + this.name_);
         if ( oldModel !== model )
           this.properties = model.getRuntimeProperties().filter(function(p) { return ! p.hidden; });
+        if ( ! oldModel || this.title === oldModel.label ) this.title = model.label;
       }
     },
     {
       name: 'properties'
+    },
+    {
+      name: 'title',
+      documentation: function() {/*
+        <p>The display title for the $$DOC{ref:'foam.ui.View'}.
+        </p>
+      */}
     },
     [ 'nodeName', 'DIV' ]
   ],
@@ -59,11 +67,14 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
+      
+      var self = this;
 
       this.cls('u2-detailview').add(function(model, properties) {
         if ( ! model ) return 'Set model or data.';
 
-        var f = E();
+        var f = E().add(E('b').add(self.title$, E('br')));
+
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
 
