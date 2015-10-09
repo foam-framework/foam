@@ -25,7 +25,7 @@ e.on('click', function() { console.log('clicked'); });
 var e13 = E('div').add(
   E('br'),
   'dynamic content * ',
-  function() { return timer.second % 2 ? 'PING' : 'PONG'; },
+  function() { return timer.second % 2 ? 'PING' : E().add('PONG').style({color: 'orange'}); },
   ' *');
 e13.write(); 
 

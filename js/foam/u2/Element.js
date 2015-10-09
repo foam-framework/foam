@@ -255,7 +255,8 @@ CLASS({
         // Convert to uppercase so that checks against OPTIONAL_CLOSE_TAGS
         // and ILLEGAL_CLOSE_TAGS work.
         return v.toUpperCase();
-      }
+      },
+      defaultValue: 'SPAN'
     },
     {
       name: 'attributeMap',
