@@ -242,16 +242,16 @@ CLASS({
 
   properties: [
     {
-      name: 'state',
-      factory: function () { return this.INITIAL; }
-    },
-    {
       model_: 'foam.u2.EIDProperty',
       name: 'id'
     },
     {
+      name: 'state',
+      factory: function () { return this.INITIAL; }
+    },
+    {
       name: 'nodeName',
-      preSet: function(_, v) {
+      adapt: function(_, v) {
         // Convert to uppercase so that checks against OPTIONAL_CLOSE_TAGS
         // and ILLEGAL_CLOSE_TAGS work.
         return v.toUpperCase();
@@ -482,9 +482,9 @@ CLASS({
     function valueE_(value) {
       var dyn = E('span');
       var last = null;
-      var l = function(_,_,_,v) {
-        e = E('span');
-        if ( v ) e.add(v);
+      var l = function() {
+        var e = E('span');
+        /*if ( value.get() ) */e.add(value.get());
         if ( last ) dyn.removeChild(last); //last.remove();
         dyn.add(last = e);
       };
