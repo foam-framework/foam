@@ -16,9 +16,10 @@
  */
 
 CLASS({
+  package: 'foam.core.types',
+  name: 'DocumentInstallProperty',
   extendsModel: 'Property',
 
-  name: 'DocumentInstallProperty',
   help: "Describes a function property that runs once per document",
 
   documentation: function() {/* A special property that is run once per document.
@@ -29,8 +30,6 @@ CLASS({
     this property's definition inside the model definition. Since you can't
     control exactly when documentInstallFn is run, you can't control what it
     is set to outside the model definition. */},
-
-  package: 'foam.core.types',
 
   properties: [
     {

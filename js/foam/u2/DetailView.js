@@ -48,11 +48,19 @@ CLASS({
     [ 'nodeName', 'DIV' ]
   ],
 
+  templates: [
+    function CSS() {/*
+      .u2-detailview {
+        background: #f9f9f9;
+      }
+    */}
+  ],
+
   methods: [
     function init() {
       this.SUPER();
 
-      this.style({background: '#eee'}).cls('u2-detailview').add(function(model, properties) {
+      this.cls('u2-detailview').add(function(model, properties) {
         if ( ! model ) return 'Set model or data.';
 
         var f = E();

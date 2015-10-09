@@ -308,6 +308,22 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
+        var t = this.model_.templates[i];
+        if ( t.name === 'CSS' ) {
+          t.futureTemplate(function() {
+            X.addStyle(
+              this.CSS(),
+              this.model_.id.split('.').join('/') + '.CSS');
+          }.bind(this));
+          return;
+        }
+      }
+    },
+    
     function attrValue(opt_name, opt_event) {
       var args = { element: this };
 
