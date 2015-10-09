@@ -96,14 +96,10 @@ e14.attrs({
   color: 'black'
 });
 
-timer.stop();
-
 E('b').add(E('br'), 'DetailView: ').write();
 
 var dv = foam.u2.DetailView.create();
 dv.write();
-
-E('b').add('End').write();
 
 setTimeout(function() { dv.data = dv; }, 3000);
 setTimeout(function() { dv.properties = [dv.model_.PROPERTIES, dv.model_.MODEL, dv.model_.DATA]; }, 6000);
