@@ -60,7 +60,7 @@ CLASS({
         for ( var i = 0 ; i < this.attributes.length ; i++ ) {
           var attr = this.attributes[i];
           var value = this.attributes[i].value;
-          
+
           out(' ', attr.name);
           if ( value !== undefined )
             out('="', value, '"');
@@ -466,7 +466,7 @@ CLASS({
       return this.add.apply(this, arguments);
     },
 
-    function dynamicE_(fn) {
+    function fnE_(fn) {
       var dyn = E('span');
       var last = null;
 
@@ -479,16 +479,34 @@ CLASS({
       return dyn;
     },
 
+    function valueE_(value) {
+      var dyn = E('span');
+      var last = null;
+      var l = function(_,_,_,v) {
+        e = E('span');
+        if ( v ) e.add(v);
+        if ( last ) dyn.removeChild(last); //last.remove();
+        dyn.add(last = e);
+      };
+
+      value.addListener(l);
+      l();
+
+      return dyn;
+    },
+
     function add(/* vargs */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var c = arguments[i];
         if ( typeof c === 'function' )
-          arguments[i] = this.dynamicE_(c);
+          arguments[i] = this.fnE_(c);
+        else if ( Value.isInstance(c) )
+          arguments[i] = this.valueE_(c);
       }
 
       this.childNodes.push.apply(this.childNodes, arguments);
       this.onAddChildren.apply(this, arguments);
-      
+
       return this;
     },
 
@@ -509,7 +527,11 @@ CLASS({
       var f = function templateOut(/* arguments */) {
         for ( var i = 0 ; i < arguments.length ; i++ ) {
           var o = arguments[i];
-          if ( typeof o === 'string' ) {
+          if ( o === null || o === undefined ) {
+            // NOP
+          } else if ( typeof o === 'string' ) {
+            buf.push(o);
+          } else if ( typeof o === 'number' ) {
             buf.push(o);
           } else {
             if ( o && o.toView_ ) o = o.toView_();

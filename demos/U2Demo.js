@@ -24,10 +24,13 @@ e.on('click', function() { console.log('clicked'); });
 
 var e13 = E('div').add(
   E('br'),
-  'dynamic content * ',
+  'dynamic function * ',
   function() { return timer.second % 2 ? 'PING' : E().add('PONG').style({color: 'orange'}); },
-  ' *');
-e13.write(); 
+  ' *    dynamic value: ',
+  timer.i$,
+  '  ',
+  function(i) { return i%10; }.on$(X, timer.i$));
+e13.write();
 
 var e2 = E('font').add('on click, before', E('br')).on('click', function() { console.log('clicked, before'); });
 e2.write();
@@ -92,4 +95,3 @@ e14.attrs({
   size: function() { return Math.floor(timer.i/20) % 9; },
   color: 'black'
 });
-
