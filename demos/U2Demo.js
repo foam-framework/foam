@@ -1,3 +1,6 @@
+var timer = foam.util.Timer.create();
+timer.start();
+
 E('b').add('bold', E('br')).write();
 
 E('b').add(
@@ -18,6 +21,13 @@ e.style({
 
 e.on('click', function() { console.log('clicked'); });
 
+
+var e13 = E('div').add(
+  E('br'),
+  'dynamic content * ',
+  function() { return timer.second % 2 ? 'PING' : 'PONG'; },
+  ' *');
+e13.write(); 
 
 var e2 = E('font').add('on click, before', E('br')).on('click', function() { console.log('clicked, before'); });
 e2.write();
@@ -58,8 +68,6 @@ e8.attrValue(null, 'input').addListener(function() { console.log('**input: ', ar
 
 var e9 = E('input');
 e9.write();
-var timer = foam.util.Timer.create();
-timer.start();
 timer.i$ = e9.attrValue();
 
 var e10 = E('font').add(E('br'), 'set attr before').attrs({color: 'red'});
@@ -78,9 +86,10 @@ e12.style({
   color: function() { return Math.floor(timer.i/20) % 2 ? 'black' : 'yellow'; }
 });
 
-var e13 = E('font').add('dynamic attribute');
-e13.write();
-e13.attrs({
+var e14 = E('font').add('dynamic attribute');
+e14.write();
+e14.attrs({
   size: function() { return Math.floor(timer.i/20) % 9; },
   color: 'black'
 });
+

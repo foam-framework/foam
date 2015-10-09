@@ -104,7 +104,10 @@ CLASS({
 
         this.visitChildren('load');
       },
-      unload:        function() { console.error('Must load before unloading.'); },
+      unload: function() {
+        this.state = this.UNLOADED;
+        this.visitChildren('unload');
+      },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
         this.id$el.classList[enabled ? 'add' : 'remove'](cls);
@@ -118,11 +121,13 @@ CLASS({
       onSetAttr:     function(key, value) {
         this.id$el[key] = value;
       },
-      onAddChildren: function() {
+      onAddChildren: function(c) {
         var out = this.createOutputStream();
+        out(c);
+        /*
         for ( var i = 0 ; i < arguments.length ; i++ ) {
           out(arguments[i]);
-        }
+        }*/
         this.id$el.insertAdjacentHTML('beforeend', out);
       },
       toString:      function() { return 'OUTPUT'; }
@@ -131,6 +136,10 @@ CLASS({
       output:        function(out) { console.warn('Duplicate output.'); },
       load:          function() { console.error('Duplicate load.'); },
       unload:        function() {
+        var e = this.id$el;
+        if ( e ) {
+          e.remove();
+        }
         this.state = this.UNLOADED;
         this.visitChildren('unload');
       },
@@ -163,6 +172,9 @@ CLASS({
           out(arguments[i]);
         }
         e.insertAdjacentHTML('beforeend', out);
+        for ( var i = 0 ; i < arguments.length ; i++ ) {
+          arguments[i].load && arguments[i].load();
+        }
       },
       toString:      function() { return 'LOADED'; }
     },
@@ -380,9 +392,14 @@ CLASS({
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === c ) {
           this.childNodes.splice(i, 1);
+          c.remove();
           break;
         }
       }
+    },
+
+    function remove() {
+      this.unload();
     },
 
     //
@@ -448,9 +465,29 @@ CLASS({
       return this.add.apply(this, arguments);
     },
 
-    function add() {
+    function dynamicE_(fn) {
+      var dyn = E('span');
+      var last = null;
+
+      this.dynamic(fn, function(e) {
+        e = E('span').add(e);
+        if ( last ) dyn.removeChild(last); //last.remove();
+        dyn.add(last = e);
+      });
+
+      return dyn;
+    },
+
+    function add(/* vargs */) {
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        var c = arguments[i];
+        if ( typeof c === 'function' )
+          arguments[i] = this.dynamicE_(c);
+      }
+
       this.childNodes.push.apply(this.childNodes, arguments);
       this.onAddChildren.apply(this, arguments);
+      
       return this;
     },
 
