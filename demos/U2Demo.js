@@ -96,7 +96,7 @@ e14.attrs({
   color: 'black'
 });
 
-E('b').add(E('br'), E('br'), 'DetailView: ').write();
+E('div').style({height: '30px'}).write();
 
 var dv = foam.u2.DetailView.create();
 dv.write();

@@ -78,6 +78,7 @@ CLASS({
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
 
+          // self.data$.subValue(prop.name);
           //          f.add(prop.label, ' ', E('input'), E('br'));
           f.add(self.PropertyView.create({data$: self.data$, property: prop}));
         }
