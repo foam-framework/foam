@@ -104,3 +104,12 @@ dv.write();
 setTimeout(function() { dv.data = dv; }, 2000);
 setTimeout(function() { dv.properties = [dv.model_.PROPERTIES, dv.model_.MODEL, dv.model_.DATA]; }, 5000);
 setTimeout(function() { dv.title = 'New Title'; }, 7000);
+
+var e15 = foam.u2.Input.create().write();
+e15.data$ = timer.i$;
+
+E('div').style({height: '30px'}).write();
+
+foam.u2.Input.create().write().data$ = foam.u2.Input.create().write().data$;
+
+foam.u2.OnKeyInput.create().write().data$ = foam.u2.OnKeyInput.create().write().data$;
