@@ -323,7 +323,7 @@ CLASS({
         }
       }
     },
-    
+
     function attrValue(opt_name, opt_event) {
       var args = { element: this };
 
@@ -580,6 +580,7 @@ CLASS({
       /* For debugging, not production. */
       (opt_X.document || document).writeln(this.outerHTML);
       this.load();
+      return this;
     },
 
     function toString() { return this.outerHTML; }
