@@ -119,6 +119,16 @@ E('div').style({height: '30px'}).write();
 foam.u2.TextArea.create().write().data$ = foam.u2.TextArea.create().write().data$;
 foam.u2.OnKeyTextArea.create().write().data$ = foam.u2.OnKeyTextArea.create().write().data$;
 
+E('div').style({height: '30px'}).write();
+var e16 = foam.u2.Select.create({options: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
+var e17 = foam.u2.Select.create({options: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
 
+e16.data$ = e17.data$;
+
+/*
+setTimeout(function() {
+  e17.options = [['b', 'Bert'], ['e', 'Ernie']];
+}, 5000);
+*/
 
 timer.stop();
