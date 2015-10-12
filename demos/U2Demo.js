@@ -113,3 +113,12 @@ E('div').style({height: '30px'}).write();
 foam.u2.Input.create().write().data$ = foam.u2.Input.create().write().data$;
 
 foam.u2.OnKeyInput.create().write().data$ = foam.u2.OnKeyInput.create().write().data$;
+
+E('div').style({height: '30px'}).write();
+
+foam.u2.TextArea.create().write().data$ = foam.u2.TextArea.create().write().data$;
+foam.u2.OnKeyTextArea.create().write().data$ = foam.u2.OnKeyTextArea.create().write().data$;
+
+
+
+timer.stop();
