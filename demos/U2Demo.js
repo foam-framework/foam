@@ -131,4 +131,4 @@ setTimeout(function() {
 }, 5000);
 */
 
-timer.stop();
+//timer.stop();
