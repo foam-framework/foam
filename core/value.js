@@ -47,7 +47,7 @@ CLASS({
       this.SUPER();
       for ( var i = 0 ; i < this.values.length ; i++ )
         this.values[i].addListener(this.onSubValueChange);
-      this.value = this.valueFactory();
+      this.onSubValueChange();
     },
     get: function() { return this.value; },
     set: function(val) { },
@@ -71,7 +71,7 @@ CLASS({
 function or$(values, factory, opt_X) {
   return OrValue.create({
     values: values,
-    valueFactory: factory, 
+    valueFactory: factory,
   }, opt_X);
 }
 
@@ -81,16 +81,16 @@ CLASS({
   extendsModel: 'SimpleValue',
 
   documentation: 'A simple value that can only be set during initialization.',
-  
+
   properties: [
-    { 
+    {
       name: 'value',
       preSet: function(old, nu) {
         return ( typeof this.instance_.value == 'undefined' ) ? nu : old ;
       }
-    } 
+    }
   ],
-  
+
   methods: {
     set: function(val) {
       /* Only allow set once. The first initialized value is the only one. */
