@@ -29,7 +29,8 @@ CLASS({
       factory: function() { return []; }
     },
     [ 'nodeName', 'select' ],
-    'data'
+    'data',
+    'placeholder'
   ],
 
   methods: [
@@ -37,12 +38,14 @@ CLASS({
       this.SUPER();
       var self = this;
       this.data$ = this.attrValue();
-      this.add(function(options) {
+      this.add(function(options, placeholder) {
+        if ( placeholder )
+          self.add(E('option').attrs({disabled: 'disabled'}).add(self.placeholder));
         for ( var i = 0 ; i < options.length ; i++ ) {
           var o = options[i];
           self.add(E('option').attrs({value: o[0]}).add(o[1]));
         }
-      }.on$(this.X, this.options$));
+      }.on$(this.X, this.options$, this.placeholder$));
     }
   ]
 });
