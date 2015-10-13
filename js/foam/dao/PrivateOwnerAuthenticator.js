@@ -44,7 +44,7 @@ CLASS({
       // Now either old exists but is owned by me, or this is a new put.
       // Either way, clone nu and set its owner to the principal.
       var clone = nu.clone();
-      clone.owner = principal;
+      clone[this.ownerProp.name] = principal;
       ret(clone);
     },
     function massageForRead(ret, principal, obj) {
