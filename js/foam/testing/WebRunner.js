@@ -129,7 +129,7 @@ CLASS({
                         (model.tests[i].hasFailed() ? 'failing' : 'passing') + '">';
                     s += '<div class="test-result-header">Test Case: ' +
                         model.tests[i].name + '</div>';
-                    s += model.tests[i].results;
+                    s += model.tests[i].results.split('\n').join('<br/>');
                     s += '</div>';
                     this.log(s);
                   }
