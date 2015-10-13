@@ -35,7 +35,9 @@ CLASS({
     'foam.dao.EasyClientDAO',
     'foam.dao.GUIDDAO',
     'foam.dao.IDBDAO',
-    'foam.dao.SeqNoDAO'
+    'foam.dao.SeqNoDAO',
+    'foam.dao.LoggingDAO',
+    'foam.dao.TimingDAO'
   ],
 
   imports: [ 'document' ],
@@ -290,8 +292,8 @@ CLASS({
         });
       }
 
-      if ( this.timing  ) dao = TimingDAO.create(this.name + 'DAO', dao);
-      if ( this.logging ) dao = LoggingDAO.create(dao);
+      if ( this.timing  ) dao = this.TimingDAO.create({ name: this.name + 'DAO', delegate: dao });
+      if ( this.logging ) dao = this.LoggingDAO.create({ delegate: dao });
 
       this.delegate = dao;
     },
