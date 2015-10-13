@@ -45,14 +45,13 @@ CLASS({
 */
         var subX = this.Y;
         if (req.headers && req.headers.cookie) {
-          var cookies = req.headers.cookie.split(/;\s+/);
-          for (var i = 0; i < cookies.length; i++) {
-            var match = cookies[i].match(/^([^=]+)=(.*)$/);
-            if (match && match[1] === 'foamDAOAuth') {
-              subX = this.Y.sub({ principal: match[2] });
-              break;
-            }
+          var cookies = {};
+          var parts = req.headers.cookie.split(/;\s+/);
+          for (var i = 0; i < parts.length; i++) {
+            var match = parts[i].match(/^([^=]+)=(.*)$/);
+            cookies[match[1]] = match[2];
           }
+          subX = subX.sub({ cookies: cookies });
         }
 
         // Warning insecure parser.
