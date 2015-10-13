@@ -30,50 +30,7 @@ CLASS({
   constants: {
     INITIAL: {
       output: function(out) {
-        out('<', this.nodeName);
-        if ( this.id ) out(' id="', this.id, '"');
-
-        var first = true;
-        for ( var key in this.classes ) {
-          if ( first ) {
-            out(' class="');
-            first = false;
-          } else {
-            out(' ');
-          }
-          out(key);
-        }
-        if ( ! first ) out('"');
-
-        first = true;
-        for ( var key in this.css ) {
-          var value = this.css[key];
-
-          if ( first ) {
-            out(' style="');
-            first = false;
-          }
-          out(key, ':', value, ';');
-        }
-        if ( ! first ) out('"');
-
-        for ( var i = 0 ; i < this.attributes.length ; i++ ) {
-          var attr = this.attributes[i];
-          var value = this.attributes[i].value;
-
-          out(' ', attr.name);
-          if ( value !== undefined )
-            out('="', value, '"');
-        }
-
-        if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
-             ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
-          out('>');
-          this.outputInnerHTML(out);
-          out('</', this.nodeName);
-        }
-
-        out('>');
+        this.output_(out);
 
         this.state = this.OUTPUT;
 
@@ -583,7 +540,57 @@ CLASS({
       return this;
     },
 
-    function toString() { return this.outerHTML; }
+    function output_(out) {
+      /** Output the element without transitioning to the OUTPUT state. **/
+      out('<', this.nodeName);
+      if ( this.id ) out(' id="', this.id, '"');
+
+      var first = true;
+      for ( var key in this.classes ) {
+        if ( first ) {
+          out(' class="');
+          first = false;
+        } else {
+          out(' ');
+        }
+        out(key);
+      }
+      if ( ! first ) out('"');
+
+      first = true;
+      for ( var key in this.css ) {
+        var value = this.css[key];
+
+        if ( first ) {
+          out(' style="');
+          first = false;
+        }
+        out(key, ':', value, ';');
+      }
+      if ( ! first ) out('"');
+
+      for ( var i = 0 ; i < this.attributes.length ; i++ ) {
+        var attr = this.attributes[i];
+        var value = this.attributes[i].value;
+
+        out(' ', attr.name);
+        if ( value !== undefined )
+          out('="', value, '"');
+      }
+
+      if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
+           ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
+        out('>');
+        this.outputInnerHTML(out);
+        out('</', this.nodeName);
+      }
+
+      out('>');
+    },
+
+    function toString() {
+      return this.output_(this.createOutputStream()).toString();
+    }
   ]
 });
 
