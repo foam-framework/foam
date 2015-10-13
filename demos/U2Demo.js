@@ -89,7 +89,7 @@ e12.style({
   color: function() { return Math.floor(timer.i/20) % 2 ? 'black' : 'yellow'; }
 });
 
-var e14 = E('font').add('dynamic attribute');
+var e14 = E('font').style({height: '80px', display: 'block'}).add('dynamic attribute');
 e14.write();
 e14.attrs({
   size: function() { return Math.floor(timer.i/20) % 9; },
@@ -125,10 +125,8 @@ var e17 = foam.u2.Select.create({options: [['r', 'Red'],['g', 'Green'], ['b', 'B
 
 e16.data$ = e17.data$;
 
-/*
 setTimeout(function() {
   e17.options = [['b', 'Bert'], ['e', 'Ernie']];
 }, 5000);
-*/
 
 //timer.stop();

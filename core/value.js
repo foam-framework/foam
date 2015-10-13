@@ -47,7 +47,7 @@ CLASS({
       this.SUPER();
       for ( var i = 0 ; i < this.values.length ; i++ )
         this.values[i].addListener(this.onSubValueChange);
-      this.onSubValueChange();
+      this.onSubValueChange_();
     },
     get: function() { return this.value; },
     set: function(val) { },
@@ -56,13 +56,19 @@ CLASS({
 
   listeners: [
     {
-      name: 'onSubValueChange',
-      isFramed: true,
+      name: 'onSubValueChange_',
       code: function() {
         var args = new Array(this.values.length);
         for ( var i = 0 ; i < this.values.length ; i++ )
           args[i] = this.values[i].get();
         this.value = this.valueFactory.apply(this, args);
+      }
+    },
+    {
+      name: 'onSubValueChange',
+      isFramed: true,
+      code: function() {
+        this.onSubValueChange_();
       }
     }
   ]

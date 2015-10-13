@@ -483,6 +483,23 @@ CLASS({
       return this;
     },
 
+    function removeAllChildren() {
+      while ( this.childNodes.length ) this.removeChild(this.childNodes[0]);
+    },
+
+    function setChildren(value) {
+      /** value -- a Value of an array of children which set this elements contents, replacing old children **/
+      var l = function() {
+        this.removeAllChildren();
+        this.add.apply(this, value.get());
+      }.bind(this);
+
+      value.addListener(l);
+      l();
+
+      return this;
+    },
+
     //
     // Output Methods
     //
