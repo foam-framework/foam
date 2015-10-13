@@ -35,7 +35,7 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'appBuilderAnalyticsEnabled',
       label: 'Send anonymous usage data from my apps to the App Builder team ' +
-          'to help make App Builder better',
+          'to help make App Builder better<br><a href="#">Learn more</a>',
       defaultValue: true,
     },
   ],

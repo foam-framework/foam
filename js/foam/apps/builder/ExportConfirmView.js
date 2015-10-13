@@ -20,7 +20,7 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.AppConfig',
+      type: 'foam.apps.builder.ImportExportFlow',
       name: 'data',
     },
     {
@@ -88,6 +88,10 @@ CLASS({
         <div class="md-card-content">
           <span class="md-subhead md-grey">Your application requires the following permissions:</span>
           <pre class="md-quote md-grey" style="margin-left: 16px"><% this.prettyPermissions(out); %></pre>
+          $$analyticsEnabled{
+            model_: 'foam.ui.md.CheckboxView',
+            extraClassName: 'analyticsEnabled',
+          }
         </div>
         <div class="md-card-content-footer-spacer"></div>
         <actions class="md-actions md-card-footer horizontal">
@@ -97,7 +101,8 @@ CLASS({
       </export-confirm>
     */},
     function prettyPermissions() {/*<%
-      var permissions = this.data ? this.data.getChromePermissions() : '';
+      var permissions = this.data && this.data.config ?
+          this.data.config.getChromePermissions() : '';
       if ( permissions ) {
         for ( var i = 0; i < permissions.length; ++i ) {
           if ( typeof permissions[i] === 'string' ) {
@@ -117,6 +122,9 @@ CLASS({
       }
       export-confirm pre {
         margin: 0;
+      }
+      export-confirm .analyticsEnabled .md-grey {
+        opacity: 1.0;
       }
       @media (min-width: 600px) {
         export-confirm {

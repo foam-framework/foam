@@ -60,7 +60,7 @@ CLASS({
         for ( var i = 0 ; i < this.attributes.length ; i++ ) {
           var attr = this.attributes[i];
           var value = this.attributes[i].value;
-          
+
           out(' ', attr.name);
           if ( value !== undefined )
             out('="', value, '"');
@@ -104,7 +104,10 @@ CLASS({
 
         this.visitChildren('load');
       },
-      unload:        function() { console.error('Must load before unloading.'); },
+      unload: function() {
+        this.state = this.UNLOADED;
+        this.visitChildren('unload');
+      },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
         this.id$el.classList[enabled ? 'add' : 'remove'](cls);
@@ -118,11 +121,13 @@ CLASS({
       onSetAttr:     function(key, value) {
         this.id$el[key] = value;
       },
-      onAddChildren: function() {
+      onAddChildren: function(c) {
         var out = this.createOutputStream();
+        out(c);
+        /*
         for ( var i = 0 ; i < arguments.length ; i++ ) {
           out(arguments[i]);
-        }
+        }*/
         this.id$el.insertAdjacentHTML('beforeend', out);
       },
       toString:      function() { return 'OUTPUT'; }
@@ -131,6 +136,10 @@ CLASS({
       output:        function(out) { console.warn('Duplicate output.'); },
       load:          function() { console.error('Duplicate load.'); },
       unload:        function() {
+        var e = this.id$el;
+        if ( e ) {
+          e.remove();
+        }
         this.state = this.UNLOADED;
         this.visitChildren('unload');
       },
@@ -163,6 +172,9 @@ CLASS({
           out(arguments[i]);
         }
         e.insertAdjacentHTML('beforeend', out);
+        for ( var i = 0 ; i < arguments.length ; i++ ) {
+          arguments[i].load && arguments[i].load();
+        }
       },
       toString:      function() { return 'LOADED'; }
     },
@@ -230,20 +242,21 @@ CLASS({
 
   properties: [
     {
-      name: 'state',
-      factory: function () { return this.INITIAL; }
-    },
-    {
       model_: 'foam.u2.EIDProperty',
       name: 'id'
     },
     {
+      name: 'state',
+      factory: function () { return this.INITIAL; }
+    },
+    {
       name: 'nodeName',
-      preSet: function(_, v) {
+      adapt: function(_, v) {
         // Convert to uppercase so that checks against OPTIONAL_CLOSE_TAGS
         // and ILLEGAL_CLOSE_TAGS work.
         return v.toUpperCase();
-      }
+      },
+      defaultValue: 'SPAN'
     },
     {
       name: 'attributeMap',
@@ -295,6 +308,22 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
+        var t = this.model_.templates[i];
+        if ( t.name === 'CSS' ) {
+          t.futureTemplate(function() {
+            X.addStyle(
+              this.CSS(),
+              this.model_.id.split('.').join('/') + '.CSS');
+          }.bind(this));
+          return;
+        }
+      }
+    },
+
     function attrValue(opt_name, opt_event) {
       var args = { element: this };
 
@@ -380,9 +409,14 @@ CLASS({
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === c ) {
           this.childNodes.splice(i, 1);
+          c.remove();
           break;
         }
       }
+    },
+
+    function remove() {
+      this.unload();
     },
 
     //
@@ -448,9 +482,47 @@ CLASS({
       return this.add.apply(this, arguments);
     },
 
-    function add() {
+    function fnE_(fn) {
+      var dyn = E('span');
+      var last = null;
+
+      this.dynamic(fn, function(e) {
+        e = E('span').add(e);
+        if ( last ) dyn.removeChild(last); //last.remove();
+        dyn.add(last = e);
+      });
+
+      return dyn;
+    },
+
+    function valueE_(value) {
+      var dyn = E('span');
+      var last = null;
+      var l = function() {
+        var e = E('span');
+        /*if ( value.get() ) */e.add(value.get());
+        if ( last ) dyn.removeChild(last); //last.remove();
+        dyn.add(last = e);
+      };
+
+      value.addListener(l);
+      l();
+
+      return dyn;
+    },
+
+    function add(/* vargs */) {
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        var c = arguments[i];
+        if ( typeof c === 'function' )
+          arguments[i] = this.fnE_(c);
+        else if ( Value.isInstance(c) )
+          arguments[i] = this.valueE_(c);
+      }
+
       this.childNodes.push.apply(this.childNodes, arguments);
       this.onAddChildren.apply(this, arguments);
+
       return this;
     },
 
@@ -471,7 +543,11 @@ CLASS({
       var f = function templateOut(/* arguments */) {
         for ( var i = 0 ; i < arguments.length ; i++ ) {
           var o = arguments[i];
-          if ( typeof o === 'string' ) {
+          if ( o === null || o === undefined ) {
+            // NOP
+          } else if ( typeof o === 'string' ) {
+            buf.push(o);
+          } else if ( typeof o === 'number' ) {
             buf.push(o);
           } else {
             if ( o && o.toView_ ) o = o.toView_();
@@ -504,6 +580,7 @@ CLASS({
       /* For debugging, not production. */
       (opt_X.document || document).writeln(this.outerHTML);
       this.load();
+      return this;
     },
 
     function toString() { return this.outerHTML; }

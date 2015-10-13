@@ -572,7 +572,7 @@ MODEL({
       for ( i = 0   ; i < start             ; i++ ) r.push(this[i]);
       for ( i = 2   ; i < arguments.length  ; i++ ) r.push(arguments[i]);
       for ( i = start+end ; i < this.length ; i++ ) r.push(this[i]);
-      
+
       return r;
     },
 
@@ -758,6 +758,14 @@ MODEL({
       return function() {
         return f1.call(this, f2.apply(this, argsToArray(arguments)));
       };
+    },
+
+    function on$(X /*, Values[] */) {
+      /* Convert a function into a Value whenever any of the dependent Values update. */
+      return OrValue.create({
+        values: Array.prototype.splice.call(arguments, 1),
+        valueFactory: this
+      }, X);
     }
   ]
 });

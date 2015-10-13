@@ -1,3 +1,6 @@
+var timer = foam.util.Timer.create();
+timer.start();
+
 E('b').add('bold', E('br')).write();
 
 E('b').add(
@@ -18,6 +21,16 @@ e.style({
 
 e.on('click', function() { console.log('clicked'); });
 
+
+var e13 = E('div').add(
+  E('br'),
+  'dynamic function * ',
+  function() { return timer.second % 2 ? 'PING' : E().add('PONG').style({color: 'orange'}); },
+  ' *    dynamic value: ',
+  timer.i$,
+  '  ',
+  function(i) { return i%10; }.on$(X, timer.i$));
+e13.write();
 
 var e2 = E('font').add('on click, before', E('br')).on('click', function() { console.log('clicked, before'); });
 e2.write();
@@ -58,8 +71,6 @@ e8.attrValue(null, 'input').addListener(function() { console.log('**input: ', ar
 
 var e9 = E('input');
 e9.write();
-var timer = foam.util.Timer.create();
-timer.start();
 timer.i$ = e9.attrValue();
 
 var e10 = E('font').add(E('br'), 'set attr before').attrs({color: 'red'});
@@ -78,9 +89,46 @@ e12.style({
   color: function() { return Math.floor(timer.i/20) % 2 ? 'black' : 'yellow'; }
 });
 
-var e13 = E('font').add('dynamic attribute');
-e13.write();
-e13.attrs({
+var e14 = E('font').add('dynamic attribute');
+e14.write();
+e14.attrs({
   size: function() { return Math.floor(timer.i/20) % 9; },
   color: 'black'
 });
+
+E('div').style({height: '30px'}).write();
+
+var dv = foam.u2.DetailView.create();
+dv.write();
+
+setTimeout(function() { dv.data = dv; }, 2000);
+setTimeout(function() { dv.properties = [dv.model_.PROPERTIES, dv.model_.MODEL, dv.model_.DATA]; }, 5000);
+setTimeout(function() { dv.title = 'New Title'; }, 7000);
+
+var e15 = foam.u2.Input.create().write();
+e15.data$ = timer.i$;
+
+E('div').style({height: '30px'}).write();
+
+foam.u2.Input.create().write().data$ = foam.u2.Input.create().write().data$;
+
+foam.u2.OnKeyInput.create().write().data$ = foam.u2.OnKeyInput.create().write().data$;
+
+E('div').style({height: '30px'}).write();
+
+foam.u2.TextArea.create().write().data$ = foam.u2.TextArea.create().write().data$;
+foam.u2.OnKeyTextArea.create().write().data$ = foam.u2.OnKeyTextArea.create().write().data$;
+
+E('div').style({height: '30px'}).write();
+var e16 = foam.u2.Select.create({placeholder: 'Pick a Colour:', options: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
+var e17 = foam.u2.Select.create({options: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
+
+e16.data$ = e17.data$;
+
+/*
+setTimeout(function() {
+  e17.options = [['b', 'Bert'], ['e', 'Ernie']];
+}, 5000);
+*/
+
+//timer.stop();

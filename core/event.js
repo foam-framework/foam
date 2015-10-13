@@ -452,7 +452,7 @@ var FunctionStack = {
 
 var Value = {
   __isValue__: true,
-  isValue: function(o) { return o.__isValue__; }
+  isInstance: function(o) { return o && o.__isValue__; }
 };
 
 var PropertyValue = {
