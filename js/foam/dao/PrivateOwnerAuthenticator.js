@@ -52,7 +52,7 @@ CLASS({
       ret(mine ? obj : null);
     },
     function shouldAllowRemove(ret, principal, obj) {
-      ret(EQ(this.ownerProp, principal).f(obj));
+      ret(!obj || EQ(this.ownerProp, principal).f(obj));
     },
     function decorateForSelect(ret, principal, dao) {
       ret(dao.where(EQ(this.ownerProp, principal)));
