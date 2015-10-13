@@ -48,7 +48,8 @@ CLASS({
       ret(clone);
     },
     function massageForRead(ret, principal, obj) {
-      ret(obj);
+      var mine = EQ(this.ownerProp, principal).f(obj);
+      ret(mine ? obj : null);
     },
     function shouldAllowRemove(ret, principal, obj) {
       ret(EQ(this.ownerProp, principal).f(obj));
