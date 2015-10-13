@@ -51,7 +51,7 @@ CLASS({
       name: 'installFonts_',
       hidden: true,
       factory: function() {
-        return this.document.head.querySelector('link[rel=stylesheet][href*=Roboto]') ?
+        return this.document.head.querySelector('link[rel=stylesheet][href*=RobotoDraft]') ?
             '' : this.Fonts.create();
       }
     },
@@ -84,7 +84,7 @@ CLASS({
     initHTML: function() {
       this.SUPER();
 
-      this.$.addEventListener('paste', this.onPaste);
+      this.$parent.addEventListener('paste', this.onPaste);
 
       // This block causes the calc-display to scroll when updated.
       // To remove this feature replace the .inner-calc-display 'transition:' and
@@ -130,20 +130,13 @@ CLASS({
 
   templates: [
     function CSS() {/*
-    * {
+    .CalcView * {
       box-sizing: border-box;
       outline: none;
     }
 
-    html {
-      height: 100%;
-      margin: 0;
-      overflow: initial;
-      padding: 0;
-      width: 100%;
-    }
 
-    body {
+    .CalcView {
       -webkit-user-select: none;
       -webkit-font-smoothing: antialiased;
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
@@ -152,16 +145,15 @@ CLASS({
       height: 100%;
       position: fixed;
       margin: 0;
-      overflow: hidden;
       padding: 0;
       width: 100%;
     }
 
-    ::-webkit-scrollbar {
+    .CalcView ::-webkit-scrollbar {
       display: none;
     }
 
-    ::-webkit-scrollbar-thumb {
+    .CalcView ::-webkit-scrollbar-thumb {
       display: none;
     }
 
@@ -296,7 +288,7 @@ CLASS({
       font-size: 30px;
     }
 
-    hr {
+    .calc hr {
       border-style: outset;
       opacity: 0.5;
     }
@@ -307,15 +299,16 @@ CLASS({
         <%= this.CalcSpeechView.create({calc: this.data}) %>
         <!-- <%= this.ZoomView.create() %> -->
         <% X.registerModel(this.CalcButton, 'foam.ui.ActionButton'); %>
+        <div id="%%id" class="CalcView">
         <div style="position: relative;z-index: 100;">
           <div tabindex="1" style="position: absolute;">
-            <span aria-label="{{{Calc.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{Calc.RAD.label}}}"></span>
-            <span aria-label="{{{Calc.DEG.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{Calc.DEG.label}}}"></span>
+            <span aria-label="{{{this.data.model_.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{this.data.model_.RAD.label}}}"></span>
+            <span aria-label="{{{this.data.model_.DEG.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{this.data.model_.DEG.label}}}"></span>
           </div>
         </div>
 
         <div class="edge"></div>
-        <div id="%%id" class="calc">
+        <div class="calc">
           <div class="calc-display">
             <div class="inner-calc-display">
               $$history{ rowView: 'foam.apps.calc.HistoryCitationView' }
@@ -344,6 +337,7 @@ CLASS({
             }
            }) %>
           </div>
+        </div>
         </div>
       */}
     }
