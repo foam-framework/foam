@@ -21,7 +21,12 @@ CLASS({
   // for a new method to be added, but not authenticated.
   properties: [
     {
+      name: 'model',
+      required: true
+    },
+    {
       name: 'delegate',
+      required: true
     },
     {
       name: 'authenticator',
@@ -147,6 +152,7 @@ CLASS({
       // counts will be thrown off. This shouldn't matter most of the time,
       // since decorateForSelect will be comprehensive, and massageForRead will
       // never return null on the selected objects.
+      if (!sink) sink = [].sink;
       var future = afuture();
       var self = this;
       var principal = opt_X && opt_X.principal;
