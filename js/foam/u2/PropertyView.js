@@ -22,7 +22,8 @@ CLASS({
   extendsModel: 'foam.u2.Element',
 
   requires: [
-    'Property'
+    'Property',
+    'foam.u2.Input'
   ],
 
   properties: [
@@ -30,15 +31,19 @@ CLASS({
       name: 'data'
     },
     {
-      name: 'property'
-    }
+      name: 'prop'
+    },
+    [ 'nodeName', 'tr' ]
   ],
 
   methods: [
     function init() {
-      this.SUPER();
+      var view = foam.u2.Input.create({data$: this.data.propertyValue(this.prop.name)});
 
-      this.add(this.property.label, ' ', E('input'), E('br'));
+      console.log('*** ', this.prop.name, this.data, this.data.propertyValue(this.prop.name).get());
+      this.add(
+        E('td').add(this.prop.label),
+        E('td').add(view));
     }
   ]
 });

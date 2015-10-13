@@ -98,11 +98,18 @@ e14.attrs({
 
 E('div').style({height: '30px'}).write();
 
-var dv = foam.u2.DetailView.create();
-dv.write();
+MODEL({name: 'Person', properties: ['firstName', 'lastName', 'age']});
+var dd = Person.create({firstName: 'Donald', lastName: 'Duck', age: 83});
+console.log('dd: ', dd.toJSON());
 
-setTimeout(function() { dv.data = dv; }, 2000);
-setTimeout(function() { dv.properties = [dv.model_.PROPERTIES, dv.model_.MODEL, dv.model_.DATA]; }, 5000);
+foam.u2.DetailView.create({data:dd}).write();
+
+var dv = foam.u2.DetailView.create().write();
+
+
+
+setTimeout(function() { dv.data = dd; }, 2000);
+// setTimeout(function() { dv.properties = [dv.model_.PROPERTIES, dv.model_.MODEL, dv.model_.DATA]; }, 5000);
 setTimeout(function() { dv.title = 'New Title'; }, 7000);
 
 var e15 = foam.u2.Input.create().write();
