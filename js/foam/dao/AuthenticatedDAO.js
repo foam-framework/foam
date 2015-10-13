@@ -72,14 +72,14 @@ CLASS({
                 ret();
               },
               put: function(postPut) {
-                self.authenticator.massageForRead(principal, postPut)(function(massaged) {
+                self.authenticator.massageForRead(function(massaged) {
                   if (massaged) {
                     sink && sink.put && sink.put(massaged);
                   } else {
                     sink && sink.error && sink.error('Illegal put.');
                   }
                   ret();
-                });
+                }, principal, postPut);
               }
             });
           }
@@ -130,13 +130,13 @@ CLASS({
       this.delegate.find(id, {
         error: sink && sink.error && sink.error.bind(sink),
         put: function(obj) {
-          self.authenticator.massageForRead(principal, obj)(function(obj) {
+          self.authenticator.massageForRead(function(obj) {
             if (obj === null) {
               sink && sink.error && sink.error('Failed to find');
             } else {
               sink && sink.put && sink.put(obj);
             }
-          });
+          }, principal, obj);
         }
       });
     },
@@ -170,11 +170,11 @@ CLASS({
           dao.select({
             error: sink && sink.error && sink.error.bind(sink),
             put: function(obj) {
-              self.authenticator.massageForRead(principal, obj)(function(massaged) {
+              self.authenticator.massageForRead(function(massaged) {
                 if (massaged !== null) {
                   sink && sink.put && sink.put(massaged);
                 }
-              });
+              }, principal, obj);
             },
             eof: function() {
               sink && sink.eof && sink.eof();
