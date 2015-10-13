@@ -39,7 +39,7 @@ CLASS({
   methods: [
     function adelegateFind_(id) {
       return function(ret) {
-        this.delegate.find(obj.id, {
+        this.delegate.find(id, {
           put: ret,
           error: function() { ret(null); }
         });
