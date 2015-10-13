@@ -338,10 +338,8 @@ CLASS({
     },
     assert: function(condition, comment) {
       if ( condition ) this.passed++; else this.failed++;
-      this.log(
-        (comment ? comment : '(no message)') +
-        ' ' +
-        (condition ? "<font color=green>OK</font>" : "<font color=red>ERROR</font>"));
+      this.log((condition ? 'PASS' : 'FAIL') + ': ' +
+          (comment ? comment : '(no message)'));
     },
     fail: function(comment) {
       this.assert(false, comment);
