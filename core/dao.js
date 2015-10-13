@@ -98,21 +98,21 @@ CLASS({
     }
   ],
   methods: {
-    select: function(sink, options) {
+    select: function(sink, options, opt_X) {
       return this.delegate.select(sink, options ? {
         __proto__: options,
         query: options.query ?
           AND(this.query, options.query) :
           this.query
-      } : {query: this.query});
+      } : {query: this.query}, opt_X);
     },
-    removeAll: function(sink, options) {
+    removeAll: function(sink, options, opt_X) {
       return this.delegate.removeAll(sink, options ? {
         __proto__: options,
         query: options.query ?
           AND(this.query, options.query) :
           this.query
-      } : {query: this.query});
+      } : {query: this.query}, opt_X);
     },
     listen: function(sink, options) {
       return this.SUPER(sink, options ? {
@@ -144,7 +144,7 @@ CLASS({
     }
   ],
   methods: {
-    select: function(sink, options) {
+    select: function(sink, options, opt_X) {
       if ( options ) {
         if ( ! options.order )
           options = { __proto__: options, order: this.comparator };
@@ -152,7 +152,7 @@ CLASS({
         options = {order: this.comparator};
       }
 
-      return this.delegate.select(sink, options);
+      return this.delegate.select(sink, options, opt_X);
     },
     toString: function() {
       return this.delegate + '.orderBy(' + this.comparator + ')';
@@ -177,7 +177,7 @@ CLASS({
     }
   ],
   methods: {
-    select: function(sink, options) {
+    select: function(sink, options, opt_X) {
       if ( options ) {
         if ( 'limit' in options ) {
           options = {
@@ -192,7 +192,7 @@ CLASS({
         options = { limit: this.count };
       }
 
-      return this.delegate.select(sink, options);
+      return this.delegate.select(sink, options, opt_X);
     },
     toString: function() {
       return this.delegate + '.limit(' + this.count + ')';
@@ -220,10 +220,10 @@ CLASS({
     }
   ],
   methods: {
-    select: function(sink, options) {
+    select: function(sink, options, opt_X) {
       options = options ? { __proto__: options, skip: this.skip } : { skip: this.skip };
 
-      return this.delegate.select(sink, options);
+      return this.delegate.select(sink, options, opt_X);
     },
     toString: function() {
       return this.delegate + '.skip(' + this.skip + ')';
