@@ -50,9 +50,9 @@ __DATA({
       name: 'massageForRead',
       description: 'Prepares an object to be returned to the user.',
       documentation: function() {/*
-        <p>Returns a future for an object that is safe to be sent to the current
-        user. Often no change is needed here, but this method might eg. erase
-        server-specific or hidden properties.</p>
+        <p>Returns an object that is safe to be sent to the current user. Often
+        no change is needed here, but this method might eg. erase
+        server-only or hidden properties.</p>
         <p>If the object should actually be denied the user, this should return
         null.</p>
         <p>Note that this method is called in three cases:
@@ -65,6 +65,7 @@ __DATA({
         <p>Note also that the object should be cloned before changes are made.</p>
       */},
       args: [
+        { name: 'ret', type: 'Function', documentation: 'afunc return callback' },
         { name: 'principal', documentation: 'The current user. Type is implementation-defined.' },
         { name: 'obj', documentation: 'The object to be returned.' }
       ],

@@ -47,10 +47,8 @@ CLASS({
       clone.owner = principal;
       ret(clone);
     },
-    function massageForRead(principal, obj) {
-      var clone = obj.clone();
-      clone.owner = '';
-      return aconstant(clone);
+    function massageForRead(ret, principal, obj) {
+      ret(obj);
     },
     function shouldAllowRemove(ret, principal, obj) {
       ret(EQ(this.ownerProp, principal).f(obj));
