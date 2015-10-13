@@ -35,22 +35,6 @@ CLASS({
     },
   ],
 
-  methods: {
-    initHTML: function() {
-      this.SUPER();
-      this.softValue = DomValue.create(this.$input, 'input',
-          this.growable ? 'textContent' : 'value');
-      this.softValue.set(this.data);
-      Events.link(this.softValue, this.softData$);
-
-      // Always use onKeyMode true, to automatically accept the color as the user
-      // moves the selector target in the picker (most users will never
-      // focus the text box in the picker)
-      Events.link(this.data$, this.softData$);
-
-      this.setupAutocomplete();
-    }
-  },
   listeners: [
     {
       name: 'onKeyPress',

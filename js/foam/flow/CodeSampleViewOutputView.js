@@ -24,8 +24,16 @@ CLASS({
       name: 'sampleCodeContext'
     },
     {
-      model_: 'StringProperty',
-      name: 'data'
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( old ) Events.unfollow(old.view$, this.dataView$);
+        if ( nu ) Events.follow(nu.view$, this.dataView$);
+      }
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'dataView'
     },
     {
       name: 'height',
@@ -35,16 +43,16 @@ CLASS({
       name: 'cssHeight',
       documentation: 'Height as string: "#px" for CSS style="..." override',
       dynamicValue: function() {
-        this.data && this.data.view; this.height;
-        return (this.data && this.data.view) ? this.height + 'px' : '';
+        this.dataView; this.height;
+        return this.dataView ? this.height + 'px' : '';
       }
     },
     {
       name: 'cssClassName',
       documentation: 'Dynamically computed CSS class name',
       dynamicValue: function() {
-        this.data && this.data.view; this.height;
-        return this.data && this.data.view && this.height > 0 ? 'visible' : '';
+        this.dataView; this.height;
+        return this.dataView && this.height > 0 ? 'visible' : '';
       }
     },
     {
@@ -68,13 +76,12 @@ CLASS({
       code: function() {
         this.SUPER.apply(this, arguments);
 
-        Events.dynamic(function() {
-          this.data && this.data.view; this.$; this.state;
-          if ( ! this.$ || ! this.data || this.state !== 'release' ||
-              this.prevState === this.state ) return;
+        this.X.dynamic(function() {
+          this.dataView; this.$; this.state;
+          if ( ! this.$ || ! this.data || this.state !== 'release' ) return;
           this.updateHTML();
         }.bind(this));
-        Events.dynamic(function() {
+        this.X.dynamic(function() {
           this.height; this.cssClassName;
           if ( ! this.$ ) return;
           this.$.style.height = this.cssHeight;
@@ -101,8 +108,8 @@ CLASS({
       </{{{this.tagName}}}>
     */},
     function toInnerHTML() {/*
-      <% if ( this.data && this.data.view ) { %>
-        <%= this.data.view({}, this.sampleCodeContext) %>
+      <% if ( this.dataView ) { %>
+        <%= this.dataView({}, this.sampleCodeContext) %>
       <% } %>
     */},
     function CSS() {/*

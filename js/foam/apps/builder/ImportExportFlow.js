@@ -14,12 +14,23 @@ CLASS({
   name: 'ImportExportFlow',
 
   imports: [
+    'appBuilderAnalyticsEnabled$ as analyticsEnabled$',
     'mdToolbar as toolbar',
   ],
   properties: [
-    'config',
     'dao',
     'toolbar',
+    {
+      type: 'foam.apps.builder.AppConfig',
+      name: 'config',
+      defaultValue: null,
+      postSet: function(old, nu) {
+        if ( old ) Events.unfollow(this.analyticsEnabled$,
+                                   old.appBuilderAnalyticsEnabled$);
+        if ( nu ) Events.follow(this.analyticsEnabled$,
+                                nu.appBuilderAnalyticsEnabled$);
+      },
+    },
     {
       model_: 'StringProperty',
       name: 'title',
@@ -52,6 +63,13 @@ CLASS({
       model_: 'StringProperty',
       name: 'details',
       defaultValue: 'Still working...',
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'analyticsEnabled',
+      label: 'Send app usage data from this app to the App Builder team ' +
+          'to help make App Builder better<br><a href="#">Learn more</a>',
+      defaultValue: true,
     },
   ],
 });

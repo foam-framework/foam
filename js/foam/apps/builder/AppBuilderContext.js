@@ -13,11 +13,26 @@ CLASS({
   package: 'foam.apps.builder',
   name: 'AppBuilderContext',
 
+  requires: [
+    'foam.apps.builder.Identity',
+  ],
+
   properties: [
     {
       type: 'foam.apps.builder.Identity',
       name: 'identity',
-      defaultValue: null,
+      lazyFactory: function() {
+        return DEBUG ? (
+          this.Identity.create({
+            id: 'fakeID1234',
+            displayName: 'User Q User',
+            oauth: '',
+            iconUrl: '',
+            authType: 'WEB',
+          })
+        ) : null;
+      },
+
     },
     {
       model_: 'ArrayProperty',
@@ -35,7 +50,7 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'appBuilderAnalyticsEnabled',
       label: 'Send anonymous usage data from my apps to the App Builder team ' +
-          'to help make App Builder better',
+          'to help make App Builder better<br><a href="#">Learn more</a>',
       defaultValue: true,
     },
   ],

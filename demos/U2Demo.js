@@ -89,21 +89,44 @@ e12.style({
   color: function() { return Math.floor(timer.i/20) % 2 ? 'black' : 'yellow'; }
 });
 
-var e14 = E('font').add('dynamic attribute');
+var e14 = E('font').style({height: '80px', display: 'block'}).add('dynamic attribute');
 e14.write();
 e14.attrs({
   size: function() { return Math.floor(timer.i/20) % 9; },
   color: 'black'
 });
 
-timer.stop();
-
-E('b').add(E('br'), 'DetailView: ').write();
+E('div').style({height: '30px'}).write();
 
 var dv = foam.u2.DetailView.create();
 dv.write();
 
-E('b').add('End').write();
+setTimeout(function() { dv.data = dv; }, 2000);
+setTimeout(function() { dv.properties = [dv.model_.PROPERTIES, dv.model_.MODEL, dv.model_.DATA]; }, 5000);
+setTimeout(function() { dv.title = 'New Title'; }, 7000);
 
-setTimeout(function() { dv.data = dv; }, 3000);
-setTimeout(function() { dv.properties = [dv.model_.PROPERTIES, dv.model_.MODEL, dv.model_.DATA]; }, 6000);
+var e15 = foam.u2.Input.create().write();
+e15.data$ = timer.i$;
+
+E('div').style({height: '30px'}).write();
+
+foam.u2.Input.create().write().data$ = foam.u2.Input.create().write().data$;
+
+foam.u2.OnKeyInput.create().write().data$ = foam.u2.OnKeyInput.create().write().data$;
+
+E('div').style({height: '30px'}).write();
+
+foam.u2.TextArea.create().write().data$ = foam.u2.TextArea.create().write().data$;
+foam.u2.OnKeyTextArea.create().write().data$ = foam.u2.OnKeyTextArea.create().write().data$;
+
+E('div').style({height: '30px'}).write();
+var e16 = foam.u2.Select.create({placeholder: 'Pick a Colour:', options: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
+var e17 = foam.u2.Select.create({options: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
+
+e16.data$ = e17.data$;
+
+setTimeout(function() {
+  e17.options = [['b', 'Bert'], ['e', 'Ernie']];
+}, 5000);
+
+//timer.stop();

@@ -40,17 +40,23 @@ CLASS({
 
   methods: [
     function doExportAction(name, title) {
-      var confirm = this.aconfirmExportAction.bind(this, name, title);
-      var setup = this.asetupExportAction.bind(this, name, title);
+      var exportFlow = this.ImportExportFlow.create({
+        config$: this.data$,
+        actionName: name,
+        title: title,
+      }, this.Y);
+      var confirm = this.aconfirmExportAction.bind(this, name, title,
+                                                   exportFlow);
+      var setup = this.asetupExportAction.bind(this, name, title, exportFlow);
       aaif(confirm, aseq(setup, function(ret, exportFlow) {
         this.importExportManager[name](exportFlow);
         ret();
       }.bind(this)))(nop);
     },
-    function aconfirmExportAction(name, title, ret) {
+    function aconfirmExportAction(name, title, exportFlow, ret) {
       var confirmPopup = this.PopupView.create({
         cardClass: 'md-card-shell',
-        data: this.data,
+        data: exportFlow,
         blockerMode: 'modal',
         delegate: this.ExportConfirmView.xbind({
           actionName: name,
@@ -60,12 +66,7 @@ CLASS({
       confirmPopup.open();
       confirmPopup.delegateView.result(ret);
     },
-    function asetupExportAction(name, title, ret) {
-      var exportFlow = this.ImportExportFlow.create({
-        config$: this.data$,
-        actionName: name,
-        title: title,
-      }, this.Y);
+    function asetupExportAction(name, title, exportFlow, ret) {
       var popup = this.PopupView.create({
         cardClass: 'md-card-shell',
         blockerMode: 'modal',

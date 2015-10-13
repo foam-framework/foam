@@ -30,50 +30,7 @@ CLASS({
   constants: {
     INITIAL: {
       output: function(out) {
-        out('<', this.nodeName);
-        if ( this.id ) out(' id="', this.id, '"');
-
-        var first = true;
-        for ( var key in this.classes ) {
-          if ( first ) {
-            out(' class="');
-            first = false;
-          } else {
-            out(' ');
-          }
-          out(key);
-        }
-        if ( ! first ) out('"');
-
-        first = true;
-        for ( var key in this.css ) {
-          var value = this.css[key];
-
-          if ( first ) {
-            out(' style="');
-            first = false;
-          }
-          out(key, ':', value, ';');
-        }
-        if ( ! first ) out('"');
-
-        for ( var i = 0 ; i < this.attributes.length ; i++ ) {
-          var attr = this.attributes[i];
-          var value = this.attributes[i].value;
-
-          out(' ', attr.name);
-          if ( value !== undefined )
-            out('="', value, '"');
-        }
-
-        if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
-             ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
-          out('>');
-          this.outputInnerHTML(out);
-          out('</', this.nodeName);
-        }
-
-        out('>');
+        this.output_(out);
 
         this.state = this.OUTPUT;
 
@@ -308,6 +265,22 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
+        var t = this.model_.templates[i];
+        if ( t.name === 'CSS' ) {
+          t.futureTemplate(function() {
+            X.addStyle(
+              this.CSS(),
+              this.model_.id.split('.').join('/') + '.CSS');
+          }.bind(this));
+          return;
+        }
+      }
+    },
+
     function attrValue(opt_name, opt_event) {
       var args = { element: this };
 
@@ -510,6 +483,23 @@ CLASS({
       return this;
     },
 
+    function removeAllChildren() {
+      while ( this.childNodes.length ) this.removeChild(this.childNodes[0]);
+    },
+
+    function setChildren(value) {
+      /** value -- a Value of an array of children which set this elements contents, replacing old children **/
+      var l = function() {
+        this.removeAllChildren();
+        this.add.apply(this, value.get());
+      }.bind(this);
+
+      value.addListener(l);
+      l();
+
+      return this;
+    },
+
     //
     // Output Methods
     //
@@ -564,9 +554,60 @@ CLASS({
       /* For debugging, not production. */
       (opt_X.document || document).writeln(this.outerHTML);
       this.load();
+      return this;
     },
 
-    function toString() { return this.outerHTML; }
+    function output_(out) {
+      /** Output the element without transitioning to the OUTPUT state. **/
+      out('<', this.nodeName);
+      if ( this.id ) out(' id="', this.id, '"');
+
+      var first = true;
+      for ( var key in this.classes ) {
+        if ( first ) {
+          out(' class="');
+          first = false;
+        } else {
+          out(' ');
+        }
+        out(key);
+      }
+      if ( ! first ) out('"');
+
+      first = true;
+      for ( var key in this.css ) {
+        var value = this.css[key];
+
+        if ( first ) {
+          out(' style="');
+          first = false;
+        }
+        out(key, ':', value, ';');
+      }
+      if ( ! first ) out('"');
+
+      for ( var i = 0 ; i < this.attributes.length ; i++ ) {
+        var attr = this.attributes[i];
+        var value = this.attributes[i].value;
+
+        out(' ', attr.name);
+        if ( value !== undefined )
+          out('="', value, '"');
+      }
+
+      if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
+           ( ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] || this.childNodes.length ) ) {
+        out('>');
+        this.outputInnerHTML(out);
+        out('</', this.nodeName);
+      }
+
+      out('>');
+    },
+
+    function toString() {
+      return this.output_(this.createOutputStream()).toString();
+    }
   ]
 });
 

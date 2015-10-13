@@ -113,7 +113,7 @@ CLASS({
           this.sendPublish.bind(this))
       (this.completePublish.bind(this));
     },
-    function getIdentity(ret) { this.identityManager.getIdentity(ret); },
+    function getIdentity(ret) { ret(this.identityManager.getIdentity()); },
     function getUploadHash(ret) {
       this.uploadCache.find(this.data.config.chromeId, {
         put: function(obj) { ret(obj); },
