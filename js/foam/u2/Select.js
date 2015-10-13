@@ -38,13 +38,15 @@ CLASS({
       this.SUPER();
       var self = this;
       this.data$ = this.attrValue();
-      this.add(function(options, placeholder) {
+      this.setChildren(function(options, placeholder) {
+        var cs = [];
         if ( placeholder )
-          self.add(E('option').attrs({disabled: 'disabled'}).add(self.placeholder));
+          cs.push(E('option').attrs({disabled: 'disabled'}).add(self.placeholder));
         for ( var i = 0 ; i < options.length ; i++ ) {
           var o = options[i];
-          self.add(E('option').attrs({value: o[0]}).add(o[1]));
+          cs.push(E('option').attrs({value: o[0]}).add(o[1]));
         }
+        return cs;
       }.on$(this.X, this.options$, this.placeholder$));
     }
   ]

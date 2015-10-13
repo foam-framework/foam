@@ -145,6 +145,10 @@ function anyChar(ps) {
   return ps.head ? ps.tail/*.setValue(ps.head)*/ : undefined;
 }
 
+function fail(ps) {
+  return undefined;
+}
+
 function notChar(c) {
   return function(ps) {
     return ps.head && ps.head !== c ? ps.tail.setValue(ps.head) : undefined;
