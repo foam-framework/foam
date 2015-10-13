@@ -191,5 +191,20 @@ CLASS({
     function removeAll(sink, options, opt_X) {
       // TODO(braden): Implement me. Use the select+remove scheme.
     },
+    function where(query) {
+      return (this.Y || X).lookup('FilteredDAO_').create({ query: query, delegate: this });
+    },
+    function limit(count) {
+      return (this.Y || X).lookup('LimitedDAO_').create({ count: count, delegate: this });
+    },
+    function skip(skip) {
+      return (this.Y || X).lookup('SkipDAO_').create({ skip: skip, delegate: this });
+    },
+    function orderBy() {
+      return (this.Y || X).lookup('OrderedDAO_').create({
+        comparator: arguments.length === 1 ? arguments[0] : argsToArray(arguments),
+        delegete: this
+      });
+    },
   ]
 });
