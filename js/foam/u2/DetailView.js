@@ -29,9 +29,8 @@ CLASS({
   properties: [
     {
       name: 'data',
-      preSet: function(_, data) {
+      postSet: function(_, data) {
         if ( data.model_ !== this.model ) this.model = data.model_;
-        return data;
       }
     },
     {

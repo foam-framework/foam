@@ -38,9 +38,11 @@ CLASS({
 
   methods: [
     function init() {
-      var view = foam.u2.Input.create({data$: this.data.propertyValue(this.prop.name)});
+      var view = foam.u2.Input.create();
 
-      console.log('*** ', this.prop.name, this.data, this.data.propertyValue(this.prop.name).get());
+      // TODO: Why can't I just define this with data$ in the view constructor?
+      // Is data$ linking the wrong way?
+      Events.link(this.data.propertyValue(this.prop.name), view.data$);
       this.add(
         E('td').add(this.prop.label),
         E('td').add(view));

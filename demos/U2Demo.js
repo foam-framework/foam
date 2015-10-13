@@ -100,7 +100,6 @@ E('div').style({height: '30px'}).write();
 
 MODEL({name: 'Person', properties: ['firstName', 'lastName', 'age']});
 var dd = Person.create({firstName: 'Donald', lastName: 'Duck', age: 83});
-console.log('dd: ', dd.toJSON());
 
 foam.u2.DetailView.create({data:dd}).write();
 
