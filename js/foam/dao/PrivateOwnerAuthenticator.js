@@ -36,7 +36,7 @@ CLASS({
     function massageForPut(ret, principal, old, nu) {
       // If old exists and old.owner != principal, fail: trying to write someone
       // else's data.
-      if (old && NE(this.ownerProp, principal).f(old)) {
+      if (old && NEQ(this.ownerProp, principal).f(old)) {
         ret(null);
         return;
       }
