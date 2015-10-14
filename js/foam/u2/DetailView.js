@@ -57,7 +57,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .u2-detailview {
+      .foam-u2-DetailView {
         display: inline-block;
         margin: 5px;
         background: #fdfdfd;
@@ -72,7 +72,7 @@ CLASS({
 
       var self = this;
 
-      this.cls('u2-detailview').add(function(model, properties) {
+      this.cls('foam-u2-DetailView').add(function(model, properties) {
         if ( ! model ) return 'Set model or data.';
 
         var e = self.createFormE();
