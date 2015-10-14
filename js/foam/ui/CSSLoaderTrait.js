@@ -33,7 +33,7 @@ CLASS({
           var t = this.model_.templates[i];
           if ( t.name === 'CSS' ) {
             t.futureTemplate(function() {
-              X.addStyle(this.CSS());
+              X.addStyle(this);
             }.bind(this));
             return;
           }

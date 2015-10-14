@@ -78,6 +78,10 @@ CLASS({
       factory: function() { return {}; }
     },
     {
+      name: 'installedStyles',
+      factory: function() { return {}; }
+    },
+    {
       model_: 'BooleanProperty',
       name: 'isBackground',
       defaultValue: false
@@ -89,9 +93,12 @@ CLASS({
   ],
 
   methods: {
-    addStyle: function(css, opt_source) {
-      if ( opt_source )
-        css += '\n\n/*# sourceURL=' + opt_source + ' */\n'
+    addStyle: function(obj) {
+      var id = obj.model_.id;
+      if ( this.installedStyles[id] ) return;
+      this.installedStyles[id] = true;
+
+      var css = obj.CSS() + '\n\n/*# sourceURL=' + id.split('.').join('/') + '.CSS */\n';
 
       if ( ! this.document || ! this.document.createElement ) return;
       var s = this.document.createElement('style');
