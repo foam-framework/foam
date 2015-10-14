@@ -136,3 +136,87 @@ setTimeout(function() {
 }, 5000);
 
 //timer.stop();
+
+
+MODEL({
+  name: 'AllViews',
+  properties: [
+    {
+      name: 'default'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'string'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'boolean'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'date'
+    },
+    {
+      model_: 'DateTimeProperty',
+      name: 'dateTime'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'int'
+    },
+    {
+      model_: 'LongProperty',
+      name: 'long'
+    },
+    {
+      model_: 'FloatProperty',
+      name: 'float'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'function'
+    },
+    {
+      model_: 'TemplateProperty',
+      name: 'template'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'array'
+    },
+    // ReferenceProperty
+    {
+      model_: 'StringArrayProperty',
+      name: 'stringArray'
+    },
+    {
+      model_: 'EMailProperty',
+      name: 'email'
+    },
+    {
+      model_: 'ImageProperty',
+      name: 'image'
+    },
+    {
+      model_: 'URLProperty',
+      name: 'string'
+    },
+    {
+      model_: 'ColorProperty',
+      name: 'color'
+    },
+    {
+      model_: 'PasswordProperty',
+      name: 'password'
+    },
+    {
+      model_: 'PhoneNumberProperty',
+      name: 'phoneNumber'
+    }
+  ]
+});
+
+E('div').style({height: '30px'}).write();
+
+var dv2 = foam.u2.DetailView.create({data: AllViews.create()}).write();
+var dv3 = foam.u2.DetailView.create({data: dv2.data}).write();

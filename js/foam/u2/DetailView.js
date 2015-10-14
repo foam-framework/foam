@@ -51,13 +51,17 @@ CLASS({
         <p>The display title for the $$DOC{ref:'foam.ui.View'}.
         </p>
       */}
-    }
+    },
+    [ 'nodeName', 'div' ]
   ],
 
   templates: [
     function CSS() {/*
       .u2-detailview {
-        background: #f9f9f9;
+        display: inline-block;
+        margin: 5px;
+        background: #fdfdfd;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
       }
     */}
   ],
@@ -65,7 +69,7 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      
+
       var self = this;
 
       this.cls('u2-detailview').add(function(model, properties) {
@@ -85,7 +89,7 @@ CLASS({
         return e;
       }.on$(this.X, this.model$, this.properties$));
     },
-    
+
     // Template Methods
 
     function createFormE() { return E('table'); },
