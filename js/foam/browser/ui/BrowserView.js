@@ -76,7 +76,7 @@ CLASS({
           name: 'selection',
           documentation: 'Used in the list view.',
           postSet: function(old, nu) {
-            if (nu) {
+            if (nu && this.data && this.data.dao ) {
               this.data.dao.find(nu.id, {
                 put: function(obj) {
                   this.stack.pushView(this.data.detailView({

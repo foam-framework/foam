@@ -14,6 +14,10 @@ CLASS({
   name: 'AppView',
   extendsModel: 'foam.ui.SimpleView',
 
+  exports: [
+    'previewSelectionGuard$ as selection$',
+  ],
+
   properties: [
     'data',
     {
@@ -23,6 +27,10 @@ CLASS({
     {
       name: 'delegateView',
       defaultValue: null,
+    },
+    {
+      name: 'previewSelectionGuard',
+      defaultValue: '',
     },
   ],
 
