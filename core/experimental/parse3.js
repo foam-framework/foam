@@ -107,12 +107,40 @@ function char_ic(c) {
   }
 }
 
-function literal(str, opt_value) {
+function xxliteral(str, opt_value) {
   var s = [];
   for ( var i = 0; i < str.length ; i++ ) {
     s.push(char(str[i]));
   }
   return seq.apply(null, s);
+}
+
+function literal(str, opt_value) {
+  return function(state) {
+    var i = 0;
+    var ps = state[STREAM];
+    var c = ps.head;
+    while ( c != null && i < str.length ) {
+      if ( str.charAt(i) !== c) {
+        return DO_FAIL(state, state[STREAM]);
+      }
+      ps = ps.tail;
+      c = ps.head;
+      i++;
+    }
+    if ( c == null ) {
+      debugger;
+      return [
+        literal(str.subtring(i), opt_value || str),
+        ps,
+        state[SUCCESS],
+        state[FAIL],
+        state[PAYLOAD]
+      ];
+    }
+    VALUE(state, opt_value || str);
+    return DO_SUCCESS(state, ps);
+  };
 }
 
 function literal_ic(str, opt_value) {
