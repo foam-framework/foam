@@ -21,17 +21,10 @@ CLASS({
   extendsModel: 'foam.ui.SimpleView',
   traits: ['foam.ui.md.MDStyleTrait'],
 
-  requires: [
-    'foam.util.Base64Encoder',
-  ],
-
   properties: [
     [ 'tagName', 'image-picker' ],
     {
       name: 'data',
-      postSet: function(old,nu) {
-        console.log("data change",old,nu);
-      }
     },
     {
       name: '$input',

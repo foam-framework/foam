@@ -15,37 +15,33 @@
  * limitations under the License.
  */
 
-CLASS({
-  package: 'foam.u2',
-  name: 'PropertyView',
-
-  extendsModel: 'foam.u2.Element',
-
-  requires: [
-    'Property',
-    'foam.u2.Input'
-  ],
-
+MODEL({
+  package: 'foam.apps.calc',
+  name: 'Binary',
+  extendsModel: 'foam.apps.calc.Unary',
   properties: [
+    [ 'code', function(_, action) {
+      if ( this.a2 == '' ) {
+        // the previous operation should be replaced, since we can't
+        // finish this one without a second arg. The user probably hit one
+        // binay op, followed by another.
+        this.replace(action.f);
+      } else {
+        if ( this.op != this.model_.DEFAULT_OP ) this.equals();
+        this.push('', action.f);
+        this.editable = true;
+      }
+    }],
     {
-      name: 'data'
-    },
-    {
-      name: 'prop'
-    },
-    [ 'nodeName', 'tr' ]
+      name: 'label',
+      defaultValueFn: function() { return this.name; }
+    }
   ],
-
   methods: [
     function init() {
-      var view = foam.u2.Input.create();
-
-      // TODO: Why can't I just define this with data$ in the view constructor?
-      // Is data$ linking the wrong way?
-      Events.link(this.data.propertyValue(this.prop.name), view.data$);
-      this.add(
-        E('td').add(this.prop.label),
-        E('td').add(view));
+      this.SUPER();
+      this.f.unary = false;
+      this.f.binary = true;
     }
   ]
 });

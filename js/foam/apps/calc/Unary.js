@@ -15,19 +15,32 @@
  * limitations under the License.
  */
 
-// TODO: Add datalist support.
-
 CLASS({
-  package: 'foam.u2',
-  name: 'Input',
-  extendsModel: 'foam.u2.Element',
-
-  properties: [ [ 'nodeName', 'input' ], 'data' ],
-
+  package: 'foam.apps.calc',
+  name: 'Unary',
+  extendsModel: 'Action',
+  properties: [
+    'f',
+    { name: 'longName', defaultValueFn: function() { return this.name; } },
+    {
+      name: 'translationHint',
+      defaultValueFn: function() { return this.longName ? 'short form for mathematical function: "' + this.longName + '"' : '' ;}
+    },
+    [ 'code', function(_, action) {
+      this.op = action.f;
+      this.push(action.f.call(this, this.a2));
+      this.editable = false;
+    }],
+    {
+      name: 'label',
+      defaultValueFn: function() { return this.name; }
+    }
+  ],
   methods: [
     function init() {
       this.SUPER();
-      this.data$ = this.attrValue();
+      this.f.label = '<span aria-label="' + this.speechLabel + '">' + this.label + '</span>';
+      this.f.unary = true;
     }
   ]
 });

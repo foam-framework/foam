@@ -16,36 +16,24 @@
  */
 
 CLASS({
-  package: 'foam.u2',
-  name: 'PropertyView',
-
-  extendsModel: 'foam.u2.Element',
-
-  requires: [
-    'Property',
-    'foam.u2.Input'
-  ],
-
+  package: 'foam.apps.calc',
+  name: 'Num',
+  documentation: 'Make a 0-9 Number Action.',
+  extendsModel: 'Action',
   properties: [
-    {
-      name: 'data'
-    },
-    {
-      name: 'prop'
-    },
-    [ 'nodeName', 'tr' ]
-  ],
-
-  methods: [
-    function init() {
-      var view = foam.u2.Input.create();
-
-      // TODO: Why can't I just define this with data$ in the view constructor?
-      // Is data$ linking the wrong way?
-      Events.link(this.data.propertyValue(this.prop.name), view.data$);
-      this.add(
-        E('td').add(this.prop.label),
-        E('td').add(view));
-    }
+    'n',
+    { name: 'name', defaultValueFn: function() { return this.n.toString(); } },
+    { name: 'keyboardShortcuts', factory: null, defaultValueFn: function() { return [ this.n + '' ]; } },
+    [ 'code', function(_, action) {
+      var n = action.n;
+      if ( ! this.editable ) {
+        this.push(n);
+        this.editable = true;
+      } else {
+        if ( this.a2 == '0' && ! n ) return;
+        if ( this.a2.length >= 18 ) return;
+        this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
+      }
+    }]
   ]
 });

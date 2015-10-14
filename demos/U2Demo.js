@@ -89,7 +89,7 @@ e12.style({
   color: function() { return Math.floor(timer.i/20) % 2 ? 'black' : 'yellow'; }
 });
 
-var e14 = E('font').add('dynamic attribute');
+var e14 = E('font').style({height: '80px', display: 'block'}).add('dynamic attribute');
 e14.write();
 e14.attrs({
   size: function() { return Math.floor(timer.i/20) % 9; },
@@ -98,11 +98,17 @@ e14.attrs({
 
 E('div').style({height: '30px'}).write();
 
-var dv = foam.u2.DetailView.create();
-dv.write();
+MODEL({name: 'Person', properties: ['firstName', 'lastName', 'age']});
+var dd = Person.create({firstName: 'Donald', lastName: 'Duck', age: 83});
 
-setTimeout(function() { dv.data = dv; }, 2000);
-setTimeout(function() { dv.properties = [dv.model_.PROPERTIES, dv.model_.MODEL, dv.model_.DATA]; }, 5000);
+foam.u2.DetailView.create({data:dd}).write();
+
+var dv = foam.u2.DetailView.create().write();
+
+
+
+setTimeout(function() { dv.data = dd; }, 2000);
+// setTimeout(function() { dv.properties = [dv.model_.PROPERTIES, dv.model_.MODEL, dv.model_.DATA]; }, 5000);
 setTimeout(function() { dv.title = 'New Title'; }, 7000);
 
 var e15 = foam.u2.Input.create().write();
@@ -125,10 +131,92 @@ var e17 = foam.u2.Select.create({options: [['r', 'Red'],['g', 'Green'], ['b', 'B
 
 e16.data$ = e17.data$;
 
-/*
 setTimeout(function() {
   e17.options = [['b', 'Bert'], ['e', 'Ernie']];
 }, 5000);
-*/
 
 //timer.stop();
+
+
+MODEL({
+  name: 'AllViews',
+  properties: [
+    {
+      name: 'default'
+    },
+    {
+      model_: 'StringProperty',
+      name: 'string'
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'boolean'
+    },
+    {
+      model_: 'DateProperty',
+      name: 'date'
+    },
+    {
+      model_: 'DateTimeProperty',
+      name: 'dateTime'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'int'
+    },
+    {
+      model_: 'LongProperty',
+      name: 'long'
+    },
+    {
+      model_: 'FloatProperty',
+      name: 'float'
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'function'
+    },
+    {
+      model_: 'TemplateProperty',
+      name: 'template'
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'array'
+    },
+    // ReferenceProperty
+    {
+      model_: 'StringArrayProperty',
+      name: 'stringArray'
+    },
+    {
+      model_: 'EMailProperty',
+      name: 'email'
+    },
+    {
+      model_: 'ImageProperty',
+      name: 'image'
+    },
+    {
+      model_: 'URLProperty',
+      name: 'string'
+    },
+    {
+      model_: 'ColorProperty',
+      name: 'color'
+    },
+    {
+      model_: 'PasswordProperty',
+      name: 'password'
+    },
+    {
+      model_: 'PhoneNumberProperty',
+      name: 'phoneNumber'
+    }
+  ]
+});
+
+E('div').style({height: '30px'}).write();
+
+var dv2 = foam.u2.DetailView.create({data: AllViews.create()}).write();
+var dv3 = foam.u2.DetailView.create({data: dv2.data}).write();

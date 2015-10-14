@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,83 +15,8 @@
  * limitations under the License.
  */
 
-MODEL({
-  name: 'Num',
-  documentation: 'Make a 0-9 Number Action.',
-  extendsModel: 'Action',
-  properties: [
-    'n',
-    { name: 'name', defaultValueFn: function() { return this.n.toString(); } },
-    { name: 'keyboardShortcuts', factory: null, defaultValueFn: function() { return [ this.n + '' ]; } },
-    [ 'code', function(_, action) {
-      var n = action.n;
-      if ( ! this.editable ) {
-        this.push(n);
-        this.editable = true;
-      } else {
-        if ( this.a2 == '0' && ! n ) return;
-        if ( this.a2.length >= 18 ) return;
-        this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
-      }
-    }]
-  ]
-});
-
-
-MODEL({
-  name: 'Unary',
-  extendsModel: 'Action',
-  properties: [
-    'f',
-    { name: 'longName', defaultValueFn: function() { return this.name; } },
-    {
-      name: 'translationHint',
-      defaultValueFn: function() { return this.longName ? 'short form for mathematical function: "' + this.longName + '"' : '' ;}
-    },
-    [ 'code', function(_, action) {
-      this.op = action.f;
-      this.push(action.f.call(this, this.a2));
-      this.editable = false;
-    }]
-  ],
-  methods: [
-    function init() {
-      this.SUPER();
-      this.f.label = '<span aria-label="' + this.speechLabel + '">' + this.label + '</span>';
-      this.f.unary = true;
-    }
-  ]
-});
-
-
-MODEL({
-  name: 'Binary',
-  extendsModel: 'Unary',
-  properties: [
-    [ 'code', function(_, action) {
-      if ( this.a2 == '' ) {
-        // the previous operation should be replaced, since we can't
-        // finish this one without a second arg. The user probably hit one
-        // binay op, followed by another.
-        this.replace(action.f);
-      } else {
-        if ( this.op != Calc.DEFAULT_OP ) this.equals();
-        this.push('', action.f);
-        this.editable = true;
-      }
-    }]
-  ],
-  methods: [
-    function init() {
-      this.SUPER();
-      this.f.unary = false;
-      this.f.binary = true;
-    }
-  ]
-});
-
-
 CLASS({
+  package: 'foam.apps.calc',
   name: 'Calc',
   translationHint: 'Calculator',
 
@@ -227,18 +152,18 @@ CLASS({
   ],
 
   actions: [
-    { model_: 'Num', n: 1 },
-    { model_: 'Num', n: 2 },
-    { model_: 'Num', n: 3 },
-    { model_: 'Num', n: 4 },
-    { model_: 'Num', n: 5 },
-    { model_: 'Num', n: 6 },
-    { model_: 'Num', n: 7 },
-    { model_: 'Num', n: 8 },
-    { model_: 'Num', n: 9 },
-    { model_: 'Num', n: 0 },
+    { model_: 'foam.apps.calc.Num', n: 1 },
+    { model_: 'foam.apps.calc.Num', n: 2 },
+    { model_: 'foam.apps.calc.Num', n: 3 },
+    { model_: 'foam.apps.calc.Num', n: 4 },
+    { model_: 'foam.apps.calc.Num', n: 5 },
+    { model_: 'foam.apps.calc.Num', n: 6 },
+    { model_: 'foam.apps.calc.Num', n: 7 },
+    { model_: 'foam.apps.calc.Num', n: 8 },
+    { model_: 'foam.apps.calc.Num', n: 9 },
+    { model_: 'foam.apps.calc.Num', n: 0 },
     {
-      model_: "Binary",
+      model_: "foam.apps.calc.Binary",
       name: "div",
       label: "÷",
       speechLabel: "divide",
@@ -246,7 +171,7 @@ CLASS({
       f: function (a1, a2) { return a1 / a2; }
     },
     {
-      model_: "Binary",
+      model_: "foam.apps.calc.Binary",
       name: "mult",
       label: "×",
       speechLabel: "multiply",
@@ -254,7 +179,7 @@ CLASS({
       f: function (a1, a2) { return a1 * a2; }
     },
     {
-      model_: "Binary",
+      model_: "foam.apps.calc.Binary",
       name: "plus",
       label: "+",
       speechLabel: "plus",
@@ -262,7 +187,7 @@ CLASS({
       f: function (a1, a2) { return a1 + a2; }
     },
     {
-      model_: "Binary",
+      model_: "foam.apps.calc.Binary",
       name: "minus",
       label: "–",
       speechLabel: "minus",
@@ -377,6 +302,7 @@ CLASS({
     },
     {
       name: 'e',
+      label: 'e',
       keyboardShortcuts: [ 'e' ],
       translationHint: 'mathematical constant, e',
       code: function() { this.a2 = Math.E; }
@@ -390,7 +316,7 @@ CLASS({
       code: function() { this.a2 /= 100.0; }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "inv",
       label: "1/x",
       speechLabel: "inverse",
@@ -398,14 +324,14 @@ CLASS({
       f: function (a) { return 1.0/a; }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "sqroot",
       label: "√",
       speechLabel: "square root",
       f: function(a) { return Math.sqrt(a); }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "square",
       label: "x²",
       speechLabel: "x squared",
@@ -413,33 +339,33 @@ CLASS({
       f: function (a) { return a*a; }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "ln",
       speechLabel: "natural logarithm",
       f: function(a) { return Math.log(a); }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "exp",
       label: "eⁿ",
       speechLabel: "e to the power of n",
       f: function(a) { return Math.exp(a); }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "log",
       speechLabel: "log base 10",
       f: function(a) { return Math.log(a) / Math.LN10; }
     },
     {
-      model_: "Binary",
+      model_: "foam.apps.calc.Binary",
       name: "root",
       label: "ⁿ √Y",
       speechLabel: "the enth root of y",
       f: function(a1, a2) { return Math.pow(a2, 1/a1); }
     },
     {
-      model_: "Binary",
+      model_: "foam.apps.calc.Binary",
       name: "pow",
       label: "yⁿ",
       speechLabel: "y to the power of n",
@@ -459,43 +385,43 @@ CLASS({
       code: function() { this.degreesMode = false; }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "sin",
       speechLabel: "sine",
       f: function(a) { return Math.sin(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "cos",
       speechLabel: "cosine",
       f: function(a) { return Math.cos(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "tan",
       speechLabel: "tangent",
       f: function(a) { return Math.tan(this.degreesMode ? a * Math.PI / 180 : a) }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "asin",
       speechLabel: "arcsine",
       f: function(a) { return Math.asin(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "acos",
       speechLabel: "arccosine",
       f: function(a) { return Math.acos(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "atan",
       speechLabel: "arctangent",
       f: function(a) { return Math.atan(a) * ( this.degreesMode ? 180 / Math.PI : 1); }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "fact",
       label: "x!",
       speechLabel: "factorial",
@@ -503,27 +429,27 @@ CLASS({
       f: function (n) { return this.factorial(n); }
     },
     {
-      model_: "Binary",
+      model_: "foam.apps.calc.Binary",
       name: "mod",
       speechLabel: "modulo",
       f: function (a1, a2) { return a1 % a2; }
     },
     {
-      model_: "Binary",
+      model_: "foam.apps.calc.Binary",
       name: "p",
       label: "nPr",
       speechLabel: "permutation",
       f: function (n,r) { return this.permutation(n,r); }
     },
     {
-      model_: "Binary",
+      model_: "foam.apps.calc.Binary",
       name: "c",
       label: "nCr",
       speechLabel: "combination",
       f: function (n,r) { return this.combination(n,r); }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "round",
       label: "rnd",
       speechLabel: "round",
@@ -536,7 +462,7 @@ CLASS({
       code: function() { this.a2 = Math.random(); }
     },
     {
-      model_: "Unary",
+      model_: "foam.apps.calc.Unary",
       name: "store",
       label: "a=",
       speechLabel: "store in memory",

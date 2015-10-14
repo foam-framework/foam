@@ -29,9 +29,8 @@ CLASS({
   properties: [
     {
       name: 'data',
-      preSet: function(_, data) {
+      postSet: function(_, data) {
         if ( data.model_ !== this.model ) this.model = data.model_;
-        return data;
       }
     },
     {
@@ -53,13 +52,16 @@ CLASS({
         </p>
       */}
     },
-    [ 'nodeName', 'DIV' ]
+    [ 'nodeName', 'div' ]
   ],
 
   templates: [
     function CSS() {/*
       .u2-detailview {
-        background: #f9f9f9;
+        display: inline-block;
+        margin: 5px;
+        background: #fdfdfd;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
       }
     */}
   ],
@@ -67,24 +69,31 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      
+
       var self = this;
 
       this.cls('u2-detailview').add(function(model, properties) {
         if ( ! model ) return 'Set model or data.';
 
-        var f = E().add(E('b').add(self.title$, E('br')));
+        var e = self.createFormE();
+        e.add(E('tr').add(E('td').attrs({colspan: 2}).add(self.title$)));
 
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
 
           // self.data$.subValue(prop.name);
           //          f.add(prop.label, ' ', E('input'), E('br'));
-          f.add(self.PropertyView.create({data$: self.data$, property: prop}));
+          e.add(self.createPropertyE(prop));
         }
 
-        return f;
+        return e;
       }.on$(this.X, this.model$, this.properties$));
-    }
+    },
+
+    // Template Methods
+
+    function createFormE() { return E('table'); },
+
+    function createPropertyE(prop) { return this.PropertyView.create({data$: this.data$, prop: prop}); }
   ]
 });
