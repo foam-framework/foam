@@ -399,7 +399,7 @@ CLASS({
           return true;
         }
       }
-      console.assert(! DEBUG, 'Phantom DAO unlisten: ', this, sink);
+      if ( DEBUG ) console.warn('Phantom DAO unlisten: ', this, sink);
     },
 
     // Default removeAll: calls select() with the same options and
