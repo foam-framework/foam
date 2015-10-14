@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+// TODO: Add datalist support.
+
 CLASS({
   package: 'foam.u2',
   name: 'Input',
