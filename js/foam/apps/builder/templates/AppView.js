@@ -50,14 +50,18 @@ CLASS({
         margin: 16px;
         border: 16px solid grey;
         border-radius: 16px;
-        flex-grow: 1;
         display: flex;
         flex-direction: column;
         box-shadow: 0px 3px 4px #444;
         overflow-y: auto;
         min-height: 400px;
         max-height: 100%;
+        height: 600px;
       }
+      builder preview-frame .md-update-detail-view-body {
+        overflow-y: auto;
+      }
+
       @media (max-width: 600px) {
         preview-frame {
           margin: 0px;
