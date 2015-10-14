@@ -34,7 +34,7 @@ CLASS({
       label: 'Unique App ID',
       mode: 'read-only',
       help: "The hidden unique id for the app that links DAO instances and models to the owner app.",
-      lazyFactory: function() {
+      factory: function() {
         return camelize(this.appName) + '-' + createGUID();
       }
     },

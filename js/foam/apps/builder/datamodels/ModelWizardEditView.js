@@ -31,6 +31,7 @@ CLASS({
 
   exports: [
     'properties$',
+    'selectionGuard$ as selection$',
   ],
 
   properties: [
@@ -46,7 +47,11 @@ CLASS({
           this.data.properties = nu;
         }
       },
-    }
+    },
+    {
+      name: 'selectionGuard',
+      defaultValue: '',
+    },
   ],
 
   actions: [

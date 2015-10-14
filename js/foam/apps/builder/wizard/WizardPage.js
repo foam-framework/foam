@@ -22,7 +22,8 @@ CLASS({
     'stack',
     'dao',
     'popup',
-    'wizardStack'
+    'wizardStack',
+    'appSelection$',
   ],
 
 
@@ -174,13 +175,19 @@ CLASS({
     },
     function initHTML() {
       this.SUPER();
-      if ( this.popup ) this.popup.subscribe(this.popup.CANCEL, this.onCancel.bind(this));
+      if ( this.popup ) {
+        this.popup.subscribe(this.popup.CANCEL, this.onCancel.bind(this));
+      }
     },
     function onNext() {
       /* if you need to do anything when the user picks the 'next' action,
         implement this method. Remember to call this.SUPER() at the end of your
         implementation, or handle saving this.data yourself. */
-      this.dao && this.dao.put(this.data);
+      this.dao && this.dao.put(this.data, { put: function(cfg) {
+        if ( ( ! this.appSelection ) || ( this.appSelection.appId !== cfg.appId ) ) {
+          this.appSelection = cfg;
+        }
+      }.bind(this) });
     },
     function onCancel() {
       /* if you need to do anything when the user picks the 'cancel' action, implement this method */

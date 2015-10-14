@@ -32,6 +32,7 @@ CLASS({
       transient: true,
       hidden: true,
       type: 'foam.apps.builder.AppConfig',
+      compareProperty: function() { return 0; },
       postSet: function(old,nu) {
         if ( nu ) {
           var id = nu.appId + "_" + this.name;

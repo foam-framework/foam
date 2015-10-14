@@ -58,7 +58,9 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        $$browserConfig{ model_: 'foam.browser.ui.BrowserView' }
+        <% if ( this.data ) { %>
+          $$browserConfig{ model_: 'foam.browser.ui.BrowserView' }
+        <% } %>
       </div>
     */},
   ],
