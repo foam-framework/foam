@@ -85,6 +85,14 @@ CLASS({
         this.popView_(0);
       }
     },
+    {
+      name: 'popChildViews',
+      documentation: 'Default popChildViews that works on the top level. See ' +
+          'popView_ for details.',
+      code: function() {
+        this.popView_(1);
+      }
+    },
     function elementAnimationAdd_(style) {
       if ( this.transition == 'slide' ) {
         style.width = "0px";
@@ -344,6 +352,7 @@ CLASS({
           __proto__: this,
           pushView: this.pushView_.bind(this, this.views_.length),
           popView: this.popView_.bind(this, this.views_.length),
+          popChildViews: this.popView_.bind(this, this.views_.length+1),
           replaceView: this.replaceView_.bind(this, this.views_.length)
         };
 
@@ -371,6 +380,8 @@ CLASS({
         // popView_(i) pops everything greater than and including i. Therefore,
         // a view that calls this.stack.popView() (on the substack object created
         // above) will be removed from the stack.
+        if ( index >= this.views_.length ) return;
+
         this.visibleStart_ -= this.visibleEnd_ - index + 1;
         this.visibleEnd_ = index - 1;
         this.destroyChildViews_(index);

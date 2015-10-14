@@ -140,7 +140,6 @@ CLASS({
       ligature: 'delete',
       code: function() {
         this.dao.remove(this.data);
-        this.stack.popView();
       },
     },
   ],

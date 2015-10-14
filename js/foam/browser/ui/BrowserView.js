@@ -63,6 +63,9 @@ CLASS({
             if (old) old.unsubscribe(old.MENU_CLOSE, this.onMenuTouch);
             if (nu) nu.subscribe(nu.MENU_CLOSE, this.onMenuTouch);
             this.onMenuTouch();
+
+            old.dao && old.dao.unlisten(this);
+            nu.dao && nu.dao.listen(this);
           },
         },
         {
@@ -80,9 +83,13 @@ CLASS({
                     data: obj,
                     innerView: this.data.innerDetailView
                   }, this.Y.sub({ dao: this.data.dao })));
+                }.bind(this),
+                error: function() {
+                  this.selection = null;
                 }.bind(this)
               });
-              this.selection = '';
+            } else {
+              this.stack.popChildViews();
             }
           }
         },
@@ -192,7 +199,15 @@ CLASS({
           if ( menuBodyElem ) this.$menuBody.removeEventListener('transitionend', this.onMenuClosed);
           var menuElem = this.$menuContainer;
           if ( menuElem ) menuElem.outerHTML = "";
-        }
+        },
+
+        function remove(selection) {
+          /* when dao items change, make sure we don't leave the view open */
+          if ( this.selection && this.selection.id && this.selection.id === selection.id ) {
+            //this.listView_ && this.listView_.stack && this.listView_.stack.popView();
+            this.selection = null;
+          }
+        },
       ],
 
       actions: [
@@ -244,7 +259,10 @@ CLASS({
         {
           name: 'onMenuClosed',
           code: function(evt) {
-            if ( evt.propertyName && ! this.menuOpen ) this.updateHTML();
+            if ( evt.propertyName && ! this.menuOpen ) {
+              this.stack.popChildViews();
+              this.updateHTML();
+            }
           },
         },
       ],
@@ -481,7 +499,7 @@ CLASS({
     function initHTML() {
       this.SUPER();
       this.stack.initHTML();
-      this.stack.pushView_(-1, this.InnerBrowserView.create({
+      this.stack.pushView(this.InnerBrowserView.create({
         parent: this,
         data$: this.data$
       }, this.Y));

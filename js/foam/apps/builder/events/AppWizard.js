@@ -40,7 +40,6 @@ CLASS({
   methods: [
     function onNext() {
       this.SUPER(); // puts the app into the main dao
-      this.selection = this.data; // imported selection from browser's main list
     },
     function onCancel() {
       this.SUPER();
