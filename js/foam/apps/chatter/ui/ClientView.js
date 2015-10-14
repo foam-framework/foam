@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.apps.chatter',
+  package: 'foam.apps.chatter.ui',
   name: 'ClientView',
   extendsModel: 'foam.ui.DetailView',
   requires: [
-    'foam.apps.chatter.ChannelView',
+    'foam.apps.chatter.ui.ChannelView',
     'foam.apps.chatter.Channel',
-    'foam.apps.chatter.ChannelCitationView',
-    'foam.apps.chatter.NotificationsView',
+    'foam.apps.chatter.ui.ChannelCitationView',
+    'foam.apps.chatter.ui.NotificationsView',
     'foam.ui.DAOListView'
   ],
   imports: [

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.apps.chatter',
+  package: 'foam.apps.chatter.ui',
   name: 'ChannelCitationView',
   extendsModel: 'foam.ui.DetailView',
   templates: [
