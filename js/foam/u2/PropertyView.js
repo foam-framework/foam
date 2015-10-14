@@ -36,16 +36,26 @@ CLASS({
     [ 'nodeName', 'tr' ]
   ],
 
+  templates: [
+    function CSS() {/*
+      .foam-u2-PropertyView-label {
+        font-size: 14px;
+      }
+    */}
+  ],
+
   methods: [
     function init() {
+      this.SUPER();
+
       var view = foam.u2.Input.create();
 
       // TODO: Why can't I just define this with data$ in the view constructor?
       // Is data$ linking the wrong way?
       Events.link(this.data.propertyValue(this.prop.name), view.data$);
-      this.add(
-        E('td').add(this.prop.label),
-        E('td').add(view));
+      this.cls('foam-u2-PropertyView').add(
+        E('td').cls('foam-u2-PropertyView-label').add(this.prop.label),
+        E('td').cls('foam-u2-PropertyView-view').add(view));
     }
   ]
 });
