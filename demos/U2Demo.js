@@ -261,7 +261,7 @@ dao.pipe(count);
 var scroll = E('input').attrs({
   type: 'range',
   min: 0,
-  max: function() { return count.count; },
+  max: count.count$,
   step: 1
 });
 
