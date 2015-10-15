@@ -39,7 +39,15 @@ CLASS({
   templates: [
     function CSS() {/*
       .foam-u2-PropertyView-label {
-        font-size: 14px;
+        color: #444;
+        display: block;
+        float: left;
+        font-size: 12px;
+        font-weight: bold;
+        padding-left: 6px;
+        padding-top: 6px;
+        text-align: right;
+        vertical-align: top;
       }
     */}
   ],
