@@ -43,7 +43,6 @@ CLASS({
         display: block;
         float: left;
         font-size: 12px;
-        font-weight: bold;
         padding-left: 6px;
         padding-top: 6px;
         text-align: right;
