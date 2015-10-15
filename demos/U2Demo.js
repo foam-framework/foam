@@ -220,3 +220,68 @@ E('div').style({height: '30px'}).write();
 
 var dv2 = foam.u2.DetailView.create({data: AllViews.create()}).write();
 var dv3 = foam.u2.DetailView.create({data: dv2.data}).write();
+
+CLASS({
+  name: 'TestObject',
+  properties: [
+    'id',
+    'a',
+    'b'
+  ]
+});
+
+var dao = [];
+var text = [
+  'hello',
+  'world',
+  'this',
+  'is',
+  'some',
+  'random',
+  'text',
+  'options'
+];
+
+for ( var i = 0 ; i < 50; i++ ) {
+  dao.push({
+    id: i,
+    a: text[Math.floor(Math.random() * text.length)],
+    b: text[Math.floor(Math.random() * text.length)]
+  });
+}
+
+dao = JSONUtil.arrayToObjArray(X, dao, TestObject);
+
+var count = COUNT();
+dao.pipe(count);
+
+var scroll = E('input').attrs({
+  type: 'range',
+  min: 0,
+  max: function() { return count.count; },
+  step: 1
+});
+
+E('div').add("Scroll amount").add(scroll).write();
+
+foam.u2.DAOListView.create({
+  data: foam.dao.ScrollDAO.create({
+    src: dao,
+    scrollValue$: scroll.attrValue(),
+    scrollSize: 5,
+    model: TestObject
+  })
+}).write();
+
+setInterval((function() {
+  var i = 0;
+  var j = 50;
+  return function() {
+    dao.remove(i++);
+    dao.put(TestObject.create({
+      id: j++,
+      a: text[Math.floor(Math.random() * text.length)],
+      b: text[Math.floor(Math.random() * text.length)]
+    }));
+  };
+})(), 5000);
