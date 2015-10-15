@@ -18,7 +18,7 @@
 CLASS({
   name: 'MaxExpr',
 
-  extendsModel: 'UNARY',
+  extends: 'UNARY',
 
   properties: [
     {
@@ -58,7 +58,7 @@ function MAX(expr) {
 CLASS({
   name: 'InExpr',
 
-  extendsModel: 'BINARY',
+  extends: 'BINARY',
 
   documentation: 'Binary expression which is true if its first argument is EQ to any element of its second argument, which is an array.',
 
@@ -104,7 +104,7 @@ function IN(arg1, arg2) {
 CLASS({
   name: 'LtExpr',
 
-  extendsModel: 'BINARY',
+  extends: 'BINARY',
   abstract: true,
 
   methods: {
@@ -136,7 +136,7 @@ function LT(arg1, arg2) {
 CLASS({
   name: 'GtExpr',
 
-  extendsModel: 'BINARY',
+  extends: 'BINARY',
   abstract: true,
 
   methods: {
@@ -168,7 +168,7 @@ function GT(arg1, arg2) {
 CLASS({
   name: 'LteExpr',
 
-  extendsModel: 'BINARY',
+  extends: 'BINARY',
   abstract: true,
 
   methods: {
@@ -201,7 +201,7 @@ function LTE(arg1, arg2) {
 CLASS({
   name: 'GteExpr',
 
-  extendsModel: 'BINARY',
+  extends: 'BINARY',
   abstract: true,
 
   methods: {

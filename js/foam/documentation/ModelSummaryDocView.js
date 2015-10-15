@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'ModelSummaryDocView',
-  extendsModel: 'foam.documentation.DocView',
+  extends: 'foam.documentation.DocView',
 
   imports: ['subModelDAO', 'traitUserDAO'],
 
@@ -64,8 +64,8 @@ CLASS({
 <%        if (this.data.package) { %>
             <p class="important">Package <%=this.data.package%></p>
 <%        } %>
-<%        if (this.data.extendsModel) { %>
-            <p class="important">Extends $$DOC{ref: this.data.extendsModel }</p>
+<%        if (this.data.extends) { %>
+            <p class="important">Extends $$DOC{ref: this.data.extends }</p>
 <%        } %>
 <%        if (this.data.traits && this.data.traits.length > 0) { %>
             <p class="important">Traits: $$traits{ model_: 'foam.documentation.TextualDAOListView', rowView: 'foam.documentation.DocFeatureModelRefView', mode: 'read-only' }</p>

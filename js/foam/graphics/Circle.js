@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name: 'Circle',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   properties: [
     {

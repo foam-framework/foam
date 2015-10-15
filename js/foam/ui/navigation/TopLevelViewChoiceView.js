@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.navigation',
   name: 'TopLevelViewChoiceView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [
     'foam.graphics.ActionButtonCView',
     'foam.ui.SlidePanel',

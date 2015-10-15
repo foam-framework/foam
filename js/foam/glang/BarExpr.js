@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.glang',
   name: 'BarExpr',
-  extendsModel: 'foam.glang.BaseBarExpr',
+  extends: 'foam.glang.BaseBarExpr',
   properties: [
     {
       name: 'expr',

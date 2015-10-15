@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'InterfaceSummaryDocView',
-  extendsModel: 'foam.documentation.SummaryDocView',
+  extends: 'foam.documentation.SummaryDocView',
   documentation: 'Displays the documentation of the given interface.',
 
   requires: ['foam.documentation.TextualDAOListView',

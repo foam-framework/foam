@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.events',
   name: 'AppWizard',
-  extendsModel: 'foam.apps.builder.wizard.WizardPage',
+  extends: 'foam.apps.builder.wizard.WizardPage',
 
   imports: [
     'selection$',

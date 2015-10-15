@@ -34,7 +34,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Bubble',
 
-  extendsModel: 'foam.demos.physics.PhysicalGLCircle',
+  extends: 'foam.demos.physics.PhysicalGLCircle',
 
   requires: [
     'foam.graphics.webgl.flat.Image',
@@ -135,7 +135,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'VideoBubble',
 
-  extendsModel: 'com.google.watlobby.Bubble',
+  extends: 'com.google.watlobby.Bubble',
 
   requires: [
     'foam.graphics.webgl.flat.Image',
@@ -217,7 +217,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'PhotoAlbumBubble',
 
-  extendsModel: 'com.google.watlobby.Bubble',
+  extends: 'com.google.watlobby.Bubble',
 
   requires: [
     'foam.graphics.webgl.primitives.Rectangle',
@@ -298,7 +298,7 @@ CLASS({
 CLASS({
   package: 'com.google.watlobby',
   name: 'LobbyGL',
-  extendsModel: 'foam.graphics.webgl.flat.Scene',
+  extends: 'foam.graphics.webgl.flat.Scene',
 
   requires: [
     'com.google.watlobby.Bubble',

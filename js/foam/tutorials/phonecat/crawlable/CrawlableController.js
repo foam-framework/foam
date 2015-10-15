@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.tutorials.phonecat.crawlable',
   name: 'CrawlableController',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.tutorials.phonecat.crawlable.CrawlableDetailView',
     'foam.tutorials.phonecat.crawlable.CrawlableRowView',

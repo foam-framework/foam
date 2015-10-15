@@ -13,7 +13,7 @@
 CLASS({
   name: 'ModalOverlayView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   exports: [ 'as overlay' ],
 

@@ -13,7 +13,7 @@
 CLASS({
   name: 'Pong',
   package: 'foam.flow',
-  extendsModel: 'foam.flow.Section',
+  extends: 'foam.flow.Section',
 
   requires: [
     'foam.flow.CodeView',

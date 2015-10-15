@@ -18,7 +18,7 @@
 CLASS({
   name: 'PopupAutocompleteView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
   imports: [

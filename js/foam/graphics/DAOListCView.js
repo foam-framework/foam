@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name: 'DAOListCView',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   properties: [
     { model_: 'foam.core.types.DAOProperty', name: 'dao' },

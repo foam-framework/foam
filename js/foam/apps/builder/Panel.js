@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'Panel',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: [ 'foam.apps.builder.ZIndexTrait' ],
 
   properties: [

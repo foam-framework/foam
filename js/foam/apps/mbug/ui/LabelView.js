@@ -18,7 +18,7 @@
 CLASS({
   name: 'LabelView',
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   traits: ['foam.ui.md.ColoredBackgroundTrait'],
   templates: [ function toHTML() {/*
     <div id="%%id" <%= this.generateColorStyle(this.data.label.match(/[^-]+/)[0]) %> class="IssueLabel">{{ this.data.label }}</div>

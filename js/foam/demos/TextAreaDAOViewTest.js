@@ -23,7 +23,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'TextAreaDAOView',
-  extendsModel: 'foam.ui.AbstractDAOView',
+  extends: 'foam.ui.AbstractDAOView',
 
   requires: [
     'foam.graphics.ScrollCView'
@@ -96,7 +96,7 @@ CLASS({
 
 CLASS({
   name: 'StandardTextAreaDAOView',
-  extendsModel: 'foam.ui.AbstractDAOView',
+  extends: 'foam.ui.AbstractDAOView',
 
   properties: [
     {

@@ -18,7 +18,7 @@
 CLASS({
   package: 'com.google.watlobby',
   name: 'Lobby',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
   traits: [ 'com.google.misc.Colors' ],
 
   requires: [

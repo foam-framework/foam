@@ -19,7 +19,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'UpdateDetailView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   imports: [
     'DAO as dao',

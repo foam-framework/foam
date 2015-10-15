@@ -20,7 +20,7 @@ CLASS({
   name:  'DAOCreateController',
   label: 'DAO Create',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {

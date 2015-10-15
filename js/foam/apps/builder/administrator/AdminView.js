@@ -13,7 +13,7 @@ CLASS({
   package: 'foam.apps.builder.administrator',
   name: 'AdminView',
 
-  extendsModel: 'foam.apps.builder.AppController',
+  extends: 'foam.apps.builder.AppController',
 
   requires: [
     'foam.browser.ui.BrowserView',

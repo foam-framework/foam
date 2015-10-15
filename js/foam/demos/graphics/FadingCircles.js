@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.graphics',
   name: 'FadingCircles',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
     'foam.input.Mouse',

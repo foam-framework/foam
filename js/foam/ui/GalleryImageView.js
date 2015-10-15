@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'GalleryImageView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [ 'source' ],
 

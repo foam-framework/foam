@@ -19,7 +19,7 @@ CLASS({
    "package": "foam.ui.layout",
    "model_": "Model",
    "name": "OverlaySlider",
-   "extendsModel": "foam.ui.View",
+   extends: "foam.ui.View",
    "traits": [
       "foam.ui.layout.PositionedDOMViewTrait"
    ],

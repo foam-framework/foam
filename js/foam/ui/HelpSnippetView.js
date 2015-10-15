@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'HelpSnippetView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   properties: [
     'data',

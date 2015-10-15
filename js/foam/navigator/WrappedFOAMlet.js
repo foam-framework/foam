@@ -17,7 +17,7 @@
 
  CLASS({
   name: 'WrappedFOAMlet',
-  extendsModel: 'foam.navigator.FOAMlet',
+  extends: 'foam.navigator.FOAMlet',
   package: 'foam.navigator',
 
   documentation: function() {/* A wrapper for $$DOC{ref:'foam.navigator.FOAMlet'}

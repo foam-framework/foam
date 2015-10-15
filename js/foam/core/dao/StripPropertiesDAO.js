@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.core.dao',
   name: 'StripPropertiesDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   properties: [
     {
       model_: 'StringArrayProperty',

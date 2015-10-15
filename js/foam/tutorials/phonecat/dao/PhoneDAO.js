@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.tutorials.phonecat.dao',
   name: 'PhoneDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   requires: [
     'foam.tutorials.phonecat.model.Phone',
     'MDAO'

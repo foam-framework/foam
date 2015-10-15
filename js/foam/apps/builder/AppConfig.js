@@ -34,7 +34,7 @@ CLASS({
       label: 'Unique App ID',
       mode: 'read-only',
       help: "The hidden unique id for the app that links DAO instances and models to the owner app.",
-      lazyFactory: function() {
+      factory: function() {
         return camelize(this.appName) + '-' + createGUID();
       }
     },
@@ -114,7 +114,6 @@ CLASS({
       help: multiline(function() {/*
         Terms of service the user must accept before using the application.
       */}),
-      disabled: true,
       issues: [
         'TODO(markdittmer): Support file upload.',
       ],
@@ -123,6 +122,19 @@ CLASS({
         placeholder: 'TERMS OF SERVICE',
         displayHeight: 8
       }
+    },
+    {
+      model_: 'StringProperty',
+      name: 'privacyPolicyURL',
+      label: 'Privacy policy URL',
+      help: 'Link to app Privacy Policy.',
+      view: 'foam.ui.md.TextFieldView'
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'userDataWarning',
+      transient: true,
+      defaultValue: null
     },
     {
       model_: 'IntProperty',
@@ -153,10 +165,7 @@ CLASS({
           TODO(markdittmer): Consider changing download button title based on
           this.
         */})
-      ],
-      postSet: function(oldValue, newValue) {
-        // this.setKioskMode(newValue);
-      }
+      ]
     },
     {
       model_: 'IntProperty',
@@ -164,8 +173,7 @@ CLASS({
       label: 'Session idle timeout',
       help: 'Time (in minutes) the app is idle before clearing browsing data.',
       rangeDescription: '1 - 1440 minutes',
-      defaultDescription: '0 = unlimited',
-      // view: 'RangeDefaultTextFieldView'
+      defaultDescription: '0 = unlimited'
     },
     {
       model_: 'IntProperty',
@@ -176,8 +184,7 @@ CLASS({
         Browsing data is not cleared.
       */}),
       rangeDescription: '1 - 1440 minutes',
-      defaultDescription: '0 = unlimited',
-      // view: 'RangeDefaultTextFieldView'
+      defaultDescription: '0 = unlimited'
     },
     {
       model_: 'BooleanProperty',
@@ -189,31 +196,31 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'chromeId',
-      hidden: true,
+      hidden: true
     },
     {
       model_: 'IntProperty',
       name: 'defaultWindowWidth',
       label: 'Default app window width',
-      defaultValue: 800,
+      defaultValue: 800
     },
     {
       model_: 'IntProperty',
       name: 'defaultWindowHeight',
       label: 'Default app window height',
-      defaultValue: 700,
+      defaultValue: 700
     },
     {
       model_: 'IntProperty',
       name: 'minWindowWidth',
       label: 'Minimum app window width',
-      defaultValue: 400,
+      defaultValue: 400
     },
     {
       model_: 'IntProperty',
       name: 'minWindowHeight',
       label: 'Minimum app window height',
-      defaultValue: 600,
+      defaultValue: 600
     },
     {
       type: 'foam.apps.builder.AppWindow',
@@ -225,23 +232,25 @@ CLASS({
           width$: this.defaultWindowWidth$,
           height$: this.defaultWindowHeight$,
           minWidth$: this.minWindowWidth$,
-          minHeight$: this.minWindowHeight$,
+          minHeight$: this.minWindowHeight$
         }, this.Y);
       },
-      hidden: true,
+      hidden: true
     },
     {
       model_: 'BooleanProperty',
       name: 'appBuilderAnalyticsEnabled',
-      defaultValue: true,
       hidden: true,
+      defaultValue: true,
+      label: 'Send anonymous usage data from this app to the App Builder team ' +
+          'to help make App Builder better<br><a href="#">Learn more</a>'
     },
     {
       model_: 'StringProperty',
       name: 'analyticsId',
       label: 'Google Analytics property tracking ID',
-      help: 'When set, reports app usage statistics through Google Analytics.',
-    },
+      help: 'When set, reports app usage statistics through Google Analytics.'
+    }
   ],
 
   methods: [
@@ -274,6 +283,6 @@ CLASS({
         });
       }
       return dc;
-    },
-  ],
+    }
+  ]
 });

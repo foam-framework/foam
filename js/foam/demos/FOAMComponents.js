@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.demos',
   name: 'FOAMComponents',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   exports: ['masterModelList', '_DEV_ModelDAO'],
 
@@ -169,7 +169,7 @@ CLASS({
           { name: 'Templates', model: 'Template', instance: null },
           { name: 'Unit Tests', model: 'UnitTest', instance: null },
           { name: 'Issues', model: 'Issue', instance: null },
-          { name: 'Timer', model: 'Timer', instance: null },
+          { name: 'Timer', model: 'foam.util.Timer', instance: null },
           { name: 'Mouse', model: 'foam.input.Mouse', instance: null },
           { name: 'EyeCView', model: 'foam.demos.graphics.EyeCView', instance: null },
           { name: 'EyesCView', model: 'foam.demos.graphics.EyesCView', instance: null },

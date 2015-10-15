@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'CitationView',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
   requires: [
   ],
 

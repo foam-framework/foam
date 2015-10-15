@@ -18,7 +18,7 @@
 CLASS({
   name: 'ContactGSnippet',
   package: 'foam.navigator.views',
-  extendsModel: 'foam.navigator.views.GSnippet',
+  extends: 'foam.navigator.views.GSnippet',
   properties: [
     {
       name: 'title',

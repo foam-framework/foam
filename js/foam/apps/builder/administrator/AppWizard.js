@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.administrator',
   name: 'AppWizard',
-  extendsModel: 'foam.apps.builder.wizard.WizardPage',
+  extends: 'foam.apps.builder.wizard.WizardPage',
 
   requires: [
     'foam.apps.builder.administrator.PickAppWizard',
@@ -35,17 +35,13 @@ CLASS({
 
   methods: [
     function onNext() {
-      this.SUPER(); // puts the app into the main dao
+      //this.SUPER(); // puts the app into the main dao
     },
     function onCancel() {
       this.SUPER();
       // remove the unfinished app. The user must have backed out of
       // every other wizard page to get back here.
-      this.dao && this.dao.remove(this.data, { remove: function(cfg) {
-        if ( this.appSelection && ( this.appSelection.appId == cfg.appId ) ) {
-          this.appSelection = '!';
-        }
-      }.bind(this) });
+      this.dao && this.dao.remove(this.data);
     },
   ],
 

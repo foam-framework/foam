@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'BorderLabel',
-  extendsModel: 'foam.graphics.Label',
+  extends: 'foam.graphics.Label',
   traits: ['foam.graphics.BorderTrait']
 
 });

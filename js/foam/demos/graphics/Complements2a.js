@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.demos.graphics',
   name: 'Complements2a',
 
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
     'foam.util.Timer',

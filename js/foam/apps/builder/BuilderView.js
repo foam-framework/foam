@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'BuilderView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.browser.ui.BrowserView',

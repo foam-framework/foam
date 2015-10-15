@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'FutureView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   requires: [
     'foam.ui.SpinnerView',
   ],

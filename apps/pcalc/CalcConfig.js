@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'PolymerActionButton',
-  extendsModel: 'foam.ui.polymer.ActionButton',
+  extends: 'foam.ui.polymer.ActionButton',
 
   templates: [
     {

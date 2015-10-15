@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'StringArrayView',
 
-  extendsModel: 'foam.ui.TextFieldView',
+  extends: 'foam.ui.TextFieldView',
 
   methods: {
     findCurrentValues: function() {

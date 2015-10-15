@@ -18,7 +18,7 @@
 CLASS({
   name: 'OAuth2RedirectWithServer',
   package: 'foam.oauth2',
-  extendsModel: 'foam.oauth2.OAuth2',
+  extends: 'foam.oauth2.OAuth2',
   documentation: 'OAuth2 strategy that redirects the whole page. Uses the ' +
       'web server flow, so you need a server. Expects to find the access ' +
       'access token in LocalStorage, under the key "__foam_oauth_token". If ' +

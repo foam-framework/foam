@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.physics',
   name: 'Baloons',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
     'foam.demos.physics.PhysicalCircle',

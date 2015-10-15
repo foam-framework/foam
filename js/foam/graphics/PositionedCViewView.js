@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name: 'PositionedCViewView',
-  extendsModel: 'foam.graphics.AbstractCViewView',
+  extends: 'foam.graphics.AbstractCViewView',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
   properties: [
     {

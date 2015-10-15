@@ -20,7 +20,7 @@ CLASS({
   name:  'DateFieldView',
   label: 'Date Field',
 
-  extendsModel: 'foam.ui.TextFieldView',
+  extends: 'foam.ui.TextFieldView',
 
   properties: [
     {

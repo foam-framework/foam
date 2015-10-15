@@ -19,7 +19,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Bubble',
 
-  extendsModel: 'foam.demos.physics.PhysicalCircle',
+  extends: 'foam.demos.physics.PhysicalCircle',
 
   properties: [
     { name: 'borderWidth', defaultValue: 20 },

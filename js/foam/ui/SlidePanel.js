@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'SlidePanel',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.input.touch.GestureTarget'

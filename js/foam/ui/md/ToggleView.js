@@ -18,7 +18,7 @@
 CLASS({
   name: 'ToggleView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   traits: ['foam.ui.md.MDStyleTrait'],
   requires: ['foam.ui.md.HaloView'],
   properties: [

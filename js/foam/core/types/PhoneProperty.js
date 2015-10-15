@@ -18,5 +18,5 @@
 CLASS({
   package: 'foam.core.types',
   name: 'PhoneProperty',
-  extendsModel: 'Property'
+  extends: 'Property'
 });

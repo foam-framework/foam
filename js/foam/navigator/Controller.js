@@ -18,7 +18,7 @@
 CLASS({
   name: 'Controller',
   package: 'foam.navigator',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.dao.CachingDAO',
     'foam.dao.FutureDAO',

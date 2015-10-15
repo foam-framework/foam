@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui',
   name: 'RangeView',
 
-  extendsModel: 'foam.ui.AbstractNumberFieldView',
+  extends: 'foam.ui.AbstractNumberFieldView',
 
   properties: [
     { name: 'type',     getter: function() { return 'range'; }},

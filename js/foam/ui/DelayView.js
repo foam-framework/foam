@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'DelayView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   help: 'A view that shows a spinner until it renders the viewFactory ' +
       'after a delay.',
   requires: [

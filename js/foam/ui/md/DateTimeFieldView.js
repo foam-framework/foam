@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'DateTimeFieldView',
-  extendsModel: 'foam.ui.md.DateFieldView',
+  extends: 'foam.ui.md.DateFieldView',
   requires: [
     'foam.ui.md.TimePickerView',
   ],

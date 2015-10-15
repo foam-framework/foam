@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'AppLoader',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: [
     'foam.apps.builder.TrackLaunchCloseTrait',
   ],

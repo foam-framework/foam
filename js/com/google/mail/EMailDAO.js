@@ -18,7 +18,7 @@
 CLASS({
   package: 'com.google.mail',
   name: 'EMailDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   requires: [
     'Binding',
     'foam.dao.CachingDAO',

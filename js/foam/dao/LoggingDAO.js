@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.dao',
   name: 'LoggingDAO',
 
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
     Logs access to the delegate DAO.

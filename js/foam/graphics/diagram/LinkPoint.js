@@ -19,7 +19,7 @@
 CLASS({
   name: 'LinkPoint',
   package: 'foam.graphics.diagram',
-  //extendsModel: 'foam.graphics.Point', // screws up ids
+  //extends: 'foam.graphics.Point', // screws up ids
 
 //  requires: ['foam.graphics.diagram.ParentageListener as ParentageListener'],
 

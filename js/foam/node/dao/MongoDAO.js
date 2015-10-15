@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.node.dao',
   name: 'MongoDAO',
-  extendsModel: 'AbstractDAO',
+  extends: 'AbstractDAO',
   label: 'MongoDB DAO',
   requires: [
     'AndExpr',

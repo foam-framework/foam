@@ -32,7 +32,7 @@ CLASS({
   constants: {
     BASE_MODEL: {
       package: 'foam.ui.polymer.gen',
-      extendsModel: 'foam.ui.polymer.gen.View',
+      extends: 'foam.ui.polymer.gen.View',
       traits: [],
       properties: [
         'id',

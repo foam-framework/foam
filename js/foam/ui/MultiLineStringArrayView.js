@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'MultiLineStringArrayView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {
@@ -60,7 +60,7 @@ CLASS({
     {
       model_: 'Model',
       name: 'RowView',
-      extendsModel: 'foam.ui.View',
+      extends: 'foam.ui.View',
       properties: [
         'field',
         {

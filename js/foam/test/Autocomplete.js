@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.test',
   name: 'Autocomplete',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   requires: [
     'MDAO',
     'foam.ui.md.TextFieldView',

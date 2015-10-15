@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.u2',
   name: 'Select',
-  extendsModel: 'foam.u2.Element',
+  extends: 'foam.u2.Element',
 
   properties: [
     {

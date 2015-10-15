@@ -18,7 +18,7 @@
 CLASS({
   name: 'RadioOptionView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   traits: ['foam.ui.md.MDStyleTrait'],
 
   imports: [

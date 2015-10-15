@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'HaloCViewView',
-  extendsModel: 'foam.graphics.AbstractCViewView',
+  extends: 'foam.graphics.AbstractCViewView',
 
   properties: [
     {

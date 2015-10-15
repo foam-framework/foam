@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'ExpandableView',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   requires: [
     'foam.ui.CSSTransitionSet',
@@ -33,25 +33,25 @@ CLASS({
       name: 'expandableContent'
     },
     {
+      model_: 'StringProperty',
+      name: 'contentClassName'
+    },
+    {
       model_: 'BooleanProperty',
       name: 'expanded',
       defaultValue: true
     },
     {
       name: 'expandedIcon',
-      required: true,
-      postSet: function(old, nu) {
-        if ( old === nu || ! this.expandedIconAnimation ) return;
-        this.expandedIconAnimation.element = this.expandedIcon;
-      }
+      defaultValue: null
     },
     {
       name: 'expandedIconAnimation',
       lazyFactory: function() {
         return this.RotateFwdBwdAnimation.create({
-          element: this.expandedIcon,
+          element$: this.expandedIcon$,
           rotation: this.expanded ? 0.5 : 0 // Icon rotation, measured in turns.
-        });
+        }, this.Y);
       }
     },
     {
@@ -90,7 +90,7 @@ CLASS({
       factory: function() {
         return this.CSSTransitionSet.create({
           height: this.heightTransition
-        });
+        }, this.Y);
       },
       postSet: function(old, nu) {
         if ( old === nu ) return;
@@ -119,8 +119,7 @@ CLASS({
         this.SUPER.apply(this, arguments);
 
         this.expandableContent = this.X.$(this.id + '-content');
-        this.$.style.height = this.expanded ?
-            this.expandableContent.offsetHeight + 'px' : '0px';
+        this.$.style.height = this.expanded ? 'initial' : '0';
 
         this.transitionString$.addListener(this.onTransitionDepChange);
         this.transitionsEnabled$.addListener(this.onTransitionDepChange);
@@ -130,21 +129,38 @@ CLASS({
     {
       name: 'expand',
       code: function() {
-        this.$.style.height = this.expandableContent.offsetHeight + 'px';
+        if ( this.expanded ) return;
+        if ( this.$ ) {
+          this.$.style.height = this.getContentHeight() + 'px';
+          var listener = function(evt) {
+            if ( evt.propertyName === 'height' ) {
+              this.$.removeEventListener('transitionend', listener);
+              this.$.style.height = 'initial';
+            }
+          }.bind(this);
+          this.$.addEventListener('transitionend', listener);
+          this.expandedIconAnimation.fwdAnimation();
+        }
+        this.expanded = true;
       }
     },
     {
       name: 'collapse',
       code: function() {
-        this.$.style.height = '0px';
+        if ( ! this.expanded ) return;
+        if ( this.$ ) {
+          this.$.style.height = this.getContentHeight() + 'px';
+          this.$.offsetLeft = this.$.offsetLeft;
+          this.$.style.height = '0';
+          this.expandedIconAnimation.bwdAnimation();
+        }
+        this.expanded = false;
       }
     },
     {
-      name: 'toggleExpandedIcon',
+      name: 'getContentHeight',
       code: function() {
-        if ( ! this.expandedIconAnimation ) return;
-        if ( this.expanded ) this.expandedIconAnimation.bwdAnimation();
-        else                 this.expandedIconAnimation.fwdAnimation();
+        return this.expandableContent.getBoundingClientRect().height;
       }
     }
   ],
@@ -155,8 +171,6 @@ CLASS({
       code: function() {
         if ( this.expanded ) this.collapse();
         else                 this.expand();
-        this.toggleExpandedIcon();
-        this.expanded = ! this.expanded;
       }
     }
   ],
@@ -183,9 +197,12 @@ CLASS({
       <% this.delegateView = this.delegate();
          this.addDataChild(this.delegateView);
       %>
-      <expandable-content id="{{this.id}}-content">
+      <expandable-content id="{{this.id}}-content" class="{{this.contentClassName}}">
         %%delegateView
       </expandable-content>
+      <% this.setClass('expanded', function() {
+           return this.expanded;
+         }.bind(this), this.id); %>
     */},
     function CSS() {/*
       expandable {

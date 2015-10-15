@@ -18,7 +18,7 @@
 CLASS({
   name: 'LabelArrayProperty',
   package: 'foam.apps.quickbug.model',
-  extendsModel: 'StringArrayProperty',
+  extends: 'StringArrayProperty',
 
   help: "An array of String values, taken from labels.",
 

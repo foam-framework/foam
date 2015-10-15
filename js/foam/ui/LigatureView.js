@@ -13,7 +13,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'LigatureView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   properties: [
     {

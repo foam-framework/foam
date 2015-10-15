@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'StringElideTextualView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   documentation: 'Outputs a tag containing the raw string, with text ellipsis enabled.',
 

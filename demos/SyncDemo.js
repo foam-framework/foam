@@ -28,7 +28,7 @@ CLASS({
 
 CLASS({
   name: 'AbcCitationView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
       <div style="border 1px grey;" id="%%id">

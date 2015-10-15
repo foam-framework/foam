@@ -18,7 +18,7 @@
 CLASS({
   name: 'IssueConfig',
   package: 'foam.navigator',
-  extendsModel: 'foam.navigator.BrowserConfig',
+  extends: 'foam.navigator.BrowserConfig',
   requires: [
     'XHR',
     'foam.navigator.types.Issue',

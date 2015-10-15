@@ -14,7 +14,7 @@
 CLASS({
   package: 'foam.demos.wat',
   name: 'Grid',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   properties: [
     {

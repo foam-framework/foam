@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.apps.quickbug.model',
   name: 'QIssueComment',
-  extendsModel: 'foam.apps.quickbug.model.imported.IssueComment',
+  extends: 'foam.apps.quickbug.model.imported.IssueComment',
 
   ids: [ 'id' ],
 

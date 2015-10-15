@@ -19,7 +19,7 @@
 CLASS({
   package: 'foam.demos.graphics',
   name: 'Spin',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [ 'foam.util.Timer', 'foam.graphics.Arc' ],
 

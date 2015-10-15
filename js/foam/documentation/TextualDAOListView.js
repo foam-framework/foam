@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'TextualDAOListView',
-  extendsModel: 'foam.ui.DAOListView',
+  extends: 'foam.ui.DAOListView',
 
   methods: {
     // Template method

@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.metrics',
   name: 'Error',
-  extendsModel: 'foam.metrics.Metric',
+  extends: 'foam.metrics.Metric',
 
   properties: [
     {

@@ -18,7 +18,7 @@
 CLASS({
   name: 'ChromeMessagesInjector',
   package: 'foam.i18n',
-  extendsModel: 'foam.i18n.Visitor',
+  extends: 'foam.i18n.Visitor',
 
   imports: [ 'warn' ],
 

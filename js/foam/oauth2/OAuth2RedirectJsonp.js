@@ -18,7 +18,7 @@
 CLASS({
   name: 'OAuth2RedirectJsonp',
   package: 'foam.oauth2',
-  extendsModel: 'foam.oauth2.OAuth2Redirect',
+  extends: 'foam.oauth2.OAuth2Redirect',
   methods: {
     setJsonpFuture: function(X, future) {
       var agent = this;

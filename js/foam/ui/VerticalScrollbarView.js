@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'VerticalScrollbarView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   documentation: function() {/*
    The default vertical scrollbar view for a ScrollView. It appears during

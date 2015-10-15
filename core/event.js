@@ -29,7 +29,7 @@ var __ROOT__ = {};
 MODEL({
   name: 'EventService',
 
-  extendsModel: '__ROOT__',
+  extends: '__ROOT__',
 
   constants: {
     /** If listener thows this exception, it will be removed. **/
@@ -294,7 +294,7 @@ MODEL({
 
         var i = map[null].indexOf(listener);
         if ( i == -1 ) {
-          console.warn('phantom unsubscribe, size: ', map[null].length);
+          // console.warn('phantom unsubscribe, size: ', map[null].length);
         } else {
           map[null] = map[null].spliceF(i, 1);
         }
@@ -366,7 +366,7 @@ MODEL({
 MODEL({
   name: 'PropertyChangeSupport',
 
-  extendsModel: 'EventService',
+  extends: 'EventService',
 
   constants: {
     /** Root for property topics. **/

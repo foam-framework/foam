@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.demos.graphics',
   name:  'EyesDemo',
 
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
 //    'foam.demos.graphics.EyeCView as Eyes'

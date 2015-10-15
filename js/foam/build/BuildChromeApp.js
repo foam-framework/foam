@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.build',
   name: 'BuildChromeApp',
 
-  extendsModel: 'foam.build.BuildApp',
+  extends: 'foam.build.BuildApp',
 
   methods: {
     buildModel: function() {

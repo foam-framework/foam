@@ -46,7 +46,7 @@ CLASS({
   models: [
     {
       name: 'ManagedXHR',
-      extendsModel: 'XHR',
+      extends: 'XHR',
 
       methods: [
         function asend(ret, url, data, method, headers) {

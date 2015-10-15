@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.patterns.layout',
   name: 'ConstraintProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   documentation: function() {/* Stores an integer pixel value or percentage.
     For percentages, a layoutPixelSize is imported. Export this from your

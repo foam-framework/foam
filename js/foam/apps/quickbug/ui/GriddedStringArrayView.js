@@ -18,7 +18,7 @@
 CLASS({
   name: 'GriddedStringArrayView',
   package: 'foam.apps.quickbug.ui',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.ui.ActionButton',

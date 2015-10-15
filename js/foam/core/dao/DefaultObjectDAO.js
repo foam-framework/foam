@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.core.dao',
   help: 'A DAO decorator that will generate a default object if no object is found on a .find() call.',
 
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   properties: [
     {

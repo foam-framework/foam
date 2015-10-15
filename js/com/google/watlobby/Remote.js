@@ -18,7 +18,7 @@
 CLASS({
   package: 'com.google.watlobby',
   name: 'Remote',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
     'com.google.watlobby.Bubble',

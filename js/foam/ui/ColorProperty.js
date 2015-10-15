@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'ColorProperty',
-  extendsModel: 'ColorProperty',
+  extends: 'ColorProperty',
 
   requires: [ 'foam.ui.Color' ],
 

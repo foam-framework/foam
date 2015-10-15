@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'ColorFieldView',
-  extendsModel: 'foam.ui.md.TextFieldView',
+  extends: 'foam.ui.md.TextFieldView',
 
   properties: [
     [ 'type', 'color' ],

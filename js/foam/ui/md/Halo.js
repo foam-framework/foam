@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.md',
   name: 'Halo',
 
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
 
   constant: {
     RING_INNER_COLOR: 'rgba(0, 0, 0, 0)'

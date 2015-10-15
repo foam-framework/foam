@@ -114,35 +114,35 @@ MODEL({
 
 MODEL({
   name: 'DatastoreIntProperty',
-  extendsModel: 'IntProperty',
+  extends: 'IntProperty',
   traits: ['DatastorePropertyTrait']
 });
 
 
 MODEL({
   name: 'DatastoreStringProperty',
-  extendsModel: 'StringProperty',
+  extends: 'StringProperty',
   traits: ['DatastorePropertyTrait']
 });
 
 
 MODEL({
   name: 'DatastoreFloatProperty',
-  extendsModel: 'FloatProperty',
+  extends: 'FloatProperty',
   traits: ['DatastorePropertyTrait']
 });
 
 
 MODEL({
   name: 'DatastoreDateTimeProperty',
-  extendsModel: 'DateTimeProperty',
+  extends: 'DateTimeProperty',
   traits: ['DatastorePropertyTrait']
 });
 
 
 MODEL({
   name: 'DatastoreBooleanProperty',
-  extendsModel: 'BooleanProperty',
+  extends: 'BooleanProperty',
   traits: ['DatastorePropertyTrait']
 });
 
@@ -247,7 +247,7 @@ MODEL({
 
 MODEL({
   name: 'DatastoreDAO',
-  extendsModel: 'AbstractDAO',
+  extends: 'AbstractDAO',
   requires: [
     'DatastoreKey'
   ],

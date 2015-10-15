@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.dao',
   name: 'FutureDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
     A DAO proxy that delays operations until the delegate is set in the future.

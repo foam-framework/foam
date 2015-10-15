@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'SummaryView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   documentation: function() {/* A display-only summary view. */},
   properties: [

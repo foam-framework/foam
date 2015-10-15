@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.util.zip',
   name: 'EndOfCentralDirectoryRecord',
-  extendsModel: 'foam.util.zip.BinaryHeader',
+  extends: 'foam.util.zip.BinaryHeader',
 
   imports: [
     'numberOfFiles$',

@@ -18,7 +18,7 @@
 CLASS({
   name: 'WrappedFOAMletCreateView',
   package: 'foam.navigator.views',
-  extendsModel: 'foam.navigator.views.CreateView',
+  extends: 'foam.navigator.views.CreateView',
 
   requires: [ 'foam.navigator.WrappedFOAMlet' ], 
   

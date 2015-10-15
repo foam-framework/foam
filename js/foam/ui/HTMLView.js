@@ -20,7 +20,7 @@ CLASS({
   name:  'HTMLView',
   label: 'HTML Field',
 
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   documentation: function() {/* A view of the static HTML provided in
     $$DOC{ref:'.data'}. In most cases use a

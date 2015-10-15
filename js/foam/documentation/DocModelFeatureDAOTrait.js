@@ -184,8 +184,8 @@ CLASS({
       }.bind(this));
       // runs the trait finds first, and when they are done recurse to the next ancestor
       apar.apply(this, findFuncs)(function() {
-        if ( model.extendsModel ) {
-          this._DEV_ModelDAO.find(model.extendsModel, {
+        if ( model.extends ) {
+          this._DEV_ModelDAO.find(model.extends, {
               put: function(ext) {
                 map[ext.id] = ext;
                 this.agetInheritanceMap(ret, ext, map);
@@ -251,7 +251,7 @@ CLASS({
       code: function(extendersOf) {
         this._DEV_ModelDAO.select(MAP(
           function(obj) {
-            if ( obj.extendsModel == extendersOf.id ) {
+            if ( obj.extends == extendersOf.id ) {
               this.subModelDAO.put(obj);
               // for performance, spread out the load
               // TODO(jacksonic): disabled recursion for speed
@@ -339,7 +339,7 @@ CLASS({
 
         if ( ! isTrait && this.processBaseModels ) {
           // Check if we extend something, and recurse.
-          if (!model.extendsModel) {
+          if (!model.extends) {
             newModelTr.inheritanceLevel = 0;
           } else {
             // add the tracker we're building to the list, for updates from our base models
@@ -347,7 +347,7 @@ CLASS({
             // inheritance level will bubble back up the stack once we know where the bottom is.
             // pass a copy of previousExtenderTrackers so we know what to update in the traits section after.
             newModelTr.inheritanceLevel = 1 + this.loadFeaturesOfModel(
-              { __proto__: map, data: map[model.extendsModel] },
+              { __proto__: map, data: map[model.extends] },
               previousExtenderTrackers.slice(0));
           }
 

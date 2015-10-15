@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'DocFeatureCollapsedView',
-  extendsModel: 'foam.documentation.DocBodyView',
+  extends: 'foam.documentation.DocBodyView',
   documentation: 'A generic view for collapsed sets.',
 
   properties: [

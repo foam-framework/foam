@@ -20,7 +20,7 @@ CLASS({
   name:  'TextFieldView',
   label: 'Text Field',
 
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [ 'foam.ui.AutocompleteView' ],
 

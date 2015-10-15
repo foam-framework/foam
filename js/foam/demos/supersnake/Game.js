@@ -18,14 +18,14 @@
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Scale',
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
 });
 
 
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Snake',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
   requires: [
     'foam.demos.supersnake.Scale',
     'foam.demos.supersnake.Laser'
@@ -83,7 +83,7 @@ CLASS({
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Food',
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
   properties: [
     [ 'color', 'darkblue' ]
   ],
@@ -102,7 +102,7 @@ CLASS({
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Mushroom',
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
   requires: [ 'foam.graphics.Rectangle' ],
   imports: [ 'R as r' ],
   properties: [
@@ -138,7 +138,7 @@ CLASS({
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Laser',
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
   imports: [ 'game' ],
   properties: [
     [ 'color', 'yellow' },
@@ -163,7 +163,7 @@ CLASS({
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Game',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.util.Timer',

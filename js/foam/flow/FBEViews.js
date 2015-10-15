@@ -12,7 +12,7 @@
 CLASS({
   name: 'FBEViews',
   package: 'foam.flow',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   templates: [
     { name: 'toInnerHTML' },

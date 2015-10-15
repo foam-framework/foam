@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'TabLevelViewChoiceView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.controllers.ViewChoiceController',
     'foam.ui.StaticHTML',

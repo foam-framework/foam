@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.ctm',
   name: 'TaskManagerDetailView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   requires: [
     'foam.apps.ctm.Task',

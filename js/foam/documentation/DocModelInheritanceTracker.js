@@ -23,7 +23,7 @@ CLASS({
       <p>Stores inheritance information for a $$DOC{ref:'Model'}. One
       instance per extending $$DOC{ref:'Model'} is stored in the
       this.featureDAO (starting with the data of
-      $$DOC{ref:'DocModelView'}, and following the .extendsModel chain.
+      $$DOC{ref:'DocModelView'}, and following the .extends chain.
       </p>
       <p>See $$DOC{ref:'DocModelView'}.
       </p>

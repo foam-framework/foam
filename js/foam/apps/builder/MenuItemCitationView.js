@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'MenuItemCitationView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.ui.md.HaloView'

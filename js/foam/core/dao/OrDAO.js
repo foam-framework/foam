@@ -18,7 +18,7 @@
 CLASS({
   name: 'OrDAO',
   package: 'foam.core.dao',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   documentation: 'Looks up things in primary, then in delegate. Supports find() only!',
 

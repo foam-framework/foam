@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'HelpView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   documentation: function() {/* A display-only on-line help view. */},
 

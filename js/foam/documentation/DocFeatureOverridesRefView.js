@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'DocFeatureOverridesRefView',
-  extendsModel: 'foam.documentation.DocRefView',
+  extends: 'foam.documentation.DocRefView',
   label: 'Documentation Feature Overrides Reference Link View',
   help: "The view of a documentation reference link based on a Model's overrides.",
 

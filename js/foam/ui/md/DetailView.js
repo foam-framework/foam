@@ -12,6 +12,6 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'DetailView',
-  extendsModel: 'foam.ui.md.BaseDetailView',
+  extends: 'foam.ui.md.BaseDetailView',
   traits: [ 'foam.ui.md.ToolbarViewTrait' ],
 });

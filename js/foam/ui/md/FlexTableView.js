@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'FlexTableView',
-  extendsModel: 'foam.ui.md.TableView',
+  extends: 'foam.ui.md.TableView',
 
   requires: [
     'foam.ui.FlexTableView',

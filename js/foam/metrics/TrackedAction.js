@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.metrics',
   name: 'TrackedAction',
-  extendsModel: 'Action',
+  extends: 'Action',
 
   requires: [
     'foam.metrics.Event',

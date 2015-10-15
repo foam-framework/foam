@@ -126,7 +126,7 @@ CLASS({
 var TRUE = (FOAM({
   model_: 'Model',
   name: 'TrueExpr',
-  extendsModel: 'Expr',
+  extends: 'Expr',
 
   documentation: 'Model for the primitive true value.',
 
@@ -146,7 +146,7 @@ var TRUE = (FOAM({
 var FALSE = (FOAM({
   model_: 'Model',
   name: 'FalseExpr',
-  extendsModel: 'Expr',
+  extends: 'Expr',
 
   documentation: 'Model for the primitive false value.',
 
@@ -165,7 +165,7 @@ var FALSE = (FOAM({
 var IDENTITY = (FOAM({
   model_: 'Model',
   name: 'IdentityExpr',
-  extendsModel: 'Expr',
+  extends: 'Expr',
 
   documentation: 'The identity expression, which passes through its input unchanged.',
 
@@ -182,7 +182,7 @@ var IDENTITY = (FOAM({
 CLASS({
   name: 'NARY',
 
-  extendsModel: 'Expr',
+  extends: 'Expr',
   abstract: true,
 
   documentation: 'Parent model for expressions which take an arbitrary number of arguments.',
@@ -258,7 +258,7 @@ var IdentityExpr = { finished__: true, arequire: function(ret) { return afuture(
 CLASS({
   name: 'UNARY',
 
-  extendsModel: 'Expr',
+  extends: 'Expr',
   abstract: true,
 
   documentation: 'Parent model for one-argument expressions.',
@@ -292,7 +292,7 @@ CLASS({
 CLASS({
   name: 'BINARY',
 
-  extendsModel: 'UNARY',
+  extends: 'UNARY',
   abstract: true,
 
   documentation: 'Parent model for two-argument expressions. Extends $$DOC{ref: "UNARY"} to include $$DOC{ref: ".arg2"}.',
@@ -325,7 +325,7 @@ CLASS({
 CLASS({
   name: 'CountExpr',
 
-  extendsModel: 'Expr',
+  extends: 'Expr',
 
   properties: [
     {
@@ -363,7 +363,7 @@ function COUNT() {
 CLASS({
   name: 'EqExpr',
 
-  extendsModel: 'BINARY',
+  extends: 'BINARY',
   abstract: true,
 
   documentation: function() { /*
@@ -437,7 +437,7 @@ function EQ(arg1, arg2) {
 CLASS({
   name: 'ConstantExpr',
 
-  extendsModel: 'UNARY',
+  extends: 'UNARY',
 
   methods: {
     escapeSQLString: function(str) {
@@ -476,7 +476,7 @@ CLASS({
 CLASS({
   name: 'AndExpr',
 
-  extendsModel: 'NARY',
+  extends: 'NARY',
   abstract: true,
 
   documentation: 'N-ary expression which is true only if each of its 0 or more arguments is true. AND() === TRUE',
@@ -667,7 +667,7 @@ function AND() {
 CLASS({
   name: 'NeqExpr',
 
-  extendsModel: 'BINARY',
+  extends: 'BINARY',
   abstract: true,
 
   methods: {
@@ -720,7 +720,7 @@ function NEQ(arg1, arg2) {
 CLASS({
   name: 'UpperExpr',
 
-  extendsModel: 'UNARY',
+  extends: 'UNARY',
 
   properties: [
     { name: 'label_', defaultValue: 'UPPER' }

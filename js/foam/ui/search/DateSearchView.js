@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.search',
   name: 'DateSearchView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [ 'foam.ui.md.DateFieldView' ],
 

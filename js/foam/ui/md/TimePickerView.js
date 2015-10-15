@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'TimePickerView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [
     'foam.ui.md.PopupChoiceView',
   ],

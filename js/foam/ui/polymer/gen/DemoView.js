@@ -18,7 +18,7 @@
 CLASS({
   name: 'DemoView',
   package: 'foam.ui.polymer.gen',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {

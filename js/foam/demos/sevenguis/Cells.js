@@ -117,14 +117,14 @@ var CellParser = {
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Cells',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   imports:  [ 'dynamic' ],
   exports:  [ 'as cells' ],
 
   models: [
     {
       name: 'Cell',
-      extendsModel: 'foam.ui.View',
+      extends: 'foam.ui.View',
       requires: [ 'foam.ui.TextFieldView' ],
       imports: [ 'cells' ],
       documentation: function() {/*

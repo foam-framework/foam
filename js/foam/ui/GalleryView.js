@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'GalleryView',
-  extendsModel: 'foam.ui.SwipeAltView',
+  extends: 'foam.ui.SwipeAltView',
   
   requires: [
     'foam.ui.ViewChoice',

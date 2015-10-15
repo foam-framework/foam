@@ -48,7 +48,7 @@ var FObject = {
 
       if ( replacementModel ) return replacementModel;
 
-      otherModel = X.lookup(otherModel.extendsModel);
+      otherModel = X.lookup(otherModel.extends);
     }
 
     return undefined;

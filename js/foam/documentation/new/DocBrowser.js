@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation.new',
   name: 'DocBrowser',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.documentation.new.DocFeatureInheritanceTracker',
     'foam.documentation.new.InheritanceEngine',

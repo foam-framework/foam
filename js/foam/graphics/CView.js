@@ -240,10 +240,12 @@ CLASS({
                                    under this. */
       this.SUPER(child);
 
+      if ( child === this ) debugger;
+
       if ( this.view ) {
         child.view = this.view;
         child.addListener(this.view.paint);
-        this.view.paint();
+        try { this.view.paint(); } catch (x) { }
       }
       return this;
     },

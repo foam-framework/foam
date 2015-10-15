@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'LinkView',
 
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   properties: [
     {

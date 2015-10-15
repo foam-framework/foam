@@ -18,7 +18,7 @@
 CLASS({
   name: 'LabelStringProperty',
   package: 'foam.apps.quickbug.model',
-  extendsModel: 'StringProperty',
+  extends: 'StringProperty',
 
   help: "A String value, taken from labels.",
 

@@ -13,7 +13,7 @@ CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'QuestionnaireDetailView',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
   methods: [
     function rowToHTML(prop, view) {

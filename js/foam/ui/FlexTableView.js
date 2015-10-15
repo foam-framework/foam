@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'FlexTableView',
-  extendsModel: 'foam.ui.AbstractDAOView',
+  extends: 'foam.ui.AbstractDAOView',
 
   requires: [
     'foam.ui.FlexTableRowView',

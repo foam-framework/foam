@@ -18,7 +18,7 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CircleDrawer',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   traits: [ 'foam.memento.MementoMgr' ],
 
@@ -37,7 +37,7 @@ MODEL({
   models: [
     {
       name: 'DiameterDialog',
-      extendsModel: 'foam.ui.DetailView',
+      extends: 'foam.ui.DetailView',
 
       templates: [
         function toHTML() {/*

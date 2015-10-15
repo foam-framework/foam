@@ -18,7 +18,7 @@
 CLASS({
   name: 'BlockView',
   package: 'foam.apps.quickbug.ui',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.apps.quickbug.ui.IssueLink'

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.ctrl',
   name: 'AlwaysSelectedViewChoiceComposite',
-  extendsModel: 'foam.ui.ctrl.ViewChoiceComposite',
+  extends: 'foam.ui.ctrl.ViewChoiceComposite',
   documentation: function() {/*
     A ViewChoiceComposite that always has a view selected (defaults to the first
     view if nothing is actually selected.

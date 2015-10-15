@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'IntFieldView',
 
-  extendsModel: 'foam.ui.AbstractNumberFieldView',
+  extends: 'foam.ui.AbstractNumberFieldView',
 
   methods: {
     textToValue: function(text) { return parseInt(text) || '0'; },

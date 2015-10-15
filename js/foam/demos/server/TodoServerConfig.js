@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.demos.server',
   name: 'TodoServerConfig',
-  extendsModel: 'foam.node.server.RepoServerConfig',
+  extends: 'foam.node.server.RepoServerConfig',
   requires: [
     'foam.tutorials.todo.model.Todo',
   ],

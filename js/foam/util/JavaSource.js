@@ -59,9 +59,9 @@ CLASS({
   var className       = this.javaClassName;
   var parentClassName = 'AbstractFObject';
   var parentModel = '';
-  if (this.extendsModel) {
-    parentClassName = this.extendsModel;
-    parentModel = this.extendsModel + '.MODEL(), ';
+  if (this.extends) {
+    parentClassName = this.extends;
+    parentModel = this.extends + '.MODEL(), ';
   }
   if ( GLOBAL[parentClassName] && GLOBAL[parentClassName].abstract )
     parentClassName = 'Abstract' + parentClassName;

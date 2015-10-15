@@ -20,7 +20,7 @@ CLASS({
   name: 'FeatureListDocView',
   documentation: 'Displays the HTML documentation of the given feature list.',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: ['foam.documentation.FeatureListLoaderTrait'],
 
   requires: [ 'foam.ui.DAOListView',

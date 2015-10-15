@@ -18,7 +18,7 @@
 CLASS({
   name: 'WhenIdleDAO',
   package: 'foam.core.dao',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   help: 'Defers operations using Movement.whenIdle',
 
   methods: {

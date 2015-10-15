@@ -94,7 +94,7 @@ var BootstrapModel = {
       var model = traitModel.clone();
       model.package = '';
       model.name = name;
-      model.extendsModel = parentModel && parentModel.id;
+      model.extends = parentModel && parentModel.id;
       model.models = traitModel.models; // unclone sub-models, we don't want multiple copies of them floating around
       GLOBAL.X.registerModel(model);
     }
@@ -196,9 +196,9 @@ var BootstrapModel = {
     // extra memory in DEBUG mode.
     if ( _DOC_ ) BootstrapModel.saveDefinition(this);
 
-    if ( this.extendsModel && ! this.X.lookup(this.extendsModel) ) throw 'Unknown Model in extendsModel: ' + this.extendsModel;
+    if ( this.extends && ! this.X.lookup(this.extends) ) throw 'Unknown Model in extends: ' + this.extends;
 
-    var extendsModel = this.extendsModel && this.X.lookup(this.extendsModel);
+    var extendsModel = this.extends && this.X.lookup(this.extends);
 
     if ( this.traits ) for ( var i = 0 ; i < this.traits.length ; i++ ) {
       var trait      = this.traits[i];
@@ -474,7 +474,7 @@ var BootstrapModel = {
     var requires = {};
     this.requires.forEach(function(r) { requires[r.split(' ')[0]] = true; });
     this.traits.forEach(function(t) { requires[t] = true; });
-    if ( this.extendsModel ) requires[this.extendsModel] = true;
+    if ( this.extends ) requires[this.extends] = true;
 
     function setModel(o) { if ( o && o.model_ ) requires[o.model_.id] = true; }
 
@@ -606,7 +606,7 @@ var BootstrapModel = {
     var go = function() {
       var args = [], model = this, i;
 
-      if ( this.extendsModel ) args.push(this.X.arequire(this.extendsModel));
+      if ( this.extends ) args.push(this.X.arequire(this.extends));
 
       if ( this.models ) {
         for ( i = 0; i < this.models.length; i++ ) {
@@ -744,8 +744,8 @@ var BootstrapModel = {
        inherited features. */
     var feature = this.getMyFeature(featureName);
 
-    if ( ! feature && this.extendsModel ) {
-      var ext = this.X.lookup(this.extendsModel);
+    if ( ! feature && this.extends ) {
+      var ext = this.X.lookup(this.extends);
       if ( ext ) return ext.getFeature(featureName);
     } else {
       return feature;
@@ -756,8 +756,8 @@ var BootstrapModel = {
   getAllRawFeatures: function() {
     var featureList = this.getAllMyRawFeatures();
 
-    if ( this.extendsModel ) {
-      var ext = this.X.lookup(this.extendsModel);
+    if ( this.extends ) {
+      var ext = this.X.lookup(this.extends);
       if ( ext ) {
         ext.getAllFeatures().map(function(subFeat) {
           var subName = subFeat.name.toUpperCase();

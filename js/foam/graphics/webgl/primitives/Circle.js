@@ -29,7 +29,7 @@ CLASS({
     'glMeshLibrary'
   ],
 
-  extendsModel: 'foam.graphics.webgl.core.Object',
+  extends: 'foam.graphics.webgl.core.Object',
 
   properties: [
     {

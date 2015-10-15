@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui.autocomplete',
   name: 'GroupSplitCompleter',
-  extendsModel: 'foam.ui.autocomplete.GroupCompleter',
+  extends: 'foam.ui.autocomplete.GroupCompleter',
   requires: [
     'MDAO',
     'foam.mlang.CannedQuery',

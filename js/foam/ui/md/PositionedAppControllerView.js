@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.md',
   name: 'PositionedAppControllerView',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   requires: [ 'foam.graphics.CanvasScrollView' ],
 

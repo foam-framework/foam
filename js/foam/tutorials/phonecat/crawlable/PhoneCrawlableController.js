@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.tutorials.phonecat.crawlable',
   name: 'PhoneCrawlableController',
-  extendsModel: 'foam.tutorials.phonecat.crawlable.CrawlableController',
+  extends: 'foam.tutorials.phonecat.crawlable.CrawlableController',
   requires: [
     'foam.tutorials.phonecat.dao.PhoneDAO',
     'foam.tutorials.phonecat.model.Phone'

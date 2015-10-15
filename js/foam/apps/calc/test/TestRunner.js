@@ -1,7 +1,7 @@
 CLASS({
   package: 'foam.apps.calc.test',
   name: 'TestRunner',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.apps.calc.test.Tests',
     'foam.ui.TableView'

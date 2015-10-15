@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name: 'LinearLayout',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   traits: [
     'foam.patterns.layout.LinearLayoutTrait',

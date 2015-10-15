@@ -18,7 +18,7 @@
 CLASS({
   name: 'PaperButton',
   package: 'foam.ui.polymer.gen',
-  extendsModel: 'foam.ui.polymer.gen.View',
+  extends: 'foam.ui.polymer.gen.View',
   traits: [
     'foam.ui.polymer.gen.PaperButtonBase'
   ],

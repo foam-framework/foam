@@ -12,7 +12,7 @@
 CLASS({
   name: 'EditableView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   constants: { ELEMENT_NAME: 'toggle-editable' },
 

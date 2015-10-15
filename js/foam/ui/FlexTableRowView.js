@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'FlexTableRowView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   imports: ['hardSelection$'],
   properties: [
     {

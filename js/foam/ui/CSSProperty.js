@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'CSSProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   requires: [
     'foam.ui.CSSTransition',
@@ -24,7 +24,7 @@ CLASS({
       defaultValue: function(old, nu, prop) {
         var CSSTransition = prop.CSSTransition;
         if ( typeof nu === 'string' ) {
-          return (old || CSSTransition.create()).fromString(nu);
+          return (old || CSSTransition.create()).fromString(prop.name + ' ' + nu);
         } else if ( CSSTransition.isInstance(nu) ) {
           return nu;
         } else {

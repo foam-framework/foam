@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.dao',
   name: 'NoSelectAllDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
     A DAO which does nothing on 'select all' but otherwise acts as a ProxyDAO.

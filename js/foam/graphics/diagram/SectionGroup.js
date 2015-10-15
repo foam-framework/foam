@@ -23,7 +23,7 @@ CLASS({
 
   requires: ['foam.graphics.diagram.Section'],
   
-  extendsModel: 'foam.graphics.diagram.LinearLayout',
+  extends: 'foam.graphics.diagram.LinearLayout',
   
   documentation: function() {/*
       A group of $$DOC{ref:'foam.graphics.diagram.Section',usePlural:true}, with a heading.

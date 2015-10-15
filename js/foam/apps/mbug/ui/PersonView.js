@@ -21,7 +21,7 @@ CLASS({
   requires: [
     'foam.ui.md.MonogramStringView'
   ],
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   templates: [
     function CSS() {/*
 .PersonView {

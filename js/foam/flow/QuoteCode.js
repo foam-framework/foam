@@ -12,7 +12,7 @@
 CLASS({
   name: 'QuoteCode',
   package: 'foam.flow',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   documentation: 'Facade for code views that quote a brief snippet.',
 

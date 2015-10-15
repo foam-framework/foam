@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'DocViewPicker',
-  extendsModel: 'foam.documentation.DocView',
+  extends: 'foam.documentation.DocView',
   label: 'Documentation View Full Page',
   documentation: 'Base Model for full page documentation views.',
 

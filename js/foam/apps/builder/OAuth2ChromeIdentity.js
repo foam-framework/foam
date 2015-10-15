@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'OAuth2ChromeIdentity',
-  extendsModel: 'foam.oauth2.OAuth2ChromeIdentity',
+  extends: 'foam.oauth2.OAuth2ChromeIdentity',
   traits: [
     'foam.apps.builder.OAuth2AppBuilderTrait',
   ],

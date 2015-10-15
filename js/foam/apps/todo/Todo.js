@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.apps.todo',
   name: 'TodoApp',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [
   ],
 

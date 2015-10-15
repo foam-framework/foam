@@ -18,7 +18,7 @@
 CLASS({
   name: 'QIssueCommentCreateView',
   package: 'foam.apps.quickbug.ui',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   imports: [
     'browser'

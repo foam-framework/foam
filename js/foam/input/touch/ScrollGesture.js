@@ -18,7 +18,7 @@
 CLASS({
   name: 'ScrollGesture',
   package: 'foam.input.touch',
-  extendsModel: 'foam.input.touch.Gesture',
+  extends: 'foam.input.touch.Gesture',
   help: 'Gesture that understands vertical or horizontal scrolling.',
 
   properties: [

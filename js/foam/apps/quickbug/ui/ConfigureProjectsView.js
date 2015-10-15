@@ -18,7 +18,7 @@
 CLASS({
   name: 'ConfigureProjectsView',
   package: 'foam.apps.quickbug.ui',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   templates: [
     function toHTML() {/*

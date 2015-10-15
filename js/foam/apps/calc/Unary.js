@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.apps.calc',
   name: 'Unary',
-  extendsModel: 'Action',
+  extends: 'Action',
   properties: [
     'f',
     { name: 'longName', defaultValueFn: function() { return this.name; } },

@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.glang',
   name: 'GridBarExpr',
-  extendsModel: 'foam.glang.BaseBarExpr',
+  extends: 'foam.glang.BaseBarExpr',
   properties: [
     {
       name: 'xFunc',

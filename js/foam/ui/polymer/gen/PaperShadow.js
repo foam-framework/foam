@@ -18,7 +18,7 @@
 CLASS({
   name: 'PaperShadow',
   package: 'foam.ui.polymer.gen',
-  extendsModel: 'foam.ui.polymer.gen.View',
+  extends: 'foam.ui.polymer.gen.View',
   traits: [],
   constants: {
     POLYMER_PROPERTIES: []

@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'DAOWizard',
-  extendsModel: 'foam.apps.builder.wizard.DAOWizard',
+  extends: 'foam.apps.builder.wizard.DAOWizard',
 
   requires: [
     'foam.apps.builder.questionnaire.NewOrExistingModelWizard',

@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'DesignerView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: [
     'foam.metrics.ScreenViewTrait',
   ],

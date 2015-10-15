@@ -82,7 +82,7 @@ var FOAMargs = process.argv.slice(2);
       }
       console.log('');
       console.log('');
-      if ( m.extendsModel ) usage(X.lookup(m.extendsModel));
+      if ( m.extends ) usage(X.lookup(m.extends));
     }
 
     if ( FOAMargs[1] == '--help' ) {

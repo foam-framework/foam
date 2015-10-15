@@ -18,7 +18,7 @@
 CLASS({
   name: 'PopupView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [
     'foam.input.touch.GestureTarget'
@@ -504,9 +504,13 @@ CLASS({
       }
       .popup-view-container.bottom {
         align-items: flex-end;
+        margin-bottom: 5%;
+        max-height: 90%;
       }
       .popup-view-container.top {
         align-items: flex-start;
+        margin-top: 5%;
+        max-height: 90%;
       }
     */}
   ]

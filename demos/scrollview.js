@@ -35,7 +35,7 @@ dao = DelayedSelectDAO.create({
 
 CLASS({
   name: 'AvatarView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {
@@ -73,7 +73,7 @@ CLASS({
 
 CLASS({
   name: 'ContactRowView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   properties: [
     {

@@ -44,7 +44,7 @@ CLASS({
 CLASS({
   package: 'demo.bank',
   name: 'SavingsAccount',
-  extendsModel: 'demo.bank.Account',
+  extends: 'demo.bank.Account',
 
   methods: [
     {

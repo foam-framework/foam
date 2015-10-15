@@ -18,7 +18,7 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'FlightBooker',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [ 'foam.ui.DateFieldView' ],
   properties: [
     {

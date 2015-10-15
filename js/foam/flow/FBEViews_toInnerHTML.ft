@@ -28,7 +28,7 @@
                   <code>CLASS({
   name: 'DetailedPerson',
   package: 'foam.sandbox',
-  extendsModel: 'foam.sandbox.Person',
+  extends: 'foam.sandbox.Person',
 
   // Implement the toDetailHTML() template to supply a custom view of your
   // data model. Your model isn't actually a view, but DetailView can grab
@@ -83,7 +83,7 @@
                   <code>CLASS({
   name: 'RedPersonView',
   package: 'foam.sandbox',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   templates: [
     {
@@ -142,7 +142,7 @@
   name: 'ManualPersonView',
   package: 'foam.sandbox',
   // DetailView lets us override toHTML() and still re-render when necessary
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   properties: [
     {
@@ -222,7 +222,7 @@
                   <code>CLASS({
   name: 'BluePersonView',
   package: 'foam.sandbox',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   templates: [
     {
@@ -245,7 +245,7 @@
                   <code>CLASS({
   name: 'TemplatePlaygroundView',
   package: 'foam.sandbox',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: ['foam.ui.md.TextFieldView'],
 
   properties: [
@@ -355,7 +355,7 @@
                   <code>CLASS({
   name: 'GreenPersonView',
   package: 'foam.sandbox',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: ['foam.sandbox.RedPersonView'],
 
   templates: [
@@ -428,7 +428,7 @@
                   <code>CLASS({
   name: 'CardPersonView',
   package: 'foam.sandbox',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   templates: [
     {
@@ -508,7 +508,7 @@
                   <code>CLASS({
   name: 'ToggleCardPersonView',
   package: 'foam.sandbox',
-  extendsModel: 'foam.sandbox.CardPersonView',
+  extends: 'foam.sandbox.CardPersonView',
   requires: ['foam.ui.md.CheckboxView'],
 
   properties: [

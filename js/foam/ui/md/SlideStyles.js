@@ -12,6 +12,6 @@
 CLASS({
   name: 'SlideStyles',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   templates: [ { name: 'CSS' } ]
 });

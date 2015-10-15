@@ -20,7 +20,7 @@ CLASS({
   name: 'ChoiceRadioView',
   package: 'foam.ui.md',
 
-  extendsModel: 'foam.ui.AbstractChoiceView',
+  extends: 'foam.ui.AbstractChoiceView',
 
   requires: ['foam.ui.md.RadioOptionView',
              'foam.ui.md.RadioOptionTextFieldView'],

@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.demos.empire',
   name: 'Preso',
-  extendsModel: 'foam.flow.Section',
+  extends: 'foam.flow.Section',
 
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
 

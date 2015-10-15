@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'BasicFOAMlet',
-  extendsModel: 'foam.navigator.FOAMlet',
+  extends: 'foam.navigator.FOAMlet',
   package: 'foam.navigator',
 
   documentation: function() {/* A base model for native FOAMlets. If you are

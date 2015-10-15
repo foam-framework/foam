@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'XMLView',
-  extendsModel: 'foam.ui.TextAreaView',
+  extends: 'foam.ui.TextAreaView',
   label: 'XML View',
 
   properties: [

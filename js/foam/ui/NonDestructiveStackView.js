@@ -23,7 +23,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'NonDestructiveStackView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.ui.layout.OverlaySlider',

@@ -20,7 +20,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'ControllerView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   methods: {
     initHTML: function() {

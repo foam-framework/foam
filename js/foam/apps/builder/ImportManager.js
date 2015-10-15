@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'ImportManager',
-  extendsModel: '',
+  extends: '',
 
   requires: [
     'foam.apps.builder.ConfigParser',

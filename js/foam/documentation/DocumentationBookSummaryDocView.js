@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'DocumentationBookSummaryDocView',
-  extendsModel: 'foam.documentation.SummaryDocView',
+  extends: 'foam.documentation.SummaryDocView',
   documentation: 'Displays the documentation of the given book.',
 
   requires: ['foam.documentation.DocBodyView'],

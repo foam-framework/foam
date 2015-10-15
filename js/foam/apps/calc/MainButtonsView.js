@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.calc',
   name: 'MainButtonsView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.apps.calc.CalcButton'
   ],

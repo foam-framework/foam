@@ -18,7 +18,7 @@
 CLASS({
   name: 'WorkerDAO',
   package: 'foam.core.dao',
-  extendsModel: 'AbstractDAO',
+  extends: 'AbstractDAO',
 
   requires: [
     'foam.core.dao.KeyCollector'

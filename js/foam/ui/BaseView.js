@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'BaseView',
-  extendsModel: 'foam.patterns.ChildTreeTrait',
+  extends: 'foam.patterns.ChildTreeTrait',
 
   documentation: function() {/* For Views that use $$DOC{ref:'.data'},
     this trait will pseudo-import the data$ reference from the context,

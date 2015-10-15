@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.apps.mbug.ui',
   name: 'ChangeProjectView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   traits: [ 'foam.ui.layout.PositionedDOMViewTrait' ],
 
   requires: [

@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'TOSView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [
     'foam.ui.md.CheckboxView',

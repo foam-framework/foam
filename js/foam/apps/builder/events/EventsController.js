@@ -13,7 +13,7 @@ CLASS({
   package: 'foam.apps.builder.events',
   name: 'EventsController',
 
-  extendsModel: 'foam.apps.builder.AppController',
+  extends: 'foam.apps.builder.AppController',
 
   requires: [
     'foam.apps.builder.events.Event',

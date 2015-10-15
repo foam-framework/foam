@@ -28,7 +28,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'ScrollView',
-  extendsModel: 'foam.ui.AbstractDAOView',
+  extends: 'foam.ui.AbstractDAOView',
   requires: [
     'foam.util.busy.BusyStatus',
     'foam.ui.SpinnerView',

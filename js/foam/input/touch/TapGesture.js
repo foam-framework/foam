@@ -20,7 +20,7 @@
 CLASS({
   name: 'TapGesture',
   package: 'foam.input.touch',
-  extendsModel: 'foam.input.touch.Gesture',
+  extends: 'foam.input.touch.Gesture',
   help: 'Gesture that understands a quick, possible multi-point tap. Calls into the handler: tapClick(numberOfPoints).',
 
   properties: [

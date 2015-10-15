@@ -38,7 +38,7 @@ var CompositeService = FOAM({
   model_: 'Model',
 
   name: 'CompositeService',
-  extendsModel: 'Service',
+  extends: 'Service',
 
   properties: [
     {
@@ -83,7 +83,7 @@ var OptionalServiceView = FOAM({
 
   name: 'OptionalServiceView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {
@@ -126,7 +126,7 @@ var CompositeServiceView = FOAM({
 
   name: 'CompositeDetailView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {
@@ -199,7 +199,7 @@ var ServiceSummaryView = FOAM({
 
   name: 'ServiceSummaryView',
 
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   templates: [
     {
@@ -215,7 +215,7 @@ var CompositeServiceSummaryView = FOAM({
 
   name: 'CompositeServiceSummaryView',
 
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   properties: [
 /*    {
@@ -315,7 +315,7 @@ var order = CompositeService.create({
 var OrderSummaryView = FOAM({
   model_: 'Model',
   name: 'OrderSummaryView',
-  extendsModel: 'CompositeServiceSummaryView',
+  extends: 'CompositeServiceSummaryView',
 
   methods: {
     toHTML: function() {

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'FullPageDocView',
-  extendsModel: 'foam.documentation.DocView',
+  extends: 'foam.documentation.DocView',
   label: 'Documentation View Full Page',
   documentation: 'Base Model for full page documentation views.',
 
@@ -29,7 +29,7 @@ CLASS({
     <p><code>
     CLASS({ <br/>
     &nbsp;&nbsp;  name: 'PropertyFullPageDocView',<br/>
-    &nbsp;&nbsp;  extendsModel: 'FullPageDocView'<br/>
+    &nbsp;&nbsp;  extends: 'FullPageDocView'<br/>
     });<br/>
     // automatically creates PropertyFullPageDocView<br/>
     FullPageDocView.create({model:X.Property});<br/>

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'WebView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   imports: [
     'window',
   ],

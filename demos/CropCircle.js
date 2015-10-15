@@ -2,7 +2,7 @@ arequire('foam.graphics.CView')(function() {
 
 CLASS({
   name:  'CropCircle',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   properties: [
     {

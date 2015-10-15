@@ -29,7 +29,7 @@ CLASS({
     'selection$',
   ],
 
-  extendsModel: 'foam.meta.types.EditView',
+  extends: 'foam.meta.types.EditView',
 
   properties: [
     {

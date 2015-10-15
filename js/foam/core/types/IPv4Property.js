@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.core.types',
   name: 'IPv4Property',
-  extendsModel: 'StringProperty',
+  extends: 'StringProperty',
   documentation: function() {/*
       An IP Address v4 property.
   */},

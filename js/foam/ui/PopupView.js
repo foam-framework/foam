@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'PopupView',
 
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   constants: { CLOSED_TOPIC: [ 'closed' ] },
 

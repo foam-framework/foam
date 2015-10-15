@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'EditColumnsView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [
     'foam.ui.md.CheckboxView',

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.tools',
   name: 'EditView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   properties: [
     {
       name: 'modelName',

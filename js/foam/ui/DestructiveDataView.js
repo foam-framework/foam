@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'DestructiveDataView',
-  extendsModel: 'foam.ui.BaseView',
+  extends: 'foam.ui.BaseView',
 
   requires: [ 'SimpleValue' ],
 

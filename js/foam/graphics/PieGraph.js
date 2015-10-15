@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.graphics',
   name: 'PieGraph',
 
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   properties: [
     {

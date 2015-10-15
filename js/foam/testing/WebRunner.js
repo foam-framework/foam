@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.testing',
   name: 'WebRunner',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.core.bootstrap.BrowserFileDAO',
     'foam.core.dao.OrDAO',

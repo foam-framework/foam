@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.dao',
   name: 'TimingDAO',
 
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
     Times access to the this.SUPER DAO.

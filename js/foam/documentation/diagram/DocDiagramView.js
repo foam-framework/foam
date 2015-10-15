@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation.diagram',
   name: 'DocDiagramView',
-  extendsModel: 'foam.graphics.CViewView',
+  extends: 'foam.graphics.CViewView',
 
   requires: [
     'foam.documentation.diagram.ModelDocDiagram',

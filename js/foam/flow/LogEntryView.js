@@ -12,7 +12,7 @@
 CLASS({
   name: 'LogEntryView',
   package: 'foam.flow',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   constants: { ELEMENT_NAME: 'log-entry' },
 

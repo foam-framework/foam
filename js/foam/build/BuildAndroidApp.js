@@ -179,7 +179,7 @@ CLASS({
         var m = this.models[i];
         while (m) {
           add(m);
-          m = this.X.lookup(m).extendsModel;
+          m = this.X.lookup(m).extends;
         }
       }
 

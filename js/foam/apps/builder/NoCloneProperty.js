@@ -14,7 +14,7 @@
 CLASS({
   name: 'NoCloneProperty',
   package: 'foam.apps.builder',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help: 'Describes a property that will not clone its value.',
 

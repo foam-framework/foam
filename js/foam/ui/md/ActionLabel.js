@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'ActionLabel',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   properties: [
     'action',

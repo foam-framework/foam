@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'FutureView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   requires: [
     'foam.ui.StaticHTML',
     'foam.ui.FutureView',

@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.md',
   name: 'ChoiceMenuView',
 
-  extendsModel: 'foam.ui.AbstractChoiceView',
+  extends: 'foam.ui.AbstractChoiceView',
 
   requires: ['foam.ui.md.FlatButton'],
 

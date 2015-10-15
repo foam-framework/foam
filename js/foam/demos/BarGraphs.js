@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'BarGraphs',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'MDAO',
     'foam.glang.BarExpr',

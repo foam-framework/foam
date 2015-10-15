@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'FoamTagView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.html.Element',

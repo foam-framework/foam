@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'SummaryView',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
   requires: [
     'foam.apps.builder.wizard.WizardStackView',

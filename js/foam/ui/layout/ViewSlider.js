@@ -18,7 +18,7 @@
 CLASS({
   "package": "foam.ui.layout",
   "name": "ViewSlider",
-  "extendsModel": "foam.ui.View",
+  extends: "foam.ui.View",
   "traits": [
     "foam.ui.layout.PositionedDOMViewTrait"
   ],

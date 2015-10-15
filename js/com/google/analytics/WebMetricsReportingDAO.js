@@ -18,7 +18,7 @@
 CLASS({
   name: 'WebMetricsReportingDAO',
   package: 'com.google.analytics',
-  extendsModel: 'com.google.analytics.AbstractMetricsReportingDAO',
+  extends: 'com.google.analytics.AbstractMetricsReportingDAO',
 
   imports: [
     'document'

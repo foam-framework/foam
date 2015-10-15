@@ -18,7 +18,7 @@
 CLASS({
   name: 'ModelDocView',
   package: 'foam.documentation.new.ui',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.documentation.new.ui.PropertyDocView',
     'foam.documentation.new.ui.MethodDocView',

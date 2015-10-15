@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.util.zip',
   name: 'LocalFileHeader',
-  extendsModel: 'foam.util.zip.BinaryHeader',
+  extends: 'foam.util.zip.BinaryHeader',
 
   imports: [
     'console',

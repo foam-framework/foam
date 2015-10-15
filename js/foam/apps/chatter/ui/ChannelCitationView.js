@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.apps.chatter.ui',
   name: 'ChannelCitationView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   templates: [
     { name: 'toHTML' }
   ]

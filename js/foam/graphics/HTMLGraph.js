@@ -12,7 +12,7 @@
 CLASS({
   name: 'HTMLGraph',
   package: 'foam.graphics',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   properties: [
     {

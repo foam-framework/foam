@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'TogglePanelAction',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [
     'foam.graphics.ActionButtonCView',
   ],

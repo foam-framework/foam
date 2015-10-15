@@ -18,7 +18,7 @@
 MODEL({
   package: 'foam.apps.calc',
   name: 'Binary',
-  extendsModel: 'foam.apps.calc.Unary',
+  extends: 'foam.apps.calc.Unary',
   properties: [
     [ 'code', function(_, action) {
       if ( this.a2 == '' ) {

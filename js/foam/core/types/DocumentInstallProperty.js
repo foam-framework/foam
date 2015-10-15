@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.core.types',
   name: 'DocumentInstallProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help: "Describes a function property that runs once per document",
 

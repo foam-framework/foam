@@ -20,7 +20,7 @@ CLASS({
   name: 'PopupChoiceView',
   package: 'foam.ui.md',
 
-  extendsModel: 'foam.ui.AbstractChoiceView',
+  extends: 'foam.ui.AbstractChoiceView',
 
   requires: ['foam.ui.md.ChoiceMenuView', 'foam.ui.md.TextFieldView'],
 

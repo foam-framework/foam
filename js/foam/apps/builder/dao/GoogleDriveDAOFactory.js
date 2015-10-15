@@ -13,7 +13,7 @@ CLASS({
   name: 'GoogleDriveDAOFactory',
   package: 'foam.apps.builder.dao',
 
-  extendsModel: 'foam.apps.builder.dao.DAOFactory',
+  extends: 'foam.apps.builder.dao.DAOFactory',
 
   label: 'Cloud storage on Google Drive',
 

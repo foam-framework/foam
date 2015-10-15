@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'SimpleView',
 
-  extendsModel: 'foam.ui.BaseView',
+  extends: 'foam.ui.BaseView',
   traits: [
     'foam.ui.HTMLViewTrait',
   ],

@@ -2,7 +2,7 @@ arequire('foam.graphics.Circle')(function() {
 
 CLASS({
   name: 'Circ',
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
   traits: ['foam.physics.Physical']
 });
 

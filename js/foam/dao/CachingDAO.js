@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.dao',
   name: 'CachingDAO',
 
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   requires: ['foam.dao.FutureDAO'],
 

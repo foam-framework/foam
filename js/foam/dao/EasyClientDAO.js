@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.dao',
   name: 'EasyClientDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   requires: [
     'XHR',
     'foam.core.dao.ClientDAO'

@@ -19,5 +19,5 @@ CLASS({
   package: 'foam.ui',
   name: 'ArrayView',
 
-  extendsModel: 'foam.ui.DAOController'
+  extends: 'foam.ui.DAOController'
 })

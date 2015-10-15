@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'TextAreaView',
 
-  extendsModel: 'foam.ui.TextFieldView',
+  extends: 'foam.ui.TextFieldView',
 
   label: 'Text-Area View',
 

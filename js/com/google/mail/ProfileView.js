@@ -18,7 +18,7 @@
 CLASS({
   name: 'ProfileView',
   package: 'com.google.mail',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: ['com.google.mail.GMailUserInfo', 'foam.ui.ImageView'],
   properties: [
     {

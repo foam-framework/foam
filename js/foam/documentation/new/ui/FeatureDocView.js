@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation.new.ui',
   name: 'FeatureDocView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   templates: [
     function toHTML() {/*
       <div id="<%= this.id %>" class="doc-feature doc-property">

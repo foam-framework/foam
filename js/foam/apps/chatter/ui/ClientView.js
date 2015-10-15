@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.apps.chatter.ui',
   name: 'ClientView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [
     'foam.apps.chatter.ui.ChannelView',
     'foam.apps.chatter.Channel',

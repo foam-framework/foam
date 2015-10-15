@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.chrome',
   name: 'AppControllerView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'CView',

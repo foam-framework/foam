@@ -163,7 +163,7 @@ var Power = Model.create({
 
 var CloseApp = Model.create({
 
-   extendsModel: 'CView',
+   extends: 'CView',
 
    name: 'CloseApp',
    label: 'Close Application',
@@ -271,7 +271,7 @@ var CloseApp = Model.create({
 
 var Screen = Model.create({
 
-   extendsModel: 'CView',
+   extends: 'CView',
 
    name: 'Backlite',
 
@@ -362,7 +362,7 @@ evt.preventDefault();
 
 var BatteryGraph = Model.create({
 
-   extendsModel: 'Graph',
+   extends: 'Graph',
 
    name:  'BatteryGraph',
 
@@ -476,7 +476,7 @@ var BatteryGraph = Model.create({
 
 var BatteryMeter = Model.create({
 
-   extendsModel: 'CView',
+   extends: 'CView',
 
    name: 'BatteryMeter',
 
@@ -584,7 +584,7 @@ var BatteryMeter = Model.create({
 
 var NeedleMeter = Model.create({
 
-   extendsModel: 'CView',
+   extends: 'CView',
 
    name: 'NeedleMeter',
 

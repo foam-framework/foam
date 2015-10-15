@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.events',
   name: 'NewDAOWizard',
-  extendsModel: 'foam.apps.builder.wizard.NewDAOWizard',
+  extends: 'foam.apps.builder.wizard.NewDAOWizard',
 
   requires: [
     'foam.apps.builder.events.DAOWizard',

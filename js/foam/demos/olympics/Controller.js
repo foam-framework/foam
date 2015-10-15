@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.olympics',
   name: 'Controller',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.dao.EasyDAO',

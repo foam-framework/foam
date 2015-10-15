@@ -19,7 +19,7 @@ CLASS({
   name: 'LocationProperty',
   package: 'foam.apps.quickbug.types',
 
-  extendsModel: 'Property',
+  extends: 'Property',
 
   properties: [
     { name: 'toMemento',      defaultValue:   function(o) { return o; } },

@@ -105,9 +105,9 @@ CLASS({
       code: function() {
         var out = '';
         var first = true;
-        Object_forEach(this.cssProperties_, function(value, key) {
+        Object_forEach(this.cssProperties_, function(value) {
           if ( ! first ) out += ', ';
-          out += key + ' ' + value;
+          out += value;
           first = false;
         });
         return out;

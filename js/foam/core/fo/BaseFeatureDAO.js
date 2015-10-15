@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.core.fo',
   name: 'BaseFeatureDAO',
   help: 'Exposes all features of a model as a unified DAO',
-  extendsModel: 'AbstractDAO',
+  extends: 'AbstractDAO',
   requires: [
     'foam.core.fo.Feature',
   ],

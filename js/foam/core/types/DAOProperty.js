@@ -20,7 +20,7 @@ CLASS({
 
   name: 'DAOProperty',
 
-  extendsModel: 'Property',
+  extends: 'Property',
 
   requires: ['foam.dao.FutureDAO', 'foam.dao.ProxyDAO'],
   imports: ['console'],

@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'AbstractChoiceView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     // This is the real, final choice. The internals use index only.

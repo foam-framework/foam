@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'ModelFullPageDocView',
-  extendsModel: 'foam.documentation.ModelDocView',
+  extends: 'foam.documentation.ModelDocView',
 
   documentation: "A full-page documentation view for $$DOC{ref:'Model'} instances.",
 

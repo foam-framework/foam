@@ -20,7 +20,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'DocumentationBook',
-  extendsModel: 'Documentation',
+  extends: 'Documentation',
   label: 'Documentation Book',
   plural: 'DocumentationBooks',
   help: 'A documentation object that exists outside of a specific model.',
@@ -93,7 +93,7 @@ var RegisterDevDocs = function(opt_X) {
             attributes and behaviors, it can be a $$DOC{ref:'Model'}.</p>
             <p>To share functionality between similar $$DOC{ref:'Model',usePlural:true}, you
             can inherit the features of another $$DOC{ref:'Model'} by
-            $$DOC{ref:'Model.extendsModel',text:'extending'} it, or merge other
+            $$DOC{ref:'Model.extends',text:'extending'} it, or merge other
             $$DOC{ref:'Model',usePlural:true} in as $$DOC{ref:'Model.traits'}.</p>
             <p>$$DOC{ref:'Model',usePlural:true} are starting to sound a lot like
             object-oriented classes, and in fact when generating Java code FOAM will
@@ -183,8 +183,8 @@ var RegisterDevDocs = function(opt_X) {
             </p>
 
             <p>When you declare a $$DOC{ref:'Model'}, inheritance follows your
-            $$DOC{ref:'Model.extendsModel'} property down through the chain until
-            you omit $$DOC{ref:'Model.extendsModel'}.
+            $$DOC{ref:'Model.extends'} property down through the chain until
+            you omit $$DOC{ref:'Model.extends'}.
             At each step, new $$DOC{ref:'Property',usePlural:true} or other features are
             added on, as one would expect from inheritance. When you examine the "MySub"
             object from your context, you see all the inherited features. Calling create()

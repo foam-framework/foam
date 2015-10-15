@@ -18,7 +18,7 @@
  CLASS({
    package: 'foam.ui',
    name: 'AsyncLoadingView',
-   extendsModel: 'foam.ui.BaseView',
+   extends: 'foam.ui.BaseView',
 
    documentation: function() {/* Loads a view with arequire, giving the
      host view a placeholder immediately and filling in the actual view

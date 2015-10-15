@@ -19,7 +19,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'TopicBubble',
 
-  extendsModel: 'com.google.watlobby.Bubble',
+  extends: 'com.google.watlobby.Bubble',
 
   requires: [
     'foam.graphics.Circle',

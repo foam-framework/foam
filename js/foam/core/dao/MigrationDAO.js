@@ -18,7 +18,7 @@
 CLASS({
   name: 'MigrationDAO',
   package: 'foam.core.dao',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   requires: [
     'foam.core.dao.MigrationRule',

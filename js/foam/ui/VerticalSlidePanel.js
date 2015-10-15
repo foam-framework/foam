@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'VerticalSlidePanel',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.input.touch.GestureTarget'

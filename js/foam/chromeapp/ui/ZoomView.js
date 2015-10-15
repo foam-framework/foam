@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.chromeapp.ui',
 
   name: 'ZoomView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   imports: [ 'window', 'document' ],
 

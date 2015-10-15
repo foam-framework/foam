@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name:  'ChoiceView',
 
-  extendsModel: 'foam.ui.AbstractChoiceView',
+  extends: 'foam.ui.AbstractChoiceView',
 
   /*
    * <select size="">

@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'StringProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help: 'Describes a properties of type String.',
   label: 'Text, including letters, numbers, or symbols',
@@ -69,7 +69,7 @@ CLASS({
 
 CLASS({
   name: 'BooleanProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help: 'Describes a properties of type Boolean.',
   label: 'True/false, yes/no, or on/off',
@@ -123,7 +123,7 @@ CLASS({
 
 CLASS({
   name:  'DateProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help:  'Describes a properties of type Date.',
   label: 'Date, including year, month, and day',
@@ -172,7 +172,7 @@ CLASS({
 
 CLASS({
   name: 'DateTimeProperty',
-  extendsModel: 'DateProperty',
+  extends: 'DateProperty',
 
   help: 'Describes a properties of type DateTime.',
   label: 'Date and time, including year, month, day, hour, minute and second',
@@ -200,7 +200,7 @@ CLASS({
 
 CLASS({
   name:  'IntProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help:  'Describes a properties of type Int.',
   label: 'Round numbers such as 1, 0, or -245',
@@ -255,7 +255,7 @@ CLASS({
 
 CLASS({
   name:  'LongProperty',
-  extendsModel: 'IntProperty',
+  extends: 'IntProperty',
 
   help:  'Describes a properties of type Long.',
   label: 'Round long numbers such as 1, 0, or -245',
@@ -279,7 +279,7 @@ CLASS({
 
 CLASS({
   name:  'FloatProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help:  'Describes a properties of type Float.',
   label: 'Decimal numbers such as 1.34 or -0.00345',
@@ -344,7 +344,7 @@ CLASS({
 
 CLASS({
   name:  'FunctionProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help:  'Describes a properties of type Function.',
   label: 'Code that can be run',
@@ -402,7 +402,7 @@ CLASS({
 
 CLASS({
   name: 'TemplateProperty',
-  extendsModel: 'FunctionProperty',
+  extends: 'FunctionProperty',
 
   properties: [
     {
@@ -434,7 +434,7 @@ CLASS({
 
 CLASS({
   name: 'ArrayProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help:  'Describes a property of type Array.',
   label: 'List of items',
@@ -573,7 +573,7 @@ CLASS({
 
 CLASS({
   name:  'ReferenceProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help:  'A foreign key reference to another Entity.',
   label: 'Reference to another object',
@@ -628,7 +628,7 @@ CLASS({
 
 CLASS({
   name: 'StringArrayProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help: 'An array of String values.',
   label: 'List of text strings',
@@ -734,7 +734,7 @@ CLASS({
 
 CLASS({
   name: 'ModelProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help: 'Describes a Model property.',
   label: 'Data Model definition',
@@ -785,7 +785,7 @@ CLASS({
 
 CLASS({
   name: 'ViewProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help: 'Describes a View-Factory property.',
 
@@ -821,7 +821,7 @@ CLASS({
 
 CLASS({
   name: 'FactoryProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help: 'Describes a Factory property.',
 
@@ -862,7 +862,7 @@ CLASS({
 
 CLASS({
   name: 'ViewFactoryProperty',
-  extendsModel: 'FactoryProperty',
+  extends: 'FactoryProperty',
 
   help: 'Describes a View Factory property.',
 
@@ -917,7 +917,7 @@ CLASS({
             if ( ! viewModel ) {
                 viewModel = VIEW_CACHE[f] = Model.create({
                   name: 'InnerDetailView' + this.$UID,
-                  extendsModel: 'foam.ui.DetailView',
+                  extends: 'foam.ui.DetailView',
                   templates:[{name: 'toHTML', template: f}]
                 });
 
@@ -967,7 +967,7 @@ CLASS({
 
 CLASS({
   name: 'ReferenceArrayProperty',
-  extendsModel: 'ReferenceProperty',
+  extends: 'ReferenceProperty',
 
   properties: [
     {
@@ -997,13 +997,13 @@ CLASS({
 
 CLASS({
   name: 'EMailProperty',
-  extendsModel: 'StringProperty',
+  extends: 'StringProperty',
   label: 'Email address',
 });
 
 CLASS({
   name: 'ImageProperty',
-  extendsModel: 'StringProperty',
+  extends: 'StringProperty',
   label: 'Image data or link',
   properties: [
     [ 'view', 'foam.ui.md.ImagePickerView' ]
@@ -1012,13 +1012,13 @@ CLASS({
 
 CLASS({
   name: 'URLProperty',
-  extendsModel: 'StringProperty',
+  extends: 'StringProperty',
   label: 'Web link (URL or internet address)',
 });
 
 CLASS({
   name: 'ColorProperty',
-  extendsModel: 'StringProperty',
+  extends: 'StringProperty',
   label: 'Color',
   properties: [
     [ 'view', 'foam.ui.md.ColorFieldView' ]
@@ -1027,20 +1027,20 @@ CLASS({
 
 CLASS({
   name: 'PasswordProperty',
-  extendsModel: 'StringProperty',
+  extends: 'StringProperty',
   label: 'Password that displays protected or hidden text',
 });
 
 CLASS({
   name: 'PhoneNumberProperty',
-  extendsModel: 'StringProperty',
+  extends: 'StringProperty',
   label: 'Phone number',
 });
 
 
 if ( DEBUG ) CLASS({
   name: 'DocumentationProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
   help: 'Describes the documentation properties found on Models, Properties, Actions, Methods, etc.',
   documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
 

@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.physics',
   name: 'PhysicsEngine',
 
-  extendsModel: 'foam.physics.Collider',
+  extends: 'foam.physics.Collider',
 
   methods: [
     function updateChild(c) {

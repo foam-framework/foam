@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.node.handlers',
   name: 'FileHandler',
-  extendsModel: 'foam.node.handlers.Handler',
+  extends: 'foam.node.handlers.Handler',
   properties: [
     {
       name: 'path',

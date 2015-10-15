@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.datamodels',
   name: 'ModelCitationView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   requires: [
     'foam.ui.TextualDAOListView',

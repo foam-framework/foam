@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.dao',
   name: 'IDBDAOFactoryEditView',
-  extendsModel: 'foam.apps.builder.dao.EditView',
+  extends: 'foam.apps.builder.dao.EditView',
 
   templates: [
     function toHTML() {/*

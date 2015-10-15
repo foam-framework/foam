@@ -18,7 +18,7 @@
 CLASS({
   name: 'LabelCitationView',
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'foam.ui.md.DefaultRowView',
+  extends: 'foam.ui.md.DefaultRowView',
   traits: ['foam.ui.md.ColoredBackgroundTrait'],
   properties: [ { name: 'className', defaultValue: 'LabelCitationView' } ],
   templates: [

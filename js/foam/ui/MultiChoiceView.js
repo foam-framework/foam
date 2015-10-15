@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'MultiChoiceView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   documentation: 'A View for selecting a set of keys from an array of choices or from a DAO.',
 

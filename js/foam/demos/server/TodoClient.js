@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.demos.server',
   name: 'TodoClient',
-  extendsModel: 'foam.tutorials.todo.TodoApp',
+  extends: 'foam.tutorials.todo.TodoApp',
   requires: [
     'foam.tutorials.todo.model.Todo',
     'foam.dao.EasyClientDAO',

@@ -25,7 +25,7 @@ CLASS({
     'foam.graphics.webgl.matrix.ScaleMatrix4'
   ],
 
-  extendsModel: 'foam.graphics.webgl.core.Object',
+  extends: 'foam.graphics.webgl.core.Object',
 
   properties: [
     {

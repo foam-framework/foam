@@ -13,7 +13,7 @@ CLASS({
   package: 'foam.flow',
   name: 'ToC',
   label: 'Table of Contents',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   requires: [ 'foam.ui.DAOListView' ],
   imports: [ 'parentSection' ],

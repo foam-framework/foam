@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.browser.ui',
   name: 'BrowserView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [
     'foam.browser.BrowserConfig',
     'foam.browser.ui.StackView',
@@ -41,7 +41,7 @@ CLASS({
   models: [
     {
       name: 'InnerBrowserView',
-      extendsModel: 'foam.ui.DetailView',
+      extends: 'foam.ui.DetailView',
       requires: [
         'foam.ui.md.FlatButton',
         'foam.ui.PopupChoiceView',

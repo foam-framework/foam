@@ -18,7 +18,7 @@
 CLASS({
   name: 'DefaultRowView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   imports: [ 'removeRowFromList' ],
 

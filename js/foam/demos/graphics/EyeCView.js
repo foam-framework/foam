@@ -20,7 +20,7 @@ CLASS({
   name:  'EyeCView',
   label: 'Eye',
 
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [ 'foam.graphics.Circle' ],
 

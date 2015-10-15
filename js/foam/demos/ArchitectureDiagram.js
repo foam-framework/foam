@@ -19,7 +19,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'ArchitectureDiagram',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
     'foam.ui.DetailView',

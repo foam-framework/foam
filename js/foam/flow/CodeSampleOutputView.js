@@ -12,7 +12,7 @@
 CLASS({
   name: 'CodeSampleOutputView',
   package: 'foam.flow',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   requires: [
     'foam.flow.CodeSampleOutput',

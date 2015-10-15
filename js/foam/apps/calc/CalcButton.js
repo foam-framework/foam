@@ -12,7 +12,7 @@
 CLASS({
   name: 'CalcButton',
   package: 'foam.apps.calc',
-  extendsModel: 'foam.graphics.ActionButtonCView',
+  extends: 'foam.graphics.ActionButtonCView',
   properties: [
     {
       name: 'color',

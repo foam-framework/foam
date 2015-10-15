@@ -1011,7 +1011,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
   package: 'foam.sandbox',
   // Classical inheritance: All properties, methods, etc. from Person apply to
   // Employee.
-  extendsModel: 'foam.sandbox.Person',
+  extends: 'foam.sandbox.Person',
 
   properties: [
     {
@@ -1057,7 +1057,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
               <code>CLASS({
   name: 'Nicknamed',
   package: 'foam.sandbox',
-  extendsModel: 'foam.sandbox.Person',
+  extends: 'foam.sandbox.Person',
 
   methods: [
     function fullName() {
@@ -1142,7 +1142,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
               <code>CLASS({
   name: 'Supervisor',
   package: 'foam.sandbox',
-  extendsModel: 'foam.sandbox.Employee',
+  extends: 'foam.sandbox.Employee',
 
   properties: [
     {
@@ -1230,7 +1230,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
   name: 'Compound',
   package: 'foam.sandbox',
   // Compound has the Nicknamed trait, and is a FormalCompound.
-  extendsModel: 'foam.sandbox.FormalCompound',
+  extends: 'foam.sandbox.FormalCompound',
   traits: [ 'foam.sandbox.Nicknamed' ]
 });]]></code>
             </src>
@@ -1241,7 +1241,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
   name: 'Friend',
   package: 'foam.sandbox',
   // Friend has the Nicknamed trait, and is a Person.
-  extendsModel: 'foam.sandbox.Person',
+  extends: 'foam.sandbox.Person',
   traits: [ 'foam.sandbox.Nicknamed' ]
 });]]></code>
             </src>
@@ -1278,7 +1278,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
               <code>CLASS({
   name: 'Friendly',
   package: 'foam.sandbox',
-  extendsModel: 'foam.sandbox.Person',
+  extends: 'foam.sandbox.Person',
 
   listeners: [
     // Listeners bind "this" to the current instance. This is especially helpful
@@ -1512,7 +1512,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
               <code>CLASS({
   name: 'CompanyEmployee',
   package: 'foam.sandbox',
-  extendsModel: 'foam.sandbox.Employee',
+  extends: 'foam.sandbox.Employee',
 
   // Import company and division information from the conteXt.
   // Since contexts inherit from each other, company information is available

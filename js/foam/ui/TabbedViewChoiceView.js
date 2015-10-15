@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'TabbedViewChoiceView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [
     'foam.ui.md.HaloView',
   ],

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics.webgl.flat',
   name: 'Video',
-  extendsModel: 'foam.graphics.webgl.flat.Object',
+  extends: 'foam.graphics.webgl.flat.Object',
 
   requires: [
     'foam.graphics.webgl.core.ArrayBuffer',

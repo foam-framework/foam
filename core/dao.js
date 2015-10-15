@@ -87,7 +87,7 @@ var JSONToObject = {
 
 CLASS({
   name: 'FilteredDAO_',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   documentation: '<p>Internal use only.</p>',
 
@@ -131,7 +131,7 @@ CLASS({
 
 CLASS({
   name: 'OrderedDAO_',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
         <p>Internal use only.</p>
@@ -164,7 +164,7 @@ CLASS({
 
 CLASS({
   name: 'LimitedDAO_',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
         <p>Internal use only.</p>
@@ -203,7 +203,7 @@ CLASS({
 
 CLASS({
   name: 'SkipDAO_',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   documentation: function() {/*
         <p>Internal use only.</p>
@@ -234,7 +234,7 @@ CLASS({
 
 CLASS({
   name: 'RelationshipDAO',
-  extendsModel: 'FilteredDAO_',
+  extends: 'FilteredDAO_',
   documentation: 'Adapts a DAO based on a Relationship.',
 
   properties: [

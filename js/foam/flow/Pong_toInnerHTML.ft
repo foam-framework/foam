@@ -48,7 +48,7 @@
   </content>
 </expandable-section>
 <quote-code>
-  <code>extendsModel: 'foam.ui.View'</code>
+  <code>extends: 'foam.ui.View'</code>
 </quote-code>
 <quote-code>
   <code>this.SUPER();</code>

@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui',
   name: 'ActionButton',
 
-  extendsModel: 'foam.ui.BaseView', // not extending View prevents cycle
+  extends: 'foam.ui.BaseView', // not extending View prevents cycle
   traits: ['foam.ui.HTMLViewTrait'],
 
   properties: [

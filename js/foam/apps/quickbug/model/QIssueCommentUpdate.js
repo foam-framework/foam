@@ -18,7 +18,7 @@
 CLASS({
   name: 'QIssueCommentUpdate',
   package: 'foam.apps.quickbug.model',
-  extendsModel: 'foam.apps.quickbug.model.imported.IssueCommentUpdate',
+  extends: 'foam.apps.quickbug.model.imported.IssueCommentUpdate',
 
   properties: [
     { name: 'summary', displayWidth: 120 },

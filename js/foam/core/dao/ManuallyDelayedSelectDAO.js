@@ -18,7 +18,7 @@
 CLASS({
   name: 'ManuallyDelayedSelectDAO',
   package: 'foam.core.dao',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   properties: [
     {
       name: 'pending',

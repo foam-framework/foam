@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui',
   name: 'AbstractNumberFieldView',
 
-  extendsModel: 'foam.ui.TextFieldView',
+  extends: 'foam.ui.TextFieldView',
   abstractModel: true,
 
   properties: [
