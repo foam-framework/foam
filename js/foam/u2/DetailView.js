@@ -78,13 +78,8 @@ CLASS({
         var e = self.createFormE();
         e.add(E('tr').add(E('td').attrs({colspan: 2}).add(self.title$)));
 
-        for ( var i = 0 ; i < properties.length ; i++ ) {
-          var prop = properties[i];
-
-          // self.data$.subValue(prop.name);
-          //          f.add(prop.label, ' ', E('input'), E('br'));
-          e.add(self.createPropertyE(prop));
-        }
+        for ( var i = 0 ; i < properties.length ; i++ )
+          e.add(self.createPropertyE(properties[i]));
 
         return e;
       }.on$(this.X, this.model$, this.properties$));
