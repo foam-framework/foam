@@ -397,11 +397,22 @@ CLASS({
       });
     },
 
+    function valueAttr_(key, value) {
+      var self = this;
+      var l = function() {
+        self.setAttribute(key, value.get());
+      };
+      value.addListener(l);
+      l();
+    },
+
     function attrs(map) {
       for ( var key in map ) {
         var value = map[key];
         if ( typeof value === 'function' )
           this.dynamicAttr_(key, value);
+        else if ( Value.isInstance(value) )
+          this.valueAttr_(key, value);
         else
           this.setAttribute(key, value);
       }
