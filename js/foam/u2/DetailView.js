@@ -58,10 +58,40 @@ CLASS({
   templates: [
     function CSS() {/*
       .foam-u2-DetailView {
+        background: #fdfdfd;
+        border: solid 2px #dddddd;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
         display: inline-block;
         margin: 5px;
-        background: #fdfdfd;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+      }
+      .foam-u2-DetailView-title {
+        color: #333;
+        float: left;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        padding: 2px;
+      }
+      .foam-u2-DetailView input {
+        border: solid 1px #aacfe4;
+        font-size: 10px;
+        margin: 2px 0 0px 6px;
+        padding: 4px 2px;
+      }
+      .foam-u2-DetailView textarea {
+        border: solid 1px #aacfe4;
+        float: left;
+        font-size: 10px;
+        margin: 2px 0 0px 10px;
+        overflow: auto;
+        padding: 4px 2px;
+        width: 98%;
+      }
+      .foam-u2-DetailView select {
+        border: solid 1px #aacfe4;
+        font-size: 10px;
+        margin: 2px 0 0px 10px;
+        padding: 4px 2px;
       }
     */}
   ],
@@ -76,7 +106,7 @@ CLASS({
         if ( ! model ) return 'Set model or data.';
 
         var e = self.createFormE();
-        e.add(E('tr').add(E('td').attrs({colspan: 2}).add(self.title$)));
+        e.add(E('tr').add(E('td').cls('foam-u2-DetailView-title').attrs({colspan: 2}).add(self.title$)));
 
         for ( var i = 0 ; i < properties.length ; i++ )
           e.add(self.createPropertyE(properties[i]));
