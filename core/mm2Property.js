@@ -860,6 +860,9 @@ GLOBAL.Property = {
           if ( ! o.hasOwnProperty(name) ) o[name];
         });
       }
+    },
+    function toE() {
+      return foam.u2.Input.create();
     }
   ],
 

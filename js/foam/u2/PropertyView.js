@@ -55,7 +55,7 @@ CLASS({
     function init() {
       this.SUPER();
 
-      var view = foam.u2.Input.create();
+      var view = this.prop.toE();
 
       // TODO: Why can't I just define this with data$ in the view constructor?
       // Is data$ linking the wrong way?

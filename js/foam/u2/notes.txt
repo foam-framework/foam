@@ -18,3 +18,4 @@ validate
 configure from property
 async view loading
 toE
+benchmark (w. Cells?)
