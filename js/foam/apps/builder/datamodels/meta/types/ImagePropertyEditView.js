@@ -17,25 +17,19 @@
 
 
 CLASS({
-  name: 'PropertyEditView',
-  package: 'foam.meta.types',
+  name: 'ImagePropertyEditView',
+  package: 'foam.apps.builder.datamodels.meta.types',
 
-  extends: 'foam.meta.types.EditView',
-
-  properties: [
-
-  ],
-
-  methods: [
-
-  ],
+  extends: 'foam.apps.builder.datamodels.meta.types.EditView',
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
           <% this.headerHTML(out); %>
             $$label{ model_: 'foam.ui.TextFieldView', mode: this.mode }
+            $$defaultValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
             $$help{ model_: 'foam.ui.TextFieldView', mode: this.mode }
+          </div>
       </div>
     */},
 

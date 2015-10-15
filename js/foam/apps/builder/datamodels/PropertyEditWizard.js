@@ -57,7 +57,7 @@ CLASS({
     function init() {
       this.SUPER();
       // put old EditView back
-      this.Y.registerModel(this.X.ModelWizardEditView_foam_meta_types_EditView, 'foam.meta.types.EditView')
+      this.Y.registerModel(this.X.ModelWizardEditView_foam_meta_types_EditView, 'foam.apps.builder.datamodels.meta.types.EditView')
       this.Y.registerModel(this.PopupChoiceView, 'foam.ui.ChoiceView');
 
       this.toolbar = this.Toolbar.create({
@@ -79,7 +79,7 @@ CLASS({
       <div class="md-card-heading-content-spacer"></div>
     */},
     function contentHTML() {/*
-      $$data{ model_: 'foam.meta.types.EditView', model: this.data.model_, showHeader: false }
+      $$data{ model_: 'foam.apps.builder.datamodels.meta.types.EditView', model: this.data.model_, showHeader: false }
     */},
   ],
 

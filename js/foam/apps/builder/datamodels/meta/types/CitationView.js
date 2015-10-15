@@ -18,11 +18,11 @@
 
 CLASS({
   name: 'CitationView',
-  package: 'foam.meta.types',
+  package: 'foam.apps.builder.datamodels.meta.types',
   extends: 'foam.ui.md.DetailView',
 
   requires: [
-    'foam.meta.types.EditView',
+    'foam.apps.builder.datamodels.meta.types.EditView',
     'foam.ui.md.PopupChoiceView',
   ],
 

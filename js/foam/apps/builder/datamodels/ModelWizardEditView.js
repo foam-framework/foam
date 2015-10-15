@@ -20,13 +20,13 @@ CLASS({
   name: 'ModelWizardEditView',
   package: 'foam.apps.builder.datamodels',
 
-  extends: 'foam.meta.types.ModelEditView',
+  extends: 'foam.apps.builder.datamodels.meta.types.ModelEditView',
 
   requires: [
     'foam.apps.builder.datamodels.PropertyWizard',
     'foam.apps.builder.datamodels.PropertyEditWizard',
-    'foam.meta.types.EditView',
-    'foam.meta.types.PropertyCitationView',
+    'foam.apps.builder.datamodels.meta.types.EditView',
+    'foam.apps.builder.datamodels.meta.types.PropertyCitationView',
   ],
 
   exports: [
@@ -73,7 +73,7 @@ CLASS({
   methods: [
     function init() {
       this.Y.set('ModelWizardEditView_foam_meta_types_EditView', this.EditView);
-      this.Y.registerModel(this.PropertyEditWizard, 'foam.meta.types.EditView');
+      this.Y.registerModel(this.PropertyEditWizard, 'foam.apps.builder.datamodels.meta.types.EditView');
     }
   ],
 
@@ -85,7 +85,7 @@ CLASS({
               $$properties{
                 model_: 'foam.ui.md.DAOListView',
                 mode: 'read-only',
-                rowView: 'foam.meta.types.PropertyCitationView',
+                rowView: 'foam.apps.builder.datamodels.meta.types.PropertyCitationView',
                }
           </div>
           <div class="floating-action">
