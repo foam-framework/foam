@@ -42,6 +42,8 @@
 
           out.appendChild(e);
           out.scrollTop = e.offsetTop + e.offsetHeight;
+          document.body.appendChild(out);
+          out.style.top = 0;
         }
 
         var console = window.console;
