@@ -51,6 +51,7 @@ CLASS({
         ['black',      M.easy, 'easy'],
         ['black',      M.spline(constantFn(0), M.linear), 'spline(constantFn(0), linear)'],
         ['black',      M.spline(M.linear, constantFn(1)), 'spline(linear, constantFn(1))'],
+        ['black',      M.reverse(M.spline(M.linear, constantFn(1))), 'reverse(spline(linear, constantFn(1)))'],
         ['pink',       M.avg(M.easeIn(1.0),M.easeIn(1.0)), 'ease(0.25,0.25)'],
         ['red',        M.linear, 'linear'],
         ['green',      M.accelerate, 'accelerate'],
@@ -65,6 +66,7 @@ CLASS({
         ['red',        M.bounce(0.15, 0.02, 1), 'bounce(0.15, 0.02,1)'],
         ['red',        M.bounce(0.15, 0.02, 2), 'bounce(0.15, 0.02, 2)'],
         ['red',        M.bounce(0.15, 0.02, 3), 'bounce(0.15, 0.02, 3)'],
+        ['red',        M.reverse(M.bounce(0.15, 0.02, 3)), 'reverse(bounce(0.15, 0.02, 3))'],
         ['orange',     M.stepBack(0.05), 'stepBack(0.05)'],
         ['black',      M.bounce(0.5, 0.1, 3).o(M.stepBack(0.05)), 'bounce(0.5, 0.1, 3).o(stepBack(0.05))']
         /*
