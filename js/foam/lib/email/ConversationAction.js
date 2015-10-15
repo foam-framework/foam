@@ -19,7 +19,7 @@ CLASS({
   "model_": "Model",
   "package": "foam.lib.email",
   "name": "ConversationAction",
-  "extendsModel": "Action",
+  "extends": "Action",
   "properties": [
     {
       "name": "name",

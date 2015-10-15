@@ -213,8 +213,11 @@ var Model = {
     {
       name: 'extendsModel',
       hidden: true,
-      getter: function() { console.warn("Deprecated use of 'extendsModel'. Use 'extends' instead."); return null; },
-      setter: function(e) { console.warn("Deprecated use of 'extendsModel'. Use 'extends' instead."); if ( e ) this.extends = e; },
+      compareProperty: constantFn(0),
+      getter: function() { 
+        return null; },
+      setter: function(e) {
+        console.warn("Deprecated use of 'extendsModel'. Use 'extends' instead."); if ( e ) this.extends = e; },
     },
     {
       name: 'traits',

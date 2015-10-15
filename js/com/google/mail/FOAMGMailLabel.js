@@ -20,7 +20,7 @@ CLASS({
    "id": "com.google.mail.FOAMGMailLabel",
    "package": "com.google.mail",
    "name": "FOAMGMailLabel",
-   "extendsModel": "com.google.mail.GMailLabel",
+   "extends": "com.google.mail.GMailLabel",
    "requires": [],
    "imports": [],
    "exports": [],

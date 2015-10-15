@@ -90,11 +90,14 @@ e12.style({
 });
 
 var e14 = E('font').style({height: '80px', display: 'block'}).add('dynamic attribute');
+var v = SimpleValue.create();
+v.set('pink');
 e14.write();
 e14.attrs({
   size: function() { return Math.floor(timer.i/20) % 9; },
-  color: 'black'
+  color: v
 });
+setTimeout(function() { v.set('black'); }, 2000);
 
 E('div').style({height: '30px'}).write();
 

@@ -26,9 +26,9 @@ MODEL({
   templates: [
     function toDetailHTML() {/* $$c Celsius = $$f Fahrenheit */}
   ],
-  methods: {
-    init: function() { Events.relate(this.c$, this.f$, this.c2f, this.f2c); },
-    c2f: function(f) { return 9/5 * f + 32; },
-    f2c: function(c) { return 5/9 * ( c - 32 ); }
-  }
+  methods: [
+    function init() { Events.relate(this.c$, this.f$, this.c2f, this.f2c); },
+    function c2f(f) { return 9/5 * f + 32; },
+    function f2c(c) { return 5/9 * ( c - 32 ); }
+  ]
 });

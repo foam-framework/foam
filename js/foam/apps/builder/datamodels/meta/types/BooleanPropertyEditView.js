@@ -17,19 +17,21 @@
 
 
 CLASS({
-  name: 'FloatPropertyEditView',
-  package: 'foam.meta.types',
+  name: 'BooleanPropertyEditView',
+  package: 'foam.apps.builder.datamodels.meta.types',
 
-  extends: 'foam.meta.types.EditView',
+  extends: 'foam.apps.builder.datamodels.meta.types.EditView',
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
           <% this.headerHTML(out); %>
             $$label{ model_: 'foam.ui.TextFieldView', mode: this.mode }
-            $$defaultValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
-            $$minValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
-            $$maxValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
+            $$defaultValue{ model_: 'foam.ui.md.CheckboxView', mode: this.mode, showBorder: true }
+            $$view{ model_: 'foam.ui.md.PopupChoiceView', choices: [
+              'foam.ui.md.ToggleView',
+              'foam.ui.md.CheckboxView',
+            ] , mode: this.mode}
             $$help{ model_: 'foam.ui.TextFieldView', mode: this.mode }
       </div>
     */},

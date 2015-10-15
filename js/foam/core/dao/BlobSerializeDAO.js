@@ -19,7 +19,7 @@ CLASS({
   "model_": "Model",
   "package": "foam.core.dao",
   "name": "BlobSerializeDAO",
-  "extendsModel": "foam.dao.ProxyDAO",
+  "extends": "foam.dao.ProxyDAO",
   "requires": [
     "foam.util.Base64Encoder",
     "foam.util.Base64Decoder"

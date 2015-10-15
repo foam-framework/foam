@@ -18,8 +18,8 @@
 
 CLASS({
   name: 'PropertyCitationView',
-  package: 'foam.meta.types',
-  extends: 'foam.meta.types.CitationView',
+  package: 'foam.apps.builder.datamodels.meta.types',
+  extends: 'foam.apps.builder.datamodels.meta.types.CitationView',
 
   imports: [
     'properties$',

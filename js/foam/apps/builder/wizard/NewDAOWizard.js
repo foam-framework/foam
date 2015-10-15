@@ -17,8 +17,8 @@ CLASS({
   requires: [
     'foam.apps.builder.wizard.NewOrExistingModelWizard',
     'foam.apps.builder.wizard.DAOWizard',
-    'foam.meta.descriptor.DAOFactoryMetaDescriptor',
-    'foam.meta.descriptor.MetaDescriptorView',
+    'foam.apps.builder.datamodels.meta.descriptor.DAOFactoryMetaDescriptor',
+    'foam.apps.builder.datamodels.meta.descriptor.MetaDescriptorView',
   ],
 
   imports: [
@@ -47,7 +47,7 @@ CLASS({
     },
     {
       name: 'daoDescriptor',
-      view: 'foam.meta.descriptor.MetaDescriptorView',
+      view: 'foam.apps.builder.datamodels.meta.descriptor.MetaDescriptorView',
       help: 'The type of DAOFactory to create',
       lazyFactory: function() {
          var ret = this.DAOFactoryMetaDescriptor.create();

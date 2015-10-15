@@ -10,11 +10,11 @@
  */
 
 CLASS({
-  package: 'foam.meta.descriptor',
+  package: 'foam.apps.builder.datamodels.meta.descriptor',
   name: 'MetaDescriptor',
 
   documentation: function() {/* Describes a type (such as when creating a new
-    property). Instances of $$DOC{ref:'foam.meta.descriptor.PropertyMetaDescriptor'} may be edited
+    property). Instances of $$DOC{ref:'foam.apps.builder.datamodels.meta.descriptor.PropertyMetaDescriptor'} may be edited
     and then used to create a corresponding $$DOC{ref:'Property'} instance.
   */},
 

@@ -10,7 +10,7 @@
  */
 
 CLASS({
-  package: 'foam.meta.descriptor',
+  package: 'foam.apps.builder.datamodels.meta.descriptor',
   name: 'PropertyTypeCitationView',
   extends: 'foam.ui.md.DetailView',
 

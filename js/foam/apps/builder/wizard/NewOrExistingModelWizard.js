@@ -41,7 +41,7 @@ CLASS({
       help: 'The list is filtered to only include models that extend baseModel.',
       postSet: function() {
         if ( this.modelDAO ) {
-          this.existingDAO = this.modelDAO.where(EQ(Model.EXTENDS_MODEL, this.baseModel.id));
+          this.existingDAO = this.modelDAO.where(EQ(Model.EXTENDS, this.baseModel.id));
         }
       }
     },
@@ -49,7 +49,7 @@ CLASS({
       name: 'modelDAO',
       postSet: function(old,nu) {
         if ( this.baseModel ) {
-          this.existingDAO = this.modelDAO.where(EQ(Model.EXTENDS_MODEL, this.baseModel.id));
+          this.existingDAO = this.modelDAO.where(EQ(Model.EXTENDS, this.baseModel.id));
         }
       },
     },

@@ -20,7 +20,7 @@ CLASS({
   "id": "com.google.mail.GMailMessageDAO",
   "package": "com.google.mail",
   "name": "GMailMessageDAO",
-  "extendsModel": "com.google.mail.GMailRestDAO",
+  "extends": "com.google.mail.GMailRestDAO",
   "requires": [
     "com.google.mail.FOAMGMailMessage",
     "com.google.mail.GMailRestDAO",

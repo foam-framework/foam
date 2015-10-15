@@ -18,7 +18,7 @@
 
 CLASS({
   name: 'MetaDescriptorView',
-  package: 'foam.meta.descriptor',
+  package: 'foam.apps.builder.datamodels.meta.descriptor',
 
   requires: [
     'foam.ui.md.PopupChoiceView',
@@ -29,7 +29,7 @@ CLASS({
     'selection$',
   ],
 
-  extends: 'foam.meta.types.EditView',
+  extends: 'foam.apps.builder.datamodels.meta.types.EditView',
 
   properties: [
     {

@@ -20,7 +20,7 @@ CLASS({
    "id": "com.google.mail.FOAMGMailMessage",
    "package": "com.google.mail",
    "name": "FOAMGMailMessage",
-   "extendsModel": "com.google.mail.GMailMessage",
+   "extends": "com.google.mail.GMailMessage",
    "plural": "messages",
    "requires": [
       "foam.util.Base64Decoder",
