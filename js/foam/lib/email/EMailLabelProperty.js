@@ -20,7 +20,7 @@ CLASS({
   "id": "foam.lib.email.EMailLabelProperty",
   "package": "foam.lib.email",
   "name": "EMailLabelProperty",
-  "extendsModel": "BooleanProperty",
+  "extends": "BooleanProperty",
   "properties": [
     {
       "name": "setter",

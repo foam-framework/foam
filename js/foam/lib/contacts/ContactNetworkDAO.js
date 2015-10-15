@@ -20,7 +20,7 @@ CLASS({
    "id": "foam.lib.contacts.ContactNetworkDAO",
    "package": "foam.lib.contacts",
    "name": "ContactNetworkDAO",
-   "extendsModel": "AbstractDAO",
+   "extends": "AbstractDAO",
    "requires": [
       "foam.lib.contacts.Contact as Contact",
       "foam.lib.contacts.PhoneNumber as PhoneNumber",

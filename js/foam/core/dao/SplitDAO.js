@@ -19,7 +19,7 @@ CLASS({
   "model_": "Model",
   "package": "foam.core.dao",
   "name": "SplitDAO",
-  "extendsModel": "foam.dao.ProxyDAO",
+  "extends": "foam.dao.ProxyDAO",
   "requires": [
     "MDAO"
   ],

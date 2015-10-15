@@ -20,7 +20,7 @@ CLASS({
    "id": "com.google.mail.ComposeView",
    "package": "com.google.mail",
    "name": "ComposeView",
-   "extendsModel": "foam.ui.DetailView",
+   "extends": "foam.ui.DetailView",
    "requires": [
       "foam.ui.md.ToolbarRichTextView",
       "foam.ui.md.TextFieldView",

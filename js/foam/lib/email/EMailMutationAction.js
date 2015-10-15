@@ -20,7 +20,7 @@ CLASS({
    "id": "foam.lib.email.EMailMutationAction",
    "package": "foam.lib.email",
    "name": "EMailMutationAction",
-   "extendsModel": "Action",
+   "extends": "Action",
    "requires": [],
    "imports": [],
    "exports": [],
