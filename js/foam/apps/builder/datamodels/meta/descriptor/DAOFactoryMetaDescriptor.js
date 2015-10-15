@@ -10,21 +10,21 @@
  */
 
 CLASS({
-  package: 'foam.meta.descriptor',
+  package: 'foam.apps.builder.datamodels.meta.descriptor',
   name: 'DAOFactoryMetaDescriptor',
-  extends: 'foam.meta.descriptor.MetaDescriptor',
+  extends: 'foam.apps.builder.datamodels.meta.descriptor.MetaDescriptor',
 
   requires: [
     'foam.apps.builder.dao.LocalDAOFactory',
     'foam.apps.builder.dao.GoogleDriveDAOFactory',
     'foam.apps.builder.dao.EmbeddedDAOFactory',
-    'foam.meta.descriptor.DAOFactoryCitationView',
+    'foam.apps.builder.datamodels.meta.descriptor.DAOFactoryCitationView',
   ],
 
   label: 'Data Store',
 
   documentation: function() {/* Describes a DAOFactory type. Instances of
-    $$DOC{ref:'foam.meta.descriptor.PropertyMetaDescriptor'} may be edited
+    $$DOC{ref:'foam.apps.builder.datamodels.meta.descriptor.PropertyMetaDescriptor'} may be edited
     and then used to create a corresponding
     $$DOC{ref:'foam.apps.builder.dao.DAOFactory'} instance.
   */},
@@ -34,7 +34,7 @@ CLASS({
       name: 'selectionsDAO',
       view: {
         factory_: 'foam.ui.DAOListView',
-        rowView: 'foam.meta.descriptor.DAOFactoryCitationView',
+        rowView: 'foam.apps.builder.datamodels.meta.descriptor.DAOFactoryCitationView',
       },
       defaultValueFn: function() { return [
           X.lookup('foam.apps.builder.dao.EmbeddedDAOFactory'),

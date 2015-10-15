@@ -18,9 +18,9 @@
 
 CLASS({
   name: 'PhoneNumberPropertyEditView',
-  package: 'foam.meta.types',
+  package: 'foam.apps.builder.datamodels.meta.types',
 
-  extends: 'foam.meta.types.EditView',
+  extends: 'foam.apps.builder.datamodels.meta.types.EditView',
 
   templates: [
     function toHTML() {/*

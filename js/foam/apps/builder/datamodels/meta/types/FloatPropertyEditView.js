@@ -17,10 +17,10 @@
 
 
 CLASS({
-  name: 'IntPropertyEditView',
-  package: 'foam.meta.types',
+  name: 'FloatPropertyEditView',
+  package: 'foam.apps.builder.datamodels.meta.types',
 
-  extends: 'foam.meta.types.EditView',
+  extends: 'foam.apps.builder.datamodels.meta.types.EditView',
 
   templates: [
     function toHTML() {/*

@@ -18,7 +18,7 @@
 
 CLASS({
   name: 'EditView',
-  package: 'foam.meta.types',
+  package: 'foam.apps.builder.datamodels.meta.types',
   extends: 'foam.ui.md.DetailView',
   traits: [
     'foam.ui.md.ToolbarViewTrait'

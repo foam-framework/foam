@@ -18,7 +18,7 @@
 
 CLASS({
   name: 'MetaEditor',
-  package: 'foam.meta',
+  package: 'foam.apps.builder.datamodels.meta',
 
   requires: [
     'BooleanProperty',
@@ -27,7 +27,7 @@ CLASS({
     'FloatProperty',
     'DateProperty',
     'Model',
-    'foam.meta.types.ModelEditView',
+    'foam.apps.builder.datamodels.meta.types.ModelEditView',
     'foam.ui.TableView',
     'foam.ui.md.SharedStyles',
   ],
@@ -36,7 +36,7 @@ CLASS({
     {
       name: 'modelDefinition',
       mode: 'read-write',
-      view: 'foam.meta.types.ModelEditView',
+      view: 'foam.apps.builder.datamodels.meta.types.ModelEditView',
       factory: function() {
         return this.Model.create({
           name: 'NewModel',

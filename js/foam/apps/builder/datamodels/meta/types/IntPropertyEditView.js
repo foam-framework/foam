@@ -17,10 +17,10 @@
 
 
 CLASS({
-  name: 'StringPropertyEditView',
-  package: 'foam.meta.types',
+  name: 'IntPropertyEditView',
+  package: 'foam.apps.builder.datamodels.meta.types',
 
-  extends: 'foam.meta.types.EditView',
+  extends: 'foam.apps.builder.datamodels.meta.types.EditView',
 
   templates: [
     function toHTML() {/*
@@ -28,9 +28,13 @@ CLASS({
           <% this.headerHTML(out); %>
             $$label{ model_: 'foam.ui.TextFieldView', mode: this.mode }
             $$defaultValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
+            $$minValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
+            $$maxValue{ model_: 'foam.ui.TextFieldView', mode: this.mode }
             $$help{ model_: 'foam.ui.TextFieldView', mode: this.mode }
       </div>
-*/},
+    */},
+
+
   ]
 
 });

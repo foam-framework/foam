@@ -18,24 +18,24 @@
 
 CLASS({
   name: 'ModelEditView',
-  package: 'foam.meta.types',
+  package: 'foam.apps.builder.datamodels.meta.types',
 
-  extends: 'foam.meta.types.EditView',
+  extends: 'foam.apps.builder.datamodels.meta.types.EditView',
 
   requires: [
-    'foam.meta.types.BooleanPropertyEditView',
-    'foam.meta.types.IntPropertyEditView',
-    'foam.meta.types.FloatPropertyEditView',
-    'foam.meta.types.PropertyEditView',
-    'foam.meta.types.StringPropertyEditView',
-    'foam.meta.types.PhoneNumberPropertyEditView',
-    'foam.meta.types.ImagePropertyEditView',
+    'foam.apps.builder.datamodels.meta.types.BooleanPropertyEditView',
+    'foam.apps.builder.datamodels.meta.types.IntPropertyEditView',
+    'foam.apps.builder.datamodels.meta.types.FloatPropertyEditView',
+    'foam.apps.builder.datamodels.meta.types.PropertyEditView',
+    'foam.apps.builder.datamodels.meta.types.StringPropertyEditView',
+    'foam.apps.builder.datamodels.meta.types.PhoneNumberPropertyEditView',
+    'foam.apps.builder.datamodels.meta.types.ImagePropertyEditView',
     'foam.ui.md.UpdateDetailView',
-    'foam.meta.descriptor.PropertyMetaDescriptor',
-    'foam.meta.descriptor.MetaDescriptorView',
+    'foam.apps.builder.datamodels.meta.descriptor.PropertyMetaDescriptor',
+    'foam.apps.builder.datamodels.meta.descriptor.MetaDescriptorView',
     'foam.ui.md.PopupChoiceView',
     'foam.ui.md.DAOListView',
-    'foam.meta.types.CitationView',
+    'foam.apps.builder.datamodels.meta.types.CitationView',
   ],
 
   imports: ['stack'],
@@ -88,7 +88,7 @@ CLASS({
         var edit = this.UpdateDetailView.create({
           data: this.PropertyMetaDescriptor.create(),
           exitOnSave: true,
-          innerView: 'foam.meta.descriptor.MetaDescriptorView',
+          innerView: 'foam.apps.builder.datamodels.meta.descriptor.MetaDescriptorView',
         }, this.Y.sub({
           dao: { put: this.put.bind(this) } // hide remove(), since it's a new property we don't have already
         }));
@@ -139,7 +139,7 @@ CLASS({
             </div>
           </div>-->
           <div class="model-edit-view-list">
-            $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.meta.types.CitationView' }
+            $$properties{ model_: 'foam.ui.md.DAOListView', mode: 'read-only', rowView: 'foam.apps.builder.datamodels.meta.types.CitationView' }
           </div>
         </div>
         <div class="floating-action">

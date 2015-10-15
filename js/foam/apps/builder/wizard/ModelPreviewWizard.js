@@ -52,7 +52,7 @@ CLASS({
 
     function contentHTML() {/*
       <div class="model-preview-wizard-list">
-        $$data{ model_: 'foam.meta.types.ModelEditView', mode: 'read-only' }
+        $$data{ model_: 'foam.apps.builder.datamodels.meta.types.ModelEditView', mode: 'read-only' }
       </div>
     */},
 
