@@ -68,12 +68,12 @@ CLASS({
 	  }
 	  if ( IN_CHROME_APP() ) {
 	    aeval("(" + resp + ")")(function(data) {
-	      ret(JSONUtil.mapToObj(this.X, data));
+              JSONUtil.amapToObj(ret, this.X, data);
 	    }.bind(this));
 	    return;
 	  }
 
-	  ret(JSONUtil.parse(this.X, resp));
+          JSONUtil.aparse(ret, this.X, resp);
 	}
       )(ret)
     }

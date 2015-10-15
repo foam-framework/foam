@@ -118,8 +118,6 @@ CLASS({
       }, this.xhrManager.Y).importV2App(importFlow);
     },
     function prepareExport(exportFlow) {
-      exportFlow.config.appBuilderAnalyticsEnabled =
-          this.appBuilderAnalyticsEnabled;
       return exportFlow;
     },
   ],

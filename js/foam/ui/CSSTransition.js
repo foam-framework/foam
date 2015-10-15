@@ -28,25 +28,19 @@ CLASS({
     {
       name: 'duration',
       defaultValue: null,
-      adapt: function(old, nu) {
-      },
     },
     {
       name: 'timingFunction',
       defaultValue: null,
-      adapt: function(old, nu) {
-      },
     },
     {
       name: 'delay',
       defaultValue: null,
-      adapt: function(old, nu) {
-      },
     },
     {
       name: 'regExStr',
       lazyFactory: function() {
-        var t = this.CSSTime.REG_EX_STR;
+        var t = this.CSSTime.create().REG_EX_STR;
         var f = this.CSSFunction.create().regExStr;
         return '([a-zA-Z_-]+)\\s*(' + t + ')\\s*(' + f + ')?' + '(' + t + ')?';
       },
@@ -60,7 +54,6 @@ CLASS({
       this.property = match[1];
       this.duration = this.CSSTime.create().fromString(match[2]);
       this.timingFunction = this.CSSFunction.create().fromString(match[7]);
-      this.duration = this.CSSTime.create().fromString(match[28]);
       return this;
     },
     function fromString_(s) {

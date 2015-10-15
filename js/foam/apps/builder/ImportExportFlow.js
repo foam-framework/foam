@@ -64,12 +64,5 @@ CLASS({
       name: 'details',
       defaultValue: 'Still working...',
     },
-    {
-      model_: 'BooleanProperty',
-      name: 'analyticsEnabled',
-      label: 'Send app usage data from this app to the App Builder team ' +
-          'to help make App Builder better<br><a href="#">Learn more</a>',
-      defaultValue: true,
-    },
   ],
 });
