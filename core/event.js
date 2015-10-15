@@ -691,7 +691,7 @@ MODEL({
     },
 
     /** Combinator to reverse behaviour of supplied function. **/
-    reverse: function(f) { return function(x) { return 1-f(1-x); }; },
+    reverse: function(f) { return function(f, x) { return 1-f(1-x); }.bind(this, f); },
 
     /** Reverse of easeIn. **/
     easeOut: function(b) { return Movement.reverse(Movement.easeIn(b)); },
