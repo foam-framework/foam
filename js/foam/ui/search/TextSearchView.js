@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.search',
   name: 'TextSearchView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [ 'foam.ui.TextFieldView' ],
 

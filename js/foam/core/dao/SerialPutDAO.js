@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.core.dao',
   name: 'SerialPutDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   help: function() {/*
    Apply this decorator to a DAO to make it wait for a callback on each put

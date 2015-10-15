@@ -12,7 +12,7 @@
 CLASS({
   name: 'Plural',
   package: 'foam.i18n',
-  extendsModel: 'foam.i18n.Selector',
+  extends: 'foam.i18n.Selector',
 
   methods: [
     {

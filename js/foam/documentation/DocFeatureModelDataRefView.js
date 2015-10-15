@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'DocFeatureModelDataRefView',
-  extendsModel: 'foam.documentation.DocRefView',
+  extends: 'foam.documentation.DocRefView',
   label: 'Documentation Feature sub-model Link Reference View',
   help: 'The view of a documentation reference link based on a Sub-Model.',
 

@@ -20,7 +20,7 @@ CLASS({
   name:  'EyesCView',
   label: 'Eyes',
 
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
   traits: [ 'foam.ui.Colors' ],
 
   requires: [ 'foam.demos.graphics.EyeCView' ],

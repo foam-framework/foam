@@ -23,7 +23,7 @@ CLASS({
              'foam.graphics.diagram.SectionGroup',
              'SimpleValue'],
 
-  extendsModel: 'foam.ui.BaseView',
+  extends: 'foam.ui.BaseView',
   traits: [ 'foam.documentation.diagram.DocDiagramTrait',
             'foam.documentation.FeatureListLoaderTrait'],
 

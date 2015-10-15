@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'OverlayHelpView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [
     'foam.ui.OverlayView',

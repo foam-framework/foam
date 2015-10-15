@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'DocModelDiagramView',
-  extendsModel: 'foam.documentation.diagram.DocDiagramView',
+  extends: 'foam.documentation.diagram.DocDiagramView',
   package: 'foam.documentation.diagram',
 
   documentation: function() {/*

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.core.fo',
   name: 'FeatureDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   requires: [
     'foam.core.fo.BaseFeatureDAO',
     'foam.dao.CachingDAO',

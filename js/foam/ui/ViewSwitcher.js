@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'ViewSwitcher',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   help: 'A view which cycles between an array of views.',
 

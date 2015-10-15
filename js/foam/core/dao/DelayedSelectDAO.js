@@ -19,7 +19,7 @@ CLASS({
   name: 'DelayedSelectDAO',
   package: 'foam.core.dao',
   help: "Apply this decorator to a DAO if you'd like to pretend that select accesses are slow.",
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   properties: [
     {

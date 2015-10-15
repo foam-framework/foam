@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.pong',
   name: 'Ball',
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
   traits: ['foam.physics.Physical', 'foam.graphics.MotionBlur'],
   properties: [
     {
@@ -32,7 +32,7 @@ CLASS({
 CLASS({
   package: 'foam.demos.pong',
   name: 'Paddle',
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
   traits: ['foam.physics.Physical', 'foam.graphics.Shadow'],
   properties: [
     [ 'color', 'white' ],
@@ -45,7 +45,7 @@ CLASS({
 CLASS({
   package: 'foam.demos.pong',
   name: 'Pong',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.demos.pong.Ball',

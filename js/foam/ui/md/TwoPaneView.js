@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.md',
   name: 'TwoPaneView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {

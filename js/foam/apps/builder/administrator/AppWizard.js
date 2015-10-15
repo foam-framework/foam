@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.administrator',
   name: 'AppWizard',
-  extendsModel: 'foam.apps.builder.wizard.WizardPage',
+  extends: 'foam.apps.builder.wizard.WizardPage',
 
   requires: [
     'foam.apps.builder.administrator.PickAppWizard',

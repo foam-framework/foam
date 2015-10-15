@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'TextualView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   documentation: 'Extracts one property value as a string.',
 

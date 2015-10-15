@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.dao',
   name: 'EditView',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
 
 });

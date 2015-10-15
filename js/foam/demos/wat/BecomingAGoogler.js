@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.demos.wat',
   name: 'BecomingAGoogler',
-  extendsModel: 'foam.flow.Section',
+  extends: 'foam.flow.Section',
 
   constants: { ELEMENT_NAME: 'foam-demos-flow' },
 

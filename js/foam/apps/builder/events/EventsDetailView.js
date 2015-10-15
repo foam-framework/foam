@@ -13,7 +13,7 @@ CLASS({
   package: 'foam.apps.builder.events',
   name: 'EventsDetailView',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
   requires: [
     'foam.ui.ImageView',

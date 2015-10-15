@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'GridView',
 
-  extendsModel: 'foam.ui.AbstractDAOView',
+  extends: 'foam.ui.AbstractDAOView',
 
   requires: [
     'foam.ui.ChoiceView'

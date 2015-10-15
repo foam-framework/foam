@@ -35,7 +35,7 @@ CLASS({
 // TODO(kgr): Experimental. Remove in future if not used.
 CLASS({
   name: 'OrValue',
-  extendsModel: 'SimpleValue',
+  extends: 'SimpleValue',
 
   properties: [
     { name: 'values' },
@@ -84,7 +84,7 @@ function or$(values, factory, opt_X) {
 
 CLASS({
   name: 'SimpleReadOnlyValue',
-  extendsModel: 'SimpleValue',
+  extends: 'SimpleValue',
 
   documentation: 'A simple value that can only be set during initialization.',
 

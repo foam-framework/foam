@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'ActionLink',
 
-  extendsModel: 'foam.ui.ActionButton',
+  extends: 'foam.ui.ActionButton',
 
 
   properties: [

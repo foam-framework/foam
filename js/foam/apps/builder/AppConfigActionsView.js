@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'AppConfigActionsView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   traits: [ 'foam.ui.md.ToolbarViewTrait' ],
 
   requires: [

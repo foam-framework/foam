@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.apps.calc',
   name: 'Num',
   documentation: 'Make a 0-9 Number Action.',
-  extendsModel: 'Action',
+  extends: 'Action',
   properties: [
     'n',
     { name: 'name', defaultValueFn: function() { return this.n.toString(); } },

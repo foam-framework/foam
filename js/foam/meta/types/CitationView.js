@@ -19,7 +19,7 @@
 CLASS({
   name: 'CitationView',
   package: 'foam.meta.types',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
   requires: [
     'foam.meta.types.EditView',

@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.oauth2',
   help: 'Strategy for OAuth2 when running as a web page.',
 
-  extendsModel: 'foam.oauth2.OAuth2',
+  extends: 'foam.oauth2.OAuth2',
 
   methods: {
     refreshNow_: function(ret, opt_forceInteractive) {

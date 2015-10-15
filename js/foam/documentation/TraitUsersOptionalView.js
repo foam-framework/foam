@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'TraitUsersOptionalView',
-  extendsModel: 'foam.documentation.DocOptionalView',
+  extends: 'foam.documentation.DocOptionalView',
 
   properties: [
     {

@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'AutoSaveDetailView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   documentation: function() {/*
     <p>This is a $$DOC{ref:'foam.ui.DetailView'} that calls a user-defined
     $$DOC{ref:".onEdit"} callback whenever a property of $$DOC{ref:".data"}

@@ -16,7 +16,7 @@
  */
 CLASS({
   name: 'DemoView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   properties: ['childView', 'resultsCallback', 'childrenCallback', 'initHTMLFuture'],
   templates: [ { name: 'toHTML' } ],
   methods: {
@@ -72,7 +72,7 @@ CLASS({
 
 CLASS({
   name: 'TestsView',
-  extendsModel: 'foam.ui.AbstractDAOView',
+  extends: 'foam.ui.AbstractDAOView',
 
   properties: [
     {

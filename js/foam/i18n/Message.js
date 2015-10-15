@@ -12,7 +12,7 @@
 CLASS({
   name: 'Message',
   package: 'foam.i18n',
-  extendsModel: 'Message',
+  extends: 'Message',
 
   requires: [ 'foam.i18n.Placeholder' ],
   imports: [ 'console' ],

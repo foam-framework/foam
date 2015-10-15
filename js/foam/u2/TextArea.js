@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.u2',
   name: 'TextArea',
-  extendsModel: 'foam.u2.Element',
+  extends: 'foam.u2.Element',
 
   properties: [ [ 'nodeName', 'textarea' ], 'data' ],
 

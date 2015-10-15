@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'QuestionnaireView',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
   requires: [
     'ViewFactoryProperty',

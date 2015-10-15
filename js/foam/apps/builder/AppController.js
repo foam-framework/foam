@@ -13,7 +13,7 @@ CLASS({
   package: 'foam.apps.builder',
   name: 'AppController',
 
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
 
   documentation: function() {/*

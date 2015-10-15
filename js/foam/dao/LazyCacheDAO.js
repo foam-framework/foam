@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.dao',
   name: 'LazyCacheDAO',
 
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   properties: [
     {

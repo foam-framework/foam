@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name:  'FunctionView',
 
-  extendsModel: 'foam.ui.TextFieldView',
+  extends: 'foam.ui.TextFieldView',
   requires: [ 'foam.ui.TextFieldView' ],
 
   properties: [

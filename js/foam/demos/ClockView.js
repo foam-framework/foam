@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.demos',
   name: 'ClockView',
 
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
 
   traits: [ 'com.google.misc.Colors' ],
 
@@ -114,7 +114,7 @@ CLASS({
       model_: 'Model',
       name: 'Hand',
       label: 'Clock Hand',
-      extendsModel: 'foam.graphics.CView',
+      extends: 'foam.graphics.CView',
       properties:
       [
         {

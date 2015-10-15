@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'DatePickerView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   requires: [
     'foam.ui.md.CalendarView',
   ],

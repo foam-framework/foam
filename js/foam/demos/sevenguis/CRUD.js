@@ -30,7 +30,7 @@ MODEL({
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CRUD',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',

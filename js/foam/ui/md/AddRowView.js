@@ -18,7 +18,7 @@
 CLASS({
   name: 'AddRowView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   traits: ['foam.ui.layout.PositionedDOMViewTrait', 'foam.input.touch.VerticalScrollNativeTrait'],
 
   requires: [
@@ -42,7 +42,7 @@ CLASS({
     {
       model_: 'Model',
       name: 'SingleEntryHidingDAO',
-      extendsModel: 'foam.dao.ProxyDAO',
+      extends: 'foam.dao.ProxyDAO',
       methods: {
         select: function(sink, options) {
           var firstEntry;

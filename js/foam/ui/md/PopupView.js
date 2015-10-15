@@ -18,7 +18,7 @@
 CLASS({
   name: 'PopupView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [
     'foam.input.touch.GestureTarget'

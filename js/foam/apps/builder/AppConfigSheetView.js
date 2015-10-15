@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'AppConfigSheetView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   imports: [
     'popup',

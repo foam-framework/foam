@@ -19,7 +19,7 @@ CLASS({
   name: 'ChromeAppBrowser',
   package: 'foam.apps.quickbug.ui',
 
-  extendsModel: 'foam.apps.quickbug.ui.Browser',
+  extends: 'foam.apps.quickbug.ui.Browser',
 
   methods: {
     openURL: function(url) {

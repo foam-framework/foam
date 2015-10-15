@@ -19,7 +19,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'VideoBubble',
 
-  extendsModel: 'com.google.watlobby.TopicBubble',
+  extends: 'com.google.watlobby.TopicBubble',
 
   requires: [
     'foam.graphics.ImageCView',

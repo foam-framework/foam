@@ -5,7 +5,7 @@
 	CLASS({
 		package: 'com.todomvc',
 		name: 'TodoFilterView',
-		extendsModel: 'foam.ui.ChoiceListView',
+		extends: 'foam.ui.ChoiceListView',
 		requires: ['com.todomvc.Todo'],
 		properties: [
 			{

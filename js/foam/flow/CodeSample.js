@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.flow',
   name: 'CodeSample',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   requires: [
     'foam.dao.EasyDAO',

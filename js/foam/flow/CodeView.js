@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.flow',
   name: 'CodeView',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
   requires: [ 'foam.flow.SourceCode' ],

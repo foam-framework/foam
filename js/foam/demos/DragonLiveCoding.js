@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'DragonLiveCoding',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.demos.graphics.Dragon',

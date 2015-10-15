@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.mlang',
   name: 'ExpandableGroupByExpr',
 
-  extendsModel: 'BINARY',
+  extends: 'BINARY',
 
   properties: [
     {

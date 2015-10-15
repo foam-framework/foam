@@ -19,5 +19,5 @@ CLASS({
   name: 'StringEnumProperty',
   package: 'foam.core.types',
   traits: ['foam.core.types.EnumPropertyTrait'],
-  extendsModel: 'StringProperty'
+  extends: 'StringProperty'
 });

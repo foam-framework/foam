@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui',
   name: 'Tooltip',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   documentation: function() {/*
     Tooltips are designed to float above the document and clean themselves up.</p>

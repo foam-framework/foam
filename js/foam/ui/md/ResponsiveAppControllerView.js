@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'ResponsiveAppControllerView',
-  extendsModel: 'foam.ui.layout.ResponsiveView',
+  extends: 'foam.ui.layout.ResponsiveView',
 
   requires: [
     'foam.ui.layout.ResponsiveViewOption',

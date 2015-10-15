@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'ImportExportFlowView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [
     'foam.apps.builder.StateView',

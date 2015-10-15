@@ -18,7 +18,7 @@
 CLASS({
   name: 'LabelStringEnumProperty',
   package: 'foam.apps.quickbug.model',
-  extendsModel: 'foam.apps.quickbug.model.LabelStringProperty',
+  extends: 'foam.apps.quickbug.model.LabelStringProperty',
   traits: ['foam.core.types.EnumPropertyTrait'],
   properties: [
     {

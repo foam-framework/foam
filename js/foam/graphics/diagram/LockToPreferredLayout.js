@@ -19,7 +19,7 @@
 CLASS({
   name: 'LockToPreferredLayout',
   package: 'foam.graphics.diagram',
-  extendsModel: 'foam.graphics.LockToPreferredLayout',
+  extends: 'foam.graphics.LockToPreferredLayout',
   traits: ['foam.graphics.diagram.DiagramItemTrait'],
   
   documentation: function() {/* Overridden from 

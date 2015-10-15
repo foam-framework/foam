@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.u2',
   name: 'EIDProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
   help: 'Describes a property used to store a DOM element id.',
 
   constants: {

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'SpinnerView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   documentation: 'Renders a spinner in the Material Design style. Has a ' +
       '$$DOC{ref:".data"} property and acts like a $$DOC{ref:"BooleanView"}, ' +

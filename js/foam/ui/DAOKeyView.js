@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'DAOKeyView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {

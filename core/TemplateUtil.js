@@ -29,7 +29,7 @@
 
 MODEL({
   name: 'TemplateParser',
-  extendsModel: 'grammar',
+  extends: 'grammar',
 
   methods: {
     START: sym('markup'),

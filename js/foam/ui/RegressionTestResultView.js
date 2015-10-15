@@ -21,7 +21,7 @@ CLASS({
   label: 'Regression Test Result View',
   documentation: 'Displays the output of a $$DOC{.ref:"RegressionTest"}, either master or live.',
 
-  extendsModel: 'foam.ui.UnitTestResultView',
+  extends: 'foam.ui.UnitTestResultView',
 
   properties: [
     {

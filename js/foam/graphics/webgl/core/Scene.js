@@ -25,7 +25,7 @@ CLASS({
     'foam.graphics.webgl.matrix.PerspectiveMatrix4',
     'foam.graphics.webgl.primitives.StandardMeshLibrary'
   ],
-  extendsModel: 'foam.graphics.webgl.GLView',
+  extends: 'foam.graphics.webgl.GLView',
 
   exports: [
     'gl$',

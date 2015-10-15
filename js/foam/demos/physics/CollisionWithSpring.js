@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.physics',
   name: 'CollisionWithSpring',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
     'foam.physics.Collider',

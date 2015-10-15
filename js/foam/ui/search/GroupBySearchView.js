@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.search',
   name: 'GroupBySearchView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   label: 'GroupBy Search View',
 

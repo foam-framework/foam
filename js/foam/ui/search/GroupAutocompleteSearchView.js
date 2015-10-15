@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui.search',
   name: 'GroupAutocompleteSearchView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   requires: [
     'foam.ui.autocomplete.GroupCompleter',

@@ -18,7 +18,7 @@
 CLASS({
   name: 'DOMElementProperty',
   package: 'foam.core.types',
-  extendsModel: 'StringProperty',
+  extends: 'StringProperty',
   properties: [
     {
       name: 'getter',

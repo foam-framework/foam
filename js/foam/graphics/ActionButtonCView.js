@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.graphics',
   name: 'ActionButtonCView',
 
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
     'foam.ui.md.Halo',

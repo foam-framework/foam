@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'PanelViewChoiceView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.ui.md.CheckboxView',
     'foam.ui.md.ToggleView',

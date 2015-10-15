@@ -18,7 +18,7 @@
 CLASS({
   name: 'SharedStyles',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   templates: [
     function CSS() {/*
 body, .md-font, .md-quote {

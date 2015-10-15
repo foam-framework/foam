@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.demos',
   name: 'TwoPaneView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.ui.md.Card',

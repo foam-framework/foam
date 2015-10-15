@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.apps.quickbug.dao',
   name: 'ProjectNetworkDAO',
-  extendsModel: 'foam.core.dao.RestDAO',
+  extends: 'foam.core.dao.RestDAO',
 
   requires: [
     'foam.apps.quickbug.model.imported.Project',

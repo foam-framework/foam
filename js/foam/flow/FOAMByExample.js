@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.flow',
   name: 'FOAMByExample',
-  extendsModel: 'foam.flow.Section',
+  extends: 'foam.flow.Section',
 
   requires: [
     'foam.ui.DetailView',

@@ -2,7 +2,7 @@
 
 CLASS({
   name: 'AppController',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: ['DynamicViewListenerTrait'],
   requires: [
     'AppConfig',

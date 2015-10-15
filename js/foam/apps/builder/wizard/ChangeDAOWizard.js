@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.wizard',
   name: 'ChangeDAOWizard',
-  extendsModel: 'foam.apps.builder.wizard.NewOrExistingDAOWizard',
+  extends: 'foam.apps.builder.wizard.NewOrExistingDAOWizard',
 
   properties: [
     {

@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui.animated',
   name: 'ImageView',
 
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   properties: [
     {

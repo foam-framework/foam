@@ -19,7 +19,7 @@ CLASS({
   model_: "Model",
   package: "node.dao",
   name: "JSModelFileDAO",
-  extendsModel: "AbstractDAO",
+  extends: "AbstractDAO",
   properties: [
     {
       name: "daoListeners_",

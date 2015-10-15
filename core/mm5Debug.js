@@ -57,11 +57,11 @@ CLASS({
       help: 'Interfaces extended by this interface.',
       documentation: function() { /*
         The other $$DOC{ref:'Interface',usePlural:true} this $$DOC{ref:'Interface'} inherits
-        from. Like a $$DOC{ref:'Model'} instance can $$DOC{ref:'Model.extendsModel'} other
+        from. Like a $$DOC{ref:'Model'} instance can $$DOC{ref:'Model.extends'} other
         $$DOC{ref:'Model',usePlural:true},
         $$DOC{ref:'Interface',usePlural:true} should only extend other
         instances of $$DOC{ref:'Interface'}.</p>
-        <p>Do not specify <code>extendsModel: 'Interface'</code> unless you are
+        <p>Do not specify <code>extends: 'Interface'</code> unless you are
         creating a new interfacing system.
       */}
     },
@@ -361,7 +361,7 @@ CLASS({
   label: 'Regression Test',
   documentation: 'A $$DOC{ref: "UnitTest"} with a "gold master", which is compared with the output of the live test.',
 
-  extendsModel: 'UnitTest',
+  extends: 'UnitTest',
 
   properties: [
     {
@@ -423,7 +423,7 @@ CLASS({
   name: 'UITest',
   label: 'UI Test',
 
-  extendsModel: 'UnitTest',
+  extends: 'UnitTest',
 
   properties: [
     {

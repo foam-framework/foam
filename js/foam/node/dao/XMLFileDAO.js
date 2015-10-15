@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.node.dao',
   name: 'XMLFileDAO',
-  extendsModel: 'MDAO',
+  extends: 'MDAO',
 
   properties: [
     {

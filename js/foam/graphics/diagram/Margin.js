@@ -19,7 +19,7 @@
 CLASS({
   name: 'Margin',
   package: 'foam.graphics.diagram',
-  extendsModel: 'foam.graphics.Margin',
+  extends: 'foam.graphics.Margin',
   traits: ['foam.graphics.diagram.DiagramItemTrait'],
 
   documentation: function() {/* Overridden from 

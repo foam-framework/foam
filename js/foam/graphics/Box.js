@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name:  'Box',
-  extendsModel: 'foam.graphics.Label',
+  extends: 'foam.graphics.Label',
 
   properties: [
     {

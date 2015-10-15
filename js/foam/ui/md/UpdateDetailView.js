@@ -19,7 +19,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'UpdateDetailView',
-  extendsModel: 'foam.ui.md.BaseDetailView',
+  extends: 'foam.ui.md.BaseDetailView',
 
   requires: [
     'foam.ui.PopupChoiceView',

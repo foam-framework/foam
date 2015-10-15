@@ -18,7 +18,7 @@
 CLASS({
   package: 'com.google.mail',
   name: 'Sync',
-  extendsModel: 'foam.core.dao.Sync',
+  extends: 'foam.core.dao.Sync',
   requires: [
     'foam.lib.email.EMail'
   ],

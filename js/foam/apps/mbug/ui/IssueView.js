@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.apps.mbug.ui',
   name: 'IssueView',
 
-  extendsModel: 'foam.ui.UpdateDetailView',
+  extends: 'foam.ui.UpdateDetailView',
   traits: ['foam.input.touch.VerticalScrollNativeTrait'],
 
   requires: [

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'InterpolatedClocks',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
     'foam.demos.ClockView',

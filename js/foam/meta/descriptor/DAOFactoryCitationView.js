@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.meta.descriptor',
   name: 'DAOFactoryCitationView',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
   properties: [
     {

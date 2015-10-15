@@ -17,7 +17,7 @@
 
 CLASS({
   name: 'CSSStackView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   package: 'foam.ui.layout',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 

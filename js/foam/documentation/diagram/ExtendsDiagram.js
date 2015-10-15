@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.documentation.diagram',
   name: 'ExtendsDiagram',
 
-  extendsModel: 'foam.ui.DestructiveDataView',
+  extends: 'foam.ui.DestructiveDataView',
 
   requires: [
     'foam.documentation.diagram.ModelDocDiagram',
@@ -82,15 +82,15 @@ CLASS({
 
       var childX = this.X.sub({
         documentViewRef: this.SimpleValue.create(
-          this.DocRef.create({ ref: this.data.extendsModel })
+          this.DocRef.create({ ref: this.data.extends })
       )});
 
       // don't just copy data, find extendsModel and send that to children
       var modelDAO = this.X._DEV_ModelDAO ? this.X._DEV_ModelDAO : this.X.ModelDAO;
-      modelDAO.find(this.data.extendsModel, {
+      modelDAO.find(this.data.extends, {
           put: function(childData) {
             var thisDiag = this.ModelDocDiagram.create({ data: childData, model: childData }, childX);
-            if ( childData.extendsModel ) {
+            if ( childData.extends ) {
               this.addChild(this.model_.create({ data: childData, extended: thisDiag }, childX));
             }
 

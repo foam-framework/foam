@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.graphics',
   name: 'CViewView',
 
-  extendsModel: 'foam.graphics.AbstractCViewView',
+  extends: 'foam.graphics.AbstractCViewView',
 
   help: 'DOM wrapper for a CView, auto adjusts it size to fit the given cview.',
 

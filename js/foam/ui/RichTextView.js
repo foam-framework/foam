@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'RichTextView',
 
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [
     'foam.util.Base64Decoder',

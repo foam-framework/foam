@@ -18,5 +18,5 @@
 CLASS({
   package: 'foam.documentation.new.ui',
   name: 'MethodDocView',
-  extendsModel: 'foam.documentation.new.ui.FeatureDocView',
+  extends: 'foam.documentation.new.ui.FeatureDocView',
 });

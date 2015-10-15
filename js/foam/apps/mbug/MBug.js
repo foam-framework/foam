@@ -20,7 +20,7 @@ CLASS({
   name: 'MBug',
   description: 'Mobile QuickBug',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: [ 'foam.ui.layout.PositionedDOMViewTrait' ],
 
   requires: [

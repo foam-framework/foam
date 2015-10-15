@@ -12,7 +12,7 @@
 CLASS({
   name: 'SourceCodeListView',
   package: 'foam.flow',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: [
     'foam.ui.DAODataViewTrait'
   ],

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.tutorials.phonecat',
   name: 'Controller',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [
     'foam.tutorials.phonecat.dao.PhoneDAO',
     'foam.tutorials.phonecat.model.Phone',

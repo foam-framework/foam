@@ -739,7 +739,7 @@ CLASS({
       <li><code>this.methodName</code> calls another $$DOC{ref:'Method'} of this
               $$DOC{ref:'Model'}</li>
       <li><p><code>this.SUPER()</code> calls the $$DOC{ref:'Method'} implementation from the
-                base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extendsModel'}).</p>
+                base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extends'}).</p>
                 <ul>
                   <li>
                       <p>Calling

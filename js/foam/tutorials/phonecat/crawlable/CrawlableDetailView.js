@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.tutorials.phonecat.crawlable',
   name: 'CrawlableDetailView',
   imports: [ 'applicationURL', 'applicationIdURL' ],
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   properties: [
     { name: 'title', defaultValueFn: function() { return this.model.label; } }
   ],

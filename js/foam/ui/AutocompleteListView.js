@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'AutocompleteListView',
 
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   properties: [
     {

@@ -18,7 +18,7 @@
 CLASS({
   "package": "foam.ui.layout",
   "name": "CSSOverlaySlider",
-  "extendsModel": "foam.ui.View",
+  extends: "foam.ui.View",
   requires: [
     'foam.ui.layout.FloatingView'
   ],

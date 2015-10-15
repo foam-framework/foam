@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.core.dao',
   label: 'Chrome Sync Storage DAO',
 
-  extendsModel: 'foam.core.dao.ChromeStorageDAO',
+  extends: 'foam.core.dao.ChromeStorageDAO',
 
   properties: [
     {

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.tutorials.phonecat.crawlable',
   name: 'CrawlableRowView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   templates: [
     // TODO(braden): Is this still correct in the packaged version? I don't know
     // if this comment in the HTML is semantic or not.

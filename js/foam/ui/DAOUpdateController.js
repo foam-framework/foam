@@ -20,7 +20,7 @@ CLASS({
   name:  'DAOUpdateController',
   label: 'DAO Update',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: ['foam.ui.AlternateView'],
 

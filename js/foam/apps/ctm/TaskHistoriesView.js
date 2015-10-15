@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.ctm',
   name: 'TaskHistoriesView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [ 'foam.apps.ctm.History' ],
 

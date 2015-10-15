@@ -19,7 +19,7 @@ CLASS({
   name: 'MonogramStringView',
   package: 'foam.ui.md',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: ['foam.ui.md.ColoredBackgroundTrait'],
 
   properties: [

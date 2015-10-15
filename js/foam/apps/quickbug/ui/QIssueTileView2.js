@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.apps.quickbug.ui',
   label: 'QIssue Tile View',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.ui.PropertyView'

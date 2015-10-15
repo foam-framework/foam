@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'BrowserConfig',
-  extendsModel: 'foam.browser.BrowserConfig',
+  extends: 'foam.browser.BrowserConfig',
 
   requires: [
     'foam.apps.builder.MenuItemCitationView',

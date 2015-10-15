@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.physics',
   name: 'Spring',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [ 'foam.demos.physics.PhysicalCircle', 'foam.input.Mouse' ],
 

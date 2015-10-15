@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.apps.todo',
   name: 'TodoApp',
-  extendsModel: 'foam.browser.ui.BrowserView',
+  extends: 'foam.browser.ui.BrowserView',
   requires: [
     'foam.browser.BrowserConfig',
     'foam.dao.EasyDAO',

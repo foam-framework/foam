@@ -13,7 +13,7 @@ CLASS({
   name: 'LocalDAOFactory',
   package: 'foam.apps.builder.dao',
 
-  extendsModel: 'foam.apps.builder.dao.DAOFactory',
+  extends: 'foam.apps.builder.dao.DAOFactory',
 
   label: 'Simple local storage on your device',
 

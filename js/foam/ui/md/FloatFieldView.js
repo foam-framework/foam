@@ -18,5 +18,5 @@
 CLASS({
   name: 'FloatFieldView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.md.TextFieldView'
+  extends: 'foam.ui.md.TextFieldView'
 });

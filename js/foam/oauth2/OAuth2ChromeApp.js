@@ -22,7 +22,7 @@ CLASS({
 
   requires: [ 'XHR' ],
 
-  extendsModel: 'foam.oauth2.OAuth2',
+  extends: 'foam.oauth2.OAuth2',
 
   properties: [
     {

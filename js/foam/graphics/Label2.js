@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name:  'Label2',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   properties: [
     {

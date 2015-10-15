@@ -18,7 +18,7 @@
 CLASS({
   name: 'CitationView',
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [ 'foam.ui.md.MonogramStringView' ],
 

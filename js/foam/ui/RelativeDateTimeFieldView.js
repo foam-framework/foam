@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name:  'RelativeDateTimeFieldView',
-  extendsModel: 'foam.ui.DateTimeFieldView',
+  extends: 'foam.ui.DateTimeFieldView',
   label: 'Relative Date-Time Field',
 
   properties: [

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'ArrayListView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   traits: ['foam.ui.SimpleDynamicViewTrait'],
   properties: [

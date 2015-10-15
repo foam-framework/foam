@@ -18,7 +18,7 @@
 CLASS({
   name: 'EMailView',
   package: 'com.google.mail',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
   requires: [
     'foam.ui.WebView',
     'foam.ui.md.MonogramStringView',

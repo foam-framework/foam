@@ -29,7 +29,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'TableView',
-  extendsModel: 'foam.ui.AbstractDAOView',
+  extends: 'foam.ui.AbstractDAOView',
 
   label: 'Table View',
 

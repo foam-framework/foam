@@ -18,7 +18,7 @@
 CLASS({
   name: 'DragAndDropGrid',
   package: 'foam.apps.quickbug.ui',
-  extendsModel: 'GridByExpr',
+  extends: 'GridByExpr',
 
   requires: [
     'foam.apps.quickbug.ui.IssueDropCell'

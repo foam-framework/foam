@@ -19,7 +19,7 @@
 // TODO: add a 'mouse' property which creates and connects a Mouse model.
 CLASS({
   name: 'Canvas',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {
@@ -312,7 +312,7 @@ CLASS({
 
 CLASS({
   name:  'Box',
-  extendsModel: 'Label',
+  extends: 'Label',
 
   properties: [
     {
@@ -597,7 +597,7 @@ CLASS({
 
 CLASS({
   name:  'ProgressCView',
-  extendsModel: 'CView',
+  extends: 'CView',
 
   properties: [
     {
@@ -644,7 +644,7 @@ CLASS({
 
 CLASS({
   name:  'Graph',
-  extendsModel: 'CView',
+  extends: 'CView',
 
   properties: [
     {
@@ -1025,7 +1025,7 @@ var WarpedCanvas = {
 
 CLASS({
   name:  'GridCView',
-  extendsModel: 'CView',
+  extends: 'CView',
   label: 'GridCView',
 
   requires: ['foam.input.Mouse'],

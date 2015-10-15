@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'DocChaptersView',
-  extendsModel: 'foam.documentation.DocView',
+  extends: 'foam.documentation.DocView',
   help: 'Displays the contents of the given Chapters.',
 
   methods: {

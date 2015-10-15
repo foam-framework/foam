@@ -1,7 +1,7 @@
 CLASS({
   package: 'foam.apps.calc.test',
   name: 'CalcTest',
-  extendsModel: 'UnitTest',
+  extends: 'UnitTest',
   properties: [
     {
       name: 'name',

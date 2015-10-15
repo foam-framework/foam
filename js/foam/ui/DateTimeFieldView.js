@@ -20,7 +20,7 @@ CLASS({
   name:  'DateTimeFieldView',
   label: 'Date-Time Field',
 
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   properties: [
     {

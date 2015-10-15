@@ -18,7 +18,7 @@
 CLASS({
   name: 'PriorityCitationView',
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'foam.apps.mbug.ui.PriorityView',
+  extends: 'foam.apps.mbug.ui.PriorityView',
   methods: {
     updateHTML: function() {
       if ( ! this.$ ) return;

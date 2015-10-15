@@ -23,7 +23,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'StackView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.ui.layout.ViewSlider',

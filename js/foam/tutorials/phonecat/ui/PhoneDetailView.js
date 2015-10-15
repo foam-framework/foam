@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.tutorials.phonecat.ui',
   name: 'PhoneDetailView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [ 'foam.ui.animated.ImageView' ],
   templates: [
     function CSS() {/*

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name:  'SimpleRectangle',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
   documentation: function() {/* A $$DOC{ref:'foam.graphics.CView'} rectangle with no layout capability. */},
 
   traits: [ 'foam.graphics.BorderTrait' ]

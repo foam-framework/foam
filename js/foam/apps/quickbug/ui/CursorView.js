@@ -19,7 +19,7 @@ CLASS({
   name: 'CursorView',
   package: 'foam.apps.quickbug.ui',
 
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   methods: {
     initHTML: function() {

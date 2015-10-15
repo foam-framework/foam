@@ -19,7 +19,7 @@
 CLASS({
   package: 'foam.graphics.webgl.flat',
   name: 'Scene',
-  extendsModel: 'foam.graphics.webgl.core.Scene',
+  extends: 'foam.graphics.webgl.core.Scene',
 
   requires: [
     'foam.graphics.webgl.matrix.OrthoMatrix4',

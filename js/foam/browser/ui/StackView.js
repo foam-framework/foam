@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.browser.ui',
   name: 'StackView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   imports: [
     'setTimeout',
     'window'

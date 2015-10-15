@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'ExpandingCard',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   documentation: 'Demo/test of card which expands. Used in Flow.js demo.',
 
   requires: [

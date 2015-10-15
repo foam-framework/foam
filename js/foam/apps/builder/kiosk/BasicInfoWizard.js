@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.kiosk',
   name: 'BasicInfoWizard',
-  extendsModel: 'foam.apps.builder.wizard.WizardPage',
+  extends: 'foam.apps.builder.wizard.WizardPage',
 
   imports: [
     'selection$',

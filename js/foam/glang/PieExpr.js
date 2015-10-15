@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.glang',
   name: 'PieExpr',
-  extendsModel: 'GroupByExpr',
+  extends: 'GroupByExpr',
 
   requires: [ 'foam.graphics.PieGraph' ],
 

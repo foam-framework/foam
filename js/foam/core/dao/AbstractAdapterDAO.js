@@ -18,7 +18,7 @@
 CLASS({
   name: 'AbstractAdapterDAO',
   package: 'foam.core.dao',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   help: 'An abstract decorator for adapting a DAO of one data type to another data type.  Extend this class and implement aToB() and bToA().',
 
   methods: {

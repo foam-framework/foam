@@ -20,7 +20,7 @@
 CLASS({
   name: 'PinchTwistGesture',
   package: 'foam.input.touch',
-  extendsModel: 'foam.input.touch.Gesture',
+  extends: 'foam.input.touch.Gesture',
   help: 'Gesture that understands a two-finger pinch/stretch and rotation',
   properties: [
     {

@@ -18,6 +18,6 @@
 CLASS({
   package: 'foam.demos.physics',
   name: 'PhysicalGLSphere',
-  extendsModel: 'foam.graphics.webgl.primitives.Sphere',
+  extends: 'foam.graphics.webgl.primitives.Sphere',
   traits: [ 'foam.physics.Physical' ]
 });

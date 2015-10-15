@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'CannedQueryCitationView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   properties: [
     {
       name: 'className',

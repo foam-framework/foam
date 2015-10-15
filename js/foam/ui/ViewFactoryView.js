@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'ViewFactoryView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   properties: [
     {
       name: 'data',

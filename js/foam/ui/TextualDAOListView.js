@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'TextualDAOListView',
-  extendsModel: 'foam.ui.DAOListView',
+  extends: 'foam.ui.DAOListView',
 
   documentation: 'Combine this model with rowView set to TextualView to output lists',
 

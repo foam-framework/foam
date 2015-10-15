@@ -18,7 +18,7 @@
 CLASS({
   name: 'PriorityView',
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   properties: [
     { name: 'data', postSet: function() { this.updateHTML(); } },
     {

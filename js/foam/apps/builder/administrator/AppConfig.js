@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.administrator',
   name: 'AppConfig',
-  extendsModel: 'foam.apps.builder.AppConfig',
+  extends: 'foam.apps.builder.AppConfig',
 
   constants: {
     EXISTING_SOURCES: [

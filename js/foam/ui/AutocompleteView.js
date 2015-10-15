@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'AutocompleteView',
-  extendsModel: 'foam.ui.PopupView',
+  extends: 'foam.ui.PopupView',
   help: 'Default autocomplete popup.',
 
   requires: [

@@ -18,7 +18,7 @@
 CLASS({
   name: 'Window',
   package: 'foam.ui.layout',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   imports: [
     'dynamic',
     'window'

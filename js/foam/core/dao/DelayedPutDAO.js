@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.core.dao',
   name: 'DelayedPutDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   help: function() {/*
    Apply this decorator to a DAO to enforce a delay between put operations.

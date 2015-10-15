@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'ImagePickerView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   traits: ['foam.ui.md.MDStyleTrait'],
 
   properties: [

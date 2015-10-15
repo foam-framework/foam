@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'DAOStrategies',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
     'foam.graphics.CView',

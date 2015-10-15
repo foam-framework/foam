@@ -12,7 +12,7 @@
 CLASS({
   name: 'SourceCode',
   package: 'foam.flow',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   properties: [
     {

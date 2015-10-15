@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.dao',
   name: 'DeDupDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   methods: [
     function put(obj, sink) {

@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'StateView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   constants: {
     STATES: {

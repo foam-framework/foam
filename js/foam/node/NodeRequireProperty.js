@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.node',
   name: 'NodeRequireProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
   properties: [
     {
       name: 'moduleName',

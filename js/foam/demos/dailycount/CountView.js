@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.dailycount',
   name: 'CountView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [ 'foam.demos.dailycount.DailyCount' ],
   imports: [ 'counts' ],

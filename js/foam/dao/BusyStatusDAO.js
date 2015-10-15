@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.dao',
   name: 'BusyStatusDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   imports: [
     'busyStatus'
   ],

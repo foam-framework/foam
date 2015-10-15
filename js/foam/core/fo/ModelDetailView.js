@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.core.fo',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
   name: 'ModelDetailView',
   requires: [
     'foam.core.fo.FeatureDAO',

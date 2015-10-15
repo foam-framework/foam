@@ -14,7 +14,7 @@
 CLASS({
   name: 'CustomModelProperty',
   package: 'foam.apps.builder.datamodels',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   help: 'Describes a Model property that is editable by the user.',
   label: 'Data Model definition',

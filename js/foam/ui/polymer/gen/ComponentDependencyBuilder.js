@@ -18,7 +18,7 @@
 CLASS({
   name: 'ComponentDependencyBuilder',
   package: 'foam.ui.polymer.gen',
-  extendsModel: 'foam.ui.polymer.gen.ComponentBuilderBase',
+  extends: 'foam.ui.polymer.gen.ComponentBuilderBase',
 
   imports: [
     'componentDAO as dao',

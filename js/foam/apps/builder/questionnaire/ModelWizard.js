@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'ModelWizard',
-  extendsModel: 'foam.apps.builder.wizard.ModelWizard',
+  extends: 'foam.apps.builder.wizard.ModelWizard',
 
   properties: [
     {

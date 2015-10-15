@@ -25,7 +25,7 @@ CLASS({
       defaultValue: false
     }
   ],
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   methods: {
     select: function(sink, options) {
       if ( ! this.onSelect ) return this.SUPER(sink, options);

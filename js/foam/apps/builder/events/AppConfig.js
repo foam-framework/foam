@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.events',
   name: 'AppConfig',
-  extendsModel: 'foam.apps.builder.AppConfig',
+  extends: 'foam.apps.builder.AppConfig',
 
   requires: [
     'foam.apps.builder.DataConfig',

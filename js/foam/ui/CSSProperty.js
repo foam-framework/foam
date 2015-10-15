@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'CSSProperty',
-  extendsModel: 'Property',
+  extends: 'Property',
 
   requires: [
     'foam.ui.CSSTransition',

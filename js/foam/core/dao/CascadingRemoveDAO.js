@@ -21,7 +21,7 @@ CLASS({
 package: 'foam.core.dao',
   label: 'Cascading Remove DAO',
 
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   properties: [
     {

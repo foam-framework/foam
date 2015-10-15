@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.navigation',
   name: 'PageView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   help: 'A view that takes and renders a header, body, and footer. The ' +
       'header and footer views are required to have a preferredHeight ' +
       'property and this view gives the body the rest of the height on the ' +

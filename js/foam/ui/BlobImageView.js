@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui',
   name: 'BlobImageView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
 
   help: 'Image view for rendering a blob as an image.',

@@ -1,6 +1,6 @@
 CLASS({
   name: 'ExperimentalScrollView',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
   requires: ['foam.input.touch.GestureTarget'],
   
   constants: {

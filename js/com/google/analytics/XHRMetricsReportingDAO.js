@@ -18,7 +18,7 @@
 CLASS({
   name: 'XHRMetricsReportingDAO',
   package: 'com.google.analytics',
-  extendsModel: 'com.google.analytics.AbstractMetricsReportingDAO',
+  extends: 'com.google.analytics.AbstractMetricsReportingDAO',
 
   requires: [
     'XHR'

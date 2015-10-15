@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.documentation.diagram',
   name: 'TraitListDiagram',
 
-  extendsModel: 'foam.ui.BaseView',
+  extends: 'foam.ui.BaseView',
 
   requires: [
     'foam.documentation.diagram.ModelDocDiagram',

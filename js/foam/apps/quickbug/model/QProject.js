@@ -362,7 +362,7 @@ CLASS({
         }
 
         var model = Model.create({
-          extendsModel: 'foam.apps.quickbug.model.imported.Issue',
+          extends: 'foam.apps.quickbug.model.imported.Issue',
 
           name: 'QIssue',
           requires: [

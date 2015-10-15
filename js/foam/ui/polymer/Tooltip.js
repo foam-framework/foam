@@ -19,7 +19,7 @@ CLASS({
   name: 'Tooltip',
   package: 'foam.ui.polymer',
 
-  extendsModel: 'foam.ui.polymer.View',
+  extends: 'foam.ui.polymer.View',
   imports: ['document'],
 
   todo: function() {/*

@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.wizard',
   name: 'ModelPreviewWizard',
-  extendsModel: 'foam.apps.builder.wizard.WizardPage',
+  extends: 'foam.apps.builder.wizard.WizardPage',
 
   properties: [
     {

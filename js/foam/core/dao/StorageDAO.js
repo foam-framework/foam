@@ -19,7 +19,7 @@ CLASS({
   name: 'StorageDAO',
   package: 'foam.core.dao',
 
-  extendsModel: 'MDAO',
+  extends: 'MDAO',
 
   properties: [
     {

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'RowDocView',
-  extendsModel: 'foam.documentation.DocView',
+  extends: 'foam.documentation.DocView',
   label: 'Documentation View Row',
 
   documentation: function() {/*
@@ -28,7 +28,7 @@ CLASS({
     <p><code>
     CLASS({ <br/>
     &nbsp;&nbsp;  name: 'ListenerRowDocView',<br/>
-    &nbsp;&nbsp;  extendsModel: 'RowDocView'<br/>
+    &nbsp;&nbsp;  extends: 'RowDocView'<br/>
     });<br/>
     // automatically creates ListenerRowDocView<br/>
     RowDocView.create({model:X.Listener});<br/>

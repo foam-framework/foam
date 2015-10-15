@@ -13,7 +13,7 @@ CLASS({
   name: 'IDBDAOFactory',
   package: 'foam.apps.builder.dao',
 
-  extendsModel: 'foam.apps.builder.dao.DAOFactory',
+  extends: 'foam.apps.builder.dao.DAOFactory',
 
   label: 'Specialized local storage in IndexedDB',
 

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name: 'CanvasScrollView',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
   requires: [ 'foam.input.touch.GestureTarget' ],
   properties: [
     {

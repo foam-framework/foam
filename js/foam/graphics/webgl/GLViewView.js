@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.graphics.webgl',
   name: 'GLViewView',
 
-  extendsModel: 'foam.graphics.AbstractCViewView',
+  extends: 'foam.graphics.AbstractCViewView',
 
   documentation: function() {  /*
     The base canvas for WebGL content. Used by GLViews.

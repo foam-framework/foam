@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'QueueView',
-  extendsModel: 'foam.ui.SlidingCollectionView',
+  extends: 'foam.ui.SlidingCollectionView',
 
   methods: {
     pushView: function(view) { return this.pushView_(view); }

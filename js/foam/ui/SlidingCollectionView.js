@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'SlidingCollectionView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: ['foam.ui.layout.PositionedDOMViewTrait'],
 
   requires: [

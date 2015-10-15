@@ -18,7 +18,7 @@
 CLASS({
   name: 'CommentView',
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   requires: [
     'foam.ui.md.MonogramStringView',

@@ -1,7 +1,7 @@
 
 CLASS({
   name: 'Folder',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {

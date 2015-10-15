@@ -18,5 +18,5 @@
 CLASS({
   name: 'IntFieldView',
   package: 'foam.ui.md',
-  extendsModel: 'foam.ui.md.TextFieldView'
+  extends: 'foam.ui.md.TextFieldView'
 });

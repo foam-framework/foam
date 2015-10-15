@@ -18,7 +18,7 @@
 CLASS({
   package: 'com.google.watlobby',
   name: 'TopicApp',
-  extendsModel: 'foam.browser.ui.BrowserView',
+  extends: 'foam.browser.ui.BrowserView',
 
   requires: [
     'com.google.watlobby.Topic',

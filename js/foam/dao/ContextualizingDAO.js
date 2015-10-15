@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.dao',
   name: 'ContextualizingDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   methods: {
     find: function(id, sink) {
       var X = this.Y;

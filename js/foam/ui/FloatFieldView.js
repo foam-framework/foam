@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'FloatFieldView',
 
-  extendsModel: 'foam.ui.AbstractNumberFieldView',
+  extends: 'foam.ui.AbstractNumberFieldView',
 
   properties: [
     { name: 'precision', defaultValue: undefined }

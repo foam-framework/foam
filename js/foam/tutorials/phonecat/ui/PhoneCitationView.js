@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.tutorials.phonecat.ui',
   name: 'PhoneCitationView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   templates: [
     function toHTML() {/*
       <li id="<%= this.id %>" class="thumbnail">

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'ViewChoicesView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   // TODO(mcarcaso): Make the TwoPaneView use this.
   help: 'A view that typically takes a ViewChoiceController and renders the ' +

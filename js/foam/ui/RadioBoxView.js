@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'RadioBoxView',
 
-  extendsModel: 'foam.ui.ChoiceView',
+  extends: 'foam.ui.ChoiceView',
 
   methods: {
     toHTML: function() {

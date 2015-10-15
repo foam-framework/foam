@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'SolarSystem',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.demos.ClockView',

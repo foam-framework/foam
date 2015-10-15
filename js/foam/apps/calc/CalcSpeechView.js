@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.apps.calc',
   name: 'CalcSpeechView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   properties: [
     'calc',
     'lastSaid'

@@ -18,7 +18,7 @@
 CLASS({
   name: 'EMailCitationView',
   package: 'com.google.mail',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [
     'foam.ui.md.MonogramStringView',
     'foam.ui.RelativeDateTimeFieldView',

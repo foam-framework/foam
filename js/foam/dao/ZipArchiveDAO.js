@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.dao',
   name: 'ZipArchiveDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   requires: [
     'foam.util.zip.Archive',

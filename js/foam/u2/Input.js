@@ -20,7 +20,7 @@
 CLASS({
   package: 'foam.u2',
   name: 'Input',
-  extendsModel: 'foam.u2.Element',
+  extends: 'foam.u2.Element',
 
   properties: [ [ 'nodeName', 'input' ], 'data' ],
 

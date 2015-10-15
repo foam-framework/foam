@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.wizard',
   name: 'ChangeModelWizard',
-  extendsModel: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
+  extends: 'foam.apps.builder.wizard.NewOrExistingModelWizard',
 
   properties: [
     {

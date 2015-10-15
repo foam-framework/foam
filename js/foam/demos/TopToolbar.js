@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'TopToolbar',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: [
     'foam.graphics.ActionButtonCView',
     'foam.ui.navigation.TopToolbar',

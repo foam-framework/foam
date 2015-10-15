@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.ctm',
   name: 'TaskHistoryGraph',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [ 'foam.graphics.Graph' ],
   properties: [

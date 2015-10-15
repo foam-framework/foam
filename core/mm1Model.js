@@ -193,7 +193,7 @@ var Model = {
       help: 'The Swift classname of this model.'
     },
     {
-      name: 'extendsModel',
+      name: 'extends',
       label: 'Extends',
       type: 'String',
       displayWidth: 70,
@@ -209,6 +209,12 @@ var Model = {
         <p>Like most inheritance schemes, instances of your $$DOC{ref:'Model'} may be used in place of
         instances of the $$DOC{ref:'Model'} you extend.</p>
          */}
+    },
+    {
+      name: 'extendsModel',
+      hidden: true,
+      getter: function() { debugger; console.warn("Deprecated use of 'extendsModel'. Use 'extends' instead."); return this.extends; },
+      setter: function(e) { debugger; console.warn("Deprecated use of 'extendsModel'. Use 'extends' instead."); this.extends = e; },
     },
     {
       name: 'traits',
@@ -593,7 +599,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
           <li><code>this.methodName</code> calls another $$DOC{ref:'Method'} of this
                   $$DOC{ref:'Model'}</li>
           <li><code>this.SUPER()</code> calls the $$DOC{ref:'Method'} implementation from the
-                    base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extendsModel'}). Calling
+                    base $$DOC{ref:'Model'} (specified in $$DOC{ref:'Model.extends'}). Calling
                     <code>this.SUPER()</code> is extremely important in your <code>init()</code>
                      $$DOC{ref:'Method'}, if you provide one.</li>
         </ul>

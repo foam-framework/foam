@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.dao',
   name: 'ProxyDAO',
 
-  extendsModel: 'AbstractDAO',
+  extends: 'AbstractDAO',
 
   requires: [ 'foam.dao.NullDAO' ],
 

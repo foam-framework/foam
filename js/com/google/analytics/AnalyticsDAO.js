@@ -18,7 +18,7 @@
 CLASS({
   name: 'AnalyticsDAO',
   package: 'com.google.analytics',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   requires: [
     'Binding',
     'PersistentContext',

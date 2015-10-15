@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.navigation',
   name: 'PanelViewChoiceView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   help: 'A view that takes a ViewChoiceController and lists all of the ' +
       'ViewChoice labels, highlights the selected choice, has a title in it, ' +
       'and expands to the height of the screen. This view is typically used ' +

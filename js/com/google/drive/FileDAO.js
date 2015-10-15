@@ -18,7 +18,7 @@
 CLASS({
   package: 'com.google.drive',
   name: 'FileDAO',
-  extendsModel: 'AbstractDAO',
+  extends: 'AbstractDAO',
   requires: [
     'com.google.drive.FilesAPI',
     'com.google.drive.File'

@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.graphics',
   name: 'LogoBackground',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [ 'foam.graphics.Circle', 'foam.util.Timer' ],
 
@@ -85,7 +85,7 @@ CLASS({
 CLASS({
   package: 'foam.demos.graphics',
   name:  'LogoForeground',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   imports: [ 'text$', 'font$', 'width$', 'height$' ],
 
@@ -119,7 +119,7 @@ CLASS({
 CLASS({
   package: 'foam.demos.graphics',
   name:  'Logo',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: [ 'foam.ui.Colors' ],
 
   requires: [

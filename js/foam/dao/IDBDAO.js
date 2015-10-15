@@ -20,7 +20,7 @@ CLASS({
   name: 'IDBDAO',
   label: 'IndexedDB DAO',
 
-  extendsModel: 'AbstractDAO',
+  extends: 'AbstractDAO',
 
   documentation: function() {/*
   Usage:<br/>

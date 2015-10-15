@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.browser.ui',
   name: 'DAOController',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
   requires: [
     'foam.ui.DAOListView',
     'foam.ui.md.TextFieldView',

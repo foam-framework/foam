@@ -1,6 +1,6 @@
 CLASS({
   name: 'ValueView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     { name: 'label', defaultValue: 'Value' },
@@ -14,7 +14,7 @@ CLASS({
 
 CLASS({
   name: 'RawManifestView',
-  extendsModel: 'ValueView',
+  extends: 'ValueView',
   requires: [
     'AppManifest'
   ],
@@ -40,7 +40,7 @@ CLASS({
 
 CLASS({
   name: 'RawBackgroundPage',
-  extendsModel: 'ValueView',
+  extends: 'ValueView',
   requires: [
     'WindowConfig'
   ],
@@ -67,7 +67,7 @@ CLASS({
 
 CLASS({
   name: 'RawSetupSh',
-  extendsModel: 'ValueView',
+  extends: 'ValueView',
   requires: [
     'AppConfig'
   ],
@@ -94,7 +94,7 @@ CLASS({
 
 CLASS({
   name: 'RawBuildSh',
-  extendsModel: 'ValueView',
+  extends: 'ValueView',
   requires: [
     'AppConfig'
   ],
@@ -143,7 +143,7 @@ CLASS({
 
 CLASS({
   name: 'TextAreaValueView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   traits: ['DynamicViewListenerTrait'],
 
   properties: [

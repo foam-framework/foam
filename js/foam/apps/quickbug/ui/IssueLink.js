@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.apps.quickbug.ui',
   name: 'IssueLink',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   imports: [
     'issueDAO',

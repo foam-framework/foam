@@ -18,7 +18,7 @@
 CLASS({
   name: 'MenuLabelCitationView',
   package: 'com.google.mail',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: ['SimpleValue'],
   imports: [
     'counts',

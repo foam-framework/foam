@@ -22,7 +22,7 @@ CLASS({
 
   requires: ['SimpleValue'],
 
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   traits: ['foam.ui.DAODataViewTrait'],
 
   constants: {

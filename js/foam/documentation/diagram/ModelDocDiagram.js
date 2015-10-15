@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation.diagram',
   name: 'ModelDocDiagram',
-  extendsModel: 'foam.ui.DestructiveDataView',
+  extends: 'foam.ui.DestructiveDataView',
 
   traits: [
     'foam.documentation.DocModelFeatureDAOTrait'

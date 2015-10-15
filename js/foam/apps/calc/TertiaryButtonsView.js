@@ -12,7 +12,7 @@
 CLASS({
   name: 'TertiaryButtonsView',
   package: 'foam.apps.calc',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   requires: ['foam.apps.calc.CalcButton'],
   templates: [
     function toHTML() {/*

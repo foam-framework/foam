@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos.supersnake',
   name: 'Robot',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
   requires: [
     'foam.util.Timer',
     'foam.graphics.Circle',

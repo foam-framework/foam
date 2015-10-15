@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.kiosk',
   name: 'DesignerView',
-  extendsModel: 'foam.apps.builder.DesignerView',
+  extends: 'foam.apps.builder.DesignerView',
 
   requires: [
     'foam.apps.builder.AppConfigActionsView',

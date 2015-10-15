@@ -119,7 +119,7 @@ console.log(p.toJSON());
 
 CLASS({
   name: 'Point3D',
-  extendsModel: 'Point',
+  extends: 'Point',
   properties: [ 'z' ],
   methods: {
     scale: function(s) { this.SUPER(s); this.z *= s; }

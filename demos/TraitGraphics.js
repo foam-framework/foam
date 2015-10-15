@@ -1,12 +1,12 @@
 CLASS({
   name: 'ShadowCircle',
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
   traits: ['foam.physics.Physical', 'foam.graphics.Shadow']
 });
 
 CLASS({
   name: 'BlurCircle',
-  extendsModel: 'foam.graphics.Circle',
+  extends: 'foam.graphics.Circle',
   traits: ['foam.physics.Physical', 'foam.graphics.MotionBlur']
 });
 

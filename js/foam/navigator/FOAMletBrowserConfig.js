@@ -18,7 +18,7 @@
 CLASS({
   name: 'FOAMletBrowserConfig',
   package: 'foam.navigator',
-  extendsModel: 'foam.navigator.BrowserConfig',
+  extends: 'foam.navigator.BrowserConfig',
   requires: [
     'foam.dao.CachingDAO',
     'foam.dao.FutureDAO',

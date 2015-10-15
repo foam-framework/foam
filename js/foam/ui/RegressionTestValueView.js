@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'RegressionTestValueView',
-  extendsModel: 'foam.ui.TextFieldView',
+  extends: 'foam.ui.TextFieldView',
 
   properties: [
     {

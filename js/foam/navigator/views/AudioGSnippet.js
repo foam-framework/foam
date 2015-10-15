@@ -18,7 +18,7 @@
 CLASS({
   name: 'AudioGSnippet',
   package: 'foam.navigator.views',
-  extendsModel: 'foam.navigator.views.GSnippet',
+  extends: 'foam.navigator.views.GSnippet',
 
   requires: [
     'foam.navigator.views.GSnippetMetadata',

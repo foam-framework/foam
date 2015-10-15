@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name: 'Spacer',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
   traits: [ 'foam.patterns.layout.LayoutItemHorizontalTrait', 'foam.patterns.layout.LayoutItemVerticalTrait' ],
   documentation: function() {/* A $$DOC{ref:'foam.graphics.CView'} layout spacer. No children
       or painting is supported. */},

@@ -12,7 +12,7 @@
 CLASS({
   name: 'GlossaryTerm',
   package: 'foam.flow',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   imports: [ 'glossaryTerms' ],
 

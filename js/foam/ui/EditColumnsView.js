@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'EditColumnsView',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   properties: [
     {

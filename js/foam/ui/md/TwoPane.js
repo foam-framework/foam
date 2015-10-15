@@ -21,7 +21,7 @@ CLASS({
   requires: [
     'foam.ui.layout.DOMPanel'
   ],
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   properties: [
     { model_: 'ModelProperty', name: 'model', defaultValue: 'AppController' }
   ],

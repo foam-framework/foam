@@ -18,7 +18,7 @@
 CLASS({
   name: 'CitationRowView',
   package: 'foam.apps.mbug.ui',
-  extendsModel: 'foam.ui.md.DefaultRowView',
+  extends: 'foam.ui.md.DefaultRowView',
 
   requires: [ 'foam.ui.md.MonogramStringView' ],
 

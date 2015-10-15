@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.datamodels',
   name: 'ModelSummaryView',
-  extendsModel: 'foam.apps.builder.SummaryView',
+  extends: 'foam.apps.builder.SummaryView',
 
   requires: [
     'foam.apps.builder.datamodels.ModelCitationView',

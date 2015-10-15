@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'MDFieldGuide',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   requires: [
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
@@ -116,7 +116,7 @@ CLASS({
       code: function() {
         var popup = this.PopupView.create({
           delegate: Model.create({
-            extendsModel: 'foam.ui.SimpleView',
+            extends: 'foam.ui.SimpleView',
             imports: [
               'popup'
             ],

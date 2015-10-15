@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.navigation',
   name: 'TabLevelViewChoiceView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
   help: 'A view that takes a ViewChoiceController as data and renders the ' +
       'views in a HorizontalSlidingViewChoiceView and places a ' +
       'TabLevelViewChoiceView in the topToolbar that it imports.',

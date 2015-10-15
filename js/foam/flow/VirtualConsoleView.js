@@ -12,7 +12,7 @@
 CLASS({
   name: 'VirtualConsoleView',
   package: 'foam.flow',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
   constants: { ELEMENT_NAME: 'virtual-console' },

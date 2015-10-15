@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.meta.descriptor',
   name: 'PropertyTypeCitationView',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
   properties: [
     {

@@ -20,7 +20,7 @@ CLASS({
   name: 'IntPropertyEditView',
   package: 'foam.meta.types',
 
-  extendsModel: 'foam.meta.types.EditView',
+  extends: 'foam.meta.types.EditView',
 
   templates: [
     function toHTML() {/*

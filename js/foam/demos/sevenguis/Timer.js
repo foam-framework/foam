@@ -18,7 +18,7 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Timer',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   properties: [
     {
       name: 'progress',

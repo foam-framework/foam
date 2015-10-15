@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.u2',
   name: 'DetailView',
 
-  extendsModel: 'foam.u2.Element',
+  extends: 'foam.u2.Element',
 
   requires: [
     'Property',

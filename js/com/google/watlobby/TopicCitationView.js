@@ -18,7 +18,7 @@
 CLASS({
   package: 'com.google.watlobby',
   name: 'TopicCitationView',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
   requires: [
     'foam.ui.ColorPickerView',

@@ -170,9 +170,9 @@ CLASS({
       }.bind(this));
       // runs the trait finds first, and when they are done recurse to the next ancestor
       apar.apply(this, findFuncs)(function() {
-        if ( model.extendsModel ) {
+        if ( model.extends ) {
           var modelDAO = this.X._DEV_ModelDAO ? this.X._DEV_ModelDAO : this.X.ModelDAO;
-          modelDAO.find(model.extendsModel, {
+          modelDAO.find(model.extends, {
               put: function(ext) {
                 list.put(ext);
                 this.getInheritanceList(ext, list);

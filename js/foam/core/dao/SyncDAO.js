@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.core.dao',
   name: 'SyncDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
   properties: [
     {
       name: 'remoteDAO',

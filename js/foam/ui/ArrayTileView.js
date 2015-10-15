@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'ArrayTileView',
 
-  extendsModel: 'foam.ui.AbstractDAOView',
+  extends: 'foam.ui.AbstractDAOView',
 
   properties: [
     {

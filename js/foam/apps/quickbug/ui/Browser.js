@@ -19,7 +19,7 @@ CLASS({
   name: 'Browser',
   package: 'foam.apps.quickbug.ui',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.ui.AlternateView',
@@ -143,7 +143,7 @@ CLASS({
         Y.registerModel(Model.create({
           name: 'ChoiceListView',
           package: 'foam.ui',
-          extendsModel: 'foam.ui.ChoiceListView',
+          extends: 'foam.ui.ChoiceListView',
           methods: {
             choiceToHTML: function(id, choice) {
               var id2 = this.nextID();
@@ -633,7 +633,7 @@ CLASS({
               // TODO: this is a bit complex because it was written before Contexts. Fix.
               var g = Model.create({
                 name: 'QIssueGridView',
-                extendsModel: 'foam.ui.GridView',
+                extends: 'foam.ui.GridView',
                 methods: {
                   filteredDAO: function() {
                     return ( this.acc.choice && this.acc.choice[1] === 'Tiles' ) ?

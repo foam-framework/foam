@@ -19,7 +19,7 @@ CLASS({
    name: 'DefaultQuery',
    package: 'foam.apps.quickbug.model',
 
-   extendsModel: 'UNARY',
+   extends: 'UNARY',
 
    // See Issue#342 for explanation of query syntax
    properties: [

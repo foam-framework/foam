@@ -19,7 +19,7 @@ CLASS({
   name: 'ElementWithTooltip',
   package: 'foam.ui.polymer.demo',
 
-  extendsModel: 'foam.ui.polymer.View',
+  extends: 'foam.ui.polymer.View',
 
   properties: [
     {

@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.meta.descriptor',
   name: 'PropertyMetaDescriptor',
-  extendsModel: 'foam.meta.descriptor.MetaDescriptor',
+  extends: 'foam.meta.descriptor.MetaDescriptor',
 
   requires: ['foam.meta.descriptor.PropertyTypeCitationView'],
 

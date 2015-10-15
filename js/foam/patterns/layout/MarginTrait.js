@@ -32,7 +32,7 @@ CLASS({
     {
       model_: 'Model',
       name: 'MarginProxy',
-      extendsModel: 'foam.patterns.layout.LayoutItemLinearConstraintsProxy',
+      extends: 'foam.patterns.layout.LayoutItemLinearConstraintsProxy',
 
       documentation: function() {/* Adds an $$DOC{ref:'foam.patterns.layout.MarginTrait.MarginProxy.addAmount'} to the proxied constraints. */},
 

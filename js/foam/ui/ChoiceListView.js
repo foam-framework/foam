@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui',
   name: 'ChoiceListView',
 
-  extendsModel: 'foam.ui.AbstractChoiceView',
+  extends: 'foam.ui.AbstractChoiceView',
 
   properties: [
     {

@@ -18,7 +18,7 @@
 CLASS({
   name: 'Modeller',
   package: 'foam.apps',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: [
     'foam.ui.StackView',

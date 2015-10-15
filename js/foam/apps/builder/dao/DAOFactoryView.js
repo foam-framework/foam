@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.dao',
   name: 'DAOFactoryView',
-  extendsModel: 'foam.apps.builder.dao.EditView',
+  extends: 'foam.apps.builder.dao.EditView',
 
   requires: [
     'foam.ui.StringElideTextualView',

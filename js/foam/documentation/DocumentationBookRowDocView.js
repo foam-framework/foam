@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'DocumentationBookRowDocView',
-  extendsModel: 'foam.documentation.RowDocView',
+  extends: 'foam.documentation.RowDocView',
   documentation: 'Displays the documentation of the given book.',
 
   templates: [

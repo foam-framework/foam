@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'InterfaceFullPageDocView',
-  extendsModel: 'foam.documentation.FullPageDocView',
+  extends: 'foam.documentation.FullPageDocView',
 
   requires: ['foam.ui.DAOListView',
              'foam.documentation.SimpleRowDocView'],

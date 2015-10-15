@@ -18,7 +18,7 @@
 CLASS({
   name: 'QUser',
   package: 'foam.apps.quickbug.model',
-  extendsModel: 'foam.apps.quickbug.model.imported.User',
+  extends: 'foam.apps.quickbug.model.imported.User',
 
   properties: [
     {

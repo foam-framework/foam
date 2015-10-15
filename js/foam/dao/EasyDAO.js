@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.dao',
   name: 'EasyDAO',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   requires: [
     'MDAO',

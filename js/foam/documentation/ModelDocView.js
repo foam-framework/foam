@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'ModelDocView',
-  extendsModel: 'foam.documentation.DocView',
+  extends: 'foam.documentation.DocView',
   documentation: 'Displays the documentation of the given Model.',
   traits: ['foam.documentation.DocModelFeatureDAOTrait'],
 

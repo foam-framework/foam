@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui',
   name: 'HorizontalSlidingViewChoiceView',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   help: 'A view that typically takes a ViewChoiceController and renders the ' +
       'selected view. When the selected view changes a left/right animation ' +
       'is used to transition to the active view.',

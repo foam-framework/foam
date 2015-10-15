@@ -12,7 +12,7 @@
 CLASS({
   name: 'TitlePage',
   package: 'foam.flow',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   templates: [
     function CSS() {/*

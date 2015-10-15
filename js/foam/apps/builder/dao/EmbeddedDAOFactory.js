@@ -13,7 +13,7 @@ CLASS({
   name: 'EmbeddedDAOFactory',
   package: 'foam.apps.builder.dao',
 
-  extendsModel: 'foam.apps.builder.dao.DAOFactory',
+  extends: 'foam.apps.builder.dao.DAOFactory',
 
   label: 'Embedded storage that lives inside your app. Add data from an Admini App.',
 

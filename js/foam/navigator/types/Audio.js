@@ -18,7 +18,7 @@
 CLASS({
   name: 'Audio',
   package: 'foam.navigator.types',
-  extendsModel: 'foam.navigator.BasicFOAMlet',
+  extends: 'foam.navigator.BasicFOAMlet',
 
   requires: [
     'foam.navigator.types.AudioSource',

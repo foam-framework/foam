@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.wizard',
   name: 'WizardViewFactoryProperty',
-  extendsModel: 'ViewFactoryProperty',
+  extends: 'ViewFactoryProperty',
 
   properties: [
     {

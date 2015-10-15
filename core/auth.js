@@ -125,7 +125,7 @@ CLASS({
 // done with that security hole to agree this is worth it.
 CLASS({
   name: 'AuthenticatedDAO',
-  extendsModel: 'AbstractDAO',
+  extends: 'AbstractDAO',
 
   properties: [
     {

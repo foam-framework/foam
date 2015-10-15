@@ -20,7 +20,7 @@ CLASS({
   name:  'DAOController',
   label: 'DAO Controller',
 
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
 //  requires: ['foam.ui.search.SearchBorder'],
 

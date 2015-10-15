@@ -19,7 +19,7 @@
 CLASS({
   name: 'PropertyCitationView',
   package: 'foam.meta.types',
-  extendsModel: 'foam.meta.types.CitationView',
+  extends: 'foam.meta.types.CitationView',
 
   imports: [
     'properties$',

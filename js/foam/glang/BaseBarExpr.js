@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.glang',
   name: 'BaseBarExpr',
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
   properties: [
     {
       name: 'width',

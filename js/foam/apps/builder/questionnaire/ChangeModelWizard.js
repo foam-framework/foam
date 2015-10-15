@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.questionnaire',
   name: 'ChangeModelWizard',
-  extendsModel: 'foam.apps.builder.wizard.ChangeModelWizard',
+  extends: 'foam.apps.builder.wizard.ChangeModelWizard',
 
   requires: [
     'foam.apps.builder.questionnaire.NewModelWizard',

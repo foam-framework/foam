@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name: 'LockToPreferredLayout',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   documentation: function() {/*
       A simple layout for items not already in a layout. It will take the preferred

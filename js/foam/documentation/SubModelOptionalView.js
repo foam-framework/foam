@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'SubModelOptionalView',
-  extendsModel: 'foam.documentation.DocOptionalView',
+  extends: 'foam.documentation.DocOptionalView',
 
   requires: ['foam.documentation.DocFeatureModelDataRefView'],
 

@@ -18,7 +18,7 @@
 CLASS({
   name: 'MessagesExtractor',
   package: 'foam.i18n',
-  extendsModel: 'foam.i18n.Visitor',
+  extends: 'foam.i18n.Visitor',
 
   requires: [
     'foam.i18n.Message',

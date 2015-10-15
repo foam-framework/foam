@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder.templates',
   name: 'AppView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   exports: [
     'previewSelectionGuard$ as selection$',

@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.demos.wat',
   name: 'Slides',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
   traits: ['foam.memento.MemorableTrait'],
 
   requires: [

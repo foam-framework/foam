@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'SummaryDocView',
-  extendsModel: 'foam.documentation.DocView',
+  extends: 'foam.documentation.DocView',
   label: 'Documentation View Summary',
   documentation: 'Base Model for medium length summary documentation views.',
 
@@ -29,7 +29,7 @@ CLASS({
     <p><code>
     CLASS({ <br/>
     &nbsp;&nbsp;  name: 'MethodSummaryDocView',<br/>
-    &nbsp;&nbsp;  extendsModel: 'SummaryDocView'<br/>
+    &nbsp;&nbsp;  extends: 'SummaryDocView'<br/>
     });<br/>
     // automatically creates MethodSummaryDocView<br/>
     SummaryDocView.create({model:X.Method});<br/>

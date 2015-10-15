@@ -18,7 +18,7 @@
 CLASS({
   name: 'OAuth2ChromeIdentity',
   package: 'foam.oauth2',
-  extendsModel: 'foam.oauth2.OAuth2',
+  extends: 'foam.oauth2.OAuth2',
   help: 'OAuth2 strategy that uses the Chrome identity API',
   methods: {
     refreshNow_: function(ret) {

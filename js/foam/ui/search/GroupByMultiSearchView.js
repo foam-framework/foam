@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.ui.search',
   name: 'GroupByMultiSearchView',
-  extendsModel: 'foam.ui.search.GroupBySearchView',
+  extends: 'foam.ui.search.GroupBySearchView',
 
   requires: [ 'foam.ui.MultiChoiceView' ],
 

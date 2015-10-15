@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.graphics',
   name: 'ViewCView',
 
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   help: "View to CView adapter. Let's you display Views in a CView.",
 

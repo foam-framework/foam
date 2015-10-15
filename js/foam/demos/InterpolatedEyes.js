@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'InterpolatedEyes',
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   requires: [
     'foam.demos.graphics.EyesCView as Eyes',

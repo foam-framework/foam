@@ -18,7 +18,7 @@
 CLASS({
   name: 'ManuallyDelayedPutDAO',
   package: 'foam.core.dao',
-  extendsModel: 'foam.dao.ProxyDAO',
+  extends: 'foam.dao.ProxyDAO',
 
   requires: [ 'foam.dao.ProxyDAO' ],
 

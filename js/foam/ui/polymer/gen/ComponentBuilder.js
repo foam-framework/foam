@@ -18,7 +18,7 @@
 CLASS({
   name: 'ComponentBuilder',
   package: 'foam.ui.polymer.gen',
-  extendsModel: 'foam.ui.polymer.gen.ComponentBuilderBase',
+  extends: 'foam.ui.polymer.gen.ComponentBuilderBase',
 
   requires: [
     'XHR',

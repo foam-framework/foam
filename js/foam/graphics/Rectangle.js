@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics',
   name: 'Rectangle',
-  extendsModel: 'foam.graphics.SimpleRectangle',
+  extends: 'foam.graphics.SimpleRectangle',
   traits: [ 'foam.patterns.layout.LayoutItemHorizontalTrait', 'foam.patterns.layout.LayoutItemVerticalTrait' ],
   documentation: function() {/* A $$DOC{ref:'foam.graphics.CView'} rectangle that can be laid out. */}
 });

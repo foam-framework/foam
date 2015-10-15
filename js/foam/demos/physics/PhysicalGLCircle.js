@@ -18,6 +18,6 @@
 CLASS({
   package: 'foam.demos.physics',
   name: 'PhysicalGLCircle',
-  extendsModel: 'foam.graphics.webgl.primitives.Circle',
+  extends: 'foam.graphics.webgl.primitives.Circle',
   traits: [ 'foam.physics.Physical' ]
 });

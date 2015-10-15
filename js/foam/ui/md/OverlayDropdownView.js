@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'OverlayDropdownView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [
     'foam.ui.md.FlatButton',

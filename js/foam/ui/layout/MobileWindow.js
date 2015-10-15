@@ -18,7 +18,7 @@
 CLASS({
   name: 'MobileWindow',
   package: 'foam.ui.layout',
-  extendsModel: 'foam.ui.layout.Window',
+  extends: 'foam.ui.layout.Window',
   methods: {
     init: function(args) {
       this.SUPER(args);

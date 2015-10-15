@@ -445,7 +445,7 @@ CLASS({
 
 CLASS({
   name: 'Bar',
-  extendsModel: 'Foo',
+  extends: 'Foo',
   properties: [ { model_: 'IntProperty', name: 'counter' } ],
   methods: {
     say: function() {

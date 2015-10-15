@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.graphics.webgl.matrix',
   name: 'TransMatrix4',
-  extendsModel: 'foam.graphics.webgl.matrix.Matrix4',
+  extends: 'foam.graphics.webgl.matrix.Matrix4',
 
   properties: [
     {

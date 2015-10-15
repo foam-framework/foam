@@ -50,8 +50,8 @@ CLASS({
       var self = this;
       aseq(
         function(ret) {
-          if (model.extendsModel) {
-            self.loadModel(model.extendsModel)(ret);
+          if (model.extends) {
+            self.loadModel(model.extends)(ret);
           } else {
             ret(undefined);
           }

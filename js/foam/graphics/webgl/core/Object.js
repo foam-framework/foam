@@ -27,7 +27,7 @@ CLASS({
     'foam.graphics.webgl.matrix.Matrix4',
     'foam.graphics.webgl.Matrix4Uniform'
   ],
-  extendsModel: 'foam.graphics.webgl.GLView',
+  extends: 'foam.graphics.webgl.GLView',
 
   imports: [
     'projectionMatrix$',

@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'CalendarView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
   imports: [
     'MONTH_NAMES',
     'document',

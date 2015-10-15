@@ -20,7 +20,7 @@ CLASS({
   package: 'com.google.mail',
   description: 'Mobile Gmail',
 
-  extendsModel: 'foam.browser.ui.BrowserView',
+  extends: 'foam.browser.ui.BrowserView',
 
   requires: [
     'MDAO',

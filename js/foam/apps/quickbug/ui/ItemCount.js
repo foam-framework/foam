@@ -18,7 +18,7 @@
 CLASS({
   name: 'ItemCount',
   package: 'foam.apps.quickbug.ui',
-  extendsModel: 'CountExpr',
+  extends: 'CountExpr',
 
   requires: [
     'foam.ui.View',

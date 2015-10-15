@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.ui',
   name: 'JSView',
 
-  extendsModel: 'foam.ui.TextFieldView',
+  extends: 'foam.ui.TextFieldView',
 
   properties: [
     [ 'displayWidth',  100 ],

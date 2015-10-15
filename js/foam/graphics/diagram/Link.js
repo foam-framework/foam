@@ -19,7 +19,7 @@ CLASS({
   name: 'Link',
   package: 'foam.graphics.diagram',
 
-  extendsModel: 'foam.graphics.CView',
+  extends: 'foam.graphics.CView',
 
   properties: [
     {

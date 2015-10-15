@@ -20,7 +20,7 @@ CLASS({
   name: 'ModelWizardEditView',
   package: 'foam.apps.builder.datamodels',
 
-  extendsModel: 'foam.meta.types.ModelEditView',
+  extends: 'foam.meta.types.ModelEditView',
 
   requires: [
     'foam.apps.builder.datamodels.PropertyWizard',

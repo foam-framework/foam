@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'ModelDescriptionRowView',
-  extendsModel: 'foam.ui.View',
+  extends: 'foam.ui.View',
 
   requires: ['SimpleValue'],
 

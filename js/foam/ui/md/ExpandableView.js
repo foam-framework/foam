@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'ExpandableView',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   requires: [
     'foam.ui.CSSTransitionSet',

@@ -47,6 +47,7 @@ MODEL({
       return this.rootPath + key.replace(/\./g, '/') + '.js';
     },
     find: function(key, sink) {
+      if(key === 'Timer') debugger;
       var url = this.toURL_(key);
       if ( this.preload[key] ) {
         sink && sink.put && sink.put(this.preload[key]);

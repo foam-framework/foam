@@ -24,7 +24,7 @@ CLASS({
   requires: ['foam.graphics.Label as Label',
              'foam.graphics.diagram.LinkPoint'],
 
-  extendsModel: 'foam.graphics.diagram.LinearLayout',
+  extends: 'foam.graphics.diagram.LinearLayout',
   traits: ['foam.graphics.BorderTrait'],
 
   properties: [

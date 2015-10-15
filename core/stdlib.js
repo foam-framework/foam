@@ -47,8 +47,8 @@ function MODEL(model) {
 
   if ( model.name ) {
     if ( ! GLOBAL[model.name] ) {
-      if ( model.extendsModel ) {
-        GLOBAL[model.name] = { __proto__: GLOBAL[model.extendsModel] };
+      if ( model.extends ) {
+        GLOBAL[model.name] = { __proto__: GLOBAL[model.extends] };
       } else {
         GLOBAL[model.name] = {};
       }

@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.flow',
   name: 'Section',
-  extendsModel: 'foam.flow.Element',
+  extends: 'foam.flow.Element',
 
   imports: [ 'parentSection' ],
   exports: [ 'as parentSection' ],

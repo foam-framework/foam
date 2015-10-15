@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.documentation',
   name: 'DocBrowserView',
 
-  extendsModel: 'foam.ui.DetailView',
+  extends: 'foam.ui.DetailView',
 
   methods: {
    initHTML: function() {
