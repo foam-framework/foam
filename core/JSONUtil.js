@@ -86,6 +86,26 @@ var JSONUtil = {
     return eval('(' + str + ')');
   },
 
+  aparse: function(ret, X, str) {
+    var seq = [];
+    var res = this.parse(X, str, seq);
+    if ( seq.length ) {
+      aseq.apply(null, seq)(function() { ret(res); });
+      return;
+    }
+    ret(res);
+  },
+
+  amapToObj: function(ret, X, obj, opt_defaultModel) {
+    var seq = [];
+    var res = this.mapToObj(X, obj, opt_defaultModel, seq);
+    if ( seq.length ) {
+      aseq.apply(null, seq)(function() { ret(res); });
+      return;
+    }
+    return res;
+  },
+
   parse: function(X, str, seq) {
     return this.mapToObj(X, this.parseToMap(str), undefined, seq);
   },
