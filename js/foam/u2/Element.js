@@ -531,15 +531,9 @@ CLASS({
     },
 
     function insertAt_(children, reference, before) {
-      var referenceNode;
-      for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
-        if ( this.childNodes[i] === reference ) {
-          referenceNode = this.childNodes[i];
-          break;
-        }
-      }
+      var i = this.childNodes.indexOf(reference);
 
-      if ( i == this.childNodes.length ) {
+      if ( i == -1 ) {
         console.warn("Reference node isn't a child of this.");
         return this;
       }
