@@ -44,6 +44,7 @@ CLASS({
       onSetStyle:    function() { },
       onSetAttr:     function() { },
       onAddChildren: function() { },
+      onInsertChildren: function() { },
       toString:      function() { return 'INITIAL'; }
     },
     OUTPUT: {
@@ -86,6 +87,9 @@ CLASS({
           out(arguments[i]);
         }*/
         this.id$el.insertAdjacentHTML('beforeend', out);
+      },
+      onInsertChildren: function() {
+        throw "Mutations not allowed in OUTPUT state.";
       },
       toString:      function() { return 'OUTPUT'; }
     },
@@ -133,6 +137,22 @@ CLASS({
           arguments[i].load && arguments[i].load();
         }
       },
+      onInsertChildren: function(children, reference, where) {
+        var e = this.id$el;
+        if ( ! e ) {
+          console.warn("Missing Element: ", this.id);
+          return;
+        }
+        var out = this.createOutputStream();
+        for ( var i = 0 ; i < children.length ; i++ ) {
+          out(children[i]);
+        }
+
+        reference.id$el.insertAdjacentHTML(where, out);
+        for ( var i = 0 ; i < children.length ; i++ ) {
+          children[i].load && children[i].load();
+        }
+      },
       toString:      function() { return 'LOADED'; }
     },
     UNLOADED: {
@@ -148,6 +168,7 @@ CLASS({
       onSetStyle:    function() { },
       onSetAttr:     function() { },
       onAddChildren: function() { },
+      onInsertChildren: function() { },
       toString:      function() { return 'UNLOADED'; }
     },
     DESTROYED: {
@@ -160,6 +181,7 @@ CLASS({
       onSetStyle:    function() { },
       onSetAttr:     function() { },
       onAddChildren: function() { },
+      onInsertChildren: function() { },
       toString:      function() { return 'DESTROYED'; }
     },
 
@@ -489,6 +511,46 @@ CLASS({
       this.childNodes.push.apply(this.childNodes, arguments);
       this.onAddChildren.apply(this, arguments);
 
+      return this;
+    },
+
+    function insertBefore(child, reference) {
+      return this.insertAt_(child, reference, true);
+    },
+
+    function insertAfter(child, reference) {
+      return this.insertAt_(child, reference, false);
+    },
+
+    function addBefore(reference/* vargs */) {
+      var children = [];
+      for ( var i = 1 ; i < arguments.length ; i++ ) {
+        children.push(arguments[i]);
+      }
+      return this.insertAt_(children, reference, true);
+    },
+
+    function insertAt_(children, reference, before) {
+      var referenceNode;
+      for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
+        if ( this.childNodes[i] === reference ) {
+          referenceNode = this.childNodes[i];
+          break;
+        }
+      }
+
+      if ( i == this.childNodes.length ) {
+        console.warn("Reference node isn't a child of this.");
+        return this;
+      }
+
+      var index = before ? i : (i + 1);
+      if ( Array.isArray(children) ) {
+        this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
+      } else {
+        this.childNodes.splice(index, 0, children);
+      }
+      this.state.onInsertChildren.call(this, [].concat(children), reference, before ? 'beforebegin' : 'afterend');
       return this;
     },
 
