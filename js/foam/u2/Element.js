@@ -544,7 +544,7 @@ CLASS({
       } else {
         this.childNodes.splice(index, 0, children);
       }
-      this.state.onInsertChildren.call(this, [].concat(children), reference, before ? 'beforebegin' : 'afterend');
+      this.state.onInsertChildren.call(this, Array.isArray(children) ? children : [children], reference, before ? 'beforebegin' : 'afterend');
       return this;
     },
 
