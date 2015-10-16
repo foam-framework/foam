@@ -42,7 +42,7 @@ CLASS({
         color: #444;
         display: block;
         float: left;
-        font-size: 12px;
+        font-size: 13px;
         padding-left: 6px;
         padding-top: 6px;
         text-align: right;

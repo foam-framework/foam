@@ -75,14 +75,14 @@ CLASS({
       .foam-u2-DetailView input {
         border: solid 1px #aacfe4;
         font-size: 10px;
-        margin: 2px 0 0px 6px;
+        margin: 2px 0 0px 2px;
         padding: 4px 2px;
       }
       .foam-u2-DetailView textarea {
         border: solid 1px #aacfe4;
         float: left;
         font-size: 10px;
-        margin: 2px 0 0px 10px;
+        margin: 2px 0 0px 2px;
         overflow: auto;
         padding: 4px 2px;
         width: 98%;
@@ -90,7 +90,7 @@ CLASS({
       .foam-u2-DetailView select {
         border: solid 1px #aacfe4;
         font-size: 10px;
-        margin: 2px 0 0px 10px;
+        margin: 2px 0 0px 2px;
         padding: 4px 2px;
       }
     */}
