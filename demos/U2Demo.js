@@ -221,6 +221,34 @@ MODEL({
 
 E('div').style({height: '30px'}).write();
 
+ var e = E('div').add(
+   E('span').add("hello "),
+   E('span').add("!")).write();
+ e.insertBefore(E('span').add('world'), e.children[1]);
+
+var e = E('div').add(
+  E('span').add("hello "),
+  E('span').add("!"));
+e.insertBefore(E('span').add('world'), e.children[1]);
+e.write();
+
+var e = E('div').add(
+  E('span').add("hello "),
+  E('span').add("!")).write();
+e.insertAfter(E('span').add('world'), e.children[0]);
+
+var e = E('div').add(
+  E('span').add("hello "),
+  E('span').add("!"));
+e.insertAfter(E('span').add('world'), e.children[0]);
+e.write();
+
+var e = E('div').add(
+  E('span').add("hello "),
+  E('span').add("!"));
+e.addBefore(e.children[1], E('span').add('there '), E('span').add('world'));
+e.write();
+
 var dv2 = foam.u2.DetailView.create({data: AllViews.create()}).write();
 var dv3 = foam.u2.DetailView.create({data: dv2.data}).write();
 
