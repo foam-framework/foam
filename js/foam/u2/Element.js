@@ -68,25 +68,19 @@ CLASS({
       },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
-        this.id$el.classList[enabled ? 'add' : 'remove'](cls);
+        throw "Mutations not allowed in OUTPUT state.";
       },
       onAddListener: function(topic, listener) {
-        this.id$el.addEventListener(topic, listener);
+        throw "Mutations not allowed in OUTPUT state.";
       },
       onSetStyle:    function(key, value) {
-        this.id$el.style[key] = value;
+        throw "Mutations not allowed in OUTPUT state.";
       },
       onSetAttr:     function(key, value) {
-        this.id$el[key] = value;
+        throw "Mutations not allowed in OUTPUT state.";
       },
       onAddChildren: function(c) {
-        var out = this.createOutputStream();
-        out(c);
-        /*
-        for ( var i = 0 ; i < arguments.length ; i++ ) {
-          out(arguments[i]);
-        }*/
-        this.id$el.insertAdjacentHTML('beforeend', out);
+        throw "Mutations not allowed in OUTPUT state.";
       },
       onInsertChildren: function() {
         throw "Mutations not allowed in OUTPUT state.";
