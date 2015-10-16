@@ -26,6 +26,8 @@ CLASS({
     'foam.u2.PropertyView'
   ],
 
+  exports: [ 'data' ],
+
   properties: [
     {
       name: 'data',
@@ -100,25 +102,11 @@ CLASS({
     function init() {
       this.SUPER();
 
-      var self = this;
-
       this.cls('foam-u2-DetailView').add(function(model, properties) {
-        if ( ! model ) return 'Set model or data.';
-
-        var e = self.createFormE();
-        e.add(E('tr').add(E('td').cls('foam-u2-DetailView-title').attrs({colspan: 2}).add(self.title$)));
-
-        for ( var i = 0 ; i < properties.length ; i++ )
-          e.add(self.createPropertyE(properties[i]));
-
-        return e;
-      }.on$(this.X, this.model$, this.properties$));
-    },
-
-    // Template Methods
-
-    function createFormE() { return E('table'); },
-
-    function createPropertyE(prop) { return this.PropertyView.create({data$: this.data$, prop: prop}); }
+        return ! model ?
+          'Set model or data.' :
+          this.E('table').add(E('tr').add(E('td').cls('foam-u2-DetailView-title').attrs({colspan: 2}).add(this.title$))).add(properties) ;
+      }.bind(this).on$(this.X, this.model$, this.properties$));
+    }
   ]
 });

@@ -24,7 +24,8 @@ CLASS({
   ],
 
   imports: [
-    'dynamic'
+    'dynamic',
+    'framed'
   ],
 
   constants: {
@@ -295,6 +296,12 @@ CLASS({
       }
     },
 
+    function E(opt_nodeName) {
+      var e = foam.u2.Element.create(null, this.Y);
+      if ( opt_nodeName ) e.nodeName = opt_nodeName;
+      return e;
+    },
+
     function attrValue(opt_name, opt_event) {
       var args = { element: this };
 
@@ -482,12 +489,11 @@ CLASS({
       var last = null;
       var l = function() {
         var e = E('span');
-        /*if ( value.get() ) */e.add(value.get());
+        /*if ( value.get() ) */e.add(value.get() || '');
         if ( last ) dyn.removeChild(last); //last.remove();
         dyn.add(last = e);
       };
-
-      value.addListener(l);
+      value.addListener(this.framed(l));
       l();
 
       return dyn;
@@ -496,7 +502,14 @@ CLASS({
     function add(/* vargs */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var c = arguments[i];
-        if ( typeof c === 'function' )
+        console.assert(c !== undefined && c !== null, 'Cannot add null child.');
+        if ( Array.isArray(c) ) {
+          Array.prototype.splice.apply(arguments, [i, 1].concat(c));
+          i--;
+          continue;
+        } else if ( c.toE )
+          arguments[i] = c.toE(this.X);
+        else if ( typeof c === 'function' )
           arguments[i] = this.fnE_(c);
         else if ( Value.isInstance(c) )
           arguments[i] = this.valueE_(c);

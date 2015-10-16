@@ -26,12 +26,14 @@ CLASS({
     'foam.u2.Input'
   ],
 
+  imports: [ 'data' ],
+
   properties: [
     {
-      name: 'data'
+      name: 'prop'
     },
     {
-      name: 'prop'
+      name: 'view'
     },
     [ 'nodeName', 'tr' ]
   ],
@@ -55,7 +57,7 @@ CLASS({
     function init() {
       this.SUPER();
 
-      var view = this.prop.toE();
+      var view = this.view || this.prop.toPropertyE();
 
       // TODO: Why can't I just define this with data$ in the view constructor?
       // Is data$ linking the wrong way?

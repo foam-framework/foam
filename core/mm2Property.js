@@ -861,8 +861,13 @@ GLOBAL.Property = {
         });
       }
     },
-    function toE() {
-      return foam.u2.Input.create();
+    function toPropertyE(X) {
+      return X.foam.u2.Input.create(null, X);
+    },
+    function toE(opt_X) {
+      debugger;
+      var X = opt_X || this.X;
+      return X.foam.u2.PropertyView.create({prop: this, view: this.toPropertyE(X)}, X);
     }
   ],
 
