@@ -182,6 +182,13 @@ CLASS({
             return this.X.$(this.id + '-menu-body');
           },
         },
+        {
+          name: 'stack',
+          postSet: function(old,nu) {
+            old && old.unsubscribe(old.VIEW_DESTROYED, this.onViewDestroyed);
+            nu && nu.subscribe(nu.VIEW_DESTROYED, this.onViewDestroyed);
+          }
+        },
       ],
 
       methods: [
@@ -203,7 +210,7 @@ CLASS({
 
         function remove(selection) {
           /* when dao items change, make sure we don't leave the view open */
-          if ( this.selection && this.selection.id && this.selection.id === selection.id ) {
+          if ( this.selection && this.selection.id && this.selection.id == selection.id ) {
             //this.listView_ && this.listView_.stack && this.listView_.stack.popView();
             this.selection = null;
           }
@@ -260,10 +267,18 @@ CLASS({
           name: 'onMenuClosed',
           code: function(evt) {
             if ( evt.propertyName && ! this.menuOpen ) {
-              this.stack.popChildViews();
+              this.selection = null;
               this.updateHTML();
             }
           },
+        },
+        {
+          name: 'onViewDestroyed',
+          code: function(sender, topic, view) {
+            if (view.data && this.selection && view.data.id == this.selection.id) {
+              this.selection = null;
+            }
+          }
         },
       ],
       templates: [

@@ -25,6 +25,9 @@ CLASS({
   exports: [
     'as stack'
   ],
+  constants: {
+    VIEW_DESTROYED: [ 'view-destroyed' ],
+  },
   properties: [
     {
       model_: 'IntProperty',
@@ -115,6 +118,7 @@ CLASS({
     function destroyChildViews_(index) {
       while(this.views_.length > index) {
         var obj = this.views_.pop();
+        this.publish(this.VIEW_DESTROYED, obj.view);
         var e = this.X.$(obj.id);
         e && this.elementAnimationRemove_(e.style);
         this.resize();
