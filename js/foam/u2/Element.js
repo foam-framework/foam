@@ -28,6 +28,23 @@ CLASS({
     'framed'
   ],
 
+  static: function() {
+    console.log('Running Element.static().');
+
+    Function.prototype.toE = function(X) {
+      var dyn = E('span');
+      var last = null;
+
+      X.dynamic(this, function(e) {
+        e = E('span').add(e);
+        if ( last ) dyn.removeChild(last); //last.remove();
+        dyn.add(last = e);
+      });
+
+      return dyn;
+    }
+  },
+
   constants: {
     INITIAL: {
       output: function(out) {
@@ -471,19 +488,6 @@ CLASS({
       return this.add.apply(this, arguments);
     },
 
-    function fnE_(fn) {
-      var dyn = E('span');
-      var last = null;
-
-      this.dynamic(fn, function(e) {
-        e = E('span').add(e);
-        if ( last ) dyn.removeChild(last); //last.remove();
-        dyn.add(last = e);
-      });
-
-      return dyn;
-    },
-
     function valueE_(value) {
       var dyn = E('span');
       var last = null;
@@ -509,8 +513,6 @@ CLASS({
           continue;
         } else if ( c.toE )
           arguments[i] = c.toE(this.X);
-        else if ( typeof c === 'function' )
-          arguments[i] = this.fnE_(c);
         else if ( Value.isInstance(c) )
           arguments[i] = this.valueE_(c);
       }
