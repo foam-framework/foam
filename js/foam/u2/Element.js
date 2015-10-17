@@ -28,7 +28,7 @@ CLASS({
     'framed'
   ],
 
-  static: function() {
+  onLoad: function() {
     console.log('Running Element.static().');
 
     Function.prototype.toE = function(X) {

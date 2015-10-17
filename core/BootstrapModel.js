@@ -464,7 +464,7 @@ var BootstrapModel = {
       }
     }
 
-    if ( this.static ) this.static();
+    if ( this.onLoad ) this.onLoad();
 
     return cls;
   },

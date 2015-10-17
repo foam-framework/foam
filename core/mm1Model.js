@@ -370,7 +370,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       documentation: function() { /* $$DOC{ref:'Interface',usePlural:true} implemented by this $$DOC{ref:'Model'} .*/}
     },
     {
-      name: 'static',
+      name: 'onLoad',
       type: 'Function',
       labels: ['javascript'],
       required: false,
