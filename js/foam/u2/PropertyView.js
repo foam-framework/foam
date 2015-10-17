@@ -50,6 +50,12 @@ CLASS({
         text-align: right;
         vertical-align: top;
       }
+      .foam-u2-PropertyView-units  {
+        color: #444;
+        font-size: 13px;
+        padding: 4px;
+        text-align: right;
+      }
     */}
   ],
 
@@ -58,13 +64,17 @@ CLASS({
       this.SUPER();
 
       var view = this.view || this.prop.toPropertyE();
+      var prop = this.prop;
 
       // TODO: Why can't I just define this with data$ in the view constructor?
       // Is data$ linking the wrong way?
-      Events.link(this.data.propertyValue(this.prop.name), view.data$);
+      Events.link(this.data.propertyValue(prop.name), view.data$);
+
       this.cls('foam-u2-PropertyView').add(
-        E('td').cls('foam-u2-PropertyView-label').add(this.prop.label),
-        E('td').cls('foam-u2-PropertyView-view').add(view));
+        E('td').cls('foam-u2-PropertyView-label').add(prop.label),
+        E('td').cls('foam-u2-PropertyView-view').add(
+          view,
+          prop.units && E().cls('foam-u2-PropertyView-units').add(prop.units)));
     }
   ]
 });

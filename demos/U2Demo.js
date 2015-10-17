@@ -168,6 +168,11 @@ MODEL({
       name: 'int'
     },
     {
+      model_: 'IntProperty',
+      name: 'withUnits',
+      units: 'ms'
+    },
+    {
       model_: 'LongProperty',
       name: 'long'
     },
