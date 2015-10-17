@@ -501,8 +501,13 @@ CLASS({
     function add(/* vargs */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var c = arguments[i];
-        console.assert(c !== undefined && c !== null, 'Cannot add null child.');
-        if ( Array.isArray(c) ) {
+
+        // Remove null values
+        if ( c === undefined || c === null ) {
+          Array.prototype.splice.call(arguments, i, 1);
+          i--;
+          continue;
+        } else if ( Array.isArray(c) ) {
           Array.prototype.splice.apply(arguments, [i, 1].concat(c));
           i--;
           continue;
@@ -512,8 +517,10 @@ CLASS({
           arguments[i] = this.valueE_(c);
       }
 
-      this.childNodes.push.apply(this.childNodes, arguments);
-      this.onAddChildren.apply(this, arguments);
+      if ( arguments.length ) {
+        this.childNodes.push.apply(this.childNodes, arguments);
+        this.onAddChildren.apply(this, arguments);
+      }
 
       return this;
     },
