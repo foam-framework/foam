@@ -370,6 +370,19 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       documentation: function() { /* $$DOC{ref:'Interface',usePlural:true} implemented by this $$DOC{ref:'Model'} .*/}
     },
     {
+      name: 'static',
+      type: 'Function',
+      labels: ['javascript'],
+      required: false,
+      displayWidth: 70,
+      displayHeight: 3,
+      view: 'foam.ui.FunctionView',
+      defaultValue: '',
+      help: "A function which is called when a Model's prototype is built.",
+      documentation: function() { /*
+      */}
+    },
+    {
       name: 'tableProperties',
       type: 'Array[String]',
       view: 'foam.ui.StringArrayView',

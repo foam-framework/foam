@@ -238,8 +238,6 @@ var BootstrapModel = {
       if ( this[m.name] ) cls[m.name] = this[m.name];
     }.bind(this));
 
-// TODO(adamvy): This shouldn't be required, commenting out for now.
-//    if ( extendsModel ) this.requires = this.requires.concat(extendsModel.requires);
     // build requires
     Object_forEach(this.requires, function(i) {
       var imp  = i.split(' as ');
@@ -465,6 +463,8 @@ var BootstrapModel = {
           primaryKey.map(function(key, i) { this[key] = val[i]; }.bind(this)); });
       }
     }
+
+    if ( this.static ) this.static();
 
     return cls;
   },
