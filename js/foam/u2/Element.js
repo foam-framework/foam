@@ -483,11 +483,6 @@ CLASS({
       return this;
     },
 
-    function c() {
-      console.warn('deprecated use of c(), use add() instead.');
-      return this.add.apply(this, arguments);
-    },
-
     function valueE_(value) {
       var dyn = E('span');
       var last = null;
