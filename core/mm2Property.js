@@ -354,6 +354,20 @@ GLOBAL.Property = {
     },
     {
 //      model_: 'ViewFactoryProperty',
+      name: 'toPropertyE',
+      labels: ['javascript'],
+      defaultValue: function toPropertyE(X) {
+        var e = this.displayHeight > 1 ?
+          X.foam.u2.TextArea.create(null, X) :
+          X.foam.u2.Input.create(null, X)    ;
+        
+        e.attrs({size: this.displayWidth});
+        
+        return e;
+      }
+    },
+    {
+//      model_: 'ViewFactoryProperty',
       name: 'detailView',
       type: 'view',
       labels: ['javascript'],
@@ -860,15 +874,6 @@ GLOBAL.Property = {
           if ( ! o.hasOwnProperty(name) ) o[name];
         });
       }
-    },
-    function toPropertyE(X) {
-      var e = this.displayHeight > 1 ?
-        X.foam.u2.TextArea.create(null, X) :
-        X.foam.u2.Input.create(null, X)    ;
-
-      e.attrs({size: this.displayWidth});
-
-      return e;
     },
     function toE(opt_X) {
       var X = opt_X || this.X;
