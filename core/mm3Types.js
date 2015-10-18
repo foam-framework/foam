@@ -96,6 +96,10 @@ CLASS({
       help: 'The Java type of this property.'
     },
     [ 'view', 'foam.ui.BooleanView' ],
+    [ 'toPropertyE', function(X) {
+        return X.foam.u2.Checkbox.create(null, X);
+      },
+    ],
     [ 'defaultValue', false ],
     [ 'adapt', function (_, v) { return !!v; } ],
     {

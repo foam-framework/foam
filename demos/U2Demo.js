@@ -166,6 +166,11 @@ MODEL({
       name: 'boolean'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'defaultValueTrue',
+      defaultValue: true
+    },
+    {
       model_: 'DateProperty',
       name: 'date'
     },
