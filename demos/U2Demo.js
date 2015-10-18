@@ -222,7 +222,7 @@ MODEL({
     },
     {
       model_: 'URLProperty',
-      name: 'string'
+      name: 'url'
     },
     {
       model_: 'ColorProperty',
