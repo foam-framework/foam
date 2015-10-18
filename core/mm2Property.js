@@ -862,7 +862,13 @@ GLOBAL.Property = {
       }
     },
     function toPropertyE(X) {
-      return X.foam.u2.Input.create(null, X);
+      var e = this.displayHeight > 1 ?
+        X.foam.u2.TextArea.create(null, X) :
+        X.foam.u2.Input.create(null, X)    ;
+
+      e.attrs({size: this.displayWidth});
+
+      return e;
     },
     function toE(opt_X) {
       var X = opt_X || this.X;

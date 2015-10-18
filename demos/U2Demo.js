@@ -152,6 +152,16 @@ MODEL({
       name: 'string'
     },
     {
+      model_: 'StringProperty',
+      name: 'displayWidth',
+      displayWidth: 60
+    },
+    {
+      model_: 'StringProperty',
+      name: 'displayHeight',
+      displayHeight: 3
+    },
+    {
       model_: 'BooleanProperty',
       name: 'boolean'
     },
@@ -168,17 +178,17 @@ MODEL({
       name: 'int'
     },
     {
-      model_: 'IntProperty',
-      name: 'withUnits',
-      units: 'ms'
-    },
-    {
       model_: 'LongProperty',
       name: 'long'
     },
     {
       model_: 'FloatProperty',
       name: 'float'
+    },
+    {
+      model_: 'IntProperty',
+      name: 'withUnits',
+      units: 'ms'
     },
     {
       model_: 'FunctionProperty',
