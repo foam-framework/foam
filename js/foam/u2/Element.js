@@ -663,12 +663,14 @@ CLASS({
       if ( ! first ) out('"');
 
       for ( var i = 0 ; i < this.attributes.length ; i++ ) {
-        var attr = this.attributes[i];
+        var attr  = this.attributes[i];
         var value = this.attributes[i].value;
 
-        out(' ', attr.name);
-        if ( value !== undefined )
-          out('="', value, '"');
+        if ( value ) {
+          out(' ', attr.name);
+          if ( value !== undefined )
+            out('="', value, '"');
+        }
       }
 
       if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
