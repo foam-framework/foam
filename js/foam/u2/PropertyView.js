@@ -52,7 +52,7 @@ CLASS({
       }
       .foam-u2-PropertyView-units  {
         color: #444;
-        font-size: 13px;
+        font-size: 12px;
         padding: 4px;
         text-align: right;
       }
