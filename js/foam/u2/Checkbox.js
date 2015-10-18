@@ -26,10 +26,7 @@ CLASS({
     [ 'nodeName', 'input' ],
     {
       model_: 'BooleanProperty',
-      name: 'data',
-      postSet: function(o,n) {
-        console.log('****: ', o, n);
-      }
+      name: 'data'
     }
   ],
 
@@ -37,9 +34,6 @@ CLASS({
     function init() {
       this.SUPER();
       this.attrs({type: 'checkbox'});
-    //  var v = this.attrValue('checked', 'change');
-    //  v.addListener(console.log.bind(console));
-    //    Events.link(this.data$, v)
       this.data$ = this.attrValue('checked', 'change');
     }
   ]
