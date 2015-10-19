@@ -18,7 +18,7 @@ CLASS({
   package: 'foam.dao',
   name: 'PublicReadPrivateWriteAuthorizerTest',
   requires: [
-    'foam.dao.AuthorizingDAO',
+    'foam.dao.AuthorizedDAO',
     'foam.dao.EasyDAO',
     'foam.dao.PublicReadPrivateWriteAuthorizer',
   ],
@@ -55,7 +55,7 @@ CLASS({
       inner.put(this.Employee.create({ id: 4, name: 'Jackson', company: 'ABC', }));
       inner.put(this.Employee.create({ id: 5, name: 'Mark', company: 'ABC', }));
 
-      return this.AuthorizingDAO.create({
+      return this.AuthorizedDAO.create({
         model: this.Employee,
         authorizer: this.PublicReadPrivateWriteAuthorizer.create({
           ownerProp: this.Employee.COMPANY

@@ -21,7 +21,7 @@ CLASS({
 
   documentation: function() {/*
     <p>$$DOC{ref:'foam.dao.Authorizer'} for the common case where each user
-    of the service owns their own data. An $$DOC{ref:'foam.dao.AuthorizingDAO'}
+    of the service owns their own data. An $$DOC{ref:'foam.dao.AuthorizedDAO'}
     backed by this $$DOC{ref:'foam.dao.Authorizer'} presents a view of the
     world as though only this user's data exists.</p>
   */},

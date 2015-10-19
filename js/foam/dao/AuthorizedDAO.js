@@ -16,7 +16,7 @@
  */
 CLASS({
   package: 'foam.dao',
-  name: 'AuthorizingDAO',
+  name: 'AuthorizedDAO',
   // Deliberately does NOT extend AbstractDAO, ProxyDAO, etc. It would be unsafe
   // for a new method to be added, but not authorized.
   properties: [

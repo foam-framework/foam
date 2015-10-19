@@ -21,8 +21,8 @@ __DATA({
 
   documentation: function() {/*
     <p>This $$DOC{ref:'Interface'} describes the pluggable
-    $$DOC{ref:'foam.dao.AuthorizingDAO.authorizer'} property of an
-    $$DOC{ref:'foam.dao.AuthorizingDAO'}.</p>
+    $$DOC{ref:'foam.dao.AuthorizedDAO.authorizer'} property of an
+    $$DOC{ref:'foam.dao.AuthorizedDAO'}.</p>
     <p>Care should be taken in implementing an Authorizer to ensure that each
     operation safely defaults to allowing nothing, when access is not permitted.
     </p>

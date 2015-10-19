@@ -27,7 +27,7 @@ CLASS({
     checks its validity as a Google OAuth/Google Sign-In token. If it
     successfully matches, it will set the "sub" claim (an app-specific, stable
     user ID for this Google account) as the "principal" on the context, for the
-    use of the delegate (probably an AuthorizingDAO).
+    use of the delegate (probably an AuthorizedDAO).
   */},
 
   constants: {
