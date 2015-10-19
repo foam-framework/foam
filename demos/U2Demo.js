@@ -53,12 +53,15 @@ e5.write();
 e5.style({color: 'blue'});
 
 
-var e6 = E('div').add('add class before').cls(['important']);
+var e6 = E('div').add('add class before').cls('important');
 e6.write();
 
 var e7 = E('div').add('add class after');
 e7.write();
-e7.cls(['important']);
+e7.cls('important');
+
+E('div').add('dynamic class with value').cls('important', function(i) { return i%2; }.on$(X, timer.second$)).write();
+E('div').add('dynamic class with fn').cls('important', function(i) { return timer.second%2; }).write();
 
 var e8 = E('input');
 e8.write();

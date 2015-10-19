@@ -5,7 +5,7 @@ function toE() {
         e.ADD(E('th').cls('colHeader').add(String.fromCharCode(65 +j)));
     e.END();
     for ( i = 0 ; i <= this.rows ; i++ ) {
-      e.START('tr').add(E('th').cls('rowHeader').add(i));    
+      e.START('tr').add(E('th').cls('rowHeader').add(i));
         for ( var j = 0 ; j < this.columns ; j++ ) {
           e.ADD(E('td').cls('cell').add(this.cell(this.cellName(j, i)));
       e.END();
@@ -19,3 +19,5 @@ configure from property
 async view loading
 toE
 benchmark (w. Cells?)
+
+register PropertyViews with DetailView

@@ -366,6 +366,17 @@ CLASS({
     function blur() { },
 
     //
+    // Focus
+    //
+    function show() {
+      this.shown = true;
+    },
+
+    function hide() {
+      this.shown = false;
+    },
+
+    //
     // Lifecycle
     //
     function load() { this.state.load.call(this); },
@@ -424,9 +435,23 @@ CLASS({
     },
 
     function cls(cls, opt_enabled) {
-      var enabled = opt_enabled === undefined ? true : opt_enabled ;
-      this.classes[cls] = enabled;
-      this.onSetCls(cls, enabled);
+      if ( typeof opt_enabled === 'function' ) {
+        var fn = opt_enabled;
+        this.dynamic(fn, function(value) {
+          this.cls(cls, value);
+        }.bind(this));
+      } else if ( Value.isInstance(opt_enabled) ) {
+        var value = opt_enabled;
+        var l = function() {
+          this.cls(cls, value.get());
+        }.bind(this);
+        value.addListener(l);
+        l();
+      } else {
+        var enabled = opt_enabled === undefined ? true : opt_enabled ;
+        this.classes[cls] = enabled;
+        this.onSetCls(cls, enabled);
+      }
       return this;
     },
 
@@ -438,10 +463,9 @@ CLASS({
     },
 
     function valueAttr_(key, value) {
-      var self = this;
       var l = function() {
-        self.setAttribute(key, value.get());
-      };
+        this.setAttribute(key, value.get());
+      }.bind(this);
       value.addListener(l);
       l();
     },
@@ -460,10 +484,9 @@ CLASS({
     },
 
     function dynamicStyle_(key, fn) {
-      var self = this;
       this.dynamic(fn, function(value) {
-        self.style_(key, value);
-      });
+        this.style_(key, value);
+      }.bind(this));
     },
 
     function style_(key, value) {
