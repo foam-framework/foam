@@ -63,6 +63,8 @@ e7.cls('important');
 E('div').add('dynamic class with value').cls('important', function(i) { return i%2; }.on$(X, timer.second$)).write();
 E('div').add('dynamic class with fn').cls('important', function(i) { return timer.second%2; }).write();
 
+E('div').add('dynamic class with fn (hidden)').style({display:'block'}).cls('hidden', function(i) { return timer.second%2; }).write();
+
 var e8 = E('input');
 e8.write();
 var v8 = e8.attrValue();

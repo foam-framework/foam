@@ -361,19 +361,19 @@ CLASS({
     //
     // Focus
     //
-    function focus() { },
+    function focus() {
+    },
 
-    function blur() { },
+    function blur() {
+    },
 
     //
-    // Focus
+    // Visibility
     //
     function show() {
-      this.shown = true;
     },
 
     function hide() {
-      this.shown = false;
     },
 
     //
