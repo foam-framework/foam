@@ -36,11 +36,11 @@ CLASS({
     // official Node auth library, see:
     // https://github.com/google/google-auth-library-nodejs/blob/master/lib/auth/oauth2client.js#L90
     CLOCK_SKEW: 300,
-    // Google's public keys for verifying auth tokens.
-    CERTS: {
-      '5fafa2017895d588e4695446533f4093c0e2a8cc': '-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIIK6ARM4DTSQIwDQYJKoZIhvcNAQEFBQAwNjE0MDIGA1UE\nAxMrZmVkZXJhdGVkLXNpZ25vbi5zeXN0ZW0uZ3NlcnZpY2VhY2NvdW50LmNvbTAe\nFw0xNTEwMTMwMzEzMzRaFw0xNTEwMTQxNjEzMzRaMDYxNDAyBgNVBAMTK2ZlZGVy\nYXRlZC1zaWdub24uc3lzdGVtLmdzZXJ2aWNlYWNjb3VudC5jb20wggEiMA0GCSqG\nSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDL7gvnorwO9kO3TToJvOKYJh7eD/r5X0d0\nzKkafDpxVLGa2ZikJnEmkWVIxbzy3wGpqJphukc3bNw/aGSf5NYGi2G/ohDbjhm8\n/0QYcW1BeCRMrOXbRjERVnEGEwn/qU02/z7XUEuZPvDLT8dtxV8jr9HB7pieJy83\nmefSl2BzvuG7gC1xBLNkxdpqvD34ij/Z5JEnVQsUhiQTwyKhBaWCyu9oHBSTJDZM\njykvZ9IGWJiPfOd213QclmyTRN0mcubakIRlIKNqVCTuB9Y1z8gG/qLKzLn23xM7\nksG1ra5MBXbU1eRgArN/Z0Rf/TWmR3vAMBuPEtxhwd0IbhwWHU87AgMBAAGjODA2\nMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMBYGA1UdJQEB/wQMMAoGCCsG\nAQUFBwMCMA0GCSqGSIb3DQEBBQUAA4IBAQCcAh6MKkBe7F3MWB6tAZFpAy6Vu0wV\nH7UBPJJdSloSuvruh3rQIOlI3Hpk5JSpxPU9XU8eBJh6RlzfKbmmXiE+UeW2NtMC\n0IoRKvRN3lzlXWkgkaT8OMhVr0FzfG5jAAhJUxhhHqL9ZhczXC7m7MGz8UFuWGdu\ness7X8nSwj7TsjSE16EllR44V2pYQJy0Mr4DBAxGZ1Pf0Ir4URHZhJ35Jn+gU5o/\nPxSHtyOusKawNIUb2xMrlzsM7647S8R1JI6kk571ZPPkAEUKicTA46dijq/KlBGY\nAvLX3OewSLHdlbQ5uzPo1Zqanyddz5zDsR9RNa1eEnbIkT1C+WPdzzjp\n-----END CERTIFICATE-----\n',
-      '47db449f1e27fda0db71d5777ea5cdc64352d5f3': '-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIITwjU8ORVNrUwDQYJKoZIhvcNAQEFBQAwNjE0MDIGA1UE\nAxMrZmVkZXJhdGVkLXNpZ25vbi5zeXN0ZW0uZ3NlcnZpY2VhY2NvdW50LmNvbTAe\nFw0xNTEwMTQwMjU4MzRaFw0xNTEwMTUxNTU4MzRaMDYxNDAyBgNVBAMTK2ZlZGVy\nYXRlZC1zaWdub24uc3lzdGVtLmdzZXJ2aWNlYWNjb3VudC5jb20wggEiMA0GCSqG\nSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDF0sHOzYce06FPrJztkiqC9Yk4pqsBykR2\nI4C0X+3lIR4oKOmSqOIHaf6sPWPby5z0KSewH/2lzuUZnyQo586AdQeyEZ8Xd5h6\nfJDcqjgY8wFNmWA23Bpgku4nBi1R5zShqQ6nGf39wR0izafMb2ZYExwi68fORhJi\nkg4mMqvKXASgZQfHZlXQCaP6A/Cmj8Xqdwb4IcJWIWbccvKoQ8Rku3TK7KOWG/74\ng6gFr1efvOb2PYxwnv77a4iUX5bDzDAzgTUA4G/0iv54PP9GhRLhcvgdo6shaoXr\n1UnHwUgcWyGus7fOHyF+aEiJBhpKOjG6Nk+jKC0/Ay5VwuvbdwpJAgMBAAGjODA2\nMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMBYGA1UdJQEB/wQMMAoGCCsG\nAQUFBwMCMA0GCSqGSIb3DQEBBQUAA4IBAQAHJ+dd24vyp7fZ8E6dDSlC8SnhKht3\nQ718l52UgG97Dkphqh9f37wid+IN48tkwC3HTGOHNm2rro0FxL1yljZAwS/F0uDf\n1Q1KCZkpHaOMq46cuPf3OpmYRd8o4tXCrE3czcgNDozLepHpmhzz+mx6nanMB87n\n9XMdVHz1cadEP1itqlF1l0E0f/hJVFR6IBT5RGQ3vWcQnDItLlGtAzNd5l9ZGTzA\n/0QRzk96Yf22R51kAN+8aArpUH8v8HKuXmgV5FrNpOxEnfSLUDLwCCl932ZvaT01\nUR4d9P/gyAFhLqTMhBWiimdfP5eCUao8Bfu/YnZIyRRCkPd638yWA/gS\n-----END CERTIFICATE-----\n'
-    }
+
+    // URL for fetching Google's public keys.
+    // These are fetched at startup. The HTTP cache headers are used to
+    // determine when to fetch again.
+    CERT_URL: 'https://www.googleapis.com/oauth2/v1/certs',
   },
 
   properties: [
@@ -61,33 +61,102 @@ CLASS({
         return require('crypto');
       }
     },
+    {
+      name: 'https',
+      factory: function() {
+        return require('https');
+      }
+    },
+    {
+      name: 'certificates_',
+    },
+    {
+      name: 'certificatesExpiry_',
+    },
+    {
+      name: 'certificatesListeners_',
+    },
   ],
 
   methods: [
     function find(id, sink, opt_X) {
-      this.delegate.find(id, sink, this.augmentContext_(opt_X));
+      this.augmentContext_(opt_X)(function(X) {
+        this.delegate.find(id, sink, X);
+      }.bind(this));
     },
     function put(obj, sink, opt_X) {
-      this.delegate.put(obj, sink, this.augmentContext_(opt_X));
+      this.augmentContext_(opt_X)(function(X) {
+        this.delegate.put(obj, sink, X);
+      }.bind(this));
     },
     function remove(id, sink, opt_X) {
-      this.delegate.remove(id, sink, this.augmentContext_(opt_X));
+      this.augmentContext_(opt_X)(function(X) {
+        this.delegate.remove(id, sink, X);
+      }.bind(this));
     },
     function select(sink, options, opt_X) {
-      return this.delegate.select(sink, options, this.augmentContext_(opt_X));
+      var self = this;
+      return aseq(
+        self.augmentContext_(opt_X),
+        function(ret, X) {
+          self.delegate.select(sink, options, X)(ret);
+        }
+      );
     },
     function removeAll(sink, options, opt_X) {
-      return this.delegate.removeAll(sink, options, this.augmentContext_(opt_X));
+      var self = this;
+      return aseq(
+        self.augmentContext_(opt_X),
+        function(ret, X) {
+          self.delegate.removeAll(sink, options, X)(ret);
+        }
+      );
     },
 
     function augmentContext_(X) {
-      if (!X || !X.cookies || !X.cookies.foamDAOAuth) return X;
+      if (!X || !X.cookies || !X.cookies.foamDAOAuth) return aconstant(X);
 
       var token = X.cookies.foamDAOAuth;
-      var response = this.verifyAuthToken_(token);
-      return response ? X.sub({ principal: response }) : X;
+      return aseq(
+        this.getCertificates_.bind(this),
+        function(ret, certs) {
+          var response = this.verifyAuthToken_(certs, token);
+          ret(response ? X.sub({ principal: response }) : X);
+        }.bind(this)
+      );
     },
-    function verifyAuthToken_(jwt) {
+    function getCertificates_(ret) {
+      if (this.certificatesListeners_) {
+        this.certificatesListeners_.push(ret);
+      } else if (this.certificates_ && this.certificatesExpiry_ > new Date()) {
+        // Certificates are loaded and still fresh, so return them.
+        ret(this.certificates_);
+      } else {
+        // Fetch new certificates.
+        this.certificatesListeners_ = [ret];
+        var self = this;
+        this.https.get(this.CERT_URL, function(res) {
+          var body = '';
+          res.on('data', function(d) { body += d; });
+          res.on('end', function() {
+            self.certificates_ = JSON.parse(body);
+            // < Cache-Control: public, max-age=21115, must-revalidate,
+            // no-transform
+            //
+            var cacheMatch = res.headers['cache-control'].match(/max-age=(\d+)/);
+            self.certificatesExpiry_ = new Date(Date.now() + (+cacheMatch[1] * 1000));
+
+            self.certificatesListeners_.forEach(function(l) {
+              l(self.certificates_);
+            });
+            self.certificatesListeners_ = '';
+          });
+        }).on('error', function(e) {
+          self.warn('Failed to fetch new Google public keys: ' + e);
+        });
+      }
+    },
+    function verifyAuthToken_(certs, jwt) {
       // Verifies that a Google auth token is valid. Returns the "sub", the
       // app-specific Google account ID for this user, or false on failure.
       // This token is a standard JWT signed by Google.
@@ -126,7 +195,11 @@ CLASS({
         return false;
       }
 
-      var pem = this.CERTS[envelope.kid];
+      var pem = certs[envelope.kid];
+      if (!pem) {
+        this.warn('Unknown public key ID: ' + envelope.kid);
+        return false;
+      }
       var pemVerifier = this.crypto.createVerify('sha256');
       pemVerifier.update(signed);
       var verified = pemVerifier.verify(pem, signature, 'base64');
