@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
-  *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,13 +17,13 @@
 __DATA({
   model_: 'Interface',
   package: 'foam.dao',
-  name: 'Authenticator',
+  name: 'Authorizer',
 
   documentation: function() {/*
     <p>This $$DOC{ref:'Interface'} describes the pluggable
-    $$DOC{ref:'foam.dao.AuthenticatedDAO.authenticator'} property of an
-    $$DOC{ref:'foam.dao.AuthenticatedDAO'}.</p>
-    <p>Care should be taken in implementing an Authenticator to ensure that each
+    $$DOC{ref:'foam.dao.AuthorizingDAO.authorizer'} property of an
+    $$DOC{ref:'foam.dao.AuthorizingDAO'}.</p>
+    <p>Care should be taken in implementing an Authorizer to ensure that each
     operation safely defaults to allowing nothing, when access is not permitted.
     </p>
   */},

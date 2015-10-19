@@ -16,9 +16,9 @@
  */
 CLASS({
   package: 'foam.dao',
-  name: 'AuthenticatedDAO',
+  name: 'AuthorizingDAO',
   // Deliberately does NOT extend AbstractDAO, ProxyDAO, etc. It would be unsafe
-  // for a new method to be added, but not authenticated.
+  // for a new method to be added, but not authorized.
   properties: [
     {
       name: 'model',
@@ -29,9 +29,9 @@ CLASS({
       required: true
     },
     {
-      name: 'authenticator',
-      documentation: 'An instance of $$DOC{ref:"foam.dao.Authenticator"} ' +
-          'that describes how to authenticate each DAO method.',
+      name: 'authorizer',
+      documentation: 'An instance of $$DOC{ref:"foam.dao.Authorizer"} ' +
+          'that describes how to authorize each DAO method.',
       required: true
     },
   ],
@@ -46,7 +46,7 @@ CLASS({
       }.bind(this);
     },
     function put(obj, sink, opt_X) {
-      // On put, ask the authenticator to decorate our object.
+      // On put, ask the authorizer to decorate our object.
       // It might return null, indicating that the object is owned by another
       // user, and this put should be denied.
       var self = this;
@@ -60,7 +60,7 @@ CLASS({
         // Always return null if ID is not set; this is a new object.
         obj.id ? this.adelegateFind_(obj.id) : aconstant(null),
         function(ret, old) {
-          self.authenticator.massageForPut(ret, principal, old, obj);
+          self.authorizer.massageForPut(ret, principal, old, obj);
         },
         function(ret, massaged) {
           if (massaged === null) {
@@ -73,7 +73,7 @@ CLASS({
                 ret();
               },
               put: function(postPut) {
-                self.authenticator.massageForRead(function(massaged) {
+                self.authorizer.massageForRead(function(massaged) {
                   // Even if the massaged value is false, the put didn't fail.
                   // So we always call sink.put, maybe with null.
                   sink && sink.put && sink.put(massaged || obj);
@@ -88,7 +88,7 @@ CLASS({
     },
     function remove(id_or_obj, sink, opt_X) {
       // On remove, we retrieve the original object from the delegate, then ask
-      // the authenticator whether the removal is allowed. If the user sent us a
+      // the authorizer whether the removal is allowed. If the user sent us a
       // whole object instead of an ID, we don't trust any part of it except the
       // ID.
       // When (a) the original object doesn't exist, or (b) it exists but we're
@@ -105,13 +105,13 @@ CLASS({
       aseq(
         this.adelegateFind_(id),
         function(ret, old) {
-          self.authenticator.shouldAllowRemove(ret, principal, old);
+          self.authorizer.shouldAllowRemove(ret, principal, old);
         }
       )(function(allowed) {
         if (allowed) {
           self.delegate.remove(id, {
             remove: function(obj) {
-              self.authenticator.massageForRead(function(massaged) {
+              self.authorizer.massageForRead(function(massaged) {
                 if (!massaged) {
                   // Creates an empty object with the correct ID, if you can't
                   // read the original.
@@ -134,8 +134,8 @@ CLASS({
     },
     function find(id, sink, opt_X) {
       // On find, we retrieve the object from the delegate, then ask the
-      // authenticator to massage it for this principal, and return it.
-      // The authenticator might return null, in which case we return an error.
+      // authorizer to massage it for this principal, and return it.
+      // The authorizer might return null, in which case we return an error.
       var self = this;
       var principal = opt_X && opt_X.principal;
       if (!principal) {
@@ -149,7 +149,7 @@ CLASS({
           sink && sink.error && sink.error('Failed to find');
         },
         put: function(obj) {
-          self.authenticator.massageForRead(function(obj) {
+          self.authorizer.massageForRead(function(obj) {
             if (obj === null) {
               sink && sink.error && sink.error('Failed to find');
             } else {
@@ -163,7 +163,7 @@ CLASS({
       // On select, we first decorate the delegate to avoid wasting effort.
       // Then we run the select(), and massage each output value for reading
       // before sending it to the sink. nulls are dropped, as though they don't
-      // exist. (That should be rare, unless the authenticator can't express all
+      // exist. (That should be rare, unless the authorizer can't express all
       // of its conditions as a where() condition).
       // TODO(braden): Conditions from decorateForSelect() are fine, but if
       // massageForRead() will return null for any retrieved objects even with
@@ -183,7 +183,7 @@ CLASS({
 
       aseq(
         function(ret) {
-          self.authenticator.decorateForSelect(ret, principal, self.delegate);
+          self.authorizer.decorateForSelect(ret, principal, self.delegate);
         },
         function(ret, dao) {
           dao.select({
@@ -192,7 +192,7 @@ CLASS({
               sink && sink.error && sink.error('Internal error in select');
             },
             put: function(obj) {
-              self.authenticator.massageForRead(function(massaged) {
+              self.authorizer.massageForRead(function(massaged) {
                 if (massaged !== null) {
                   sink && sink.put && sink.put(massaged);
                 }
