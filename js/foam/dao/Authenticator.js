@@ -54,11 +54,12 @@ __DATA({
         no change is needed here, but this method might eg. erase
         server-only or hidden properties.</p>
         <p>If the object should actually be denied the user, this should return
-        null.</p>
-        <p>Note that this method is called in three cases:
+        null or false.</p>
+        <p>Note that this method is called in four cases:
           <ul>
             <li>On a find()</li>
             <li>On the result of a put() before returning it to the sink.</li>
+            <li>On the result of a remove() before returning it to the sink.</li>
             <li>On the results found by select() before returning them.</li>
           </ul>
           and this method should do the right thing for all of them.</p>
@@ -82,7 +83,7 @@ __DATA({
       args: [
         { name: 'ret', type: 'Function', documentation: 'afunc return callback' },
         { name: 'principal', documentation: 'The current user. Type is implementation-defined.' },
-        { name: 'obj', documentation: 'The original object.' }
+        { name: 'obj', documentation: 'The original object. null if it doesn\'t exist.' }
       ]
     },
     {
