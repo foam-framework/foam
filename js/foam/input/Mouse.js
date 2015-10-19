@@ -16,31 +16,27 @@
  */
 
 CLASS({
-  name: 'Mouse', 
   package: 'foam.input',
-  
+  name: 'Mouse',
+
   properties: [
     {
-      name: 'x',
-      type: 'int',
-      view: 'foam.ui.IntFieldView',
-      defaultValue: 0
+      model_: 'IntProperty',
+      name: 'x'
     },
     {
-      name: 'y',
-      type: 'int',
-      view: 'foam.ui.IntFieldView',
-      defaultValue: 0
+      model_: 'IntProperty',
+      name: 'y'
     },
-    { name: 'canvasX', getter: function() { return this.x; } }, 
-    { name: 'canvasY', getter: function() { return this.y; } }, 
+    { name: 'canvasX', getter: function() { return this.x; } },
+    { name: 'canvasY', getter: function() { return this.y; } }
   ],
-  methods: {
-    connect: function(e) {
+  methods: [
+    function connect(e) {
       e.addEventListener('mousemove', this.onMouseMove);
       return this;
     }
-  },
+  ],
 
   listeners: [
     {
@@ -53,6 +49,3 @@ CLASS({
     }
   ]
 });
-
-
-
