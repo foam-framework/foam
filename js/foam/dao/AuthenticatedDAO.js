@@ -68,16 +68,15 @@ CLASS({
           } else {
             self.delegate.put(massaged, {
               error: function(e) {
-                sink && sink.error && sink.error(e);
+                // Generic error to avoid data leaks.
+                sink && sink.error && sink.error('Internal error in put');
                 ret();
               },
               put: function(postPut) {
                 self.authenticator.massageForRead(function(massaged) {
-                  if (massaged) {
-                    sink && sink.put && sink.put(massaged);
-                  } else {
-                    sink && sink.error && sink.error('Illegal put.');
-                  }
+                  // Even if the massaged value is false, the put didn't fail.
+                  // So we always call sink.put, maybe with null.
+                  sink && sink.put && sink.put(massaged || null);
                   ret();
                 }, principal, postPut);
               }
@@ -108,7 +107,17 @@ CLASS({
         }
       )(function(allowed) {
         if (allowed) {
-          self.delegate.remove(id, sink);
+          self.delegate.remove(id, {
+            remove: function(obj) {
+              self.authenticator.massageForRead(function(massaged) {
+                sink && sink.remove && sink.remove(massaged || null);
+              }, principal, obj);
+            },
+            error: function() {
+              // Generic error to avoid data leaks.
+              sink && sink.error && sink.error('Internal error in remove.');
+            }
+          });
         } else {
           // If the thing exists but you're not allowed to remove it,
           // we return an error.
@@ -128,7 +137,10 @@ CLASS({
       }
 
       this.delegate.find(id, {
-        error: sink && sink.error && sink.error.bind(sink),
+        error: function() {
+          // Generic error to avoid data leaks.
+          sink && sink.error && sink.error('Failed to find');
+        },
         put: function(obj) {
           self.authenticator.massageForRead(function(obj) {
             if (obj === null) {
@@ -168,7 +180,10 @@ CLASS({
         },
         function(ret, dao) {
           dao.select({
-            error: sink && sink.error && sink.error.bind(sink),
+            error: function() {
+              // Generic error to avoid data leaks.
+              sink && sink.error && sink.error('Internal error in select');
+            },
             put: function(obj) {
               self.authenticator.massageForRead(function(massaged) {
                 if (massaged !== null) {
