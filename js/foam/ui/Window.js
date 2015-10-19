@@ -98,7 +98,7 @@ CLASS({
       if ( this.installedStyles[id] ) return;
       this.installedStyles[id] = true;
 
-      var css = obj.CSS() + '\n\n/*# sourceURL=' + id.replace('/\./g, '/') + '.CSS */\n';
+      var css = obj.CSS() + '\n\n/*# sourceURL=' + id.replace(/\./g, '/') + '.CSS */\n';
 
       if ( ! this.document || ! this.document.createElement ) return;
       var s = this.document.createElement('style');
