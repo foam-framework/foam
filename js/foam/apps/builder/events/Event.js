@@ -72,7 +72,10 @@ CLASS({
       subKey: 'ID',
       view: {
         factory_: 'foam.ui.DAOKeyView',
-        innerView: 'foam.ui.md.DAOListView',
+        innerView: {
+          factory_: 'foam.ui.md.DAOListView',
+          rowView: 'foam.ui.md.CitationView',
+        },
       },
     },
     {

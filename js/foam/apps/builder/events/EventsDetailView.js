@@ -35,6 +35,7 @@ CLASS({
           </div>
           $$name{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only', extraClassName: 'md-subhead' }
           $$date{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only' }
+          $$presenters
           <div class="description-box" style="background: <%= this.data.color %>">
             $$description{ model_: 'foam.ui.md.TextFieldView', floatingLabel: false, mode: 'read-only' }
           </div>
