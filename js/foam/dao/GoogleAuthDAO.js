@@ -31,7 +31,11 @@ CLASS({
   */},
 
   constants: {
-    CLOCK_SKEW: 300, // Clock skew tolerance for auth is 5 minutes.
+    // Clock skew tolerance for auth token creation/expiry timestamps is 5
+    // minutes. That seems like a long time, but it was taken from Google's
+    // official Node auth library, see:
+    // https://github.com/google/google-auth-library-nodejs/blob/master/lib/auth/oauth2client.js#L90
+    CLOCK_SKEW: 300,
     // Google's public keys for verifying auth tokens.
     CERTS: {
       '5fafa2017895d588e4695446533f4093c0e2a8cc': '-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIIK6ARM4DTSQIwDQYJKoZIhvcNAQEFBQAwNjE0MDIGA1UE\nAxMrZmVkZXJhdGVkLXNpZ25vbi5zeXN0ZW0uZ3NlcnZpY2VhY2NvdW50LmNvbTAe\nFw0xNTEwMTMwMzEzMzRaFw0xNTEwMTQxNjEzMzRaMDYxNDAyBgNVBAMTK2ZlZGVy\nYXRlZC1zaWdub24uc3lzdGVtLmdzZXJ2aWNlYWNjb3VudC5jb20wggEiMA0GCSqG\nSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDL7gvnorwO9kO3TToJvOKYJh7eD/r5X0d0\nzKkafDpxVLGa2ZikJnEmkWVIxbzy3wGpqJphukc3bNw/aGSf5NYGi2G/ohDbjhm8\n/0QYcW1BeCRMrOXbRjERVnEGEwn/qU02/z7XUEuZPvDLT8dtxV8jr9HB7pieJy83\nmefSl2BzvuG7gC1xBLNkxdpqvD34ij/Z5JEnVQsUhiQTwyKhBaWCyu9oHBSTJDZM\njykvZ9IGWJiPfOd213QclmyTRN0mcubakIRlIKNqVCTuB9Y1z8gG/qLKzLn23xM7\nksG1ra5MBXbU1eRgArN/Z0Rf/TWmR3vAMBuPEtxhwd0IbhwWHU87AgMBAAGjODA2\nMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMBYGA1UdJQEB/wQMMAoGCCsG\nAQUFBwMCMA0GCSqGSIb3DQEBBQUAA4IBAQCcAh6MKkBe7F3MWB6tAZFpAy6Vu0wV\nH7UBPJJdSloSuvruh3rQIOlI3Hpk5JSpxPU9XU8eBJh6RlzfKbmmXiE+UeW2NtMC\n0IoRKvRN3lzlXWkgkaT8OMhVr0FzfG5jAAhJUxhhHqL9ZhczXC7m7MGz8UFuWGdu\ness7X8nSwj7TsjSE16EllR44V2pYQJy0Mr4DBAxGZ1Pf0Ir4URHZhJ35Jn+gU5o/\nPxSHtyOusKawNIUb2xMrlzsM7647S8R1JI6kk571ZPPkAEUKicTA46dijq/KlBGY\nAvLX3OewSLHdlbQ5uzPo1Zqanyddz5zDsR9RNa1eEnbIkT1C+WPdzzjp\n-----END CERTIFICATE-----\n',

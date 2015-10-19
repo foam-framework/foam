@@ -60,6 +60,11 @@ CLASS({
         }
       }
 
+      var onLogin = function(ret) {
+        this.authComplete_ = true;
+        ret();
+      };
+
       // TODO(braden): Investigate the practicality of reimplementing this small
       // part of the library, to avoid needing to include it.
 
@@ -68,13 +73,13 @@ CLASS({
       // If it's already loading, this.window.__googleSignInListeners will be
       // defined, and we should add ourselves to it.
       if (this.window.__googleSignInListeners) {
-        this.window.__googleSignInListeners.push(this.onLogin.bind(this, ret));
+        this.window.__googleSignInListeners.push(onLogin.bind(this, ret));
         return;
       }
 
       // No one else has loaded the Google sign-in library, so I will.
       // First, add the listeners array, and put ourselves in.
-      this.window.__googleSignInListeners = [this.onLogin.bind(this, ret)];
+      this.window.__googleSignInListeners = [onLogin.bind(this, ret)];
       this.window.__googleSignInSuccess = this.onSuccess;
 
       // Next, add the <meta> tag with the client_id for its use.
@@ -120,13 +125,6 @@ CLASS({
         for (var i = 0; i < this.window.__googleSignInListeners.length; i++) {
           this.window.__googleSignInListeners[i]();
         }
-      }
-    },
-    {
-      name: 'onLogin',
-      code: function(ret) {
-        this.authComplete_ = true;
-        ret();
       }
     },
   ],
