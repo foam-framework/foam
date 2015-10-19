@@ -298,6 +298,14 @@ CLASS({
     }
   ],
 
+  templates: [
+    function CSS() {/*
+      .foam-u2-Element-hidden {
+        display: none !important;
+      }
+    */}
+  ],
+
   methods: [
     function init() {
       this.SUPER();
@@ -370,10 +378,13 @@ CLASS({
     //
     // Visibility
     //
-    function show() {
+    function show(opt_shown) {
+      return this.cls('foam-u2-Element-hidden', opt_shown, true);
     },
 
-    function hide() {
+    function hide(opt_hidden) {
+      if ( opt_hidden === undefined ) opt_hidden = true;
+      return this.cls('foam-u2-Element-hidden', opt_hidden);
     },
 
     //
@@ -434,21 +445,23 @@ CLASS({
       return this;
     },
 
-    function cls(cls, opt_enabled) {
+    function cls(cls, opt_enabled, opt_negate) {
+      function xor(a, b) { return a ? ! b : b; }
+
       if ( typeof opt_enabled === 'function' ) {
         var fn = opt_enabled;
         this.dynamic(fn, function(value) {
-          this.cls(cls, value);
+          this.cls(cls, xor(value, opt_negate));
         }.bind(this));
       } else if ( Value.isInstance(opt_enabled) ) {
         var value = opt_enabled;
         var l = function() {
-          this.cls(cls, value.get());
+          this.cls(cls, xor(value.get, opt_negate));
         }.bind(this);
         value.addListener(l);
         l();
       } else {
-        var enabled = opt_enabled === undefined ? true : opt_enabled ;
+        var enabled = xor(opt_enabled === undefined ? true : opt_enabled, opt_negate);
         this.classes[cls] = enabled;
         this.onSetCls(cls, enabled);
       }
