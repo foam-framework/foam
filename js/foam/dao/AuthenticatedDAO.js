@@ -76,7 +76,7 @@ CLASS({
                 self.authenticator.massageForRead(function(massaged) {
                   // Even if the massaged value is false, the put didn't fail.
                   // So we always call sink.put, maybe with null.
-                  sink && sink.put && sink.put(massaged || null);
+                  sink && sink.put && sink.put(massaged || obj);
                   ret();
                 }, principal, postPut);
               }
@@ -91,6 +91,8 @@ CLASS({
       // the authenticator whether the removal is allowed. If the user sent us a
       // whole object instead of an ID, we don't trust any part of it except the
       // ID.
+      // When (a) the original object doesn't exist, or (b) it exists but we're
+      // not allowed to 
       var self = this;
       var principal = opt_X && opt_X.principal;
       if (!principal) {
@@ -110,7 +112,12 @@ CLASS({
           self.delegate.remove(id, {
             remove: function(obj) {
               self.authenticator.massageForRead(function(massaged) {
-                sink && sink.remove && sink.remove(massaged || null);
+                if (!massaged) {
+                  // Creates an empty object with the correct ID, if you can't
+                  // read the original.
+                  massaged = obj.model_.create({ id: id });
+                }
+                sink && sink.remove && sink.remove(massaged);
               }, principal, obj);
             },
             error: function() {
