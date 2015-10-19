@@ -50,7 +50,11 @@ CLASS({
       ret(obj);
     },
     function shouldAllowRemove(ret, principal, obj) {
-      ret(!obj || EQ(this.ownerProp, principal).f(obj));
+      if (obj) {
+        ret(EQ(this.ownerProp, principal).f(obj));
+      } else {
+        ret(false);
+      }
     },
     function decorateForSelect(ret, principal, dao) {
       ret(dao);
