@@ -21,7 +21,8 @@ CLASS({
   extends: 'foam.dao.ProxyDAO',
   requires: [
     'XHR',
-    'foam.core.dao.ClientDAO'
+    'foam.core.dao.ClientDAO',
+    'foam.oauth2.GoogleSignIn',
   ],
   properties: [
     {
@@ -33,6 +34,20 @@ CLASS({
     {
       name: 'subject',
       defaultValueFn: function() { return this.model.id + 'DAO'; }
+    },
+    {
+      name: 'googleAuth',
+      documentation: 'Set this to true to enable Google authentication for ' +
+          'this DAO.',
+      defaultValue: false,
+      postSet: function(old, nu) {
+        if (nu) {
+          this.googleSignIn_ = this.GoogleSignIn.create();
+        }
+      },
+    },
+    {
+      name: 'googleSignIn_',
     },
     {
       name: 'delegate',
@@ -56,9 +71,15 @@ CLASS({
 	return true;
       });
 
+      var auth = this.googleAuth ?
+          this.googleSignIn_.alogin.bind(this.googleSignIn_) :
+          aconstant(undefined);
+
       aseq(
+        auth,
 	function(ret) {
 	  var xhr = this.XHR.create();
+          if (this.googleAuth) xhr.addDecorator(this.googleSignIn_);
 	  xhr.asend(ret, this.serverUri, json.stringify(data), 'POST');
 	}.bind(this),
 	function(ret, resp, _, success) {
@@ -75,7 +96,7 @@ CLASS({
 
           JSONUtil.aparse(ret, this.X, resp);
 	}
-      )(ret)
+      )(ret);
     }
   ]
 });

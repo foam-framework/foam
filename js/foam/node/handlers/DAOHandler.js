@@ -43,6 +43,10 @@ CLASS({
         }
         var msg = JSONUtil.mapToObj(this.Y, map);
 */
+        var subX = this.Y;
+        if (req.headers && req.headers['x-foam-auth']) {
+          subX = subX.sub({ authHeader: req.headers['x-foam-auth'] });
+        }
 
         // Warning insecure parser.
         var msg = JSONUtil.parse(this.Y, body);
@@ -59,7 +63,7 @@ CLASS({
         switch ( msg.method ) {
         case 'select':
         case 'removeAll':
-          dao[msg.method].apply(dao, msg.params)(function(sink) {
+          dao[msg.method].apply(dao, msg.params.concat(subX))(function(sink) {
             resp.statusCode = 200;
             resp.setHeader("Content-Type", "application/x.foam-json");
             resp.write(JSONUtil.stringify(sink));
@@ -82,7 +86,7 @@ CLASS({
             remove: function(x) { this.send('remove', x) },
             error: function(x) { this.send('error', x); }
           };
-          dao[msg.method](msg.params[0], sink);
+          dao[msg.method](msg.params[0], sink, subX);
           break;
         default:
           resp.statusCode = 400;
