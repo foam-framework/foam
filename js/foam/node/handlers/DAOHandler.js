@@ -44,14 +44,8 @@ CLASS({
         var msg = JSONUtil.mapToObj(this.Y, map);
 */
         var subX = this.Y;
-        if (req.headers && req.headers.cookie) {
-          var cookies = {};
-          var parts = req.headers.cookie.split(/;\s+/);
-          for (var i = 0; i < parts.length; i++) {
-            var match = parts[i].match(/^([^=]+)=(.*)$/);
-            cookies[match[1]] = match[2];
-          }
-          subX = subX.sub({ cookies: cookies });
+        if (req.headers && req.headers['x-foam-auth']) {
+          subX = subX.sub({ authHeader: req.headers['x-foam-auth'] });
         }
 
         // Warning insecure parser.
