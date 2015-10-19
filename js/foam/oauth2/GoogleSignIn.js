@@ -134,7 +134,7 @@ CLASS({
   models: [
     {
       name: 'LoginPopupView',
-      extendsModel: 'foam.ui.SimpleView',
+      extends: 'foam.ui.SimpleView',
       templates: [
         function toHTML() {/*
           <div id="%%id" %%cssClassAttr()>
