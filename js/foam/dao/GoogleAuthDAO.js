@@ -114,9 +114,9 @@ CLASS({
     },
 
     function augmentContext_(X) {
-      if (!X || !X.cookies || !X.cookies.foamDAOAuth) return aconstant(X);
+      if (!X || !X.authHeader) return aconstant(X);
 
-      var token = X.cookies.foamDAOAuth;
+      var token = X.authHeader;
       return aseq(
         this.getCertificates_.bind(this),
         function(ret, certs) {

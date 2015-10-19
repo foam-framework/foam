@@ -79,6 +79,7 @@ CLASS({
         auth,
 	function(ret) {
 	  var xhr = this.XHR.create();
+          if (this.googleAuth) xhr.addDecorator(this.googleSignIn_);
 	  xhr.asend(ret, this.serverUri, json.stringify(data), 'POST');
 	}.bind(this),
 	function(ret, resp, _, success) {
