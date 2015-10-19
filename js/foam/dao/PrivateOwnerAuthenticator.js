@@ -49,10 +49,18 @@ CLASS({
     },
     function massageForRead(ret, principal, obj) {
       var mine = EQ(this.ownerProp, principal).f(obj);
-      ret(mine ? obj : null);
+      if (mine) {
+        ret(obj);
+      } else {
+        ret(null);
+      }
     },
     function shouldAllowRemove(ret, principal, obj) {
-      ret(!obj || EQ(this.ownerProp, principal).f(obj));
+      if (obj) {
+        ret(EQ(this.ownerProp, principal).f(obj));
+      } else {
+        ret(false);
+      }
     },
     function decorateForSelect(ret, principal, dao) {
       ret(dao.where(EQ(this.ownerProp, principal)));

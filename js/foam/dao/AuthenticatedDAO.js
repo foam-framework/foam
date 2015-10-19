@@ -207,19 +207,19 @@ CLASS({
       // TODO(braden): Implement me. Use the select+remove scheme.
     },
     function where(query) {
-      return (this.Y || X).lookup('FilteredDAO_').create({ query: query, delegate: this });
+      return X.FilteredDAO_.create({ query: query, delegate: this }, this.Y);
     },
     function limit(count) {
-      return (this.Y || X).lookup('LimitedDAO_').create({ count: count, delegate: this });
+      return X.LimitedDAO_.create({ count: count, delegate: this }, this.Y);
     },
-    function skip(skip) {
-      return (this.Y || X).lookup('SkipDAO_').create({ skip: skip, delegate: this });
+    function skip(count) {
+      return X.SkipDAO_.create({ skip: count, delegate: this }, this.Y);
     },
     function orderBy() {
-      return (this.Y || X).lookup('OrderedDAO_').create({
+      return X.OrderedDAO_.create({
         comparator: arguments.length === 1 ? arguments[0] : argsToArray(arguments),
         delegete: this
-      });
+      }, this.Y);
     },
   ]
 });
