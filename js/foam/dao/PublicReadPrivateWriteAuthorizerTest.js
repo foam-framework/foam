@@ -16,11 +16,11 @@
  */
 CLASS({
   package: 'foam.dao',
-  name: 'PrivateOwnerAuthenticatorTest',
+  name: 'PublicReadPrivateWriteAuthorizerTest',
   requires: [
-    'foam.dao.AuthenticatedDAO',
+    'foam.dao.AuthorizingDAO',
     'foam.dao.EasyDAO',
-    'foam.dao.PrivateOwnerAuthenticator',
+    'foam.dao.PublicReadPrivateWriteAuthorizer',
   ],
 
   imports: [
@@ -55,9 +55,9 @@ CLASS({
       inner.put(this.Employee.create({ id: 4, name: 'Jackson', company: 'ABC', }));
       inner.put(this.Employee.create({ id: 5, name: 'Mark', company: 'ABC', }));
 
-      return this.AuthenticatedDAO.create({
+      return this.AuthorizingDAO.create({
         model: this.Employee,
-        authenticator: this.PrivateOwnerAuthenticator.create({
+        authorizer: this.PublicReadPrivateWriteAuthorizer.create({
           ownerProp: this.Employee.COMPANY
         }),
         delegate: inner
@@ -73,7 +73,7 @@ CLASS({
       var X = this.Y.sub({ principal: 'ABC' });
       dao.select(sink, undefined, X);
 
-      this.assert(sink.length === 3, 'select with ABC should return 3 entries');
+      this.assert(sink.length === 5, 'select with ABC should return all 5 entries');
       var names = sink.mapProp('name');
       this.assert(names.indexOf('Jackson') >= 0, 'results should contain Jackson');
     },
@@ -81,13 +81,15 @@ CLASS({
       var dao = this.buildDAO();
       var sink = [].sink;
       var X = this.Y.sub({ principal: 'XYZ' });
-      // Should return just Adam.
+      // Should return Jackson, Braden, Adam and Mark.
       dao.where(CONTAINS_IC(this.Employee.NAME, 'a')).select(sink, undefined, X);
 
-      this.assert(sink.length === 1, 'select with XYZ and where name contains "a" should return just 1 (Adam)');
-      this.assert(sink[0].name === 'Adam', 'single returned entry should be Adam');
+      this.assert(sink.length === 4, 'select with XYZ and where name contains "a" should return everyone but "Kevin"');
     },
     function testSelect_NoPrincipal() {
+      // TODO(braden): Should select with no principal be supported in this
+      // case? That's a different "public" from "public-but-authenticated".
+      // Probably best to stick with the less permissive default.
       var dao = this.buildDAO();
       var sink = {
         put: function() { this.fail('put called, should have been error'); }.bind(this),
@@ -97,19 +99,21 @@ CLASS({
       dao.select(sink);
     },
     function testSelect_BadPrincipal() {
+      // This tests what happens with a principal that owns nothing.
+      // Correct behavior is to return everything.
       var dao = this.buildDAO();
       var inner = [].sink;
       var sink = {
         put: inner.push.bind(inner),
         error: function() {
-          this.fail('Received error call, should have put nothing.');
+          this.fail('Received error call, should have put instead.');
         }.bind(this)
       };
 
       var X = this.Y.sub({ principal: 'Some Other Company' });
       dao.select(sink, undefined, X);
 
-      this.assert(inner.length === 0, 'No results should be returned');
+      this.assert(inner.length === 5, 'All results should be returned');
     },
 
     // Tests for find()
@@ -142,10 +146,10 @@ CLASS({
       var X = this.Y.sub({ principal: 'XYZ' });
       dao.find(4, {
         put: function(obj) {
-          this.fail('put() called on sink - should fail to find');
+          this.ok('put() called on sink');
         }.bind(this),
         error: function() {
-          this.ok('error() called on sink - correctly not found');
+          this.fail('error() called on sink - should be able to find');
         }.bind(this)
       }, X);
     },
@@ -364,7 +368,7 @@ CLASS({
       }, goodX);
     },
     function testPut_Exists_NotOwnedByMe_CorrectOwner() {
-      // Correct behavior: reject.
+      // Correct behavior: update normally.
       var dao = this.buildDAO();
       var goodX = this.Y.sub({ principal: 'ABC' });
       var badX = this.Y.sub({ principal: 'XYZ' });
@@ -403,7 +407,7 @@ CLASS({
       }, goodX);
     },
     function testPut_Exists_NotOwnedByMe_MeAsOwner() {
-      // Correct behavior: reject.
+      // Correct behavior: update normally.
       var dao = this.buildDAO();
       var goodX = this.Y.sub({ principal: 'ABC' });
       var badX = this.Y.sub({ principal: 'XYZ' });
@@ -468,7 +472,7 @@ CLASS({
 
       var sink = [].sink;
       dao.select(sink, undefined, X);
-      this.assert(sink.length === 2, 'only 2 entries left after deletion');
+      this.assert(sink.length === 4, 'only 4 entries left after deletion');
       this.assert(sink.mapProp('name').indexOf('Jackson') < 0, 'deleted entry is gone');
     },
     function testRemove_Exists_NotOwnedByMe() {

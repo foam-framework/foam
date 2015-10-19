@@ -16,13 +16,14 @@
  */
 CLASS({
   package: 'foam.dao',
-  name: 'PublicReadPrivateWriteAuthenticator',
-  implements: ['foam.dao.Authenticator'],
+  name: 'PrivateOwnerAuthorizer',
+  implements: ['foam.dao.Authorizer'],
 
   documentation: function() {/*
-    <p>$$DOC{ref:'foam.dao.Authenticator'} for the common case where each user
-    of the service can only write their own data, but all data is
-    world-readable. (Eg. Twitter, to a first approximation.)</p>
+    <p>$$DOC{ref:'foam.dao.Authorizer'} for the common case where each user
+    of the service owns their own data. An $$DOC{ref:'foam.dao.AuthorizingDAO'}
+    backed by this $$DOC{ref:'foam.dao.Authorizer'} presents a view of the
+    world as though only this user's data exists.</p>
   */},
 
   properties: [
@@ -47,13 +48,22 @@ CLASS({
       ret(clone);
     },
     function massageForRead(ret, principal, obj) {
-      ret(obj);
+      var mine = EQ(this.ownerProp, principal).f(obj);
+      if (mine) {
+        ret(obj);
+      } else {
+        ret(null);
+      }
     },
     function shouldAllowRemove(ret, principal, obj) {
-      ret(!obj || EQ(this.ownerProp, principal).f(obj));
+      if (obj) {
+        ret(EQ(this.ownerProp, principal).f(obj));
+      } else {
+        ret(false);
+      }
     },
     function decorateForSelect(ret, principal, dao) {
-      ret(dao);
+      ret(dao.where(EQ(this.ownerProp, principal)));
     },
   ]
 });
