@@ -66,6 +66,9 @@ CLASS({
         display: inline-block;
         margin: 5px;
       }
+      .foam-u2-DetailView table {
+        padding-bottom: 2px;
+      }
       .foam-u2-DetailView-title {
         color: #333;
         float: left;
