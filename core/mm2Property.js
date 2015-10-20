@@ -289,10 +289,16 @@ GLOBAL.Property = {
       */}
     },
     {
+      // For U2, replaces hidden
+      name: 'visibility',
+      choices: [ 'ro', 'rw', 'final', 'hidden' ]
+    },
+    {
       name: 'hidden',
       type: 'Boolean',
       view: 'foam.ui.BooleanView',
       defaultValue: false,
+      postSet: function(_, hidden) { if ( hidden ) this.visibility = 'hidden'; },
       help: 'Indicates if the property is hidden.',
       documentation: function() { /*
         Indicates whether the $$DOC{ref:'Property'} is for internal use and should be hidden from
@@ -360,9 +366,9 @@ GLOBAL.Property = {
         var e = this.displayHeight > 1 ?
           X.foam.u2.TextArea.create(null, X) :
           X.foam.u2.Input.create(null, X)    ;
-        
+
         e.attrs({size: this.displayWidth});
-        
+
         return e;
       }
     },
