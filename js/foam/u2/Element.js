@@ -446,22 +446,22 @@ CLASS({
     },
 
     function cls(cls, opt_enabled, opt_negate) {
-      function xor(a, b) { return a ? ! b : b; }
+      function negate(a, b) { return b ? a : ! a; }
 
       if ( typeof opt_enabled === 'function' ) {
         var fn = opt_enabled;
         this.dynamic(fn, function(value) {
-          this.cls(cls, xor(value, opt_negate));
+          this.cls(cls, value, opt_negate);
         }.bind(this));
       } else if ( Value.isInstance(opt_enabled) ) {
         var value = opt_enabled;
         var l = function() {
-          this.cls(cls, xor(value.get, opt_negate));
+          this.cls(cls, value.get(), opt_negate);
         }.bind(this);
         value.addListener(l);
         l();
       } else {
-        var enabled = xor(opt_enabled === undefined ? true : opt_enabled, opt_negate);
+        var enabled = negate(opt_enabled === undefined ? true : opt_enabled, opt_negate);
         this.classes[cls] = enabled;
         this.onSetCls(cls, enabled);
       }
