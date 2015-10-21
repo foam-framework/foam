@@ -73,6 +73,11 @@ CLASS({
       document.previousTooltip_ = this;
 
       this.X.setTimeout(function() {
+        if (document.previousTooltip_ !== this) return;
+        var oldTips = document.getElementsByClassName('tooltip');
+        for (var i = 0; i < oldTips.length; i++) {
+          oldTips[i].remove();
+        }
         var div = document.createElement('div');
 
         // Close immediately on mousedown/touchstart.
