@@ -332,7 +332,11 @@ CLASS({
           function() {
             file = myfiles[i++];
             if ( Array.isArray(file) ) {
-              if ( ! file[0] || file[1] == IN_NODEJS || file[1] == IN_CHROME_APP )
+              if ( ! file[0] ||
+                   file[1] == IN_NODEJS || // Exclude nodejs files
+                   file[1] == IN_CHROME_APP || // Exclude chrome app files
+                   file[0] == '../js/foam/core/bootstrap/BrowserFileDAO' // Exclude BrowserFileDAO, use more portable IE11ModelDAO
+                 )
                 return false;
               file = file[0];
             }
