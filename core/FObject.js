@@ -639,34 +639,30 @@ var FObject = {
 
   /** Create a shallow copy of this object. **/
   clone: function() {
-    var c = Object.create(this.__proto__);
-    c.instance_ = {};
-    c.X = this.X;
+    var m = {};
     for ( var key in this.instance_ ) {
       var value = this[key];
       if ( value !== undefined ) {
         var prop = this.model_.getProperty(key);
         if ( prop && prop.cloneProperty )
-          c.instance_[key] = prop.cloneProperty.call(prop, value);
+          m[key] = prop.cloneProperty.call(prop, value);
       }
     }
-    return c;
+    return this.model_.create(m, this.X);
   },
 
   /** Create a deep copy of this object. **/
   deepClone: function() {
-    var c = Object.create(this.__proto__);
-    c.instance_ = {};
-    c.X = this.X;
+    var m = {};
     for ( var key in this.instance_ ) {
       var value = this[key];
       if ( value !== undefined ) {
         var prop = this.model_.getProperty(key);
         if ( prop && prop.deepCloneProperty )
-          c.instance_[key] = prop.deepCloneProperty.call(prop, value);
+          m[key] = prop.deepCloneProperty.call(prop, value);
       }
     }
-    return c;
+    return this.model_.create(m, this.X);
   },
 
   /** @return this **/
