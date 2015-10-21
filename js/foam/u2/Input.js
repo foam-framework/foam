@@ -22,12 +22,37 @@ CLASS({
   name: 'Input',
   extends: 'foam.u2.Element',
 
-  properties: [ [ 'nodeName', 'input' ], 'data' ],
+  properties: [
+    [ 'nodeName', 'input' ],
+    'data',
+    {
+      name: 'mode',
+      defaultValue: 'rw',
+      postSet: function(old, mode) {
+        if ( old === mode ) return;
+
+        if ( old === 'ro' ) this.setAttribute('readonly', false);
+        else if ( old === 'disabled' ) this.setAttribute('disabled', false);
+
+        if ( mode === 'ro' ) this.setAttribute('readonly', true);
+        else if ( mode === 'disabled' ) this.setAttribute('disabled', true);
+        else if ( mode === 'hidden' ) this.hide();
+      }
+    }
+  ],
+
+  templates: [
+    function CSS() {/*
+      .foam-u2-Input:read-only { border-width: 0; }
+    */}
+  ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.data$ = this.attrValue();
+      this.cls('foam-u2-Input');
+      Events.link(this.data$, this.attrValue());
+//      this.data$ = this.attrValue();
     }
   ]
 });

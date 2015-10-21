@@ -291,7 +291,7 @@ GLOBAL.Property = {
     {
       // For U2, replaces hidden
       name: 'visibility',
-      choices: [ 'ro', 'rw', 'final', 'hidden' ]
+      choices: [ 'rw', 'final', 'ro', 'hidden' ]
     },
     {
       name: 'hidden',

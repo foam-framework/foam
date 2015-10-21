@@ -29,7 +29,7 @@ CLASS({
       defaultValueFn: function() { this.prop ? this.prop.visibility : 'rw'; }
     },
     {
-      name: 'displayMode',
+      name: 'mode',
       choices: [ 'rw', 'disabled', 'ro', 'hidden' ],
       defaultValueFn: function() {
         if ( this.visibility === 'ro' ) return 'ro';

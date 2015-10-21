@@ -341,3 +341,17 @@ setInterval((function() {
     }));
   };
 })(), 5000);
+
+E().add(
+  E('br'),
+  ' rw: ', foam.u2.Input.create({mode: 'rw', data: 'value'}),
+  ' disabled: ', foam.u2.Input.create({mode: 'disabled', data: 'value'}),
+  ' ro: ', foam.u2.Input.create({mode: 'ro', data: 'value'}),
+  ' hidden: ', foam.u2.Input.create({mode: 'hidden', data: 'value'})).write();
+
+E().add(
+  E('br'),
+  ' rw: ', foam.u2.Checkbox.create({mode: 'rw', data: true}),
+  ' disabled: ', foam.u2.Checkbox.create({mode: 'disabled', data: true}),
+  ' ro: ', foam.u2.Checkbox.create({mode: 'ro', data: true}),
+  ' hidden: ', foam.u2.Checkbox.create({mode: 'hidden', data: true})).write();

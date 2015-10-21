@@ -27,6 +27,19 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'data'
+    },
+    {
+      name: 'mode',
+      defaultValue: 'rw',
+      postSet: function(old, mode) {
+        // checkboxes don't have a readonly mode, so treat readonly the same as disabled
+        if ( old === mode ) return;
+
+        if ( old === 'ro' || old === 'disabled' ) this.setAttribute('disabled', false);
+
+        if ( mode === 'ro' || mode === 'disabled' ) this.setAttribute('disabled', true);
+        else if ( mode === 'hidden' ) this.hide();
+      }
     }
   ],
 
@@ -34,7 +47,7 @@ CLASS({
     function init() {
       this.SUPER();
       this.attrs({type: 'checkbox'});
-      this.data$ = this.attrValue('checked', 'change');
+      Events.link(this.data$, this.attrValue('checked', 'change'));
     }
   ]
 });
