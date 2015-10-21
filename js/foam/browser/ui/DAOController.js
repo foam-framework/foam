@@ -17,15 +17,18 @@
 CLASS({
   package: 'foam.browser.ui',
   name: 'DAOController',
-  extends: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.View',
   requires: [
     'foam.ui.DAOListView',
     'foam.ui.md.TextFieldView',
     'foam.ui.md.UpdateDetailView',
   ],
   imports: [
-    'selection$',
     'stack',
+  ],
+  exports: [
+    'data as dao',
+    'selection$',
   ],
 
   properties: [

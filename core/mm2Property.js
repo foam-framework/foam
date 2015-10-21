@@ -541,6 +541,24 @@ GLOBAL.Property = {
       */}
     },
     {
+      name: 'swiftPreSet',
+      type: 'String',
+      labels: ['compiletime', 'swift'],
+      defaultValue: function() { /*return newValue*/}
+    },
+    {
+      name: 'swiftPostSet',
+      type: 'String',
+      labels: ['compiletime', 'swift'],
+      defaultValue: function() { /*//swiftPostSet goes here.*/}
+    },
+    {
+      name: 'swiftGetter',
+      type: 'String',
+      labels: ['compiletime', 'swift'],
+      defaultValue: function() { /*return <%= this.name %>_*/}
+    },
+    {
       name: 'getter',
       type: 'Function',
       labels: ['javascript'],

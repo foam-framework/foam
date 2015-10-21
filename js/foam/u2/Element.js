@@ -724,7 +724,9 @@ CLASS({
     },
 
     function toString() {
-      return this.output_(this.createOutputStream()).toString();
+      var s = this.createOutputStream();
+      this.output_(s);
+      return s.toString();
     }
   ]
 });
