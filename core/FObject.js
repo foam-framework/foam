@@ -327,7 +327,7 @@ var FObject = {
 
     for ( var i = 0 ; i < e.attributes.length ; i++ ) {
       var attr = e.attributes[i];
-      var p    = elements[attr.name];
+      var p    = elements[attr.name] || elements[attr.name.toUpperCase()];
       var val  = attr.value;
       if ( p ) {
         if ( val.startsWith('#') ) {
