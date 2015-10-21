@@ -212,7 +212,9 @@ CLASS({
             <% this.tableCaptionHTML(out) %>
           </table-caption>
           <table-actions><% this.tableActionsHTML(out) %></table-actions>
-          %%columnSelectionView
+          <% if (this.editColumnSelection) { %>
+            %%columnSelectionView
+          <% } %>
         </table-header>
         %%table
       </md-table>
