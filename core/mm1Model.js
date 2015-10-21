@@ -214,7 +214,7 @@ var Model = {
       name: 'extendsModel',
       hidden: true,
       compareProperty: constantFn(0),
-      getter: function() { 
+      getter: function() {
         return null; },
       setter: function(e) {
         console.warn("Deprecated use of 'extendsModel'. Use 'extends' instead."); if ( e ) this.extends = e; },
@@ -469,7 +469,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
+        if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       help: 'Actions associated with the entity.',
       preSet: function(_, newValue) {
@@ -506,7 +506,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
+        if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       help: 'Constants associated with the entity.',
       preSet: function(_, newValue) {
@@ -538,7 +538,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
+        if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       help: 'Messages associated with the entity.',
       preSet: function(_, newValue) {
@@ -630,7 +630,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
+        if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       preSet: function(_, newValue) {
         if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
@@ -665,7 +665,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
+        if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       preSet: function(_, templates) {
         for ( var i = 0 ; i < templates.length ; i++ ) {
@@ -693,7 +693,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
+        if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       adapt: function(_, newValue) {
         if ( ! Model ) return newValue;
@@ -717,7 +717,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
+        if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       adapt: function(_, a) {
         if ( ! a ) return a;
@@ -743,7 +743,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
+        if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       help: 'Relationships of this model to other models.',
       preSet: function(_, newValue) {
@@ -781,7 +781,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       propertyToJSON: function(visitor, output, o) {
-        if ( o[this.name].length ) output[this.name] = o[this.name];
+        if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       help: 'Issues associated with this model.',
       documentation: function() { /*
