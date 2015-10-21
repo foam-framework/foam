@@ -18,6 +18,10 @@ CLASS({
     'foam.util.Base64Decoder',
     'foam.util.encodings.IncrementalUtf8',
     'foam.sandbox.IsolatedContext',
+    'foam.dao.FindFallbackDAO',
+    'foam.dao.LoggingDAO',
+    'foam.dao.CachingDAO',
+    'MDAO',
   ],
 
   properties: [
@@ -45,10 +49,23 @@ CLASS({
       name: 'dao',
       hidden: true,
       lazyFactory: function() {
-        return this.IDBDAO.create({
-          model: Model,
-          name: 'FOAMModels',
-          useSimpleSerialization: false,
+        return this.CachingDAO.create({ src:
+          this.IDBDAO.create({
+            model: Model,
+            name: 'FOAMModels',
+            useSimpleSerialization: false,
+          }),
+          src: this.MDAO.create({ model: Model })
+        });
+      },
+    },
+    {
+      name: 'modelDAO',
+      hidden: true,
+      lazyFactory: function() {
+        return  this.FindFallbackDAO.create({
+          delegate: this.dao,
+          fallback: this.X.ModelDAO,
         });
       },
     },
@@ -76,7 +93,9 @@ CLASS({
             model.arequire()(loader.modelReady);
             return model;
           }
-        }, GLOBAL.X).Y;
+        }, GLOBAL.X).Y.sub({
+          ModelDAO: this.modelDAO,
+        });
       },
     },
   ],
