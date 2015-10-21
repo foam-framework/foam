@@ -100,11 +100,15 @@ CLASS({
         position: absolute;
         transform: rotate(180deg);
         transform-origin: 15px 15px;
-        animation: torque 300ms ease 0s 5 alternate;
+        animation: torque 600ms ease 3s 2;
         top: 55px;
         left: 55px;
       }
-      @keyframes torque { from { transform: rotate(120deg); } to { transform: rotate(180deg); }  }
+      @keyframes torque {
+        0% { transform: rotate(180deg); }
+        50% { transform: rotate(120deg); }
+        100% { transform: rotate(180deg); }
+      }
 
       logo dot {
         display: block;
