@@ -897,10 +897,46 @@ CLASS({
       name: 'labels'
     },
     {
+      model_: 'StringProperty',
+      name: 'swiftCode',
+      labels: ['swift'],
+    },
+    {
       model_: 'TemplateProperty',
       name: 'swiftSource',
       labels: ['swift'],
-      defaultValue: '<% true; %>',
+      defaultValue: function() {/*
+<% if ( this.isMerged || this.isFramed ) {
+%>  var <%= this.name %>_fired_: Bool = false
+  func <%= this.name %>() {
+    if <%= this.name %>_fired_ {
+      return
+    }
+    <%= this.name %>_fired_ = true
+    NSTimer.scheduledTimerWithTimeInterval(
+      <%= ( this.isFramed ) ? 0.016 : ( this.isMerged / 1000 ) %>,
+      target: self,
+      selector: "_<%= this.name %>_wrapper_",
+      userInfo: nil,
+      repeats: false)
+  }
+  func _<%= this.name %>_wrapper_() {
+    <%= this.name %>_fired_ = false
+    <%= this.name %>_code()
+  }
+  func <%= this.name %>_code() {
+<%= this.swiftCode %>
+  }
+<% } else if ( this.swiftCode ) { %>
+  func <%= this.name %>(<%
+for ( var i = 0 ; i < this.args.length ; i++ ) {
+%>var <%= this.args[i].name %>: <%= this.args[i].swiftType %><%
+if ( i != this.args.length - 1 ) { %>, <% }
+}
+%>) -> <%= this.swiftReturnType %> {
+<%= this.swiftCode %>
+  }
+<% } %>*/}
     },
     {
       model_: 'TemplateProperty',
