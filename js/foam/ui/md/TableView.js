@@ -197,6 +197,7 @@ CLASS({
       name: 'editColumns',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAM0lEQVR4AWMYtiCI4TXDKwZ/otUDlf8HwpfEa3gF1vCCeA3+DC+Byn2p5sXRUBoNpWEKAEP5JZC/ixCxAAAAAElFTkSuQmCC',
       ligature: 'more_vert',
+      isAvailable: function() { return this.editColumnsEnabled; },
       code: function(X, action) {
         if ( this.columnSelectionView.state === 'OPEN' ) return;
         this.columnSelectionView.open();
@@ -212,7 +213,9 @@ CLASS({
             <% this.tableCaptionHTML(out) %>
           </table-caption>
           <table-actions><% this.tableActionsHTML(out) %></table-actions>
-          %%columnSelectionView
+          <% if (this.editColumnsEnabled) { %>
+            %%columnSelectionView
+          <% } %>
         </table-header>
         %%table
       </md-table>

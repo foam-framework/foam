@@ -52,7 +52,6 @@ CLASS({
       this.SUPER();
       this.cls('foam-u2-Input');
       Events.link(this.data$, this.attrValue());
-//      this.data$ = this.attrValue();
     }
   ]
 });

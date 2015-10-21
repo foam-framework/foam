@@ -85,7 +85,7 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'timeout',
-      defaultValue: 60,
+      defaultValue: 30,
       help: 'Time before automatically closing this topic, in seconds.',
       units: 'seconds'
     },

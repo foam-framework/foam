@@ -27,9 +27,12 @@ CLASS({
 
   properties: [
     {
+      name: 'name',
+    },
+    {
       name: 'logger',
       lazyFactory: function() {
-        return console.log.bind(console);
+        return console.log.bind(console, this.name);
       }
     }
   ],
@@ -50,6 +53,11 @@ CLASS({
     function removeAll(sink, options) {
       this.logger('removeAll', options);
       return this.SUPER(sink, options);
+    },
+    function find(id, sink) {
+      this.logger('find', id);
+      return this.SUPER(id, sink);
     }
+
   ]
 });

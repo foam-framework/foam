@@ -413,6 +413,10 @@ CLASS({
       this.onSetAttr(name, value);
     },
 
+    function removeAttribute(name) {
+      // TODO
+    },
+
     function getAttributeNode(name) { return this.attributeMap[name]; },
 
     function getAttribute(name) {
@@ -720,7 +724,9 @@ CLASS({
     },
 
     function toString() {
-      return this.output_(this.createOutputStream()).toString();
+      var s = this.createOutputStream();
+      this.output_(s);
+      return s.toString();
     }
   ]
 });

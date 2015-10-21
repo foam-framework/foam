@@ -69,6 +69,10 @@ CLASS({
       }
     },
     {
+      name: 'mode',
+      defaultValue: 'read-write'
+    },
+    {
       name: 'count_',
       hidden: true,
       documentation: 'Internal tracker of insertion order',
