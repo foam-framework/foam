@@ -18,19 +18,22 @@
 CLASS({
   package: 'foam.u2',
   name: 'View',
-  extends: 'foam.u2.Element'
+  extends: 'foam.u2.Element',
 
   exports: [ 'controllerMode' ],
 
   properties: [
+    'data',
     {
       name: 'visibility',
       choices: [ 'rw', 'final', 'disabled', 'ro', 'hidden' ],
-      defaultValueFn: function() { this.prop ? this.prop.visibility : 'rw'; }
+      postSet: function(_, visibility) { this.updateMode_(this.mode); }, 
+      defaultValue: 'rw'
     },
     {
       name: 'mode',
       choices: [ 'rw', 'disabled', 'ro', 'hidden' ],
+      postSet: function(_, mode) { this.updateMode_(mode); },
       defaultValueFn: function() {
         if ( this.visibility === 'ro' ) return 'ro';
         if ( this.visibility === 'final' && this.controllerMode !== 'create' ) return 'ro';
@@ -40,6 +43,16 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.updateMode_(this.mode);
+    },
+    function updateMode_() {
+      // Template method, to be implemented in sub-models
+    },
+    function fromProperty(p) {
+      this.visibility = p.visibility;
+    }
   ]
 });
 
@@ -49,6 +62,6 @@ CLASS({
     {
       name: 'controllerMode',
       choices: [ 'create', 'modify', 'view' ],
-      defaultValueFn: function() { return this.X.controllerMode || 'create'; }
+      deaultValueFn: function() { return this.X.controllerMode || 'create'; }
     },
 */

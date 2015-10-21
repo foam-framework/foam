@@ -20,25 +20,10 @@
 CLASS({
   package: 'foam.u2',
   name: 'Input',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
 
   properties: [
     [ 'nodeName', 'input' ],
-    'data',
-    {
-      name: 'mode',
-      defaultValue: 'rw',
-      postSet: function(old, mode) {
-        if ( old === mode ) return;
-
-        if ( old === 'ro' ) this.setAttribute('readonly', false);
-        else if ( old === 'disabled' ) this.setAttribute('disabled', false);
-
-        if ( mode === 'ro' ) this.setAttribute('readonly', true);
-        else if ( mode === 'disabled' ) this.setAttribute('disabled', true);
-        else if ( mode === 'hidden' ) this.hide();
-      }
-    }
   ],
 
   templates: [
@@ -52,6 +37,12 @@ CLASS({
       this.SUPER();
       this.cls('foam-u2-Input');
       Events.link(this.data$, this.attrValue());
+    },
+    function updateMode_(mode) {
+      console.log('updateMode: ', mode);
+      // TODO: make sure that DOM is updated if values don't change
+      this.setAttribute('readonly', mode === 'ro');
+      this.setAttribute('disabled', mode === 'disabled');
     }
   ]
 });
