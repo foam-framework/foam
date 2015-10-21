@@ -59,17 +59,8 @@ CLASS({
         padding: 5px 8px;
         position: absolute;
         top: 0;
-        visibility: hidden;
         z-index: 2000;
         -webkit-transform: translate3d(0, 0, 2px);
-      }
-      .tooltip.animated {
-        transition: top 0.5s ease-in-out;
-        visibility: visible;
-      }
-      .tooltip.fadeout {
-        opacity: 0;
-        transition: opacity 0.5s ease-in-out;
       }
     */}
   ],
@@ -79,16 +70,14 @@ CLASS({
       this.SUPER();
 
       var document = this.X.document;
-
       document.previousTooltip_ = this;
-      this.X.setTimeout(function() {
-        if ( this.closed ) return;
-        if ( document.previousTooltip_ != this ) return;
 
+      this.X.setTimeout(function() {
         var div = document.createElement('div');
 
-        // Close after 5s
-        this.X.setTimeout(this.close.bind(this), 5000);
+        // Close immediately on mousedown/touchstart.
+        this.target.addEventListener('mousedown', this.close.bind(this));
+        this.target.addEventListener('touchstart', this.close.bind(this));
 
         div.className = this.className;
         div.id = this.id;
@@ -105,38 +94,19 @@ CLASS({
         var maxLeft      = this.X.document.body.clientWidth + this.X.window.scrollX - 15 - div.clientWidth;
         var targetHeight = this.target.clientHeight || this.target.offsetHeight;
 
-        // Start half way to the destination to avoid the user clicking on the tooltip.
-        div.style.top  = above ?
-            pos[1] - targetHeight/2 - 4 :
-            pos[1] + targetHeight/2 + 4 ;
-
-//        div.style.top  = pos[1];
-        div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
-
-        DOM.setClass(div, 'animated');
-
-        this.X.setTimeout(function() {
-          div.style.top = above ?
+        div.style.top = above ?
             pos[1] - targetHeight - 8 :
             pos[1] + targetHeight + 8 ;
-        }, 10);
+        div.style.left = Math.max(this.X.window.scrollX + 15, Math.min(maxLeft, left));
 
         this.initHTML();
-      }.bind(this), 800);
+      }.bind(this), 400);
     },
     toInnerHTML: function() { return this.text; },
     close: function() {
-      if ( this.closed ) return;
-      this.closed = true;
-      // Closing while it is still animating causes it to jump around
-      // which looks bad, so wait 500ms to give it time to transition
-      // if it is.
-      this.X.setTimeout(function() {
-        if ( this.$ ) {
-          this.X.setTimeout(this.$.remove.bind(this.$), 1000);
-          DOM.setClass(this.$, 'fadeout');
-        }
-      }.bind(this), 500);
+      if ( this.$ ) {
+        this.$.remove();
+      }
     },
     destroy: function( isParentDestroyed ) {
       this.SUPER(isParentDestroyed);
