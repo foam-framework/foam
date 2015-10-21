@@ -20,26 +20,13 @@
 CLASS({
   package: 'foam.u2',
   name: 'Checkbox',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
 
   properties: [
     [ 'nodeName', 'input' ],
     {
       model_: 'BooleanProperty',
       name: 'data'
-    },
-    {
-      name: 'mode',
-      defaultValue: 'rw',
-      postSet: function(old, mode) {
-        // checkboxes don't have a readonly mode, so treat readonly the same as disabled
-        if ( old === mode ) return;
-
-        if ( old === 'ro' || old === 'disabled' ) this.setAttribute('disabled', false);
-
-        if ( mode === 'ro' || mode === 'disabled' ) this.setAttribute('disabled', true);
-        else if ( mode === 'hidden' ) this.hide();
-      }
     }
   ],
 
@@ -48,6 +35,9 @@ CLASS({
       this.SUPER();
       this.attrs({type: 'checkbox'});
       Events.link(this.data$, this.attrValue('checked', 'change'));
+    },
+    function updateMode_(mode) {
+      this.setAttribute('disabled', mode === 'disabled' || mode === 'ro');
     }
   ]
 });

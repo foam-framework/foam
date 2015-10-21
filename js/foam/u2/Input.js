@@ -39,7 +39,6 @@ CLASS({
       Events.link(this.data$, this.attrValue());
     },
     function updateMode_(mode) {
-      console.log('updateMode: ', mode);
       // TODO: make sure that DOM is updated if values don't change
       this.setAttribute('readonly', mode === 'ro');
       this.setAttribute('disabled', mode === 'disabled');
