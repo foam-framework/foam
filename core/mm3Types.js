@@ -105,10 +105,13 @@ CLASS({
       labels: ['javascript'],
       defaultValue: 'foam.ui.BooleanView',
     },
-    [ 'toPropertyE', function(X) {
+    {
+      name: 'toPropertyE',
+      labels: ['javascript'],
+      defaultValue: function(X) {
         return X.foam.u2.Checkbox.create(null, X);
       },
-    ],
+    },
     [ 'defaultValue', false ],
     {
       name: 'adapt',
@@ -1035,7 +1038,11 @@ CLASS({
   extends: 'StringProperty',
   label: 'Image data or link',
   properties: [
-    [ 'view', 'foam.ui.md.ImagePickerView' ]
+    {
+      name: 'view',
+      labels: ['javascript'],
+      defaultValue: 'foam.ui.md.ImagePickerView',
+    }
   ]
 });
 
