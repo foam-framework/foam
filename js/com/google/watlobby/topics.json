@@ -39,6 +39,7 @@
     "color": "BLUE",
     "roundImage": true,
     "video": "HNnfHP7VDP8",
+    "timeout": 58,
     "model": "Video"
   },
   {
@@ -67,7 +68,7 @@
     "priority": 3,
     "color": "YELLOW",
     "video": "mlYJdZeA9w4",
-    "duration": 100
+    "timeout": 100
   },
   {
     "topic": "gmailoffline",
@@ -96,6 +97,7 @@
     "priority": 5,
     "model": "Video",
     "video": "1Bb29KxXzDs",
+    "timeout": 185,
     "roundImage": true
   },
   {
@@ -103,7 +105,8 @@
     "image": "img/appbuilder.png",
     "priority": 1,
     "model": "Video",
-    "video": "HvxKHj9QmMI"
+    "video": "HvxKHj9QmMI",
+    "timeout": 55
   },
   {
     "topic": "photos",
