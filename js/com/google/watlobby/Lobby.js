@@ -43,6 +43,7 @@ CLASS({
   properties: [
     { name: 'timer' },
     { name: 'n',          defaultValue: 25 },
+    { name: 'slideshowDelay', model_: 'IntProperty' },
     { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
@@ -161,6 +162,18 @@ CLASS({
       this.addChild(clock);
 
       this.collider.start();
+
+      if ( this.slideshowDelay ) {
+        var i = 0;
+        var l = function() {
+          var t = this.topics[i++];
+          this.selected = this.children[this.findTopic(t)];
+          if ( i == this.topics.length ) i = 0;
+          this.X.setTimeout(l, t.hasOwnProperty('timeout') ? t.timeout*1000 : this.slideshowDelay*1000);
+        }.bind(this);
+
+        l();
+      }
     },
     function findTopic(t) {
       for ( var i = 0 ; i < this.children.length ; i++ ) {
