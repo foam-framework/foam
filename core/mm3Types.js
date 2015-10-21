@@ -39,6 +39,7 @@ CLASS({
     },
     {
       name: 'adapt',
+      labels: ['javascript'],
       defaultValue: function (_, v) {
         return v === undefined || v === null ? '' :
         typeof v === 'function'              ? multiline(v) : v.toString() ;
@@ -51,7 +52,11 @@ CLASS({
       defaultValue: 'String',
       help: 'The Java type of this property.'
     },
-    [ 'view', 'foam.ui.TextFieldView' ],
+    {
+      name: 'view',
+      labels: ['javascript'],
+      defaultValue: 'foam.ui.TextFieldView',
+    },
     {
       name: 'pattern',
       help: 'Regex pattern for property.'
@@ -95,13 +100,21 @@ CLASS({
       defaultValue: 'boolean',
       help: 'The Java type of this property.'
     },
-    [ 'view', 'foam.ui.BooleanView' ],
+    {
+      name: 'view',
+      labels: ['javascript'],
+      defaultValue: 'foam.ui.BooleanView',
+    },
     [ 'toPropertyE', function(X) {
         return X.foam.u2.Checkbox.create(null, X);
       },
     ],
     [ 'defaultValue', false ],
-    [ 'adapt', function (_, v) { return !!v; } ],
+    {
+      name: 'adapt',
+      defaultValue: function (_, v) { return !!v; },
+      labels: ['javascript'],
+    },
     {
       name: 'prototag',
       label: 'Protobuf tag',
@@ -111,6 +124,7 @@ CLASS({
     },
     {
       name: 'fromString',
+      labels: ['javascript'],
       defaultValue: function(s, p) {
         var txt = s.trim();
         this[p.name] =
@@ -225,11 +239,18 @@ CLASS({
       defaultValue: 'int',
       help: 'The Java type of this property.'
     },
-    [ 'view', 'foam.ui.IntFieldView' ],
-    [ 'adapt', function (_, v) {
+    {
+      name: 'view',
+      labels: ['javascript'],
+      defaultValue: 'foam.ui.IntFieldView',
+    },
+    {
+      name: 'adapt',
+      labels: ['javascript'],
+      defaultValue: function (_, v) {
         return typeof v === 'number' ? Math.round(v) : v ? parseInt(v) : 0 ;
-      }
-    ],
+      },
+    },
     [ 'defaultValue', 0 ],
     {
       name: 'prototag',
@@ -252,7 +273,11 @@ CLASS({
       required: false,
       help: 'The maximum value this property accepts.'
     },
-    [ 'compareProperty', function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; } ]
+    {
+      name: 'compareProperty',
+      labels: ['javascript'],
+      defaultValue: function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; },
+    },
   ]
 });
 
