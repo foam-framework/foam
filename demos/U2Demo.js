@@ -355,3 +355,36 @@ E().add(
   ' disabled: ', foam.u2.Checkbox.create({mode: 'disabled', data: true}),
   ' ro: ', foam.u2.Checkbox.create({mode: 'ro', data: true}),
   ' hidden: ', foam.u2.Checkbox.create({mode: 'hidden', data: true})).write();
+
+
+
+MODEL({
+  name: 'VisibilityTest',
+  properties: [
+    {
+      name: 'final',
+      visibility: 'final' 
+    },
+    {
+      name: 'rw',
+      visibility: 'rw'
+    },
+    {
+      name: 'ro',
+      visibility: 'ro'
+    },
+    {
+      name: 'hidden',
+      visibility: 'hidden'
+    }
+  ]
+});
+var vt = VisibilityTest.create({final: 'final', rw: 'rw', ro: 'ro'});
+E().add(
+  E('br'),
+  E('br'),
+  foam.u2.DetailView.create({title: 'default', data: vt}),
+  foam.u2.DetailView.create({title: 'Create',  data: vt, controllerMode: 'create'}),
+  foam.u2.DetailView.create({title: 'Modify',  data: vt, controllerMode: 'modify'}),
+  foam.u2.DetailView.create({title: 'View',    data: vt, controllerMode: 'view'})
+).write();

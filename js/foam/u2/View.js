@@ -20,6 +20,7 @@ CLASS({
   name: 'View',
   extends: 'foam.u2.Element',
 
+  imports: [ 'controllerMode' ],
   exports: [ 'controllerMode' ],
 
   properties: [
@@ -36,8 +37,8 @@ CLASS({
       postSet: function(_, mode) { this.updateMode_(mode); },
       defaultValueFn: function() {
         if ( this.visibility === 'ro' ) return 'ro';
-        if ( this.visibility === 'final' && this.controllerMode !== 'create' ) return 'ro';
-        return this.controllerMode === 'view' ? 'ro' : 'rw';
+        if ( this.visibility === 'final' && 'create' !== this.controllerMode ) return 'ro';
+        return 'view' === this.controllerMode ? 'ro' : 'rw';
      }
     }
   ],
@@ -55,13 +56,3 @@ CLASS({
     }
   ]
 });
-
-/*
-
-
-    {
-      name: 'controllerMode',
-      choices: [ 'create', 'modify', 'view' ],
-      deaultValueFn: function() { return this.X.controllerMode || 'create'; }
-    },
-*/
