@@ -66,6 +66,9 @@ CLASS({
       var view = this.view || this.prop.toPropertyE();
       var prop = this.prop;
 
+      // TODO: remove check once all views extend View
+      view.fromProperty && view.fromProperty(prop);
+
       // TODO: Why can't I just define this with data$ in the view constructor?
       // Is data$ linking the wrong way?
       Events.link(this.data.propertyValue(prop.name), view.data$);

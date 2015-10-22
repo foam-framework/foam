@@ -19,7 +19,7 @@ CLASS({
   package: 'foam.u2',
   name: 'DetailView',
 
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
 
   requires: [
     'Property',
@@ -41,7 +41,7 @@ CLASS({
         console.assert(Model.isInstance(model), 'Invalid model specified for ' + this.name_);
         if ( oldModel !== model )
           this.properties = model.getRuntimeProperties().filter(function(p) { return ! p.hidden; });
-        if ( ! oldModel || this.title === oldModel.label ) this.title = model.label;
+        if ( ( ! oldModel && ! this.hasOwnProperty('title') ) || this.title === oldModel.label ) this.title = model.label;
       }
     },
     {

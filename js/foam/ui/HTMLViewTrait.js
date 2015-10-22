@@ -165,7 +165,7 @@ CLASS({
       documentation: 'Allows specifying the minimum width of a view. ' +
           'This is optional, and only used by views attempting responsive ' +
           'layouts, such as $$DOC{ref:"foam.browser.ui.StackView"}.',
-      defaultValue: 0
+      defaultValue: 300
     },
     {
       name: 'minHeight',
