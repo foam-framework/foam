@@ -291,14 +291,15 @@ GLOBAL.Property = {
     {
       // For U2, replaces hidden
       name: 'visibility',
-      choices: [ 'rw', 'final', 'ro', 'hidden' ]
+      choices: [ 'rw', 'final', 'ro', 'hidden' ],
+      postSet: function(_, v) { if ( 'hidden' === v ) this.hidden = true; }
     },
     {
       name: 'hidden',
       type: 'Boolean',
       view: 'foam.ui.BooleanView',
       defaultValue: false,
-      postSet: function(_, hidden) { if ( hidden ) this.visibility = 'hidden'; },
+      postSet: function(old, hidden) { if ( (! old) && hidden ) this.visibility = 'hidden'; },
       help: 'Indicates if the property is hidden.',
       documentation: function() { /*
         Indicates whether the $$DOC{ref:'Property'} is for internal use and should be hidden from
