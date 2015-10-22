@@ -363,7 +363,7 @@ MODEL({
   properties: [
     {
       name: 'final',
-      visibility: 'final' 
+      visibility: 'final'
     },
     {
       name: 'rw',
@@ -387,4 +387,14 @@ E().add(
   foam.u2.DetailView.create({title: 'Create',  data: vt, controllerMode: 'create'}),
   foam.u2.DetailView.create({title: 'Modify',  data: vt, controllerMode: 'modify'}),
   foam.u2.DetailView.create({title: 'View',    data: vt, controllerMode: 'view'})
+).write();
+
+E().add(
+  E('br'),
+  E('br'),
+  foam.u2.DetailView.create({data: timer}),
+  E('br'),
+  foam.u2.ActionButton.create({data: timer, action: timer.START}),
+  foam.u2.ActionButton.create({data: timer, action: timer.STOP}),
+  foam.u2.ActionButton.create({data: timer, action: timer.STEP})
 ).write();
