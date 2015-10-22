@@ -72,7 +72,6 @@ CLASS({
   templates: [
     function CSS() {/*
       .md-time-field.md-time-field-writable {
-        height: 64px;
         margin: 8px;
         min-width: 56px;
         padding: 32px 8px 8px 8px;
@@ -86,7 +85,8 @@ CLASS({
       .md-time-field-body {
         align-items: center;
         border-bottom: 1px solid #e0e0e0;
-        padding: 8px 0;
+        margin-bottom: -8px;
+        padding-bottom: 7px;
         flex-grow: 1;
       }
 
@@ -94,11 +94,6 @@ CLASS({
         border: none;
         display: inline-block;
         padding: 0;
-      }
-
-      .md-time-field .md-floating-label {
-        font-size: 85%;
-        top: 12px;
       }
 
       .md-time-field {
@@ -111,7 +106,7 @@ CLASS({
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         <% if (this.floatingLabel) { %>
-          <label id="<%= this.id %>-label" class="md-floating-label">
+          <label id="<%= this.id %>-label" class="md-text-field-label">
             <%= this.label %>
           </label>
         <% } %>
@@ -120,10 +115,12 @@ CLASS({
             hour: 'numeric',
             minute: '2-digit',
             seconds: this.showSeconds ? '2-digit' : undefined
-          }) : '' %>
+          }) : '&nbsp;' %>
         </div>
       </div>
       <% if (this.mode !== 'read-only') { this.on('click', this.onClick, this.id); } %>
+      <% this.setClass('md-text-field-label-offset',
+          function() { return self.data; }, this.id + '-label'); %>
     */},
   ]
 });

@@ -913,10 +913,12 @@ CLASS({
       name: 'defaultValueFn',
       preSet: function(_, f) {
         // return a function that will adapt the given f's return
-        return function(prop) {
+        var fp = function(prop) {
           // call the defaultValue function, adapt the result, return it
           return ViewFactoryProperty.ADAPT.defaultValue.call(this, null, f.call(this, prop));
         };
+        fp.toString = function() { return f.toString(); };
+        return fp;
       }
     },
     {
