@@ -66,11 +66,9 @@ CLASS({
         cls('foam-u2-ActionButton').
         on('click', function() { self.action.maybeCall(self.X, self.data); }).
         attrs({disabled: function() {
-          // self.closeTooltip();
           return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
         }}).
         cls({available: function() {
-          // self.closeTooltip();
           return self.action.isAvailable.call(self.data, self.action);
         }}).
         add(this.iconUrl && this.Image.create({src: this.iconUrl})).
