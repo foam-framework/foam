@@ -50,9 +50,41 @@ CLASS({
   templates: [
     function CSS() {/*
       .foam-u2-ActionButton {
-        margin: 5px;
-        padding: 5px;
+        -webkit-box-shadow: inset 0 1px 0 0 #ffffff;
+        box-shadow: inset 0 1px 0 0 #ffffff;
+        background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+        background: -moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+        background-color: #ededed;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        border: 1px solid #dcdcdc;
+        display: inline-block;
+        color: #777777;
+        font-family: arial;
+        font-size: 12px;
+        font-weight: bold;
+        margin: 2px;
+        padding: 4px 16px;
+        text-decoration: none;
+        visibility: hidden;
       }
+
+      .foam-u2-ActionButton.available {
+        visibility: visible;
+      }
+
+      .foam-u2-ActionButton:hover {
+        background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+        background: -moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+        background-color: #dfdfdf;
+      }
+
+      .foam-u2-ActionButton img {
+        vertical-align: middle;
+      }
+
+      .foam-u2-ActionButton:disabled { color: #bbb; -webkit-filter: grayscale(0.8); }
     */}
   ],
 
@@ -64,12 +96,12 @@ CLASS({
 
       this.
         cls('foam-u2-ActionButton').
+        cls('available', function() {
+          return self.action.isAvailable.call(self.data, self.action);
+        }).
         on('click', function() { self.action.maybeCall(self.X, self.data); }).
         attrs({disabled: function() {
           return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
-        }}).
-        cls({available: function() {
-          return self.action.isAvailable.call(self.data, self.action);
         }}).
         add(this.iconUrl && this.Image.create({src: this.iconUrl})).
         add(this.showLabel && function() { return self.label; }.on$(this.data$, this.label$));
