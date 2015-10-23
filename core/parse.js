@@ -252,11 +252,15 @@ function noskip(p) {
 function repeat0(p) {
   p = prep(p);
 
-  return function(ps) {
+  var f = function(ps) {
     var res;
     while ( res = this.parse(p, ps) ) ps = res;
     return ps.setValue('');
   };
+
+  f.toString = function() { return 'repeat0(' + p + ')'; };
+
+  return f;
 }
 
 function seq(/* vargs */) {
@@ -322,7 +326,7 @@ function simpleAlt(/* vargs */) {
     return undefined;
   };
 
-  f.toString = function() { return 'alt(' + argsToArray(args).join(' | ') + ')'; };
+  f.toString = function() { return 'simpleAlt(' + argsToArray(args).join(' | ') + ')'; };
 
   return f;
 }
@@ -387,7 +391,7 @@ function alt(/* vargs */) {
     return p;
   }
 
-  return function(ps) {
+  var f = function(ps) {
     if ( parserVersion !== parserVersion_ ) {
       map = {};
       parserVersion = parserVersion_;
@@ -402,6 +406,10 @@ function alt(/* vargs */) {
     */
     return r1;
   };
+
+  f.toString = function() { return 'alt(' + argsToArray(args).join(' | ') + ')'; };
+
+  return f;
 }
 
 /** Takes a parser which returns an array, and converts its result to a String. **/
