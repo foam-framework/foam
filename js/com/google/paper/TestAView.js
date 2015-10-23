@@ -13,15 +13,28 @@ CLASS({
   package: 'com.google.paper',
   name: 'TestAView',
 
+  requires: [
+    'com.google.paper.QRView',
+  ],
+
   extends: 'foam.ui.md.DetailView',
 
+  properties: [
+     
+  ],
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %> >
-        $$name
+        $$source
         $$label
+        $$qr{ model_: 'com.google.paper.QRView' }
       </div>
+    */},
+    function CSS() {/*
+      svg {
+        max-width: 500px;
+      }
     */},
 
   ],

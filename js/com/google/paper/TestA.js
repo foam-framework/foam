@@ -15,6 +15,8 @@ CLASS({
 
   requires: [
     'com.nodeca.Pako',
+    'com.lazarsoft.JSQRCode',
+    
   ],
 
   properties: [
@@ -26,14 +28,28 @@ CLASS({
       }
     },
     {
-      name: 'name',
+      name: 'qrDecoder',
+      factory: function() {
+        var q = this.JSQRCode.create();
+        return q.qrcode;
+      }
+    },
+
+    {
+      name: 'source',
       postSet: function(old, nu) {
-        this.label = "bytes: " + nu.length +", compressed: " + this.pako.deflate(nu).length;
+        this.label = "bytes: " + nu.length +", compressed: (9)" + this.pako.deflate(nu, { level: 9 }).length + " or (6)" + this.pako.deflate(nu, { level: 6 }).length;
+        
+        this.qr = this.pako.deflate(nu, { level: 9 });
       }
     },
     {
       name: 'label',
     },
+    {
+      name: 'qr',
+      
+    }
   ],
 
 
