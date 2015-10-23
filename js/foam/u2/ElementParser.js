@@ -59,24 +59,14 @@ CLASS({
         return this.stack.length > 1 ? ps : null;
       },
 
-    code: seq('<%', repeat(not('%>', anyChar)), '%>'),
+      code: seq('<%', repeat(not('%>', anyChar)), '%>'),
 
-/*
-      startTag: seq(
-        '<',
-        sym('tagName'),
-        sym('whitespace'),
-        sym('attributes'),
-        sym('whitespace'),
-        optional('/'),
-        '>'),
-*/
       startTag: seq(
         '<',
         sym('startTagName'),
-//        sym('whitespace'),
-//        repeat0(sym('tagPart'), sym('whitespace')),
-//        sym('whitespace'),
+        sym('whitespace'),
+        repeat(sym('tagPart'), sym('whitespace')),
+        sym('whitespace'),
         optional('/'),
         '>'),
 
@@ -91,10 +81,21 @@ CLASS({
 
       tagPart: alt(
         sym('id'),
-        sym('attribute'),
-        sym('style'),
-        sym('listener')
+//        sym('attribute'),
+//        sym('style'),
+        sym('addListener')
       ),
+
+      addListener: seq('on', sym('topic'), '=', sym('listener')),
+
+      topic: sym('label'),
+
+      listener: alt(
+        sym('namedListener')/*,
+        sym('codeListener')*/),
+
+      namedListener: seq1(1, '"', sym('label'), '"'),
+      codeListener:  seq1(1, '{', sym('label'), '}'),
 
       cdata: seq1(1, '<![CDATA[', str(repeat(not(']]>', anyChar))), ']]>'),
 
@@ -110,7 +111,7 @@ CLASS({
 
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('value')))),
 
-      id: seq('id="', sym('value'), '"'),
+      id: seq1(1, 'id="', sym('value'), '"'),
 
       value: str(alt(
         plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
@@ -123,6 +124,9 @@ CLASS({
         var ret = this.output.join('');
         this.reset();
         return 'var E=this.E.bind(this),s=[],e=' + ret + ';return e;';
+      },
+      id: function(id) {
+        this.out(".id('", id, "')");
       },
       tag: function(xs) {
         var ret = this.stack[0];
@@ -139,6 +143,12 @@ CLASS({
       },
       code: function (v) {
         this.out(".s(s);", v[1].join('').trim(), "s[0]");
+      },
+      addListener: function(v) {
+        this.out(".on('", v[1], "',", v[3], ')');
+      },
+      namedListener: function(l) {
+        return 'this.' + l;
       },
       startTagName: function(xs) {
         if ( this.stack.length ) this.out('.a(');
