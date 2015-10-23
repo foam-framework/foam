@@ -45,6 +45,7 @@ CLASS({
       // break the regular alt().
       htmlPart: simpleAlt(
         sym('cdata'),
+        sym('code'),
         sym('comment'),
         sym('text'),
         sym('endTag'),
@@ -57,6 +58,8 @@ CLASS({
       matchingHTML: function(ps) {
         return this.stack.length > 1 ? ps : null;
       },
+
+    code: seq('<%', repeat(not('%>', anyChar)), '%>'),
 
 /*
       startTag: seq(
@@ -119,7 +122,7 @@ CLASS({
       START: function(xs) {
         var ret = this.output.join('');
         this.reset();
-        return 'var E = this.E.bind(this);' + ret + ';';
+        return 'var E=this.E.bind(this),s=[],e=' + ret + ';return e;';
       },
       tag: function(xs) {
         var ret = this.stack[0];
@@ -132,10 +135,13 @@ CLASS({
       cdata: function(xs) { this.peek() && this.peek().appendChild(xs); },
       text: function(xs) {
         // TODO: don't strip whitespace for <pre>
-        this.out(".add('", xs.replace(/\s+/g, ' '), "')");
+        this.out(".a('", xs.replace(/\s+/g, ' '), "')");
+      },
+      code: function (v) {
+        this.out(".s(s);", v[1].join('').trim(), "s[0]");
       },
       startTagName: function(xs) {
-        if ( this.stack.length ) this.out('.add(');
+        if ( this.stack.length ) this.out('.a(');
         if ( xs === 'SPAN' )
           this.out("E()");
         else
