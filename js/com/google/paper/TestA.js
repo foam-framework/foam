@@ -14,9 +14,8 @@ CLASS({
   name: 'TestA',
 
   requires: [
-    'com.nodeca.Pako',
+    'com.nodeca.Pako',    
     'com.lazarsoft.JSQRCode',
-    
   ],
 
   properties: [
@@ -28,13 +27,13 @@ CLASS({
       }
     },
     {
-      name: 'qrDecoder',
+      name: 'QrDecoder',
       factory: function() {
-        var q = this.JSQRCode.create();
-        return q.qrcode;
+        var r = this.JSQRCode.create();
+        r.qrcode.callback = this.onQRData;
+        return r.qrcode;
       }
     },
-
     {
       name: 'source',
       postSet: function(old, nu) {
@@ -47,10 +46,33 @@ CLASS({
       name: 'label',
     },
     {
-      name: 'qr',
-      
+      name: 'qr', 
+    },
+    {
+      name: 'dataURL',
+      postSet: function(old,nu) {
+        this.QrDecoder.decode(nu);
+      }
+    },
+    {
+      name: 'compressedSource',
+      postSet: function(old,nu) {
+        this.reinflated = this.pako.inflate(nu, { to: 'string' });        
+      }
+    },
+    {
+      name: 'reinflated'
     }
   ],
 
+  listeners: [
+    {
+      name: 'onQRData',
+      code: function(d) {
+        this.compressedSource = d;
+      }
+    }
+    
+  ]
 
 });

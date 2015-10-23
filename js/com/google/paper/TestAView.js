@@ -19,15 +19,13 @@ CLASS({
 
   extends: 'foam.ui.md.DetailView',
 
-  properties: [
-     
-  ],
-
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %> >
         $$source
         $$label
+        $$dataURL
+        $$reinflated
         $$qr{ model_: 'com.google.paper.QRView' }
       </div>
     */},

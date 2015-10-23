@@ -42,11 +42,10 @@ CLASS({
         if ( ! this.$ ) return; 
         console.log("qr:",nu);
         
-        var svg = this.QrEncoder.generateSVG(nu);
-        console.log(svg);
-        this.$.appendChild(svg);
-        
-        
+        var dataURL = this.QrEncoder.generatePNG(nu);
+        console.log(dataURL);
+        //this.$.appendChild(svg);
+        this.$.src = dataURL;
       }
       
     }
@@ -54,8 +53,7 @@ CLASS({
   
   templates: [
     function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %> >
-      </div>
+      <img id="%%id" <%= this.cssClassAttr() %> >
     */}
     
   ],
