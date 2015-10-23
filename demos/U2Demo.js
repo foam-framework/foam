@@ -403,5 +403,5 @@ E('br').write();
 
 foam.u2.ElementParser.create();
 var p = foam.u2.ElementParser.parser__.create();
-p.parseString('hello').write();
-p.parseString('<b>bold</b>').write();
+console.log(p.parseString('hello'));
+console.log(p.parseString('<div><i>italic</i><b>bold   </b><span>span</span></div>'));

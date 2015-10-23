@@ -24,16 +24,21 @@ CLASS({
       __proto__: grammar,
 
       create: function() {
-        return {
-          __proto__: this,
-          stack: [ X.foam.u2.Element.create() ]
-        }
+        return { __proto__: this }.reset();
       },
-      
+
+      out: function(s) { this.output.push.apply(this.output, arguments); },
+
+      reset: function() {
+        this.output = [];
+        this.stack  = [];
+        return this;
+      },
+
       peek: function() { return this.stack[this.stack.length-1]; },
-      
+
       START: sym('html'),
-      
+
       html: repeat0(sym('htmlPart')),
 
       // Use simpleAlt() because endTag() doesn't always look ahead and will
@@ -44,16 +49,16 @@ CLASS({
         sym('text'),
         sym('endTag'),
         sym('startTag')),
-      
+
       tag: seq(
         sym('startTag'),
         repeat(seq1(1, sym('matchingHTML'), sym('htmlPart')))),
-      
+
       matchingHTML: function(ps) {
         return this.stack.length > 1 ? ps : null;
       },
 
-/*      
+/*
       startTag: seq(
         '<',
         sym('tagName'),
@@ -65,56 +70,56 @@ CLASS({
 */
       startTag: seq(
         '<',
-        sym('tagName'),
-        sym('whitespace'),
-        repeat0(sym('tagPart'), sym('whitespace'))
-        sym('whitespace'),
+        sym('startTagName'),
+//        sym('whitespace'),
+//        repeat0(sym('tagPart'), sym('whitespace')),
+//        sym('whitespace'),
         optional('/'),
         '>'),
-      
+
       endTag: (function() {
         var endTag_ = sym('endTag_');
         return function(ps) {
           return this.stack.length > 1 ? this.parse(endTag_, ps) : undefined;
         };
       })(),
-      
+
       endTag_: seq1(1, '</', sym('tagName'), '>'),
-      
+
       tagPart: alt(
         sym('id'),
         sym('attribute'),
         sym('style'),
-        sym('listener'),
+        sym('listener')
       ),
-      
+
       cdata: seq1(1, '<![CDATA[', str(repeat(not(']]>', anyChar))), ']]>'),
-      
+
       comment: seq('<!--', repeat0(not('-->', anyChar)), '-->'),
-      
+
       label: str(plus(notChars(' %=/\t\r\n<>\'"'))),
-      
+
       tagName: sym('label'),
-      
+
+      startTagName: sym('tagName'),
+
       text: str(plus(alt('<%', notChar('<')))),
-      
+
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('value')))),
 
       id: seq('id="', sym('value'), '"'),
-      
+
       value: str(alt(
         plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
         seq1(1, '"', repeat(notChar('"')), '"')
       )),
-      
+
       whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
     }.addActions({
       START: function(xs) {
-        // TODO(kgr): I think that this might be a bug if we get a failed compile then
-        // we might not reset state properly.
-        var ret = this.stack[0];
-        this.stack = [ X.foam.u2.Element.create() ];
-        return ret;
+        var ret = this.output.join('');
+        this.reset();
+        return 'var E = this.E.bind(this);' + ret + ';';
       },
       tag: function(xs) {
         var ret = this.stack[0];
@@ -125,27 +130,32 @@ CLASS({
       attribute: function(xs) { return { name: xs[0], value: xs[1] }; },
       // Do we need this?
       cdata: function(xs) { this.peek() && this.peek().appendChild(xs); },
-      text: function(xs) { this.peek() && this.peek().appendChild(xs); },
-      startTag: function(xs) {
-        var tag = xs[1];
-        // < tagName ws attributes ws / >
-        // 0 1       2  3          4  5 6
-        var obj = X.foam.u2.Element.create({nodeName: tag, attributes: xs[3]});
-        this.peek() && this.peek().appendChild(obj);
-        if ( xs[5] != '/' ) this.stack.push(obj);
-        return obj;
+      text: function(xs) {
+        // TODO: don't strip whitespace for <pre>
+        this.out(".add('", xs.replace(/\s+/g, ' '), "')");
+      },
+      startTagName: function(xs) {
+        if ( this.stack.length ) this.out('.add(');
+        if ( xs === 'SPAN' )
+          this.out("E()");
+        else
+          this.out("E('", xs, "')");
+        this.stack.push(xs);
       },
       endTag: function(tag) {
         var stack = this.stack;
-        
+
         while ( stack.length > 1 ) {
-          if ( this.peek().nodeName === tag ) {
+          if ( this.peek() === tag ) {
             stack.pop();
+            this.out(')');
             return;
           }
+          /*
           var top = stack.pop();
           this.peek().childNodes = this.peek().childNodes.concat(top.childNodes);
           top.childNodes = [];
+          */
         }
       }
     });
