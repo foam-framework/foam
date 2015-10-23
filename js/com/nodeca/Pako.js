@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  *
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Modifications Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,57 @@ CLASS({
     name: 'Pako',
     package: 'com.nodeca',
 
-    documentation: function() {/* Repackaging of the pako zlib implementation. */},
+    documentation: function() {/* 
+      Repackaging of the pako zlib implementation.
+<code>
+// Deflate
+//
+var input = new Uint8Array();
+//... fill input data here
+var output = pako.deflate(input);
+
+// Inflate (simple wrapper can throw exception on broken stream)
+//
+var compressed = new Uint8Array();
+//... fill data to uncompress here
+try {
+  var result = pako.inflate(compressed);
+} catch (err) {
+  console.log(err);
+}
+
+//
+// Alternate interface for chunking & without exceptions
+//
+
+var inflator = new pako.Inflate();
+
+inflator.push(chunk1, false);
+inflator.push(chunk2, false);
+...
+inflator.push(chunkN, true); // true -> last chunk
+
+if (inflator.err) {
+  console.log(inflator.msg);
+}
+
+var output = inflator.result;
+</code>    
+      
+With strings:
+      
+<code>
+var test = { my: 'super', puper: [456, 567], awesome: 'pako' };
+
+var binaryString = pako.deflate(JSON.stringify(test), { to: 'string' });
+
+//
+// Here you can do base64 encode, make xhr requests and so on.
+//
+
+var restored = JSON.parse(pako.inflate(binaryString, { to: 'string' }));
+</code>
+    */},
 
     properties: [
       {
