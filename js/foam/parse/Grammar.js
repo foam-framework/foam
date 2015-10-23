@@ -19,6 +19,10 @@ CLASS({
   package: 'foam.parse',
   name: 'Grammar',
 
+  onLoad: function() {
+    this.parser__ = this.createParser();
+  },
+
   properties: [
     {
       model_: 'BooleanProperty',

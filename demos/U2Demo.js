@@ -395,6 +395,13 @@ E().add(
   foam.u2.DetailView.create({data: timer}),
   E('br'),
   foam.u2.ActionButton.create({data: timer, action: timer.START}),
-  foam.u2.ActionButton.create({data: timer, action: timer.STOP}),
-  foam.u2.ActionButton.create({data: timer, action: timer.STEP})
+  foam.u2.ActionButton.create({data: timer, action: timer.STEP}),
+  foam.u2.ActionButton.create({data: timer, action: timer.STOP})
 ).write();
+
+E('br').write();
+
+foam.u2.ElementParser.create();
+var p = foam.u2.ElementParser.parser__.create();
+p.parseString('hello').write();
+p.parseString('<b>bold</b>').write();
