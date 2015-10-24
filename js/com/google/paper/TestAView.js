@@ -15,6 +15,7 @@ CLASS({
 
   requires: [
     'com.google.paper.QRView',
+    'com.google.paper.VideoCaptureView',
   ],
 
   extends: 'foam.ui.md.DetailView',
@@ -24,7 +25,7 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %> >
         $$source
         $$label
-        $$dataURL
+        $$dataURL{ model_: 'com.google.paper.VideoCaptureView' }
         $$reinflated
         $$qr{ model_: 'com.google.paper.QRView' }
       </div>

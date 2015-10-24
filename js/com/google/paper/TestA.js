@@ -30,7 +30,7 @@ CLASS({
       name: 'QrDecoder',
       factory: function() {
         var r = this.JSQRCode.create();
-        r.qrcode.callback = this.onQRData;
+        this.compressedSource$ = r.data$;
         return r.qrcode;
       }
     },
@@ -57,7 +57,11 @@ CLASS({
     {
       name: 'compressedSource',
       postSet: function(old,nu) {
-        this.reinflated = this.pako.inflate(nu, { to: 'string' });        
+        try {
+          this.reinflated = this.pako.inflate(nu, { to: 'string' });        
+        } catch (e) {
+          console.log("Inflate failed",e);
+        }
       }
     },
     {
@@ -65,14 +69,5 @@ CLASS({
     }
   ],
 
-  listeners: [
-    {
-      name: 'onQRData',
-      code: function(d) {
-        this.compressedSource = d;
-      }
-    }
-    
-  ]
 
 });
