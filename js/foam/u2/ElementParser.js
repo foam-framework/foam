@@ -39,11 +39,12 @@ CLASS({
 
       START: sym('html'),
 
-      html: seq1(1, sym('whitespace'), repeat0(sym('htmlPart')), sym('whitespace')),
+      html: repeat0(sym('htmlPart')),
 
       // Use simpleAlt() because endTag() doesn't always look ahead and will
       // break the regular alt().
       htmlPart: simpleAlt(
+        plus(alt(' ', '\t', '\r', '\n')),
         sym('cdata'),
         sym('code'),
         sym('comment'),
