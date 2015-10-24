@@ -39,7 +39,7 @@ CLASS({
 
       START: sym('html'),
 
-      html: repeat0(sym('htmlPart')),
+      html: seq1(1, sym('whitespace'), repeat0(sym('htmlPart')), sym('whitespace')),
 
       // Use simpleAlt() because endTag() doesn't always look ahead and will
       // break the regular alt().
@@ -81,9 +81,9 @@ CLASS({
 
       tagPart: alt(
         sym('id'),
-//        sym('attribute'),
 //        sym('style'),
-        sym('addListener')
+        sym('addListener'),
+        sym('attribute')
       ),
 
       addListener: seq('on', sym('topic'), '=', sym('listener')),
@@ -109,7 +109,7 @@ CLASS({
 
       text: str(plus(alt('<%', notChar('<')))),
 
-      attribute: seq(sym('label'), optional(seq1(1, '=', sym('value')))),
+      attribute: seq(sym('label'), optional(seq1(1, '="', sym('value'), '"'))),
 
       id: seq1(1, 'id="', sym('value'), '"'),
 
@@ -134,7 +134,9 @@ CLASS({
         return ret.childNodes[0];
       },
       tagName: function(n) { return n.toUpperCase(); },
-      attribute: function(xs) { return { name: xs[0], value: xs[1] }; },
+      attribute: function(xs) {
+        this.out('.attrs({', xs[0], ':', xs[1] || 1, '})');
+      },
       // Do we need this?
       cdata: function(xs) { this.peek() && this.peek().appendChild(xs); },
       text: function(xs) {
