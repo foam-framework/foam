@@ -120,10 +120,9 @@ var literal = (function() {
       return str === ps.head ? ps.tail.setValue(opt_value || str) : undefined;
     };
     } else {
-      var chars = str.split('');
       f = function(ps) {
         for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
-          if ( chars[i] !== ps.head ) return undefined;
+          if ( str.charAt(i) !== ps.head ) return undefined;
         }
         
         return ps.setValue(opt_value || str);
