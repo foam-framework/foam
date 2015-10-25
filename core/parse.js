@@ -108,9 +108,10 @@ function range(c1, c2) {
 }
 
 function literal(str, opt_value) {
+  var chars = str.split('');
   var f = function(ps) {
     for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
-      if ( str.charAt(i) !== ps.head ) return undefined;
+      if ( chars[i] !== ps.head ) return undefined;
     }
 
     return ps.setValue(opt_value || str);
