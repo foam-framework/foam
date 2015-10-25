@@ -107,27 +107,36 @@ function range(c1, c2) {
   return f;
 }
 
-function literal(str, opt_value) {
-  var f;
-  if ( str.length === 1 ) {
-    f = function(ps) {
+var literal = (function() {
+  // Cache of literal parsers, which repeat a lot
+  var cache = {};
+
+  return function(str, opt_value) {
+    if ( ! opt_value && cache[str] ) return cache[str];
+
+    var f;
+    if ( str.length === 1 ) {
+      f = function(ps) {
       return str === ps.head ? ps.tail.setValue(opt_value || str) : undefined;
     };
-  } else {
-    var chars = str.split('');
-    f = function(ps) {
-      for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
-        if ( chars[i] !== ps.head ) return undefined;
-      }
-      
-      return ps.setValue(opt_value || str);
-    };
-  }
+    } else {
+      var chars = str.split('');
+      f = function(ps) {
+        for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
+          if ( chars[i] !== ps.head ) return undefined;
+        }
+        
+        return ps.setValue(opt_value || str);
+      };
+    }
+    
+    f.toString = function() { return '"' + str + '"'; };
 
-  f.toString = function() { return '"' + str + '"'; };
-
-  return f;
-}
+    if ( ! opt_value ) return cache[str] = f;
+    
+    return f;
+  };
+})();
 
 /**
  * Case-insensitive String literal.
