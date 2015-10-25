@@ -108,14 +108,21 @@ function range(c1, c2) {
 }
 
 function literal(str, opt_value) {
-  var chars = str.split('');
-  var f = function(ps) {
-    for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
-      if ( chars[i] !== ps.head ) return undefined;
-    }
-
-    return ps.setValue(opt_value || str);
-  };
+  var f;
+  if ( str.length === 1 ) {
+    f = function(ps) {
+      return str === ps.head ? ps.tail.setValue(opt_value || str) : undefined;
+    };
+  } else {
+    var chars = str.split('');
+    f = function(ps) {
+      for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
+        if ( chars[i] !== ps.head ) return undefined;
+      }
+      
+      return ps.setValue(opt_value || str);
+    };
+  }
 
   f.toString = function() { return '"' + str + '"'; };
 
