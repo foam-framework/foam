@@ -256,6 +256,10 @@ MODEL({
           'return function(' + args.join(',') + '){' + code + '};})()' +
           (model ? '\n\n//# sourceURL=' + model.id.replace(/\./g, '/') + '.' + t.name + '\n' : ''));
     },
+    parseCSS3: function(t) {
+      var parser = this.CSS3Parser_ || ( this.CSS3Parser_ = X.foam.grammars.CSS3.create());
+      return parser.parser.parseString(t).toString();
+    },
     compile: function(t, model) {
       // Parse result: [isSimple, maybeCode]: [true, null] or [false, codeString].
       var parseResult = TemplateCompiler.parseString(t.template);
@@ -263,8 +267,8 @@ MODEL({
       // Simple case, just a string literal
       if ( parseResult[0] )
         return ConstantTemplate(t.language === 'css' ?
-            X.foam.grammars.CSS3.create().parser.parseString(t.template).toString() :
-            t.template);
+            this.parseCSS3(t.template) :
+            t.template) ;
 
       var code = this.HEADER + parseResult[1] + this.FOOTERS[t.language];
 
