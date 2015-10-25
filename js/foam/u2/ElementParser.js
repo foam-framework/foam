@@ -83,7 +83,7 @@ CLASS({
       tagPart: alt(
         sym('id'),
         sym('class'),
-//        sym('style'),
+        sym('style'),
         sym('addListener'),
         sym('attribute')
       ),
@@ -117,6 +117,14 @@ CLASS({
 
       class: seq1(1, 'class="', repeat(sym('value'), ' '), '"'),
 
+      style: seq1(1, 'style="', sym('styleMap'), optional(';'), '"'),
+
+      styleMap: repeat(sym('stylePair'), ';'),
+
+      stylePair: seq(sym('value'), ':', sym('styleValue')),
+
+      styleValue: sym('value'),
+
       value: str(alt(
         plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
         seq1(1, '"', repeat(notChar('"')), '"')
@@ -135,6 +143,14 @@ CLASS({
       class: function(ids) {
         for ( var i = 0 ; i < ids.length ; i++ ) 
           this.out(".cls('", ids[i], "')");
+      },
+      style: function(ss) {
+        this.out(".style({");
+        for ( var i = 0 ; i < ss.length ; i++ ) {
+          if ( i > 0 ) this.out(';');
+          this.out(ss[i][0], ':"', ss[i][2], '"');
+        }
+        this.out("})");
       },
       tag: function(xs) {
         var ret = this.stack[0];
