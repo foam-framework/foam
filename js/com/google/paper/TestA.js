@@ -14,8 +14,8 @@ CLASS({
   name: 'TestA',
 
   requires: [
-    'com.nodeca.Pako',    
-    'com.lazarsoft.JSQRCode',
+    'com.nodeca.pako.Pako',
+    'com.lazarsoft.jsqrcode.JSQRCode',
   ],
 
   properties: [
@@ -38,7 +38,7 @@ CLASS({
       name: 'source',
       postSet: function(old, nu) {
         this.label = "bytes: " + nu.length +", compressed: (9)" + this.pako.deflate(nu, { level: 9 }).length + " or (6)" + this.pako.deflate(nu, { level: 6 }).length;
-        
+
         this.qr = this.pako.deflate(nu, { level: 9 });
       }
     },
@@ -46,7 +46,7 @@ CLASS({
       name: 'label',
     },
     {
-      name: 'qr', 
+      name: 'qr',
     },
     {
       name: 'dataURL',
@@ -58,7 +58,7 @@ CLASS({
       name: 'compressedSource',
       postSet: function(old,nu) {
         try {
-          this.reinflated = this.pako.inflate(nu, { to: 'string' });        
+          this.reinflated = this.pako.inflate(nu, { to: 'string' });
         } catch (e) {
           console.log("Inflate failed",e);
         }

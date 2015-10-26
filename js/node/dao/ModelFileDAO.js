@@ -121,8 +121,8 @@ CLASS({
         if ( this.looking_ === obj.id ) {
           this.looking_ = null;
         }
-        // notify other ModelFileDAOs above us that the object was found
-        // this DAO must have been a fallback
+        // notify other ModelFileDAOs above us (if any) that the object was found.
+        // (this DAO must have been a fallback)
         if ( global.__RETRY_DATACALLBACKS ) {
           for ( key in global.__RETRY_DATACALLBACKS ) {
             global.__RETRY_DATACALLBACKS[key](obj);

@@ -14,7 +14,7 @@ CLASS({
   name: 'QRView',
 
   requires: [
-    'com.public.QRGenerator',
+    'com.public.qrgenerator.QRGenerator',
   ],
 
   extends: 'foam.ui.SimpleView',
@@ -39,37 +39,37 @@ CLASS({
         return nu;
       },
       postSet: function(old,nu) {
-        if ( ! this.$ ) return; 
+        if ( ! this.$ ) return;
         console.log("qr:",nu);
-        
+
         var dataURL = this.QrEncoder.generatePNG(nu);
         console.log(dataURL);
         //this.$.appendChild(svg);
         this.$.src = dataURL;
       }
-      
+
     }
   ],
-  
+
   templates: [
     function toHTML() {/*
       <img id="%%id" <%= this.cssClassAttr() %> >
     */}
-    
+
   ],
-  
+
   methods: [
     function bytesTo7BitPerCharStr(array) {
       var l = array.length;
       for (var i=0; i < l; ++i) {
-        
+
       }
     },
     function byteArrayToStr(array) {
       var ret = '';
       var l = array.length;
       for (var i=0; i < l; ++i) {
-        ret += String.fromCharCode(array[i]); 
+        ret += String.fromCharCode(array[i]);
       }
       return ret;
     },
@@ -79,25 +79,25 @@ CLASS({
       var l = array.length;
       for (var i=0; i < l; ++i) {
         c = array[i];
-        var testC = c >> 4;        
+        var testC = c >> 4;
         if ( testC >= 0 && testC <= 7 ) {
-          ret += String.fromCharCode(c);          
+          ret += String.fromCharCode(c);
         } else if ( testC >= 12 && testC <= 13 ) {
           c2 = array[++i];
-          ret += String.fromCharCode(( (c & 0x1F) << 6) | (c2 & 0x3F) );          
+          ret += String.fromCharCode(( (c & 0x1F) << 6) | (c2 & 0x3F) );
         } else if ( testC == 14) {
           c2 = array[++i];
           c3 = array[++i];
           ret += String.fromCharCode(
-            ((c & 0x0F) << 12) | 
-            ((c2 & 0x3F) << 6) | 
+            ((c & 0x0F) << 12) |
+            ((c2 & 0x3F) << 6) |
             ((c3 & 0x3F) << 0)
           );
         }
       }
       return ret;
     }
-    
+
   ],
-  
+
 });

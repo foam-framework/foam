@@ -34,9 +34,9 @@
 
 CLASS({
     name: 'Pako',
-    package: 'com.nodeca',
+    package: 'com.nodeca.pako',
 
-    documentation: function() {/* 
+    documentation: function() {/*
       Repackaging of the pako zlib implementation.
 <code>
 // Deflate
@@ -71,10 +71,10 @@ if (inflator.err) {
 }
 
 var output = inflator.result;
-</code>    
-      
+</code>
+
 With strings:
-      
+
 <code>
 var test = { my: 'super', puper: [456, 567], awesome: 'pako' };
 
