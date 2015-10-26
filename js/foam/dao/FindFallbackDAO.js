@@ -31,28 +31,22 @@ CLASS({
   methods: {
     find: function(id, sink) {
       var sid = ""+id;
-      //console.log("FFD find: ", sid);
       this.delegate.find(sid, {
          put: function(o) {
-           //console.log("FFD found primary: ", sid);
            this.delegate.put(o);
            sink && sink.put && sink.put(o);
          }.bind(this),
          error: function() {
            if ( ! this.fallback ) {
-             //console.log("FFD primary fail, no fallback: ", sid);
              sink && sink.error && sink.error();
            } else {
              var fid = ""+sid;
-             //console.log("FFD fallback find: ", fid);
              this.fallback.find(fid, {
                put: function(o) {
-                //console.log("FFD fallback found: ", fid);
                 this.delegate.put(o);
                 sink && sink.put && sink.put(o);
                }.bind(this),
                error: function() {
-                 //console.log("FFD fallback not found: ", fid);
                  sink && sink.error && sink.error();
                }.bind(this)
              });
