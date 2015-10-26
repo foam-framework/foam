@@ -135,17 +135,17 @@ CLASS({
       START: function(xs) {
         var ret = this.output.join('');
         this.reset();
-        return 'var E=this.E.bind(this),s=[],e=' + ret + ';return e;';
+        return 'function(){var E=this.E.bind(this),s=[],e=' + ret + ';return e;}';
       },
       id: function(id) {
         this.out(".id('", id, "')");
       },
       class: function(ids) {
-        for ( var i = 0 ; i < ids.length ; i++ ) 
-          this.out(".cls('", ids[i], "')");
+        for ( var i = 0 ; i < ids.length ; i++ )
+          this.out(".c('", ids[i], "')");
       },
       style: function(ss) {
-        this.out(".style({");
+        this.out(".s({");
         for ( var i = 0 ; i < ss.length ; i++ ) {
           if ( i > 0 ) this.out(';');
           this.out(ss[i][0], ':"', ss[i][2], '"');
@@ -159,7 +159,7 @@ CLASS({
       },
       tagName: function(n) { return n.toUpperCase(); },
       attribute: function(xs) {
-        this.out('.attrs({', xs[0], ':', xs[1] || 1, '})');
+        this.out('.t({', xs[0], ':', xs[1] || 1, '})');
       },
       // Do we need this?
       cdata: function(xs) { this.peek() && this.peek().appendChild(xs); },
@@ -168,7 +168,7 @@ CLASS({
         this.out(".a('", xs.replace(/\s+/g, ' '), "')");
       },
       code: function (v) {
-        this.out(".s(s);", v[1].join('').trim(), "s[0]");
+        this.out(".p(s);", v[1].join('').trim(), "s[0]");
       },
       addListener: function(v) {
         this.out(".on('", v[1], "',", v[3], ')');

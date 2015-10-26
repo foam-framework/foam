@@ -1,5 +1,5 @@
 var timer = foam.util.Timer.create();
-timer.start();
+// timer.start();
 
 E('b').add('bold', E('br')).write();
 
@@ -417,13 +417,8 @@ console.log(p.parseString(multiline(function(){/*
       <b>bold</b>
     <% } %>
       <b if="true">bold2   </b>
-      <b repeat="{{i = 1 to 10}}">i: {{i}}</b>
-      <i repeat="{{j = this.dao}}">j: {{j}}</i>
+      <b repeat="i in 1 to 10">i: {{i}}</b>
+      <i repeat="j in this.dao">j: {{j}}</i>
     <span>span</span>
   </div>
 */})));
-
-
-
-
-timer.stop();

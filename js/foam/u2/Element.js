@@ -727,7 +727,17 @@ CLASS({
       var s = this.createOutputStream();
       this.output_(s);
       return s.toString();
-    }
+    },
+
+
+    //
+    // Template Support (internal)
+    //
+    function a() { return this.add.apply(this, arguments); },
+    function c() { return this.cls.apply(this, arguments); },
+    function p(a) { a[0] = this; },
+    function s() { return this.style.apply(this, arguments); },
+    function t(as) { return this.attrs(as); }
   ]
 });
 
