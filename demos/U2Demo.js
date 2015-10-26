@@ -404,4 +404,26 @@ E('br').write();
 foam.u2.ElementParser.create();
 var p = foam.u2.ElementParser.parser__.create();
 console.log(p.parseString('hello'));
-console.log(p.parseString('<div><i>italic</i><% if ( true ) { %><b>bold   </b><% } %><span>span</span></div>'));
+console.log(p.parseString('<input readonly>hello</input>'));
+console.log(p.parseString('<input disabled="disabled">hello</input>'));
+console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"></input><i>italic</i><% if ( true ) { %><b>bold   </b><% } %><span>span</span></div>'));
+
+console.log(p.parseString(multiline(function(){/*
+  <div id="foo" onclick="foo" class="fooClass barClass" style="color:red;padding:5px;">
+    <!-- A Comment -->
+    <input readonly type="color"></input>
+    <i>italic</i>
+    <% if ( true ) { %>
+      <b>bold</b>
+    <% } %>
+      <b if="true">bold2   </b>
+      <b repeat="{{i = 1 to 10}}">i: {{i}}</b>
+      <i repeat="{{j = this.dao}}">j: {{j}}</i>
+    <span>span</span>
+  </div>
+*/})));
+
+
+
+
+timer.stop();
