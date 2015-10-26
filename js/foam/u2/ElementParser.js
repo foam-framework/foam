@@ -47,6 +47,7 @@ CLASS({
         plus(alt(' ', '\t', '\r', '\n')),
         sym('cdata'),
         sym('code'),
+        sym('child'),
         sym('comment'),
         sym('text'),
         sym('endTag'),
@@ -61,6 +62,8 @@ CLASS({
       },
 
       code: seq('<%', repeat(not('%>', anyChar)), '%>'),
+
+      child: seq1(1, '{{', str(repeat(not('}}', anyChar))), '}}'),
 
       startTag: seq(
         '<',
@@ -169,6 +172,9 @@ CLASS({
       },
       code: function (v) {
         this.out(".p(s);", v[1].join('').trim(), "s[0]");
+      },
+      child: function (c) {
+        this.out(".a(", c, ")");
       },
       addListener: function(v) {
         this.out(".on('", v[1], "',", v[3], ')');

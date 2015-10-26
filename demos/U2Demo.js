@@ -413,6 +413,8 @@ console.log(p.parseString(multiline(function(){/*
     <!-- A Comment -->
     <input readonly type="color"></input>
     <i>italic</i>
+    {{this.fname}}
+    {{this.fname$}}
     <% if ( true ) { %>
       <b>bold</b>
     <% } %>
