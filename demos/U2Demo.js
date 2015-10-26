@@ -435,6 +435,8 @@ MODEL({
       <h1>Person With Template</h1>
       <div><b>First Name:</b> {{this.firstName}}</div>
       <div><b>First Name:</b> {{this.firstName$}}</div>
+      <% this.Y.data = this; %>
+      <div>{{this.model_.FIRST_NAME.toE(this.Y)}}</div>
     </div>
    */}
   ]

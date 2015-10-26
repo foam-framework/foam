@@ -735,7 +735,7 @@ CLASS({
     //
     function a() { return this.add.apply(this, arguments); },
     function c() { return this.cls.apply(this, arguments); },
-    function p(a) { a[0] = this; },
+    function p(a) { a[0] = this; return this; },
     function s() { return this.style.apply(this, arguments); },
     function t(as) { return this.attrs(as); }
   ]
