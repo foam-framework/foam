@@ -38,8 +38,8 @@ CLASS({
     'looking_'
   ],
 
-  methods: {
-    find: function (key, sink) {
+  methods: [
+    function find(key, sink) {
       if ( this.preload[key] ) {
         sink && sink.put && sink.put(this.preload[key]);
         delete this.preload[key];
@@ -72,20 +72,45 @@ CLASS({
           throw "Model with id: " + key + " not found in " + fileName;
         }
       } catch(e) {
-        if ( e.__DAO_ERROR )
+        if ( e.__DAO_ERROR ) {
           throw e.exception;
-        else
+        } else {
+          // in case of nested ModelFileDAOs retrying the load, record this as an
+          // interested party should it succeed.
+          this.regForRetry();
           sink && sink.error && sink.error('Error loading model', key, e, e.stack);
+        }
       } finally {
         global.__DATACALLBACK = old;
+        this.unregForRetry();
+      }
+    },
+    function regForRetry() {
+      if ( ! global.__RETRY_DATACALLBACKS ) global.__RETRY_DATACALLBACKS = {};
+      global.__RETRY_DATACALLBACKS[this.$UID] = this.onRetryOk;
+    },
+    function unregForRetry() {
+      if ( global.__RETRY_DATACALLBACKS && global.__RETRY_DATACALLBACKS[this.$UID] ) {
+        delete global.__RETRY_DATACALLBACKS[this.$UID];
       }
     }
-  },
+  ],
 
   listeners: [
     {
+      name: 'onRetryOk',
+      code: function(obj) {
+        /* When we error, this may trigger another DAO in an OrDAO to retry
+          the load and succeed. This listener is globally registered in case
+          that happens, triggered from onData. */
+        if ( this.looking_ === obj.id ) this.looking_ = null;
+      }
+    },
+    {
       name: 'onData',
       code: function(data, latch) {
+        this.unregForRetry(); // data came in, so no retry required.
+
         var work = [anop];
         var obj = JSONUtil.mapToObj(this.X, data, undefined, work);
 
@@ -93,7 +118,16 @@ CLASS({
           throw new Error("Failed to decode data: " + data);
         }
 
-        if ( this.looking_ === obj.id ) this.looking_ = null;
+        if ( this.looking_ === obj.id ) {
+          this.looking_ = null;
+        }
+        // notify other ModelFileDAOs above us that the object was found
+        // this DAO must have been a fallback
+        if ( global.__RETRY_DATACALLBACKS ) {
+          for ( key in global.__RETRY_DATACALLBACKS ) {
+            global.__RETRY_DATACALLBACKS[key](obj);
+          }
+        }
 
         if ( ! this.pending[obj.id] ) {
           if ( latch ) latch(obj);

@@ -23,6 +23,7 @@ CLASS({
 
   requires: [
     'foam.apps.builder.AppWindow',
+    'com.nodeca.Pako',
   ],
 
   ids: [ 'appId' ],
