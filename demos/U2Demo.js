@@ -1,5 +1,5 @@
 var timer = foam.util.Timer.create();
-timer.start();
+// timer.start();
 
 E('b').add('bold', E('br')).write();
 
@@ -413,17 +413,35 @@ console.log(p.parseString(multiline(function(){/*
     <!-- A Comment -->
     <input readonly type="color"></input>
     <i>italic</i>
+    {{this.fname}}
+    {{this.fname$}}
     <% if ( true ) { %>
       <b>bold</b>
     <% } %>
       <b if="true">bold2   </b>
-      <b repeat="{{i = 1 to 10}}">i: {{i}}</b>
-      <i repeat="{{j = this.dao}}">j: {{j}}</i>
+      <b repeat="i in 1 to 10">i: {{i}}</b>
+      <i repeat="j in this.dao">j: {{j}}</i>
     <span>span</span>
   </div>
 */})));
 
 
+MODEL({
+  name: 'PersonWithTemplate',
+  properties: ['firstName', 'lastName', 'age'],
+  templates: [
+    function toE() {/*#U2
+    <div>
+      <h1>Person With Template</h1>
+      <div><b>First Name:</b> {{this.firstName}}</div>
+      <div><b>First Name:</b> {{this.firstName$}}</div>
+      <% this.Y.data = this; %>
+      <div>{{this.model_.FIRST_NAME.toE(this.Y)}}</div>
+    </div>
+   */}
+  ]
+});
 
-
-timer.stop();
+var p = PersonWithTemplate.create({firstName: 'Sebastian', lastName: 'Greer', age: 11});
+p.toE().write();
+p.firstName = 'Alexey';

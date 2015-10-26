@@ -15,7 +15,17 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.u2',
-  name: 'Image',
-  extends: 'foam.u2.Element',
+  package: 'foam.core.types',
+  name: 'JSONModelTrait',
+  methods: [
+    function fromJSON(json) {
+      var props = this.model_.getRuntimeProperties();
+      for (var i = 0; i < props.length; i++) {
+        var prop = props[i];
+        if (prop.fromJSON) {
+          prop.fromJSON(this, json);
+        }
+      }
+    },
+  ]
 });
