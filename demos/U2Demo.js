@@ -424,3 +424,22 @@ console.log(p.parseString(multiline(function(){/*
     <span>span</span>
   </div>
 */})));
+
+
+MODEL({
+  name: 'PersonWithTemplate',
+  properties: ['firstName', 'lastName', 'age'],
+  templates: [
+    function toE() {/*#U2
+    <div>
+      <h1>Person With Template</h1>
+      <div><b>First Name:</b> {{this.firstName}}</div>
+      <div><b>First Name:</b> {{this.firstName$}}</div>
+    </div>
+   */}
+  ]
+});
+
+var p = PersonWithTemplate.create({firstName: 'Sebastian', lastName: 'Greer', age: 11});
+p.toE().write();
+p.firstName = 'Alexey';

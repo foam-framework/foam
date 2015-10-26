@@ -260,7 +260,19 @@ MODEL({
       var parser = this.CSS3Parser_ || ( this.CSS3Parser_ = X.foam.grammars.CSS3.create());
       return parser.parser.parseString(t).toString();
     },
+    parseU2: function(t) {
+      var parser = this.U2Parser_ || ( this.U2Parser_ = X.foam.u2.ElementParser.parser__.create() );
+      return parser.parseString(t.trim()).toString();
+    },
     compile: function(t, model) {
+      if ( t.name !== 'CSS' ) {
+        if ( model.isSubModel(X.lookup('foam.u2.Element')) ) {
+          return eval('(function() { return ' + this.parseU2(t.template) + '; })()');
+        }
+        if ( t.template.startsWith('#U2') ) {
+          return eval('(function() { return ' + this.parseU2(t.template.substring(3)) + '; })()');
+        }
+      }
       // Parse result: [isSimple, maybeCode]: [true, null] or [false, codeString].
       var parseResult = TemplateCompiler.parseString(t.template);
 

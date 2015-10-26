@@ -23,3 +23,5 @@ benchmark (w. Cells?)
 register PropertyViews with DetailView
 
 cache id$el based on lifecycle
+
+SlidePanel

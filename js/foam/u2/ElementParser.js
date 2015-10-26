@@ -112,7 +112,7 @@ CLASS({
 
       startTagName: sym('tagName'),
 
-      text: str(plus(alt('<%', notChar('<')))),
+      text: str(plus(not(alt('<', '{{'), anyChar))),
 
       attribute: seq(sym('label'), optional(seq1(1, '="', sym('value'), '"'))),
 
@@ -138,7 +138,7 @@ CLASS({
       START: function(xs) {
         var ret = this.output.join('');
         this.reset();
-        return 'function(){var E=this.E.bind(this),s=[],e=' + ret + ';return e;}';
+        return 'function(){var E=(this.E || GLOBAL.E).bind(this),s=[],e=' + ret + ';return e;}';
       },
       id: function(id) {
         this.out(".id('", id, "')");
