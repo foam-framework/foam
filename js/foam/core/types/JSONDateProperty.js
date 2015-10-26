@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.u2',
-  name: 'Image',
-  extends: 'foam.u2.Element',
+  package: 'foam.core.types',
+  name: 'JSONDateProperty',
+  extends: 'DateProperty',
+  traits: ['foam.core.types.JSONPropertyTrait'],
+  constants: {
+    DAYS: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  }
 });

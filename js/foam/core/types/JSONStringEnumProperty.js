@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.u2',
-  name: 'Image',
-  extends: 'foam.u2.Element',
+  package: 'foam.core.types',
+  name: 'JSONStringEnumProperty',
+  extends: 'foam.core.types.StringEnumProperty',
+  traits: ['foam.core.types.JSONPropertyTrait']
 });
