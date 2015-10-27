@@ -21,7 +21,8 @@ CLASS({
   imports: [
     'document',
     'hardSelection$',
-    'softSelection$'
+    'softSelection$',
+    'window'
   ],
 
   label: 'Flex Table View',
@@ -167,6 +168,11 @@ CLASS({
     function initHTML() {
       this.SUPER();
       this.initColWidths();
+      this.window.addEventListener('resize', this.resetColWidths);
+    },
+    function destroy(shouldDestroy) {
+      this.SUPER(shouldDestroy);
+      this.window.addEventListener('resize', this.resetColWidths);
     },
     function initGlobalState() {
       this.X.dynamic(
@@ -355,6 +361,13 @@ CLASS({
         map = map || {};
         map.properties = this.getProperties();
         return this.rowView(map, Y);
+      }
+    },
+    {
+      name: 'resetColWidths',
+      code: function() {
+        this.colWidths = [];
+        this.initColWidths();
       }
     },
   ],
