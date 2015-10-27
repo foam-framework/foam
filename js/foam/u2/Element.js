@@ -329,9 +329,15 @@ CLASS({
     },
 
     function elementForName(nodeName) {
-      nodeName = nodeName ? nodeName.toUpperCase() : 'SPAN' ;
-      var modelName = foam.u2.Element.getPrototype().MODELED_ELEMENTS[nodeName];
-      return modelName ? this.X.lookup(modelName).create(null, this.Y) : null ;
+      nodeName = nodeName ? nodeName : 'SPAN' ;
+      var modelName = foam.u2.Element.getPrototype().MODELED_ELEMENTS[nodeName.toUpperCase()];
+      if ( modelName ) return this.X.lookup(modelName).create(null, this.Y);
+      
+      if ( nodeName.startsWith('O:') ) {
+        return this.X.data.model_.getFeature(nodeName.substring(2)).toE(this.Y);
+      }
+
+      return null;
     },
     function E(opt_nodeName) {
       var e = this.elementForName && this.elementForName(opt_nodeName);
