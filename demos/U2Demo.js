@@ -122,6 +122,9 @@ setTimeout(function() { dv.title = 'New Title'; }, 7000);
 var e15 = foam.u2.Input.create().write();
 e15.data$ = timer.i$;
 
+var e15b = E('input').write();
+e15b.data$ = timer.i$;
+
 E('div').style({height: '30px'}).write();
 
 foam.u2.Input.create().write().data$ = foam.u2.Input.create().write().data$;

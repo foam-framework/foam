@@ -214,6 +214,7 @@ CLASS({
       TFOOT: true,
       COLGROUP: true
     },
+
     ILLEGAL_CLOSE_TAGS: {
       IMG: true,
       INPUT: true,
@@ -228,6 +229,12 @@ CLASS({
       LINK: true,
       META: true,
       PARAM: true
+    },
+
+    MODELED_ELEMENTS: {
+      INPUT:    'foam.u2.Input',
+      TEXTAREA: 'foam.u2.TextArea',
+      SELECT:   'foam.u2.Select'
     }
   },
 
@@ -322,7 +329,8 @@ CLASS({
     },
 
     function E(opt_nodeName) {
-      var e = foam.u2.Element.create(null, this.Y);
+      var model = opt_nodeName && foam.u2.Element.getPrototype().MODELED_ELEMENTS[opt_nodeName.toUpperCase()];
+      var e = (model ? this.X.lookup(model) : foam.u2.Element).create(null, this.Y);
       if ( opt_nodeName ) e.nodeName = opt_nodeName;
       return e;
     },
