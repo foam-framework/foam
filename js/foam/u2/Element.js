@@ -546,6 +546,17 @@ CLASS({
       return dyn;
     },
 
+    function start(opt_nodeName) {
+      var c = this.E(opt_nodeName);
+      c.parent_ = this;
+      this.add(c);
+      return c;
+    },
+    function end() {
+      var p = this.parent_;
+      this.parent_ = null;
+      return p
+    },
     function add(/* vargs */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var c = arguments[i];

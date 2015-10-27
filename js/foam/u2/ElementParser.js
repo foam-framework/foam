@@ -140,9 +140,7 @@ CLASS({
         this.reset();
         return 'function(){var E=(this.E || GLOBAL.E).bind(this),s=[],e=' + ret + ';return e;}';
       },
-      id: function(id) {
-        this.out(".id('", id, "')");
-      },
+      id: function(id) { this.out(".id('", id, "')"); },
       class: function(ids) {
         for ( var i = 0 ; i < ids.length ; i++ )
           this.out(".c('", ids[i], "')");
@@ -170,24 +168,19 @@ CLASS({
         // TODO: don't strip whitespace for <pre>
         this.out(".a('", xs.replace(/\s+/g, ' '), "')");
       },
-      code: function (v) {
-        this.out(".p(s);", v[1].join('').trim(), "s[0]");
-      },
-      child: function (c) {
-        this.out(".a(", c, ")");
-      },
-      addListener: function(v) {
-        this.out(".on('", v[1], "',", v[3], ')');
-      },
-      namedListener: function(l) {
-        return 'this.' + l;
-      },
+      code: function (v) { this.out(".p(s);", v[1].join('').trim(), "s[0]"); },
+      child: function (c) { this.out(".a(", c, ")"); },
+      addListener: function(v) { this.out(".on('", v[1], "',", v[3], ')'); },
+      namedListener: function(l) { return 'this.' + l; },
       startTagName: function(xs) {
-        if ( this.stack.length ) this.out('.a(');
-        if ( xs === 'SPAN' )
-          this.out("E()");
-        else
+        if ( this.stack.length ) {
+          if ( xs === 'SPAN' )
+            this.out(".start()");
+          else
+            this.out(".start('", xs, "')");
+        } else {
           this.out("E('", xs, "')");
+        }
         this.stack.push(xs);
       },
       endTag: function(tag) {
@@ -196,7 +189,7 @@ CLASS({
         while ( stack.length > 1 ) {
           if ( this.peek() === tag ) {
             stack.pop();
-            this.out(')');
+            this.out('.end()');
             return;
           }
           /*
