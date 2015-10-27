@@ -328,10 +328,19 @@ CLASS({
       }
     },
 
+    function elementForName(nodeName) {
+      nodeName = nodeName ? nodeName.toUpperCase() : 'SPAN' ;
+      var modelName = foam.u2.Element.getPrototype().MODELED_ELEMENTS[nodeName];
+      return modelName ? this.X.lookup(modelName).create(null, this.Y) : null ;
+    },
     function E(opt_nodeName) {
-      var model = opt_nodeName && foam.u2.Element.getPrototype().MODELED_ELEMENTS[opt_nodeName.toUpperCase()];
-      var e = (model ? this.X.lookup(model) : foam.u2.Element).create(null, this.Y);
-      if ( opt_nodeName ) e.nodeName = opt_nodeName;
+      var e = this.elementForName && this.elementForName(opt_nodeName);
+
+      if ( ! e ) {
+        e = foam.u2.Element.create(null, this.Y);
+        if ( opt_nodeName ) e.nodeName = opt_nodeName;
+      }
+
       return e;
     },
 
