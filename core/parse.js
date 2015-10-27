@@ -124,15 +124,15 @@ var literal = (function() {
         for ( var i = 0 ; i < str.length ; i++, ps = ps.tail ) {
           if ( str.charAt(i) !== ps.head ) return undefined;
         }
-        
+
         return ps.setValue(opt_value || str);
       };
     }
-    
+
     f.toString = function() { return '"' + str + '"'; };
 
     if ( ! opt_value ) return cache[str] = f;
-    
+
     return f;
   };
 })();
@@ -253,7 +253,7 @@ function repeat(p, opt_delim, opt_min, opt_max) {
   return f;
 }
 
-function plus(p) { return repeat(p, undefined, 1); }
+function plus(p, opt_delim) { return repeat(p, opt_delim, 1); }
 
 function noskip(p) {
   return function(ps) {
@@ -270,6 +270,23 @@ function repeat0(p) {
 
   var f = function(ps) {
     var res;
+    while ( res = this.parse(p, ps) ) ps = res;
+    return ps.setValue('');
+  };
+
+  f.toString = function() { return 'repeat0(' + p + ')'; };
+
+  return f;
+}
+
+/** A repeat-at-least-once which doesn't build an array of parsed values. **/
+function plus0(p) {
+  p = prep(p);
+
+  var f = function(ps) {
+    var res;
+    if ( ! (res = this.parse(p, ps)) ) return undefined;
+    ps = res;
     while ( res = this.parse(p, ps) ) ps = res;
     return ps.setValue('');
   };

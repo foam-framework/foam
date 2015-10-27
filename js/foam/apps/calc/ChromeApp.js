@@ -44,7 +44,7 @@ __DATA({
     '../js/foam/ui/AbstractDAOView',
     '../js/foam/ui/DAOListView',
     '../js/foam/ui/DetailView',
-    '../js/foam/grammars/CSS3',
+    '../js/foam/grammars/CSSDecl',
     'HTMLParser',
     'visitor',
     'dao',

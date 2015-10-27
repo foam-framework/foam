@@ -220,7 +220,7 @@ MODEL({
     FOOTERS: {
       html: "');return out.toString();",
       css: "');return " +
-          'X.foam.grammars.CSS3.create().parser.parseString(out.toString()).toString();'
+          'X.foam.grammars.CSSDecl.create().parser.parseString(out.toString());'
     },
   },
 
@@ -256,8 +256,8 @@ MODEL({
           'return function(' + args.join(',') + '){' + code + '};})()' +
           (model ? '\n\n//# sourceURL=' + model.id.replace(/\./g, '/') + '.' + t.name + '\n' : ''));
     },
-    parseCSS3: function(t) {
-      var parser = this.CSS3Parser_ || ( this.CSS3Parser_ = X.foam.grammars.CSS3.create());
+    parseCSS: function(t) {
+      var parser = this.CSSParser_ || ( this.CSSParser_ = X.foam.grammars.CSSDecl.create());
       return parser.parser.parseString(t).toString();
     },
     parseU2: function(t) {
@@ -279,7 +279,7 @@ MODEL({
       // Simple case, just a string literal
       if ( parseResult[0] )
         return ConstantTemplate(t.language === 'css' ?
-            this.parseCSS3(t.template) :
+            this.parseCSS(t.template) :
             t.template) ;
 
       var code = this.HEADER + parseResult[1] + this.FOOTERS[t.language];

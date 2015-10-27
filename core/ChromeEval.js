@@ -76,7 +76,7 @@ if ( ! (window.cordova && window.chrome) ) {
       // Simple case, just a string literal
       if ( parseResult[0] )
         return aconstant(ConstantTemplate(t.language === 'css' ?
-            X.foam.grammars.CSS3.create().parser.parseString(t.template).toString() :
+            X.foam.grammars.CSSDecl.create().parser.parseString(t.template) :
             t.template));
 
       var code = TemplateUtil.HEADER + parseResult[1] + TemplateUtil.FOOTERS[t.language];
