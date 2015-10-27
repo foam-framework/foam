@@ -223,9 +223,15 @@ CLASS({
       if ( cells.length === this.colWidths.length ) return;
 
       var i;
+      var props = this.getProperties();
       for ( i = 0; i < cells.length; ++i ) {
-        cells[i].style.width = 'initial';
-        cells[i].style['flex-grow'] = '1';
+        if (props[i].tableWidth) {
+          cells[i].style.width = props[i].tableWidth + 'px';
+          cells[i].style['flex-grow'] = null;
+        } else {
+          cells[i].style.width = 'initial';
+          cells[i].style['flex-grow'] = '1';
+        }
       }
       this.measureColWidths(cells);
       for ( i = 0; i < cells.length; ++i ) {
@@ -404,8 +410,8 @@ CLASS({
     */},
     function colCSS(out, i) {/*
       #%%id .col-{{i}} {
-        min-width: {{this.minColWidth}};
-        width: {{this.colWidths[i]}};
+        min-width: {{this.minColWidth}}px;
+        width: {{this.colWidths[i]}}px;
       }
     */},
     { name: 'CSS' }
