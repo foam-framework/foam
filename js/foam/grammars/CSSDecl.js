@@ -70,8 +70,6 @@ CLASS({
           ws: alt(' ', '\t', '\n', '\r', '\f'),
           ws_: repeat0(sym('ws')),
           wsp_: plus0(sym('ws')),
-          wsStar: r(sym('ws')),
-          wsPlus: p(sym('ws')),
 
           alphaNum: alt(
               '-',
@@ -93,7 +91,7 @@ CLASS({
               r(alt(
                   sym('stmtRule'),
                   sym('blockRule')),
-                sym('wsp_'))),
+                sym('ws_'))),
 
           rulePrefix: plus(
               // Alpha-num-punct, but not ";" "{", or "}".
