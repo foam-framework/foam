@@ -1,0 +1,26 @@
+{
+  "name": "qr.js",
+  "main": "qr.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/lifthrasiir/qr.js",
+  "authors": [
+    "Kang Seonghoon <kang.seonghoon@mearie.org>"
+  ],
+  "description": "QR code generator in pure Javascript",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "qr",
+    "qr.js",
+    "qrcode"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
