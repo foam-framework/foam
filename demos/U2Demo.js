@@ -432,11 +432,15 @@ MODEL({
   templates: [
     function toE() {/*#U2
     <div>
+      <br></br>
+      <br></br>
       <h1>Person With Template</h1>
       <div><b>First Name:</b> {{this.firstName}}</div>
       <div><b>First Name:</b> {{this.firstName$}}</div>
       <% this.Y.data = this; %>
+      <o:firstName>blah blah blah</o:firstName>
       <div>{{this.model_.FIRST_NAME.toE(this.Y)}}</div>
+      {{ E('i').add('italic') }}
     </div>
    */}
   ]
