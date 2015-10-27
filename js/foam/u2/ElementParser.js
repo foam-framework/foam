@@ -138,7 +138,7 @@ CLASS({
       START: function(xs) {
         var ret = this.output.join('');
         this.reset();
-        return 'function(){var E=(this.E || GLOBAL.E).bind(this),s=[],e=' + ret + ';return e;}';
+        return 'function(){var s=[],e=this.X' + ret + ';return e;}';
       },
       id: function(id) { this.out(".id('", id, "')"); },
       class: function(ids) {
@@ -146,7 +146,7 @@ CLASS({
           this.out(".c('", ids[i], "')");
       },
       style: function(ss) {
-        this.out(".s({");
+        this.out(".y({");
         for ( var i = 0 ; i < ss.length ; i++ ) {
           if ( i > 0 ) this.out(';');
           this.out(ss[i][0], ':"', ss[i][2], '"');
@@ -173,14 +173,11 @@ CLASS({
       addListener: function(v) { this.out(".on('", v[1], "',", v[3], ')'); },
       namedListener: function(l) { return 'this.' + l; },
       startTagName: function(xs) {
-        if ( this.stack.length ) {
-          if ( xs === 'SPAN' )
-            this.out(".start()");
-          else
-            this.out(".start('", xs, "')");
-        } else {
-          this.out("E('", xs, "')");
-        }
+        var n = this.stack.length ? '.s' : '.start';
+        if ( xs === 'SPAN' )
+          this.out(n, "()");
+        else
+          this.out(n, "('", xs, "')");
         this.stack.push(xs);
       },
       endTag: function(tag) {
@@ -189,7 +186,7 @@ CLASS({
         while ( stack.length > 1 ) {
           if ( this.peek() === tag ) {
             stack.pop();
-            this.out('.end()');
+            this.out('.e()');
             return;
           }
           /*

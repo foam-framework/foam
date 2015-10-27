@@ -211,3 +211,8 @@ CLASS({
 function E(opt_nodeName) {
   return foam.u2.Element.getPrototype().E.call(this, opt_nodeName);
 }
+
+function start(opt_nodeName) {
+  return E(opt_nodeName);
+}
+
