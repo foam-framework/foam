@@ -436,7 +436,9 @@ MODEL({
       <div><b>First Name:</b> {{this.firstName}}</div>
       <div><b>First Name:</b> {{this.firstName$}}</div>
       <% this.Y.data = this; %>
+      <o:firstName>blah blah blah</o:firstName>
       <div>{{this.model_.FIRST_NAME.toE(this.Y)}}</div>
+      {{ E('i').add('italic') }}
     </div>
    */}
   ]

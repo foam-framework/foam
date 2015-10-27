@@ -106,7 +106,7 @@ CLASS({
 
       comment: seq('<!--', repeat0(not('-->', anyChar)), '-->'),
 
-      label: str(plus(notChars(' %=/\t\r\n<>\'"'))),
+      label: str(plus(notChars(' %=/\t\r\n<>\'"{}'))),
 
       tagName: sym('label'),
 
