@@ -19,8 +19,8 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %> >
-        $$name
-        $$label
+        $$source
+        $$compressed
       </div>
     */},
 
