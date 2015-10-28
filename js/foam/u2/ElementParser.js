@@ -61,7 +61,7 @@ CLASS({
         return this.stack.length > 1 ? ps : null;
       },
 
-      code: seq('<%', repeat(not('%>', anyChar)), '%>'),
+      code: seq1(1, '<%', str(repeat(not('%>', anyChar))), '%>'),
 
       child: seq1(1, '{{', str(repeat(not('}}', anyChar))), '}}'),
 
@@ -168,7 +168,7 @@ CLASS({
         // TODO: don't strip whitespace for <pre>
         this.out(".a('", xs.replace(/\s+/g, ' '), "')");
       },
-      code: function (v) { this.out(".p(s);", v[1].join('').trim(), "s[0]"); },
+      code: function (c) { this.out(".p(s);", c.trim(), "s[0]"); },
       child: function (c) { this.out(".a(", c, ")"); },
       addListener: function(v) { this.out(".on('", v[1], "',", v[3], ')'); },
       namedListener: function(l) { return 'this.' + l; },
