@@ -443,7 +443,7 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div foo="bar" bar={{ 'foo' }} style="background:#f9f9f9">
+    <div foo="bar" bar={{'foo'}} style="background:#f9f9f9;padding:6px;color:gray">
       (( this.X.data = this; ))
       <br/>
       (( if ( true ) { ))

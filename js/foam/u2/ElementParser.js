@@ -128,7 +128,7 @@ CLASS({
 
       style: seq1(1, 'style="', sym('styleMap'), optional(';'), '"'),
 
-      styleMap: repeat(sym('stylePair'), ';'),
+      styleMap: repeat(sym('stylePair'), ';', 1),
 
       stylePair: seq(sym('value'), ':', sym('styleValue')),
 
@@ -159,7 +159,7 @@ CLASS({
       style: function(ss) {
         this.out(".y({");
         for ( var i = 0 ; i < ss.length ; i++ ) {
-          if ( i > 0 ) this.out(';');
+          if ( i > 0 ) this.out(',');
           this.out(ss[i][0], ':"', ss[i][2], '"');
         }
         this.out("})");
