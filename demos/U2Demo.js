@@ -454,12 +454,15 @@ MODEL({
       <div><b>First Name:</b> {{this.firstName$}}</div>
       <red>red</red>
       <br/>
-      <o:firstName/>       <!-- A Property                -->
-      <o:go/>              <!-- An Action                 -->
-      <o:toEMethod/>       <!-- A Method                  -->
-      {{this.toEMethod()}} <!-- Same result as above line -->
-      <o:toE2/>            <!-- Another Template          -->
-      {{this.toE2()}}      <!-- Same result as above line -->
+
+      <o:firstName/>       <!-- A Property           -->
+      <o:go/>              <!-- An Action            -->
+      <o:toEMethod/>       <!-- A Method             -->
+      <o:toE2/>            <!-- Another Template     -->
+
+      {{this.toEMethod()}} <!-- Same result as above -->
+      {{this.toE2()}}      <!-- Same result as above -->
+
       <br/>
       {{ E('i').add('italic') }}
     </div>
