@@ -443,12 +443,12 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div foo="bar" bar={{ 'foo' }}>
+    <div foo="bar" bar={{ 'foo' }} style="background:#f9f9f9">
       (( this.X.data = this; ))
-      <br/>
       <br/>
       (( if ( true ) { ))
         <h1>Person With Template</h1>
+        <br/>
       (( } ))
       <div><b>First Name:</b> {{this.firstName}}</div>
       <div><b>First Name:</b> {{this.firstName$}}</div>

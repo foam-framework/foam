@@ -132,7 +132,12 @@ CLASS({
 
       stylePair: seq(sym('value'), ':', sym('styleValue')),
 
-      styleValue: sym('value'),
+      styleValue: str(plus(alt(
+        range('a','z'),
+        range('A', 'Z'),
+        range('0', '9'),
+        '-',
+        '#'))),
 
       value: str(alt(
         plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
