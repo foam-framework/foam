@@ -22,4 +22,10 @@ How to handle OnKeyInput and OnKeyTextArea
   - have two data$'s
   - set mode
 
+Add ability to lookup view features in DetailView.
 
+ActionBorder
+
+make template output two-pass
+
+<tag x:data={{self}}> to set context variables
