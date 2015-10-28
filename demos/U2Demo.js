@@ -441,8 +441,9 @@ MODEL({
       <h1>Person With Template</h1>
       <div><b>First Name:</b> {{this.firstName}}</div>
       <div><b>First Name:</b> {{this.firstName$}}</div>
-      <o:firstName>blah blah blah</o:firstName>
-      <div>{{this.model_.FIRST_NAME.toE(this.Y)}}</div>
+      <red>red</red>
+      <o:firstName></o:firstName>
+      <br></br>
       {{ E('i').add('italic') }}
     </div>
    */}
@@ -451,4 +452,3 @@ MODEL({
 
 var p = PersonWithTemplate.create({firstName: 'Sebastian', lastName: 'Greer', age: 11});
 p.toE().write();
-p.firstName = 'Alexey';
