@@ -61,7 +61,7 @@ CLASS({
         return this.stack.length > 1 ? ps : null;
       },
 
-      code: seq1(1, '<%', str(repeat(not('%>', anyChar))), '%>'),
+      code: seq1(1, '((', str(repeat(not('))', anyChar))), '))'),
 
       child: seq1(1, '{{', str(repeat(not('}}', anyChar))), '}}'),
 
@@ -106,7 +106,7 @@ CLASS({
 
       comment: seq('<!--', repeat0(not('-->', anyChar)), '-->'),
 
-      label: str(plus(notChars(' %=/\t\r\n<>\'"{}'))),
+      label: str(plus(notChars(' %=/\t\r\n<>\'"{}()'))),
 
       tagName: sym('label'),
 

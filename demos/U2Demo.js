@@ -409,7 +409,7 @@ var p = foam.u2.ElementParser.parser__.create();
 console.log(p.parseString('hello'));
 console.log(p.parseString('<input readonly/>'));
 console.log(p.parseString('<input disabled="disabled"/>'));
-console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"></input><i>italic</i><% if ( true ) { %><b>bold   </b><% } %><span>span</span></div>'));
+console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"></input><i>italic</i>(( if ( true ) { ))<b>bold   </b>(( } ))<span>span</span></div>'));
 
 console.log(p.parseString(multiline(function(){/*
   <div id="foo" onclick="foo" class="fooClass barClass" style="color:red;padding:5px;">
@@ -418,9 +418,9 @@ console.log(p.parseString(multiline(function(){/*
     <i>italic</i>
     {{this.fname}}
     {{this.fname$}}
-    <% if ( true ) { %>
+    (( if ( true ) { )) 
       <b>bold</b>
-    <% } %>
+    (( } ))
       <b if="true">bold2   </b>
       <b repeat="i in 1 to 10">i: {{i}}</b>
       <i repeat="j in this.dao">j: {{j}}</i>
@@ -435,10 +435,12 @@ MODEL({
   templates: [
     function toE() {/*#U2
     <div>
-      <% this.X.data = this; %>
+      (( this.X.data = this; ))
       <br/>
       <br/>
-      <h1>Person With Template</h1>
+      (( if ( true ) { ))
+        <h1>Person With Template</h1>
+      (( } ))
       <div><b>First Name:</b> {{this.firstName}}</div>
       <div><b>First Name:</b> {{this.firstName$}}</div>
       <red>red</red>
