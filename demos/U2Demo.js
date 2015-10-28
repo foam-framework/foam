@@ -392,11 +392,12 @@ E().add(
   foam.u2.DetailView.create({title: 'View',    data: vt, controllerMode: 'view'})
 ).write();
 
-E().add(
+E(null, X.sub({data: timer})).add(
   E('br'),
   E('br'),
   foam.u2.DetailView.create({data: timer}),
   E('br'),
+  timer.model_.actions, // Doesn't work without data-binding
   foam.u2.ActionButton.create({data: timer, action: timer.START}),
   foam.u2.ActionButton.create({data: timer, action: timer.STEP}),
   foam.u2.ActionButton.create({data: timer, action: timer.STOP})
@@ -418,7 +419,7 @@ console.log(p.parseString(multiline(function(){/*
     <i>italic</i>
     {{this.fname}}
     {{this.fname$}}
-    (( if ( true ) { )) 
+    (( if ( true ) { ))
       <b>bold</b>
     (( } ))
       <b if="true">bold2   </b>
