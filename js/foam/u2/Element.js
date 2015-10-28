@@ -586,7 +586,7 @@ CLASS({
           i--;
           continue;
         } else if ( c.toE )
-          arguments[i] = c.toE(this.X);
+          arguments[i] = c.toE(this.Y);
         else if ( Value.isInstance(c) )
           arguments[i] = this.valueE_(c);
       }

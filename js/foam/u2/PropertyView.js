@@ -38,27 +38,6 @@ CLASS({
     [ 'nodeName', 'tr' ]
   ],
 
-  templates: [
-    function CSS() {/*
-      .foam-u2-PropertyView-label {
-        color: #444;
-        display: block;
-        float: left;
-        font-size: 13px;
-        padding-left: 6px;
-        padding-top: 6px;
-        text-align: right;
-        vertical-align: top;
-      }
-      .foam-u2-PropertyView-units  {
-        color: #444;
-        font-size: 12px;
-        padding: 4px;
-        text-align: right;
-      }
-    */}
-  ],
-
   methods: [
     function init() {
       this.SUPER();
@@ -73,11 +52,10 @@ CLASS({
       // Is data$ linking the wrong way?
       Events.link(this.data.propertyValue(prop.name), view.data$);
 
-      this.cls('foam-u2-PropertyView').add(
-        E('td').cls('foam-u2-PropertyView-label').add(prop.label),
-        E('td').cls('foam-u2-PropertyView-view').add(
-          view,
-          prop.units && E().cls('foam-u2-PropertyView-units').add(prop.units)));
+      this.initE(view);
+    },
+    function initE(view) {
+      this.cls('foam-u2-PropertyView').add(view);
     }
   ]
 });
