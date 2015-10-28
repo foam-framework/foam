@@ -172,6 +172,12 @@ CLASS({
       child: function (c) { this.out(".a(", c, ")"); },
       addListener: function(v) { this.out(".on('", v[1], "',", v[3], ')'); },
       namedListener: function(l) { return 'this.' + l; },
+      startTag: function(a) {
+        if ( a[5] /* optional('/') */ ) {
+          this.stack.pop();
+          this.out('.e()');
+        }
+      },
       startTagName: function(xs) {
         var n = this.stack.length ? '.s' : '.start';
         if ( xs === 'SPAN' )

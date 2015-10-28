@@ -436,8 +436,8 @@ MODEL({
     function toE() {/*#U2
     <div>
       <% this.X.data = this; %>
-      <br></br>
-      <br></br>
+      <br/>
+      <br/>
       <h1>Person With Template</h1>
       <div><b>First Name:</b> {{this.firstName}}</div>
       <div><b>First Name:</b> {{this.firstName$}}</div>
