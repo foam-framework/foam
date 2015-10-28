@@ -580,6 +580,11 @@ CLASS({
     {
       name: 'labels'
     }
+  ],
+  methods: [
+    function toE(X) {
+      return X.data[this.name]();
+    }
   ]
 });
 

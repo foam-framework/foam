@@ -451,12 +451,19 @@ MODEL({
       <div><b>First Name:</b> {{this.firstName$}}</div>
       <red>red</red>
       <br/>
-      <o:firstName/> <!-- A Property -->
-      <o:go/>        <!-- An Action  -->
+      <o:firstName/>   <!-- A Property                -->
+      <o:go/>          <!-- An Action                 -->
+      <o:toE2/>        <!-- Another Template          -->
+      {{this.toE2()}}  <!-- Same result as above line -->
       <br/>
       {{ E('i').add('italic') }}
     </div>
-   */}
+    */},
+    function toE2() {/*#U2
+    <blockquote style="color:red">
+      sub template
+    </blockquote>
+    */}
   ]
 });
 
