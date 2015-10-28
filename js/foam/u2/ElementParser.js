@@ -63,7 +63,9 @@ CLASS({
 
       code: seq1(1, '((', str(repeat(not('))', anyChar))), '))'),
 
-      child: seq1(1, '{{', str(repeat(not('}}', anyChar))), '}}'),
+      child: sym('braces'),
+
+      braces: seq1(1, '{{', str(repeat(not('}}', anyChar))), '}}'),
 
       startTag: seq(
         '<',
@@ -114,7 +116,11 @@ CLASS({
 
       text: str(plus(not(alt('<', '{{'), anyChar))),
 
-      attribute: seq(sym('label'), optional(seq1(1, '="', sym('value'), '"'))),
+      attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
+
+      valueOrLiteral: alt(
+        str(seq('"', sym('value'), '"')),
+        sym('braces')),
 
       id: seq1(1, 'id="', sym('value'), '"'),
 
