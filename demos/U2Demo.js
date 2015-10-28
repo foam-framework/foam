@@ -443,15 +443,20 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div foo="bar" bar={{'foo'}} style="background:#f9f9f9;padding:6px;color:gray">
+    <div foo="bar" bar={{'foo'}}
+      style="
+        background: #f9f9f9;
+        color: gray;
+        margin: 6px;
+        padding: 12px;
+      ">
       (( this.X.data = this; ))
-      <br/>
       (( if ( true ) { ))
         <h1>Person With Template</h1>
         <br/>
       (( } ))
-      <div><b>First Name:</b> {{this.firstName}}</div>
-      <div><b>First Name:</b> {{this.firstName$}}</div>
+      <div><b>First Name: </b>{{this.firstName}}</div>
+      <div><b>First Name: </b>{{this.firstName$}}</div>
       <red>red</red>
       <br/>
 

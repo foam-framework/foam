@@ -126,11 +126,13 @@ CLASS({
 
       class: seq1(1, 'class="', repeat(sym('value'), ' '), '"'),
 
-      style: seq1(1, 'style="', sym('styleMap'), optional(';'), '"'),
+      style: seq1(2, 'style="', sym('whitespace'), sym('styleMap'), optional(sym('styleDelim')), sym('whitespace'), '"'),
 
-      styleMap: repeat(sym('stylePair'), ';', 1),
+      styleMap: repeat(sym('stylePair'), sym('styleDelim'), 1),
 
-      stylePair: seq(sym('value'), ':', sym('styleValue')),
+      styleDelim: seq(sym('whitespace'), ';', sym('whitespace')),
+
+      stylePair: seq(sym('value'), sym('whitespace'), ':', sym('whitespace'), sym('styleValue')),
 
       styleValue: str(plus(alt(
         range('a','z'),
@@ -160,7 +162,7 @@ CLASS({
         this.out(".y({");
         for ( var i = 0 ; i < ss.length ; i++ ) {
           if ( i > 0 ) this.out(',');
-          this.out(ss[i][0], ':"', ss[i][2], '"');
+          this.out(ss[i][0], ':"', ss[i][4], '"');
         }
         this.out("})");
       },
