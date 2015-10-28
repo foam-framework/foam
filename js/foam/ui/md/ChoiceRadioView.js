@@ -54,6 +54,17 @@ CLASS({
       }
     },
     {
+      name: 'prop',
+    },
+    {
+      name: 'showLabel',
+      defaultValue: false
+    },
+    {
+      name: 'label',
+      defaultValueFn: function() { return this.prop.label; }
+    },
+    {
       name: 'className',
       defaultValueFn: function() { return 'md-choice-radio-view ' + this.orientation; }
     },
@@ -97,6 +108,9 @@ CLASS({
   },
   templates: [
     function toInnerHTML() {/*
+      <% if (this.showLabel) { %>
+        <span class="md-choice-radio-view-title"><%= this.label %></span>
+      <% } %>
 <%
       for ( var i = 0 ; i < this.choices.length ; i++ ) {
         var choice = this.choices[i];  %>
@@ -136,8 +150,13 @@ CLASS({
   padding: 0px;
 }
 .md-choice-radio-view.md-style-trait-standard  {
-  margin: 0px;
-  padding: 0px;
+  align-items: center;
+  display: flex;
+  margin: 0 0 0 16px;
+  padding: 0;
+}
+.md-choice-radio-view.md-style-trait-standard .md-choice-radio-view-title {
+  margin-right: 16px;
 }
 
 
