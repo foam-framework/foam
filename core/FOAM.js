@@ -186,8 +186,8 @@ function packagePath(X, path) {
 }
 
 function registerModel(model, opt_name, fastMode) {
-  var root    = model.package ? this : GLOBAL;
-  var name    = model.name;
+  var root = model.package ? this : GLOBAL;
+  var name = model.name;
   var pack = model.package;
 
   if ( opt_name ) {
