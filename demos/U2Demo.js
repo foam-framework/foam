@@ -438,6 +438,9 @@ MODEL({
       code: function() { console.log('Go!'); }
     }
   ],
+  methods: [
+    function toEMethod() { return E('b').add(E('br'),'from method'); }
+  ],
   templates: [
     function toE() {/*#U2
     <div>
@@ -451,10 +454,12 @@ MODEL({
       <div><b>First Name:</b> {{this.firstName$}}</div>
       <red>red</red>
       <br/>
-      <o:firstName/>   <!-- A Property                -->
-      <o:go/>          <!-- An Action                 -->
-      <o:toE2/>        <!-- Another Template          -->
-      {{this.toE2()}}  <!-- Same result as above line -->
+      <o:firstName/>       <!-- A Property                -->
+      <o:go/>              <!-- An Action                 -->
+      <o:toEMethod/>       <!-- A Method                  -->
+      {{this.toEMethod()}} <!-- Same result as above line -->
+      <o:toE2/>            <!-- Another Template          -->
+      {{this.toE2()}}      <!-- Same result as above line -->
       <br/>
       {{ E('i').add('italic') }}
     </div>

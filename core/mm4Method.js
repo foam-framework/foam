@@ -248,11 +248,11 @@ CLASS({
         */}
     }
   ],
-  methods: {
-    toE: function(X) {
+  methods: [
+    function toE(X) {
       return foam.u2.ActionButton.create({data: X.data, action: this});
     },
-    maybeCall: function(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
+    function maybeCall(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
       if ( this.isAvailable.call(that, this) && this.isEnabled.call(that, this) ) {
         this.code.call(that, X, this);
         that.publish(['action', this.name], this);
@@ -260,7 +260,7 @@ CLASS({
       }
       return false;
     }
-  }
+  ]
 });
 
 
@@ -582,9 +582,7 @@ CLASS({
     }
   ],
   methods: [
-    function toE(X) {
-      return X.data[this.name]();
-    }
+    function toE(X) { return X.data[this.name](); }
   ]
 });
 
@@ -956,6 +954,10 @@ if ( i != this.args.length - 1 ) { %>, <% }
 %><%= arg.javaSource() %><% if ( i < this.args.length-1 ) out(", ");
 %><% } %>) {}\n*/}
     }
+  ],
+
+  methods: [
+    function toE(X) { return X.data[this.name](); },
   ],
 
   templates:[
