@@ -455,10 +455,10 @@ MODEL({
       <red>red</red>
       <br/>
 
-      <o:firstName/>       <!-- A Property           -->
-      <o:go/>              <!-- An Action            -->
-      <o:toEMethod/>       <!-- A Method             -->
-      <o:toE2/>            <!-- Another Template     -->
+      <:firstName/>        <!-- A Property           -->
+      <:go/>               <!-- An Action            -->
+      <:toEMethod/>        <!-- A Method             -->
+      <:toE2/>             <!-- Another Template     -->
 
       {{this.toEMethod()}} <!-- Same result as above -->
       {{this.toE2()}}      <!-- Same result as above -->
