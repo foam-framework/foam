@@ -332,7 +332,7 @@ CLASS({
       nodeName = nodeName ? nodeName : 'SPAN' ;
       var modelName = foam.u2.Element.getPrototype().MODELED_ELEMENTS[nodeName.toUpperCase()];
       if ( modelName ) return this.X.lookup(modelName).create(null, this.Y);
-      
+
       if ( nodeName.startsWith(':') ) {
         return this.X.data.model_.getFeature(nodeName.substring(1)).toE(this.Y);
       }
