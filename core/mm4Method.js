@@ -249,6 +249,9 @@ CLASS({
     }
   ],
   methods: {
+    toE: function(X) {
+      return foam.u2.ActionButton.create({data: X.data, action: this});
+    },
     maybeCall: function(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
       if ( this.isAvailable.call(that, this) && this.isEnabled.call(that, this) ) {
         this.code.call(that, X, this);

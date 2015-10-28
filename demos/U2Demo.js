@@ -432,6 +432,12 @@ console.log(p.parseString(multiline(function(){/*
 MODEL({
   name: 'PersonWithTemplate',
   properties: ['firstName', 'lastName', 'age'],
+  actions: [
+    {
+      name: 'go',
+      code: function() { console.log('Go!'); }
+    }
+  ],
   templates: [
     function toE() {/*#U2
     <div>
@@ -445,7 +451,8 @@ MODEL({
       <div><b>First Name:</b> {{this.firstName$}}</div>
       <red>red</red>
       <br/>
-      <o:firstName></o:firstName>
+      <o:firstName/> <!-- A Property -->
+      <o:go/>        <!-- An Action  -->
       <br/>
       {{ E('i').add('italic') }}
     </div>
