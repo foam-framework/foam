@@ -26,13 +26,13 @@ CLASS({
       }
     },
     {
-      name: 'name',
+      name: 'source',
       postSet: function(old, nu) {
-        this.label = "bytes: " + nu.length +", compressed: " + this.pako.deflate(nu).length;
+        this.compressed = "bytes: " + nu.length +", compressed: " + this.pako.deflate(nu).length;
       }
     },
     {
-      name: 'label',
+      name: 'compressed',
     },
   ],
 
