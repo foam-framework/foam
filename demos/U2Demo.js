@@ -407,8 +407,8 @@ E('br').write();
 foam.u2.ElementParser.create();
 var p = foam.u2.ElementParser.parser__.create();
 console.log(p.parseString('hello'));
-console.log(p.parseString('<input readonly>hello</input>'));
-console.log(p.parseString('<input disabled="disabled">hello</input>'));
+console.log(p.parseString('<input readonly/>'));
+console.log(p.parseString('<input disabled="disabled"/>'));
 console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"></input><i>italic</i><% if ( true ) { %><b>bold   </b><% } %><span>span</span></div>'));
 
 console.log(p.parseString(multiline(function(){/*
@@ -442,8 +442,9 @@ MODEL({
       <div><b>First Name:</b> {{this.firstName}}</div>
       <div><b>First Name:</b> {{this.firstName$}}</div>
       <red>red</red>
+      <br/>
       <o:firstName></o:firstName>
-      <br></br>
+      <br/>
       {{ E('i').add('italic') }}
     </div>
    */}

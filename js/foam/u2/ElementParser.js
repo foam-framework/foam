@@ -173,18 +173,19 @@ CLASS({
       addListener: function(v) { this.out(".on('", v[1], "',", v[3], ')'); },
       namedListener: function(l) { return 'this.' + l; },
       startTag: function(a) {
-        if ( a[5] /* optional('/') */ ) {
+        if ( a[5] /* optional('/') */ || foam.u2.Element.ILLEGAL_CLOSE_TAGS[a[1]] ) {
           this.stack.pop();
           this.out('.e()');
         }
       },
-      startTagName: function(xs) {
-        var n = this.stack.length ? '.s' : '.start';
-        if ( xs === 'SPAN' )
-          this.out(n, "()");
+      startTagName: function(n) {
+        var t = this.stack.length ? '.s' : '.start';
+        if ( n === 'SPAN' )
+          this.out(t, "()");
         else
-          this.out(n, "('", xs, "')");
-        this.stack.push(xs);
+          this.out(t, "('", n, "')");
+        this.stack.push(n);
+        return n;
       },
       endTag: function(tag) {
         var stack = this.stack;
