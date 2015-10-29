@@ -444,7 +444,7 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div foo="bar" bar={{'foo'}}
+    <div foo="bar" xdata={{this}} bar={{'foo'}}
       style="
         background: #f9f9f9;
         color: gray;

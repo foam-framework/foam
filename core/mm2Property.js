@@ -816,6 +816,12 @@ GLOBAL.Property = {
       help: 'True if this value should be included in a memento for this object.',
       defaultValue: false
     },
+    {
+      name: 'attribute',
+      type: 'Boolean',
+      help: 'True if this property is settable as an element attribute.',
+      defaultValue: false
+    }
   ],
 
   methods: [

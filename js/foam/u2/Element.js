@@ -572,7 +572,7 @@ CLASS({
     function end() {
       var p = this.parent_;
       this.parent_ = null;
-      return p
+      return p;
     },
     function add(/* vargs */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
