@@ -333,11 +333,13 @@ CLASS({
       var modelName = foam.u2.Element.getPrototype().MODELED_ELEMENTS[nodeName.toUpperCase()];
       if ( modelName ) return this.X.lookup(modelName).create(null, this.Y);
 
-      if ( nodeName.startsWith(':') ) {
-        return this.X.data.model_.getFeature(nodeName.substring(1)).toE(this.Y);
-      }
+      if ( nodeName.startsWith(':') )
+        return this.elementForFeature(nodeName.substring(1));
 
       return null;
+    },
+    function elementForFeature(fName) {
+      return this.X.data.model_.getFeature(fName).toE(this.Y);
     },
     function E(opt_nodeName) {
       var e = this.elementForName && this.elementForName(opt_nodeName);
