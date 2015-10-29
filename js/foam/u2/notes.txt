@@ -24,8 +24,7 @@ How to handle OnKeyInput and OnKeyTextArea
 ActionBorder
 
 make template output two-pass
-
-<tag x:data={{self}}> to set context variables
+  - then fix tags with missing close tags
 
 elementForFeature or elementForName needs to come out of the Context.
 Are we going to have leakage?  Does it matter?
@@ -42,4 +41,8 @@ X.elementMap_;  -> starts with constant collection
 
 <foam.u2.Input prop={{this.FIRST_NAME}}/>
 
-Put FIRST_NAME in prototype.
+element: true, Property property
+
+Do we need to rename Value?
+
+host: or $CSS shortcut

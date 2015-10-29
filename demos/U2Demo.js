@@ -456,7 +456,6 @@ MODEL({
       (( } ))
       <div><b>First Name: </b>{{this.firstName}}</div>
       <div><b>First Name: </b>{{this.firstName$}}</div>
-      <red>red</red>
       <br/>
 
       <:firstName/>        <!-- A Property           -->
@@ -471,6 +470,8 @@ MODEL({
 
       <br/>
       {{ E('i').add('italic') }}
+      <br/>
+      <red>red</red>
     </div>
     */},
     function toE2() {/*#U2
