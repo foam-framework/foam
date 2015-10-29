@@ -2,7 +2,6 @@ Add className support
 validate
 configure from property
 async/future view loading
-toE
 benchmark (w. Cells?)
 
 cache id$el based on lifecycle?
@@ -25,5 +24,3 @@ How to handle OnKeyInput and OnKeyTextArea
 ActionBorder
 
 make template output two-pass
-
-<tag x:data={{self}}> to set context variables

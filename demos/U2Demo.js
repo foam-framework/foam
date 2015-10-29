@@ -392,15 +392,14 @@ E().add(
   foam.u2.DetailView.create({title: 'View',    data: vt, controllerMode: 'view'})
 ).write();
 
-E(null, X.sub({data: timer})).add(
+E().x('data', timer).add(
   E('br'),
   E('br'),
   foam.u2.DetailView.create({data: timer}),
   E('br'),
-  timer.model_.actions, // Doesn't work without data-binding
-  foam.u2.ActionButton.create({data: timer, action: timer.START}),
-  foam.u2.ActionButton.create({data: timer, action: timer.STEP}),
-  foam.u2.ActionButton.create({data: timer, action: timer.STOP})
+  timer.STEP,
+  ' : ',
+  timer.model_.actions
 ).write();
 
 E('br').write();
@@ -444,7 +443,7 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div foo="bar" x:data={{this}} bar={{'foo'}}
+    <div x:data={{this}} foo="bar" bar={{'foo'}}
       style="
         background: #f9f9f9;
         color: gray;
