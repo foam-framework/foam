@@ -214,6 +214,7 @@ CLASS({
       TFOOT: true,
       COLGROUP: true
     },
+
     ILLEGAL_CLOSE_TAGS: {
       IMG: true,
       INPUT: true,
@@ -228,6 +229,12 @@ CLASS({
       LINK: true,
       META: true,
       PARAM: true
+    },
+
+    MODELED_ELEMENTS: {
+      INPUT:    'foam.u2.Input',
+      TEXTAREA: 'foam.u2.TextArea',
+      SELECT:   'foam.u2.Select'
     }
   },
 
@@ -321,9 +328,27 @@ CLASS({
       }
     },
 
+    function elementForName(nodeName) {
+      nodeName = nodeName ? nodeName : 'SPAN' ;
+      var modelName = foam.u2.Element.getPrototype().MODELED_ELEMENTS[nodeName.toUpperCase()];
+      if ( modelName ) return this.X.lookup(modelName).create(null, this.Y);
+
+      if ( nodeName.startsWith(':') )
+        return this.elementForFeature(nodeName.substring(1));
+
+      return null;
+    },
+    function elementForFeature(fName) {
+      return this.X.data.model_.getFeature(fName).toE(this.Y);
+    },
     function E(opt_nodeName) {
-      var e = foam.u2.Element.create(null, this.Y);
-      if ( opt_nodeName ) e.nodeName = opt_nodeName;
+      var e = this.elementForName && this.elementForName(opt_nodeName);
+
+      if ( ! e ) {
+        e = foam.u2.Element.create(null, this.Y);
+        if ( opt_nodeName ) e.nodeName = opt_nodeName;
+      }
+
       return e;
     },
 
@@ -538,6 +563,17 @@ CLASS({
       return dyn;
     },
 
+    function start(opt_nodeName) {
+      var c = this.E(opt_nodeName);
+      c.parent_ = this;
+      this.add(c);
+      return c;
+    },
+    function end() {
+      var p = this.parent_;
+      this.parent_ = null;
+      return p
+    },
     function add(/* vargs */) {
       for ( var i = 0 ; i < arguments.length ; i++ ) {
         var c = arguments[i];
@@ -552,7 +588,7 @@ CLASS({
           i--;
           continue;
         } else if ( c.toE )
-          arguments[i] = c.toE(this.X);
+          arguments[i] = c.toE(this.Y);
         else if ( Value.isInstance(c) )
           arguments[i] = this.valueE_(c);
       }
@@ -735,9 +771,11 @@ CLASS({
     //
     function a() { return this.add.apply(this, arguments); },
     function c() { return this.cls.apply(this, arguments); },
+    function e() { return this.end(); },
     function p(a) { a[0] = this; return this; },
-    function s() { return this.style.apply(this, arguments); },
-    function t(as) { return this.attrs(as); }
+    function s(opt_nodeName) { return this.start(opt_nodeName); },
+    function t(as) { return this.attrs(as); },
+    function y() { return this.style.apply(this, arguments); },
   ]
 });
 

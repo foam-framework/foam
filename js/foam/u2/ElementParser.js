@@ -61,9 +61,11 @@ CLASS({
         return this.stack.length > 1 ? ps : null;
       },
 
-      code: seq('<%', repeat(not('%>', anyChar)), '%>'),
+      code: seq1(1, '((', str(repeat(not('))', anyChar))), '))'),
 
-      child: seq1(1, '{{', str(repeat(not('}}', anyChar))), '}}'),
+      child: sym('braces'),
+
+      braces: seq1(1, '{{', str(repeat(not('}}', anyChar))), '}}'),
 
       startTag: seq(
         '<',
@@ -106,7 +108,7 @@ CLASS({
 
       comment: seq('<!--', repeat0(not('-->', anyChar)), '-->'),
 
-      label: str(plus(notChars(' %=/\t\r\n<>\'"{}'))),
+      label: str(plus(notChars(' %=/\t\r\n<>\'"{}()'))),
 
       tagName: sym('label'),
 
@@ -114,19 +116,30 @@ CLASS({
 
       text: str(plus(not(alt('<', '{{'), anyChar))),
 
-      attribute: seq(sym('label'), optional(seq1(1, '="', sym('value'), '"'))),
+      attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
+
+      valueOrLiteral: alt(
+        str(seq('"', sym('value'), '"')),
+        sym('braces')),
 
       id: seq1(1, 'id="', sym('value'), '"'),
 
       class: seq1(1, 'class="', repeat(sym('value'), ' '), '"'),
 
-      style: seq1(1, 'style="', sym('styleMap'), optional(';'), '"'),
+      style: seq1(2, 'style="', sym('whitespace'), sym('styleMap'), optional(sym('styleDelim')), sym('whitespace'), '"'),
 
-      styleMap: repeat(sym('stylePair'), ';'),
+      styleMap: repeat(sym('stylePair'), sym('styleDelim'), 1),
 
-      stylePair: seq(sym('value'), ':', sym('styleValue')),
+      styleDelim: seq(sym('whitespace'), ';', sym('whitespace')),
 
-      styleValue: sym('value'),
+      stylePair: seq(sym('value'), sym('whitespace'), ':', sym('whitespace'), sym('styleValue')),
+
+      styleValue: str(plus(alt(
+        range('a','z'),
+        range('A', 'Z'),
+        range('0', '9'),
+        '-',
+        '#'))),
 
       value: str(alt(
         plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
@@ -138,20 +151,18 @@ CLASS({
       START: function(xs) {
         var ret = this.output.join('');
         this.reset();
-        return 'function(){var E=(this.E || GLOBAL.E).bind(this),s=[],e=' + ret + ';return e;}';
+        return 'function(){var s=[],e=this.X' + ret + ';return e;}';
       },
-      id: function(id) {
-        this.out(".id('", id, "')");
-      },
+      id: function(id) { this.out(".id('", id, "')"); },
       class: function(ids) {
         for ( var i = 0 ; i < ids.length ; i++ )
           this.out(".c('", ids[i], "')");
       },
       style: function(ss) {
-        this.out(".s({");
+        this.out(".y({");
         for ( var i = 0 ; i < ss.length ; i++ ) {
-          if ( i > 0 ) this.out(';');
-          this.out(ss[i][0], ':"', ss[i][2], '"');
+          if ( i > 0 ) this.out(',');
+          this.out(ss[i][0], ':"', ss[i][4], '"');
         }
         this.out("})");
       },
@@ -170,25 +181,24 @@ CLASS({
         // TODO: don't strip whitespace for <pre>
         this.out(".a('", xs.replace(/\s+/g, ' '), "')");
       },
-      code: function (v) {
-        this.out(".p(s);", v[1].join('').trim(), "s[0]");
+      code: function (c) { this.out(".p(s);", c.trim(), "s[0]"); },
+      child: function (c) { this.out(".a(", c, ")"); },
+      addListener: function(v) { this.out(".on('", v[1], "',", v[3], ')'); },
+      namedListener: function(l) { return 'this.' + l; },
+      startTag: function(a) {
+        if ( a[5] /* optional('/') */ || foam.u2.Element.ILLEGAL_CLOSE_TAGS[a[1]] ) {
+          this.stack.pop();
+          this.out('.e()');
+        }
       },
-      child: function (c) {
-        this.out(".a(", c, ")");
-      },
-      addListener: function(v) {
-        this.out(".on('", v[1], "',", v[3], ')');
-      },
-      namedListener: function(l) {
-        return 'this.' + l;
-      },
-      startTagName: function(xs) {
-        if ( this.stack.length ) this.out('.a(');
-        if ( xs === 'SPAN' )
-          this.out("E()");
+      startTagName: function(n) {
+        var t = this.stack.length ? '.s' : '.start';
+        if ( n === 'SPAN' )
+          this.out(t, "()");
         else
-          this.out("E('", xs, "')");
-        this.stack.push(xs);
+          this.out(t, "('", n, "')");
+        this.stack.push(n);
+        return n;
       },
       endTag: function(tag) {
         var stack = this.stack;
@@ -196,7 +206,7 @@ CLASS({
         while ( stack.length > 1 ) {
           if ( this.peek() === tag ) {
             stack.pop();
-            this.out(')');
+            this.out('.e()');
             return;
           }
           /*

@@ -43,7 +43,7 @@ CLASS({
       }
     },
     {
-      name: 'label',
+      name: 'compressed',
     },
     {
       name: 'qr',

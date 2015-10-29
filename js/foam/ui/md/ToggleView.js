@@ -116,7 +116,7 @@ CLASS({
       }
 
       .toggle-background.toggledOn {
-        background-color: #7baaf7; // Google Blue 300
+        background-color: #7baaf7;
       }
 
       .toggle-background.toggledOn .toggle-lever {

@@ -69,7 +69,7 @@ var files = [
   'view',
   '../js/foam/ui/FoamTagView',
   'cview',
-  '../js/foam/grammars/CSS3',
+  '../js/foam/grammars/CSSDecl',
   'HTMLParser',
   'mlang',
   'mlang1',

@@ -908,7 +908,7 @@ GLOBAL.Property = {
     },
     function toE(opt_X) {
       var X = opt_X || this.X;
-      return X.foam.u2.PropertyView.create({prop: this, view: this.toPropertyE(X)}, X);
+      return X.lookup('foam.u2.PropertyView').create({prop: this, view: this.toPropertyE(X)}, X);
     }
   ],
 

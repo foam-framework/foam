@@ -60,7 +60,7 @@ __DATA({
     'value',
     'view',
     '../js/foam/ui/FoamTagView',
-    '../js/foam/grammars/CSS3',
+    '../js/foam/grammars/CSSDecl',
     'HTMLParser',
     'visitor',
     'dao',

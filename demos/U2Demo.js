@@ -122,6 +122,9 @@ setTimeout(function() { dv.title = 'New Title'; }, 7000);
 var e15 = foam.u2.Input.create().write();
 e15.data$ = timer.i$;
 
+var e15b = E('input').write();
+e15b.data$ = timer.i$;
+
 E('div').style({height: '30px'}).write();
 
 foam.u2.Input.create().write().data$ = foam.u2.Input.create().write().data$;
@@ -389,11 +392,12 @@ E().add(
   foam.u2.DetailView.create({title: 'View',    data: vt, controllerMode: 'view'})
 ).write();
 
-E().add(
+E(null, X.sub({data: timer})).add(
   E('br'),
   E('br'),
   foam.u2.DetailView.create({data: timer}),
   E('br'),
+  timer.model_.actions, // Doesn't work without data-binding
   foam.u2.ActionButton.create({data: timer, action: timer.START}),
   foam.u2.ActionButton.create({data: timer, action: timer.STEP}),
   foam.u2.ActionButton.create({data: timer, action: timer.STOP})
@@ -404,9 +408,9 @@ E('br').write();
 foam.u2.ElementParser.create();
 var p = foam.u2.ElementParser.parser__.create();
 console.log(p.parseString('hello'));
-console.log(p.parseString('<input readonly>hello</input>'));
-console.log(p.parseString('<input disabled="disabled">hello</input>'));
-console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"></input><i>italic</i><% if ( true ) { %><b>bold   </b><% } %><span>span</span></div>'));
+console.log(p.parseString('<input readonly>'));
+console.log(p.parseString('<input disabled="disabled">'));
+console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"></input><i>italic</i>(( if ( true ) { ))<b>bold   </b>(( } ))<span>span</span></div>'));
 
 console.log(p.parseString(multiline(function(){/*
   <div id="foo" onclick="foo" class="fooClass barClass" style="color:red;padding:5px;">
@@ -415,9 +419,9 @@ console.log(p.parseString(multiline(function(){/*
     <i>italic</i>
     {{this.fname}}
     {{this.fname$}}
-    <% if ( true ) { %>
+    (( if ( true ) { ))
       <b>bold</b>
-    <% } %>
+    (( } ))
       <b if="true">bold2   </b>
       <b repeat="i in 1 to 10">i: {{i}}</b>
       <i repeat="j in this.dao">j: {{j}}</i>
@@ -429,23 +433,53 @@ console.log(p.parseString(multiline(function(){/*
 MODEL({
   name: 'PersonWithTemplate',
   properties: ['firstName', 'lastName', 'age'],
+  actions: [
+    {
+      name: 'go',
+      code: function() { console.log('Go!'); }
+    }
+  ],
+  methods: [
+    function toEMethod() { return E('b').add(E('br'),'from method'); }
+  ],
   templates: [
     function toE() {/*#U2
-    <div>
-      <br></br>
-      <br></br>
-      <h1>Person With Template</h1>
-      <div><b>First Name:</b> {{this.firstName}}</div>
-      <div><b>First Name:</b> {{this.firstName$}}</div>
-      <% this.Y.data = this; %>
-      <o:firstName>blah blah blah</o:firstName>
-      <div>{{this.model_.FIRST_NAME.toE(this.Y)}}</div>
+    <div foo="bar" bar={{'foo'}}
+      style="
+        background: #f9f9f9;
+        color: gray;
+        margin: 6px;
+        padding: 12px;
+      ">
+      (( this.X.data = this; ))
+      (( if ( true ) { ))
+        <h1>Person With Template</h1>
+        <br/>
+      (( } ))
+      <div><b>First Name: </b>{{this.firstName}}</div>
+      <div><b>First Name: </b>{{this.firstName$}}</div>
+      <red>red</red>
+      <br/>
+
+      <:firstName/>        <!-- A Property           -->
+      <:go/>               <!-- An Action            -->
+      <:toEMethod/>        <!-- A Method             -->
+      <:toE2/>             <!-- Another Template     -->
+
+      {{this.toEMethod()}} <!-- Same result as above -->
+      {{this.toE2()}}      <!-- Same result as above -->
+
+      <br/>
       {{ E('i').add('italic') }}
     </div>
-   */}
+    */},
+    function toE2() {/*#U2
+    <blockquote style="color:red">
+      sub template
+    </blockquote>
+    */}
   ]
 });
 
 var p = PersonWithTemplate.create({firstName: 'Sebastian', lastName: 'Greer', age: 11});
 p.toE().write();
-p.firstName = 'Alexey';

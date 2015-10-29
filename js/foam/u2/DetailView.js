@@ -23,7 +23,7 @@ CLASS({
 
   requires: [
     'Property',
-    'foam.u2.PropertyView'
+    'foam.u2.DetailPropertyView'
   ],
 
   exports: [ 'data' ],
@@ -105,11 +105,13 @@ CLASS({
     function init() {
       this.SUPER();
 
+      this.Y.registerModel(foam.u2.DetailPropertyView, 'foam.u2.PropertyView');
+
       this.cls('foam-u2-DetailView').add(function(model, properties) {
         return ! model ?
           'Set model or data.' :
           this.E('table').add(E('tr').add(E('td').cls('foam-u2-DetailView-title').attrs({colspan: 2}).add(this.title$))).add(properties) ;
-      }.bind(this).on$(this.X, this.model$, this.properties$));
+      }.bind(this).on$(this.Y, this.model$, this.properties$));
     }
   ]
 });
