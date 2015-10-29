@@ -20,10 +20,10 @@ CLASS({
   name: 'ActionButton',
 
   extends: 'foam.u2.Element',
+  imports: [ 'data' ],
 
   properties: [
     'action',
-    'data',
     [ 'nodeName', 'button' ],
     {
       name: 'showLabel',
@@ -93,7 +93,6 @@ CLASS({
       this.SUPER();
 
       var self = this;
-
       this.
         cls('foam-u2-ActionButton').
         cls('available', function() {

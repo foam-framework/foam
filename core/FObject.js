@@ -472,6 +472,7 @@ var FObject = {
   defineProperty: function(prop) {
     var name = prop.name;
     prop.name$_ = name + '$';
+    this[constantize(prop.name)] = prop;
 
     // Add a 'name$' psedo-property if not already defined
     // Faster to define on __ROOT__, but not as good for auto-completion
