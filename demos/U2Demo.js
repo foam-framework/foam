@@ -466,6 +466,8 @@ MODEL({
       <:toEMethod/>        <!-- A Method             -->
       <:toE2/>             <!-- Another Template     -->
 
+      {{this.FIRST_NAME}}  <!-- Same result as above -->
+      {{this.GO}}          <!-- Same result as above -->
       {{this.toEMethod()}} <!-- Same result as above -->
       {{this.toE2()}}      <!-- Same result as above -->
 
