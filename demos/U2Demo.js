@@ -444,14 +444,13 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div foo="bar" xdata={{this}} bar={{'foo'}}
+    <div foo="bar" x:data={{this}} bar={{'foo'}}
       style="
         background: #f9f9f9;
         color: gray;
         margin: 6px;
         padding: 12px;
       ">
-      (( this.X.data = this; ))
       (( if ( true ) { ))
         <h1>Person With Template</h1>
         <br/>
