@@ -392,15 +392,14 @@ E().add(
   foam.u2.DetailView.create({title: 'View',    data: vt, controllerMode: 'view'})
 ).write();
 
-E(null, X.sub({data: timer})).add(
+E().x('data', timer).add(
   E('br'),
   E('br'),
   foam.u2.DetailView.create({data: timer}),
   E('br'),
-  timer.model_.actions, // Doesn't work without data-binding
-  foam.u2.ActionButton.create({data: timer, action: timer.START}),
-  foam.u2.ActionButton.create({data: timer, action: timer.STEP}),
-  foam.u2.ActionButton.create({data: timer, action: timer.STOP})
+  timer.STEP,
+  ' : ',
+  timer.model_.actions
 ).write();
 
 E('br').write();
@@ -444,21 +443,19 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div foo="bar" bar={{'foo'}}
+    <div x:data={{this}} foo="bar" bar={{'foo'}}
       style="
         background: #f9f9f9;
         color: gray;
         margin: 6px;
         padding: 12px;
       ">
-      (( this.X.data = this; ))
       (( if ( true ) { ))
         <h1>Person With Template</h1>
         <br/>
       (( } ))
       <div><b>First Name: </b>{{this.firstName}}</div>
       <div><b>First Name: </b>{{this.firstName$}}</div>
-      <red>red</red>
       <br/>
 
       <:firstName/>        <!-- A Property           -->
@@ -466,11 +463,15 @@ MODEL({
       <:toEMethod/>        <!-- A Method             -->
       <:toE2/>             <!-- Another Template     -->
 
+      {{this.FIRST_NAME}}  <!-- Same result as above -->
+      {{this.GO}}          <!-- Same result as above -->
       {{this.toEMethod()}} <!-- Same result as above -->
       {{this.toE2()}}      <!-- Same result as above -->
 
       <br/>
       {{ E('i').add('italic') }}
+      <br/>
+      <red>red</red>
     </div>
     */},
     function toE2() {/*#U2

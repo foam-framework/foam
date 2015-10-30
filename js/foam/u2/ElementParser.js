@@ -90,6 +90,7 @@ CLASS({
         sym('class'),
         sym('style'),
         sym('addListener'),
+        sym('xattribute'),
         sym('attribute')
       ),
 
@@ -117,6 +118,8 @@ CLASS({
       text: str(plus(not(alt('<', '{{'), anyChar))),
 
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
+
+      xattribute: seq('x:', sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
       valueOrLiteral: alt(
         str(seq('"', sym('value'), '"')),
@@ -174,6 +177,9 @@ CLASS({
       tagName: function(n) { return n.toUpperCase(); },
       attribute: function(xs) {
         this.out('.t({', xs[0], ':', xs[1] || 1, '})');
+      },
+      xattribute: function(xs) {
+        this.out(".x('", xs[1], "',", xs[2],')');
       },
       // Do we need this?
       cdata: function(xs) { this.peek() && this.peek().appendChild(xs); },
