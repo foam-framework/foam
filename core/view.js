@@ -207,9 +207,47 @@ CLASS({
   }
 });
 
+
+// U2 Support
+
+var __element_map__ = {
+  INPUT:    'foam.u2.Input',
+  TEXTAREA: 'foam.u2.TextArea',
+  SELECT:   'foam.u2.Select'
+};
+
+function elementForName(nodeName) {
+  nodeName = nodeName ? nodeName : 'SPAN' ;
+  var modelName = this.__element_map__[nodeName.toUpperCase()];
+  if ( modelName ) return this.X.lookup(modelName).create(null, this.Y || X);
+
+  if ( nodeName.startsWith(':') )
+    return this.elementForFeature(nodeName.substring(1));
+
+  return null;
+}
+
+function elementForFeature(fName) {
+  return this.data.model_.getFeature(fName).toE(this.Y || X);
+}
+
+function registerE(name, model) {
+  var m = { __proto__: this.__element_map__ };
+  m[name.toUpperCase()] = model;
+  this.set('__element_map__', m);
+  return this;
+}
+
 // Utility function for creating U2 elements in a short format.
 function E(opt_nodeName) {
-  return foam.u2.Element.getPrototype().E.call(this, opt_nodeName);
+  var e = this.elementForName(opt_nodeName);
+
+  if ( ! e ) {
+    e = foam.u2.Element.create(null, X);
+    if ( opt_nodeName ) e.nodeName = opt_nodeName;
+  }
+
+  return e;
 }
 
 function start(opt_nodeName) {

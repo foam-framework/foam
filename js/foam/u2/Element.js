@@ -229,12 +229,6 @@ CLASS({
       LINK: true,
       META: true,
       PARAM: true
-    },
-
-    MODELED_ELEMENTS: {
-      INPUT:    'foam.u2.Input',
-      TEXTAREA: 'foam.u2.TextArea',
-      SELECT:   'foam.u2.Select'
     }
   },
 
@@ -328,21 +322,8 @@ CLASS({
       }
     },
 
-    function elementForName(nodeName) {
-      nodeName = nodeName ? nodeName : 'SPAN' ;
-      var modelName = foam.u2.Element.getPrototype().MODELED_ELEMENTS[nodeName.toUpperCase()];
-      if ( modelName ) return this.X.lookup(modelName).create(null, this.Y);
-
-      if ( nodeName.startsWith(':') )
-        return this.elementForFeature(nodeName.substring(1));
-
-      return null;
-    },
-    function elementForFeature(fName) {
-      return this.X.data.model_.getFeature(fName).toE(this.Y);
-    },
     function E(opt_nodeName) {
-      var e = this.elementForName && this.elementForName(opt_nodeName);
+      var e = this.X.elementForName(opt_nodeName);
 
       if ( ! e ) {
         e = foam.u2.Element.create(null, this.Y);
