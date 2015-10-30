@@ -455,7 +455,6 @@ MODEL({
         margin: 6px;
         padding: 12px;
       ">
-      (( X.registerE('red', RedElement); ))
       (( if ( true ) { ))
         <h1>Person With Template</h1>
         <br/>
@@ -477,7 +476,13 @@ MODEL({
       <br/>
       {{ E('i').add('italic') }}
       <br/>
-      <red>red</red>
+      <h2>Custom Elements</h2>
+      <red>not red</red>
+      <p>
+        (( s[0].X.registerE('red', RedElement); )) <!-- Need better syntax for this -->
+        <red>red</red>
+      </p>
+      <red>not red again</red>
     </div>
     */},
     function toE2() {/*#U2
