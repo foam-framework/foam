@@ -428,6 +428,11 @@ console.log(p.parseString(multiline(function(){/*
   </div>
 */})));
 
+MODEL({
+  name: 'RedElement',
+  extends: 'foam.u2.Element',
+  methods: [ function init() { this.SUPER(); this.style({color: 'red'}); } ]
+});
 
 MODEL({
   name: 'PersonWithTemplate',
@@ -450,6 +455,7 @@ MODEL({
         margin: 6px;
         padding: 12px;
       ">
+      (( X.registerE('red', RedElement); ))
       (( if ( true ) { ))
         <h1>Person With Template</h1>
         <br/>
