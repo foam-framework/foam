@@ -498,3 +498,6 @@ MODEL({
 
 var p = PersonWithTemplate.create({firstName: 'Sebastian', lastName: 'Greer', age: 11});
 p.toE().write();
+
+console.log(p.model_.templates[0].template.toString().length, p.toE.toString().length);
+// 1238 861
