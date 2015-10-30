@@ -221,14 +221,18 @@ function elementForName(nodeName) {
   var modelName = this.__element_map__[nodeName.toUpperCase()];
   if ( modelName ) return this.X.lookup(modelName).create(null, this.Y || X);
 
-  if ( nodeName.startsWith(':') )
-    return this.elementForFeature(nodeName.substring(1));
+  var i = nodeName.indexOf(':');
+  if ( i != -1 ) {
+    return this.elementForFeature(nodeName.substring(0, i), nodeName.substring(i+1));
+  }
 
   return null;
 }
 
-function elementForFeature(fName) {
-  return this.data.model_.getFeature(fName).toE(this.Y || X);
+function elementForFeature(objName, featureName) {
+  var x = this.Y || X;
+  if ( objName ) x = X.sub({data: this[objName]});
+  return this[objName || 'data'].model_.getFeature(featureName).toE(x);
 }
 
 function registerE(name, model) {

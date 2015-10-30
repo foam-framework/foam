@@ -174,7 +174,7 @@ CLASS({
         this.stack = [ X.foam.u2.Element.create() ];
         return ret.childNodes[0];
       },
-      tagName: function(n) { return n.toUpperCase(); },
+      tagName: function(n) { return n; },
       attribute: function(xs) {
         this.out('.t({', xs[0], ':', xs[1] || 1, '})');
       },

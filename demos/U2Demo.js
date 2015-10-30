@@ -448,7 +448,7 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div x:data={{this}} foo="bar" bar={{'foo'}}
+    <div x:data={{this}} x:timer={{timer}} foo="bar" bar={{'foo'}}
       style="
         background: #f9f9f9;
         color: gray;
@@ -472,6 +472,9 @@ MODEL({
       {{this.GO}}          <!-- Same result as above -->
       {{this.toEMethod()}} <!-- Same result as above -->
       {{this.toE2()}}      <!-- Same result as above -->
+
+      <br/>
+      <b>timer: </b> <timer:SECOND/> <timer:STOP/> <timer:START/> <br/>
 
       <br/>
       {{ E('i').add('italic') }}
