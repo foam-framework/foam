@@ -188,7 +188,7 @@ CLASS({
         this.out(".a('", xs.replace(/\s+/g, ' '), "')");
       },
       code: function (c) { this.out(".p(s);", c.trim(), "s[0]"); },
-      child: function (c) { this.out(".a(", c, ")"); },
+      child: function (c) { this.out(".a(", c.trim(), ")"); },
       addListener: function(v) { this.out(".on('", v[1], "',", v[3], ')'); },
       namedListener: function(l) { return 'this.' + l; },
       startTag: function(a) {
