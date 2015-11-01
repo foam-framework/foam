@@ -161,7 +161,11 @@ CLASS({
 
       stylePair: seq(sym('value'), sym('whitespace'), ':', sym('whitespace'), sym('styleValue')),
 
-      styleValue: str(plus(alt(
+      styleValue: alt(
+        sym('literalStyleValue'),
+        sym('braces')),
+
+      literalStyleValue: str(plus(alt(
         range('a','z'),
         range('A', 'Z'),
         range('0', '9'),
@@ -204,6 +208,7 @@ CLASS({
       code: function (c) {
         this.peek().children.push({code: c.trim()});
       },
+      literalStyleValue: function(v) { return '"' + v + '"'; },
       child: function (c) { this.peek().children.push(c.trim()); },
       addListener: function(v) {
         this.peek().listeners[v[1]] = v[3];
@@ -225,6 +230,19 @@ CLASS({
           style:       {},
           listeners:   [], // TODO
           children:    [],
+          outputMap: function(out, f, m) {
+            var first = true;
+            for ( var key in m ) {
+              if ( first ) {
+                out('.', f, '({');
+                first = false;
+              } else {
+                out(',');
+              }
+              out(key, ':', m[key]);
+            }
+            if ( ! first ) out('})');
+          },
           output: function(out, firstE) {
             var nn = this.nodeName === 'div' ? null : '"' + this.nodeName + '"';
             if ( firstE ) {
@@ -238,35 +256,9 @@ CLASS({
             }
             if ( this.id ) out('.id(', this.id, ')');
 
-            var first = true;
-            for ( var key in this.attributes ) {
-              if ( first ) {
-                out('.t({');
-                first = false;
-              } else {
-                out(',');
-              }
-              out(key, ':', this.attributes[key]);
-            }
-            if ( ! first ) out('})');
-
-            first = true;
-            for ( var key in this.style ) {
-              if ( first ) {
-                out('.y({');
-                first = false;
-              } else {
-                out(',');
-              }
-              // TODO: allow {{ }}'s for style values
-              out(key, ':"', this.style[key], '"');
-            }
-            if ( ! first ) out('})');
-
-            // TODO: make one call
-            for ( var key in this.xattributes ) {
-              out('.x("', key, '",', this.xattributes[key], ')');
-            }
+            this.outputMap(out, 'y', this.style);
+            this.outputMap(out, 't', this.attributes);
+            this.outputMap(out, 'x', this.xattributes);
 
             var outputting = false;
             for ( var i = 0 ; i < this.children.length ; i++ ) {

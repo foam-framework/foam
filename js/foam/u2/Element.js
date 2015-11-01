@@ -762,7 +762,10 @@ CLASS({
     function p(a) { a[0] = this; return this; },
     function s(opt_nodeName) { return this.start(opt_nodeName); },
     function t(as) { return this.attrs(as); },
-    function x(k,v) { this.X.set(k,v); return this; },
+    function x(m) {
+      for ( var k in m ) this.X.set(k, m[k]);
+      return this;
+    },
     function y() { return this.style.apply(this, arguments); },
   ]
 });
