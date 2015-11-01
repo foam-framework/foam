@@ -504,4 +504,4 @@ console.log(p.toE.toString());
 e.write();
 
 console.log(p.model_.templates[0].template.toString().length, p.toE.toString().length);
-// 1238 861 -> 811 (tag)
+// 1238 861 -> 811 (tag) -> 790 (div br defaults) -> 742 (remove empty strings "")
