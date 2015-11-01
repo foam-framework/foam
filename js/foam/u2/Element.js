@@ -216,19 +216,19 @@ CLASS({
     },
 
     ILLEGAL_CLOSE_TAGS: {
-      IMG: true,
-      INPUT: true,
-      BR: true,
-      HR: true,
-      FRAME: true,
-      AREA: true,
-      BASE: true,
-      BASEFONT: true,
-      COL: true,
-      ISINDEX: true,
-      LINK: true,
-      META: true,
-      PARAM: true
+      img: true,
+      input: true,
+      br: true,
+      hr: true,
+      frame: true,
+      area: true,
+      base: true,
+      basefont: true,
+      col: true,
+      isindex: true,
+      link: true,
+      meta: true,
+      param: true
     }
   },
 

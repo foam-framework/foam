@@ -406,15 +406,15 @@ E('br').write();
 
 foam.u2.ElementParser.create();
 var p = foam.u2.ElementParser.parser__.create();
-console.log(p.parseString('hello'));
+// console.log(p.parseString('hello'));
 console.log(p.parseString('<input readonly>'));
 console.log(p.parseString('<input disabled="disabled">'));
-console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"></input><i>italic</i>(( if ( true ) { ))<b>bold   </b>(( } ))<span>span</span></div>'));
+console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"><i>italic</i>(( if ( true ) { ))<b>bold   </b>(( } ))<span>span</span></div>'));
 
 console.log(p.parseString(multiline(function(){/*
   <div id="foo" onclick="foo" class="fooClass barClass" style="color:red;padding:5px;">
     <!-- A Comment -->
-    <input readonly type="color"></input>
+    <input readonly type="color">
     <i>italic</i>
     {{this.fname}}
     {{this.fname$}}
@@ -422,8 +422,10 @@ console.log(p.parseString(multiline(function(){/*
       <b>bold</b>
     (( } ))
       <b if="true">bold2   </b>
+      <!--
       <b repeat="i in 1 to 10">i: {{i}}</b>
       <i repeat="j in this.dao">j: {{j}}</i>
+      -->
     <span>span</span>
   </div>
 */})));
@@ -455,6 +457,7 @@ MODEL({
         margin: 6px;
         padding: 12px;
       ">
+      <h1>Title</h1>
       (( if ( true ) { ))
         <h1>Person With Template</h1>
         <br/>
@@ -488,6 +491,15 @@ MODEL({
       <red>not red again</red>
     </div>
     */},
+    function xxxtoE() {/*#U2
+    <div>
+      (( if ( true ) { ))
+        <h1>Person With Template</h1>
+        <br/>
+      (( } ))
+      not h1
+    </div>
+    */},
     function toE2() {/*#U2
     <blockquote style="color:red">
       sub template
@@ -497,7 +509,9 @@ MODEL({
 });
 
 var p = PersonWithTemplate.create({firstName: 'Sebastian', lastName: 'Greer', age: 11});
-p.toE().write();
+var e = p.toE();
+console.log(p.toE.toString());
+e.write();
 
 console.log(p.model_.templates[0].template.toString().length, p.toE.toString().length);
 // 1238 861

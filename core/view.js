@@ -255,5 +255,5 @@ function E(opt_nodeName) {
 }
 
 function start(opt_nodeName) {
-  return E(opt_nodeName);
+  return this.E(opt_nodeName);
 }
