@@ -229,7 +229,11 @@ CLASS({
             if ( firstE ) {
               out('.E("', this.nodeName, '")');
             } else {
-              out('.start("', this.nodeName, '")');
+              if ( this.children.length ) {
+                out('.s("', this.nodeName, '")');
+              } else {
+                out('.g("', this.nodeName, '")');
+              }
             }
             if ( this.id ) out('.id(', this.id, ')');
 
@@ -275,15 +279,15 @@ CLASS({
                 out('.p(s);', c.code, 's[0]');
                 outputting = false;
               } else {
-                out(outputting ? ',' : '.add(');
+                out(outputting ? ',' : '.a(');
                 out(c);
                 outputting = true;
               }
             }
             if ( outputting ) out(')');
 
-            if ( ! firstE )
-              out('.end()');
+            if ( ! firstE && this.children.length )
+              out('.e()');
           }
         });
         return n;

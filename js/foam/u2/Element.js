@@ -544,6 +544,11 @@ CLASS({
       return dyn;
     },
 
+    function tag(opt_nodeName) {
+      var c = this.E(opt_nodeName);
+      this.add(c);
+      return this;
+    },
     function start(opt_nodeName) {
       var c = this.E(opt_nodeName);
       c.parent_ = this;
@@ -753,6 +758,7 @@ CLASS({
     function a() { return this.add.apply(this, arguments); },
     function c() { return this.cls.apply(this, arguments); },
     function e() { return this.end(); },
+    function g(opt_nodeName) { return this.tag(opt_nodeName); },
     function p(a) { a[0] = this; return this; },
     function s(opt_nodeName) { return this.start(opt_nodeName); },
     function t(as) { return this.attrs(as); },
