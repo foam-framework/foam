@@ -51,3 +51,16 @@ host: or $CSS shortcut
 <div class="foo bar">{{.cls('foobar', function() { })}}
 <div class="foo {{foobar: function() { }}}">
 <div class="foo foobar{{function() { }}}">
+
+
+OPTIONAL_CLOSE_TAGS
+<table>
+  <tr>
+    <td>blah
+    <td>blah
+    <td>blah
+  <tr>
+    <td>blah
+      <td>blah
+        <td>blah
+</table>

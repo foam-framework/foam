@@ -188,7 +188,7 @@ CLASS({
         this.stack.push({
           nodeName:    n,
           id:          null,
-          classes:     [], // TODO
+          classes:     [], // TODO: support for dynamic classes
           xattributes: {},
           attributes:  {},
           style:       {},

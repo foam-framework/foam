@@ -197,6 +197,7 @@ CLASS({
       toString:      function() { return 'DESTROYED'; }
     },
 
+    // ???: Should we disallow these?
     OPTIONAL_CLOSE_TAGS: {
       HTML: true,
       HEAD: true,
