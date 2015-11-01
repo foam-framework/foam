@@ -248,7 +248,7 @@ CLASS({
         // and ILLEGAL_CLOSE_TAGS work.
         return v.toUpperCase();
       },
-      defaultValue: 'SPAN'
+      defaultValue: 'div'
     },
     {
       name: 'attributeMap',
@@ -545,7 +545,7 @@ CLASS({
     },
 
     function tag(opt_nodeName) {
-      var c = this.E(opt_nodeName);
+      var c = this.E(opt_nodeName || 'br');
       this.add(c);
       return this;
     },

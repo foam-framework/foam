@@ -457,7 +457,6 @@ MODEL({
         margin: 6px;
         padding: 12px;
       ">
-      <h1>Title</h1>
       (( if ( true ) { ))
         <h1>Person With Template</h1>
         <br/>
@@ -491,15 +490,6 @@ MODEL({
       <red>not red again</red>
     </div>
     */},
-    function xxxtoE() {/*#U2
-    <div>
-      (( if ( true ) { ))
-        <h1>Person With Template</h1>
-        <br/>
-      (( } ))
-      not h1
-    </div>
-    */},
     function toE2() {/*#U2
     <blockquote style="color:red">
       sub template
@@ -514,4 +504,4 @@ console.log(p.toE.toString());
 e.write();
 
 console.log(p.model_.templates[0].template.toString().length, p.toE.toString().length);
-// 1238 861
+// 1238 861 -> 811 (tag)

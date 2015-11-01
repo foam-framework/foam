@@ -219,20 +219,21 @@ CLASS({
         this.stack.push({
           nodeName:    n,
           id:          null,
-          classes:     [],
-          style:       {},
-          listeners:   [],
+          classes:     [], // TODO
           xattributes: {},
           attributes:  {},
+          style:       {},
+          listeners:   [], // TODO
           children:    [],
           output: function(out, firstE) {
+            var nn = this.nodeName === 'div' ? null : this.nodeName;
             if ( firstE ) {
-              out('.E("', this.nodeName, '")');
+              out('.E("', nn, '")');
             } else {
               if ( this.children.length ) {
-                out('.s("', this.nodeName, '")');
+                out('.s("', nn, '")');
               } else {
-                out('.g("', this.nodeName, '")');
+                out('.g("', this.nodeName === 'br' ? null : this.nodeName, '")');
               }
             }
             if ( this.id ) out('.id(', this.id, ')');
