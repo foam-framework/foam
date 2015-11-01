@@ -218,7 +218,7 @@ CLASS({
                 out('.g(', this.nodeName === 'br' ? null : '"' + this.nodeName + '"', ')');
               }
             }
-            if ( this.id ) out('.id(', this.id, ')');
+            if ( this.id ) out('.i(', this.id, ')');
 
             for ( var i = 0 ; i < this.classes.length ; i++ ) {
               out('.c("', this.classes[i], '")'); 

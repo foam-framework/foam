@@ -449,6 +449,10 @@ CLASS({
     //
     // Fluent Methods
     //
+    function setID(id) {
+      this.id = id;
+      return this;
+    },
     function on(topic, listener) {
       this.elListeners.push([topic, listener]);
       this.onAddListener(topic, listener);
@@ -759,6 +763,7 @@ CLASS({
     function c() { return this.cls.apply(this, arguments); },
     function e() { return this.end(); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
+    function i(id) { return this.setID(id); },
     function o(m) {
       for ( var k in m ) this.on(k, m[k]);
       return this;
