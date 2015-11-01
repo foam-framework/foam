@@ -445,12 +445,15 @@ MODEL({
       code: function() { console.log('Go!'); }
     }
   ],
+  listeners: [
+    { name: 'click', code: function() { console.log('click'); } }
+  ],
   methods: [
     function toEMethod() { return E('b').add(E('br'),'from method'); }
   ],
   templates: [
     function toE() {/*#U2
-    <div x:data={{this}} x:timer={{timer}} foo="bar" bar={{'foo'}}
+    <div x:data={{this}} x:timer={{timer}} foo="bar" bar={{'foo'}} onClick="click"
       style="
         background: #f9f9f9;
         color: gray;

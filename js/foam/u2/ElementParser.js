@@ -213,6 +213,7 @@ CLASS({
       addListener: function(v) {
         this.peek().listeners[v[1]] = v[3];
       },
+      topic: function(t) { return t.toLowerCase(); },
       namedListener: function(l) { return 'this.' + l; },
       startTag: function(a) {
         if ( a[5] /* optional('/') */ || foam.u2.Element.ILLEGAL_CLOSE_TAGS[a[1]] ) {
@@ -228,7 +229,7 @@ CLASS({
           xattributes: {},
           attributes:  {},
           style:       {},
-          listeners:   [], // TODO
+          listeners:   {},
           children:    [],
           outputMap: function(out, f, m) {
             var first = true;
@@ -259,6 +260,7 @@ CLASS({
             this.outputMap(out, 'y', this.style);
             this.outputMap(out, 't', this.attributes);
             this.outputMap(out, 'x', this.xattributes);
+            this.outputMap(out, 'o', this.listeners);
 
             var outputting = false;
             for ( var i = 0 ; i < this.children.length ; i++ ) {

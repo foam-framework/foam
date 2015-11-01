@@ -759,6 +759,10 @@ CLASS({
     function c() { return this.cls.apply(this, arguments); },
     function e() { return this.end(); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
+    function o(m) {
+      for ( var k in m ) this.on(k, m[k]);
+      return this;
+    },
     function p(a) { a[0] = this; return this; },
     function s(opt_nodeName) { return this.start(opt_nodeName); },
     function t(as) { return this.attrs(as); },
