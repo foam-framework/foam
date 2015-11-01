@@ -23,47 +23,10 @@ CLASS({
     this.parser__ = {
       __proto__: grammar,
 
-      create: function() {
-        return { __proto__: this }.reset();
-      },
+      create: function() { return { __proto__: this }.reset(); },
 
-      outputElement: function (e) {
-        /*
-        var t = this.stack.length ? '.s' : '.start';
-        if ( n === 'SPAN' )
-          this.out(t, "()");
-        else
-          this.out(t, "('", n, "')");
-
-        this.out(".x('", xs[1], "',", xs[2],')');
-
-        this.out('.t({', xs[0], ':', xs[1] || 1, '})');
-
-        this.out(".y({");
-        for ( var i = 0 ; i < ss.length ; i++ ) {
-          if ( i > 0 ) this.out(',');
-          this.out(ss[i][0], ':"', ss[i][4], '"');
-        }
-        this.out("})");
-
-        for ( var i = 0 ; i < ids.length ; i++ )
-          this.out(".c('", ids[i], "')");
-
-      xxxid: function(id) { this.out(".id('", id, "')"); },
-
-        // TODO: don't strip whitespace for <pre>
-        this.out(".a('", t.replace(/\s+/g, ' '), "')");
-
-        this.out(".p(s);", c.trim(), "s[0]");
-
-      child: function (c) { this.out(".a(", c.trim(), ")"); },
-
-      addListener: function(v) { this.out(".on('", v[1], "',", v[3], ')'); },
-
-          */
-        out('.start("', e.nodeName, '")');
-        out('.end()');
-      },
+      // TODO: don't strip whitespace for <pre>
+      //this.out(".a('", t.replace(/\s+/g, ' '), "')");
 
       reset: function() {
         this.stack  = [ { children: [] } ];
@@ -139,6 +102,8 @@ CLASS({
 
       startTagName: sym('tagName'),
 
+      id: seq1(1, 'id=', sym('valueOrLiteral')),
+
       text: str(plus(not(alt('<', '{{'), anyChar))),
 
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
@@ -148,8 +113,6 @@ CLASS({
       valueOrLiteral: alt(
         str(seq('"', sym('value'), '"')),
         sym('braces')),
-
-      id: seq1(1, 'id="', sym('value'), '"'),
 
       class: seq1(1, 'class="', repeat(sym('value'), ' '), '"'),
 
@@ -187,8 +150,8 @@ CLASS({
         return 'function(){var s=[],e=this.X' + output.join('') + ';return e;}';
       },
       id: function(id) { this.peek().id = id; },
-      class: function(ids) {
-        this.peek().classes = this.peek().classes.concat(ids);
+      class: function(cs) {
+        this.peek().classes = this.peek().classes.concat(cs);
       },
       style: function(ss) {
         for ( var i = 0 ; i < ss.length ; i++ )
@@ -257,6 +220,10 @@ CLASS({
             }
             if ( this.id ) out('.id(', this.id, ')');
 
+            for ( var i = 0 ; i < this.classes.length ; i++ ) {
+              out('.c("', this.classes[i], '")'); 
+            }
+            
             this.outputMap(out, 'y', this.style);
             this.outputMap(out, 't', this.attributes);
             this.outputMap(out, 'x', this.xattributes);

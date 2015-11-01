@@ -453,7 +453,7 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div x:data={{this}} x:timer={{timer}} foo="bar" bar={{'foo'}} onClick="click"
+    <div id="special" class="c1 c2" x:data={{this}} x:timer={{timer}} foo="bar" bar={{'foo'}} onClick="click"
       style="
         background: #f9f9f9;
         color: gray;

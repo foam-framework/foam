@@ -46,3 +46,8 @@ element: true, Property property
 Do we need to rename Value?
 
 host: or $CSS shortcut
+
+
+<div class="foo bar">{{.cls('foobar', function() { })}}
+<div class="foo {{foobar: function() { }}}">
+<div class="foo foobar{{function() { }}}">
