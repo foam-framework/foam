@@ -487,7 +487,7 @@ MODEL({
       <h2>Custom Elements</h2>
       <red>not red</red>
       <p>
-        (( s[0].X.registerE('red', RedElement); )) <!-- Need better syntax for this -->
+        (( $e.X.registerE('red', RedElement); ))
         <red>red</red>
       </p>
       <red>not red again</red>

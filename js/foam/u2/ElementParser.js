@@ -147,7 +147,7 @@ CLASS({
         var out = output.push.bind(output);
         this.peek().children[0].output(out, true);
         this.reset();
-        return 'function(){var s=[],e=this.X' + output.join('') + ';return e;}';
+        return 'function(){var $e,s=[],$top=this.X' + output.join('') + ';return $top;}';
       },
       id: function(id) { this.peek().id = id; },
       class: function(cs) {
@@ -238,7 +238,7 @@ CLASS({
                 outputting = false;
               } else if ( c.code ) {
                 if ( outputting ) out(')');
-                out('.p(s);', c.code, 's[0]');
+                out('.p(s);$e=s[0];', c.code, 's[0]');
                 outputting = false;
               } else {
                 out(outputting ? ',' : '.a(');

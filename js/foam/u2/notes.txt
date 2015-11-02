@@ -64,3 +64,14 @@ OPTIONAL_CLOSE_TAGS
       <td>blah
         <td>blah
 </table>
+
+<div var="foo">
+</div>
+((
+  foo.cls('adf');
+))
+
+
+Special value:    
+  $top - top most element in the template
+  $e - current element
