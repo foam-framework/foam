@@ -411,8 +411,11 @@ console.log(p.parseString('<input readonly>'));
 console.log(p.parseString('<input disabled="disabled">'));
 console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"><i>italic</i>(( if ( true ) { ))<b>bold   </b>(( } ))<span>span</span></div>'));
 
+console.log(p.parseString('<div><b if={{true}}></b></div>'));
+
 console.log(p.parseString(multiline(function(){/*
   <div id="foo" onclick="foo" class="fooClass barClass" style="color:red;padding:5px;">
+      <b if={{true}}>bold*************************</b>
     <!-- A Comment -->
     <input readonly type="color">
     <i>italic</i>
@@ -421,6 +424,7 @@ console.log(p.parseString(multiline(function(){/*
     (( if ( true ) { ))
       <b>bold</b>
     (( } ))
+      <b if={{true}}>bold</b>
       <b if="true">bold2   </b>
       <!--
       <b repeat="i in 1 to 10">i: {{i}}</b>
@@ -478,10 +482,10 @@ MODEL({
       {{this.toEMethod()}} <!-- Same result as above -->
       {{this.toE2()}}      <!-- Same result as above -->
 
-      <br/>
+      <br>
       <b>timer: </b> <timer:SECOND/> <timer:STOP/> <timer:START/> <br/>
 
-      <br/>
+      <br>
       {{ E('i').add('italic') }}
       <br/>
       <h2>Custom Elements</h2>
@@ -491,6 +495,19 @@ MODEL({
         <red>red</red>
       </p>
       <red>not red again</red>
+      <br>
+      (( if ( true ) { ))
+        <b>condition: style 1</b>
+      (( } ))
+      (( if ( false ) { ))
+        <b>condition: style 1</b>
+      (( } ))
+      <br>
+      <b if={{true}}>condition: style 2</b>
+      <b if={{false}}>condition: style 2</b>
+      <br>
+      <b if="true">condition: style 3</b>
+      <b if="false">condition: style 3</b>
     </div>
     */},
     function toE2() {/*#U2

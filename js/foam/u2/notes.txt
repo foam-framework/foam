@@ -65,7 +65,7 @@ OPTIONAL_CLOSE_TAGS
         <td>blah
 </table>
 
-<div var="foo">
+<div var="foo">         ???
 </div>
 ((
   foo.cls('adf');
@@ -75,3 +75,11 @@ OPTIONAL_CLOSE_TAGS
 Special value:    
   $top - top most element in the template
   $e - current element
+
+
+TODO:
+  better name for $top?
+  dynamic class syntax
+  if
+  repeat
+  var?

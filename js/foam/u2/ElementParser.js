@@ -35,6 +35,18 @@ CLASS({
 
       peek: function() { return this.stack[this.stack.length-1]; },
 
+      finishTag: function() {
+        var e = this.stack.pop();
+        var p = this.peek();
+        if ( e.ifexpr ) this.addCode('if(' + e.ifexpr + '){');
+        p.children.push(e);
+        if ( e.ifexpr ) this.addCode('}');
+      },
+
+      addCode: function(c) {
+        this.peek().children.push({code: c.trim()});
+      },
+
       START: sym('html'),
 
       html: repeat0(sym('htmlPart')),
@@ -79,6 +91,7 @@ CLASS({
         sym('class'),
         sym('style'),
         sym('addListener'),
+        sym('if'),
         sym('xattribute'),
         sym('attribute')
       ),
@@ -106,6 +119,8 @@ CLASS({
 
       text: str(plus(not(alt('<', '{{'), anyChar))),
 
+      if: seq1(1, 'if=', sym('valueOrLiteral')),
+      
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
       xattribute: seq('x:', sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
@@ -158,6 +173,13 @@ CLASS({
           this.peek().style[ss[i][0]] = ss[i][4];
       },
       tagName: function(n) { return n; },
+      if: function(v) {
+        var e = this.peek();
+        if ( e.ifexpr ) {
+          console.warn('Warning: Duplicate if expression');
+        }
+        e.ifexpr = v;
+      },
       attribute: function(xs) {
         this.peek().attributes[xs[0]] = xs[1];
       },
@@ -169,7 +191,7 @@ CLASS({
         this.peek().children.push('"' + t.trim() + '"');
       },
       code: function (c) {
-        this.peek().children.push({code: c.trim()});
+        this.addCode(c);
       },
       literalStyleValue: function(v) { return '"' + v + '"'; },
       child: function (c) { this.peek().children.push(c.trim()); },
@@ -179,10 +201,8 @@ CLASS({
       topic: function(t) { return t.toLowerCase(); },
       namedListener: function(l) { return 'this.' + l; },
       startTag: function(a) {
-        if ( a[5] /* optional('/') */ || foam.u2.Element.ILLEGAL_CLOSE_TAGS[a[1]] ) {
-          var e = this.stack.pop();
-          this.peek().children.push(e);
-        }
+        if ( a[5] /* optional('/') */ || foam.u2.Element.ILLEGAL_CLOSE_TAGS[a[1]] )
+          this.finishTag();
       },
       startTagName: function(n) {
         this.stack.push({
@@ -257,8 +277,7 @@ CLASS({
       endTag: function(tag) {
         while ( this.stack.length > 1 ) {
           if ( this.peek().nodeName === tag ) {
-            var e = this.stack.pop();
-            this.peek().children.push(e);
+            this.finishTag();
             return;
           }
           debugger;
