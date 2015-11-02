@@ -9,23 +9,18 @@ E('b').add(
 
 var e = E('font').add('text', E('br'));
 console.log('id: ', e.id);
-
 e.write();
-
 e.attrs({color: 'orange'});
-
 e.style({
   fontWeight: 'bold',
-  fontSize:  '32pt'
+  fontSize:  '24pt'
 });
-
 e.on('click', function() { console.log('clicked'); });
 
 
 var e13 = E('div').add(
-  E('br'),
   'dynamic function * ',
-  function() { return timer.second % 2 ? 'PING' : E().add('PONG').style({color: 'orange'}); },
+  function() { return timer.second % 2 ? 'PING' : E('span').add('PONG').style({color: 'orange'}); },
   ' *    dynamic value: ',
   timer.i$,
   '  ',
@@ -346,14 +341,12 @@ setInterval((function() {
 })(), 5000);
 
 E().add(
-  E('br'),
   ' rw: ', foam.u2.Input.create({mode: 'rw', data: 'value'}),
   ' disabled: ', foam.u2.Input.create({mode: 'disabled', data: 'value'}),
   ' ro: ', foam.u2.Input.create({mode: 'ro', data: 'value'}),
   ' hidden: ', foam.u2.Input.create({mode: 'hidden', data: 'value'})).write();
 
 E().add(
-  E('br'),
   ' rw: ', foam.u2.Checkbox.create({mode: 'rw', data: true}),
   ' disabled: ', foam.u2.Checkbox.create({mode: 'disabled', data: true}),
   ' ro: ', foam.u2.Checkbox.create({mode: 'ro', data: true}),
