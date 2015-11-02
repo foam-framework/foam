@@ -90,13 +90,13 @@ CLASS({
         sym('id'),
         sym('class'),
         sym('style'),
-        sym('addListener'),
+        sym('on'),
         sym('if'),
         sym('xattribute'),
         sym('attribute')
       ),
 
-      addListener: seq('on', sym('topic'), '=', sym('listener')),
+      on: seq('on', sym('topic'), '=', sym('listener')),
 
       topic: sym('label'),
 
@@ -169,9 +169,7 @@ CLASS({
         return 'function(){var $e,s=[],$top=this.X' + output.join('') + ';return $top;}';
       },
       id: function(id) { this.peek().id = id; },
-      class: function(cs) {
-        this.peek().classes = this.peek().classes.concat(cs);
-      },
+      class: function(cs) { this.peek().classes = this.peek().classes.concat(cs); },
       style: function(ss) {
         for ( var i = 0 ; i < ss.length ; i++ )
           this.peek().style[ss[i][0]] = ss[i][4];
@@ -184,24 +182,16 @@ CLASS({
         }
         e.ifexpr = v;
       },
-      attribute: function(xs) {
-        this.peek().attributes[xs[0]] = xs[1];
-      },
-      xattribute: function(xs) {
-        this.peek().xattributes[xs[1]] = xs[2];
-      },
+      attribute: function(xs) { this.peek().attributes[xs[0]] = xs[1]; },
+      xattribute: function(xs) { this.peek().xattributes[xs[1]] = xs[2]; },
       text: function(t) {
         if ( ! this.peek() ) return; // TODO: Or add an implicit Element
         this.peek().children.push('"' + t.trim() + '"');
       },
-      code: function (c) {
-        this.addCode(c);
-      },
+      code: function (c) { this.addCode(c); },
       literalStyleValue: function(v) { return '"' + v + '"'; },
       child: function (c) { this.peek().children.push(c.trim()); },
-      addListener: function(v) {
-        this.peek().listeners[v[1]] = v[3];
-      },
+      on: function(v) { this.peek().listeners[v[1]] = v[3]; },
       topic: function(t) { return t.toLowerCase(); },
       namedListener: function(l) { return 'this.' + l; },
       startTag: function(a) {

@@ -490,17 +490,17 @@ MODEL({
       <red>not red again</red>
       <br>
       (( if ( true ) { ))
-        <b>condition: style 1</b>
+        <b>condition: style 1 true</b>
       (( } ))
       (( if ( false ) { ))
-        <b>condition: style 1</b>
+        <b>condition: style 1 false</b>
       (( } ))
       <br>
-      <b if={{true}}>condition: style 2</b>
-      <b if={{false}}>condition: style 2</b>
+      <b if={{true}}>condition: style 2 true</b>
+      <b if={{false}}>condition: style 2 false</b>
       <br>
-      <b if="true">condition: style 3</b>
-      <b if="false">condition: style 3</b>
+      <b if="true">condition: style 3 true</b>
+      <b if="false">condition: style 3 false</b>
     </div>
     */},
     function toE2() {/*#U2
