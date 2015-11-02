@@ -450,7 +450,7 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div id="special" class="c1 c2" x:data={{this}} x:timer={{timer}} foo="bar" bar={{'foo'}} onClick="click"
+    <div as="top" id="special" class="c1 c2" x:data={{this}} x:timer={{timer}} foo="bar" bar={{'foo'}} onClick="click"
       style="
         background: #f9f9f9;
         color: gray;
@@ -483,8 +483,8 @@ MODEL({
       <br/>
       <h2>Custom Elements</h2>
       <red>not red</red>
-      <p>
-        (( $e.X.registerE('red', RedElement); ))
+      <p as="p">
+        (( p.X.registerE('red', RedElement); ))
         <red>red</red>
       </p>
       <red>not red again</red>

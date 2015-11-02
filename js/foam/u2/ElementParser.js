@@ -88,6 +88,7 @@ CLASS({
 
       tagPart: alt(
         sym('id'),
+        sym('as'),
         sym('class'),
         sym('style'),
         sym('on'),
@@ -116,6 +117,12 @@ CLASS({
       startTagName: sym('tagName'),
 
       id: seq1(1, 'id=', sym('valueOrLiteral')),
+
+      as: seq1(1, 'as="', sym('varName'), '"'),
+
+      varName: str(seq(
+        alt(range('a','z'), range('A','Z'), '$', '_'),
+        str(repeat(alt(range('a','z'), range('A', 'Z'), '$', '_', range('0', '9')))))),
 
       text: str(plus(not(alt('<', '{{'), anyChar))),
 
@@ -164,11 +171,14 @@ CLASS({
       START: function(xs) {
         var output = [];
         var out = output.push.bind(output);
-        this.peek().children[0].output(out, true);
+        var e = this.peek().children[0];
+        e.as = e.as || '$e';
+        e.output(out, true);
         this.reset();
-        return 'function(){var $e,s=[],$top=this.X' + output.join('') + ';return $top;}';
+        return 'function(){var s=[];' + output.join('') + ';return ' + e.as + ';}';
       },
       id: function(id) { this.peek().id = id; },
+      as: function(as) { this.peek().as = as; },
       class: function(cs) { this.peek().classes = this.peek().classes.concat(cs); },
       style: function(ss) {
         for ( var i = 0 ; i < ss.length ; i++ )
@@ -223,11 +233,14 @@ CLASS({
           },
           output: function(out, firstE) {
             var nn = this.nodeName === 'div' ? null : '"' + this.nodeName + '"';
+
             if ( firstE ) {
-              out('.E(', nn, ')');
+              if ( this.as ) out('var ', this.as, '=');
+              out('this.X.E(', nn, ')');
             } else {
-              if ( this.children.length ) {
+              if ( this.children.length || this.as ) {
                 out('.s(', nn, ')');
+                if ( this.as ) out('.p(s);var ', this.as, '=s[0];s[0]');
               } else {
                 out('.g(', this.nodeName === 'br' ? null : '"' + this.nodeName + '"', ')');
               }
@@ -252,7 +265,7 @@ CLASS({
                 outputting = false;
               } else if ( c.code ) {
                 if ( outputting ) out(')');
-                out('.p(s);$e=s[0];', c.code, 's[0]');
+                out('.p(s);', c.code, 's[0]');
                 outputting = false;
               } else {
                 out(outputting ? ',' : '.a(');
