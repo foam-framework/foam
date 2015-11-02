@@ -119,7 +119,11 @@ CLASS({
 
       text: str(plus(not(alt('<', '{{'), anyChar))),
 
-      if: seq1(1, 'if=', sym('valueOrLiteral')),
+      if: seq1(1, 'if=', sym('ifExpr')),
+
+        ifExpr: alt(
+          seq1(1, '"', sym('value'), '"'),
+          sym('braces')),
       
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
