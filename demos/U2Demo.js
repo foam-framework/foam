@@ -385,7 +385,7 @@ E().add(
   foam.u2.DetailView.create({title: 'View',    data: vt, controllerMode: 'view'})
 ).write();
 
-E().x('data', timer).add(
+E().x({data: timer}).add(
   E('br'),
   E('br'),
   foam.u2.DetailView.create({data: timer}),

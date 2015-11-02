@@ -92,6 +92,7 @@ CLASS({
     function init() {
       this.SUPER();
 
+debugger;
       var self = this;
       this.
         cls('foam-u2-ActionButton').

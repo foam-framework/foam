@@ -49,7 +49,7 @@ CLASS({
         E('td').cls('foam-u2-PropertyView-label').add(prop.label),
         E('td').cls('foam-u2-PropertyView-view').add(
           view,
-          prop.units && E().cls('foam-u2-PropertyView-units').add(prop.units)));
+          prop.units && E('span').cls('foam-u2-PropertyView-units').add(prop.units)));
     }
   ]
 });

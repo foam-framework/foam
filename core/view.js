@@ -217,7 +217,7 @@ var __element_map__ = {
 };
 
 function elementForName(nodeName) {
-  nodeName = nodeName ? nodeName : 'SPAN' ;
+  nodeName = nodeName ? nodeName : 'div' ;
   var modelName = this.__element_map__[nodeName.toUpperCase()];
   if ( modelName ) return this.X.lookup(modelName).create(null, this.Y || X);
 
