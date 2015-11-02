@@ -9,23 +9,18 @@ E('b').add(
 
 var e = E('font').add('text', E('br'));
 console.log('id: ', e.id);
-
 e.write();
-
 e.attrs({color: 'orange'});
-
 e.style({
   fontWeight: 'bold',
-  fontSize:  '32pt'
+  fontSize:  '24pt'
 });
-
 e.on('click', function() { console.log('clicked'); });
 
 
 var e13 = E('div').add(
-  E('br'),
   'dynamic function * ',
-  function() { return timer.second % 2 ? 'PING' : E().add('PONG').style({color: 'orange'}); },
+  function() { return timer.second % 2 ? 'PING' : E('span').add('PONG').style({color: 'orange'}); },
   ' *    dynamic value: ',
   timer.i$,
   '  ',
@@ -346,14 +341,12 @@ setInterval((function() {
 })(), 5000);
 
 E().add(
-  E('br'),
   ' rw: ', foam.u2.Input.create({mode: 'rw', data: 'value'}),
   ' disabled: ', foam.u2.Input.create({mode: 'disabled', data: 'value'}),
   ' ro: ', foam.u2.Input.create({mode: 'ro', data: 'value'}),
   ' hidden: ', foam.u2.Input.create({mode: 'hidden', data: 'value'})).write();
 
 E().add(
-  E('br'),
   ' rw: ', foam.u2.Checkbox.create({mode: 'rw', data: true}),
   ' disabled: ', foam.u2.Checkbox.create({mode: 'disabled', data: true}),
   ' ro: ', foam.u2.Checkbox.create({mode: 'ro', data: true}),
@@ -392,7 +385,7 @@ E().add(
   foam.u2.DetailView.create({title: 'View',    data: vt, controllerMode: 'view'})
 ).write();
 
-E().x('data', timer).add(
+E().x({data: timer}).add(
   E('br'),
   E('br'),
   foam.u2.DetailView.create({data: timer}),
@@ -497,17 +490,17 @@ MODEL({
       <red>not red again</red>
       <br>
       (( if ( true ) { ))
-        <b>condition: style 1</b>
+        <b>condition: style 1 true</b>
       (( } ))
       (( if ( false ) { ))
-        <b>condition: style 1</b>
+        <b>condition: style 1 false</b>
       (( } ))
       <br>
-      <b if={{true}}>condition: style 2</b>
-      <b if={{false}}>condition: style 2</b>
+      <b if={{true}}>condition: style 2 true</b>
+      <b if={{false}}>condition: style 2 false</b>
       <br>
-      <b if="true">condition: style 3</b>
-      <b if="false">condition: style 3</b>
+      <b if="true">condition: style 3 true</b>
+      <b if="false">condition: style 3 false</b>
     </div>
     */},
     function toE2() {/*#U2
