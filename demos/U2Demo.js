@@ -466,7 +466,7 @@ MODEL({
       ">
       (( if ( true ) { ))
         <h1>Person With Template</h1>
-        <br/>
+        <br>
       (( } ))
       <div><b>First Name: </b>{{this.firstName}}</div>
       <div><b>First Name: </b>{{this.firstName$}}</div>
