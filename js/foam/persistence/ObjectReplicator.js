@@ -24,6 +24,10 @@ CLASS({
       name: 'id',
     },
     {
+      name: 'obj',
+      type: 'FObject'
+    },
+    {
       name: 'model',
       type: 'Model'
     },
