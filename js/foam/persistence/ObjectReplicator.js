@@ -42,7 +42,7 @@ CLASS({
         // TODO: Support multi part keys
         return this.model.getProperty(this.model.ids[0]);
       },
-      javaFactory: 'return this.model.getProperty(this.model.ids[0]);'
+      javaFactory: 'return getModel().getID();'
     },
     {
       name: 'future',
@@ -70,7 +70,7 @@ CLASS({
         this.obj.removeListener(this.objChanged);
         this.dao.unlisten(this);
       },
-      javaCode: 'this.obj.removeListener(this.objChanged);\nthis.dao.unlisten(this);\n'
+      javaCode: 'getObj().removeListener(this.objChanged);\getDao().unlisten(this);\n'
     },
     {
       name: 'attach',
@@ -78,7 +78,7 @@ CLASS({
         this.obj.addListener(this.objChanged);
         this.dao.where(EQ(this.pk, this.obj.id)).listen(this);
       },
-      javaCode: 'this.obj.addListener(this.objChanged);\nthis.dao.where(EQ(this.pk, this.obj.id)).listen(this);\n'
+      javaCode: '\ngetObj().addListener(this.objChanged);\getDao().where(EQ(getPk(), getObj().getId())).listen(this);'
     }
   ],
   listeners: [
@@ -96,12 +96,12 @@ CLASS({
         });
       },
       javaCode: multiline(function() {/*
-        if ( this.feedback )
+        if ( getFeedback() )
           return;
 
-        FObject clone = this.obj.deepClone();
-        FObject result = this.dao.put(this.X, clone);
-        this.obj.copyFrom(result);
+        FObject clone = getObj().deepClone();
+        FObject result = getDao().put(this.X, clone);
+        getObj().copyFrom(result);
       */})
     },
     {
@@ -120,10 +120,10 @@ CLASS({
         });
       },
       javaCode: multiline(function() {/*
-        FObject obj = this.dao.find(this.X, this.id);
-        this.feedback = true;
-        this.obj.copyFrom(obj);
-        this.feedback = false;
+        FObject obj = getDao().find(this.X, getId());
+        setFeedback(true);
+        getObj().copyFrom(obj);
+        setFeedback(false);
       */})
     },
     {
