@@ -501,6 +501,11 @@ GLOBAL.Property = {
       */}
     },
     {
+      name: 'javaFactory',
+      type: 'String',
+      labels: ['java']
+    },
+    {
       name: 'lazyFactory',
       type: 'Function',
       labels: ['javascript'],

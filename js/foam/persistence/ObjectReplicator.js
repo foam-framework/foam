@@ -18,11 +18,19 @@
 CLASS({
   package: 'foam.persistence',
   name: 'ObjectReplicator',
+  implements: ['foam.dao.DAOListener'],
   properties: [
-    'id',
-    'model',
-    'args',
-    'dao',
+    {
+      name: 'id',
+    },
+    {
+      name: 'model',
+      type: 'Model'
+    },
+    {
+      name: 'dao',
+      type: 'DAO'
+    },
     {
       model_: 'BooleanProperty',
       name: 'feedback',
@@ -33,10 +41,12 @@ CLASS({
       lazyFactory: function() {
         // TODO: Support multi part keys
         return this.model.getProperty(this.model.ids[0]);
-      }
+      },
+      javaFactory: 'return this.model.getProperty(this.model.ids[0]);'
     },
     {
       name: 'future',
+      labels: ['javascript'],
       lazyFactory: function() {
         var self = this;
         var fut = afuture();
@@ -50,26 +60,25 @@ CLASS({
           self.attach();
         })
         return fut;
-      }
-    },
-    {
-      name: 'daoListener',
-      factory: function() {
-        return {
-          put: this.onPut,
-          remove: this.onRemove
-        };
-      }
+      },
     }
   ],
   methods: [
-    function destroy() {
-      this.obj.removeListener(this.objChanged);
-      this.dao.unlisten(this.daoListener);
+    {
+      name: 'destroy',
+      code: function() {
+        this.obj.removeListener(this.objChanged);
+        this.dao.unlisten(this);
+      },
+      javaCode: 'this.obj.removeListener(this.objChanged);\nthis.dao.unlisten(this);\n'
     },
-    function attach() {
-      this.obj.addListener(this.objChanged);
-      this.dao.where(EQ(this.pk, this.obj.id)).listen(this.daoListener)
+    {
+      name: 'attach',
+      code: function() {
+        this.obj.addListener(this.objChanged);
+        this.dao.where(EQ(this.pk, this.obj.id)).listen(this);
+      },
+      javaCode: 'this.obj.addListener(this.objChanged);\nthis.dao.where(EQ(this.pk, this.obj.id)).listen(this);\n'
     }
   ],
   listeners: [
@@ -85,10 +94,18 @@ CLASS({
             this.obj.copyFrom(obj2);
           }.bind(this)
         });
-      }
+      },
+      javaCode: multiline(function() {/*
+        if ( this.feedback )
+          return;
+
+        FObject clone = this.obj.deepClone();
+        FObject result = this.dao.put(this.X, clone);
+        this.obj.copyFrom(result);
+      */})
     },
     {
-      name: 'onPut',
+      name: 'put',
       code: function() {
         this.dao.find(this.id, {
           put: function(obj2) {
@@ -101,13 +118,18 @@ CLASS({
             }
           }.bind(this)
         });
-      }
+      },
+      javaCode: multiline(function() {/*
+        FObject obj = this.dao.find(this.X, this.id);
+        this.feedback = true;
+        this.obj.copyFrom(obj);
+        this.feedback = false;
+      */})
     },
     {
-      name: 'onRemove',
-      code: function() {
-        // TODO
-      }
+      name: 'remove',
+      code: function() {},
+      javaCode: ''
     }
   ]
 });

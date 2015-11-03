@@ -945,6 +945,11 @@ if ( i != this.args.length - 1 ) { %>, <% }
 <% } %>*/}
     },
     {
+      model_: 'StringProperty',
+      name: 'javaCode',
+      labels: ['java']
+    },
+    {
       model_: 'TemplateProperty',
       name: 'javaSource',
       labels: ['java'],
@@ -952,7 +957,7 @@ if ( i != this.args.length - 1 ) { %>, <% }
     <%= this.returnType || "void" %> <%= this.name %>(<%
  for ( var i = 0 ; this.args && i < this.args.length ; i++ ) { var arg = this.args[i];
 %><%= arg.javaSource() %><% if ( i < this.args.length-1 ) out(", ");
-%><% } %>) {}\n*/}
+%><% } %>) { <%= this.javaCode %> }\n*/}
     }
   ],
 

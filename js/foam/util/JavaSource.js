@@ -74,7 +74,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
-    extends <%= parentClassName %> {
+    extends <%= parentClassName %> <% if ( this.implements ) { %>
+    implements <%
+for ( var i = 0 ; i < this.implements.length; i++ ) {
+  var impl = this.implements[i]; %><%= impl %><%
+  if ( i != this.implements.length -1  ) { %>, <% }
+}
+} %> {
 <% for ( var key in this.properties ) {
   var prop = this.properties[key];
   if ( prop.labels && prop.labels.indexOf('compiletime') != -1  )
