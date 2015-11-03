@@ -386,12 +386,16 @@ CLASS({
     // Visibility
     //
     function show(opt_shown) {
-      return this.cls('foam-u2-Element-hidden', opt_shown, true);
+      if ( opt_shown ) {
+        this.removeCls('foam-u2-Element-hidden');
+      } else {
+        this.cls('foam-u2-Element-hidden');
+      }
+      return this;
     },
 
     function hide(opt_hidden) {
-      if ( opt_hidden === undefined ) opt_hidden = true;
-      return this.cls('foam-u2-Element-hidden', opt_hidden);
+      return this.show(! (opt_hidden || true));
     },
 
     //
@@ -448,6 +452,16 @@ CLASS({
     },
 
     //
+    // DOM-like
+    //
+    function removeCls(cls) {
+      if ( cls ) {
+        delete this.classes[cls];
+        this.onSetCls(cls, false);
+      }
+    },
+
+    //
     // Fluent Methods
     //
     function setID(id) {
@@ -481,6 +495,37 @@ CLASS({
         this.onSetCls(cls, enabled);
       }
       return this;
+    },
+
+    function cls2(cls) {
+      if ( typeof cls === 'function' ) {
+        var lastValue = null;
+        this.dynamic(cls, function(value) {
+          this.cls2_(lastValue, value);
+          lastValue = value;
+        }.bind(this));
+      } else if ( Value.isInstance(cls) ) {
+        var lastValue = null;
+        var l = function() {
+          var v = cls.get();
+          this.cls2_(lastValue, v);
+          lastValue = v;
+        }.bind(this);
+        cls.addListener(l);
+        l();
+      } else {
+        this.cls2_(null, cls);
+      }
+      return this;
+    },
+
+    function cls2_(oldClass, newClass) {
+      if ( oldClass === newClass ) return;
+      this.removeCls(oldClass);
+      if ( newClass ) {
+        this.classes[newClass] = true;
+        this.onSetCls(newClass, true);
+      }
     },
 
     function dynamicAttr_(key, fn) {
@@ -761,7 +806,7 @@ CLASS({
     // Template Support (internal)
     //
     function a() { return this.add.apply(this, arguments); },
-    function c() { return this.cls.apply(this, arguments); },
+    function c() { return this.cls2.apply(this, arguments); },
     function e() { return this.end(); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
     function i(id) { return this.setID(id); },
