@@ -19,6 +19,11 @@ CLASS({
   name: 'Person',
   package: 'com.google.plus',
 
+  requires: [
+    'com.google.plus.Circle'
+  ],
+
+
   models: [
     {
       name: 'Url',
@@ -41,7 +46,16 @@ CLASS({
       documentation: function() {/* "person" - represents an actual person.
         "page" - represents a page. */},
     },
-    //{ model_: 'StringProperty', name: 'plusId', help: 'Numeric G+ ID'  },
+    //{ model_: 'StringProperty', name: 'plusId', help: 'GAIA/G+ ID'  },
+
+    {
+      model_: 'ArrayProperty',
+      subType: 'com.google.plus.Circle',
+      name: 'circles',
+      help: "All of this Person's circles.",
+      factory: function() { return []; },
+    },
+
 
     { model_: 'StringProperty', name: 'nickname'  },
     { model_: 'StringProperty', name: 'occupation'  },

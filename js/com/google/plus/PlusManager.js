@@ -56,13 +56,14 @@ CLASS({
     {
       name: 'circleDAO',
       factory: function() {
-        return this.EasyDAO.create({
-          model: this.Circle,
-          name: 'circles',
-          daoType: MDAO,
-//          cache: true,
-          guid: true,
-        });
+        return [];
+//         return this.EasyDAO.create({
+//           model: this.Circle,
+//           name: 'circles',
+//           daoType: MDAO,
+// //          cache: true,
+//           guid: true,
+//         });
       },
       view: { factory_: 'foam.ui.md.DAOListView', rowView: 'foam.ui.md.DetailView' },
     },
@@ -73,7 +74,10 @@ CLASS({
         // if person changed, update personDAO and use the result
         if (! equals(old, nu) ) {
           this.personDAO.put(nu, {
-            put: function(p) { this.currentUser = p; }.bind(this),
+            put: function(p) {
+              this.currentUser = p;
+              this.circleDAO = this.circles;
+            }.bind(this),
             //TODO: error case, keep old?
           });
         }
@@ -132,10 +136,8 @@ CLASS({
         c[1].forEach(function(pIdx) {
           nu.people.put(personTestArray[pIdx]);
         });
+        self.currentUser.circles.put(nu);
       });
-
     },
-
-
   ],
 });
