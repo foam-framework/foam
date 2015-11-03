@@ -501,6 +501,10 @@ MODEL({
       <br>
       <b if="true">condition: style 3 true</b>
       <b if="false">condition: style 3 false</b>
+      <br>
+      <b class="important">static class</b>
+      <br>
+      <b class={{function(i) { return i%2 && 'important'; }.on$(X, timer.second$)}}>dynamic class</b>
     </div>
     */},
     function toE2() {/*#U2

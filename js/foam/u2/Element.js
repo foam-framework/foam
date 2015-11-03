@@ -806,7 +806,7 @@ CLASS({
     // Template Support (internal)
     //
     function a() { return this.add.apply(this, arguments); },
-    function c() { return this.cls.apply(this, arguments); },
+    function c() { return this.cls2.apply(this, arguments); },
     function e() { return this.end(); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
     function i(id) { return this.setID(id); },

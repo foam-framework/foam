@@ -140,7 +140,15 @@ CLASS({
         str(seq('"', sym('value'), '"')),
         sym('braces')),
 
-      class: seq1(1, 'class="', repeat(sym('value'), ' '), '"'),
+      class: seq1(1, 'class=', alt(sym('classList'), sym('classValue'))),
+
+        classList: seq1(1, '"', repeat(sym('className'), ' '), '"'),
+
+          className: str(seq(
+            alt(range('a','z'), range('A','Z')),
+            str(repeat(alt(range('a','z'), range('A', 'Z'), '-', range('0', '9')))))),
+
+        classValue: sym('braces'),
 
       style: seq1(2, 'style="', sym('whitespace'), sym('styleMap'), optional(sym('styleDelim')), sym('whitespace'), '"'),
 
@@ -179,7 +187,8 @@ CLASS({
       },
       id: function(id) { this.peek().id = id; },
       as: function(as) { this.peek().as = as; },
-      class: function(cs) { this.peek().classes = this.peek().classes.concat(cs); },
+      classList: function(cs) { for ( var i = 0 ; i < cs.length ; i++ ) this.peek().classes.push('"' + cs[i] + '"'); },
+      classValue: function(c) { this.peek().classes.push(c); },
       style: function(ss) {
         for ( var i = 0 ; i < ss.length ; i++ )
           this.peek().style[ss[i][0]] = ss[i][4];
@@ -248,7 +257,7 @@ CLASS({
             if ( this.id ) out('.i(', this.id, ')');
 
             for ( var i = 0 ; i < this.classes.length ; i++ ) {
-              out('.c("', this.classes[i], '")'); 
+              out('.c(', this.classes[i], ')'); 
             }
             
             this.outputMap(out, 'y', this.style);
