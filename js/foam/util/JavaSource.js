@@ -74,7 +74,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public<%= this.abstract ? ' abstract' : '' %> class <%= className %>
-    extends <%= parentClassName %> <% if ( this.implements ) { %>
+    extends <%= parentClassName %> <% if ( this.implements.length ) { %>
     implements <%
 for ( var i = 0 ; i < this.implements.length; i++ ) {
   var impl = this.implements[i]; %><%= impl %><%
