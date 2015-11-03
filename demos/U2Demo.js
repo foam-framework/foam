@@ -1,5 +1,5 @@
 var timer = foam.util.Timer.create();
-// timer.start();
+ timer.start();
 
 E('b').add('bold', E('br')).write();
 
@@ -9,23 +9,18 @@ E('b').add(
 
 var e = E('font').add('text', E('br'));
 console.log('id: ', e.id);
-
 e.write();
-
 e.attrs({color: 'orange'});
-
 e.style({
   fontWeight: 'bold',
-  fontSize:  '32pt'
+  fontSize:  '24pt'
 });
-
 e.on('click', function() { console.log('clicked'); });
 
 
 var e13 = E('div').add(
-  E('br'),
   'dynamic function * ',
-  function() { return timer.second % 2 ? 'PING' : E().add('PONG').style({color: 'orange'}); },
+  function() { return timer.second % 2 ? 'PING' : E('span').add('PONG').style({color: 'orange'}); },
   ' *    dynamic value: ',
   timer.i$,
   '  ',
@@ -53,17 +48,17 @@ e5.write();
 e5.style({color: 'blue'});
 
 
-var e6 = E('div').add('add class before').cls('important');
+var e6 = E('div').add('add class before').cls2('important');
 e6.write();
 
 var e7 = E('div').add('add class after');
 e7.write();
-e7.cls('important');
+e7.cls2('important');
 
-E('div').add('dynamic class with value').cls('important', function(i) { return i%2; }.on$(X, timer.second$)).write();
-E('div').add('dynamic class with fn').cls('important', function(i) { return timer.second%2; }).write();
+E('div').add('dynamic class with value').cls2(function(i) { return i%2 ? 'important' : null; }.on$(X, timer.second$)).write();
+E('div').add('dynamic class with fn').cls2(function() { return timer.second%2 ? 'important' : null; }).write();
 
-E('div').add('dynamic class with fn (hidden)').style({display:'block'}).cls('hidden', function(i) { return timer.second%3; }).write();
+E('div').add('dynamic class with fn (hidden)').style({display:'block'}).cls2(function(i) { return timer.second%3 && 'hidden'; }).write();
 
 var e8 = E('input');
 e8.write();
@@ -346,14 +341,12 @@ setInterval((function() {
 })(), 5000);
 
 E().add(
-  E('br'),
   ' rw: ', foam.u2.Input.create({mode: 'rw', data: 'value'}),
   ' disabled: ', foam.u2.Input.create({mode: 'disabled', data: 'value'}),
   ' ro: ', foam.u2.Input.create({mode: 'ro', data: 'value'}),
   ' hidden: ', foam.u2.Input.create({mode: 'hidden', data: 'value'})).write();
 
 E().add(
-  E('br'),
   ' rw: ', foam.u2.Checkbox.create({mode: 'rw', data: true}),
   ' disabled: ', foam.u2.Checkbox.create({mode: 'disabled', data: true}),
   ' ro: ', foam.u2.Checkbox.create({mode: 'ro', data: true}),
@@ -392,43 +385,53 @@ E().add(
   foam.u2.DetailView.create({title: 'View',    data: vt, controllerMode: 'view'})
 ).write();
 
-E(null, X.sub({data: timer})).add(
+E().x({data: timer}).add(
   E('br'),
   E('br'),
   foam.u2.DetailView.create({data: timer}),
   E('br'),
-  timer.model_.actions, // Doesn't work without data-binding
-  foam.u2.ActionButton.create({data: timer, action: timer.START}),
-  foam.u2.ActionButton.create({data: timer, action: timer.STEP}),
-  foam.u2.ActionButton.create({data: timer, action: timer.STOP})
+  timer.STEP,
+  ' : ',
+  timer.model_.actions
 ).write();
 
 E('br').write();
 
 foam.u2.ElementParser.create();
 var p = foam.u2.ElementParser.parser__.create();
-console.log(p.parseString('hello'));
+// console.log(p.parseString('hello'));
 console.log(p.parseString('<input readonly>'));
 console.log(p.parseString('<input disabled="disabled">'));
-console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"></input><i>italic</i>(( if ( true ) { ))<b>bold   </b>(( } ))<span>span</span></div>'));
+console.log(p.parseString('<div id="foo" onclick="foo"><input readonly type="color"><i>italic</i>(( if ( true ) { ))<b>bold   </b>(( } ))<span>span</span></div>'));
+
+console.log(p.parseString('<div><b if={{true}}></b></div>'));
 
 console.log(p.parseString(multiline(function(){/*
   <div id="foo" onclick="foo" class="fooClass barClass" style="color:red;padding:5px;">
+      <b if={{true}}>bold*************************</b>
     <!-- A Comment -->
-    <input readonly type="color"></input>
+    <input readonly type="color">
     <i>italic</i>
     {{this.fname}}
     {{this.fname$}}
     (( if ( true ) { ))
       <b>bold</b>
     (( } ))
+      <b if={{true}}>bold</b>
       <b if="true">bold2   </b>
+      <!--
       <b repeat="i in 1 to 10">i: {{i}}</b>
       <i repeat="j in this.dao">j: {{j}}</i>
+      -->
     <span>span</span>
   </div>
 */})));
 
+MODEL({
+  name: 'RedElement',
+  extends: 'foam.u2.Element',
+  methods: [ function init() { this.SUPER(); this.style({color: 'red'}); } ]
+});
 
 MODEL({
   name: 'PersonWithTemplate',
@@ -439,12 +442,15 @@ MODEL({
       code: function() { console.log('Go!'); }
     }
   ],
+  listeners: [
+    { name: 'click', code: function() { console.log('click'); } }
+  ],
   methods: [
     function toEMethod() { return E('b').add(E('br'),'from method'); }
   ],
   templates: [
     function toE() {/*#U2
-    <div foo="bar" x:data={{this}} bar={{'foo'}}
+    <div as="top" id="special" class="c1 c2" x:data={{this}} x:timer={{timer}} foo="bar" bar={{'foo'}} onClick="click"
       style="
         background: #f9f9f9;
         color: gray;
@@ -453,11 +459,10 @@ MODEL({
       ">
       (( if ( true ) { ))
         <h1>Person With Template</h1>
-        <br/>
+        <br>
       (( } ))
       <div><b>First Name: </b>{{this.firstName}}</div>
       <div><b>First Name: </b>{{this.firstName$}}</div>
-      <red>red</red>
       <br/>
 
       <:firstName/>        <!-- A Property           -->
@@ -470,8 +475,36 @@ MODEL({
       {{this.toEMethod()}} <!-- Same result as above -->
       {{this.toE2()}}      <!-- Same result as above -->
 
-      <br/>
+      <br>
+      <b>timer: </b> <timer:SECOND/> <timer:STOP/> <timer:START/> <br/>
+
+      <br>
       {{ E('i').add('italic') }}
+      <br/>
+      <h2>Custom Elements</h2>
+      <red>not red</red>
+      <p as="p">
+        (( p.X.registerE('red', RedElement); ))
+        <red>red</red>
+      </p>
+      <red>not red again</red>
+      <br>
+      (( if ( true ) { ))
+        <b>condition: style 1 true</b>
+      (( } ))
+      (( if ( false ) { ))
+        <b>condition: style 1 false</b>
+      (( } ))
+      <br>
+      <b if={{true}}>condition: style 2 true</b>
+      <b if={{false}}>condition: style 2 false</b>
+      <br>
+      <b if="true">condition: style 3 true</b>
+      <b if="false">condition: style 3 false</b>
+      <br>
+      <b class="important">static class</b>
+      <br>
+      <b class={{function(i) { return i%2 && 'important'; }.on$(X, timer.second$)}}>dynamic class</b>
     </div>
     */},
     function toE2() {/*#U2
@@ -483,4 +516,9 @@ MODEL({
 });
 
 var p = PersonWithTemplate.create({firstName: 'Sebastian', lastName: 'Greer', age: 11});
-p.toE().write();
+var e = p.toE();
+console.log(p.toE.toString());
+e.write();
+
+console.log(p.model_.templates[0].template.toString().length, p.toE.toString().length);
+// 1238 861 -> 811 (tag) -> 790 (div br defaults) -> 742 (remove empty strings "")

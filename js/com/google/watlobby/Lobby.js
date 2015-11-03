@@ -22,6 +22,7 @@ CLASS({
   traits: [ 'com.google.misc.Colors' ],
 
   requires: [
+    'com.google.watlobby.SmallRemote',
     'com.google.watlobby.Remote',
     'com.google.watlobby.TopicApp',
 
@@ -237,6 +238,13 @@ CLASS({
         c.friction = 0.94;
         this.collider.add(c);
       }
+    },
+    function openSmallRemoteUI() {
+      var w = foam.ui.Window.create({window: window.open("", "Remote", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
+      w.document.innerHTML = '';
+      w.document.write('<html><head><title>Wat Lobby Remote</title></head><body></body></html>');
+      var r = this.SmallRemote.create({topics: this.topics}, w.Y);
+      r.write(w.Y);
     },
     function openRemoteUI() {
       var w = foam.ui.Window.create({window: window.open("", "Remote", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});

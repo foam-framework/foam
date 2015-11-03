@@ -405,7 +405,7 @@ CLASS({
               var t = model.templates[j];
               // It's safe to remove leading and trailing whitespace from CSS.
               if ( t.name === 'CSS' ) t.template = t.template.split('\n').map(function(s) { return s.trim(); }).join('\n');
-              t.code = TemplateUtil.compile(t);
+              t.code = TemplateUtil.compile(t, model);
               t.clearProperty('template');
             }
             model.models.forEach(precompile)

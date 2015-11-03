@@ -2,7 +2,6 @@ Add className support
 validate
 configure from property
 async/future view loading
-toE
 benchmark (w. Cells?)
 
 cache id$el based on lifecycle?
@@ -25,5 +24,62 @@ How to handle OnKeyInput and OnKeyTextArea
 ActionBorder
 
 make template output two-pass
+  - then fix tags with missing close tags
 
-<tag x:data={{self}}> to set context variables
+elementForFeature or elementForName needs to come out of the Context.
+Are we going to have leakage?  Does it matter?
+<data:feature/> (default)
+<view:feature/>
+
+same as E()
+
+X.E('view:feature');
+
+X.registerElement()
+
+X.elementMap_;  -> starts with constant collection
+
+<foam.u2.Input prop={{this.FIRST_NAME}}/>
+
+element: true, Property property
+
+Do we need to rename Value?
+
+host: or $CSS shortcut
+
+
+<div class="foo bar">{{.cls('foobar', function() { })}}
+<div class="foo {{foobar: function() { }}}">
+<div class="foo foobar{{function() { }}}">
+
+
+OPTIONAL_CLOSE_TAGS
+<table>
+  <tr>
+    <td>blah
+    <td>blah
+    <td>blah
+  <tr>
+    <td>blah
+      <td>blah
+        <td>blah
+</table>
+
+<div var="foo">         ???
+</div>
+((
+  foo.cls('adf');
+))
+
+
+Special value:    
+  $top - top most element in the template
+  $e - current element
+
+
+TODO:
+  better name for $top?
+  dynamic class syntax
+  if
+  repeat
+  var?

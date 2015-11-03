@@ -23,19 +23,29 @@ CLASS({
     this.parser__ = {
       __proto__: grammar,
 
-      create: function() {
-        return { __proto__: this }.reset();
-      },
+      create: function() { return { __proto__: this }.reset(); },
 
-      out: function(s) { this.output.push.apply(this.output, arguments); },
+      // TODO: don't strip whitespace for <pre>
+      //this.out(".a('", t.replace(/\s+/g, ' '), "')");
 
       reset: function() {
-        this.output = [];
-        this.stack  = [];
+        this.stack  = [ { children: [] } ];
         return this;
       },
 
       peek: function() { return this.stack[this.stack.length-1]; },
+
+      finishTag: function() {
+        var e = this.stack.pop();
+        var p = this.peek();
+        if ( e.ifexpr ) this.addCode('if(' + e.ifexpr + '){');
+        p.children.push(e);
+        if ( e.ifexpr ) this.addCode('}');
+      },
+
+      addCode: function(c) {
+        this.peek().children.push({code: c.trim()});
+      },
 
       START: sym('html'),
 
@@ -45,21 +55,12 @@ CLASS({
       // break the regular alt().
       htmlPart: simpleAlt(
         plus(alt(' ', '\t', '\r', '\n')),
-        sym('cdata'),
         sym('code'),
         sym('child'),
         sym('comment'),
         sym('text'),
         sym('endTag'),
         sym('startTag')),
-
-      tag: seq(
-        sym('startTag'),
-        repeat(seq1(1, sym('matchingHTML'), sym('htmlPart')))),
-
-      matchingHTML: function(ps) {
-        return this.stack.length > 1 ? ps : null;
-      },
 
       code: seq1(1, '((', str(repeat(not('))', anyChar))), '))'),
 
@@ -87,14 +88,16 @@ CLASS({
 
       tagPart: alt(
         sym('id'),
+        sym('as'),
         sym('class'),
         sym('style'),
-        sym('addListener'),
+        sym('on'),
+        sym('if'),
         sym('xattribute'),
         sym('attribute')
       ),
 
-      addListener: seq('on', sym('topic'), '=', sym('listener')),
+      on: seq('on', sym('topic'), '=', sym('listener')),
 
       topic: sym('label'),
 
@@ -105,8 +108,6 @@ CLASS({
       namedListener: seq1(1, '"', sym('label'), '"'),
       codeListener:  seq1(1, '{', sym('label'), '}'),
 
-      cdata: seq1(1, '<![CDATA[', str(repeat(not(']]>', anyChar))), ']]>'),
-
       comment: seq('<!--', repeat0(not('-->', anyChar)), '-->'),
 
       label: str(plus(notChars(' %=/\t\r\n<>\'"{}()'))),
@@ -115,8 +116,22 @@ CLASS({
 
       startTagName: sym('tagName'),
 
+      id: seq1(1, 'id=', sym('valueOrLiteral')),
+
+      as: seq1(1, 'as="', sym('varName'), '"'),
+
+      varName: str(seq(
+        alt(range('a','z'), range('A','Z'), '$', '_'),
+        str(repeat(alt(range('a','z'), range('A', 'Z'), '$', '_', range('0', '9')))))),
+
       text: str(plus(not(alt('<', '{{'), anyChar))),
 
+      if: seq1(1, 'if=', sym('ifExpr')),
+
+        ifExpr: alt(
+          seq1(1, '"', sym('value'), '"'),
+          sym('braces')),
+      
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
       xattribute: seq('x:', sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
@@ -125,9 +140,15 @@ CLASS({
         str(seq('"', sym('value'), '"')),
         sym('braces')),
 
-      id: seq1(1, 'id="', sym('value'), '"'),
+      class: seq1(1, 'class=', alt(sym('classList'), sym('classValue'))),
 
-      class: seq1(1, 'class="', repeat(sym('value'), ' '), '"'),
+        classList: seq1(1, '"', repeat(sym('className'), ' '), '"'),
+
+          className: str(seq(
+            alt(range('a','z'), range('A','Z')),
+            str(repeat(alt(range('a','z'), range('A', 'Z'), '-', range('0', '9')))))),
+
+        classValue: sym('braces'),
 
       style: seq1(2, 'style="', sym('whitespace'), sym('styleMap'), optional(sym('styleDelim')), sym('whitespace'), '"'),
 
@@ -137,7 +158,11 @@ CLASS({
 
       stylePair: seq(sym('value'), sym('whitespace'), ':', sym('whitespace'), sym('styleValue')),
 
-      styleValue: str(plus(alt(
+      styleValue: alt(
+        sym('literalStyleValue'),
+        sym('braces')),
+
+      literalStyleValue: str(plus(alt(
         range('a','z'),
         range('A', 'Z'),
         range('0', '9'),
@@ -152,69 +177,126 @@ CLASS({
       whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
     }.addActions({
       START: function(xs) {
-        var ret = this.output.join('');
+        var output = [];
+        var out = output.push.bind(output);
+        var e = this.peek().children[0];
+        e.as = e.as || '$e';
+        e.output(out, true);
         this.reset();
-        return 'function(){var s=[],e=this.X' + ret + ';return e;}';
+        return 'function(){var s=[];' + output.join('') + ';return ' + e.as + ';}';
       },
-      id: function(id) { this.out(".id('", id, "')"); },
-      class: function(ids) {
-        for ( var i = 0 ; i < ids.length ; i++ )
-          this.out(".c('", ids[i], "')");
-      },
+      id: function(id) { this.peek().id = id; },
+      as: function(as) { this.peek().as = as; },
+      classList: function(cs) { for ( var i = 0 ; i < cs.length ; i++ ) this.peek().classes.push('"' + cs[i] + '"'); },
+      classValue: function(c) { this.peek().classes.push(c); },
       style: function(ss) {
-        this.out(".y({");
-        for ( var i = 0 ; i < ss.length ; i++ ) {
-          if ( i > 0 ) this.out(',');
-          this.out(ss[i][0], ':"', ss[i][4], '"');
+        for ( var i = 0 ; i < ss.length ; i++ )
+          this.peek().style[ss[i][0]] = ss[i][4];
+      },
+      tagName: function(n) { return n; },
+      if: function(v) {
+        var e = this.peek();
+        if ( e.ifexpr ) {
+          console.warn('Warning: Duplicate if expression');
         }
-        this.out("})");
+        e.ifexpr = v;
       },
-      tag: function(xs) {
-        var ret = this.stack[0];
-        this.stack = [ X.foam.u2.Element.create() ];
-        return ret.childNodes[0];
+      attribute: function(xs) { this.peek().attributes[xs[0]] = xs[1]; },
+      xattribute: function(xs) { this.peek().xattributes[xs[1]] = xs[2]; },
+      text: function(t) {
+        if ( ! this.peek() ) return; // TODO: Or add an implicit Element
+        this.peek().children.push('"' + t.trim() + '"');
       },
-      tagName: function(n) { return n.toUpperCase(); },
-      attribute: function(xs) {
-        this.out('.t({', xs[0], ':', xs[1] || 1, '})');
-      },
-      xattribute: function(xs) {
-        this.out(".x('", xs[1], "',", xs[2],')');
-      },
-      // Do we need this?
-      cdata: function(xs) { this.peek() && this.peek().appendChild(xs); },
-      text: function(xs) {
-        // TODO: don't strip whitespace for <pre>
-        this.out(".a('", xs.replace(/\s+/g, ' '), "')");
-      },
-      code: function (c) { this.out(".p(s);", c.trim(), "s[0]"); },
-      child: function (c) { this.out(".a(", c, ")"); },
-      addListener: function(v) { this.out(".on('", v[1], "',", v[3], ')'); },
+      code: function (c) { this.addCode(c); },
+      literalStyleValue: function(v) { return '"' + v + '"'; },
+      child: function (c) { this.peek().children.push(c.trim()); },
+      on: function(v) { this.peek().listeners[v[1]] = v[3]; },
+      topic: function(t) { return t.toLowerCase(); },
       namedListener: function(l) { return 'this.' + l; },
       startTag: function(a) {
-        if ( a[5] /* optional('/') */ || foam.u2.Element.ILLEGAL_CLOSE_TAGS[a[1]] ) {
-          this.stack.pop();
-          this.out('.e()');
-        }
+        if ( a[5] /* optional('/') */ || foam.u2.Element.ILLEGAL_CLOSE_TAGS[a[1]] )
+          this.finishTag();
       },
       startTagName: function(n) {
-        var t = this.stack.length ? '.s' : '.start';
-        if ( n === 'SPAN' )
-          this.out(t, "()");
-        else
-          this.out(t, "('", n, "')");
-        this.stack.push(n);
+        this.stack.push({
+          nodeName:    n,
+          id:          null,
+          classes:     [], // TODO: support for dynamic classes
+          xattributes: {},
+          attributes:  {},
+          style:       {},
+          listeners:   {},
+          children:    [],
+          outputMap: function(out, f, m) {
+            var first = true;
+            for ( var key in m ) {
+              if ( first ) {
+                out('.', f, '({');
+                first = false;
+              } else {
+                out(',');
+              }
+              out(key, ':', m[key]);
+            }
+            if ( ! first ) out('})');
+          },
+          output: function(out, firstE) {
+            var nn = this.nodeName === 'div' ? null : '"' + this.nodeName + '"';
+
+            if ( firstE ) {
+              if ( this.as ) out('var ', this.as, '=');
+              out('this.X.E(', nn, ')');
+            } else {
+              if ( this.children.length || this.as ) {
+                out('.s(', nn, ')');
+                if ( this.as ) out('.p(s);var ', this.as, '=s[0];s[0]');
+              } else {
+                out('.g(', this.nodeName === 'br' ? null : '"' + this.nodeName + '"', ')');
+              }
+            }
+            if ( this.id ) out('.i(', this.id, ')');
+
+            for ( var i = 0 ; i < this.classes.length ; i++ ) {
+              out('.c(', this.classes[i], ')'); 
+            }
+            
+            this.outputMap(out, 'y', this.style);
+            this.outputMap(out, 't', this.attributes);
+            this.outputMap(out, 'x', this.xattributes);
+            this.outputMap(out, 'o', this.listeners);
+
+            var outputting = false;
+            for ( var i = 0 ; i < this.children.length ; i++ ) {
+              var c = this.children[i];
+              if ( c.output ) {
+                if ( outputting ) out(')');
+                c.output(out);
+                outputting = false;
+              } else if ( c.code ) {
+                if ( outputting ) out(')');
+                out('.p(s);', c.code, 's[0]');
+                outputting = false;
+              } else {
+                out(outputting ? ',' : '.a(');
+                out(c);
+                outputting = true;
+              }
+            }
+            if ( outputting ) out(')');
+
+            if ( ! firstE && this.children.length )
+              out('.e()');
+          }
+        });
         return n;
       },
       endTag: function(tag) {
-        var stack = this.stack;
-
-        while ( stack.length > 1 ) {
-          if ( this.peek() === tag ) {
-            stack.pop();
-            this.out('.e()');
+        while ( this.stack.length > 1 ) {
+          if ( this.peek().nodeName === tag ) {
+            this.finishTag();
             return;
           }
+          debugger;
           /*
           var top = stack.pop();
           this.peek().childNodes = this.peek().childNodes.concat(top.childNodes);

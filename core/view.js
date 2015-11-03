@@ -207,11 +207,53 @@ CLASS({
   }
 });
 
+
+// U2 Support
+
+var __element_map__ = {
+  INPUT:    'foam.u2.Input',
+  TEXTAREA: 'foam.u2.TextArea',
+  SELECT:   'foam.u2.Select'
+};
+
+function elementForName(nodeName) {
+  nodeName = nodeName ? nodeName : 'div' ;
+  var modelName = this.__element_map__[nodeName.toUpperCase()];
+  if ( modelName ) return this.X.lookup(modelName).create(null, this.Y || X);
+
+  var i = nodeName.indexOf(':');
+  if ( i != -1 ) {
+    return this.elementForFeature(nodeName.substring(0, i), nodeName.substring(i+1));
+  }
+
+  return null;
+}
+
+function elementForFeature(objName, featureName) {
+  var x = this.Y || X;
+  if ( objName ) x = X.sub({data: this[objName]});
+  return this[objName || 'data'].model_.getFeature(featureName).toE(x);
+}
+
+function registerE(name, model) {
+  var m = { __proto__: this.__element_map__ };
+  m[name.toUpperCase()] = model;
+  this.set('__element_map__', m);
+  return this;
+}
+
 // Utility function for creating U2 elements in a short format.
 function E(opt_nodeName) {
-  return foam.u2.Element.getPrototype().E.call(this, opt_nodeName);
+  var e = this.elementForName(opt_nodeName);
+
+  if ( ! e ) {
+    e = foam.u2.Element.create(null, X);
+    if ( opt_nodeName ) e.nodeName = opt_nodeName;
+  }
+
+  return e;
 }
 
 function start(opt_nodeName) {
-  return E(opt_nodeName);
+  return this.E(opt_nodeName);
 }

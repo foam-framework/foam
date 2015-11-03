@@ -270,7 +270,8 @@ MODEL({
           return eval('(function() { return ' + this.parseU2(t.template) + '; })()');
         }
         if ( t.template.startsWith('#U2') ) {
-          return eval('(function() { return ' + this.parseU2(t.template.substring(3)) + '; })()');
+          var code = '(function() { return ' + this.parseU2(t.template.substring(3)) + '; })()';
+          return eval(code);
         }
       }
       // Parse result: [isSimple, maybeCode]: [true, null] or [false, codeString].
