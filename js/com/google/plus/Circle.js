@@ -19,19 +19,9 @@ CLASS({
   name: 'Circle',
   package: 'com.google.plus',
 
-  requires: [
-    'com.google.plus.Person'
-  ],
-
   properties: [
     { model_: 'Property', name: 'id', help: 'The FOAM ID, globally unique.' },
-    //{ model_: 'StringProperty', name: 'plusId', help: 'Numeric G+ ID' },
-
-    { model_: 'ReferenceProperty',
-      name: 'owner',
-      subType: 'com.google.plus.Person',
-      // defaults to ID, which is the person's GUID
-    },
+    //{ model_: 'StringProperty', name: 'plusId', help: 'GAIA/G+ ID' },
 
     { model_: 'StringProperty', name: 'displayName' },
     { model_: 'StringProperty', name: 'description' },
