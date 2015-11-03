@@ -45,6 +45,7 @@ CLASS({
       .md-text-field-label { color: #999; }
       .radioLabel, .toggle-text-indicator { font-size: 16px !important; }
       .toggle-label { color: #333; font-size: 17px; }
+      .md-detail-view { overflow-y: auto; }
     */}
   ],
 
@@ -61,8 +62,8 @@ CLASS({
             factory_: 'foam.ui.md.DAOListView',
             rowView: 'com.google.watlobby.TopicCitationView',
             minWidth: 450,
-            preferredWidth: 600,
-            maxWidth: 600
+            preferredWidth: 550,
+            maxWidth: 550
           },
           cannedQueryDAO: [
             this.CannedQuery.create({
