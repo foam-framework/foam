@@ -43,6 +43,7 @@ CLASS({
 
   properties: [
     { name: 'timer' },
+    { name: 'clientMode', defaultValue: false },
     { name: 'n',          defaultValue: 25 },
     { name: 'slideshowDelay', model_: 'IntProperty' },
     { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
@@ -86,6 +87,13 @@ CLASS({
     {
       name: 'topics',
       factory: function() {
+        if ( this.clientMode ) {
+	  return this.EasyClientDAO.create({
+	    serverUri: this.document.location.origin + '/api',
+	    model: this.Topic
+	  });
+        }
+
         var dao = [].dao;
 
         axhr('topics.json')(function(topics) {
