@@ -24,9 +24,11 @@ CLASS({
     'com.google.plus.Circle',
     'foam.dao.EasyDAO',
     'com.google.plus.ui.PersonCitationView',
+    'com.google.plus.ui.CircleCitationView',
     'foam.ui.md.DAOListView',
     'foam.ui.md.DetailView',
     'foam.ui.ArrayView',
+    'foam.dao.ProxyDAO',
   ],
 
   exports: [
@@ -56,16 +58,9 @@ CLASS({
     {
       name: 'circleDAO',
       factory: function() {
-        return [];
-//         return this.EasyDAO.create({
-//           model: this.Circle,
-//           name: 'circles',
-//           daoType: MDAO,
-// //          cache: true,
-//           guid: true,
-//         });
+        return this.ProxyDAO.create({ delegate: [].dao });
       },
-      view: { factory_: 'foam.ui.md.DAOListView', rowView: 'foam.ui.md.DetailView' },
+      view: { factory_: 'foam.ui.md.DAOListView', rowView: 'com.google.plus.ui.CircleCitationView' },
     },
     {
       type: 'com.google.plus.Person',
@@ -76,7 +71,7 @@ CLASS({
           this.personDAO.put(nu, {
             put: function(p) {
               this.currentUser = p;
-              this.circleDAO = this.circles;
+              this.circleDAO.delegate = this.currentUser.circles;
             }.bind(this),
             //TODO: error case, keep old?
           });
@@ -130,7 +125,8 @@ CLASS({
         ['neigbors', [4,5,6,7]],
       ].forEach(function(c) {
         var nu = self.Circle.create({
-          owner: self.currentUser.id,
+          //owner: self.currentUser.id,
+          id: c[0],
           displayName: c[0],
         });
         c[1].forEach(function(pIdx) {

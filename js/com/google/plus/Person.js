@@ -55,6 +55,15 @@ CLASS({
       help: "All of this Person's circles.",
       factory: function() { return []; },
     },
+    {
+      model_: 'ReferenceArrayProperty',
+      subType: 'com.google.plus.Person',
+      name: 'contacts',
+      factory: function() { return []; },
+      // TODO: make this a circle? give Circle an 'authorized' flag? Could also
+      // use for 'blocked' circle. Only authorized circles would allow content
+      // through.
+    },
 
 
     { model_: 'StringProperty', name: 'nickname'  },

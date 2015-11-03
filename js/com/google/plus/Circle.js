@@ -21,12 +21,12 @@ CLASS({
 
   properties: [
     { model_: 'Property', name: 'id', help: 'The FOAM ID, globally unique.' },
-    //{ model_: 'StringProperty', name: 'plusId', help: 'GAIA/G+ ID' },
 
     { model_: 'StringProperty', name: 'displayName' },
     { model_: 'StringProperty', name: 'description' },
 
-    { model_: 'ReferenceArrayProperty',
+    {
+      model_: 'ReferenceArrayProperty',
       subType: 'com.google.plus.Person',
       name: 'people',
       // defaults to ID, which is the person's GUID
