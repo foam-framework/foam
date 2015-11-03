@@ -192,6 +192,10 @@ CLASS({
       return -1;
     },
     function putTopic(t) {
+      if ( t.model === 'Background' ) {
+        document.body.style.backgroundImage = 'url(' + t.image + ')';
+        return;
+      }
 //      console.log('***** putTopic: ', t.topic);
       var i = this.findTopic(t);
       if ( i != -1 ) {
@@ -262,7 +266,7 @@ CLASS({
       r.write(w.Y);
     },
     function openAdminUI() {
-      var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1100, height=700, location=no, menubar=no")});
+      var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1200, height=700, location=no, menubar=no")});
       w.document.innerHTML = '';
       w.document.write('<html><head><title>Wat Lobby Admin</title><base href="/js/com/google/watlobby/"></head><body></body></html>');
       var r = this.TopicApp.create({dao: this.topics}, w.Y);

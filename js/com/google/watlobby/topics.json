@@ -116,5 +116,10 @@
     "model": "Album",
     "color": "YELLOW",
     "roundImage": true
+  },
+  {
+    "topic": "bg",
+    "image": "img/googlewat.png",
+    "model": "Background"
   }
 ]
