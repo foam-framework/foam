@@ -27,12 +27,16 @@ CLASS({
       }
     },
     {
-      name:  'name',
-      label: 'File Name',
       model_: 'StringProperty',
+      name:  'filename',
+      label: 'File Name',
       defaultValueFn: function() {
-        return this.model.plural + '.json';
+        return this.name + '.json';
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'writing'
     }
   ],
 
@@ -40,8 +44,8 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      if ( this.fs.existsSync(this.name) ) {
-        var content = this.fs.readFileSync(this.name, { encoding: 'utf-8' });
+      if ( this.fs.existsSync(this.filename) ) {
+        var content = this.fs.readFileSync(this.filename, { encoding: 'utf-8' });
         JSONUtil.parse(this.X, content).select(this);
       }
 
@@ -63,8 +67,18 @@ CLASS({
       name: 'updated',
       isMerged: 100,
       code: function() {
+        if ( this.writing ) {
+          this.updated();
+          return;
+        }
+
         this.select()(function(a) {
-          this.fs.writeFileSync(this.name, JSONUtil.where(NOT_TRANSIENT).stringify(a), { encoding: 'utf-8' });
+          this.writing = true;
+          this.fs.writeFile(
+            this.filename,
+            JSONUtil.where(NOT_TRANSIENT).stringify(a),
+            { encoding: 'utf-8' },
+            function() { this.writing = false; }.bind(this));
         }.bind(this));
       }
     }
