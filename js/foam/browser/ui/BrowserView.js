@@ -81,6 +81,7 @@ CLASS({
                 put: function(obj) {
                   this.stack.pushView(this.data.detailView({
                     data: obj,
+                    controllerMode: 'update',
                     innerView: this.data.innerDetailView
                   }, this.Y.sub({ dao: this.data.dao })));
                 }.bind(this),

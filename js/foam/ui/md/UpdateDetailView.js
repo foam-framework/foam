@@ -29,7 +29,8 @@ CLASS({
 
   imports: [
     'dao',
-    'stack'
+    'stack',
+    'controllerMode'
   ],
   exports: [
     'toolbar as mdToolbar'
@@ -177,7 +178,11 @@ CLASS({
           this.ToolbarAction.create({
             data: this,
             action: this.model_.getAction('save')
-          }, this.Y)
+          }),
+          this.ToolbarAction.create({
+            data: this,
+            action: this.model_.getAction('delete')
+          })
         ];
       },
       postSet: function(old, nu) {
@@ -197,7 +202,9 @@ CLASS({
       order: 0.0,
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPUlEQVQ4y2NgGLbgf8P/BtKU////+78WacpDSFMeSlPlYaQo/0OacjyAcg1wJ4WTGmHDS4sWaVrqhm/mBQAoLpX9t+4i2wAAAABJRU5ErkJggg==',
       ligature: 'arrow_back',
-      isAvailable: function() { return this.liveEdit || ! this.outstandingChanges; },
+      isAvailable: function() {
+        return this.liveEdit || ! this.outstandingChanges;
+      },
       code: function() { this.stack.popView(); }
     },
     {
@@ -210,6 +217,25 @@ CLASS({
       isAvailable: function() { return  ! this.liveEdit && this.outstandingChanges; },
       code: function() {
         this.commit_();
+      }
+    },
+    {
+      name: 'delete',
+      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAOklEQVQ4y2NgGPzgv8L/B/9h4MF/BXxK8QDqaCDH/aSaP6phVAMuDa+wqn+BW4P//5eYyv/7DvI8DwBDJ5LB6mdU8gAAAABJRU5ErkJggg==',
+      priority: 0,
+      order: 0,
+      isAvailable: function() {
+        return this.controllerMode && this.controllerMode == 'update';
+      },
+      code: function() {
+        this.dao.remove(this.data, {
+          remove: function() {
+            this.stack.popView();
+          }.bind(this),
+          error: function() {
+            // TODO:
+          }
+        });
       }
     },
     {
