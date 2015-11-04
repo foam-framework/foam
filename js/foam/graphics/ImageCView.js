@@ -48,6 +48,7 @@ CLASS({
 
       this.SUPER();
     },
+
     paintSelf: function() {
       this.canvas.drawImage(this.image_, 0, 0);
     }
