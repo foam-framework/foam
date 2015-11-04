@@ -81,20 +81,16 @@ CLASS({
     {
       name: "removeAll",
       code: function (sink, options) {
-        // If sink.remove is not defined, we can skip the expensive returning of data.
-        // If we need results back, the server returns an array of removed values.
-        var hasSink = !!(sink && sink.remove);
         var future = afuture();
+        var self = this;
+
         this.asend(function(response) {
-          if (hasSink && response) {
-            if (sink.remove) response.forEach(sink.remove);
-          }
-          sink && sink.eof && sink.eof();
+          // TODO: handle error
           future.set();
         }, {
           subject: self.subject,
           method: 'removeAll',
-          params: [hasSink, options]
+          params: [null, options]
         });
         return future;
       }
