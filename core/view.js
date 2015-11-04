@@ -244,7 +244,7 @@ function registerE(name, model) {
 
 // Utility function for creating U2 elements in a short format.
 function E(opt_nodeName) {
-  var e = this.elementForName(opt_nodeName);
+  var e = this.elementForName && this.elementForName(opt_nodeName);
 
   if ( ! e ) {
     e = foam.u2.Element.create(null, X);
