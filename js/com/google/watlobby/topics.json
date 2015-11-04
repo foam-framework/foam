@@ -8,12 +8,14 @@
   },
   {
     "topic": "flip",
+    "parent": "chrome",
     "image": "img/flip.png",
     "priority": 1,
     "color": "RED"
   },
   {
     "topic": "pixel",
+    "parent": "chrome",
     "image": "img/pixel.png",
     "priority": 1,
     "color": "RED"
@@ -27,6 +29,7 @@
   },
   {
     "topic": "appbuilder",
+    "parent": "foam",
     "image": "img/appbuilder.png",
     "priority": 1,
     "model": "Video",
@@ -42,6 +45,7 @@
   },
   {
     "topic": "onhubvideo",
+    "parent": "onhub",
     "image": "img/onhublogo.png",
     "priority": 3,
     "color": "BLUE",
@@ -65,6 +69,7 @@
   },
   {
     "topic": "calc",
+    "parent": "foam",
     "image": "img/calculator.png",
     "priority": 1,
     "color": "GREEN"

@@ -43,6 +43,9 @@ CLASS({
       defaultValue: true
     },
     {
+      name: 'parent'
+    },
+    {
       name: 'priority',
       defaultValue: 3,
       view: {

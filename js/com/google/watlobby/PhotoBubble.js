@@ -54,7 +54,7 @@ CLASS({
             self.x = w/2;
             self.y = h/2;
             self.zoom = 1;
-        }/*, Movement.easey*/ ]
+        }, Movement.easey ]
       ])();
       } else {
         this.mass = this.oldMass_;
