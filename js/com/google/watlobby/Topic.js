@@ -87,6 +87,7 @@ CLASS({
     },
     {
       name: 'r',
+      defaultValue: 180,
       hidden: true
     },
     {
