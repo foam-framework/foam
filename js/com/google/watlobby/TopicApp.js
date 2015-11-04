@@ -57,7 +57,7 @@ CLASS({
           title: 'WAT Lobby Admin',
           model: this.Topic,
           dao: this.dao,
-          detailView: 'com.google.watlobby.TopicDetailView',
+          innerDetailView: 'com.google.watlobby.TopicDetailView',
           listView: {
             factory_: 'foam.ui.md.DAOListView',
             rowView: 'com.google.watlobby.TopicCitationView',

@@ -18,7 +18,7 @@
 CLASS({
   package: 'com.google.watlobby',
   name: 'TopicDetailView',
-  extends: 'foam.ui.md.UpdateDetailView',
+  extends: 'foam.ui.md.DetailView',
   methods: [
     function initHTML() {
       this.SUPER();
