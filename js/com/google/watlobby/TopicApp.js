@@ -22,6 +22,7 @@ CLASS({
 
   requires: [
     'com.google.watlobby.Topic',
+    'com.google.watlobby.TopicDAO',
     'com.google.watlobby.TopicCitationView',
     'com.google.watlobby.TopicDetailView',
     'foam.browser.BrowserConfig',
@@ -51,6 +52,17 @@ CLASS({
   ],
 
   properties: [
+    {
+      model_: 'BooleanProperty',
+      name: 'clientMode',
+      defaultValue: true
+    },
+    {
+      name: 'dao',
+      lazyFactory: function() {
+        return this.TopicDAO.create({ clientMode: this.clientMode });
+      }
+    },
     {
       name: 'data',
       factory: function() {
