@@ -36,7 +36,8 @@ CLASS({
     },
     {
       model_: 'BooleanProperty',
-      name: 'writing'
+      name: 'writing',
+      defaultValue: false
     }
   ],
 
@@ -65,13 +66,12 @@ CLASS({
   listeners: [
     {
       name: 'updated',
-      isMerged: 100,
+      isMerged: 1000,
       code: function() {
         if ( this.writing ) {
           this.updated();
           return;
         }
-
         this.select()(function(a) {
           this.writing = true;
           this.fs.writeFile(
