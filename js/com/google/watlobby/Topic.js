@@ -103,7 +103,7 @@ CLASS({
       view: {
 ///        factory_: 'foam.ui.md.ChoiceMenuView',
         factory_: 'foam.ui.md.ChoiceRadioView',
-        choices: [ 'Album', 'Background', 'Topic', 'Video' ]
+        choices: [ 'Background', 'Photo', 'Topic', 'Video' ]
       }
     },
     {

@@ -113,7 +113,7 @@
     "topic": "photos",
     "image": "img/photoalbum.png",
     "priority": 3,
-    "model": "Album",
+    "model": "Photo",
     "color": "YELLOW",
     "roundImage": true
   },
