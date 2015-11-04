@@ -43,7 +43,7 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'clientMode', defaultValue: false, model_: 'BooleanProperty', postSet: function() { console.log("client mode", this.clientMode); } },
+    { name: 'clientMode', defaultValue: false, model_: 'BooleanProperty' },
     { name: 'n',          defaultValue: 25 },
     { name: 'slideshowDelay', model_: 'IntProperty' },
     { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
@@ -95,7 +95,6 @@ CLASS({
           guid: true,
           syncWithServer: this.clientMode
         });
-        return dao;
 
         if ( this.clientMode ) return dao;
 
