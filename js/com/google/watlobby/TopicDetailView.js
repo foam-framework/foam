@@ -29,8 +29,10 @@ CLASS({
   listeners: [
     {
       name: 'onModelChange',
-      code: function(_, __, ___, model) {
-        this.videoView.$.style.display = model === 'Video' ? 'block' : 'none'; 
+      isFramed: true,
+      code: function() {
+        var model = this.data.model;
+        this.videoView.$.style.display = model === 'Video' ? 'block' : 'none';
         this.textView.$.style.display  = ( model === 'Video' || model === 'Background' ) ? 'none' : 'block';
       }
     }

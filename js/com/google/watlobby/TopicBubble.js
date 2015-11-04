@@ -64,14 +64,16 @@ CLASS({
 
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
-        this.cancel_ = Movement.animate(1000, function() {
+        this.cancel_ = Movement.compile([
+          [ 800, function() {
           var w = self.lobby.width;
           var h = self.lobby.height;
           self.x = w/2;
           self.y = h/2;
           self.zoom = 1;
-          self.textArea.alpha = 1;
-        }, Movement.easey)();
+        }, Movement.easey ],
+        [ 500, function() { self.textArea.alpha = 1; }, Movement.easeIn(1)]
+      ])();
       } else {
         this.mass = this.oldMass_;
         Movement.compile([

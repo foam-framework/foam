@@ -42,10 +42,11 @@ CLASS({
   templates: [
     function CSS() {/*
       body{ color: #555; }
+      .md-detail-view { overflow-y: auto; }
+      .md-text-field-input { width: 100%; }
       .md-text-field-label { color: #999; }
       .radioLabel, .toggle-text-indicator { font-size: 16px !important; }
       .toggle-label { color: #333; font-size: 17px; }
-      .md-detail-view { overflow-y: auto; }
     */}
   ],
 
@@ -57,7 +58,7 @@ CLASS({
           title: 'WAT Lobby Admin',
           model: this.Topic,
           dao: this.dao,
-          detailView: 'com.google.watlobby.TopicDetailView',
+          innerDetailView: 'com.google.watlobby.TopicDetailView',
           listView: {
             factory_: 'foam.ui.md.DAOListView',
             rowView: 'com.google.watlobby.TopicCitationView',
