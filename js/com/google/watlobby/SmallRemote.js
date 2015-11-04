@@ -25,6 +25,7 @@ CLASS({
     'com.google.watlobby.TopicBubble',
     'com.google.watlobby.AlbumBubble',
     'com.google.watlobby.Topic',
+    'com.google.watlobby.TopicDAO',
     'com.google.watlobby.VideoBubble',
     'foam.demos.physics.PhysicalCircle',
     'foam.graphics.ImageCView'
@@ -41,7 +42,17 @@ CLASS({
     { name: 'width',      factory: function() { return this.window.innerWidth; } },
     { name: 'height',     factory: function() { return this.window.innerHeight } },
     { name: 'background', defaultValue: '#ccf' },
-    { name: 'topics' }
+    {
+      model_: 'BooleanProperty',
+      name: 'clientMode',
+      defaultValue: true
+    },
+    {
+      name: 'topics',
+      lazyFactory: function() {
+        return this.TopicDAO.create({ clientMode: this.clientMode });
+      }
+    }
   ],
 
   listeners: [
