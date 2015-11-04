@@ -126,7 +126,15 @@ CLASS({
     },
     function paintBorder() { },
     function paintChildren() {
+      var c = this.canvas;
+      if ( this.roundImage ) {
+        c.save();
+        c.beginPath();
+        c.arc(0, 0, this.r, 0, 2 * Math.PI, false);
+        c.clip();
+      }
       this.SUPER();
+      if ( this.roundImage ) c.restore();
       foam.graphics.Circle.getPrototype().paintBorder.call(this);
     }
   ]
