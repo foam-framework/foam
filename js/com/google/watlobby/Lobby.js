@@ -174,7 +174,7 @@ CLASS({
     function findTopic(t) {
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var c = this.children[i];
-        if ( c.topic && c.topic.topic === t.topic ) return i;
+        if ( c.topic && c.topic.id === t.id ) return i;
       }
       return -1;
     },
@@ -216,8 +216,15 @@ CLASS({
       this.collider.add(c);
     },
     function removeTopic(t) {
-      console.log('removeTopic ************** ', arguments);
-      // TODO
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        if ( this.children[i].topic &&
+             this.children[i].topic.id == t.id ) {
+          var child = this.children[i];
+          this.removeChild(child);
+          this.collider.remove(child);
+          return;
+        }
+      }
     },
     function addBubbles() {
       var N = this.n;
