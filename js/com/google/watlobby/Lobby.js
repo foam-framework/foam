@@ -25,7 +25,7 @@ CLASS({
     'com.google.watlobby.SmallRemote',
     'com.google.watlobby.Remote',
     'com.google.watlobby.TopicApp',
-
+    'foam.dao.EasyDAO',
     'com.google.watlobby.Bubble',
     'com.google.watlobby.TopicBubble',
     'com.google.watlobby.AlbumBubble',
@@ -86,15 +86,17 @@ CLASS({
     }},
     {
       name: 'topics',
-      factory: function() {
-        if ( this.clientMode ) {
-	  return this.EasyClientDAO.create({
-	    serverUri: this.document.location.origin + '/api',
-	    model: this.Topic
-	  });
-        }
+      lazyFactory: function() {
+	var dao = this.EasyDAO.create({
+          daoType: 'MDAO',
+          model: this.Topic,
+          cloning: true,
+          contextualize: true,
+          guid: true,
+          syncWithServer: this.clientMode
+        });
 
-        var dao = [].dao;
+        if ( this.clientMode ) return dao;
 
         axhr('topics.json')(function(topics) {
           JSONUtil.arrayToObjArray(this.X, topics, this.Topic).select(dao);

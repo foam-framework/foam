@@ -19,9 +19,16 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Topic',
 
-  traits: [ 'com.google.misc.Colors' ],
+  traits: [
+    'foam.core.dao.SyncTrait',
+    'com.google.misc.Colors'
+  ],
 
   properties: [
+    {
+      name: 'id',
+      hidden: true
+    },
     {
       name: 'topic',
       postSet: function(_, t) {
