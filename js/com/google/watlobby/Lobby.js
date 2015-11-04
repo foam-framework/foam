@@ -25,7 +25,7 @@ CLASS({
     'com.google.watlobby.SmallRemote',
     'com.google.watlobby.Remote',
     'com.google.watlobby.TopicApp',
-
+    'foam.dao.EasyDAO',
     'com.google.watlobby.Bubble',
     'com.google.watlobby.TopicBubble',
     'com.google.watlobby.AlbumBubble',
@@ -43,7 +43,7 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'clientMode', defaultValue: false, model_: 'BooleanProperty' },
+    { name: 'clientMode', defaultValue: false, model_: 'BooleanProperty', postSet: function() { console.log("client mode", this.clientMode); } },
     { name: 'n',          defaultValue: 25 },
     { name: 'slideshowDelay', model_: 'IntProperty' },
     { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
@@ -86,15 +86,18 @@ CLASS({
     }},
     {
       name: 'topics',
-      factory: function() {
-        if ( this.clientMode ) {
-	  return this.EasyClientDAO.create({
-	    serverUri: this.document.location.origin + '/api',
-	    model: this.Topic
-	  });
-        }
+      lazyFactory: function() {
+	var dao = this.EasyDAO.create({
+          daoType: 'MDAO',
+          model: this.Topic,
+          cloning: true,
+          contextualize: true,
+          guid: true,
+          syncWithServer: this.clientMode
+        });
+        return dao;
 
-        var dao = [].dao;
+        if ( this.clientMode ) return dao;
 
         axhr('topics.json')(function(topics) {
           JSONUtil.arrayToObjArray(this.X, topics, this.Topic).select(dao);

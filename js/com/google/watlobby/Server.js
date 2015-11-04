@@ -20,6 +20,7 @@ CLASS({
   name: 'Server',
   requires: [
     'foam.dao.EasyDAO',
+    'foam.node.dao.JSONFileDAO',
     'com.google.watlobby.Topic'
   ],
   imports: [
@@ -33,23 +34,31 @@ CLASS({
     {
       name: 'topicDAO',
       factory: function() {
-	var result = this.fs.readFileSync(global.FOAM_BOOT_DIR + '/../js/com/google/watlobby/topics.json');
-
-	if ( ! result ) {
-	  result = [];
-	} else {
-	  result = eval('(' + result + ')');
-	  result = JSONUtil.arrayToObjArray(this.X, result, this.Topic);
-	}
-
 	var dao = foam.dao.EasyDAO.create({
-	  daoType: 'MDAO',
+	  daoType: this.JSONFileDAO.xbind({
+            filename: global.FOAM_BOOT_DIR + '/../js/com/google/watlobby/topics_dao.json'
+          }),
+          //          daoType: 'MDAO',
 	  model: this.Topic,
+	  guid: true,
 	  dedup: true,
-	  seqNo: true,
-	  autoIndex: true
+          autoIndex: true,
+          isServer: true
 	});
-	result.select(dao);
+
+        dao.select(COUNT())(function(c) {
+          if ( c.count !== 0 )
+            return;
+
+	  var result = this.fs.readFileSync(global.FOAM_BOOT_DIR + '/../js/com/google/watlobby/topics.json');
+	  if ( ! result ) {
+	    result = [];
+	  } else {
+	    result = eval('(' + result + ')');
+	    result = JSONUtil.arrayToObjArray(this.X, result, this.Topic);
+	  }
+	  result.select(dao);
+        }.bind(this));
 
         return dao;
       }
