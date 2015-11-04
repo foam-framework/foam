@@ -18,7 +18,7 @@
 CLASS({
   package: 'com.google.watlobby',
   name: 'TopicDetailView',
-  extends: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.UpdateDetailView',
   methods: [
     function initHTML() {
       this.SUPER();
@@ -30,8 +30,8 @@ CLASS({
     {
       name: 'onModelChange',
       code: function(_, __, ___, model) {
-        this.videoView.$.style.display = model === 'Video' ? 'block' : 'none'; 
-        this.textView.$.style.display  = ( model === 'Video' || model === 'Background' ) ? 'none' : 'block';
+        if ( this.videoView ) this.videoView.$.style.display = model === 'Video' ? 'block' : 'none';
+        if ( this.textView  ) this.textView.$.style.display  = ( model === 'Video' || model === 'Background' ) ? 'none' : 'block';
       }
     }
   ]

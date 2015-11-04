@@ -42,10 +42,10 @@ CLASS({
   templates: [
     function CSS() {/*
       body{ color: #555; }
+      .md-detail-view { overflow-y: auto; }
       .md-text-field-label { color: #999; }
       .radioLabel, .toggle-text-indicator { font-size: 16px !important; }
       .toggle-label { color: #333; font-size: 17px; }
-      .md-detail-view { overflow-y: auto; }
     */}
   ],
 
