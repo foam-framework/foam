@@ -562,6 +562,14 @@ CLASS({
       }.bind(this));
     },
 
+    function valueStyle_(key, v) {
+      var l = function(value) {
+        this.style_(key, v.get());
+      }.bind(this);
+      v.addListener(l);
+      l();
+    },
+
     function style_(key, value) {
       this.css[key] = value;
       this.onSetStyle(key, value);
@@ -573,6 +581,8 @@ CLASS({
         var value = map[key];
         if ( typeof value === 'function' )
           this.dynamicStyle_(key, value);
+        else if ( Value.isInstance(value) )
+          this.valueStyle_(key, value);
         else
           this.style_(key, value);
       }

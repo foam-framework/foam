@@ -27,6 +27,19 @@ var e13 = E('div').add(
   function(i) { return i%10; }.on$(X, timer.i$));
 e13.write();
 
+E('div').add(
+  function() {
+    return timer.second % 5 ?
+      'TICK' :
+      E('span').add('TOCK').style({
+        'font-size': function(i) { return i%2 ? '12px' : '24px'; }.on$(X, timer.second$)
+      });
+  }
+).write();
+      E('span').add('TOCK').style({
+        'font-size': function(i) { return i%2 ? '12px' : '24px'; }.on$(X, timer.second$)
+      }).write();
+
 var e2 = E('font').add('on click, before', E('br')).on('click', function() { console.log('clicked, before'); });
 e2.write();
 
