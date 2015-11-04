@@ -6,6 +6,6 @@ ClientController.js contains a Client version which connects to the server suppl
 
 From the top level foam directory, run the server with:
 
-    node --harmony tools/foam.js foam.node.tools.Server agents=foam.demos.olympics.Server
+    node --harmony tools/foam.js foam.node.Server agents=foam.demos.olympics.Server
 
 Then run the client by connecting to [http://localhost:8080/index.html?model=foam.demos.olympics.ClientController](http://localhost:8080/index.html?model=foam.demos.olympics.ClientController)
