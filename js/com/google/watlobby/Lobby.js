@@ -113,6 +113,15 @@ CLASS({
         }
 
         return null;
+      },
+      postSet: function(o, n) {
+        if ( o === n ) return;
+        if ( n && n.setSelected ) {
+          this.topics.where(EQ(this.Topic.PARENT, n.topic.topic)).select({put: this.putTopic.bind(this)});
+        }
+        if ( o ) {
+          this.topics.where(EQ(this.Topic.PARENT, o.topic.topic)).select({put: this.removeTopic.bind(this)});
+        }
       }
     }
   ],
@@ -184,6 +193,7 @@ CLASS({
         document.body.style.backgroundImage = 'url(' + t.image + ')';
         return;
       }
+      if ( t.parent && ! t.priority && ! ( this.selected && this.selected.topic.topic === t.parent ) ) return;
 //      console.log('***** putTopic: ', t.topic);
       var i = this.findTopic(t);
       if ( i != -1 ) {
@@ -210,7 +220,8 @@ CLASS({
       c.roundImage = t.roundImage;
      // if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
-      this.addChild(c);
+      //      this.children.addChild(c);
+      this.children.addChild(c);
       c.mass = r/150;
       c.gravity = 0;
       c.friction = 0.94;
