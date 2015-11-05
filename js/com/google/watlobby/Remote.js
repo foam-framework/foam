@@ -98,8 +98,9 @@ CLASS({
 
       var h = (this.height-26) / 4;
       var i = this.children.length;
-
-      var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
+      var m = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble');
+      if ( ! m ) return;
+      var c = m.create({
         x: Math.floor(i / 4) * h + h/2,
         y: ( i % 4 ) * h + h/2
       }, this.Y);
