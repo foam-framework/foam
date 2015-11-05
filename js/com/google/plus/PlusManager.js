@@ -30,6 +30,7 @@ CLASS({
     'foam.ui.md.DetailView',
     'foam.ui.ArrayView',
     'foam.dao.ProxyDAO',
+    'foam.ui.md.CitationView',
   ],
 
   exports: [
@@ -49,6 +50,13 @@ CLASS({
       name: 'TestStreamItem',
       extends: 'com.google.ow.model.Envelope',
       traits: [ 'com.google.plus.ShareableTrait' ],
+      templates: [
+        function toDetailHTML() {/*
+          <div id="%%id" <%= this.cssClassAttr() %> >
+            $$data{ floatingLabel: false, mode: 'read-only' }
+          </div>
+        */}
+      ]
     }
   ],
 
@@ -94,17 +102,18 @@ CLASS({
       name: 'streamDAO',
       factory: function() {
         return this.EasyDAO.create({
-          model: this.ShareableTrait,
+          model: this.TestStreamItem,
           name: 'streams',
           daoType: MDAO,
           guid: true,
         });
       },
-      view: { factory_: 'foam.ui.md.DAOListView', rowView: 'com.google.plus.ui.PersonCitationView' },
+      view: { factory_: 'foam.ui.md.DAOListView', rowView: 'foam.ui.md.DetailView' },
     },
     {
       model_: 'FunctionProperty',
       name: 'createStreamItem',
+      hidden: true,
       factory: function() {
         return function(source, target, data) {
           return this.TestStreamItem.create({
@@ -127,7 +136,7 @@ CLASS({
       var self = this;
 
       // create a current user
-      this.currentUser = this.Person.create({
+      self.currentUser = self.Person.create({
         givenName: 'John',
         middleName: 'Q.',
         familyName: 'Public',
@@ -170,6 +179,10 @@ CLASS({
         });
         self.currentUser.circles.put(nu);
       });
+
+      self.streamDAO.put(
+        self.createStreamItem(personTestArray[1], self.currentUser, "Data A")
+      );
     },
   ],
 });

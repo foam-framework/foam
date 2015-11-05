@@ -15,11 +15,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      model_: 'StringProperty',
       name: 'id',
     },
     {
-      model_: 'IntProperty',
+      model_: 'StringProperty',
       name: 'sid',
       defaultValue: 0,
     },
