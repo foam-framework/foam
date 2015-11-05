@@ -99,7 +99,7 @@ CLASS({
       if ( this.zoom ) {
         var w = this.lobby.width;
         var h = this.lobby.height;
-        var r = Math.min(w, h)/2.3;
+        var r = Math.min(w, h)/3;
 
         this.r += (r - this.topic.r) * this.zoom;
 

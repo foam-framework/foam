@@ -68,7 +68,7 @@ CLASS({
 
       var w = self.lobby.width;
       var h = self.lobby.height;
-      var maxR = 0.8 * Math.min(w, h)/2;
+      var maxR = Math.min(w, h)/3;
       this.r = this.topic.r * ( 1-this.zoom ) + this.zoom * maxR; 
       var c = this.canvas;
 
