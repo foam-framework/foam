@@ -116,11 +116,25 @@ CLASS({
       },
       postSet: function(o, n) {
         if ( o === n ) return;
-        if ( n && n.setSelected ) {
-          this.topics.where(EQ(this.Topic.PARENT, n.topic.topic)).select({put: this.putTopic.bind(this)});
-        }
         if ( o ) {
-          this.topics.where(EQ(this.Topic.PARENT, o.topic.topic)).select({put: this.removeTopic.bind(this)});
+          this.topics.where(
+            AND(
+              EQ(this.Topic.PARENT, o.topic.topic),
+              EQ(this.Topic.PRIORITY, 0))
+            ).select({put: this.removeTopic.bind(this)});
+//          this.topics.select({put: this.putTopic.bind(this)});
+        }
+        if ( n && n.setSelected ) {
+          this.topics.where(
+            AND(
+              EQ(this.Topic.PARENT, n.topic.topic),
+              EQ(this.Topic.PRIORITY, 0))
+          ).select({put: this.putTopic.bind(this)});
+          this.topics.where(AND(NEQ(this.Topic.PARENT, n.topic.topic), NEQ(this.Topic.TOPIC, n.topic.topic))).select({put: this.removeTopic.bind(this)});
+        } else if ( o ) {
+          this.topics.where(
+            NEQ(this.Topic.TOPIC, o.topic.topic)
+          ).select({put: this.putTopic.bind(this)});
         }
       }
     }

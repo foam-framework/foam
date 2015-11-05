@@ -72,14 +72,14 @@ CLASS({
           self.y = h/2;
           self.zoom = 1;
         }, Movement.easey ],
-        [ 500, function() { self.textArea.alpha = 1; }, Movement.easeIn(1)]
+        [ 10, function() { self.textArea.alpha = 1; }, Movement.easeIn(1)]
       ])();
       } else {
         this.mass = this.oldMass_;
         Movement.compile([
           [
-            [ 200,  function() { self.textArea.alpha = 0; } ],
-            [ 1000, function() { self.zoom = 0; } ]
+            [ 200, function() { self.textArea.alpha = 0; } ],
+            [ 800, function() { self.zoom = 0; } ]
           ],
           // This is needed for the rare case that the tab was hidden until
           // after the timeout and then CView aborts in paint() because width
