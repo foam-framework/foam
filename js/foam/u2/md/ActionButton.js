@@ -194,9 +194,19 @@ CLASS({
       }
 
       $-floating-action-button {
+        background-color: #e51c23;
+        border-radius: 50%;
+        bottom: 10px;
+        box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.33);
+        flex-shrink: 0;
         height: 44px;
+        margin: 0;
+        opacity: 1;
         padding: 10px;
+        position: absolute;
+        right: 20px;
         width: 44px;
+        z-index: 10;
       }
     */}
   ]

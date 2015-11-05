@@ -15,30 +15,36 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.browser.ui',
+  package: 'foam.browser.u2',
   name: 'StackView',
-  extends: 'foam.ui.SimpleView',
+  extends: 'foam.u2.Element',
+
   imports: [
     'setTimeout',
     'window'
   ],
+
   exports: [
     'as stack'
   ],
+
   constants: {
-    VIEW_DESTROYED: [ 'view-destroyed' ],
+    VIEW_DESTROYED: ['view-destroyed']
   },
+
   properties: [
     {
-      model_: 'IntProperty',
       name: 'maxVisibleViews',
+      type: 'Int',
       defaultValue: 2,
       documentation: 'Limits the number of views on screen at a time.',
     },
     {
       name: 'views_',
       documentation: 'Internal array of child views.',
-      factory: function() { return []; }
+      factory: function() {
+        return [];
+      }
     },
     {
       name: 'visibleStart_',
@@ -51,135 +57,120 @@ CLASS({
       defaultValue: 0
     },
     {
-      name: 'className',
-      defaultValue: 'stackview-container'
-    },
-    {
-      model_: 'BooleanProperty',
       name: 'noDecoration',
-      documentation: 'If true, panel edges are not added',
-      defaultValue: false,
+      type: 'Boolean',
+      documentation: 'Set true to hide panel edges.',
+      defaultValue: false
     },
     {
+      model_: 'foam.core.types.StringEnumProperty',
       name: 'transition',
-      documentation: 'The transition when adding or removing a view. Choose from "slide" or "fade"',
+      documentation: 'Transition to use when adding or removing a view.',
       defaultValue: 'slide',
+      choices: ['slide', 'fade']
     },
   ],
 
   methods: [
-    function init(args) {
-      this.SUPER(args);
+    function init() {
+      this.SUPER();
       this.window.addEventListener('resize', this.onResize);
     },
     {
       name: 'pushView',
-      documentation: 'Default pushView that works on the top level. See ' +
-          'pushView_ for details.',
+      documentation: 'Default pushView that works at the top level. See ' +
+          '$$DOC{ref:".pushView_"} for details.',
       code: function(view, hints) {
         this.pushView_(-1, view, hints);
       }
     },
     {
       name: 'popView',
-      documentation: 'Default popView that works on the top level. See ' +
-          'popView_ for details.',
+      documentation: 'Default popView that works at the top level. See ' +
+          '$$DOC{ref:".popView_"} for details.',
       code: function() {
         this.popView_(0);
       }
     },
     {
       name: 'popChildViews',
-      documentation: 'Default popChildViews that works on the top level. See ' +
-          'popView_ for details.',
+      documentation: 'Default popChildViews that works at the top level. See ' +
+          '$$DOC{ref:".popChildViews_"} for details.',
       code: function() {
         this.popView_(1);
       }
     },
-    function elementAnimationAdd_(style) {
-      if ( this.transition == 'slide' ) {
-        style.width = "0px";
-        style.left = this.$.offsetWidth;
-        // not animating width makes a big difference in performance by avoiding layout events
-        style.transition = "left 300ms ease"; // "width 300ms ease, left 300ms ease";
-      } else if ( this.transition == 'fade' ) {
-        style.opacity = 0;
-        style.transition = "opacity 300ms ease";
-        this.X.setTimeout(function() { style.opacity = 1; }, 50);
+    function elementAnimationAdd_(e) {
+      if (this.transition === 'slide') {
+        e.style({
+          width: '0px',
+          left: this.id$el.offsetWidth,
+          transition: 'left 300ms ease'
+        });
+      } else if (this.transition === 'fade') {
+        e.style({
+          opacity: 0,
+          transition: 'opacity 300ms ease'
+        });
+        // TODO(braden): Probably replace this with requestAnimationFrame?
+        this.setTimeout(function() { e.style({ opacity: 1 }); }, 50);
       }
     },
-    function elementAnimationRemove_(style) {
-      if ( this.transition == 'slide' ) {
-        style.left = this.$.offsetWidth;
-      } else if ( this.transition == 'fade' ) {
-        style.opacity = 0;
+    function elementAnimationRemove_(e) {
+      if (this.transition === 'slide') {
+        e.style({ left: this.id$el.offsetWidth });
+      } else if (this.transition === 'fade') {
+        e.style({ opacity: 0 });
       }
     },
     function destroyChildViews_(index) {
-      while(this.views_.length > index) {
+      while (this.views_.length > index) {
         var obj = this.views_.pop();
-        this.publish(this.VIEW_DESTROYED, obj.view);
-        var e = this.X.$(obj.id);
-        e && this.elementAnimationRemove_(e.style);
+        this.publish(this.VIEW_DESTROYED, obj.content);
+        this.elementAnimationRemove_(obj.panel);
         this.resize();
-        this.finishDestroy(obj);
+        this.finishDestroy(obj.panel);
       }
     },
-    function finishDestroy(obj) {
-      // separate method to capture proper obj in closure
-      this.X.setTimeout(function() { // clean up after animation
-        obj.view.destroy();
-        // Destroy the Events.dynamic for the hidden class.
-        obj.hideBinding && obj.hideBinding();
-        var e = this.X.$(obj.id);
-        if ( e ) e.outerHTML = '';
-      }.bind(this), 1000);
+    function finishDestroy(e) {
+      this.setTimeout(function() {
+        // Clean up after the animation.
+        // TODO(braden): Not sure if this is done?
+        //obj.view.remove();
+        e.unload();
+        e.destroy();
+      }, 1000);
     },
-
     function renderChild(index) {
-      var obj = this.views_[index];
-      this.$.insertAdjacentHTML('beforeend', this.childHTML(index, this.views_[index]));
-      this.elementAnimationAdd_(this.X.$(obj.id).style);
-      obj.view.setClass('stackview-hidden', function() { return this.noDecoration; }.bind(this), obj.id + '-edge');
-
-      obj.view.initHTML();
+      var e = this.childE(index);
+      this.views_[index].panel = e;
+      this.add(e);
+      this.elementAnimationAdd_(e);
     },
-    function childHTML(index) {
+    function childE(index) {
       var obj = this.views_[index];
-      var html = '<div id="' + obj.id + '" class="stackview-panel stackview-hidden stackview-no-input">';
-      html += obj.view.toHTML();
-      html += '  <div id="' + obj.id + '-edge" class="stackview-edge"></div>';
-      html += '</div>';
-
-      // This is added as an initializer, and when the inner view is inited,
-      // the dynamic binding is created. We can't create it directly, or it
-      // will throw unsubscribe immediately, since the DOM node is not yet
-      // rendered.
       var self = this;
-      obj.view.addInitializer(function() {
-        obj.hideBinding = self.X.dynamicFn(
-            function() { self.visibleStart_; self.visibleEnd_; },
-            function() {
-              var e = self.X.$(obj.id);
-              if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-              // +1/-1 here to avoid hiding the panels animating out to the right
-              // or being overlapped to the left
-              DOM.setClass(e, 'stackview-hidden',
-                  index < self.visibleStart_-1 || index > self.visibleEnd_+1);
-              DOM.setClass(e, 'stackview-no-input',
-                  index < self.visibleStart_ || index > self.visibleEnd_);
-            }
-        ).destroy;
-      });
+      var e = this.E('div')
+          .cls(this.myCls('panel'))
+          .cls2(function(start, end) {
+            return index < start - 1 || index > end + 1 ? self.myCls('hidden') : '';
+          }.on$(this.X, this.visibleStart_$, this.visibleEnd_$))
+          .cls2(function(start, end) {
+            return index < start || index > end ? self.myCls('no-input') : '';
+          }.on$(this.X, this.visibleStart_$, this.visibleEnd_$));
 
-      return html;
+      e.add(obj.content);
+      e.start('div')
+          .cls(this.myCls('edge'))
+          .cls(this.myCls('hidden'), this.noDecoration$)
+          .end();
+      return e;
     },
     function resize() {
-      if ( ! this.$ ) return;
-      var width = this.$.offsetWidth;
+      var width = this.id$el.offsetWidth;
       var index = this.views_.length - 1;
-      while (index >= 0 && width >= this.views_[index].view.minWidth) {
-        width -= this.views_[index].view.minWidth;
+      while (index >= 0 && width >= this.views_[index].content.minWidth) {
+        width -= this.views_[index].content.minWidth;
         index--;
       }
 
@@ -199,22 +190,22 @@ CLASS({
 
       if (this.visibleStart_ < 0) return;
 
-      width = this.$.offsetWidth;
+      width = this.id$el.offsetWidth;
       var sizes = [];
       for (var i = this.visibleStart_; i <= this.visibleEnd_; i++) {
-        var min = this.views_[i].view.minWidth;
+        var min = this.views_[i].content.minWidth;
         sizes[i] = min; // This leaves blanks for hidden views. Oh well.
         width -= min;
       }
 
       for (i = this.visibleEnd_; width > 0 && i >= this.visibleStart_; i--) {
-        var newSize = Math.min(sizes[i] + width, this.views_[i].view.preferredWidth);
+        var newSize = Math.min(sizes[i] + width, this.views_[i].content.preferredWidth);
         width -= newSize - sizes[i];
         sizes[i] = newSize;
       }
 
       for (i = this.visibleEnd_; width > 0 && i >= this.visibleStart_; i--) {
-        var newSize = Math.min(sizes[i] + width, this.views_[i].view.maxWidth);
+        var newSize = Math.min(sizes[i] + width, this.views_[i].content.maxWidth);
         width -= newSize - sizes[i];
         sizes[i] = newSize;
       }
@@ -226,70 +217,73 @@ CLASS({
       }
 
       var foundTop = false;
-      var pos = this.$.offsetWidth;
+      var pos = this.id$el.offsetWidth;
       for (i = this.visibleEnd_; i >= 0; i--) {
         var size = sizes[i] || 0; // size zero for buried items to the left
         pos -= size; // left edge
-        var s = this.X.$(this.views_[i].id).style;
+        var obj = this.views_[i];
         // ugly code to not animate width on the topmost visible view
         if ( this.transition == 'slide' ) {
           if ( ! foundTop ) {
-            s.transition = "left 300ms ease";
+            obj.panel.style({ transition: "left 300ms ease" });
             foundTop = true;
           } else {
-            s.transition = "left 300ms ease, width 300ms ease";
+            obj.panel.style({ transition: "left 300ms ease, width 300ms ease" });
           }
         }
         if (size > 0) {
-          s.width = size + 'px'; // only set size for non-zero, buried panels will be overlapped
+          // Only set size for non-zero, buried panels will be overlapped.
+          obj.panel.style({ width: size + 'px' });
         }
-        s.zIndex = i; // z ordering ensures overlap
-        s.left = pos + 'px';
-        s.top = "0px";
+        obj.panel.style({
+          'z-index': i, // z ordering ensures overlap
+          left: pos + 'px',
+          top: '0px'
+        });
       }
+    },
+    function initE(opt_e) {
+      opt_e.cls(this.myCls());
+    },
+    function load() {
+      this.SUPER();
+      this.onLoad();
     },
   ],
 
   templates: [
     function CSS() {/*
-      .stackview-container {
+      $ {
         height: 100%;
-        width: 100%;
         overflow-x: hidden;
         position: relative;
+        width: 100%;
       }
-      .stackview-panel {
+      $-panel {
         background-color: #fff;
-        height: 100%;
-        position: absolute;
-        height: 100%;
         display: flex;
         flex-direction: column;
+        height: 100%;
         overflow: hidden;
+        position: absolute;
       }
-
-      .stackview-edge {
+      $-edge {
         background-color: #000;
         height: 100%;
+        opacity: 0.1;
         position: absolute;
         right: 0px;
         top: 0px;
-        opacity: 0.1;
         width: 1px;
         z-index: 100;
       }
 
-      .stackview-hidden {
+      $-hidden {
         display: none;
       }
-
-      .stackview-no-input {
+      $-no-input {
         pointer-events: none;
       }
-    */},
-    function toHTML() {/*
-      <div id="<%= this.id %>" <%= this.cssClassAttr() %>></div>
-      <% this.addInitializer(this.onLoad); %>
     */},
   ],
 
@@ -368,11 +362,10 @@ CLASS({
         view.Y.stack = substack;
 
         this.views_.push({
-          id: this.nextID(),
-          view: view
+          content: view
         });
 
-        if (this.$) this.renderChild(index + 1);
+        this.renderChild(index + 1);
         this.setTimeout(this.onResize, 100);
       }
     },

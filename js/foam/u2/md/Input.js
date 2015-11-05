@@ -28,16 +28,30 @@ CLASS({
     {
       name: 'showLabel',
       attribute: true,
-      defaultValue: true
+      defaultValueFn: function() {
+        return ! this.inline;
+      }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'inline',
+      attribute: true,
+      defaultValue: false
     },
     {
       name: 'label',
       attribute: true
     },
     {
+      name: 'placeholder',
+      attribute: true,
+      documentation: 'Ignored when $$DOC{ref:".showLabel"} is true, but used ' +
+          'as an inline placeholder when it\'s false.',
+    },
+    {
       model_: 'BooleanProperty',
-      name: 'focused'
-    }
+      name: 'focused_'
+    },
   ],
 
   methods: [
@@ -50,8 +64,8 @@ CLASS({
             .cls(this.myCls('label'))
             .cls(this.dynamic(function() {
               return (typeof self.data !== 'undefined' && self.data !== '') ||
-                  self.focused ? self.myCls('label-offset') : '';
-            }, this.data$, this.focused$))
+                  self.focused_ ? self.myCls('label-offset') : '';
+            }, this.data$, this.focused_$))
             .add(this.label$)
             .end();
       } else {
@@ -60,8 +74,10 @@ CLASS({
 
       var input = this.start('input')
           .attrs({ type: 'text' })
-          .on('focus', function() { self.focused = true; })
-          .on('blur', function() { self.focused = false; });
+          .on('focus', function() { self.focused_ = true; })
+          .on('blur', function() { self.focused_ = false; });
+      if (!this.showLabel && this.placeholder)
+        input.attrs({ placeholder: this.placeholder });
       input.data$ = this.data$;
       input.end();
     },
@@ -93,6 +109,9 @@ CLASS({
       $-label-offset {
         font-size: 85%;
         top: 8px;
+      }
+      $-no-label {
+        padding-top: 8px;
       }
       $ input {
         background: transparent;

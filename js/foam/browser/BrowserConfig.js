@@ -140,6 +140,13 @@ CLASS({
         placeholder: 'Search',
         onKeyMode: true,
       },
+      toPropertyE: function(X) {
+        return X.lookup('foam.u2.md.Input').create({
+          data$: X.data$,
+          inline: true,
+          placeholder: 'Search',
+        });
+      }
     },
     {
       model_: 'ViewFactoryProperty',
