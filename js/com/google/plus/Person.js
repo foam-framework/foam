@@ -18,6 +18,7 @@
 CLASS({
   name: 'Person',
   package: 'com.google.plus',
+  plural: 'People',
 
   requires: [
     'com.google.plus.Circle'
