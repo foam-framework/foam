@@ -38,11 +38,11 @@ CLASS({
 
   properties: [
 //    { name: 'scales', factory: function() { return []; } },
-    [ 'sx', 240 },
-    [ 'sy', 240 },
-    [ 'vx', 1 },
-    [ 'vy', 0 },
-    [ 'length', 5 }
+    [ 'sx', 240 ],
+    [ 'sy', 240 ],
+    [ 'vx', 1 ],
+    [ 'vy', 0 ],
+    [ 'length', 5 ]
   ],
   methods: [
     function init() {
@@ -141,8 +141,8 @@ CLASS({
   extends: 'foam.graphics.Circle',
   imports: [ 'game' ],
   properties: [
-    [ 'color', 'yellow' },
-    [ 'r', 12 },
+    [ 'color', 'yellow' ],
+    [ 'r', 12 ],
     'vx',
     'vy'
   ],
