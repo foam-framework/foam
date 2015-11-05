@@ -32,7 +32,7 @@ CLASS({
     'com.google.watlobby.PhotoBubble',
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
-    'foam.demos.ClockView',
+//    'foam.demos.ClockView',
     'foam.demos.physics.PhysicalCircle',
     'foam.graphics.ImageCView',
     'foam.physics.PhysicsEngine as Collider',
@@ -172,6 +172,7 @@ CLASS({
       var foam = this.ImageCView.create({x: 10, y: this.height-60, width: 837/5, height: 269/5, src: 'img/foampowered_red.png'});
       this.addChild(foam);
 
+      /*
       var clock = this.ClockView.create({
         drawTicks: true,
         x: this.width-250,
@@ -180,7 +181,8 @@ CLASS({
         scaleX: 4,
         scaleY: 4});
       this.addChild(clock);
-
+      */
+      
       this.collider.start();
 
       if ( this.slideshowDelay ) {
