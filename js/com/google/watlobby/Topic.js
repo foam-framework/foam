@@ -51,6 +51,7 @@ CLASS({
       view: {
         factory_: 'foam.ui.md.ChoiceRadioView',
         choices: [
+          [ 0, 'Hidden' ],
           [ 1, 'Low' ],
 //          [ 2, '' ],
           [ 3, 'Medium' ],
@@ -59,7 +60,7 @@ CLASS({
         ]
       },
       postSet: function(_, p) {
-        this.r = ([110, 130, 150, 180, 200])[p-1];
+        this.r = ([90, 110, 130, 150, 180, 200])[p-1];
       }
     },
     {
