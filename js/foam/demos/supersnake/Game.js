@@ -238,7 +238,7 @@ CLASS({
     {
       name: 'right',
       keyboardShortcuts: [ 39 /* right arrow */, 'd' ],
-      cod: function() { this.snake.right(); }
+      code: function() { this.snake.right(); }
     },
     {
       name: 'fire',
