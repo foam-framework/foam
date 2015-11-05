@@ -43,7 +43,7 @@ CLASS({
       // lookup the owner
       self.personDAO.find(o.owner, { put: function(owner) {
         var shares = o.shares;
-        shares.flatten(owner); // TODO: this is just-in-case. leave out? must put()
+        shares.flatten(owner); // TODO: this is just-in-case. leave out? must put() modified o back
 
         var people = shares.people;
 
@@ -53,12 +53,22 @@ CLASS({
             // TODO: cache flattened list of ok ids for each target?
             if (self.isInCircles(owner, person)) {
               // TODO: error handling
-              this.streamDAO.put(self.createStreamItem(owner, person, o.data));
+              this.streamDAO.put(self.createStreamItem(owner, person, o.data));//from, to, content
             }
-          }
-        });
+          });
+        }
+      }
+    },
 
-
+    function isInCircles(subject, circleOwner) {
+      var circs = circleOwner.circles;
+      for (var i=0; i<circs.length; ++i) {
+        var people = circs[i].people;
+        for (var j=0; j<people.length; ++j) {
+          if ( people[j].id === subject.id ) return true;
+        }
+      }
+      return false;
     },
   ],
 

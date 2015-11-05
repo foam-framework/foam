@@ -22,6 +22,7 @@ CLASS({
   requires: [
     'com.google.plus.Person',
     'com.google.plus.Circle',
+    'com.google.plus.ShareableTrait',
     'foam.dao.EasyDAO',
     'com.google.plus.ui.PersonCitationView',
     'com.google.plus.ui.CircleCitationView',
@@ -34,12 +35,22 @@ CLASS({
   exports: [
     'personDAO',
     'circleDAO',
+    'streamDAO',
+    'createStreamItem',
   ],
 
   documentation: function() {/* Manages circles setup. Extend into client and
     server versions, where the client only ever sees the currentUser's circles
-    and is untrusted, and the server handles filtering out notifications based on
-    mutual circleship. */},
+    and is untrusted, and the server handles filtering out notifications based
+    on mutual circleship. */},
+
+  models: [
+    {
+      name: 'TestStreamItem',
+      extends: 'com.google.ow.model.Envelope',
+      traits: [ 'com.google.plus.ShareableTrait' ],
+    }
+  ],
 
   properties: [
     {
@@ -78,7 +89,32 @@ CLASS({
         }
       },
       view: 'com.google.plus.ui.PersonDetailView',
-    }
+    },
+    {
+      name: 'streamDAO',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.ShareableTrait,
+          name: 'streams',
+          daoType: MDAO,
+          guid: true,
+        });
+      },
+      view: { factory_: 'foam.ui.md.DAOListView', rowView: 'com.google.plus.ui.PersonCitationView' },
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'createStreamItem',
+      factory: function() {
+        return function(source, target, data) {
+          return this.TestStreamItem.create({
+            owner: target,
+            source: source,
+            data: data,
+          });
+        }.bind(this);
+      },
+    },
   ],
 
 
