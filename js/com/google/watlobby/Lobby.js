@@ -220,8 +220,14 @@ CLASS({
       c.roundImage = t.roundImage;
      // if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
-      //      this.children.addChild(c);
-      this.children.addChild(c);
+      this.addChild(c);
+      if ( this.children.length > 1 ) {
+        var cs = this.children;
+        var l = cs.length;
+        var tmp = cs[l-1];
+        cs[l-1] = cs[l-2];
+        cs[l-2] = tmp;
+      }
       c.mass = r/150;
       c.gravity = 0;
       c.friction = 0.94;
