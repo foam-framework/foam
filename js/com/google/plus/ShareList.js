@@ -24,6 +24,10 @@ CLASS({
     'com.google.plus.Circle',
   ],
 
+  imports: [
+    'personDAO'
+  ],
+
   documentation: function() {/* A list of people and or circles. When
     sharing is locked in, the circles are flattened into a list of
     people. The circle names are retained for UI use. */},
@@ -50,6 +54,47 @@ CLASS({
       name: 'circleNames',
       help: "After flattening, circles will be empty and the names listed here."
     }
+  ],
+
+  methods: [
+    function flatten(opt_owner) {
+      /* Flattens the list of people currently in the shared
+        $$DOC{ref:'com.google.plus.Circle',usePlural:true}. After
+        a $$DOC{ref:'.flatten'}, $$DOC{ref:'.circles'} will be empty,
+        $$DOC{ref:'.circleNames'} will contain the display names of the
+        flattened circles, and all the
+        $$DOC{ref:'com.google.plus.Person',usePlural:true} from those circles
+        will have been added to $$DOC{ref:'.people'}. If you already have
+        the owner Person available, you can pass it in (opt_owner.id must
+        match this.owner). If not, it will be looked up in the personDAO. */
+
+      var self = this;
+
+      // TODO: error case: retain circles that can't be flattened
+      var flatize = function(owner) {
+        var circs = self.circles;
+        self.circles = [];
+        // lookup each circle ID from the owner's circles
+        for (var i=0; i<circs.length; ++i) {
+          owner.circles.find(circs[i], { put: function(c) {
+            // remember name for display purposes
+            self.circleNames.push(c.displayName);
+            // grab all circle member references
+            c.people.select(MAP(this.Person.ID, self.people));
+          }});
+        }
+      }
+
+      if ( opt_owner && opt_owner.id === this.owner ) {
+        // valid owner supplied by caller
+        flatize(opt_owner);
+      } else {
+        // lookup owner reference (TODO: should always be X.currentUser?)
+        self.personDAO && self.personDAO.find(self.owner, {
+          put: flatize
+        });
+      }
+    },
   ],
 
 });

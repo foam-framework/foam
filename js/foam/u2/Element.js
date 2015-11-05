@@ -318,10 +318,14 @@ CLASS({
           t.futureTemplate(function() {
             X.addStyle(this);
           }.bind(this));
-          return;
+          break;
         }
       }
+
+      return this.initE();
     },
+
+    function initE() {},
 
     function E(opt_nodeName) {
       var e = this.X.elementForName(opt_nodeName);
@@ -721,12 +725,12 @@ CLASS({
             buf.push(o);
           } else if ( typeof o === 'number' ) {
             buf.push(o);
+          } else if ( X.foam.u2.Element.isInstance(o) ) {
+            o.output(f);
           } else {
             if ( o && o.toView_ ) o = o.toView_();
             if ( ! ( o === null || o === undefined ) ) {
-              if ( o.output ) {
-                o.output(f);
-              } else if ( o.toHTML ) {
+              if ( o.toHTML ) {
                 buf.push(o.toHTML());
               } else {
                 buf.push(o);
@@ -810,6 +814,9 @@ CLASS({
       this.output_(s);
       return s.toString();
     },
+
+    function toHTML() { return this.outerHTML; },
+    function initHTML() { this.load(); },
 
 
     //
