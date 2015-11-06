@@ -20,10 +20,12 @@ CLASS({
   package: 'com.google.plus',
   plural: 'People',
 
+  traits: [
+    'foam.core.dao.SyncTrait',
+  ],
   requires: [
     'com.google.plus.Circle'
   ],
-
 
   models: [
     {
