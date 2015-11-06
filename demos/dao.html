@@ -12,10 +12,6 @@
 
 <script id='demo' language="xjavascript">
 
-// Import modelled (not "core") mlangs
-X.foam.mlang.LookupExpr.create().exportToContext(X);
-var LOOKUP = X.LOOKUP;
-
 CLASS({
   name: 'Tabla',
   properties: [ 'id', 'a', 'b' ]
@@ -159,10 +155,7 @@ dao.find(EQ(Person.NAME, 'Dave'), console.log.json);
 // Another
 dao.find(GT(Person.AGE, 19), console.log.json);
 
-// Nested property lookup: Using LOOKUP() mlang
-dao.where(EQ(LOOKUP(Person.HOBBY, Hobby.NAME), 'Baseball')).select(console.log.json);
-
-// OrderBy nested fields: Using PROPERTY1.dot(PROPERTY2) continuation
+// Nested property lookup: Using PROPERTY1.dot(PROPERTY2) continuation
 dao.where(EQ(Person.HOBBY.dot(Hobby.PLACE), 'Anywhere')).select(console.log.json);
 
 // Add more data
@@ -193,9 +186,6 @@ dao.orderBy(Person.AGE).select(console.log.json);
 
 // OrderBy multiple fields, including descending
 dao.orderBy(DESC(Person.AGE), Person.NAME).select(console.log.json);
-
-// OrderBy nested fields: Using LOOKUP() mlang
-dao.orderBy(LOOKUP(Person.HOBBY, Hobby.NAME)).select(console.log.json);
 
 // OrderBy nested fields: Using PROPERTY1.dot(PROPERTY2) continuation
 dao.orderBy(Person.HOBBY.dot(Hobby.PLACE)).select(console.log.json);
@@ -466,8 +456,7 @@ dao.select(document);
        arequire('foam.dao.EasyDAO'),
        arequire('foam.dao.IDBDAO'),
        arequire('foam.dao.NullDAO'),
-       arequire('foam.mlang.LookupExpr'),
-       arequire('foam.core.types.PropertySequence')
+       arequire('foam.mlang.PropertySequence')
     )(function() {
     var demo = X.$('demo');
     var out  = X.$('output');
