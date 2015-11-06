@@ -10,16 +10,20 @@
  */
 
 CLASS({
-  package: 'foam.core.types',
+  package: 'foam.mlang',
   name: 'PropertySequence',
   extends: 'Property',
+
+  documentation: function() {/* A linked list-style sequence of
+    $$DOC{ref:'Property',usePlural:true} that models
+    <code>obj.prop1.prop2</code> lookup. Extends $$DOC{ref:'Property'} to look
+    and act like a $$DOC{ref:'Property'}, but is really a <i>pseudo-property</i>
+    for use as an mlang value. */},
 
   properties: [
     {
       name: 'id',
-      getter: function() {
-        return this.name + (this.next_ ? '.' + this.next_.id : '');
-      },
+      getter: function() { this.getFullName('.'); },
     },
     {
       type: 'Property',
@@ -29,6 +33,9 @@ CLASS({
   ],
 
   methods: [
+    function getFullName(sep) {
+      return this.name + (this.next_ ? sep + this.next_.id : '');
+    },
     function partialEval() { return this; },
     function f(obj) {
       var i;
@@ -41,33 +48,8 @@ CLASS({
       if ( ! obj ) return obj;
       return obj[constantize(p.name)].f(obj);
     },
+    function toSQL() { this.getFullName('_'); },
+    function toMQL() { this.getFullName('_'); },
+    function toBQL() { this.getFullName('_'); },
   ],
 });
-
-// Install property-continuation-property when this model is loaded (even if no
-// instances are created yet).
-// TODO(markdittmer): This won't work in packaged apps.
-(function() {
-  // Property Continuation Property Name.
-  var PCP_NAME = 'dot';
-  var Property = this.X.lookup('Property');
-  if ( Property.getProperty(PCP_NAME) ) return;
-
-  var PropertySequence = this.X.lookup('foam.core.types.PropertySequence');
-  // Property Continuation Property.
-  var pcp = Property.create({
-    name: PCP_NAME,
-    labels: ['javascript'],
-    defaultValue: function(nextProp) {
-      if ( PropertySequence.isInstance(this) ) {
-        if ( this.next_ ) this.next_ = this.next_[PCP_NAME](nextProp);
-        else              this.next_ = nextProp;
-        return this;
-      } else {
-        return PropertySequence.xbind({ next_: nextProp }).create(this, this.Y);
-      }
-    },
-  });
-  Property.properties.push(pcp);
-  Property.getPrototype().defineProperty(pcp);
-})();
