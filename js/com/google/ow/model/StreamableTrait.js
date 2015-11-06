@@ -21,7 +21,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'sid',
-      defaultValue: 0,
+      defaultValue: '',
     },
   ],
 });

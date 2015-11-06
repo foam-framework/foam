@@ -14,12 +14,6 @@ CLASS({
   name: 'EnvelopeCitationView',
   extends: 'foam.u2.View',
 
-  requires: [
-    'com.google.ow.ui.ImageView',
-    'foam.ui.KeyView',
-  ],
-  imports: [ 'imageDAO' ],
-
   properties: [ [ 'nodeName', 'ENVELOPE-CITATION' ] ],
 
   methods: [
@@ -28,20 +22,7 @@ CLASS({
       return this.cls('md-card-shell').cls('md-body')
         .start('div').cls('md-subhead').cls('heading').add(d.titleText).end()
         .start('div').cls('content')
-          .add(this.KeyView.create({
-            dao: this.imageDAO,
-            data: d.image,
-            subType: 'com.google.ow.model.Image',
-            subKey: 'ID',
-            innerView: function(args, X) {
-              return this.ImageView.create(args, X || this.Y).style({
-                background: '#000',
-                float: 'left',
-                'margin-right': '10px',
-              });
-            }.bind(this),
-          }, this.Y))
-          .start('div').cls('md-body').add(d.summaryText).end()
+          .add(d.toCitationE())
         .end();
     },
   ],

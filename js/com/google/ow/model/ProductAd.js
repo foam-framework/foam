@@ -16,13 +16,22 @@ CLASS({
 
   requires: [
     'com.google.ow.ui.ShoppingView',
+    'foam.u2.Element',
+    'com.google.ow.ui.ImageView',
+    'foam.ui.KeyView',
+    
   ],
+  
+  exports: [ 'imageDAO' ],
 
   properties: [
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'products',
     },
+    {
+      name: 'imageDAO',
+    }
   ],
 
   methods: [
@@ -30,5 +39,24 @@ CLASS({
     function toDetailE() {
       return this.ShoppingView.create({ data: this }, this.Y);
     },
+    function toCitationE() {
+      return this.Element.create()
+        .start()
+          .add(this.KeyView.create({
+            dao: this.imageDAO,
+            data: this.image,
+            subType: 'com.google.ow.model.Image',
+            subKey: 'ID',
+            innerView: function(args, X) {
+              return this.ImageView.create(args, X || this.Y).style({
+                background: '#000',
+                float: 'left',
+                'margin-right': '10px',
+              });
+            }.bind(this),
+          }, this.Y))
+          .start('div').cls('md-body').add(this.summaryText).end()
+        .end();
+    }
   ],
 });
