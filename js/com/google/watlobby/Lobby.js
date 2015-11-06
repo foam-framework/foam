@@ -116,6 +116,33 @@ CLASS({
       },
       postSet: function(o, n) {
         if ( o === n ) return;
+        if ( ! n ) {
+          this.topics.select({put: this.putTopic});
+          return;
+        }
+        var ts = this.topics;
+        var Topic = this.Topic;
+        var self = this;
+        ts.find(EQ(Topic.PARENT, n.topic.topic), {
+          put: function() {
+            self.topics.where(
+              AND(
+                NEQ(self.Topic.PARENT, n.topic.topic),
+                NEQ(self.Topic.TOPIC, n.topic.topic))
+            ).select({put: self.removeTopic});
+            self.topics.where(
+                EQ(self.Topic.PARENT, n.topic.topic)
+            ).select({put: self.putTopic});
+          },
+          error: function() {
+            // TODO: Only show parent and siblings
+            self.topics.select({put: self.putTopic});
+          }
+        });
+      },
+
+      xxxpostSet: function(o, n) {
+        if ( o === n ) return;
         if ( o ) {
           this.topics.where(
             AND(
@@ -151,7 +178,7 @@ CLASS({
       }
       if ( t.parent && ! t.priority && ! ( this.selected && this.selected.topic.topic === t.parent ) ) return;
 //      console.log('***** putTopic: ', t.topic);
-      var i = this.findTopic(t);
+      var i = this.findTopicIndex(t);
       if ( i != -1 ) {
         if ( t.selected ) {
           this.selected = this.children[i];
@@ -191,7 +218,7 @@ CLASS({
       this.collider.add(c);
     },
     function removeTopic(t) {
-      var i = this.findTopic(t);
+      var i = this.findTopicIndex(t);
       if ( i != -1 ) {
         var child = this.children[i];
         Movement.compile([
@@ -245,7 +272,7 @@ CLASS({
         var i = 0;
         var l = function() {
           var t = this.topics[i++];
-          this.selected = this.children[this.findTopic(t)];
+          this.selected = this.children[this.findTopicIndex(t)];
           if ( i == this.topics.length ) i = 0;
           this.X.setTimeout(l, t.hasOwnProperty('timeout') ? t.timeout*1000 : this.slideshowDelay*1000);
         }.bind(this);
@@ -253,12 +280,18 @@ CLASS({
         l();
       }
     },
-    function findTopic(t) {
+    function findTopicIndex(t) {
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var c = this.children[i];
         if ( c.topic && c.topic.id === t.id ) return i;
       }
       return -1;
+    },
+    function findTopic(t) {
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        var c = this.children[i];
+        if ( c.topic && c.topic.id === t.id ) return c;
+      }
     },
     function addBubbles() {
       var N = this.n;
