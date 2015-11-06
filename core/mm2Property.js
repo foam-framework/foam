@@ -872,6 +872,20 @@ GLOBAL.Property = {
     function exprClone() {
       return this;
     },
+    function dot(nextProp) {
+      var PropertySequence = this.X.lookup('foam.mlang.PropertySequence');
+      if ( ! PropertySequence ) {
+        console.warn('Missing foam.mlang.PropertySequence for Property.dot()');
+        return this;
+      }
+      if ( PropertySequence.isInstance(this) ) {
+        if ( this.next_ ) this.next_ = this.next_.dot(nextProp);
+        else              this.next_ = nextProp;
+        return this;
+      } else {
+        return PropertySequence.xbind({ next_: nextProp }).create(this, this.Y);
+      }
+    },
     function initPropertyAgents(proto, fastInit) {
       var prop   = this;
       var name   = prop.name;
