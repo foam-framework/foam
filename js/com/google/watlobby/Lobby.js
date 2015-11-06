@@ -253,8 +253,13 @@ CLASS({
       var i = this.findTopic(t);
       if ( i != -1 ) {
         var child = this.children[i];
-        this.removeChild(child);
-        this.collider.remove(child);
+        Movement.compile([
+          [ 1800, function() { child.alpha = 0; } ],
+          function() {
+            this.removeChild(child);
+            this.collider.remove(child);
+          }.bind(this)
+        ])();
       }
     },
     function addBubbles() {
