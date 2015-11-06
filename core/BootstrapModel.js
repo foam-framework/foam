@@ -104,6 +104,23 @@ var BootstrapModel = {
     return ret;
   },
 
+  createMethod_: function(X, name, fn) {
+    var method = Method.create({
+      name: name,
+      code: fn
+    });
+    
+    if ( FEATURE_ENABLED(['debug']) && Arg ) {
+      var str = fn.toString();
+      var match = str.match(/^function[ _$\w]*\(([ ,\w]+)/);
+      if ( match )
+        method.args = match[1].split(',').
+        map(function(name) { return Arg.create({name: name.trim()}); });
+    }
+    
+    return method;
+  },
+
   buildProtoImports_: function(props) {
     // build imports as psedo-properties
     Object_forEach(this.instance_.imports_, function(i) {
