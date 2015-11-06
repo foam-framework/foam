@@ -97,6 +97,7 @@
   },
   {
     "topic": "foam",
+    "parent": "chrome",
     "image": "img/foam_whiteontransparent.png",
     "priority": 3,
     "color": "red",
