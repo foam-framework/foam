@@ -21,15 +21,13 @@ CLASS({
 
   requires: [
     'com.google.plus.Person',
-    'com.google.plus.ShareSink'
+    'com.google.plus.ShareSink',
     'foam.dao.EasyDAO',
     'com.google.ow.model.Envelope',
   ],
-  
   imports: [
     'exportDAO',
-  ]
-
+  ],
   exports: [
     'personDAO',
     'streamDAO',
@@ -98,6 +96,6 @@ CLASS({
       this.SUPER();
       this.exportDAO(this.streamDAO);
       this.exportDAO(this.personDAO);
-    }
+    },
   ]
 });

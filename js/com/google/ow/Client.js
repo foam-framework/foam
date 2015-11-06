@@ -26,6 +26,8 @@ CLASS({
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.ProductAd',
     'com.google.ow.ui.EnvelopeCitationView',
+    'com.google.plus.Person',
+    'com.google.plus.Circle',
     'foam.browser.BrowserConfig',
     'foam.browser.ui.DAOController',
     'foam.dao.EasyDAO',
@@ -34,6 +36,7 @@ CLASS({
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
     'foam.ui.DAOListView',
+    'foam.ui.md.DAOListView',
     'foam.ui.TextFieldView',
     'foam.ui.Tooltip',
     'foam.ui.md.CannedQueryCitationView',
@@ -111,7 +114,7 @@ CLASS({
       lazyFactory: function() {
         var sX = GLOBAL.sub({
           exportDAO: function(dao) {
-            console.log("Exporting fake server dao", dao.name);
+            console.log("Fake-exporting fake server dao", dao.name);
           }.bind(this)
         });
         
@@ -127,6 +130,54 @@ CLASS({
       this.SUPER();
       // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
       // this.SharedStyles.create(null, this.Y);
+      
+      this._populate_test_data_();
+    },
+    function _populate_test_data_() {
+      var self = this;
+
+      // create test user pool
+      var personTestArray = [];
+      [
+        ['Henry', 'Joe', 'Carvil'],
+        ['Sammy', 'Davis', 'Junior'],
+        ['Herbert', '', 'Hoover'],
+        ['Jerry', '', 'Seinfeld'],
+        ['Samwise', '', 'Gamgee'],
+        ['Norman', 'J', 'Bates'],
+        ['Doctor', '', 'Who'],
+        ['Charleton', '', 'Heston'],
+      ].forEach(function(name) {
+        self.personDAO.put(self.Person.create({
+          givenName: name[0],
+          middleName: name[1],
+          familyName: name[2],
+        }), {
+          put: function(p) { personTestArray.put(p); }
+        });
+      });
+      self.currentUser = personTestArray[0];
+
+      // create some circles for currentUser
+      [
+        ['family', [0,1,2]],
+        ['friends', [3,4]],
+        ['neigbors', [4,5,6,7]],
+      ].forEach(function(c) {
+        var nu = self.Circle.create({
+          //owner: self.currentUser.id,
+          id: c[0],
+          displayName: c[0],
+        });
+        c[1].forEach(function(pIdx) {
+          nu.people.put(personTestArray[pIdx]);
+        });
+        self.currentUser.circles.put(nu);
+      });
+
+      self.streamDAO.put(
+        self.Envelope.create({ source: personTestArray[1], owner: self.currentUser, data: "Data A" })
+      );
     },
   ],
 });

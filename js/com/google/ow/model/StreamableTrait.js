@@ -11,21 +11,17 @@
 
 CLASS({
   package: 'com.google.ow.model',
-  name: 'Envelope',
-  extends: 'com.google.ow.model.StreamableTrait',
-  traits: [
-    'foam.core.dao.SyncTrait',
-    'com.google.plus.ShareableTrait',
-  ],
+  name: 'StreamableTrait',
 
-  //TODO: hack to get Envelope.SID to show up
   properties: [
-    'id',
-    'sid',
-    'shares',
-    'owner',
-    'source',
-    'data',
+    {
+      model_: 'StringProperty',
+      name: 'id',
+    },
+    {
+      model_: 'StringProperty',
+      name: 'sid',
+      defaultValue: 0,
+    },
   ],
-
 });
