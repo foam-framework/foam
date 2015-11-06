@@ -169,7 +169,7 @@ CLASS({
 
       document.body.addEventListener('click', this.onClick);
 
-      var foam = this.ImageCView.create({x: 10, y: this.height-60, width: 837/5, height: 269/5, src: 'img/foampowered_red.png'});
+      var foam = this.ImageCView.create({x: 5, y: this.height-5-269/4, width: 837/4, height: 269/4, src: 'img/foampowered_red.png'});
       this.addChild(foam);
 
       /*
