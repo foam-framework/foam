@@ -18,6 +18,7 @@
 CLASS({
   name: 'ShareSink',
   package: 'com.google.plus',
+  extends: 'foam.dao.ProxyDAO',
 
   requires: [
     'com.google.plus.Person',
@@ -37,27 +38,45 @@ CLASS({
     object is cloned to the receiver. */},
 
   methods: [
-    function put(o) {
+    function put(o, sink) {
       var self = this;
-
-      // lookup the owner
-      self.personDAO.find(o.owner, { put: function(owner) {
-        var shares = o.shares;
-        shares.flatten(owner); // TODO: this is just-in-case. leave out? must put() modified o back
-
-        var people = shares.people;
-
-        self.personDAO.where(IN(self.Person.ID, people)).select({
-          put: function(person) {
-            // for each share target, check if they have owner in any circle
-            // TODO: cache flattened list of ok ids for each target?
-            if (self.isInCircles(owner, person)) {
-              // TODO: error handling
-              this.streamDAO.put(self.createStreamItem(owner, person, o.data));//from, to, content
-            }
-          });
+      
+      // run the sharing check after the put() succeeds
+      self.delegate.put(o, {
+        put: function(o) {
+          self.checkShare(o);
+          sink && sink.put(o);
         }
+      })
+    },
+
+    function checkShare(o) {
+      var self = this;
+      if ( o.shares.shareComplete ) {
+        return;
       }
+      // lookup the owner
+      self.personDAO.find(o.owner, { 
+        put: function(owner) {
+          var shares = o.shares;
+          shares.flatten(owner); // TODO: this is just-in-case. leave out? must put() modified o back
+          var people = shares.people;
+          shares.shareComplete = true;
+          self.delegate.put(o);
+
+          self.personDAO.where(IN(self.Person.ID, people)).select({
+            put: function(person) {
+              // for each share target, check if they have owner in any circle
+              // TODO: cache flattened list of ok ids for each target?
+              if (self.isInCircles(owner, person)) {
+                // TODO: error handling
+                self.streamDAO.put(self.createStreamItem(owner, person, o.data));//from, to, content
+              }
+            }
+          }); 
+        },
+      });  
+      
     },
 
     function isInCircles(subject, circleOwner) {
@@ -70,10 +89,6 @@ CLASS({
       }
       return false;
     },
-  ],
-
-  properties: [
-
   ],
 
 });

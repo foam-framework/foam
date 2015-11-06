@@ -53,6 +53,11 @@ CLASS({
       model_: 'StringArrayProperty',
       name: 'circleNames',
       help: "After flattening, circles will be empty and the names listed here."
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'shareComplete',
+      defaultValue: false,
     }
   ],
 
