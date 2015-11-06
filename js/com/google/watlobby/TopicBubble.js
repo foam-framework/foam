@@ -80,7 +80,7 @@ CLASS({
         Movement.compile([
           [
             [ 10, function() { self.textArea.alpha = 0; } ],
-            [ 400, function() { self.img.alpha = 1; self.zoom = 0; } ]
+            [ 800, function() { self.img.alpha = 1; self.zoom = 0; } ]
           ],
           // This is needed for the rare case that the tab was hidden until
           // after the timeout and then CView aborts in paint() because width

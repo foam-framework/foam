@@ -226,13 +226,14 @@ CLASS({
       var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
         x: Math.random() * this.width,
         y: Math.random() * this.height,
-        border: t.color
+        border: t.color,
+        scaleX: 0,
+        scaleY: 0,
+        alpha: 0
       }, this.Y);
       c.topic = t;
       c.image = t.image;
-      var r = t.r;
-      t.r = 1;
-      Movement.animate(2000, function() { t.r = r; })();
+      Movement.animate(1000, function() { c.alpha = 1.0; c.scaleX = c.scaleY = 1; })();
       c.roundImage = t.roundImage;
      // if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
@@ -244,7 +245,7 @@ CLASS({
         cs[l-1] = cs[l-2];
         cs[l-2] = tmp;
       }
-      c.mass = r/150;
+      c.mass = t.r/150;
       c.gravity = 0;
       c.friction = 0.94;
       this.collider.add(c);
@@ -254,7 +255,7 @@ CLASS({
       if ( i != -1 ) {
         var child = this.children[i];
         Movement.compile([
-          [ 1800, function() { child.alpha = 0; } ],
+          [ 800, function() { child.alpha = 0; child.scaleX = child.scaleY = 0.1; } ],
           function() {
             this.removeChild(child);
             this.collider.remove(child);
