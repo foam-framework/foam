@@ -121,88 +121,28 @@ CLASS({
             AND(
               EQ(this.Topic.PARENT, o.topic.topic),
               EQ(this.Topic.PRIORITY, 0))
-            ).select({put: this.removeTopic.bind(this)});
-//          this.topics.select({put: this.putTopic.bind(this)});
+            ).select({put: this.removeTopic});
+//          this.topics.select({put: this.putTopic});
         }
         if ( n && n.setSelected ) {
           this.topics.where(
             AND(
               EQ(this.Topic.PARENT, n.topic.topic),
               EQ(this.Topic.PRIORITY, 0))
-          ).select({put: this.putTopic.bind(this)});
+          ).select({put: this.putTopic});
           this.topics.where(AND(NEQ(this.Topic.PARENT, n.topic.topic), NEQ(this.Topic.TOPIC, n.topic.topic))).select({put: this.removeTopic.bind(this)});
         } else if ( o ) {
           this.topics.where(
             NEQ(this.Topic.TOPIC, o.topic.topic)
-          ).select({put: this.putTopic.bind(this)});
+          ).select({put: this.putTopic});
         }
       }
     }
   ],
 
   listeners: [
-    {
-      name: 'onClick',
-      code: function(evt) {
-        this.selected = this.findChildAt(evt.clientX, evt.clientY);
-      }
-    }
-  ],
-
-  methods: [
-    function initCView() {
-      this.SUPER();
-
-      GLOBAL.lobby = this;
-
-      if ( ! this.timer ) {
-        this.timer = this.Timer.create();
-        this.timer.start();
-      }
-
-      this.addBubbles();
-
-      this.topics.pipe({
-        put:    this.putTopic.bind(this),
-        remove: this.removeTopic.bind(this)
-      });
-
-      document.body.addEventListener('click', this.onClick);
-
-      var foam = this.ImageCView.create({x: 5, y: this.height-5-269/4, width: 837/4, height: 269/4, src: 'img/foampowered_red.png'});
-      this.addChild(foam);
-
-      /*
-      var clock = this.ClockView.create({
-        drawTicks: true,
-        x: this.width-250,
-        y: 250,
-        r: (120-10)/2,
-        scaleX: 4,
-        scaleY: 4});
-      this.addChild(clock);
-      */
-
-      this.collider.start();
-
-      if ( this.slideshowDelay ) {
-        var i = 0;
-        var l = function() {
-          var t = this.topics[i++];
-          this.selected = this.children[this.findTopic(t)];
-          if ( i == this.topics.length ) i = 0;
-          this.X.setTimeout(l, t.hasOwnProperty('timeout') ? t.timeout*1000 : this.slideshowDelay*1000);
-        }.bind(this);
-
-        l();
-      }
-    },
-    function findTopic(t) {
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        var c = this.children[i];
-        if ( c.topic && c.topic.id === t.id ) return i;
-      }
-      return -1;
+    function onClick(evt) {
+      this.selected = this.findChildAt(evt.clientX, evt.clientY);
     },
     function putTopic(t) {
       if ( t.model === 'Background' ) {
@@ -262,6 +202,63 @@ CLASS({
           }.bind(this)
         ])();
       }
+    }
+  ],
+
+  methods: [
+    function initCView() {
+      this.SUPER();
+
+      GLOBAL.lobby = this;
+
+      if ( ! this.timer ) {
+        this.timer = this.Timer.create();
+        this.timer.start();
+      }
+
+      this.addBubbles();
+
+      this.topics.pipe({
+        put:    this.putTopic,
+        remove: this.removeTopic
+      });
+
+      document.body.addEventListener('click', this.onClick);
+
+      var foam = this.ImageCView.create({x: 5, y: this.height-5-269/4, width: 837/4, height: 269/4, src: 'img/foampowered_red.png'});
+      this.addChild(foam);
+
+      /*
+      var clock = this.ClockView.create({
+        drawTicks: true,
+        x: this.width-250,
+        y: 250,
+        r: (120-10)/2,
+        scaleX: 4,
+        scaleY: 4});
+      this.addChild(clock);
+      */
+
+      this.collider.start();
+
+      if ( this.slideshowDelay ) {
+        var i = 0;
+        var l = function() {
+          var t = this.topics[i++];
+          this.selected = this.children[this.findTopic(t)];
+          if ( i == this.topics.length ) i = 0;
+          this.X.setTimeout(l, t.hasOwnProperty('timeout') ? t.timeout*1000 : this.slideshowDelay*1000);
+        }.bind(this);
+
+        l();
+      }
+    },
+    function findTopic(t) {
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        var c = this.children[i];
+        if ( c.topic && c.topic.id === t.id ) return i;
+      }
+      return -1;
     },
     function addBubbles() {
       var N = this.n;
