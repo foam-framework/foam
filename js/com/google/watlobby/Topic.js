@@ -43,11 +43,15 @@ CLASS({
       defaultValue: true
     },
     {
+      name: 'parent'
+    },
+    {
       name: 'priority',
       defaultValue: 3,
       view: {
         factory_: 'foam.ui.md.ChoiceRadioView',
         choices: [
+          [ 0, 'Hidden' ],
           [ 1, 'Low' ],
 //          [ 2, '' ],
           [ 3, 'Medium' ],
@@ -56,7 +60,7 @@ CLASS({
         ]
       },
       postSet: function(_, p) {
-        this.r = ([110, 130, 150, 180, 200])[p-1];
+        this.r = ([90, 110, 130, 150, 180, 200])[p-1];
       }
     },
     {
@@ -103,7 +107,7 @@ CLASS({
       view: {
 ///        factory_: 'foam.ui.md.ChoiceMenuView',
         factory_: 'foam.ui.md.ChoiceRadioView',
-        choices: [ 'Album', 'Background', 'Topic', 'Video' ]
+        choices: [ 'Background', 'Photo', 'Topic', 'Video' ]
       }
     },
     {

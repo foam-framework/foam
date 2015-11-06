@@ -22,6 +22,7 @@ CLASS({
   requires: [
     'com.google.plus.Person',
     'com.google.plus.Circle',
+    'com.google.plus.ShareableTrait',
     'foam.dao.EasyDAO',
     'com.google.plus.ui.PersonCitationView',
     'com.google.plus.ui.CircleCitationView',
@@ -29,17 +30,35 @@ CLASS({
     'foam.ui.md.DetailView',
     'foam.ui.ArrayView',
     'foam.dao.ProxyDAO',
+    'foam.ui.md.CitationView',
   ],
 
   exports: [
     'personDAO',
     'circleDAO',
+    'streamDAO',
+    'createStreamItem',
   ],
 
   documentation: function() {/* Manages circles setup. Extend into client and
     server versions, where the client only ever sees the currentUser's circles
-    and is untrusted, and the server handles filtering out notifications based on
-    mutual circleship. */},
+    and is untrusted, and the server handles filtering out notifications based
+    on mutual circleship. */},
+
+  models: [
+    {
+      name: 'TestStreamItem',
+      extends: 'com.google.ow.model.Envelope',
+      traits: [ 'com.google.plus.ShareableTrait' ],
+      templates: [
+        function toDetailHTML() {/*
+          <div id="%%id" <%= this.cssClassAttr() %> >
+            $$data{ floatingLabel: false, mode: 'read-only' }
+          </div>
+        */}
+      ]
+    }
+  ],
 
   properties: [
     {
@@ -78,7 +97,33 @@ CLASS({
         }
       },
       view: 'com.google.plus.ui.PersonDetailView',
-    }
+    },
+    {
+      name: 'streamDAO',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.TestStreamItem,
+          name: 'streams',
+          daoType: MDAO,
+          guid: true,
+        });
+      },
+      view: { factory_: 'foam.ui.md.DAOListView', rowView: 'foam.ui.md.DetailView' },
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'createStreamItem',
+      hidden: true,
+      factory: function() {
+        return function(source, target, data) {
+          return this.TestStreamItem.create({
+            owner: target,
+            source: source,
+            data: data,
+          });
+        }.bind(this);
+      },
+    },
   ],
 
 
@@ -91,7 +136,7 @@ CLASS({
       var self = this;
 
       // create a current user
-      this.currentUser = this.Person.create({
+      self.currentUser = self.Person.create({
         givenName: 'John',
         middleName: 'Q.',
         familyName: 'Public',
@@ -134,6 +179,10 @@ CLASS({
         });
         self.currentUser.circles.put(nu);
       });
+
+      self.streamDAO.put(
+        self.createStreamItem(personTestArray[1], self.currentUser, "Data A")
+      );
     },
   ],
 });

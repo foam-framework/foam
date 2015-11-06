@@ -8,14 +8,16 @@
   },
   {
     "topic": "flip",
+    "parent": "chrome",
     "image": "img/flip.png",
-    "priority": 1,
+    "priority": 0,
     "color": "RED"
   },
   {
     "topic": "pixel",
+    "parent": "chrome",
     "image": "img/pixel.png",
-    "priority": 1,
+    "priority": 0,
     "color": "RED"
   },
   {
@@ -27,8 +29,9 @@
   },
   {
     "topic": "appbuilder",
+    "parent": "foam",
     "image": "img/appbuilder.png",
-    "priority": 1,
+    "priority": 0,
     "model": "Video",
     "video": "HvxKHj9QmMI",
     "timeout": 55
@@ -42,6 +45,7 @@
   },
   {
     "topic": "onhubvideo",
+    "parent": "onhub",
     "image": "img/onhublogo.png",
     "priority": 3,
     "color": "BLUE",
@@ -65,8 +69,9 @@
   },
   {
     "topic": "calc",
+    "parent": "foam",
     "image": "img/calculator.png",
-    "priority": 1,
+    "priority": 0,
     "color": "GREEN"
   },
   {
@@ -113,7 +118,7 @@
     "topic": "photos",
     "image": "img/photoalbum.png",
     "priority": 3,
-    "model": "Album",
+    "model": "Photo",
     "color": "YELLOW",
     "roundImage": true
   },

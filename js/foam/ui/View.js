@@ -23,6 +23,7 @@ CLASS({
 
   traits: [
     'foam.ui.HTMLViewTrait',
+    'foam.ui.U2ViewTrait',
   ],
 
   requires: [ 'Property' ],

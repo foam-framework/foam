@@ -29,9 +29,10 @@ CLASS({
     'com.google.watlobby.Bubble',
     'com.google.watlobby.TopicBubble',
     'com.google.watlobby.AlbumBubble',
+    'com.google.watlobby.PhotoBubble',
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
-    'foam.demos.ClockView',
+//    'foam.demos.ClockView',
     'foam.demos.physics.PhysicalCircle',
     'foam.graphics.ImageCView',
     'foam.physics.PhysicsEngine as Collider',
@@ -112,6 +113,29 @@ CLASS({
         }
 
         return null;
+      },
+      postSet: function(o, n) {
+        if ( o === n ) return;
+        if ( o ) {
+          this.topics.where(
+            AND(
+              EQ(this.Topic.PARENT, o.topic.topic),
+              EQ(this.Topic.PRIORITY, 0))
+            ).select({put: this.removeTopic.bind(this)});
+//          this.topics.select({put: this.putTopic.bind(this)});
+        }
+        if ( n && n.setSelected ) {
+          this.topics.where(
+            AND(
+              EQ(this.Topic.PARENT, n.topic.topic),
+              EQ(this.Topic.PRIORITY, 0))
+          ).select({put: this.putTopic.bind(this)});
+          this.topics.where(AND(NEQ(this.Topic.PARENT, n.topic.topic), NEQ(this.Topic.TOPIC, n.topic.topic))).select({put: this.removeTopic.bind(this)});
+        } else if ( o ) {
+          this.topics.where(
+            NEQ(this.Topic.TOPIC, o.topic.topic)
+          ).select({put: this.putTopic.bind(this)});
+        }
       }
     }
   ],
@@ -148,6 +172,7 @@ CLASS({
       var foam = this.ImageCView.create({x: 10, y: this.height-60, width: 837/5, height: 269/5, src: 'img/foampowered_red.png'});
       this.addChild(foam);
 
+      /*
       var clock = this.ClockView.create({
         drawTicks: true,
         x: this.width-250,
@@ -156,6 +181,7 @@ CLASS({
         scaleX: 4,
         scaleY: 4});
       this.addChild(clock);
+      */
 
       this.collider.start();
 
@@ -183,6 +209,7 @@ CLASS({
         document.body.style.backgroundImage = 'url(' + t.image + ')';
         return;
       }
+      if ( t.parent && ! t.priority && ! ( this.selected && this.selected.topic.topic === t.parent ) ) return;
 //      console.log('***** putTopic: ', t.topic);
       var i = this.findTopic(t);
       if ( i != -1 ) {
@@ -210,20 +237,24 @@ CLASS({
      // if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
       this.addChild(c);
+      if ( this.children.length > 1 ) {
+        var cs = this.children;
+        var l = cs.length;
+        var tmp = cs[l-1];
+        cs[l-1] = cs[l-2];
+        cs[l-2] = tmp;
+      }
       c.mass = r/150;
       c.gravity = 0;
       c.friction = 0.94;
       this.collider.add(c);
     },
     function removeTopic(t) {
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        if ( this.children[i].topic &&
-             this.children[i].topic.id == t.id ) {
-          var child = this.children[i];
-          this.removeChild(child);
-          this.collider.remove(child);
-          return;
-        }
+      var i = this.findTopic(t);
+      if ( i != -1 ) {
+        var child = this.children[i];
+        this.removeChild(child);
+        this.collider.remove(child);
       }
     },
     function addBubbles() {
