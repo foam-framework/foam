@@ -182,7 +182,7 @@ CLASS({
         scaleY: 4});
       this.addChild(clock);
       */
-      
+
       this.collider.start();
 
       if ( this.slideshowDelay ) {
@@ -250,14 +250,11 @@ CLASS({
       this.collider.add(c);
     },
     function removeTopic(t) {
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        if ( this.children[i].topic &&
-             this.children[i].topic.id == t.id ) {
-          var child = this.children[i];
-          this.removeChild(child);
-          this.collider.remove(child);
-          return;
-        }
+      var i = this.findTopic(t);
+      if ( i != -1 ) {
+        var child = this.children[i];
+        this.removeChild(child);
+        this.collider.remove(child);
       }
     },
     function addBubbles() {
