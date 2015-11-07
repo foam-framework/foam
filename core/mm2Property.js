@@ -949,7 +949,7 @@ GLOBAL.Property = {
 };
 
 Model.methods = {};
-"createMethod_ getProperty getAction  hashCode buildPrototype addTraitToModel_ buildProtoImports_ buildProtoProperties_ buildProtoMethods_ getPrototype isSubModel isInstance getAllRequires arequire getMyFeature getRawFeature getAllMyRawFeatures getFeature getAllRawFeatures atest getRuntimeProperties getRuntimeActions create".split(' ').forEach(function(k) { Model.methods[k] = BootstrapModel[k]; });
+"createMethod_ getProperty getAction hashCode buildPrototype addTraitToModel_ buildProtoImports_ buildProtoProperties_ buildProtoMethods_ getPrototype isSubModel isInstance getAllRequires arequire getMyFeature getRawFeature getAllMyRawFeatures getFeature getAllRawFeatures atest getRuntimeProperties getRuntimeActions create".split(' ').forEach(function(k) { Model.methods[k] = BootstrapModel[k]; });
 
 
 // This is the coolest line of code that I've ever written
