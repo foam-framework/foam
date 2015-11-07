@@ -191,10 +191,12 @@ CLASS({
       var t = this.findChildAt(evt.clientX, evt.clientY);
       if ( t ) {
         this.selected = t && t.topic && t.topic.topic;
-      } else if ( this.dir ) {
-        // CD up a directory
+      } else {
         this.selected = null;
-        this.dir = this.findTopic(this.dir).topic.parent;
+        if ( this.dir ) {
+          // CD up a directory
+          this.dir = this.findTopic(this.dir).topic.parent;
+        }
       }
     },
     function putTopic(t) {
