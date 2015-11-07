@@ -91,31 +91,12 @@ CLASS({
         return this.TopicDAO.create({ clientMode: this.clientMode });
       }
     },
+    { name: 'root', defaultValue: '' },
     {
-      name: 'selected',
-      preSet: function(o, n) {
-        if ( o === n ) return o;
-
-        if ( o ) o.setSelected(false);
-
-        if ( n && n.setSelected ) {
-          // Move-to-Front
-          var i = this.children.indexOf(n);
-          this.children[i] = this.children[this.children.length-1];
-          this.children[this.children.length-1] = n;
-
-          n.setSelected(true);
-
-          this.clearTimeout(this.timeout_);
-          this.timeout_ = this.setTimeout(function() { this.selected = null; }.bind(this), n.topic.timeout * 1000);
-
-          return n;
-        }
-
-        return null;
-      },
-      postSet: function(o, n) {
-        if ( o === n ) return;
+      name: 'dir',
+      defaultValue: '',
+      postSet: function(_, d) {
+        /*
         if ( ! n ) {
           this.topics.select({put: this.putTopic});
           return;
@@ -138,6 +119,45 @@ CLASS({
             // TODO: Only show parent and siblings
             self.topics.select({put: self.putTopic});
           }
+        });
+        */
+
+      }
+    },
+    {
+      name: 'selected',
+      preSet: function(o, n) {
+debugger;
+        if ( o === n ) return o;
+
+        var oc = this.findTopic(o);
+        if ( oc ) oc.setSelected(false);
+
+        var nc = this.findTopic(n);
+
+        if ( nc && nc.setSelected ) {
+          // Move-to-Front
+          var i = this.children.indexOf(n);
+          this.children[i] = this.children[this.children.length-1];
+          this.children[this.children.length-1] = nc;
+
+          nc.setSelected(true);
+
+          this.clearTimeout(this.timeout_);
+          this.timeout_ = this.setTimeout(function() { this.selected = null; }.bind(this), nc.topic.timeout * 1000);
+
+          return n;
+        }
+
+        return null;
+      },
+      postSet: function(o, n) {
+        if ( o === n || !n ) return;
+
+        this.topics.find(EQ(this.Topic.PARENT, n), {
+          put: function() {
+            this.dir = n;
+          }.bind(this)
         });
       },
 
@@ -169,19 +189,20 @@ CLASS({
 
   listeners: [
     function onClick(evt) {
-      this.selected = this.findChildAt(evt.clientX, evt.clientY);
+      var t = this.findChildAt(evt.clientX, evt.clientY);
+      this.selected = t && t.topic && t.topic.topic;
     },
     function putTopic(t) {
       if ( t.model === 'Background' ) {
         document.body.style.backgroundImage = 'url(' + t.image + ')';
         return;
       }
-      if ( t.parent && ! t.priority && ! ( this.selected && this.selected.topic.topic === t.parent ) ) return;
+      if ( ! ( t.parent == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
 //      console.log('***** putTopic: ', t.topic);
       var i = this.findTopicIndex(t);
       if ( i != -1 ) {
         if ( t.selected ) {
-          this.selected = this.children[i];
+          this.selected = t;
           return;
         } else {
           this.children.splice(i, 1);
@@ -272,7 +293,7 @@ CLASS({
         var i = 0;
         var l = function() {
           var t = this.topics[i++];
-          this.selected = this.children[this.findTopicIndex(t)];
+          this.selected = t;
           if ( i == this.topics.length ) i = 0;
           this.X.setTimeout(l, t.hasOwnProperty('timeout') ? t.timeout*1000 : this.slideshowDelay*1000);
         }.bind(this);
@@ -283,14 +304,14 @@ CLASS({
     function findTopicIndex(t) {
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var c = this.children[i];
-        if ( c.topic && c.topic.id === t.id ) return i;
+        if ( c.topic && c.topic.topic === t ) return i;
       }
       return -1;
     },
     function findTopic(t) {
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var c = this.children[i];
-        if ( c.topic && c.topic.id === t.id ) return c;
+        if ( c.topic && c.topic.topic === t ) return c;
       }
     },
     function addBubbles() {
