@@ -96,6 +96,17 @@ CLASS({
       name: 'dir',
       defaultValue: '',
       postSet: function(_, d) {
+        var Topic = this.Topic;
+
+        this.topics.where(
+          AND(
+            NEQ(Topic.PARENT, d),
+            NEQ(Topic.TOPIC,  d))
+        ).select({put: this.removeTopic});
+
+        this.topics.where(
+          EQ(Topic.PARENT, d)
+        ).select({put: this.putTopic});
         /*
         if ( ! n ) {
           this.topics.select({put: this.putTopic});
@@ -246,7 +257,7 @@ CLASS({
       this.collider.add(c);
     },
     function removeTopic(t) {
-      var i = this.findTopicIndex(t);
+      var i = this.findTopicIndex(t.topic);
       if ( i != -1 ) {
         var child = this.children[i];
         Movement.compile([
