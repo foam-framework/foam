@@ -127,7 +127,6 @@ CLASS({
     {
       name: 'selected',
       preSet: function(o, n) {
-debugger;
         if ( o === n ) return o;
 
         var oc = this.findTopic(o);
@@ -190,7 +189,13 @@ debugger;
   listeners: [
     function onClick(evt) {
       var t = this.findChildAt(evt.clientX, evt.clientY);
-      this.selected = t && t.topic && t.topic.topic;
+      if ( t ) {
+        this.selected = t && t.topic && t.topic.topic;
+      } else if ( this.dir ) {
+        // CD up a directory
+        this.selected = null;
+        this.dir = this.findTopic(this.dir).topic.parent;
+      }
     },
     function putTopic(t) {
       if ( t.model === 'Background' ) {
