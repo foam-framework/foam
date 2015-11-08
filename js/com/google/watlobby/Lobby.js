@@ -106,36 +106,10 @@ CLASS({
 
         this.topics.where(
           OR(
-            EQ(Topic.PARENT, d)
-          //  EQ(Topic.TOPIC,  d)
+            EQ(Topic.PARENT, d),
+            EQ(Topic.TOPIC,  d)
           )
-        ).select({put: this.putTopic});
-        /*
-        if ( ! n ) {
-          this.topics.select({put: this.putTopic});
-          return;
-        }
-        var ts = this.topics;
-        var Topic = this.Topic;
-        var self = this;
-        ts.find(EQ(Topic.PARENT, n.topic.topic), {
-          put: function() {
-            self.topics.where(
-              AND(
-                NEQ(self.Topic.PARENT, n.topic.topic),
-                NEQ(self.Topic.TOPIC, n.topic.topic))
-            ).select({put: self.removeTopic});
-            self.topics.where(
-                EQ(self.Topic.PARENT, n.topic.topic)
-            ).select({put: self.putTopic});
-          },
-          error: function() {
-            // TODO: Only show parent and siblings
-            self.topics.select({put: self.putTopic});
-          }
-        });
-        */
-
+        ).select({put: function(t) { if ( ! this.findTopic(t.topic) ) this.putTopic(t); }.bind(this) });
       }
     },
     {
@@ -171,30 +145,6 @@ CLASS({
             this.dir = n;
           }.bind(this)
         });
-      },
-
-      xxxpostSet: function(o, n) {
-        if ( o === n ) return;
-        if ( o ) {
-          this.topics.where(
-            AND(
-              EQ(this.Topic.PARENT, o.topic.topic),
-              EQ(this.Topic.PRIORITY, 0))
-            ).select({put: this.removeTopic});
-//          this.topics.select({put: this.putTopic});
-        }
-        if ( n && n.setSelected ) {
-          this.topics.where(
-            AND(
-              EQ(this.Topic.PARENT, n.topic.topic),
-              EQ(this.Topic.PRIORITY, 0))
-          ).select({put: this.putTopic});
-          this.topics.where(AND(NEQ(this.Topic.PARENT, n.topic.topic), NEQ(this.Topic.TOPIC, n.topic.topic))).select({put: this.removeTopic.bind(this)});
-        } else if ( o ) {
-          this.topics.where(
-            NEQ(this.Topic.TOPIC, o.topic.topic)
-          ).select({put: this.putTopic});
-        }
       }
     }
   ],
@@ -222,7 +172,7 @@ CLASS({
         document.body.style.backgroundImage = 'url(' + t.image + ')';
         return;
       }
-      if ( ! ( t.parent == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
+      if ( ! ( t.parent == this.dir || t.topic == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
 //      console.log('***** putTopic: ', t.topic);
       var i = this.findTopicIndex(t.topic);
       if ( i != -1 ) {
