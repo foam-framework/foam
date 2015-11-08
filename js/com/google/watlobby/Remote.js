@@ -38,6 +38,17 @@ CLASS({
 
   properties: [
     {
+      name: 'root',
+      defaultValue: ''
+    },
+    {
+      name: 'dir',
+      defaultValue: ''
+    },
+    {
+      name: 'selected'
+    },
+    {
       model_: 'BooleanProperty',
       name: 'clientMode',
       defaultValue: true
@@ -57,6 +68,20 @@ CLASS({
 
   listeners: [
     {
+      name: 'updateState',
+      isFramed: true,
+      code: function() {
+        this.topics.find(EQ(this.Topic.TOPIC, this.root), {
+          put: function (t) {
+            t = t.clone();
+            t.selected = this.selected;
+            t.dir = this.dir;
+            this.topics.put(t);
+          }.bind(this)
+        });
+      }
+    },
+    {
       name: 'onClick',
       code: function(evt) {
         var self  = this;
@@ -64,9 +89,12 @@ CLASS({
 
         if ( ! child || ! child.topic ) return;
 
+        this.selected = child.topic.topic;
+        /*
         this.topics.where(EQ(this.Topic.SELECTED, true)).update(SET(this.Topic.SELECTED, false))(function() {
           self.topics.where(EQ(self.Topic.TOPIC, child.topic.topic)).update(SET(self.Topic.SELECTED, true));
         });
+        */
       }
     }
   ],
@@ -81,6 +109,8 @@ CLASS({
       });
 
       this.document.body.addEventListener('click', this.onClick);
+      this.selected$.addListener(this.updateState);
+      this.dir$.addListener(this.updateState);
     },
 
     function putTopic(t) {

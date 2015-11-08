@@ -58,7 +58,6 @@ CLASS({
       var self = this;
       c.detectCollisions = function() {
         var cs = this.children;
-console.log(this.children.length);
         for ( var i = 0 ; i < cs.length ; i++ ) {
           var c1 = cs[i];
           this.updateChild(c1);
@@ -170,6 +169,11 @@ console.log(this.children.length);
       }
     },
     function putTopic(t) {
+      if ( t.topic === this.root ) {
+        if ( this.selected !== t.selected ) this.selected = t.selected;
+        if ( this.dir !== t.dir ) this.dir = t.dir;
+      }
+
       if ( ! ( t.parent == this.dir || t.topic == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
 //      console.log('***** putTopic: ', t.topic);
       if ( t.model === 'Background' ) {
@@ -177,15 +181,7 @@ console.log(this.children.length);
         return;
       }
       var i = this.findTopicIndex(t.topic);
-      if ( i != -1 ) {
-        /*
-        if ( t.selected ) {
-          this.selected = t;
-          return;
-        }
-        */
-        this.children.splice(i, 1);
-      }
+      if ( i != -1 ) this.children.splice(i, 1);
 
       if ( ! t.enabled ) return;
 

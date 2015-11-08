@@ -64,7 +64,10 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      name: 'dir',
+      hidden: true
+    },
+    {
       name: 'selected',
       hidden: true
     },

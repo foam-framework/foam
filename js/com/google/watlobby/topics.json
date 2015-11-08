@@ -1,5 +1,10 @@
 [
   {
+    "topic": "",
+    "image": "img/googlewat.png",
+    "model": "Background"
+  },
+  {
     "topic": "chrome",
     "image": "img/chrome.png",
     "priority": 5,
@@ -122,11 +127,6 @@
     "model": "Photo",
     "color": "YELLOW",
     "roundImage": true
-  },
-  {
-    "topic": "bg",
-    "image": "img/googlewat.png",
-    "model": "Background"
   },
   {
     "topic": "chromebg",
