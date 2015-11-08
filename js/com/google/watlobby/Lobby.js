@@ -58,6 +58,7 @@ CLASS({
       var self = this;
       c.detectCollisions = function() {
         var cs = this.children;
+console.log(this.children.length);
         for ( var i = 0 ; i < cs.length ; i++ ) {
           var c1 = cs[i];
           this.updateChild(c1);

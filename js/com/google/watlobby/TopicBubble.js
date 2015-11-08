@@ -66,15 +66,15 @@ CLASS({
         this.vx = this.vy = 0;
         this.cancel_ = Movement.compile([
           [ 400, function() {
-          var w = self.lobby.width;
-          var h = self.lobby.height;
-          self.x = w/2;
-          self.y = h/2;
-          self.zoom = 1;
-          self.img.alpha = 0.15;
-        }, Movement.easey ],
-        [ 1000, function() { self.textArea.alpha = 1; }/*, Movement.easeIn(1)*/]
-      ])();
+            var w = self.lobby.width;
+            var h = self.lobby.height;
+            self.x = w/2;
+            self.y = h/2;
+            self.zoom = 1;
+            self.img.alpha = 0.15;
+          }, Movement.easey ],
+          [ 400, function() { self.textArea.alpha = 1; }]
+        ])();
       } else {
         this.mass = this.oldMass_;
         Movement.compile([
