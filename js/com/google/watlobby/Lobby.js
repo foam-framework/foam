@@ -105,7 +105,10 @@ CLASS({
         ).select({put: this.removeTopic});
 
         this.topics.where(
-          EQ(Topic.PARENT, d)
+          OR(
+            EQ(Topic.PARENT, d)
+          //  EQ(Topic.TOPIC,  d)
+          )
         ).select({put: this.putTopic});
         /*
         if ( ! n ) {
@@ -147,10 +150,9 @@ CLASS({
 
         if ( nc && nc.setSelected ) {
           // Move-to-Front
-          var i = this.children.indexOf(n);
+          var i = this.findTopicIndex(n);
           this.children[i] = this.children[this.children.length-1];
           this.children[this.children.length-1] = nc;
-
           nc.setSelected(true);
 
           this.clearTimeout(this.timeout_);
@@ -205,8 +207,13 @@ CLASS({
       } else {
         this.selected = null;
         if ( this.dir ) {
+          var self = this;
           // CD up a directory
-          this.dir = this.findTopic(this.dir).topic.parent;
+          this.topics.find(EQ(this.Topic.TOPIC, this.dir), {
+            put: function(t) { self.dir = t.parent; },
+            error: function() { self.dir = ''; }
+          });
+//          this.dir = this.findTopic(this.dir).topic.parent;
         }
       }
     },
@@ -219,12 +226,13 @@ CLASS({
 //      console.log('***** putTopic: ', t.topic);
       var i = this.findTopicIndex(t.topic);
       if ( i != -1 ) {
+        /*
         if ( t.selected ) {
           this.selected = t;
           return;
-        } else {
-          this.children.splice(i, 1);
         }
+        */
+        this.children.splice(i, 1);
       }
 
       if ( ! t.enabled ) return;
