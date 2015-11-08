@@ -155,8 +155,9 @@ CLASS({
       if ( t ) {
         this.selected = t && t.topic && t.topic.topic;
       } else {
-        this.selected = null;
-        if ( this.dir ) {
+        if ( this.selected ) {
+          this.selected = null;
+        } else if ( this.dir ) {
           var self = this;
           // CD up a directory
           this.topics.find(EQ(this.Topic.TOPIC, this.dir), {
