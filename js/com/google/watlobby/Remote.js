@@ -19,6 +19,8 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Remote',
   extends: 'foam.graphics.CView',
+  
+  traits: [ 'com.google.watlobby.RemoteTrait' ],
 
   requires: [
     'com.google.watlobby.Bubble',
@@ -37,17 +39,6 @@ CLASS({
   ],
 
   properties: [
-    {
-      name: 'root',
-      defaultValue: ''
-    },
-    {
-      name: 'dir',
-      defaultValue: ''
-    },
-    {
-      name: 'selected'
-    },
     {
       model_: 'BooleanProperty',
       name: 'clientMode',
@@ -82,19 +73,16 @@ CLASS({
       }
     },
     {
-      name: 'onClick',
-      code: function(evt) {
-        var self  = this;
-        var child = this.findChildAt(evt.clientX, evt.clientY);
-
-        if ( ! child || ! child.topic ) return;
-
-        this.selected = child.topic.topic;
-        /*
-        this.topics.where(EQ(this.Topic.SELECTED, true)).update(SET(this.Topic.SELECTED, false))(function() {
-          self.topics.where(EQ(self.Topic.TOPIC, child.topic.topic)).update(SET(self.Topic.SELECTED, true));
-        });
-        */
+      name: 'layout',
+      isFramed: true,
+      code: function() {
+        while ( this.children.length ) {
+          this.removeChild(this.children[this.children.length-1]);
+        }
+        
+        console.log('dir: "', this.dir, '"');
+        this.topics.find(EQ(this.Topic.TOPIC, this.dir),{put:this.putTopic.bind(this)});
+        this.topics.where(EQ(this.Topic.PARENT, this.dir)).select({put: this.putTopic.bind(this)});
       }
     }
   ],
@@ -103,18 +91,15 @@ CLASS({
     function initCView() {
       this.SUPER();
 
-      this.topics.pipe({
-        put:    this.putTopic.bind(this),
-        remove: this.removeTopic.bind(this)
-      });
-
+      this.topics.pipe({put: this.layout, remove: this.layout});
       this.document.body.addEventListener('click', this.onClick);
       this.selected$.addListener(this.updateState);
       this.dir$.addListener(this.updateState);
+      this.layout();
     },
 
     function putTopic(t) {
-      // console.log('*** putTopic: ', t, t.topic && t.topic.topic);
+      console.log('*** putTopic: ', t, t.topic && t.topic.topic);
       // Don't add if we already have topic
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var c = this.children[i];

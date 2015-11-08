@@ -19,7 +19,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Lobby',
   extends: 'foam.graphics.CView',
-  traits: [ 'com.google.misc.Colors' ],
+  traits: [ 'com.google.misc.Colors', 'com.google.watlobby.RemoteTrait' ],
 
   requires: [
     'com.google.watlobby.SmallRemote',
@@ -91,7 +91,6 @@ CLASS({
         return this.TopicDAO.create({ clientMode: this.clientMode });
       }
     },
-    { name: 'root', defaultValue: '' },
     {
       name: 'dir',
       defaultValue: '',
@@ -136,38 +135,11 @@ CLASS({
         }
 
         return null;
-      },
-      postSet: function(o, n) {
-        if ( o === n || !n ) return;
-
-        this.topics.find(EQ(this.Topic.PARENT, n), {
-          put: function() {
-            this.dir = n;
-          }.bind(this)
-        });
       }
     }
   ],
 
   listeners: [
-    function onClick(evt) {
-      var t = this.findChildAt(evt.clientX, evt.clientY);
-      if ( t ) {
-        this.selected = t && t.topic && t.topic.topic;
-      } else {
-        if ( this.selected ) {
-          this.selected = null;
-        } else if ( this.dir ) {
-          var self = this;
-          // CD up a directory
-          this.topics.find(EQ(this.Topic.TOPIC, this.dir), {
-            put: function(t) { self.dir = t.parent; },
-            error: function() { self.dir = ''; }
-          });
-//          this.dir = this.findTopic(this.dir).topic.parent;
-        }
-      }
-    },
     function putTopic(t) {
       if ( t.topic === this.root ) {
         if ( this.selected !== t.selected ) this.selected = t.selected;
