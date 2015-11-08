@@ -80,7 +80,6 @@ CLASS({
           this.removeChild(this.children[this.children.length-1]);
         }
         
-        console.log('dir: "', this.dir, '"');
         this.topics.find(EQ(this.Topic.TOPIC, this.dir),{put:this.putTopic.bind(this)});
         this.topics.where(EQ(this.Topic.PARENT, this.dir)).select({put: this.putTopic.bind(this)});
       }
@@ -91,15 +90,18 @@ CLASS({
     function initCView() {
       this.SUPER();
 
-      this.topics.pipe({put: this.layout, remove: this.layout});
+      this.topics.listen({put: function(t) { if ( t.topic !== this.root ) this.layout(); }.bind(this), remove: this.layout});
       this.document.body.addEventListener('click', this.onClick);
       this.selected$.addListener(this.updateState);
       this.dir$.addListener(this.updateState);
+      this.dir$.addListener(this.layout);
       this.layout();
     },
 
     function putTopic(t) {
-      console.log('*** putTopic: ', t, t.topic && t.topic.topic);
+      if ( t.topic === this.root ) return;
+
+      // console.log('*** putTopic: ', t, t.topic && t.topic.topic);
       // Don't add if we already have topic
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var c = this.children[i];
@@ -122,12 +124,15 @@ CLASS({
       c.topic = t;
       c.image = t.image;
       var r = h/2-20;
-      t.r = r;
-      c.r = r;
+      t.r = c.r = r;
+      c.scaleX = c.scaleY = 0.1;
+      c.alpha = 0.1;
       c.roundImage = t.roundImage;
       if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
       this.addChild(c);
+      
+      Movement.animate(250, function() { c.alpha = 1; c.scaleX = c.scaleY = 1; })();
     },
     function removeTopic(t) {
       // TODO

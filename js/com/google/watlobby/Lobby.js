@@ -167,7 +167,7 @@ CLASS({
       }, this.Y);
       c.topic = t;
       c.image = t.image;
-      Movement.animate(1000, function() { c.alpha = 1.0; c.scaleX = c.scaleY = 1; })();
+      Movement.animate(1000, function() { c.alpha = 1; c.scaleX = c.scaleY = 1; })();
       c.roundImage = t.roundImage;
      // if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
