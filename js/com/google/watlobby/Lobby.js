@@ -217,7 +217,7 @@ CLASS({
       }
       if ( ! ( t.parent == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
 //      console.log('***** putTopic: ', t.topic);
-      var i = this.findTopicIndex(t);
+      var i = this.findTopicIndex(t.topic);
       if ( i != -1 ) {
         if ( t.selected ) {
           this.selected = t;
