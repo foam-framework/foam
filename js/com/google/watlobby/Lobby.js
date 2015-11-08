@@ -168,12 +168,12 @@ CLASS({
       }
     },
     function putTopic(t) {
+      if ( ! ( t.parent == this.dir || t.topic == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
+//      console.log('***** putTopic: ', t.topic);
       if ( t.model === 'Background' ) {
         document.body.style.backgroundImage = 'url(' + t.image + ')';
         return;
       }
-      if ( ! ( t.parent == this.dir || t.topic == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
-//      console.log('***** putTopic: ', t.topic);
       var i = this.findTopicIndex(t.topic);
       if ( i != -1 ) {
         /*

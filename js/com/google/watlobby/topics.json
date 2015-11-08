@@ -127,5 +127,17 @@
     "topic": "bg",
     "image": "img/googlewat.png",
     "model": "Background"
+  },
+  {
+    "topic": "chromebg",
+    "parent": "chrome",
+    "image": "img/googlewat.png",
+    "model": "Background"
+  },
+  {
+    "topic": "foambg",
+    "parent": "foam",
+    "image": "img/foampowered_red.png",
+    "model": "Background"
   }
 ]
