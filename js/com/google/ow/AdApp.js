@@ -46,7 +46,16 @@ CLASS({
   ],
   exports: [ 'imageDAO' ],
 
+  exports: [
+    'circleDAO',
+    'personDAO',
+    'currentUser',
+  ],
+
   properties: [
+    { name: 'circleDAO', factory: function() { return [].dao; }},
+    { name: 'personDAO', factory: function() { return [].dao; }},
+    { name: 'currentUser' },
     {
       name: 'imageDAO',
       factory: function() {

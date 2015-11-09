@@ -49,6 +49,8 @@ CLASS({
         font-weight: 500;
         padding: 10px 10px 5px 10px;
         background: #EEEEEE;
+        display: flex;
+        flex-direction: row;
       }
       envelope-citation .content {
         padding: 5px 10px;
