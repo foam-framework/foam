@@ -50,6 +50,8 @@ CLASS({
         if ( t.topic.topic === this.BACK_TOPIC ) {
           this.selected = '';
           this.back();
+        } else if ( t.topic.topic === this.selected ) {
+          this.selected = '';
         } else {
           this.selected = t && t.topic && t.topic.topic;
         }

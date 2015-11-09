@@ -140,10 +140,11 @@ CLASS({
       if ( t.background ) c.color = t.background;
       this.addChild(c);
 
+      var close = this.ImageCView.create({alpha: 0.5, x: -60, y: -60, width: 120, height: 120, src: 'img/close.png'}); 
       var s = function() { c.scaleX = c.scaleY = ! this.selected ? 0.9 : this.selected === t.topic ? 1.02 : 0.75; }.bind(this);
-      var l = function() { Movement.animate(300, s)(); };
+      var l = function() { if ( this.selected === t.topic ) { c.addChild(close); } else { c.removeChild(close); } Movement.animate(300, s)(); }.bind(this);
       this.selected$.addListener(l);
-      l();
+      this.X.setTimeout(l,20);
     }
   ]
 });
