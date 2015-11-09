@@ -55,6 +55,16 @@ CLASS({
       name: 'http'
     },
     {
+      model_: 'foam.node.NodeRequireProperty',
+      name: 'https'
+    },
+    {
+      name: 'keyFile',
+    },
+    {
+      name: 'certFile',
+    },
+    {
       name: 'server',
       hidden: true
     },
@@ -76,7 +86,16 @@ CLASS({
   ],
   methods: [
     function execute() {
-      this.server = this.http.createServer(this.onRequest);
+      if (this.keyFile && this.certFile) {
+        var fs = require('fs');
+        this.server = this.https.createServer({
+          key: fs.readFileSync(this.keyFile),
+          cert: fs.readFileSync(this.certFile)
+        }, this.onRequest);
+      } else {
+        this.server = this.http.createServer(this.onRequest);
+      }
+
       this.server.listen(this.port);
 
       // TODO Find a better way to default these?
