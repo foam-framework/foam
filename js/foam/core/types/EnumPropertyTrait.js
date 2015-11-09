@@ -29,6 +29,13 @@ CLASS({
     {
       name: 'view',
       defaultValue: 'foam.ui.ChoiceView'
-    }
+    },
+    {
+      name: 'toPropertyE',
+      defaultValue: function(X) {
+        // TODO(braden): Use a FutureElement for this in the future.
+        return X.lookup('foam.u2.Select').create({ prop: this }, X);
+      }
+    },
   ]
 });
