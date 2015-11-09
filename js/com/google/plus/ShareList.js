@@ -24,6 +24,17 @@ CLASS({
     'com.google.plus.Circle',
   ],
 
+  models: [
+    {
+      name: 'HistoryItem',
+      properties: [
+        { model_: 'StringProperty', name: 'id' },
+        { model_: 'StringProperty', name: 'displayName' },
+        { model_: 'StringProperty', name: 'type' },
+      ]
+    }
+  ],
+
   imports: [
     'personDAO'
   ],
@@ -42,23 +53,27 @@ CLASS({
       model_: 'ReferenceArrayProperty',
       name: 'circles',
       subType: 'com.google.plus.Circle',
-      help: "References to the owner's actual circles"
+      help: "References to the owner's actual circles, to which to share."
     },
     {
       model_: 'ReferenceArrayProperty',
       name: 'people',
-      subType: 'com.google.plus.Person'
+      subType: 'com.google.plus.Person',
+      help: 'People to which to share.',
     },
     {
-      model_: 'StringArrayProperty',
-      name: 'circleNames',
-      help: "After flattening, circles will be empty and the names listed here."
+      model_: 'ArrayProperty',
+      name: 'history',
+      subType: 'com.google.plus.ShareList.HistoryItem',
+      factory: function() { return [].dao; }
     },
     {
       model_: 'BooleanProperty',
-      name: 'shareComplete',
-      defaultValue: false
-      //TODO: mark individual people as completed?
+      name: 'sharesPending',
+      getter: function() {
+        return (this.instance_.circles && this.instance_.circles.length) ||
+          (this.instance_.people && this.instance_.people.length);
+      }
     }
   ],
 
@@ -84,7 +99,7 @@ CLASS({
         for (var i=0; i<circs.length; ++i) {
           owner.circles.find(circs[i], { put: function(c) {
             // remember name for display purposes
-            self.circleNames.push(c.displayName);
+            self.moveToHistory(c);
             // grab all circle member references
             c.people.select(MAP(this.Person.ID, self.people));
           }});
@@ -101,6 +116,17 @@ CLASS({
         });
       }
     },
+
+    function moveToHistory(item) {
+      this.history.put(this.HistoryItem.create({
+        id: item.id,
+        displayName: item.displayName,
+        type: item.type
+      }));
+
+      this.circles.remove(item.id);
+      this.people.remove(item.id);
+    }
   ],
 
 });
