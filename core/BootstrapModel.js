@@ -91,15 +91,16 @@ var BootstrapModel = {
     var name       = parentName + '_ExtendedWith_' + traitName;
 
     if ( ! lookup(name) ) {
-      var model = traitModel.clone();
-      model.package = '';
-      model.name = name;
-      model.extends = parentModel && parentModel.id;
-      model.models = traitModel.models; // unclone sub-models, we don't want multiple copies of them floating around
-      this.X.registerModel(model);
+      var models = traitModel.models;
+      traitModel = traitModel.clone();
+      traitModel.package = '';
+      traitModel.name = name;
+      traitModel.extends = parentModel && parentModel.id;
+      traitModel.models = models; // unclone sub-models, we don't want multiple copies of them floating around
+      traitModel.X.registerModel(traitModel);
     }
 
-    var ret = this.X.lookup(name);
+    var ret = traitModel.X.lookup(name);
     console.assert(ret, 'Error adding Trait to Model, unknown name: ', name);
     return ret;
   },
@@ -207,6 +208,7 @@ var BootstrapModel = {
   },
 
   buildPrototype: function() { /* Internal use only. */
+    if ( this.id === 'foam.graphics.Rectangle' ) debugger;
     // save our pure state
     // Note: Only documentation browser uses this, and it will be replaced
     // by the new Feature Oriented bootstrapping process, so only use the
