@@ -21,14 +21,19 @@ CLASS({
   extends: 'foam.node.handlers.Handler',
   properties: [
     {
+      model_: 'foam.node.NodeRequireProperty',
       name: 'path',
       hidden: true,
-      factory: function() { return require('path'); }
     },
     {
+      model_: 'foam.node.NodeRequireProperty',
       name: 'fs',
       hidden: true,
-      factory: function() { return require('fs'); }
+    },
+    {
+      model_: 'foam.node.NodeRequireProperty',
+      name: 'url',
+      hidden: true,
     },
     {
       name: 'pathname'
@@ -39,7 +44,7 @@ CLASS({
   ],
   methods: {
     handle: function(req, res) {
-      if ( req.url.indexOf(this.pathname) !== 0 ) return false;
+      if ( this.url.parse(req.url).pathname !== this.pathname ) return false;
 
       this.fs.readFile(this.file, function(err, data) {
 	if ( err ) {
