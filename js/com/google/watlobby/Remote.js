@@ -135,13 +135,18 @@ CLASS({
       var r = h/2-20;
       t.r = c.r = r;
       c.scaleX = c.scaleY = 0.1;
-      c.alpha = 0.1;
       c.roundImage = t.roundImage;
       if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
       this.addChild(c);
+
+      var l = function(_,_,_,s) { c.alpha = ( !s || s === t.topic ) ? 1 : 0.4; };
+      if ( t.topic !== this.BACK_TOPIC ) {
+        this.selected$.addListener(l);
+        l(null,null,null, this.selected);
+      }
       
-      Movement.animate(250, function() { c.alpha = 1; c.scaleX = c.scaleY = 1; })();
+      Movement.animate(250, function() { c.scaleX = c.scaleY = 1; })();
     }
   ]
 });
