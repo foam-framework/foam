@@ -38,7 +38,7 @@ CLASS({
       name: 'data',
       postSet: function(old,nu) {
         if (nu.data) {
-          this.title = nu.data.title || nu.data.titleText;
+          this.title$ = nu.data.title$ || nu.data.titleText$;
         }
       }
     }
@@ -49,7 +49,7 @@ CLASS({
       var d = this.data ? this.data.data : {};
       return this.cls('md-card-shell').cls('md-body')
         .start('div').cls('md-subhead').cls('heading')
-          .add(this.toolbar)
+          .add(d.titleText)
           .start('div').cls('envelope-spacer').end()
           .start().add('Shared With:').cls('md-grey').end()
           .add(this.data.SHARES)
