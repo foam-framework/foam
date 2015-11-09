@@ -25,7 +25,7 @@ CLASS({
   templates: [
     function CSS() {/*
       plus-chip {
-        display: inline;
+        display: inline-block;
         padding: 3px 8px;
         margin: 3px;
         white-space: pre-line;
@@ -33,7 +33,7 @@ CLASS({
         border-radius: 8px;
         flex-grow: 0;
         flex-shrink: 0;
-        height: 16px;
+        line-height: 12px;
         background-color: grey;
         color: white;
         box-shadow: 0 1px 1px rgba(0,0,0,.25);

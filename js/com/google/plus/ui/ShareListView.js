@@ -61,7 +61,7 @@ CLASS({
     function CSS() {/*
       plus-share-list {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         white-space: pre-line;
         cursor: pointer;
       }
