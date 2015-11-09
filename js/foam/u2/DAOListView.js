@@ -18,13 +18,22 @@
 CLASS({
   package: 'foam.u2',
   name: 'DAOListView',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
   requires: [
     'foam.u2.DetailView'
   ],
   properties: [
     {
-      name: 'data'
+      model_: 'foam.core.types.DAOProperty',
+      name: 'data',
+      postSet: function(old, nu) {
+        this.dao = nu;
+      },
+    },
+    {
+      // Separate from data so it can be a DAOProperty.
+      model_: 'foam.core.types.DAOProperty',
+      name: 'dao',
     },
     {
       name: 'daoListener_',
@@ -53,9 +62,10 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-
+      this.dao$Proxy.pipe(this.daoListener_);
+    },
+    function initE() {
       this.cls('foam-u2-DAOListView');
-      this.data.pipe(this.daoListener_);
     },
   ],
   listeners: [
@@ -88,6 +98,7 @@ CLASS({
       code: function(obj) {
         this.removeAllChildren();
         this.rows = {};
+        this.dao.select(this.daoListener_);
       }
     }
   ]
