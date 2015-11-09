@@ -47,10 +47,10 @@ CLASS({
     // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
     // 'foam.u2.md.SharedStyles',
   ],
-  exports: [ 
+  exports: [
     'streamDAO',
     'personDAO',
-    'circleDAO', // Note: a convenient proxy for currentUser.circles
+    'circleDAO', // Note: proxy for currentUser.circles
     'contactsDAO', // Note: proxy for currentUser.contacts
     'currentUser',
   ],
@@ -119,13 +119,6 @@ CLASS({
       },
     },
     {
-      name: 'shareTargetsDAO',
-      type: 'com.google.plus.ShareTarget',
-      factory: function() {
-        return this.ProxyDAO.create({ model: this.ShareTarget, delegate: [].dao });
-      },      
-    },
-    {
       name: 'fakeInternalServer',
       lazyFactory: function() {
         var sX = GLOBAL.sub({
@@ -133,9 +126,9 @@ CLASS({
             console.log("Fake-exporting fake server dao", dao.name);
           }.bind(this)
         });
-        
+
         var serv = this.Server.create({}, sX);
-        
+
         this.X.setInterval(function() {
           serv.streamDAO.put(
             this.Envelope.create({
@@ -173,7 +166,7 @@ Machine Wash Cold*/}),
             }, this.Y)
           );
         }.bind(this), 2000);
-        
+
         return serv;
       }
     }
@@ -184,7 +177,7 @@ Machine Wash Cold*/}),
       this.SUPER();
       // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
       // this.SharedStyles.create(null, this.Y);
-      
+
       this._populate_test_data_();
     },
     function _populate_test_data_() {

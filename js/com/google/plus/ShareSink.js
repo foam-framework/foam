@@ -29,7 +29,7 @@ CLASS({
     'personDAO',
     'streamDAO',
     'createStreamItem',
-    //TODO: contentDAO (for the content inside streamDAO's envelopes)
+    //TODO: contentDAO (for the content inside streamDAO's envelopes?)
   ],
 
   documentation: function() {/* Handles filtering out notifications based on
