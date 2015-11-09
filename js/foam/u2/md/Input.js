@@ -33,8 +33,8 @@ CLASS({
     {
       name: 'label',
       attribute: true,
-      dynamicValue: function() {
-        return this.prop.label;
+      defaultValueFn: function() {
+        return this.prop ? this.prop.label : '';
       }
     },
     {
@@ -70,6 +70,7 @@ CLASS({
     },
     function fromProperty(prop) {
       this.prop = prop;
+      this.label = prop.label;
       return this.SUPER(prop);
     },
   ],
@@ -82,7 +83,6 @@ CLASS({
         margin: 8px;
         padding: 32px 8px 8px 8px;
         position: relative;
-        flex-grow: 1;
       }
       .foam-u2-md-Input-label {
         color: #999;
