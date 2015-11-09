@@ -52,9 +52,9 @@ CLASS({
         this.start('label')
             .cls2('foam-u2-md-Input-label')
             .cls2(function() {
-              return self.data || self.focused ?
-                  'foam-u2-md-Input-label-offset' : '';
-            }.on$(this.data$, this.focused$))
+              return (typeof self.data !== 'undefined' && self.data !== '') ||
+                  self.focused ? 'foam-u2-md-Input-label-offset' : '';
+            }.on$(this.X, this.data$, this.focused$))
             .add(this.label$)
             .end();
       } else {
