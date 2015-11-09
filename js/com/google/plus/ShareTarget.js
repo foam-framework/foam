@@ -15,27 +15,27 @@
  * limitations under the License.
  */
 
-CLASS({
-  name: 'ShareTarget',
-  package: 'com.google.plus',
+// CLASS({
+//   name: 'ShareTarget',
+//   package: 'com.google.plus',
 
-  documentation: function() {/* A Person, Circle, or ShareList that can be
-     shared to (one of the targets of a share). */},
+//   documentation: function() {/* A Person, Circle, or ShareList that can be
+//      shared to (one of the targets of a share). */},
 
-  properties: [
-    {
-      model_: 'StringProperty',
-      name: 'displayName',
-    }
-  ],
+//   properties: [
+//     {
+//       model_: 'StringProperty',
+//       name: 'displayName',
+//     }
+//   ],
 
-  methods: [
-    function toPeople() {
-      /* Implement to return the flat list of Person ids this share target references. */
-    },
-    function toChipE() {
-      /* Implement to return a contact chip view Element */
-    },
-  ],
+//   methods: [
+//     function toPeople() {
+//       /* Implement to return the flat list of Person ids this share target references. */
+//     },
+//     function toChipE() {
+//       /* Implement to return a contact chip view Element */
+//     },
+//   ],
 
-});
+// });

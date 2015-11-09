@@ -27,9 +27,7 @@ CLASS({
       plus-chip {
         display: inline;
         padding: 3px 8px;
-        -webkit-user-select: none;
-        -ms-user-select': none;
-        -moz-user-select': none;
+        margin: 3px;
         white-space: pre-line;
         cursor: pointer;
         border-radius: 8px;
@@ -39,6 +37,10 @@ CLASS({
         background-color: grey;
         color: white;
         box-shadow: 0 1px 1px rgba(0,0,0,.25);
+      }
+      .chip-historical plus-chip {
+        background-color: transparent;
+        color: grey;
       }
     */},
   ],

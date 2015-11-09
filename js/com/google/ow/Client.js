@@ -26,7 +26,7 @@ CLASS({
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.ProductAd',
     'com.google.ow.ui.EnvelopeCitationView',
-    'com.google.plus.ShareTarget',
+    'com.google.plus.ShareList',
     'com.google.plus.Person',
     'com.google.plus.Circle',
     'foam.browser.BrowserConfig',
@@ -119,6 +119,14 @@ CLASS({
       },
     },
     {
+      name: 'testPeople',
+      lazyFactory: function() { return [].dao; }
+    },
+    {
+      name: 'testCircles',
+      lazyFactory: function() { return [].dao; }
+    },
+    {
       name: 'fakeInternalServer',
       lazyFactory: function() {
         var sX = GLOBAL.sub({
@@ -129,10 +137,14 @@ CLASS({
 
         var serv = this.Server.create({}, sX);
 
-        this.X.setInterval(function() {
+        this.X.setTimeout(function() {
           serv.streamDAO.put(
             this.Envelope.create({
               owner: this.currentUser.id,
+              shares: this.ShareList.create({
+                circles: [ this.testCircles[0].id ],
+                people: [ this.testPeople[3].id, this.testPeople[5].id ],
+              }),
               data: this.ProductAd.create({
                 titleText: 'FOAM T-shirt'+(new Date).toString(),
                 summaryText:
@@ -184,7 +196,7 @@ Machine Wash Cold*/}),
       var self = this;
 
       // create test user pool
-      var personTestArray = [];
+      var personTestArray = this.testPeople;
       [
         ['Henry', 'Joe', 'Carvil'],
         ['Sammy', 'Davis', 'Junior'],
@@ -219,7 +231,7 @@ Machine Wash Cold*/}),
         c[1].forEach(function(pIdx) {
           nu.people.put(personTestArray[pIdx]);
         });
-        self.currentUser.circles.put(nu);
+        self.currentUser.circles.put(nu, self.testCircles);
       });
 
       // self.streamDAO.put(

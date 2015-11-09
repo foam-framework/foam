@@ -18,11 +18,11 @@
 CLASS({
   name: 'Circle',
   package: 'com.google.plus',
-  extends: 'com.google.plus.ShareTarget',
 
   properties: [
     { model_: 'Property', name: 'id', help: 'The FOAM ID, globally unique.' },
 
+    { model_: 'StringProperty', name: 'displayName' },
     { model_: 'StringProperty', name: 'description' },
 
     {
@@ -34,7 +34,7 @@ CLASS({
 //   "etag": etag,
 //   "selfLink": 'StringProperty'
   ],
-  
+
   methods: [
     function toPeople() {
       return this.people;

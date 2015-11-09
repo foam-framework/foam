@@ -101,7 +101,7 @@ CLASS({
             // remember name for display purposes
             self.moveToHistory(c);
             // grab all circle member references
-            c.people.select(MAP(this.Person.ID, self.people));
+            c.people.select(MAP(self.Person.ID, self.people));
           }});
         }
       }

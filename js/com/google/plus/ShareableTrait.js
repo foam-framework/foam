@@ -43,6 +43,11 @@ CLASS({
     },
     {
       name: 'shares',
+      view: 'com.google.plus.ui.ShareListView',
+      toPropertyE: function toPropertyE(X) {
+        var v = X.lookup('com.google.plus.ui.ShareListView');
+        return v ? v.create({},X.sub({ data: X.data.shares }) ) : ''; //TODO: this right?
+      },
       factory: function() {
         return this.ShareList.create({ owner: this.owner });
       },

@@ -19,7 +19,6 @@ CLASS({
   name: 'Person',
   package: 'com.google.plus',
   plural: 'People',
-  extends: 'com.google.plus.ShareTarget',
 
   traits: [
     'foam.core.dao.SyncTrait',

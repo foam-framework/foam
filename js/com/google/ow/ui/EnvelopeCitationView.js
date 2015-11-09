@@ -14,13 +14,20 @@ CLASS({
   name: 'EnvelopeCitationView',
   extends: 'foam.u2.View',
 
+  requires: [ 'com.google.plus.ui.ShareListView' ],
+
+  exports: [ 'data' ],
+
   properties: [ [ 'nodeName', 'ENVELOPE-CITATION' ] ],
 
   methods: [
     function initE() {
       var d = this.data ? this.data.data : {};
       return this.cls('md-card-shell').cls('md-body')
-        .start('div').cls('md-subhead').cls('heading').add(d.titleText).end()
+        .start('div').cls('md-subhead').cls('heading')
+          .add(d.titleText)
+          .add(this.data.SHARES)
+        .end()
         .start('div').cls('content')
           .add(d.toCitationE())
         .end();
