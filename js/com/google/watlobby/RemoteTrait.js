@@ -19,6 +19,10 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'RemoteTrait',
 
+  constants: {
+    BACK_TOPIC: '*back*'
+  },
+
   properties: [
     { name: 'root', defaultValue: '' },
     {
@@ -43,19 +47,30 @@ CLASS({
     function onClick(evt) {
       var t = this.findChildAt(evt.clientX, evt.clientY);
       if ( t ) {
-        this.selected = t && t.topic && t.topic.topic;
+        if ( t.topic.topic === this.BACK_TOPIC ) {
+          this.selected = '';
+          this.back();
+        } else {
+          this.selected = t && t.topic && t.topic.topic;
+        }
       } else {
         if ( this.selected ) {
           this.selected = null;
         } else if ( this.dir ) {
-          var self = this;
-          // CD up a directory
-          this.topics.find(EQ(this.Topic.TOPIC, this.dir), {
-            put: function(t) { self.dir = t.parent; },
-            error: function() { self.dir = ''; }
-          });
+          this.back();
         }
       }
+    }
+  ],
+
+  methods: [
+    function back() {
+      var self = this;
+      // CD up a directory
+      this.topics.find(EQ(this.Topic.TOPIC, this.dir), {
+        put: function(t) { self.dir = t.parent; },
+        error: function() { self.dir = ''; }
+      });
     }
   ]
 });

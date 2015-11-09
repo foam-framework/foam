@@ -80,6 +80,15 @@ CLASS({
           this.removeChild(this.children[this.children.length-1]);
         }
         
+        if ( this.dir )
+          this.putTopic(this.Topic.create({
+            parent: this.dir,
+            topic: this.BACK_TOPIC,
+            image: 'img/back.png',
+            model: "Photo",
+            color: 'grey',
+            roundImage: true
+          }));
         this.topics.find(EQ(this.Topic.TOPIC, this.dir),{put:this.putTopic.bind(this)});
         this.topics.where(EQ(this.Topic.PARENT, this.dir)).select({put: this.putTopic.bind(this)});
       }
@@ -133,9 +142,6 @@ CLASS({
       this.addChild(c);
       
       Movement.animate(250, function() { c.alpha = 1; c.scaleX = c.scaleY = 1; })();
-    },
-    function removeTopic(t) {
-      // TODO
     }
   ]
 });
