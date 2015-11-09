@@ -86,7 +86,7 @@ CLASS({
             topic: this.BACK_TOPIC,
             image: 'img/back.png',
             model: "Photo",
-            color: 'grey',
+            color: 'gray',
             roundImage: true
           }));
         this.topics.find(EQ(this.Topic.TOPIC, this.dir),{put:this.putTopic.bind(this)});
@@ -139,6 +139,8 @@ CLASS({
       if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
       this.addChild(c);
+
+      if ( t.topic === this.BACK_TOPIC ) c.alpha = 0.5;
 
       var close = this.ImageCView.create({alpha: 0.5, x: -60, y: -60, width: 120, height: 120, src: 'img/close.png'}); 
       var s = function() { c.scaleX = c.scaleY = ! this.selected ? 0.9 : this.selected === t.topic ? 1.02 : 0.75; }.bind(this);
