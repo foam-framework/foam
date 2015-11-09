@@ -140,13 +140,10 @@ CLASS({
       if ( t.background ) c.color = t.background;
       this.addChild(c);
 
-      var l = function(_,_,_,s) { c.alpha = ( !s || s === t.topic ) ? 1 : 0.4; };
-      if ( t.topic !== this.BACK_TOPIC ) {
-        this.selected$.addListener(l);
-        l(null,null,null, this.selected);
-      }
-      
-      Movement.animate(250, function() { c.scaleX = c.scaleY = 1; })();
+      var s = function() { c.scaleX = c.scaleY = ! this.selected ? 0.9 : this.selected === t.topic ? 1.02 : 0.75; }.bind(this);
+      var l = function() { Movement.animate(300, s)(); };
+      this.selected$.addListener(l);
+      l();
     }
   ]
 });
