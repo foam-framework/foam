@@ -44,9 +44,8 @@ CLASS({
     // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
     // 'foam.u2.md.SharedStyles',
   ],
-  exports: [ 'imageDAO' ],
-
   exports: [
+    'imageDAO',
     'circleDAO',
     'personDAO',
     'currentUser',

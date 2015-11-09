@@ -26,6 +26,8 @@ CLASS({
       return this.cls('md-card-shell').cls('md-body')
         .start('div').cls('md-subhead').cls('heading')
           .add(d.titleText)
+          .start('div').cls('envelope-spacer').end()
+          .start().add('Shared:').cls('md-grey').end()
           .add(this.data.SHARES)
         .end()
         .start('div').cls('content')
@@ -54,6 +56,9 @@ CLASS({
       }
       envelope-citation .content {
         padding: 5px 10px;
+      }
+      envelope-citation .envelope-spacer {
+        flex-grow: 10;
       }
     */},
   ],
