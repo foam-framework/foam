@@ -18,9 +18,11 @@
 CLASS({
   package: 'foam.u2',
   name: 'DetailPropertyView',
-      
   extends: 'foam.u2.PropertyView',
-  
+  requires: [
+    'foam.u2.Select',
+  ],
+
   templates: [
     function CSS() {/*
       .foam-u2-PropertyView-label {
