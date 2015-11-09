@@ -41,14 +41,14 @@ CLASS({
       }
     */}
   ],
-      
+
   methods: [
-    function initE(view) {
+    function initE() {
       var prop = this.prop;
       this.cls('foam-u2-PropertyView').add(
         E('td').cls('foam-u2-PropertyView-label').add(prop.label),
         E('td').cls('foam-u2-PropertyView-view').add(
-          view,
+          this.child_,
           prop.units && E('span').cls('foam-u2-PropertyView-units').add(prop.units)));
     }
   ]
