@@ -22,6 +22,9 @@ CLASS({
   requires: [
     'foam.u2.DetailView'
   ],
+  imports: [
+    'selection$',
+  ],
   properties: [
     {
       model_: 'foam.core.types.DAOProperty',
@@ -80,6 +83,13 @@ CLASS({
         var child = obj.toE ?
             obj.toE() :
             this.DetailView.create({ data: obj });
+
+        if (this.X.selection$) {
+          child.on('click', function() {
+            this.selection = obj;
+          }.bind(this));
+        }
+
         this.rows[obj.id] = child;
         this.add(child);
       }
