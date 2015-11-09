@@ -96,10 +96,10 @@ var BootstrapModel = {
       model.name = name;
       model.extends = parentModel && parentModel.id;
       model.models = traitModel.models; // unclone sub-models, we don't want multiple copies of them floating around
-      GLOBAL.X.registerModel(model);
+      this.X.registerModel(model);
     }
 
-    var ret = GLOBAL.X.lookup(name);
+    var ret = this.X.lookup(name);
     console.assert(ret, 'Error adding Trait to Model, unknown name: ', name);
     return ret;
   },
@@ -109,7 +109,7 @@ var BootstrapModel = {
       name: name,
       code: fn
     });
-    
+
     if ( FEATURE_ENABLED(['debug']) && Arg ) {
       var str = fn.toString();
       var match = str.match(/^function[ _$\w]*\(([ ,\w]+)/);
@@ -117,7 +117,7 @@ var BootstrapModel = {
         method.args = match[1].split(',').
         map(function(name) { return Arg.create({name: name.trim()}); });
     }
-    
+
     return method;
   },
 
