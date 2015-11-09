@@ -35,21 +35,21 @@ CLASS({
   documentation: function() {/* Handles filtering out notifications based on
     mutual circleship. A put()ted object's shareWith property is checked,
     and if sender and reciever are mutually circling each other, the
-    object is cloned to the receiver. 
-    
+    object is cloned to the receiver.
+
     Note that under current assumptions, a sub-stream adds content by
-    copying the sub-stream's shareList into the new content. Once the 
+    copying the sub-stream's shareList into the new content. Once the
     new content hits the server, it is shared with the other participants
     of the sub-stream. Adding a user to the sub-stream
     on your end will cause them to see new updates, not get old ones.
-    Removing a user would halt new updates, but not remove old ones. 
-    
+    Removing a user would halt new updates, but not remove old ones.
+
     */},
 
   methods: [
     function put(o, sink) {
       var self = this;
-      
+
       // run the sharing check after the put() succeeds
       self.delegate.put(o, {
         put: function(o) {
@@ -61,31 +61,30 @@ CLASS({
 
     function checkShare(o) {
       var self = this;
-      if ( o.shares.shareComplete ) {
-        return;
-      }
+      if ( ! o.shares.sharesPending ) return;
+
       // lookup the owner
-      self.personDAO.find(o.owner, { 
+      self.personDAO.find(o.owner, {
         put: function(owner) {
           var shares = o.shares;
           shares.flatten(owner); // TODO: this is just-in-case. leave out? must put() modified o back
           var people = shares.people;
-          shares.shareComplete = true;
-          self.delegate.put(o);
+          self.putBack(o);
 
           self.personDAO.where(IN(self.Person.ID, people)).select({
             put: function(person) {
               // for each share target, check if they have owner in any circle
+              o.shares.moveToHistory(person);
+              self.putBack(o);
               // TODO: cache flattened list of ok ids for each target?
               if (self.isInCircles(owner, person)) {
                 // TODO: error handling
                 self.streamDAO.put(self.createStreamItem(owner, person, o.data));//from, to, content
               }
             }
-          }); 
+          });
         },
-      });  
-      
+      });
     },
 
     function isInCircles(subject, circleOwner) {
@@ -99,5 +98,15 @@ CLASS({
       return false;
     },
   ],
+
+  listeners: [
+    {
+      name: 'putBack',
+      isMerged: 1000,
+      code: function(o) {
+        this.delegate.put(o); // TODO: UPDATE instead? Just want to change o.shares
+      }
+    },
+  ]
 
 });
