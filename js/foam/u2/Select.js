@@ -26,9 +26,12 @@ CLASS({
       adapt: function(_, options) {
         return options.map(function(o) { return Array.isArray(o) ? o : [o, o]; });
       },
-      factory: function() { return []; }
+      factory: function() {
+        return this.prop && this.prop.choices || [];
+      }
     },
     [ 'nodeName', 'select' ],
+    'prop',
     'data',
     'placeholder'
   ],
