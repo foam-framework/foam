@@ -80,15 +80,15 @@ CLASS({
     },
     function addRightAction(action) {
       if ( ! action ) return;
-      this.addRightActions('right', [action]);
+      this.addRightActions([action]);
     },
     function removeLeftAction(action) {
       if ( ! action ) return;
-      this.removeActions('left', [action]);
+      this.removeLeftActions([action]);
     },
     function removeRightAction(action) {
       if ( ! action ) return;
-      this.removeActions('right', [action]);
+      this.removeRightActions([action]);
     },
     function addLeftActions(actions) { return this.addActions('left', actions); },
     function addRightActions(actions) { return this.addActions('right', actions); },
