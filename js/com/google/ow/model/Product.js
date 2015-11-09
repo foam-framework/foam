@@ -13,6 +13,10 @@ CLASS({
   package: 'com.google.ow.model',
   name: 'Product',
 
+  requires: [
+    'com.google.ow.model.OrderItem',
+  ],
+
   properties: [
     {
       model_: 'StringProperty',
@@ -25,6 +29,14 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'summary',
+    },
+  ],
+
+  methods: [
+    function toOrderItem(n) {
+      var c = this.clone();
+      c.name = c.summary = '';
+      return this.OrderItem.create({ product: c, quantity: n }, this.Y);
     },
   ],
 });

@@ -19,10 +19,8 @@ CLASS({
     'foam.u2.Element',
     'com.google.ow.ui.ImageView',
     'foam.ui.KeyView',
-    
   ],
-  
-  exports: [ 'imageDAO' ],
+  imports: [ 'imageDAO' ],
 
   properties: [
     {
@@ -30,17 +28,21 @@ CLASS({
       name: 'products',
     },
     {
-      name: 'imageDAO',
-    }
+      type: 'com.google.ow.model.Order',
+      name: 'order',
+    },
   ],
 
   methods: [
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE() {
-      return this.ShoppingView.create({ data: this }, this.Y);
+      return this.ShoppingView.create({
+        order: this.order,
+        products: this.products,
+      }, this.Y);
     },
     function toCitationE() {
-      return this.Element.create()
+      return this.Element.create(null, this.Y)
         .start()
           .add(this.KeyView.create({
             dao: this.imageDAO,
@@ -57,6 +59,6 @@ CLASS({
           }, this.Y))
           .start('div').cls('md-body').add(this.summaryText).end()
         .end();
-    }
+    },
   ],
 });

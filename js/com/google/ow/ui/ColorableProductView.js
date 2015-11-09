@@ -43,7 +43,7 @@ CLASS({
                 });
           }.bind(this),
         }, this.Y))
-        .start('div').cls('md-body').style({ 'padding-left': '16px' })
+        .start('div').cls('md-body').cls('content')
           .add(this.data.summary)
         .end()
         .add(this.data.COLOR);
