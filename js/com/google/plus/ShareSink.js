@@ -35,7 +35,16 @@ CLASS({
   documentation: function() {/* Handles filtering out notifications based on
     mutual circleship. A put()ted object's shareWith property is checked,
     and if sender and reciever are mutually circling each other, the
-    object is cloned to the receiver. */},
+    object is cloned to the receiver. 
+    
+    Note that under current assumptions, a sub-stream adds content by
+    copying the sub-stream's shareList into the new content. Once the 
+    new content hits the server, it is shared with the other participants
+    of the sub-stream. Adding a user to the sub-stream
+    on your end will cause them to see new updates, not get old ones.
+    Removing a user would halt new updates, but not remove old ones. 
+    
+    */},
 
   methods: [
     function put(o, sink) {

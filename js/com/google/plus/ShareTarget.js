@@ -16,31 +16,26 @@
  */
 
 CLASS({
-  name: 'Circle',
+  name: 'ShareTarget',
   package: 'com.google.plus',
-  extends: 'com.google.plus.ShareTarget',
+
+  documentation: function() {/* A Person, Circle, or ShareList that can be
+     shared to (one of the targets of a share). */},
 
   properties: [
-    { model_: 'Property', name: 'id', help: 'The FOAM ID, globally unique.' },
-
-    { model_: 'StringProperty', name: 'description' },
-
     {
-      model_: 'ReferenceArrayProperty',
-      subType: 'com.google.plus.Person',
-      name: 'people',
-      // defaults to ID, which is the person's GUID
-    },
-//   "etag": etag,
-//   "selfLink": 'StringProperty'
+      model_: 'StringProperty',
+      name: 'displayName',
+    }
   ],
-  
+
   methods: [
     function toPeople() {
-      return this.people;
+      /* Implement to return the flat list of Person ids this share target references. */
     },
     function toChipE() {
       /* Implement to return a contact chip view Element */
     },
   ],
+
 });

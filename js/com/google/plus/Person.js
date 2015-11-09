@@ -19,6 +19,7 @@ CLASS({
   name: 'Person',
   package: 'com.google.plus',
   plural: 'People',
+  extends: 'com.google.plus.ShareTarget',
 
   traits: [
     'foam.core.dao.SyncTrait',
@@ -40,6 +41,15 @@ CLASS({
         },
         { model_: 'StringProperty', name: 'label'  },
       ]
+    },
+  ],
+
+  methods: [
+    function toPeople() {
+      return this.id;
+    },
+    function toChipE() {
+      /* Implement to return a contact chip view Element */
     },
   ],
 

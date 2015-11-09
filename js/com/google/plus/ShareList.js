@@ -36,7 +36,7 @@ CLASS({
     {
       model_: 'ReferenceProperty',
       subType: 'com.google.plus.Person',
-      name: 'owner',
+      name: 'owner'
     },
     {
       model_: 'ReferenceArrayProperty',
@@ -47,7 +47,7 @@ CLASS({
     {
       model_: 'ReferenceArrayProperty',
       name: 'people',
-      subType: 'com.google.plus.Person',
+      subType: 'com.google.plus.Person'
     },
     {
       model_: 'StringArrayProperty',
@@ -57,7 +57,8 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'shareComplete',
-      defaultValue: false,
+      defaultValue: false
+      //TODO: mark individual people as completed?
     }
   ],
 

@@ -26,6 +26,7 @@ CLASS({
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.ProductAd',
     'com.google.ow.ui.EnvelopeCitationView',
+    'com.google.plus.ShareTarget',
     'com.google.plus.Person',
     'com.google.plus.Circle',
     'foam.browser.BrowserConfig',
@@ -50,6 +51,7 @@ CLASS({
     'streamDAO',
     'personDAO',
     'circleDAO', // Note: a convenient proxy for currentUser.circles
+    'contactsDAO', // Note: proxy for currentUser.contacts
     'currentUser',
   ],
 
@@ -86,6 +88,7 @@ CLASS({
         if (nu) {
           this.streamDAO.delegate = this.fakeInternalServer.streamDAO.where(EQ(this.Envelope.OWNER, nu.id));
           this.circleDAO.delegate = nu.circles;
+          this.contactsDAO.delegate = nu.contacts;
         }
       }
     },
@@ -105,8 +108,22 @@ CLASS({
       name: 'circleDAO',
       type: 'com.google.plus.Circle',
       factory: function() {
-        return this.ProxyDAO.create({ delegate: [].dao });
+        return this.ProxyDAO.create({ model: this.Circle, delegate: [].dao });
       },
+    },
+    {
+      name: 'contactsDAO',
+      type: 'com.google.plus.Person',
+      factory: function() {
+        return this.ProxyDAO.create({ model: this.Person, delegate: [].dao });
+      },
+    },
+    {
+      name: 'shareTargetsDAO',
+      type: 'com.google.plus.ShareTarget',
+      factory: function() {
+        return this.ProxyDAO.create({ model: this.ShareTarget, delegate: [].dao });
+      },      
     },
     {
       name: 'fakeInternalServer',
