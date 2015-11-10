@@ -30,6 +30,14 @@ CLASS({
         return nu;
       }
     },
+//     {
+//       name: 'gestureManager',
+//       factory: function() { return "";}
+//     },
+//     {
+//       name: 'touchManager',
+//       factory: function() { return "";}
+//     },
   ],
 
 });
