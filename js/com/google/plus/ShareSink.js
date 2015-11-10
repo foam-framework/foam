@@ -68,14 +68,14 @@ CLASS({
         put: function(owner) {
           var shares = o.shares;
           shares.flatten(owner); // TODO: this is just-in-case. leave out? must put() modified o back
-          var people = shares.people;
+          var people = shares.flattenedPeople;
           self.putBack(o);
 
           self.personDAO.where(IN(self.Person.ID, people)).select({
             put: function(person) {
-              // for each share target, check if they have owner in any circle
-              o.shares.moveToHistory(person);
+              // move direct person references to history list
               self.putBack(o);
+              // for each share target, check if they have owner in any circle
               // TODO: cache flattened list of ok ids for each target?
               if (self.isInCircles(owner, person)) {
                 // TODO: error handling
@@ -83,6 +83,7 @@ CLASS({
               }
             }
           });
+
         },
       });
     },

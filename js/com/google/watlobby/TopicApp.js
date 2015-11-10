@@ -42,7 +42,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      body{ color: #555; }
+      body { color: #555; }
       .md-detail-view image-picker { min-height: 250px; }
       .md-detail-view { overflow-y: auto; }
       .md-text-field-input { width: 100%; }
