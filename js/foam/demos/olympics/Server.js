@@ -49,8 +49,6 @@ CLASS({
     }
   ],
   methods: [
-    function execute() {
-      this.exportDAO(this.medalDAO);
-    }
+    function execute() { this.exportDAO(this.medalDAO); }
   ]
 });
