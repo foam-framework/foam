@@ -29,7 +29,6 @@ CLASS({
       defaultValue: true
     },
     ['showLabel', true],
-    'prop',
     {
       name: 'label',
       attribute: true,
@@ -69,7 +68,6 @@ CLASS({
       input.end();
     },
     function fromProperty(prop) {
-      this.prop = prop;
       this.label = prop.label;
       return this.SUPER(prop);
     },

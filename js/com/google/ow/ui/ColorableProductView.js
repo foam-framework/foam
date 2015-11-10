@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'com.google.ow.ui.ImageView',
+    'foam.u2.md.Select',
     'foam.ui.KeyView',
   ],
   imports: [ 'imageDAO' ],
@@ -24,6 +25,12 @@ CLASS({
   properties: [ [ 'nodeName', 'PRODUCT' ] ],
 
   methods: [
+    function init() {
+      // For *EnumProperty.toPropertyE().
+      this.Y.registerModel(this.Select, 'foam.u2.Select');
+
+      this.SUPER();
+    },
     function initE() {
       return this.start('div').cls('md-subhead').cls('heading')
           .add(this.data.name)
@@ -43,8 +50,11 @@ CLASS({
                 });
           }.bind(this),
         }, this.Y))
-        .start('div').cls('md-body').cls('content')
+        .start('div').cls('md-body').cls('summary')
           .add(this.data.summary)
+        .end()
+        .start('div').cls('md-body').cls('price')
+          .add('$').add(this.data.price.toFixed(2))
         .end()
         .add(this.data.COLOR);
     },
@@ -66,9 +76,15 @@ CLASS({
       product .heading {
         padding: 10px 0 5px 10px;
       }
-      product .content {
+      product .summary, product.price {
         padding: 5px 10px;
+      }
+      product .summary {
         white-space: pre-line;
+      }
+      product .price {
+        font-style: italic;
+        padding: 5px 10px;
       }
     */},
   ],

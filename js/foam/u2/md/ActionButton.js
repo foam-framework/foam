@@ -90,8 +90,10 @@ CLASS({
   ],
 
   listeners: [
-    function onClick() {
-      console.log('Action button click');
+    function onClick(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.action.maybeCall(this.X, this.data);
     },
   ],
 

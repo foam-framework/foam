@@ -20,12 +20,9 @@ CLASS({
     'com.google.ow.ui.ImageView',
     'foam.ui.KeyView',
   ],
-  exports: [ 'imageDAO' ],
+  imports: [ 'imageDAO' ],
 
   properties: [
-    {
-      name: 'imageDAO'
-    },
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'products',

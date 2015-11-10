@@ -81,7 +81,7 @@ CLASS({
         }
 
         var child = obj.toE ?
-            obj.toE() :
+            obj.toE(this.Y) :
             this.DetailView.create({ data: obj });
 
         if (this.X.selection$) {

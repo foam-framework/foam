@@ -15,6 +15,7 @@ CLASS({
 
   requires: [
     'com.google.ow.model.OrderItem',
+    'com.google.ow.ui.ShoppingItemView',
   ],
 
   properties: [
@@ -30,13 +31,34 @@ CLASS({
       model_: 'StringProperty',
       name: 'summary',
     },
+    {
+      model_: 'FloatProperty',
+      name: 'price',
+    },
+    {
+      model_: 'IntProperty',
+      name: 'hash',
+      defaultValueFn: function() {
+        return this.id.hashCode();
+      },
+    },
   ],
 
   methods: [
     function toOrderItem(n) {
       var c = this.clone();
+      var name = c.name;
       c.name = c.summary = '';
-      return this.OrderItem.create({ product: c, quantity: n }, this.Y);
+      return this.OrderItem.create({
+        product: c,
+        summary: name,
+        quantity: n,
+      }, this.Y);
+    },
+    function toE(X) {
+      // TODO(markdittmer): This may not always be what we want. We should
+      // use some contextual hints to choose a view.
+      return this.ShoppingItemView.create({ data: this }, X);
     },
   ],
 });

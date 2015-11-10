@@ -242,12 +242,13 @@ function registerE(name, model) {
   return this;
 }
 
-// Utility function for creating U2 elements in a short format.
+// Utility function for creating U2 elements in a short format. Expects to be
+// run on a conteXt object.
 function E(opt_nodeName) {
   var e = this.elementForName && this.elementForName(opt_nodeName);
 
   if ( ! e ) {
-    e = foam.u2.Element.create(null, X);
+    e = this.lookup('foam.u2.Element').create(null, this);
     if ( opt_nodeName ) e.nodeName = opt_nodeName;
   }
 

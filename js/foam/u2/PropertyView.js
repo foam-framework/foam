@@ -26,15 +26,12 @@ CLASS({
     'foam.u2.Input'
   ],
 
-  imports: [ 'data$' ],
+  imports: [
+    'data',
+    'data$',
+  ],
 
   properties: [
-    {
-      name: 'data',
-      postSet: function(old, nu) {
-        this.bindData_(old, nu);
-      },
-    },
     {
       name: 'prop'
     },

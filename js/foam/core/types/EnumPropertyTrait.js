@@ -24,18 +24,33 @@ CLASS({
       type: 'Array',
       help: 'Array of [value, label] choices.',
       preSet: function(_, a) { return a.map(function(c) { return Array.isArray(c) ? c : [c, c]; }); },
-      required: true
+      required: true,
     },
     {
       name: 'view',
-      defaultValue: 'foam.ui.ChoiceView'
+      defaultValue: 'foam.ui.ChoiceView',
     },
     {
       name: 'toPropertyE',
       defaultValue: function(X) {
         // TODO(braden): Use a FutureElement for this in the future.
-        return X.lookup('foam.u2.Select').create({ prop: this }, X);
+        return X.lookup('foam.u2.Select').create({
+          prop: this,
+          choices: this.choices,
+        }, X);
       }
     },
-  ]
+  ],
+
+  methods: [
+    function choiceLabel(value) {
+      var vl = this.choices.filter(function(vl) { return vl[0] === value; })[0];
+
+      return vl ? vl[1] : '';
+    },
+    function choiceValue(label) {
+      var vl = this.choices.filter(function(vl) { return vl[1] === label; })[0];
+      return vl ? vl[0] : '';
+    },
+  ],
 });

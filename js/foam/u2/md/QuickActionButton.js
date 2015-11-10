@@ -116,8 +116,10 @@ CLASS({
   ],
 
   listeners: [
-    function onClick() {
-      console.log('Quick action button click');
+    function onClick(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.action.maybeCall(this.X, this.data);
     },
   ],
 
