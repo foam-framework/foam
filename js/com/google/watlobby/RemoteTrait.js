@@ -50,7 +50,7 @@ CLASS({
   listeners: [
     function onClick(evt) {
       var t = this.findChildAt(evt.clientX, evt.clientY);
-      if ( t ) {
+      if ( t && t.topic ) {
         if ( t.topic.topic === this.BACK_TOPIC ) {
           this.selected = '';
           this.back();
