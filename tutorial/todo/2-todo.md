@@ -64,6 +64,9 @@ to see your budding app in action. It should look like this:
 ![List view screenshot]({{ site.url }}/tutorial/todo/assets/model-only-list.png)
 ![Detail view screenshot]({{ site.url }}/tutorial/todo/assets/model-only-details.png)
 
+Note that your data won't be saved across refreshes. We'll fix that in [Part
+4]({{ site.baseurl }}/tutorial/todo/4-dao), so don't worry about it for now.
+
 There are definitely things we'll want to clean up, but we just got a lot of
 logic for free! This uses FOAM's `foam.browser` suite to generate an app for our
 model. The browser is for the common class of apps that have a list of items and
@@ -80,7 +83,7 @@ shape of your data, it can generate lots of functionality for you.
 FOAM can give you as much or as little help as you like. If your app doesn't
 fit this list-and-details pattern, you don't need to use `foam.browser` at all.
 If you want a completely different look, you can still get the search and menu
-from the controller, but replace the view completely.
+from the controller, but replace the views completely.
 
 FOAM doesn't force you into anything. If you don't like one of our views,
 replace it with one of your own. Every component can be replaced, and any

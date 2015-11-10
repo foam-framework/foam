@@ -23,8 +23,5 @@ tutorials:
   -
     title: Canned Queries
     url: /tutorial/todo/6-canned-query
-  -
-    title: Actions
-    url: /tutorial/todo/7-actions
 ---
 {{ content }}

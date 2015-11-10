@@ -16,7 +16,7 @@ Create the file `$PROJECT/js/com/todo/TodoApp.js` and put the following into it:
 CLASS({
   package: 'com.todo',
   name: 'TodoApp',
-  extendsModel: 'foam.browser.ui.BrowserView',
+  extends: 'foam.browser.ui.BrowserView',
   requires: [
     'com.todo.model.Todo',
     'foam.browser.BrowserConfig',

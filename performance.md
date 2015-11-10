@@ -7,7 +7,7 @@ permalink: /performance/
 There are two established approaches to two-way binding in Javascript: dirty
 checking and `Object.observe`.
 
-Dirty checking scales linearly with the number of live bindings, and the
+Dirty checking scales linearly with the number of bindings, and the
 overhead gets worse as the values get more interdependent.
 
 `Object.observe` is currently only [supported](http://caniuse.com/#feat=object-observe)

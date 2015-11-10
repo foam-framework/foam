@@ -84,5 +84,6 @@ with the red + button, edit existing Todos, search-as-you-type, and more. On
 desktop, it can split into multiple columns. On mobile, it will be a single
 column.
 
-We'll get started building our app in [Part 1: Todo Model]({{ site.baseurl }}/tutorial/todo/1-model/).
+We'll introduce a few of FOAM's key concepts in
+[Part 1: Models and Metaprogramming]({{ site.baseurl }}/tutorial/todo/1-model/).
 

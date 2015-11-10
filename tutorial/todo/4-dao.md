@@ -39,7 +39,16 @@ persistent.
 
 Edit `js/com/todo/TodoApp.js`.
 
-First, add `foam.dao.EasyDAO` to the `requires`.
+First, add `foam.dao.EasyDAO` to the `requires`:
+
+{% highlight js %}
+requires: [
+  'com.todo.model.Todo',
+  'foam.browser.BrowserConfig',
+  'foam.dao.EasyDAO',
+],
+{% endhighlight %}
+
 
 Then edit `data`'s `factory` to be:
 {% highlight js %}

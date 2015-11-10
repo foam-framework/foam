@@ -6,7 +6,7 @@ tutorial: 6
 
 ## Menus in the browser
 
-You may have noticed that our Todo Browser has a "sausage menu" button in the
+You may have noticed that our Todo Browser has a "hamburger" button in the
 corner. If you touch it, it animates a slide-out menu... with nothing in it.
 
 ![Empty menu overlay]({{ site.url }}/tutorial/todo/assets/empty-menu.png)
@@ -63,7 +63,18 @@ We want three canned queries:
 - "Done": `EQ(this.Todo.IS_COMPLETED, true)`
 - "Everything": `TRUE`
 
-Open up `TodoApp.js`. First, add `foam.mlang.CannedQuery` to `requires`.
+Open up `TodoApp.js`.
+
+First, add `foam.mlang.CannedQuery` to `requires`:
+{% highlight js %}
+requires: [
+  'com.todo.model.Todo',
+  'com.todo.ui.TodoCitationView',
+  'foam.browser.BrowserConfig',
+  'foam.dao.EasyDAO',
+  'foam.mlang.CannedQuery',
+],
+{% endhighlight %}
 
 Then expand the `factory` for `data`:
 
@@ -110,8 +121,8 @@ subset of the data.
 
 ![Alphabetical list]({{ site.url }}/tutorial/todo/assets/menu-alphabetical.png)
 
-Note that the entries are in alphabetical order, not the order we wrote them in
-the file. Let's fix the orders.
+Note also that the entries are in alphabetical order, not the order we wrote
+them in the file. Let's fix the order.
 
 
 ### Controlling canned query order
@@ -120,7 +131,8 @@ Canned queries can provide a `section` property, which groups them into
 clusters. They can also provide an `order` property to specify the order within
 each section, independently.
 
-For our purposes here, we just want to set `order` on each query:
+For our purposes here, we only have one group, so we'll just set `order` on each
+query:
 {% highlight js %}
 cannedQueryDAO: [
   this.CannedQuery.create({
@@ -147,9 +159,11 @@ And the result:
 
 ## Next
 
-The last part of this basic tutorial is to add user actions to our `Todo` model,
-so that they will appear in the header of the detail view.
+You made it! That's the end of this basic introduction to programming in FOAM.
 
-We'll add a "delete" button in
-[Part 7: User Actions]({{ site.baseurl }}/tutorial/todo/7-actions).
+There are enough places to go next that they have a page to themselves:
+[FOAM tutorial hub]({{ site.baseurl }}/tutorial/0-intro).
+
+We particularly recommend you take a look at the [DAO User Guide]({{ site.url }}/guides/dao).
+If you're wondering about reactivity and performance, see [Performance]({{ site.baseurl }}/performance).
 

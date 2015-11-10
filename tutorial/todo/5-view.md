@@ -19,7 +19,7 @@ view:
 
 - `foam.ui.View` completely re-renders itself every time its `data` changes.
 - `foam.ui.SimpleView` doesn't react at all when its `data` changes.
-- `foam.ui.md.DetailView` doesn't repaint itself - it expects its child view to
+- `foam.ui.md.DetailView` doesn't repaint itself - it expects its child views to
   update themselves if their portion of the `data` changed.
 
 The choice between them isn't always clear. Generally, `SimpleView` is for views
@@ -42,7 +42,7 @@ and will the file with the following:
 CLASS({
   package: 'com.todo.ui',
   name: 'TodoCitationView',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
   templates: [
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
@@ -93,20 +93,31 @@ of the `title` property.
 ### Wire in our new view
 
 We need to override the default list view with our own. FOAM has a variety of
-views that expect a DAO and render its contents in some fashion. The three main
+views that expect a DAO and render its contents in some fashion. The four main
 ones are:
 
 - `foam.ui.DAOListView` is a basic list, used by default.
 - `foam.ui.ScrollView` is an infinite-scrolling version that uses native browser
   scrolling and can handle 100,000 rows at 60fps on mobile.
 - `foam.ui.(md.)TableView` renders an HTML `<table>`.
+- `foam.ui.(md.)FlexTableView` renders a table with adjustible columns and
+  infinite scrolling.
 
-The browser uses a `DAOListView` with a `rowView` of `foam.ui.md.CitationView`
-by default. We're going to override that to use our new `TodoCitationView`
-instead.
+By default, the browser uses a `DAOListView` with `rowView` set to
+`foam.ui.md.CitationView`. We're going to override that to use our new
+`TodoCitationView` instead.
 
-Edit `TodoApp.js`. First, add `'com.todo.ui.TodoCitationView'` to the
-`requires`.
+Edit `TodoApp.js`.
+
+First, add `'com.todo.ui.TodoCitationView'` to the `requires`:
+{% highlight js %}
+requires: [
+  'com.todo.model.Todo',
+  'com.todo.ui.TodoCitationView',
+  'foam.browser.BrowserConfig',
+  'foam.dao.EasyDAO',
+],
+{% endhighlight %}
 
 Then update the `data` `factory`:
 
@@ -200,7 +211,7 @@ is created. Let's create one now:
 CLASS({
   package: 'com.todo.ui',
   name: 'TodoCitationView',
-  extendsModel: 'foam.ui.md.DetailView',
+  extends: 'foam.ui.md.DetailView',
 
   properties: [
     {
