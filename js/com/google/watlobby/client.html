@@ -20,7 +20,7 @@
    <script>
     var root = location.search.split('root=')[1];
     arequire('com.google.watlobby.Lobby')(function(Lobby) {
-      Lobby.create({root: root || ''}).write();
+      Lobby.create({root: root || '', clientMode: true}).write();
     });
    </script>
   </body>
