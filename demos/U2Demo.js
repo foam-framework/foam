@@ -1,5 +1,6 @@
 var timer = foam.util.Timer.create();
  timer.start();
+var E = X.E.bind(X);
 
 E('b').add('bold', E('br')).write();
 
