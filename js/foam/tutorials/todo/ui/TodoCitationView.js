@@ -14,24 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 CLASS({
   package: 'foam.tutorials.todo.ui',
   name: 'TodoCitationView',
   extends: 'foam.ui.md.DetailView',
-
   properties: [
     {
       name: 'className',
       defaultValue: 'todo-citation'
     },
   ],
-
   templates: [
     function CSS() {/*
       .todo-citation {
         align-items: center;
-        border-bottom: center;
+        border-bottom: 1px solid #eee;
         display: flex;
         min-height: 48px;
       }

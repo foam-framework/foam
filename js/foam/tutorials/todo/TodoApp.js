@@ -14,26 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 CLASS({
   package: 'foam.tutorials.todo',
   name: 'TodoApp',
   extends: 'foam.browser.ui.BrowserView',
   requires: [
     'foam.browser.BrowserConfig',
-    'foam.browser.ui.DAOController',
-    'foam.core.dao.ChromeStorageDAO',
     'foam.dao.EasyDAO',
     'foam.mlang.CannedQuery',
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
-    'foam.ui.DAOListView',
-    'foam.ui.TextFieldView',
-    'foam.ui.Tooltip',
-    'foam.ui.md.CannedQueryCitationView',
-    'foam.ui.md.CheckboxView',
-    'foam.ui.md.PopupView'
   ],
+
   properties: [
     {
       name: 'data',
@@ -48,24 +40,27 @@ CLASS({
           }),
           listView: {
             factory_: 'foam.ui.DAOListView',
-            rowView: 'foam.tutorials.todo.ui.TodoCitationView'
+            rowView: 'foam.tutorials.todo.ui.TodoCitationView',
           },
           cannedQueryDAO: [
             this.CannedQuery.create({
               label: 'Todo',
+              order: 1,
               expression: EQ(this.Todo.IS_COMPLETED, false)
             }),
             this.CannedQuery.create({
               label: 'Done',
+              order: 2,
               expression: EQ(this.Todo.IS_COMPLETED, true)
             }),
             this.CannedQuery.create({
               label: 'Everything',
+              order: 3,
               expression: TRUE
-            }),
+            })
           ]
         });
       }
-    }
+    },
   ]
 });
