@@ -157,6 +157,10 @@ CLASS({
             return;
           }
         }
+        if ( ! nu && this.autoSetData ) {
+          if (this.useSelection) this.index = 0;
+          else if ( this.choices.length )this.data = this.choices[0][0];
+        }
         if ( nu && this.choices.length )
           console.warn('ChoiceView data set to invalid choice: ', nu);
       }
