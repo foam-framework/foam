@@ -68,7 +68,7 @@ CLASS({
           var d = Movement.distance(c1.y-h/2, c1.x-w/2);
           // Keeps topic bubbles from going too far off screen
           // if ( c1.topic && d > h / 2 - r) c1.out_ = false;
-          if ( d > w / 2 - r ) c1.out_ = false;
+          if ( d > w / 2 - 2*r ) c1.out_ = false;
           if ( d < h/4 ) c1.out_ = true;
           // c1.color = c1.out_ ? 'orange' : 'blue';
 
