@@ -99,16 +99,20 @@ CLASS({
 
         this.topics.where(
           AND(
-            NEQ(Topic.PARENT, d),
+            NEQ(Topic.PARENT_TOPIC, d),
             NEQ(Topic.TOPIC,  d))
         ).select({put: this.removeTopic});
 
         this.topics.where(
           OR(
-            EQ(Topic.PARENT, d),
+            EQ(Topic.PARENT_TOPIC, d),
             EQ(Topic.TOPIC,  d)
           )
-        ).select({put: function(t) { if ( ! this.findTopic(t.topic) ) this.putTopic(t); }.bind(this) });
+        ).select({
+          put: function(t) {
+            if ( ! this.findTopic(t.topic) ) this.putTopic(t);
+          }.bind(this)
+        });
       }
     },
     {

@@ -19,7 +19,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Remote',
   extends: 'foam.graphics.CView',
-  
+
   traits: [ 'com.google.watlobby.RemoteTrait' ],
 
   requires: [
@@ -79,10 +79,10 @@ CLASS({
         while ( this.children.length ) {
           this.removeChild(this.children[this.children.length-1]);
         }
-        
+
         if ( this.dir )
           this.putTopic(this.Topic.create({
-            parent: this.dir,
+            parentTopic: this.dir,
             topic: this.BACK_TOPIC,
             image: 'img/back.png',
             model: "Photo",
@@ -90,7 +90,7 @@ CLASS({
             roundImage: true
           }));
         this.topics.find(EQ(this.Topic.TOPIC, this.dir),{put:this.putTopic.bind(this)});
-        this.topics.where(EQ(this.Topic.PARENT, this.dir)).select({put: this.putTopic.bind(this)});
+        this.topics.where(EQ(this.Topic.PARENT_TOPIC, this.dir)).select({put: this.putTopic.bind(this)});
       }
     }
   ],
@@ -142,7 +142,7 @@ CLASS({
 
       if ( t.topic === this.BACK_TOPIC ) c.alpha = 0.5;
 
-      var close = this.ImageCView.create({alpha: 0.5, x: -60, y: -60, width: 120, height: 120, src: 'img/close.png'}); 
+      var close = this.ImageCView.create({alpha: 0.5, x: -60, y: -60, width: 120, height: 120, src: 'img/close.png'});
       var s = function() { c.scaleX = c.scaleY = ! this.selected ? 0.9 : this.selected === t.topic ? 1.02 : 0.75; }.bind(this);
       var l = function() { if ( this.selected === t.topic ) { c.addChild(close); } else { c.removeChild(close); } Movement.animate(300, s)(); }.bind(this);
       this.selected$.addListener(l);

@@ -38,7 +38,7 @@ CLASS({
       postSet: function(o, n) {
         if ( o === n || !n ) return;
 
-        this.topics.find(EQ(this.Topic.PARENT, n), {
+        this.topics.find(EQ(this.Topic.PARENT_TOPIC, n), {
           put: function() {
             this.dir = n;
           }.bind(this)
@@ -75,7 +75,7 @@ CLASS({
       if ( this.dir === this.root ) return;
       // CD up a directory
       this.topics.find(EQ(this.Topic.TOPIC, this.dir), {
-        put: function(t) { self.dir = t.parent; },
+        put: function(t) { self.dir = t.parentTopic; },
         error: function() { self.dir = ''; }
       });
     }
