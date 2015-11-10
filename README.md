@@ -2,8 +2,8 @@
 
 Build fully featured high performance apps in less time using FOAM.
 
-  * Application Efficiency
-
+  * Application Speed
+  * Application Size
   * Developer Efficiency
 
 "Fast apps Fast"
@@ -12,7 +12,7 @@ Build fully featured high performance apps in less time using FOAM.
 
 ## Feature Oriented Active Modeller
 
-FOAM is a full-stack Reactive MVC Meta-Programming framework.
+FOAM is a full-stack reactive MVC metaprogramming framework.
 
 While it is written in Javascript, it can be used to generate code for any
 language or platform.
@@ -27,6 +27,7 @@ There is nothing to build.  Just load any of the various .html demos.
 
   * [Demos](http://foam-framework.github.io/foam/foam/demos/DemoCat.html)
 
+<!--
 ## Testing
 
 FOAM has automated tests that can be run with `npm test`. This depends only on a working Node.js and `npm`.
@@ -35,7 +36,7 @@ There is also a pre-commit hook in `hooks/pre-commit`; it can be installed by ru
 
 Regression tests whose output has legitimately changed can be conveniently updated using the test page. That works as follows:
 ```
-node --harmony tests/server.js
+nodejs tests/server.js
 ```
 and then navigate to [http://localhost:8888/tests/FOAMTests.html](http://localhost:8888/tests/FOAMTests.html).
 
@@ -46,22 +47,24 @@ Any failed regression test will highlight its results with red borders, and the 
 A small subset of tests require human oversight. These can be run using the server (see above) and then navigating to [http://localhost:8888/tests/FOAMTests.html?ui=1](http://localhost:8888/tests/FOAMTests.html?ui=1) to see just the UI tests.
 
 The `?ui=1` parameter shows only tests with the `'ui'` tag.
+-->
 
 ## Bundled Javascript Files
 
 FOAM can bootstrap itself at runtime using `core/bootFOAM.js` and friends.
 
-However, we have a Grunt script that will build a combined `foam.js` and minified `foam.min.js`, which make for easier deployment.
+However, we have a script that will build a combined and minified `foam.js` and
+`foam.html`, which make for easy and efficient deployment.
 
-To get started with Grunt, you'll need [npm](http://nodejs.org). Then you can run:
+The simplest case of running the build tool is to run
 
 ```
-sudo npm install -g grunt-cli
-npm install
-grunt
+nodejs tools/foam.js foam.build.BuildApp controller=my.controller.Model targetPath=.
 ```
 
-Currently these files are bloated by rarely-used optional features like Canvas views, Google protobuffer support, and others. We plan to cut these out into separate files eventually.
+But there are many more options you can configure. See [BuildApp.js](https://github.com/foam-framework/foam/tree/master/js/foam/build/BuildApp.js)
+for the complete set of options and flags, and the various `build.sh` scripts in
+the repo for examples of real usage.
 
 ### Contributing
 
