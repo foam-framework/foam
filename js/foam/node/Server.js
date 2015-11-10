@@ -24,12 +24,13 @@ CLASS({
     'foam.node.handlers.DAOHandler'
   ],
   exports: [
+    'log',
     'exportDAO',
     'exportFile',
     'exportDirectory',
   ],
   imports: [
-    'log'
+    'log as log_'
   ],
   properties: [
     {
@@ -65,6 +66,12 @@ CLASS({
       name: 'certFile',
     },
     {
+      model_: 'BooleanProperty',
+      name: 'quiet',
+      help: 'Set to true to silence most logs outputs.',
+      defaultValue: false,
+    },
+    {
       name: 'server',
       hidden: true
     },
@@ -85,6 +92,11 @@ CLASS({
     }
   ],
   methods: [
+    function log() {
+      if ( ! this.quiet ) {
+        this.log_.apply(null, arguments);
+      }
+    },
     function execute() {
       if (this.keyFile && this.certFile) {
         var fs = require('fs');
@@ -103,13 +115,13 @@ CLASS({
       this.agents.push('foam.node.ServeFOAM');
 
       for( var i = 0 ; i < this.agents.length ; i++ ) {
-        this.log("Loading ", this.agents[i]);
+        this.log_("Loading ", this.agents[i]);
         var f = arequire(this.agents[i])(function(m) {
           var agent = m.create(undefined, this.Y);
           if ( agent.execute ) {
             agent.execute();
           }
-          this.log("Loaded ", m.id);
+          this.log_("Loaded ", m.id);
         }.bind(this));
       }
     },
@@ -124,7 +136,7 @@ CLASS({
       }
 
       this.daoHandler_.daoMap[opt_name] = dao;
-      this.log("Exporting " + opt_name);
+      this.log_("Exporting " + opt_name);
     },
     function exportFile(url, filepath) {
       this.handlers.push(
