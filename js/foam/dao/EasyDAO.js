@@ -61,7 +61,7 @@ CLASS({
   properties: [
     {
       name: 'name',
-      defaultValueFn: function() { return this.model.plural; },
+      defaultValueFn: function() { return this.model.id; },
       documentation: "The developer-friendly name for this $$DOC{ref:'.'}."
     },
     {
@@ -224,7 +224,7 @@ CLASS({
           dao = this.MigrationDAO.create({
             delegate: dao,
             rules: this.migrationRules,
-            name: this.model.name + "_" + daoModel.name + "_" + this.name
+            name: this.model.id + "_" + daoModel.id + "_" + this.name
           }, this.Y);
         }
         if ( this.cache ) {
@@ -305,7 +305,7 @@ CLASS({
         });
       }
 
-      if ( this.timing  ) dao = this.TimingDAO.create({ name: this.name + 'DAO', delegate: dao });
+      if ( this.timing  ) dao = this.TimingDAO.create({ name: this.model.plural + 'DAO', delegate: dao });
       if ( this.logging ) dao = this.LoggingDAO.create({ delegate: dao });
 
       this.delegate = dao;
