@@ -28,6 +28,8 @@ CLASS({
     'foam.core.dao.StorageDAO',
     'foam.core.dao.SyncDAO',
     'foam.core.dao.SyncTrait',
+    'foam.core.dao.sync.PollingSyncDAO',
+    'foam.core.dao.sync.SocketSyncDAO',
     'foam.core.dao.VersionNoDAO',
     'foam.dao.CachingDAO',
     'foam.dao.ContextualizingDAO',
@@ -148,9 +150,18 @@ CLASS({
       name: 'syncWithServer'
     },
     {
+      model_: 'BooleanProperty',
+      name: 'sockets',
+      defaultValue: false
+    },
+    {
       model_: 'StringProperty',
       name: 'serverUri',
       defaultValueFn: function() {
+        if ( this.sockets ) {
+          var s = this.document.location.origin + '/api';
+          return s.replace(/^https/, "wss").replace(/^http/, "ws");
+        }
         return this.document.location.origin + '/api'
       }
     },
@@ -265,23 +276,25 @@ CLASS({
       }
 
       if ( this.syncWithServer ) {
-        dao = this.SyncDAO.create({
-          model: model,
-          delegate: dao,
+        var syncStrategy = this.sockets ? this.SocketSyncDAO : this.PollingSyncDAO;
+        dao = syncStrategy.create({
           remoteDAO: this.EasyClientDAO.create({
             serverUri: this.serverUri,
             model: model,
+            sockets: this.sockets,
+            reconnectPeriod: 30000
           }),
           syncProperty: this.syncProperty,
           deletedProperty: this.deletedProperty,
-          syncRecordDAO: foam.dao.EasyDAO.create({
-            model: this.SyncDAO.SyncRecord,
-            cache: true,
-            daoType: this.daoType,
-            name: this.name + '_SyncRecords'
-          })
+          delegate: dao,
+          period: 1000
         });
-        window.setInterval(function() { this.sync(); }.bind(dao), 1000);
+        dao.syncRecordDAO = foam.dao.EasyDAO.create({
+          model: dao.SyncRecord,
+          cache: true,
+          daoType: this.daoType,
+          name: this.name + '_SyncRecords'
+        });
       }
 
       if ( this.isServer ) {
