@@ -51,8 +51,6 @@ CLASS({
         return this.TopicDAO.create({ clientMode: this.clientMode });
       }
     },
-    { name: 'n',          defaultValue: 25 },
-    { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
     { name: 'width',      factory: function() { return this.window.innerWidth; } },
     { name: 'height',     factory: function() { return this.window.innerHeight } },
     { name: 'background', defaultValue: '#ccf' }
