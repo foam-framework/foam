@@ -23,7 +23,6 @@ CLASS({
   traits: [ 'com.google.watlobby.RemoteTrait' ],
 
   requires: [
-    'com.google.watlobby.AlbumBubble',
     'com.google.watlobby.Bubble',
     'com.google.watlobby.PhotoBubble',
     'com.google.watlobby.Topic',

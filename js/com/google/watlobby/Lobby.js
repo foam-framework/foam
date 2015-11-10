@@ -27,7 +27,6 @@ CLASS({
     'com.google.watlobby.TopicDAO',
     'com.google.watlobby.Bubble',
     'com.google.watlobby.TopicBubble',
-    'com.google.watlobby.AlbumBubble',
     'com.google.watlobby.PhotoBubble',
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
