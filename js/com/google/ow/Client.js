@@ -42,6 +42,7 @@ CLASS({
     'foam.ui.md.CannedQueryCitationView',
     'foam.ui.md.CheckboxView',
     'foam.ui.md.PopupView',
+    'foam.ui.md.UpdateDetailView',
     'foam.u2.DetailView',
     'com.google.ow.Server', // for fake internal server
     'com.google.ow.examples.VideoA',
@@ -60,6 +61,7 @@ CLASS({
     {
       name: 'browserConfig',
       lazyFactory: function() {
+        var UpdateDetailView = this.UpdateDetailView;
         return this.BrowserConfig.create({
           title: 'Lifestream',
           model: this.Envelope,
@@ -74,6 +76,12 @@ CLASS({
               expression: TRUE,
             }),
           ],
+          detailView: function(args, X) {
+            var v = UpdateDetailView.create(args, X);
+            v.title = (args.data && args.data.data) ? args.data.data.titleText
+                        : this.title;
+            return v;
+          },
           innerDetailView: function(args, X) {
             // TODO(markdittmer): This should be more robust.
             var d = (args.data || args.data$.get()).data;
