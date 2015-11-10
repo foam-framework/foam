@@ -33,11 +33,28 @@ CLASS({
   ],
 
   methods: [
-    function addAction(act) {
-
+    function addAction(action) {
+      this.addActions([action]);
     },
-    function removeAction(act) {
-
+    function addActions(actions) {
+      if ( ( ! actions ) || actions.length === 0 ) return;
+      this.actions = this.actions.concat(
+          actions.filter(function(currentActions, newAction) {
+            return ! currentActions.some(function(currentAction) {
+              return currentAction === newAction;
+            });
+          }.bind(this, this.actions)));
+    },
+    function removeAction(action) {
+      this.removeActions([action]);
+    },
+    function removeActions(actions) {
+      this.actions =
+          this.actions.filter(function(currentAction) {
+            return ! actions.some(function(removeAction) {
+              return removeAction === currentAction;
+            });
+      });
     },
 
     function actionComparator(a, b) {
@@ -52,8 +69,8 @@ CLASS({
       this.SUPER();
       // TODO(markdittmer): There should be a more elegant way of
       // contextualizing this.
-      this.model_.getAction('moreActions').isAvailable =
-          this.areMoreActionsAvailable;
+//       this.model_.getAction('moreActions').isAvailable =
+//           this.areMoreActionsAvailable;
     },
     function initE() {
       var Y = this.Y.sub();
@@ -83,22 +100,16 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAGklEQVQ4y2NgGAVEg/9EAMo0jHp61NOjAAgAUWrXKeQhPE4AAAAASUVORK5CYII=',
       ligature: 'more_vert',
       code: function() { this.moreActionsDropdown.open(); },
-    },
-  ],
-
-  listeners: [
-    {
-      name: 'areMoreActionsAvailable',
-      code: function() {
-        var data = this.data;
+      isAvailable: function(action) {
         var toolbarActions = this.rightActions.slice();
         return toolbarActions.length > 0 &&
             toolbarActions.map(function(toolbarAction) {
               return toolbarAction && toolbarAction.isAvailable;
             }).some(function(v) { return v; });
-      },
+      }
     },
   ],
+
 
   templates: [
 //     function toHTML() {/*
