@@ -55,7 +55,7 @@ CLASS({
           .add(this.data.SHARES)
         .end()
         .start('div').cls('content')
-          .add(d.toCitationE())
+          .add(d.toCitationE(this.Y))
         .end();
     },
   ],

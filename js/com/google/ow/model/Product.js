@@ -34,6 +34,14 @@ CLASS({
     {
       model_: 'FloatProperty',
       name: 'price',
+      toPropertyE: function(X) {
+        // TODO(markdittmer): This should be a "currency E" of some kind.
+        return X.lookup('foam.u2.Element').create(null, X)
+            .add('$')
+            .add(function(num) {
+              return num.toFixed(2);
+            }.bind(this).on$(X, X.data[this.name + '$']));
+      },
     },
     {
       model_: 'IntProperty',

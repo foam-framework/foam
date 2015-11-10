@@ -52,9 +52,12 @@ CLASS({
         return this.product ? this.product.price * this.quantity : 0.00;
       },
       toPropertyE: function(X) {
-        // TODO(markdittmer): We should have a non-input-element standard for
-        // this.
-        return X.E('div').add(X.data[this.name + '$']);
+        // TODO(markdittmer): This should be a "currency E" of some kind.
+        return X.lookup('foam.u2.Element').create(null, X)
+            .add('$')
+            .add(function(num) {
+              return num.toFixed(2);
+            }.bind(this).on$(X, X.data[this.name + '$']));
       },
     },
   ],

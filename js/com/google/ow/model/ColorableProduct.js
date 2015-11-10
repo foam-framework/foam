@@ -27,9 +27,13 @@ CLASS({
       },
     },
     {
-      model_: 'ReferenceProperty',
-      name: 'colorableImage',
-      defaultValue: null,
+      model_: 'StringProperty',
+      name: 'colorableImageUrl',
+      toPropertyE: function(X) {
+        return X.lookup('foam.u2.Element').create({ nodeName: 'IMG' }, X)
+          .attrs({ src: X.data.colorableImageUrl$ })
+          .style({ background: X.data.color$ });
+      },
     },
     {
       // TODO(markdittmer): This should be an enum property.
@@ -61,8 +65,8 @@ CLASS({
       item.summary += ' ' + this.COLOR.choiceLabel(this.color);
       return item;
     },
-    function toDetailE() {
-      return this.ColorableProductView.create({ data: this }, this.Y);
+    function toDetailE(X) {
+      return this.ColorableProductView.create({ data: this }, X);
     },
   ],
 });

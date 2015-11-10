@@ -25,12 +25,20 @@ CLASS({
       required: true,
     },
     {
-      model_: 'ReferenceProperty',
-      name: 'image',
+      model_: 'StringProperty',
+      name: 'imageUrl',
+      toPropertyE: function(X) {
+        // TODO(markdittmer): This should just be a (U2) ImageProperty.
+        return X.E('img').attrs({ src: X.data[this.name + '$'], });
+      },
     },
     {
       model_: 'StringProperty',
       name: 'headerImageUrl',
+      toPropertyE: function(X) {
+        // TODO(markdittmer): This should just be a (U2) ImageProperty.
+        return X.E('img').attrs({ src: X.data[this.name + '$'] });
+      },
     },
   ],
 });

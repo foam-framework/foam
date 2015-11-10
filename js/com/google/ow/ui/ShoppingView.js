@@ -33,7 +33,11 @@ CLASS({
       model_: 'foam.core.types.DAOProperty',
       name: 'products',
       toPropertyE: function(X) {
-        return X.lookup('foam.u2.DAOListView').create({ data: X.products }, X);
+        return X.lookup('foam.u2.DAOListView').create({
+          data: X.products
+        }, X.sub({
+          selection$: undefined,
+        }));
       },
     },
     {
@@ -53,8 +57,7 @@ CLASS({
 
   methods: [
     function initE() {
-      var E = this.Y.E;
-      return this.add(this.PRODUCTS)
+      return this.x({ data: this }).add(this.PRODUCTS)
       .add(this.PURCHASE_ORDER);
       // TODO(markdittmer): Add view of order + pay/checkout action.
     },
