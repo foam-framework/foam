@@ -47,7 +47,6 @@ CLASS({
     { name: 'clientMode', defaultValue: false, model_: 'BooleanProperty' },
     { name: 'n',          defaultValue: 25 },
     { name: 'slideshowDelay', model_: 'IntProperty' },
-    { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
     { name: 'background', defaultValue: '#ccf' },
