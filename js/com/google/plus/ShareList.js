@@ -62,6 +62,12 @@ CLASS({
       help: 'People to which to share.',
     },
     {
+      model_: 'ReferenceArrayProperty',
+      name: 'flattenedPeople',
+      subType: 'com.google.plus.Person',
+      help: 'People to which to share.',
+    },
+    {
       model_: 'ArrayProperty',
       name: 'history',
       subType: 'com.google.plus.ShareList.HistoryItem',
@@ -93,6 +99,18 @@ CLASS({
 
       // TODO: error case: retain circles that can't be flattened
       var flatize = function(owner) {
+        // create history items for direct people references
+        var people = self.people;
+        self.people = [];
+        for (var i=0; i<people.length; ++i) {
+          self.personDAO.find(people[i], { put: function(p) {
+            // remember name for display purposes
+            self.moveToHistory(p);
+            // grab all circle member references
+            self.flattenedPeople.put(p.id);
+          }});
+        }
+
         var circs = self.circles;
         self.circles = [];
         // lookup each circle ID from the owner's circles
@@ -101,7 +119,7 @@ CLASS({
             // remember name for display purposes
             self.moveToHistory(c);
             // grab all circle member references
-            c.people.select(MAP(self.Person.ID, self.people));
+            c.people.select(MAP(self.Person.ID, self.flattenedPeople));
           }});
         }
       }
@@ -124,8 +142,8 @@ CLASS({
         type: item.type
       }));
 
-      this.circles.remove(item.id);
-      this.people.remove(item.id);
+      this.circles.deleteI(item.id);
+      this.people.deleteI(item.id);
     }
   ],
 
