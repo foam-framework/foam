@@ -43,7 +43,8 @@ CLASS({
       defaultValue: true
     },
     {
-      name: 'parentTopic'
+      name: 'parentTopic',
+      label: 'Parent'
     },
     {
       name: 'priority',
