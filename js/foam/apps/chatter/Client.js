@@ -46,6 +46,7 @@ CLASS({
           cloning: true,
           contextualize: true,
           dedup: true,
+          sockets: true,
           syncWithServer: true
         });
       }
@@ -61,6 +62,7 @@ CLASS({
           cloning: true,
           contextualize: true,
           guid: true,
+          sockets: true,
           syncWithServer: true
         });
       }
