@@ -97,6 +97,7 @@ CLASS({
       }
 
       this.server.listen(this.port);
+      this.server.on('upgrade', this.onUpgrade);
 
       // TODO Find a better way to default these?
       this.agents.push('foam.node.ServeFOAM');
@@ -151,6 +152,20 @@ CLASS({
         if ( i === this.handlers.length ) {
           resp.statusCode = 404;
           resp.end();
+        }
+      }
+    },
+    {
+      name: 'onUpgrade',
+      code: function(req, socket, head) {
+        for ( var i = 0 ; i < this.handlers.length ; i++ ) {
+          if ( this.handlers[i].upgrade &&
+               this.handlers[i].upgrade(req, socket, head) ) {
+            break;
+          }
+        }
+        if ( i == this.handlers.length ) {
+          socket.end('HTTP/1.1 501 Unimplemented\r\n\r\n');
         }
       }
     }

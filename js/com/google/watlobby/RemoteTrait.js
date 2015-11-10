@@ -24,7 +24,11 @@ CLASS({
   },
 
   properties: [
-    { name: 'root', defaultValue: '' },
+    {
+      name: 'root',
+      defaultValue: '',
+      postSet: function(_, n) { this.dir = n; }
+    },
     {
       name: 'dir',
       defaultValue: ''
@@ -42,7 +46,7 @@ CLASS({
       }
     }
   ],
-  
+
   listeners: [
     function onClick(evt) {
       var t = this.findChildAt(evt.clientX, evt.clientY);
@@ -68,6 +72,7 @@ CLASS({
   methods: [
     function back() {
       var self = this;
+      if ( this.dir === this.root ) return;
       // CD up a directory
       this.topics.find(EQ(this.Topic.TOPIC, this.dir), {
         put: function(t) { self.dir = t.parent; },

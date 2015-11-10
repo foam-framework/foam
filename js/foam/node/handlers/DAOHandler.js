@@ -18,8 +18,15 @@
 CLASS({
   package: 'foam.node.handlers',
   name: 'DAOHandler',
+  requires: [
+    'foam.node.ws.WebSocket'
+  ],
   properties: [
     'path',
+    {
+      name: 'crypto',
+      factory: function() { return require('crypto'); }
+    },
     {
       name: 'daoMap',
       factory: function() { return {}; }
@@ -30,6 +37,120 @@ CLASS({
     'error'
   ],
   methods: [
+    function upgrade(req, socket, data) {
+      if ( req.url != this.path ) return false;
+
+      var key = req.headers['sec-websocket-key'];
+      key += '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
+
+      var hash = this.crypto.createHash('SHA1');
+      hash.update(key);
+      hash = hash.digest('base64');
+
+      socket.write(
+        'HTTP/1.1 101 Switching Protocols\r\n' +
+          'Upgrade: websocket\r\n' +
+          'Connection: upgrade\r\n' +
+          'Sec-WebSocket-Accept: ' + hash + '\r\n\r\n');
+
+      var ws = this.WebSocket.create({
+        socket: socket
+      });
+
+      ws.subscribe(ws.ON_MESSAGE, function(_, _, message) {
+        // Warning insecure parser.
+        var msg = JSONUtil.parse(this.Y, message);
+        var msgid = msg.msgid;
+
+        if ( msg.method == 'listen' ) {
+          var dao = this.daoMap[msg.subject];
+
+          if ( ! dao ) {
+            ws.send(JSON.stringify({ msgid: msgid, msg: { error: 'No dao found.' } }));
+            return;
+          }
+
+          dao.listen({
+            put: function(o) {
+              ws.send(JSONUtil.stringify({
+                msg: {
+                  notify: ["put", o]
+                }
+              }));
+            },
+            remove: function(o) {
+              ws.send(JSONUtil.stringify({
+                msg: {
+                  notify: ["remove",o]
+                }
+              }));p
+            },
+            reset: function() {
+              ws.send(JSON.stringify({
+                msg: {
+                  notify: ["reset"]
+                }
+              }));
+            }
+          });
+
+          ws.send(JSON.stringify({
+            msgid: msgid,
+            msg: true
+          }));
+        } else {
+          this.handleDAORequest(msg, {
+            put: function(m) {
+              ws.send(JSONUtil.stringify({
+                msgid: msgid,
+                msg: m
+              }));
+            },
+            error: function(msg) {
+              ws.send(JSONUtil.stringify({
+                msgid: msgid,
+                msg: { error: msg }
+              }));
+            }
+          });
+        }
+      }.bind(this));
+
+      return true;
+    },
+    function handleDAORequest(msg, resp, X) {
+      var dao = this.daoMap[msg.subject];
+      if ( ! dao ) {
+        resp.error && resp.error('no such dao');
+        return;
+      }
+
+      switch ( msg.method ) {
+      case 'select':
+      case 'removeAll':
+        dao[msg.method].apply(dao, msg.params.concat(X))(function(sink) {
+          resp.put && resp.put(sink);
+        });
+        break;
+      case 'put':
+      case 'remove':
+      case 'find':
+        var sink = {
+          send: function(method, x) {
+            var payload = {};
+            payload[method] = x;
+            resp.put && resp.put(payload);
+          },
+          put: function(x) { this.send('put', x) },
+          remove: function(x) { this.send('remove', x) },
+          error: function(x) { this.send('error', x); }
+        };
+        dao[msg.method](msg.params[0], sink, X);
+        break;
+      default:
+        resp.error && resp.error("Unsupported dao method.");
+      }
+    },
     function handle(req, resp) {
       if ( req.url != this.path ) return false;
       var body = '';
@@ -51,49 +172,20 @@ CLASS({
         // Warning insecure parser.
         var msg = JSONUtil.parse(this.Y, body);
 
-        var dao = this.daoMap[msg.subject];
-        if ( ! dao ) {
-          resp.statusCode = 400;
-          resp.setHeader("Content-Type", "application/json");
-          resp.write('{ "error": "No such DAO" }');
-          resp.end();
-          return;
-        }
-
-        switch ( msg.method ) {
-        case 'select':
-        case 'removeAll':
-          dao[msg.method].apply(dao, msg.params.concat(subX))(function(sink) {
+        this.handleDAORequest(msg, {
+          put: function(msg) {
             resp.statusCode = 200;
-            resp.setHeader("Content-Type", "application/x.foam-json");
-            resp.write(JSONUtil.stringify(sink));
+            resp.setHeader("Content-Type", "application/json");
+            resp.write(JSONUtil.stringify(msg));
             resp.end();
-          });
-          break;
-        case 'put':
-        case 'remove':
-        case 'find':
-          var sink = {
-            send: function(method, x) {
-              resp.statusCode = 200;
-              resp.setHeader("Content-Type", "application/x.foam-json");
-              var payload = {};
-              payload[method] = x;
-              resp.write(JSONUtil.stringify(payload));
-              resp.end();
-            },
-            put: function(x) { this.send('put', x) },
-            remove: function(x) { this.send('remove', x) },
-            error: function(x) { this.send('error', x); }
-          };
-          dao[msg.method](msg.params[0], sink, subX);
-          break;
-        default:
-          resp.statusCode = 400;
-          resp.setHeader("Content-Type", "application/json");
-          resp.write('{ "error": "Unsupported dao method." }');
-          resp.end();
-        }
+          },
+          error: function(err) {
+            resp.statusCode = 400;
+            resp.setHeader("Content-Type", "application/json");
+            resp.write(JSON.stringify({ error: err }));
+            resp.end();
+          }
+        }, subX);
       }.bind(this));
       return true;
     }

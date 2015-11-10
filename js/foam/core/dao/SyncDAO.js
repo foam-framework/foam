@@ -22,7 +22,8 @@ CLASS({
   properties: [
     {
       name: 'remoteDAO',
-      transient: true
+      transient: true,
+      required: true
     },
     {
       name: 'syncRecordDAO',
@@ -31,14 +32,18 @@ CLASS({
     },
     {
       name: 'syncProperty',
+      required: true,
       transient: true
     },
     {
       name: 'deletedProperty',
+      required: true,
       transient: true
     },
     {
       name: 'model',
+      required: true,
+
       transient: true
     }
   ],
@@ -92,6 +97,23 @@ CLASS({
         }
       });
     },
+    function processFromServer(obj) {
+      this.syncRecordDAO.put(
+        this.SyncRecord.create({
+          id: obj.id,
+          syncNo: obj[this.syncProperty.name]
+        }));
+
+      if ( obj[this.deletedProperty.name] ) {
+        this.delegate.remove(obj)
+      } else {
+        this.delegate.put(obj, {
+          error: function() {
+            console.error.apply(console, arguments);
+          }
+        });
+      }
+    },
     function syncFromServer(ret) {
       this.syncRecordDAO.select(MAX(this.SyncRecord.SYNC_NO))(function(m) {
         this.remoteDAO
@@ -99,21 +121,7 @@ CLASS({
             GT(this.syncProperty, m.max))
           .select({
             put: function(obj) {
-              this.syncRecordDAO.put(
-                this.SyncRecord.create({
-                  id: obj.id,
-                  syncNo: obj[this.syncProperty.name]
-                }));
-
-              if ( obj[this.deletedProperty.name] ) {
-                this.delegate.remove(obj)
-              } else {
-                this.delegate.put(obj, {
-                  error: function() {
-                    console.error.apply(console, arguments);
-                  }
-                });
-              }
+              this.processFromServer(obj);
             }.bind(this)
           });
       }.bind(this));
@@ -155,15 +163,10 @@ CLASS({
           }
         }
       }.bind(this));
-    }
-  ],
-  actions: [
-    {
-      name: 'sync',
-      code: function() {
-        this.syncToServer();
-        this.syncFromServer();
-      }
+    },
+    function sync() {
+      this.syncToServer();
+      this.syncFromServer();
     }
   ]
 });

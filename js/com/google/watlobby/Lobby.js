@@ -68,7 +68,7 @@ CLASS({
           var d = Movement.distance(c1.y-h/2, c1.x-w/2);
           // Keeps topic bubbles from going too far off screen
           // if ( c1.topic && d > h / 2 - r) c1.out_ = false;
-          if ( d > w / 2 - r ) c1.out_ = false;
+          if ( d > w / 2 - 2*r ) c1.out_ = false;
           if ( d < h/4 ) c1.out_ = true;
           // c1.color = c1.out_ ? 'orange' : 'blue';
 
@@ -143,7 +143,7 @@ CLASS({
     function putTopic(t) {
       if ( t.topic === this.root ) {
         if ( this.selected !== t.selected ) this.selected = t.selected;
-        if ( this.dir !== t.dir ) this.dir = t.dir;
+        if ( this.dir !== t.dir && ( ! this.root || t.dir ) ) this.dir = t.dir;
       }
 
       if ( ! ( t.parent == this.dir || t.topic == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
@@ -288,10 +288,14 @@ CLASS({
     },
     function openRemoteUI() {
       var w = foam.ui.Window.create({window: window.open("", "Remote", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
-      w.document.innerHTML = '';
-      w.document.write('<html><head><title>Wat Lobby Remote</title></head><body></body></html>');
-      var r = this.Remote.create({topics: this.topics}, w.Y);
-      r.write(w.Y);
+
+      // There's some timing issue that causes the remote to not open if you try to do it immediately after openeing the window.
+      this.X.setTimeout(function() {
+        w.document.innerHTML = '';
+        w.document.write('<html><head><title>Wat Lobby Remote</title></head><body></body></html>');
+        var r = this.Remote.create({topics: this.topics}, w.Y);
+        r.write(w.Y);
+      }.bind(this), 200);
     },
     function openAdminUI() {
       var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1200, height=700, location=no, menubar=no")});
