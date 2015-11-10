@@ -98,9 +98,10 @@ CLASS({
 
           if ( data.msg.notify ) {
             this.notify_(data.msg.notify[0], [data.msg.notify[1]]);
+            return;
           }
 
-          console.log("Unknown response.");
+          console.warn("Unknown response.");
         }.bind(this), this.X, msg);
       }
     },
