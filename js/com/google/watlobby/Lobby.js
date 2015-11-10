@@ -22,7 +22,6 @@ CLASS({
   traits: [ 'com.google.misc.Colors', 'com.google.watlobby.RemoteTrait' ],
 
   requires: [
-    'com.google.watlobby.SmallRemote',
     'com.google.watlobby.Remote',
     'com.google.watlobby.TopicApp',
     'com.google.watlobby.TopicDAO',
@@ -32,7 +31,6 @@ CLASS({
     'com.google.watlobby.PhotoBubble',
     'com.google.watlobby.Topic',
     'com.google.watlobby.VideoBubble',
-//    'foam.demos.ClockView',
     'foam.demos.physics.PhysicalCircle',
     'foam.graphics.ImageCView',
     'foam.physics.PhysicsEngine as Collider',
@@ -157,7 +155,6 @@ CLASS({
         return;
       }
 
-//      console.log('***** putTopic: ', t.topic);
       if ( t.model === 'Background' ) {
         document.body.style.backgroundImage = 'url(' + t.image + ')';
         return;
@@ -179,7 +176,6 @@ CLASS({
       c.image = t.image;
       Movement.animate(1000, function() { c.alpha = 1; c.scaleX = c.scaleY = 1; })();
       c.roundImage = t.roundImage;
-     // if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
       this.addChild(c);
       if ( this.children.length > 1 ) {
@@ -232,17 +228,6 @@ CLASS({
       var foam = this.ImageCView.create({x: 5, y: this.height-5-269/4, width: 837/4, height: 269/4, src: 'img/foampowered_red.png'});
       this.addChild(foam);
 
-      /*
-      var clock = this.ClockView.create({
-        drawTicks: true,
-        x: this.width-250,
-        y: 250,
-        r: (120-10)/2,
-        scaleX: 4,
-        scaleY: 4});
-      this.addChild(clock);
-      */
-
       this.collider.start();
 
       if ( this.slideshowDelay ) {
@@ -288,13 +273,6 @@ CLASS({
         c.friction = 0.94;
         this.collider.add(c);
       }
-    },
-    function openSmallRemoteUI() {
-      var w = foam.ui.Window.create({window: window.open("", "Remote", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
-      w.document.innerHTML = '';
-      w.document.write('<html><head><title>Wat Lobby Remote</title></head><body></body></html>');
-      var r = this.SmallRemote.create({topics: this.topics}, w.Y);
-      r.write(w.Y);
     },
     function openRemoteUI() {
       var w = foam.ui.Window.create({window: window.open("", "Remote", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
