@@ -161,15 +161,15 @@ CLASS({
         },
         {
           name: 'minWidth',
-          getter: function() { return this.listView_.minWidth; }
+          getter: function() { return this.listView_.minWidth || 300; }
         },
         {
           name: 'preferredWidth',
-          getter: function() { return this.listView_.preferredWidth; }
+          getter: function() { return this.listView_.preferredWidth || 400; }
         },
         {
           name: 'maxWidth',
-          getter: function() { return this.listView_.maxWidth; }
+          getter: function() { return this.listView_.maxWidth || 1280; }
         },
         {
           name: '$menuContainer',
