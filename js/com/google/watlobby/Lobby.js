@@ -143,7 +143,7 @@ CLASS({
     function putTopic(t) {
       if ( t.topic === this.root ) {
         if ( this.selected !== t.selected ) this.selected = t.selected;
-        if ( this.dir !== t.dir ) this.dir = t.dir;
+        if ( this.dir !== t.dir && ( ! this.root || t.dir ) ) this.dir = t.dir;
       }
 
       if ( ! ( t.parent == this.dir || t.topic == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
