@@ -26,7 +26,7 @@ CLASS({
     'foam.u2.DetailPropertyView'
   ],
 
-  exports: [ 'data' ],
+  exports: [ 'data$' ],
 
   properties: [
     {
@@ -105,7 +105,7 @@ CLASS({
     function init() {
       this.SUPER();
 
-      this.Y.registerModel(foam.u2.DetailPropertyView, 'foam.u2.PropertyView');
+      this.Y.registerModel(this.DetailPropertyView, 'foam.u2.PropertyView');
 
       this.cls('foam-u2-DetailView').add(function(model, properties) {
         return ! model ?

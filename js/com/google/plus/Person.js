@@ -43,6 +43,15 @@ CLASS({
     },
   ],
 
+  methods: [
+    function toPeople() {
+      return this.id;
+    },
+    function toChipE() {
+      /* Implement to return a contact chip view Element */
+    },
+  ],
+
   properties: [
     { model_: 'Property', name: 'id', help: 'The FOAM ID, globally unique.' },
     { model_: 'StringProperty', name: 'objectType', defaultValue: 'person',

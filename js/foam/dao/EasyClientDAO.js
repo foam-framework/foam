@@ -105,7 +105,11 @@ CLASS({
 	    ret(null);
 	    return;
 	  }
-	  if ( IN_CHROME_APP() ) {
+          // TODO(braden): This is fine in built non-Chrome apps, but would fail
+          // in a built Chrome app. The model loader that defines IN_CHROME_APP
+          // and friends is not used for built apps, so this check will always
+          // fail in a built app.
+	  if ( window.IN_CHROME_APP && IN_CHROME_APP() ) {
 	    aeval("(" + resp + ")")(function(data) {
               JSONUtil.amapToObj(ret, this.X, data);
 	    }.bind(this));

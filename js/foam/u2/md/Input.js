@@ -33,7 +33,9 @@ CLASS({
     {
       name: 'label',
       attribute: true,
-      defaultValueFn: function() { return this.prop.label; }
+      defaultValueFn: function() {
+        return this.prop ? this.prop.label : '';
+      }
     },
     {
       model_: 'BooleanProperty',
@@ -50,9 +52,9 @@ CLASS({
         this.start('label')
             .cls2('foam-u2-md-Input-label')
             .cls2(function() {
-              return self.data || self.focused ?
-                  'foam-u2-md-Input-label-offset' : '';
-            }.on$(this.data$, this.focused$))
+              return (typeof self.data !== 'undefined' && self.data !== '') ||
+                  self.focused ? 'foam-u2-md-Input-label-offset' : '';
+            }.on$(this.X, this.data$, this.focused$))
             .add(this.label$)
             .end();
       } else {
@@ -65,6 +67,11 @@ CLASS({
           .on('blur', function() { self.focused = false; });
       input.data$ = this.data$;
       input.end();
+    },
+    function fromProperty(prop) {
+      this.prop = prop;
+      this.label = prop.label;
+      return this.SUPER(prop);
     },
   ],
 

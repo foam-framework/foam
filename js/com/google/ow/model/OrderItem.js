@@ -11,32 +11,21 @@
 
 CLASS({
   package: 'com.google.ow.model',
-  name: 'Product',
-
-  requires: [
-    'com.google.ow.model.OrderItem',
-  ],
+  name: 'OrderItem',
 
   properties: [
     {
-      model_: 'StringProperty',
+      model_: 'IntProperty',
       name: 'id',
     },
     {
-      model_: 'StringProperty',
-      name: 'name',
+      type: 'com.google.ow.model.Product',
+      name: 'product',
     },
     {
-      model_: 'StringProperty',
-      name: 'summary',
-    },
-  ],
-
-  methods: [
-    function toOrderItem(n) {
-      var c = this.clone();
-      c.name = c.summary = '';
-      return this.OrderItem.create({ product: c, quantity: n }, this.Y);
+      model_: 'IntProperty',
+      name: 'quantity',
+      defaultValue: 1,
     },
   ],
 });

@@ -31,8 +31,16 @@ CLASS({
       name: 'people',
       // defaults to ID, which is the person's GUID
     },
-
 //   "etag": etag,
 //   "selfLink": 'StringProperty'
-  ]
+  ],
+
+  methods: [
+    function toPeople() {
+      return this.people;
+    },
+    function toChipE() {
+      /* Implement to return a contact chip view Element */
+    },
+  ],
 });

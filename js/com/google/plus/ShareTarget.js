@@ -15,27 +15,27 @@
  * limitations under the License.
  */
 
-CLASS({
-  name: 'EnumPropertyTrait',
-  package: 'foam.core.types',
-  properties: [
-    {
-      name: 'choices',
-      type: 'Array',
-      help: 'Array of [value, label] choices.',
-      preSet: function(_, a) { return a.map(function(c) { return Array.isArray(c) ? c : [c, c]; }); },
-      required: true
-    },
-    {
-      name: 'view',
-      defaultValue: 'foam.ui.ChoiceView'
-    },
-    {
-      name: 'toPropertyE',
-      defaultValue: function(X) {
-        // TODO(braden): Use a FutureElement for this in the future.
-        return X.lookup('foam.u2.Select').create({ prop: this }, X);
-      }
-    },
-  ]
-});
+// CLASS({
+//   name: 'ShareTarget',
+//   package: 'com.google.plus',
+
+//   documentation: function() {/* A Person, Circle, or ShareList that can be
+//      shared to (one of the targets of a share). */},
+
+//   properties: [
+//     {
+//       model_: 'StringProperty',
+//       name: 'displayName',
+//     }
+//   ],
+
+//   methods: [
+//     function toPeople() {
+//       /* Implement to return the flat list of Person ids this share target references. */
+//     },
+//     function toChipE() {
+//       /* Implement to return a contact chip view Element */
+//     },
+//   ],
+
+// });

@@ -137,7 +137,7 @@
   {
     "topic": "foambg",
     "parent": "foam",
-    "image": "img/foampowered_red.png",
+    "image": "img/foam_red.png",
     "model": "Background"
   }
 ]

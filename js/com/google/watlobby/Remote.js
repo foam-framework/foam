@@ -19,6 +19,8 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Remote',
   extends: 'foam.graphics.CView',
+  
+  traits: [ 'com.google.watlobby.RemoteTrait' ],
 
   requires: [
     'com.google.watlobby.Bubble',
@@ -37,17 +39,6 @@ CLASS({
   ],
 
   properties: [
-    {
-      name: 'root',
-      defaultValue: ''
-    },
-    {
-      name: 'dir',
-      defaultValue: ''
-    },
-    {
-      name: 'selected'
-    },
     {
       model_: 'BooleanProperty',
       name: 'clientMode',
@@ -82,19 +73,24 @@ CLASS({
       }
     },
     {
-      name: 'onClick',
-      code: function(evt) {
-        var self  = this;
-        var child = this.findChildAt(evt.clientX, evt.clientY);
-
-        if ( ! child || ! child.topic ) return;
-
-        this.selected = child.topic.topic;
-        /*
-        this.topics.where(EQ(this.Topic.SELECTED, true)).update(SET(this.Topic.SELECTED, false))(function() {
-          self.topics.where(EQ(self.Topic.TOPIC, child.topic.topic)).update(SET(self.Topic.SELECTED, true));
-        });
-        */
+      name: 'layout',
+      isFramed: true,
+      code: function() {
+        while ( this.children.length ) {
+          this.removeChild(this.children[this.children.length-1]);
+        }
+        
+        if ( this.dir )
+          this.putTopic(this.Topic.create({
+            parent: this.dir,
+            topic: this.BACK_TOPIC,
+            image: 'img/back.png',
+            model: "Photo",
+            color: 'gray',
+            roundImage: true
+          }));
+        this.topics.find(EQ(this.Topic.TOPIC, this.dir),{put:this.putTopic.bind(this)});
+        this.topics.where(EQ(this.Topic.PARENT, this.dir)).select({put: this.putTopic.bind(this)});
       }
     }
   ],
@@ -103,17 +99,17 @@ CLASS({
     function initCView() {
       this.SUPER();
 
-      this.topics.pipe({
-        put:    this.putTopic.bind(this),
-        remove: this.removeTopic.bind(this)
-      });
-
+      this.topics.listen({put: function(t) { if ( t.topic !== this.root ) this.layout(); }.bind(this), remove: this.layout});
       this.document.body.addEventListener('click', this.onClick);
       this.selected$.addListener(this.updateState);
       this.dir$.addListener(this.updateState);
+      this.dir$.addListener(this.layout);
+      this.layout();
     },
 
     function putTopic(t) {
+      if ( t.topic === this.root ) return;
+
       // console.log('*** putTopic: ', t, t.topic && t.topic.topic);
       // Don't add if we already have topic
       for ( var i = 0 ; i < this.children.length ; i++ ) {
@@ -137,15 +133,20 @@ CLASS({
       c.topic = t;
       c.image = t.image;
       var r = h/2-20;
-      t.r = r;
-      c.r = r;
+      t.r = c.r = r;
+      c.scaleX = c.scaleY = 0.1;
       c.roundImage = t.roundImage;
       if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
       this.addChild(c);
-    },
-    function removeTopic(t) {
-      // TODO
+
+      if ( t.topic === this.BACK_TOPIC ) c.alpha = 0.5;
+
+      var close = this.ImageCView.create({alpha: 0.5, x: -60, y: -60, width: 120, height: 120, src: 'img/close.png'}); 
+      var s = function() { c.scaleX = c.scaleY = ! this.selected ? 0.9 : this.selected === t.topic ? 1.02 : 0.75; }.bind(this);
+      var l = function() { if ( this.selected === t.topic ) { c.addChild(close); } else { c.removeChild(close); } Movement.animate(300, s)(); }.bind(this);
+      this.selected$.addListener(l);
+      this.X.setTimeout(l,20);
     }
   ]
 });

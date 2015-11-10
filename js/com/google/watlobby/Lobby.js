@@ -19,7 +19,7 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Lobby',
   extends: 'foam.graphics.CView',
-  traits: [ 'com.google.misc.Colors' ],
+  traits: [ 'com.google.misc.Colors', 'com.google.watlobby.RemoteTrait' ],
 
   requires: [
     'com.google.watlobby.SmallRemote',
@@ -68,7 +68,7 @@ CLASS({
           var d = Movement.distance(c1.y-h/2, c1.x-w/2);
           // Keeps topic bubbles from going too far off screen
           // if ( c1.topic && d > h / 2 - r) c1.out_ = false;
-          if ( d > w / 2 - r ) c1.out_ = false;
+          if ( d > w / 2 - 2*r ) c1.out_ = false;
           if ( d < h/4 ) c1.out_ = true;
           // c1.color = c1.out_ ? 'orange' : 'blue';
 
@@ -91,7 +91,6 @@ CLASS({
         return this.TopicDAO.create({ clientMode: this.clientMode });
       }
     },
-    { name: 'root', defaultValue: '' },
     {
       name: 'dir',
       defaultValue: '',
@@ -136,42 +135,15 @@ CLASS({
         }
 
         return null;
-      },
-      postSet: function(o, n) {
-        if ( o === n || !n ) return;
-
-        this.topics.find(EQ(this.Topic.PARENT, n), {
-          put: function() {
-            this.dir = n;
-          }.bind(this)
-        });
       }
     }
   ],
 
   listeners: [
-    function onClick(evt) {
-      var t = this.findChildAt(evt.clientX, evt.clientY);
-      if ( t ) {
-        this.selected = t && t.topic && t.topic.topic;
-      } else {
-        if ( this.selected ) {
-          this.selected = null;
-        } else if ( this.dir ) {
-          var self = this;
-          // CD up a directory
-          this.topics.find(EQ(this.Topic.TOPIC, this.dir), {
-            put: function(t) { self.dir = t.parent; },
-            error: function() { self.dir = ''; }
-          });
-//          this.dir = this.findTopic(this.dir).topic.parent;
-        }
-      }
-    },
     function putTopic(t) {
       if ( t.topic === this.root ) {
         if ( this.selected !== t.selected ) this.selected = t.selected;
-        if ( this.dir !== t.dir ) this.dir = t.dir;
+        if ( this.dir !== t.dir && ( ! this.root || t.dir ) ) this.dir = t.dir;
       }
 
       if ( ! ( t.parent == this.dir || t.topic == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
@@ -195,7 +167,7 @@ CLASS({
       }, this.Y);
       c.topic = t;
       c.image = t.image;
-      Movement.animate(1000, function() { c.alpha = 1.0; c.scaleX = c.scaleY = 1; })();
+      Movement.animate(1000, function() { c.alpha = 1; c.scaleX = c.scaleY = 1; })();
       c.roundImage = t.roundImage;
      // if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
@@ -316,10 +288,14 @@ CLASS({
     },
     function openRemoteUI() {
       var w = foam.ui.Window.create({window: window.open("", "Remote", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
-      w.document.innerHTML = '';
-      w.document.write('<html><head><title>Wat Lobby Remote</title></head><body></body></html>');
-      var r = this.Remote.create({topics: this.topics}, w.Y);
-      r.write(w.Y);
+
+      // There's some timing issue that causes the remote to not open if you try to do it immediately after openeing the window.
+      this.X.setTimeout(function() {
+        w.document.innerHTML = '';
+        w.document.write('<html><head><title>Wat Lobby Remote</title></head><body></body></html>');
+        var r = this.Remote.create({topics: this.topics}, w.Y);
+        r.write(w.Y);
+      }.bind(this), 200);
     },
     function openAdminUI() {
       var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1200, height=700, location=no, menubar=no")});
