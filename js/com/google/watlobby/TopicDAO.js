@@ -19,10 +19,12 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'TopicDAO',
   extends: 'foam.dao.ProxyDAO',
+
   requires: [
     'com.google.watlobby.Topic',
     'foam.dao.EasyDAO'
   ],
+
   properties: [
     {
       model_: 'BooleanProperty',
@@ -33,20 +35,20 @@ CLASS({
       name: 'delegate',
       factory: function() {
         var dao = this.EasyDAO.create({
-          daoType: 'MDAO',
-          model: this.Topic,
-          cloning: true,
-          contextualize: true,
-          guid: true,
-          sockets: true,
+          daoType:        'MDAO',
+          model:          this.Topic,
+          cloning:        true,
+          contextualize:  true,
+          guid:           true,
+          sockets:        true,
           syncWithServer: this.clientMode
         });
 
-        if ( this.clientMode ) return dao;
-
-        axhr('topics.json')(function(topics) {
-          JSONUtil.arrayToObjArray(this.X, topics, this.Topic).select(dao);
-        }.bind(this));
+        if ( ! this.clientMode ) {
+          axhr('topics.json')(function(topics) {
+            JSONUtil.arrayToObjArray(this.X, topics, this.Topic).select(dao);
+          }.bind(this));
+        }
 
         return dao;
       }
