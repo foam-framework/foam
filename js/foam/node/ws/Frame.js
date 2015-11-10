@@ -48,14 +48,14 @@ CLASS({
       var length = this.length;
       if ( length > 65535 ) {
         buffer.writeUInt8(127, i++);
-        buffer.writeUInt8(length >> 56, i++)
-        buffer.writeUInt8(length >> 48, i++)
-        buffer.writeUInt8(length >> 40, i++)
-        buffer.writeUInt8(length >> 32, i++)
-        buffer.writeUInt8(length >> 24, i++)
-        buffer.writeUInt8(length >> 16, i++)
-        buffer.writeUInt8((length & 0xff00) >> 8, i++)
-        buffer.writeUInt8(length & 0xff, i++)
+        buffer.writeUInt8((length >> 56) & 0xff, i++)
+        buffer.writeUInt8((length >> 48) & 0xff, i++)
+        buffer.writeUInt8((length >> 40) & 0xff, i++)
+        buffer.writeUInt8((length >> 32) & 0xff, i++)
+        buffer.writeUInt8((length >> 24) & 0xff, i++)
+        buffer.writeUInt8((length >> 16) & 0xff, i++)
+        buffer.writeUInt8((length >> 8) & 0xff, i++)
+        buffer.writeUInt8((length & 0xff), i++)
       } else if ( length > 125 ) {
         buffer.writeUInt8(126, i++);
         buffer.writeUInt8((length & 0xff00) >> 8, i++)
