@@ -150,7 +150,14 @@ CLASS({
         if ( this.dir !== t.dir && ( ! this.root || t.dir ) ) this.dir = t.dir;
       }
 
-      if ( ! ( t.parent == this.dir || t.topic == this.dir || ( this.selected && t.topic == this.selected ) ) ) return;
+      if ( ! ( t.parentTopic == this.dir ||
+               t.topic == this.dir ||
+               ( this.selected &&
+                 t.topic == this.selected ) ) ) {
+        this.removeTopic(t);
+        return;
+      }
+
 //      console.log('***** putTopic: ', t.topic);
       if ( t.model === 'Background' ) {
         document.body.style.backgroundImage = 'url(' + t.image + ')';
