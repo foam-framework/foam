@@ -21,7 +21,8 @@ CLASS({
 
   requires: [ 'foam.dao.ProxyDAO' ],
 
-  documentation: function() {/* A generic replacement for a DAOKeyView.
+  documentation: function() {/* TODO: Change this into a proxy DAO.
+    A generic replacement for a DAOKeyView.
     Use this controller to transform your reference list dao, and pass
     $$DOC{ref:'.resolvedData'} to your internal DAOListView. */},
 

@@ -16,12 +16,14 @@ CLASS({
   requires: [
     'com.google.plus.ui.ChipListView',
     'foam.ui.ReferenceListResolver',
+    'foam.ui.md.ToolbarAction',
   ],
 
   imports: [
     'data',
     'circleDAO',
-    'personDAO'
+    'personDAO',
+    'mdToolbar',
   ],
   exports: [ 'data' ],
 
@@ -29,6 +31,12 @@ CLASS({
 
   methods: [
     function initE() {
+      this.mdToolbar && this.mdToolbar.addRightAction(
+        this.ToolbarAction.create({
+          action: this.EDIT,
+          data: this
+        })
+      );
       return this.cls('md-body').start('div').cls('history-section').cls('chip-historical')
         .add(this.ChipListView.create({}, this.Y.sub({
           data: this.data.history
@@ -56,6 +64,18 @@ CLASS({
       .end();
     },
   ],
+
+  actions: [
+    {
+      name: 'edit',
+      ligature: 'forward',
+      isEnabled: function() { return true; },
+      code: function() {
+        console.log("Edit!");
+      }
+    }
+  ],
+
 
   templates: [
     function CSS() {/*
