@@ -23,10 +23,11 @@ CLASS({
   traits: [ 'com.google.watlobby.RemoteTrait' ],
 
   requires: [
-    'com.google.watlobby.Bubble',
-    'com.google.watlobby.TopicBubble',
     'com.google.watlobby.AlbumBubble',
+    'com.google.watlobby.Bubble',
+    'com.google.watlobby.PhotoBubble',
     'com.google.watlobby.Topic',
+    'com.google.watlobby.TopicBubble',
     'com.google.watlobby.TopicDAO',
     'com.google.watlobby.VideoBubble',
     'foam.demos.physics.PhysicalCircle',
@@ -80,7 +81,7 @@ CLASS({
           this.removeChild(this.children[this.children.length-1]);
         }
 
-        if ( this.dir )
+        if ( this.dir ) {
           this.putTopic(this.Topic.create({
             parentTopic: this.dir,
             topic: this.BACK_TOPIC,
@@ -89,6 +90,7 @@ CLASS({
             color: 'gray',
             roundImage: true
           }));
+        }
         this.topics.find(EQ(this.Topic.TOPIC, this.dir),{put:this.putTopic.bind(this)});
         this.topics.where(EQ(this.Topic.PARENT_TOPIC, this.dir)).select({put: this.putTopic.bind(this)});
       }

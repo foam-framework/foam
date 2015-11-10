@@ -27,7 +27,7 @@ CLASS({
     'foam.graphics.ViewCView'
   ],
 
-  imports: [ 'lobby' ],
+  imports: [ 'lobby', 'window' ],
 
   properties: [
     'topic', 'image', 'roundImage', [ 'zoom', 0 ]
@@ -66,10 +66,10 @@ CLASS({
     function layout() {
       if ( ! this.img ) return;
 
-      var w = self.lobby.width;
-      var h = self.lobby.height;
+      var w = this.window.innerWidth;
+      var h = this.window.innerHeight;
       var maxR = Math.min(w, h)/3;
-      this.r = this.topic.r * ( 1-this.zoom ) + this.zoom * maxR; 
+      this.r = this.topic.r * ( 1-this.zoom ) + this.zoom * maxR;
       var c = this.canvas;
 
       var r2 = this.roundImage ?
