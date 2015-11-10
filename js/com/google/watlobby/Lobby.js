@@ -288,10 +288,14 @@ CLASS({
     },
     function openRemoteUI() {
       var w = foam.ui.Window.create({window: window.open("", "Remote", "width=800, height=600, location=no, menubar=no, resizable=no, status=no, titlebar=no")});
-      w.document.innerHTML = '';
-      w.document.write('<html><head><title>Wat Lobby Remote</title></head><body></body></html>');
-      var r = this.Remote.create({topics: this.topics}, w.Y);
-      r.write(w.Y);
+
+      // There's some timing issue that causes the remote to not open if you try to do it immediately after openeing the window.
+      this.X.setTimeout(function() {
+        w.document.innerHTML = '';
+        w.document.write('<html><head><title>Wat Lobby Remote</title></head><body></body></html>');
+        var r = this.Remote.create({topics: this.topics}, w.Y);
+        r.write(w.Y);
+      }.bind(this), 200);
     },
     function openAdminUI() {
       var w = foam.ui.Window.create({window: window.open("", "Admin", "width=1200, height=700, location=no, menubar=no")});
