@@ -5,7 +5,9 @@
 
   "permissions": [
     "webview",
-    "alarms"
+    "alarms",
+    "system.display",
+    "storage"
   ],
 
   "app": {

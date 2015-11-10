@@ -8,18 +8,34 @@ chrome.runtime.onUpdateAvailable.addListener(function() {
   chrome.runtime.reload();
 });
 
-
-chrome.alarms.onAlarm.addListener(function(alarms) {
-  chrome.runtime.requestUpdateCheck(function(u) {
-    if ( u == 'throttled' ) {
-      period *= 2;
-      chrome.alarms.create("update", {
-        periodInMinutes: period
-      });
-    } else {
-      period = 1;
-    }
+function displayCheck() {
+  chrome.system.display.getInfo(function(info) {
+    chrome.storage.local.get("info", function(stored) {
+      if ( info.length !== stored.infolength ) {
+        chrome.storage.local.set({
+          "info": info
+        }, function(){});
+        launchWindow();
+      }
+    });
   });
+}
+
+chrome.alarms.onAlarm.addListener(function(alarm) {
+  if ( alarm.name == "update" ) {
+    chrome.runtime.requestUpdateCheck(function(u) {
+      if ( u == 'throttled' ) {
+        period *= 2;
+        chrome.alarms.create("update", {
+          periodInMinutes: period
+        });
+      } else {
+        period = 1;
+      }
+    });
+  } else if ( alarm.name = "displayCheck" ) {
+    displayCheck();
+  }
 });
 
 var launchWindow = (function() {
@@ -35,13 +51,14 @@ var launchWindow = (function() {
       launching = true;
       chrome.app.window.create("main.html", {
         frame: 'none',
-        innerBounds: {
+        innerBounds: { left: 1440, top: 0, width: 2560, height: 1600 },
+/*        innerBounds: {
           left: -3240,
           top: 0,
           width: 2700,
           height: 1920
         }
-      }, function(w) {
+*/      }, function(w) {
         launching = false;
       });
     }
@@ -56,6 +73,9 @@ chrome.runtime.onInstalled.addListener(function() {
   launchWindow();
   chrome.alarms.create("update", {
     periodInMinutes: period
+  });
+  chrome.alarms.create("displaycheck", {
+    periodInMinutes: 1
   });
 });
 
