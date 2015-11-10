@@ -13,14 +13,14 @@
   },
   {
     "topic": "flip",
-    "parent": "chrome",
+    "parentTopic": "chrome",
     "image": "img/flip.png",
     "priority": 0,
     "color": "RED"
   },
   {
     "topic": "pixel",
-    "parent": "chrome",
+    "parentTopic": "chrome",
     "image": "img/pixel.png",
     "priority": 0,
     "color": "RED"
@@ -34,7 +34,7 @@
   },
   {
     "topic": "appbuilder",
-    "parent": "foam",
+    "parentTopic": "foam",
     "image": "img/appbuilder.png",
     "priority": 0,
     "model": "Video",
@@ -50,7 +50,7 @@
   },
   {
     "topic": "onhubvideo",
-    "parent": "onhub",
+    "parentTopic": "onhub",
     "image": "img/onhublogo.png",
     "priority": 3,
     "color": "BLUE",
@@ -74,7 +74,7 @@
   },
   {
     "topic": "calc",
-    "parent": "foam",
+    "parentTopic": "foam",
     "image": "img/calculator.png",
     "priority": 0,
     "color": "GREEN"
@@ -102,7 +102,7 @@
   },
   {
     "topic": "foam",
-    "parent": "chrome",
+    "parentTopic": "chrome",
     "image": "img/foam_whiteontransparent.png",
     "priority": 3,
     "color": "red",
@@ -130,13 +130,13 @@
   },
   {
     "topic": "chromebg",
-    "parent": "chrome",
+    "parentTopic": "chrome",
     "image": "img/googlewat.png",
     "model": "Background"
   },
   {
     "topic": "foambg",
-    "parent": "foam",
+    "parentTopic": "foam",
     "image": "img/foam_red.png",
     "model": "Background"
   }
