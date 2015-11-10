@@ -49,8 +49,7 @@ CLASS({
           if ( c.count ) return;
 
 	  var result = this.fs.readFileSync(global.FOAM_BOOT_DIR + '/../js/com/google/watlobby/topics.json');
-	  result = result ? JSONUtil.arrayToObjArray(this.X, eval('(' + result + ')'), this.Topic) : [];
-	  result.select(dao);
+          if ( result ) JSONUtil.arrayToObjArray(this.X, eval('(' + result + ')'), this.Topic).select(dao);
         }.bind(this));
 
         return dao;
