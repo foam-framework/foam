@@ -38,6 +38,7 @@ CLASS({
           cloning: true,
           contextualize: true,
           guid: true,
+          sockets: true,
           syncWithServer: this.clientMode
         });
 
