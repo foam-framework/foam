@@ -16,17 +16,25 @@ CLASS({
 
   requires: [
     'com.google.ow.model.Order',
+    'com.google.ow.ui.OrderView',
     'com.google.ow.ui.ShoppingItemView',
-    'foam.ui.DAOListView',
+    'foam.u2.DAOListView',
+    'foam.u2.DetailView',
   ],
 
-  exports: [ 'purchaseOrder' ],
+  exports: [
+    'products',
+    'purchaseOrder'
+  ],
 
   properties: [
     [ 'nodeName', 'SHOPPING' ],
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'products',
+      toPropertyE: function(X) {
+        return X.lookup('foam.u2.DAOListView').create({ data: X.products }, X);
+      },
     },
     {
       type: 'com.google.ow.model.Order',
@@ -35,16 +43,19 @@ CLASS({
         console.log('Instantiate order');
         return this.Order.create(null, this.Y);
       },
+      toPropertyE: function(X) {
+        return X.lookup('com.google.ow.ui.OrderView').create({
+          data: X.purchaseOrder
+        }, X);
+      },
     },
   ],
 
   methods: [
     function initE() {
       var E = this.Y.E;
-      return this.add(this.DAOListView.create({
-        dao: this.products,
-        rowView: 'com.google.ow.ui.ShoppingItemView',
-      }, this.Y));
+      return this.add(this.PRODUCTS)
+      .add(this.PURCHASE_ORDER);
       // TODO(markdittmer): Add view of order + pay/checkout action.
     },
   ],

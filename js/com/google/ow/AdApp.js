@@ -35,7 +35,7 @@ CLASS({
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
     'foam.u2.DetailView',
-    'foam.ui.DAOListView',
+    'foam.u2.DAOListView',
     'foam.ui.TextFieldView',
     'foam.ui.Tooltip',
     'foam.ui.md.CannedQueryCitationView',
@@ -105,6 +105,7 @@ CLASS({
 Lean fit, size up for loose fit in body
 Made in the U.S.A, by American Apparel.
 Machine Wash Cold*/}),
+                    price: 45.00,
                     colorableImage: 'FOAMTShirt',
                   }, this.Y),
                   this.ColorableProduct.create({
@@ -126,6 +127,7 @@ Wash: Machine wash cold. May shrink after wash
 Made of 100% preshrunk cotton
 Weight: 4.5oz
 IMPORTED*/}),
+                    price: 72.00,
                     colorableImage: 'FOAMPJs',
                   }, this.Y),
                 ],
@@ -136,10 +138,7 @@ IMPORTED*/}),
           title: 'Lifestream (Ad demo)',
           model: this.Envelope,
           dao: dao,
-          listView: {
-            factory_: 'foam.ui.DAOListView',
-            rowView: 'com.google.ow.ui.EnvelopeCitationView'
-          },
+          listView: 'foam.u2.DAOListView',
           cannedQueryDAO: [
             this.CannedQuery.create({
               label: 'All',

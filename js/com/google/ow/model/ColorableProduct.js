@@ -16,10 +16,16 @@ CLASS({
 
   requires: [
     'com.google.ow.ui.ColorableProductView',
-    'foam.u2.md.Select',
   ],
 
   properties: [
+    {
+      model_: 'IntProperty',
+      name: 'hash',
+      defaultValueFn: function() {
+        return (this.id + '$'  + this.color).hashCode();
+      },
+    },
     {
       model_: 'ReferenceProperty',
       name: 'colorableImage',
@@ -27,34 +33,34 @@ CLASS({
     },
     {
       // TODO(markdittmer): This should be an enum property.
-      model_: 'StringProperty',
+      model_: 'foam.core.types.StringEnumProperty',
       name: 'color',
-      toPropertyE: function(opt_X) {
-        var X = opt_X || this.Y;
-        return X.foam.u2.md.Select.create({
-          choices: [
-            ['#212121', 'Black'],
-            ['#E91E63', 'Pink'],
-            ['#D50000', 'Red'],
-            ['#03A9F4', 'Blue'],
-            ['#4CAF50', 'Green'],
-          ],
-        }, X);
-      },
-      defaultValue: '#212121',
     },
     {
       model_: 'ArrayProperty',
       name: 'colors',
-      lazyFactory: function() {
-        return
+      factory: function() {
+        return [
+          ['#212121', 'Black'],
+          ['#E91E63', 'Pink'],
+          ['#D50000', 'Red'],
+          ['#03A9F4', 'Blue'],
+          ['#4CAF50', 'Green'],
+        ];
       },
-      transient: true,
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.COLOR.choices = nu;
+      },
     },
   ],
 
   methods: [
-    // TODO(markdittmer): We should use model-for-model or similar here.
+    function toOrderItem(n) {
+      var item = this.SUPER(n);
+      item.summary += ' ' + this.COLOR.choiceLabel(this.color);
+      return item;
+    },
     function toDetailE() {
       return this.ColorableProductView.create({ data: this }, this.Y);
     },

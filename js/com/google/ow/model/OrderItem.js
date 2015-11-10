@@ -13,6 +13,10 @@ CLASS({
   package: 'com.google.ow.model',
   name: 'OrderItem',
 
+  requires: [
+    'com.google.ow.ui.OrderItemView',
+  ],
+
   properties: [
     {
       model_: 'IntProperty',
@@ -23,9 +27,44 @@ CLASS({
       name: 'product',
     },
     {
+      model_: 'StringProperty',
+      name: 'summary',
+      toPropertyE: function(X) {
+        // TODO(markdittmer): We should have a non-input-element standard for
+        // this.
+        return X.E('div').add(X.data[this.name + '$']);
+      },
+    },
+    {
       model_: 'IntProperty',
       name: 'quantity',
       defaultValue: 1,
+      toPropertyE: function(X) {
+        // TODO(markdittmer): We should have a non-input-element standard for
+        // this.
+        return X.E('div').add(X.data[this.name + '$']);
+      },
+    },
+    {
+      model_: 'FloatProperty',
+      name: 'total',
+      dynamicValue: function() {
+        return this.product ? this.product.price * this.quantity : 0.00;
+      },
+      toPropertyE: function(X) {
+        // TODO(markdittmer): We should have a non-input-element standard for
+        // this.
+        return X.E('div').add(X.data[this.name + '$']);
+      },
+    },
+  ],
+
+  methods: [
+    function toE(X) {
+      return this.OrderItemView.create({
+        data: this,
+        controllerMode: 'view',
+      }, X);
     },
   ],
 });
