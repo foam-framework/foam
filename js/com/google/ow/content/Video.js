@@ -27,6 +27,10 @@ CLASS({
       name: 'titleText'
     },
     {
+      model_: 'StringProperty',
+      name: 'description'
+    },
+    {
       model_: 'URLProperty',
       name: 'content',
     },
@@ -46,6 +50,7 @@ CLASS({
           'margin': '16px'
         })
           .start().add(this.titleText$).cls('md-title').end()
+          .start().add(this.description$).cls('md-subhead').end()
           .start('video')
             .attrs({ src: this.content, controls: 'true', preload:'auto'})
             .style({ width: '100%' })
@@ -54,8 +59,12 @@ CLASS({
     },
     function toCitationE() {
       return this.Element.create(null, this.Y)
-        .start()
+        .start().style({
+            'display': 'flex',
+            'flex-direction': 'row',
+          })
           .add(this.ImageView.create({ data: this.preview, displayHeight: 80 }))
+          .start().add(this.description$).style({ margin: 10 }).end()
         .end();
     },
   ],
