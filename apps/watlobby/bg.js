@@ -11,6 +11,7 @@ chrome.runtime.onUpdateAvailable.addListener(function() {
 function displayCheck() {
   chrome.system.display.getInfo(function(info) {
     chrome.storage.local.get("info", function(stored) {
+      chrome.storage.local.set({ "info": info });
       if ( info.length !== stored.infolength ) {
         launchWindow();
       }

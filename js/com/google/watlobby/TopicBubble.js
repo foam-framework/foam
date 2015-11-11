@@ -32,7 +32,12 @@ CLASS({
 
   properties: [
     { name: 'topic' },
-    { name: 'image' },
+    {
+      name: 'image',
+      postSet: function(_, i) {
+        this.img.src = i;
+      }
+    },
     { name: 'roundImage' },
     { name: 'zoom', defaultValue: 0 },
     {
@@ -45,14 +50,20 @@ CLASS({
 //          data: 'foobar\nblah\nblah\nblah'
         })});
       }
-    }
+    },
+    {
+      name: 'img',
+      factory: function() {
+        return this.ImageCView.create({ src: this.image });
+      }
+    },
   ],
 
   methods: [
     function initCView() {
       this.SUPER();
 
-      this.addChild(this.img = this.ImageCView.create({src: this.image}));
+      this.addChild(this.img);
       this.addChild(this.textArea);
       this.textArea.innerView.data = '<font style="color:' + this.topic.color + ';"><b>' + ( this.topic.text || 'INSERT TEXT HERE' ) + '</b></font>';
       this.textArea.alpha = 0;

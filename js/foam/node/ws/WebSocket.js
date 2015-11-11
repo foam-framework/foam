@@ -78,7 +78,6 @@ CLASS({
               opcode: 10
             });
             var written = this.socket.write(resp.toData());
-            console.log("Written is", written);
           }
           return;
         }
