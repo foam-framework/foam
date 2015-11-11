@@ -551,7 +551,7 @@ CLASS({
 
   methods: {
     pipe: function(sink) { sink.put(this); },
-    put: function(obj) { this.instance_.sum += this.arg1.f(obj); },
+    put: function(obj) { this.instance_.sum += +this.arg1.f(obj); },
     remove: function(obj) { this.sum -= this.arg1.f(obj); },
     toString: function() { return this.sum; }
   }

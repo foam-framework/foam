@@ -33,15 +33,6 @@ CLASS({
     {
       name: 'medalDAO',
       factory: function() {
-	var result =
-	    this.fs.readFileSync(global.FOAM_BOOT_DIR + '/../js/foam/demos/olympics/MedalData.json');
-	if ( ! result ) {
-	  result = [];
-	} else {
-	  result = eval("(" + result + ")");
-	  result = JSONUtil.arrayToObjArray(this.X, result, this.Medal);
-	}
-
 	var dao = foam.dao.EasyDAO.create({
 	  daoType: 'MDAO',
 	  model: this.Medal,
@@ -49,15 +40,15 @@ CLASS({
 	  seqNo: true,
 	  autoIndex: true
 	});
-	result.select(dao);
+
+	var result = this.fs.readFileSync(global.FOAM_BOOT_DIR + '/../js/foam/demos/olympics/MedalData.json');
+        if ( result ) JSONUtil.arrayToObjArray(this.X, eval("(" + result + ")"), this.Medal).select(dao);
 
         return dao;
       }
     }
   ],
   methods: [
-    function execute() {
-      this.exportDAO(this.medalDAO);
-    }
+    function execute() { this.exportDAO(this.medalDAO); }
   ]
 });

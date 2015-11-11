@@ -22,6 +22,7 @@ CLASS({
   extends: 'foam.ui.BaseView',
   traits: [
     'foam.ui.HTMLViewTrait',
+    'foam.ui.U2ViewTrait',
   ],
 
   requires: [ 'Property' ],

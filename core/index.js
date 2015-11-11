@@ -1126,7 +1126,7 @@ var AutoIndex = {
   addIndex: function(prop) {
     if ( GLOBAL.DescExpr && DescExpr.isInstance(prop) ) prop = prop.arg1;
 
-    console.log('Adding AutoIndex : ', prop.name);
+    console.log('Adding AutoIndex : ', prop.id);
     this.properties[prop.name] = true;
     this.mdao.addIndex(prop);
   },

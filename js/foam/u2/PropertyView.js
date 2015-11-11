@@ -26,7 +26,10 @@ CLASS({
     'foam.u2.Input'
   ],
 
-  imports: [ 'data' ],
+  imports: [
+    'data',
+    'data$',
+  ],
 
   properties: [
     {
@@ -35,27 +38,39 @@ CLASS({
     {
       name: 'view'
     },
+    {
+      name: 'child_',
+    },
     [ 'nodeName', 'tr' ]
   ],
 
   methods: [
     function init() {
-      this.SUPER();
-
       var view = this.view || this.prop.toPropertyE();
       var prop = this.prop;
 
       // TODO: remove check once all views extend View
       view.fromProperty && view.fromProperty(prop);
 
-      // TODO: Why can't I just define this with data$ in the view constructor?
-      // Is data$ linking the wrong way?
-      Events.link(this.data.propertyValue(prop.name), view.data$);
+      this.child_ = view;
 
-      this.initE(view);
+      // Will call initE.
+      this.SUPER();
+
+      this.bindData_(null, this.data);
     },
-    function initE(view) {
-      this.cls('foam-u2-PropertyView').add(view);
+    function initE() {
+      this.cls('foam-u2-PropertyView').add(this.child_);
     }
+  ],
+
+  listeners: [
+    function bindData_(old, nu) {
+      if (!this.child_) return;
+      if (old)
+        Events.unlink(old.propertyValue(this.prop.name), this.child_.data$);
+      if (nu)
+        Events.link(nu.propertyValue(this.prop.name), this.child_.data$);
+    },
   ]
 });

@@ -14,14 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 CLASS({
   package: 'foam.tutorials.todo.model',
   name: 'Todo',
   properties: [
     {
       name: 'id',
-      javaType: 'int',
       hidden: true
     },
     {
@@ -31,22 +29,7 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'isCompleted',
       label: 'Completed',
-      view: 'foam.ui.md.CheckboxView'
-    }
+      view: 'foam.ui.md.CheckboxView',
+    },
   ],
-
-  actions: [
-    {
-      name: 'delete',
-      isAvailable: function() { return this.id; },
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUg' +
-          'AAABgAAAAYCAQAAABKfvVzAAAAOklEQVQ4y2NgGPzgv8L/B/' +
-          '9h4MF/BXxK8QDqaCDH/aSaP6phVAMuDa+wqn+BW4P//5eYy' +
-          'v/7DvI8DwBDJ5LB6mdU8gAAAABJRU5ErkJggg==',
-      code: function(X) {
-        X.dao.remove(this.id);
-        X.stack.popView();
-      }
-    }
-  ]
 });

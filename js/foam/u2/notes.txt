@@ -46,3 +46,40 @@ element: true, Property property
 Do we need to rename Value?
 
 host: or $CSS shortcut
+
+
+<div class="foo bar">{{.cls('foobar', function() { })}}
+<div class="foo {{foobar: function() { }}}">
+<div class="foo foobar{{function() { }}}">
+
+
+OPTIONAL_CLOSE_TAGS
+<table>
+  <tr>
+    <td>blah
+    <td>blah
+    <td>blah
+  <tr>
+    <td>blah
+      <td>blah
+        <td>blah
+</table>
+
+<div var="foo">         ???
+</div>
+((
+  foo.cls('adf');
+))
+
+
+Special value:    
+  $top - top most element in the template
+  $e - current element
+
+
+TODO:
+  better name for $top?
+  dynamic class syntax
+  if
+  repeat
+  var?

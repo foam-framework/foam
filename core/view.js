@@ -217,18 +217,22 @@ var __element_map__ = {
 };
 
 function elementForName(nodeName) {
-  nodeName = nodeName ? nodeName : 'SPAN' ;
+  nodeName = nodeName ? nodeName : 'div' ;
   var modelName = this.__element_map__[nodeName.toUpperCase()];
   if ( modelName ) return this.X.lookup(modelName).create(null, this.Y || X);
 
-  if ( nodeName.startsWith(':') )
-    return this.elementForFeature(nodeName.substring(1));
+  var i = nodeName.indexOf(':');
+  if ( i != -1 ) {
+    return this.elementForFeature(nodeName.substring(0, i), nodeName.substring(i+1));
+  }
 
   return null;
 }
 
-function elementForFeature(fName) {
-  return this.data.model_.getFeature(fName).toE(this.Y || X);
+function elementForFeature(objName, featureName) {
+  var x = this.Y || X;
+  if ( objName ) x = X.sub({data: this[objName]});
+  return this[objName || 'data'].model_.getFeature(featureName).toE(x);
 }
 
 function registerE(name, model) {
@@ -238,12 +242,13 @@ function registerE(name, model) {
   return this;
 }
 
-// Utility function for creating U2 elements in a short format.
+// Utility function for creating U2 elements in a short format. Expects to be
+// run on a conteXt object.
 function E(opt_nodeName) {
-  var e = this.elementForName(opt_nodeName);
+  var e = this.elementForName && this.elementForName(opt_nodeName);
 
   if ( ! e ) {
-    e = foam.u2.Element.create(null, X);
+    e = this.lookup('foam.u2.Element').create(null, this);
     if ( opt_nodeName ) e.nodeName = opt_nodeName;
   }
 
@@ -251,5 +256,5 @@ function E(opt_nodeName) {
 }
 
 function start(opt_nodeName) {
-  return E(opt_nodeName);
+  return this.E(opt_nodeName);
 }

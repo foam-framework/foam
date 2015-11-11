@@ -1,0 +1,20 @@
+{
+  "name": "watlobby",
+  "version": "1.0.3",
+  "manifest_version": 2,
+
+  "permissions": [
+    "webview",
+    "alarms",
+    "system.display",
+    "storage"
+  ],
+
+  "app": {
+    "background": {
+      "scripts": [
+        "bg.js"
+      ]
+    }
+  }
+}

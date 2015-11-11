@@ -194,6 +194,7 @@ CLASS({
     setupAutocomplete: function() {
       if ( ! this.autocomplete ) return;
       var view = this.autocompleteView = this.AutocompleteView.create({
+        acRowView: this.acRowView,
         autocompleter: this.autocompleter({
           prop: this.prop
         }, this.Y),

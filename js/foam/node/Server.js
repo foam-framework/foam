@@ -24,12 +24,13 @@ CLASS({
     'foam.node.handlers.DAOHandler'
   ],
   exports: [
+    'log',
     'exportDAO',
     'exportFile',
     'exportDirectory',
   ],
   imports: [
-    'log'
+    'log as log_'
   ],
   properties: [
     {
@@ -55,6 +56,22 @@ CLASS({
       name: 'http'
     },
     {
+      model_: 'foam.node.NodeRequireProperty',
+      name: 'https'
+    },
+    {
+      name: 'keyFile',
+    },
+    {
+      name: 'certFile',
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'quiet',
+      help: 'Set to true to silence most logs outputs.',
+      defaultValue: false,
+    },
+    {
       name: 'server',
       hidden: true
     },
@@ -75,21 +92,36 @@ CLASS({
     }
   ],
   methods: [
+    function log() {
+      if ( ! this.quiet ) {
+        this.log_.apply(null, arguments);
+      }
+    },
     function execute() {
-      this.server = this.http.createServer(this.onRequest);
+      if (this.keyFile && this.certFile) {
+        var fs = require('fs');
+        this.server = this.https.createServer({
+          key: fs.readFileSync(this.keyFile),
+          cert: fs.readFileSync(this.certFile)
+        }, this.onRequest);
+      } else {
+        this.server = this.http.createServer(this.onRequest);
+      }
+
       this.server.listen(this.port);
+      this.server.on('upgrade', this.onUpgrade);
 
       // TODO Find a better way to default these?
       this.agents.push('foam.node.ServeFOAM');
 
       for( var i = 0 ; i < this.agents.length ; i++ ) {
-        this.log("Loading ", this.agents[i]);
+        this.log_("Loading ", this.agents[i]);
         var f = arequire(this.agents[i])(function(m) {
           var agent = m.create(undefined, this.Y);
           if ( agent.execute ) {
             agent.execute();
           }
-          this.log("Loaded ", m.id);
+          this.log_("Loaded ", m.id);
         }.bind(this));
       }
     },
@@ -104,7 +136,7 @@ CLASS({
       }
 
       this.daoHandler_.daoMap[opt_name] = dao;
-      this.log("Exporting " + opt_name);
+      this.log_("Exporting " + opt_name);
     },
     function exportFile(url, filepath) {
       this.handlers.push(
@@ -132,6 +164,20 @@ CLASS({
         if ( i === this.handlers.length ) {
           resp.statusCode = 404;
           resp.end();
+        }
+      }
+    },
+    {
+      name: 'onUpgrade',
+      code: function(req, socket, head) {
+        for ( var i = 0 ; i < this.handlers.length ; i++ ) {
+          if ( this.handlers[i].upgrade &&
+               this.handlers[i].upgrade(req, socket, head) ) {
+            break;
+          }
+        }
+        if ( i == this.handlers.length ) {
+          socket.end('HTTP/1.1 501 Unimplemented\r\n\r\n');
         }
       }
     }

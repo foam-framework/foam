@@ -197,6 +197,7 @@ CLASS({
       toString:      function() { return 'DESTROYED'; }
     },
 
+    // ???: Should we disallow these?
     OPTIONAL_CLOSE_TAGS: {
       HTML: true,
       HEAD: true,
@@ -216,19 +217,19 @@ CLASS({
     },
 
     ILLEGAL_CLOSE_TAGS: {
-      IMG: true,
-      INPUT: true,
-      BR: true,
-      HR: true,
-      FRAME: true,
-      AREA: true,
-      BASE: true,
-      BASEFONT: true,
-      COL: true,
-      ISINDEX: true,
-      LINK: true,
-      META: true,
-      PARAM: true
+      img: true,
+      input: true,
+      br: true,
+      hr: true,
+      frame: true,
+      area: true,
+      base: true,
+      basefont: true,
+      col: true,
+      isindex: true,
+      link: true,
+      meta: true,
+      param: true
     }
   },
 
@@ -248,7 +249,7 @@ CLASS({
         // and ILLEGAL_CLOSE_TAGS work.
         return v.toUpperCase();
       },
-      defaultValue: 'SPAN'
+      defaultValue: 'div'
     },
     {
       name: 'attributeMap',
@@ -317,10 +318,14 @@ CLASS({
           t.futureTemplate(function() {
             X.addStyle(this);
           }.bind(this));
-          return;
+          break;
         }
       }
+
+      return this.initE();
     },
+
+    function initE() {},
 
     function E(opt_nodeName) {
       var e = this.X.elementForName(opt_nodeName);
@@ -385,12 +390,16 @@ CLASS({
     // Visibility
     //
     function show(opt_shown) {
-      return this.cls('foam-u2-Element-hidden', opt_shown, true);
+      if ( opt_shown ) {
+        this.removeCls('foam-u2-Element-hidden');
+      } else {
+        this.cls('foam-u2-Element-hidden');
+      }
+      return this;
     },
 
     function hide(opt_hidden) {
-      if ( opt_hidden === undefined ) opt_hidden = true;
-      return this.cls('foam-u2-Element-hidden', opt_hidden);
+      return this.show(! (opt_hidden || true));
     },
 
     //
@@ -447,8 +456,22 @@ CLASS({
     },
 
     //
+    // DOM-like
+    //
+    function removeCls(cls) {
+      if ( cls ) {
+        delete this.classes[cls];
+        this.onSetCls(cls, false);
+      }
+    },
+
+    //
     // Fluent Methods
     //
+    function setID(id) {
+      this.id = id;
+      return this;
+    },
     function on(topic, listener) {
       this.elListeners.push([topic, listener]);
       this.onAddListener(topic, listener);
@@ -476,6 +499,37 @@ CLASS({
         this.onSetCls(cls, enabled);
       }
       return this;
+    },
+
+    function cls2(cls) {
+      if ( typeof cls === 'function' ) {
+        var lastValue = null;
+        this.dynamic(cls, function(value) {
+          this.cls2_(lastValue, value);
+          lastValue = value;
+        }.bind(this));
+      } else if ( Value.isInstance(cls) ) {
+        var lastValue = null;
+        var l = function() {
+          var v = cls.get();
+          this.cls2_(lastValue, v);
+          lastValue = v;
+        }.bind(this);
+        cls.addListener(l);
+        l();
+      } else {
+        this.cls2_(null, cls);
+      }
+      return this;
+    },
+
+    function cls2_(oldClass, newClass) {
+      if ( oldClass === newClass ) return;
+      this.removeCls(oldClass);
+      if ( newClass ) {
+        this.classes[newClass] = true;
+        this.onSetCls(newClass, true);
+      }
     },
 
     function dynamicAttr_(key, fn) {
@@ -512,6 +566,14 @@ CLASS({
       }.bind(this));
     },
 
+    function valueStyle_(key, v) {
+      var l = function(value) {
+        this.style_(key, v.get());
+      }.bind(this);
+      v.addListener(l);
+      l();
+    },
+
     function style_(key, value) {
       this.css[key] = value;
       this.onSetStyle(key, value);
@@ -523,6 +585,8 @@ CLASS({
         var value = map[key];
         if ( typeof value === 'function' )
           this.dynamicStyle_(key, value);
+        else if ( Value.isInstance(value) )
+          this.valueStyle_(key, value);
         else
           this.style_(key, value);
       }
@@ -544,6 +608,11 @@ CLASS({
       return dyn;
     },
 
+    function tag(opt_nodeName) {
+      var c = this.E(opt_nodeName || 'br');
+      this.add(c);
+      return this;
+    },
     function start(opt_nodeName) {
       var c = this.E(opt_nodeName);
       c.parent_ = this;
@@ -656,12 +725,12 @@ CLASS({
             buf.push(o);
           } else if ( typeof o === 'number' ) {
             buf.push(o);
+          } else if ( X.foam.u2.Element.isInstance(o) ) {
+            o.output(f);
           } else {
             if ( o && o.toView_ ) o = o.toView_();
             if ( ! ( o === null || o === undefined ) ) {
-              if ( o.output ) {
-                o.output(f);
-              } else if ( o.toHTML ) {
+              if ( o.toHTML ) {
                 buf.push(o.toHTML());
               } else {
                 buf.push(o);
@@ -746,17 +815,29 @@ CLASS({
       return s.toString();
     },
 
+    function toHTML() { return this.outerHTML; },
+    function initHTML() { this.load(); },
+
 
     //
     // Template Support (internal)
     //
     function a() { return this.add.apply(this, arguments); },
-    function c() { return this.cls.apply(this, arguments); },
+    function c() { return this.cls2.apply(this, arguments); },
     function e() { return this.end(); },
+    function g(opt_nodeName) { return this.tag(opt_nodeName); },
+    function i(id) { return this.setID(id); },
+    function o(m) {
+      for ( var k in m ) this.on(k, m[k]);
+      return this;
+    },
     function p(a) { a[0] = this; return this; },
     function s(opt_nodeName) { return this.start(opt_nodeName); },
     function t(as) { return this.attrs(as); },
-    function x(k,v) { this.X.set(k,v); return this; },
+    function x(m) {
+      for ( var k in m ) this.X.set(k, m[k]);
+      return this;
+    },
     function y() { return this.style.apply(this, arguments); },
   ]
 });

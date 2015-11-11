@@ -30,7 +30,7 @@ CLASS({
   properties: [
     {
       name: 'playIcon',
-      factory: function() { return this.ImageCView.create({src: 'img/play.png', x:-40, y:-40, width: 80, height: 80, alpha: 0.25}); }
+      factory: function() { return this.ImageCView.create({src: 'img/play.png', alpha: 0.35}); }
     }
   ],
 
@@ -38,6 +38,14 @@ CLASS({
     function initCView() {
       this.SUPER();
       this.addChild(this.playIcon);
+    },
+    function layout() {
+      this.SUPER();
+      if ( ! this.img ) return;
+      this.playIcon.width = this.r / 0.8
+      this.playIcon.height = this.r / 0.8;
+      this.playIcon.x = -this.playIcon.width/2.2;
+      this.playIcon.y = -this.playIcon.height/2;
     },
     function setSelected(selected) {
       var lobby = this.lobby;

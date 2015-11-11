@@ -22,7 +22,8 @@ CLASS({
   requires: [
     'XHR',
     'foam.core.dao.ClientDAO',
-    'foam.oauth2.GoogleSignIn',
+    'foam.core.dao.WebSocketDAO',
+    'foam.oauth2.GoogleSignIn'
   ],
   properties: [
     {
@@ -50,8 +51,25 @@ CLASS({
       name: 'googleSignIn_',
     },
     {
+      model_: 'BooleanProperty',
+      name: 'sockets',
+      defaultValue: false
+    },
+    {
+      name: 'reconnectPeriod',
+      defaultValue: 0
+    },
+    {
       name: 'delegate',
       factory: function() {
+        if ( this.sockets ) {
+          return this.WebSocketDAO.create({
+            uri: this.serverUri,
+            model: this.model,
+            reconnectPeriod: this.reconnectPeriod
+          });
+        }
+
 	return this.ClientDAO.create({
 	  asend: this.asend.bind(this),
 	  model: this.model,
@@ -87,7 +105,11 @@ CLASS({
 	    ret(null);
 	    return;
 	  }
-	  if ( IN_CHROME_APP() ) {
+          // TODO(braden): This is fine in built non-Chrome apps, but would fail
+          // in a built Chrome app. The model loader that defines IN_CHROME_APP
+          // and friends is not used for built apps, so this check will always
+          // fail in a built app.
+	  if ( window.IN_CHROME_APP && IN_CHROME_APP() ) {
 	    aeval("(" + resp + ")")(function(data) {
               JSONUtil.amapToObj(ret, this.X, data);
 	    }.bind(this));

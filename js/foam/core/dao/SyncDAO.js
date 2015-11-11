@@ -22,7 +22,8 @@ CLASS({
   properties: [
     {
       name: 'remoteDAO',
-      transient: true
+      transient: true,
+      required: true
     },
     {
       name: 'syncRecordDAO',
@@ -31,14 +32,18 @@ CLASS({
     },
     {
       name: 'syncProperty',
+      required: true,
       transient: true
     },
     {
       name: 'deletedProperty',
+      required: true,
       transient: true
     },
     {
       name: 'model',
+      required: true,
+
       transient: true
     }
   ],
@@ -92,6 +97,23 @@ CLASS({
         }
       });
     },
+    function processFromServer(obj) {
+      this.syncRecordDAO.put(
+        this.SyncRecord.create({
+          id: obj.id,
+          syncNo: obj[this.syncProperty.name]
+        }));
+
+      if ( obj[this.deletedProperty.name] ) {
+        this.delegate.remove(obj)
+      } else {
+        this.delegate.put(obj, {
+          error: function() {
+            console.error.apply(console, arguments);
+          }
+        });
+      }
+    },
     function syncFromServer(ret) {
       this.syncRecordDAO.select(MAX(this.SyncRecord.SYNC_NO))(function(m) {
         this.remoteDAO
@@ -99,21 +121,7 @@ CLASS({
             GT(this.syncProperty, m.max))
           .select({
             put: function(obj) {
-              this.syncRecordDAO.put(
-                this.SyncRecord.create({
-                  id: obj.id,
-                  syncNo: obj[this.syncProperty.name]
-                }));
-
-              if ( obj[this.deletedProperty] )
-                this.delegate.remove(obj)
-              else {
-                this.delegate.put(obj, {
-                  error: function() {
-                    console.error.apply(console, arguments);
-                  }
-                });
-              }
+              this.processFromServer(obj);
             }.bind(this)
           });
       }.bind(this));
@@ -122,19 +130,17 @@ CLASS({
       this.syncRecordDAO.where(EQ(this.SyncRecord.SYNC_NO, -1)).select(GROUP_BY(this.SyncRecord.DELETED,MAP(this.SyncRecord.ID, [].sink)))(function(records) {
         // handle deleted records
         if ( records.groups["true"] ) {
-          this.remoteDAO
-            .where(
-                IN(this.model.getProperty(this.model.ids[0]), records.groups["true"].arg2))
-            .removeAll({
-              remove: function(obj) {
-                this.syncRecordDAO.put(
-                  this.SyncRecord.create({
-                    id: obj.id,
-                    syncNo: -1 * obj[this.syncProperty.name],
-                    delete: true
-                  }));
+          for ( var i = 0 ; i < records.groups["true"].arg2.length ; i++ ) {
+            var id = records.groups["true"].arg2[i];
+            var obj = this.model.create({ id: id });
+            obj[this.deletedProperty.name] = true;
+
+            this.remoteDAO.put(obj, {
+              put: function(obj) {
+                this.delegate.remove(obj);
               }.bind(this)
             });
+          }
         }
 
         // sync new records to server.
@@ -157,15 +163,10 @@ CLASS({
           }
         }
       }.bind(this));
-    }
-  ],
-  actions: [
-    {
-      name: 'sync',
-      code: function() {
-        this.syncToServer();
-        this.syncFromServer();
-      }
+    },
+    function sync() {
+      this.syncToServer();
+      this.syncFromServer();
     }
   ]
 });

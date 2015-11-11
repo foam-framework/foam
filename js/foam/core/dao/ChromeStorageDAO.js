@@ -33,7 +33,7 @@ CLASS({
       label: 'Store Name',
       type:  'String',
       defaultValueFn: function() {
-        return this.model.plural;
+        return this.model.id;
       }
     },
     {

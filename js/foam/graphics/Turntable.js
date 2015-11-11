@@ -72,18 +72,18 @@ CLASS({
     }
   ],
 
-  listeners: {
-    mouseDown: function(evt) {
+  listeners: [
+    function mouseDown(evt) {
       this.active = true;
       this.internalTime = this.time;
       this.touchX = evt.offsetX - this.r - this.x;
       this.touchY = evt.offsetY - this.r - this.y;
       this.theta = this.angle(this.touchX, this.touchY);
     },
-    mouseUp: function(evt) {
+    function mouseUp(evt) {
       this.active = false;
     },
-    mouseMove: function(evt) {
+    function mouseMove(evt) {
       if ( ! this.active ) return;
 
       this.touchX = evt.offsetX - this.r - this.x;
@@ -99,7 +99,7 @@ CLASS({
       var dTime = d/(Math.PI*2)*36000/this.rpm;
       this.time = this.internalTime = this.internalTime + dTime;
     }
-  },
+  ],
 
   methods: {
     initCView: function() {

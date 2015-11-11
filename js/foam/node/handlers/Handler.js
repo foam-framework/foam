@@ -18,7 +18,13 @@ CLASS({
   package: 'foam.node.handlers',
   name: 'Handler',
   documentation: 'Abstract Handler class. handle() returns true if handled, ' +
-      'false if the server should keep looking.',
+    'false if the server should keep looking.',
+
+  imports: [
+    'log as log_',
+    'warn as warn_',
+    'error as error_'
+  ],
 
   properties: [
     {
@@ -33,7 +39,7 @@ CLASS({
 
   methods: {
     handle: function() {
-      console.warn('Abstract handle call');
+      this.warn_('Abstract handle call');
       return false;
     },
     send: function(res, status, body) {
@@ -49,19 +55,19 @@ CLASS({
     },
     log: function(msg) {
       if ( this.logLevel < 3 ) return;
-      console.log(this.mkLogMessage_('II', msg));
+      this.log_(this.mkLogMessage_('II', msg));
     },
     warn: function(msg) {
       if ( this.logLevel < 2 ) return;
-      console.warn(this.mkLogMessage_('WW', msg));
+      this.warn_(this.mkLogMessage_('WW', msg));
     },
     error: function(msg) {
       if ( this.logLevel < 1 ) return;
-      console.error(this.mkLogMessage_('EE', msg));
+      this.error_(this.mkLogMessage_('EE', msg));
     },
     verbose: function(msg) {
       if ( this.logLevel < 4 ) return;
-      console.log(this.mkLogMessage_('VV', msg));
+      this.log_(this.mkLogMessage_('VV', msg));
     }
   }
 });

@@ -22,6 +22,7 @@ CLASS({
 
   requires: [
     'com.google.watlobby.Topic',
+    'com.google.watlobby.TopicDAO',
     'com.google.watlobby.TopicCitationView',
     'com.google.watlobby.TopicDetailView',
     'foam.browser.BrowserConfig',
@@ -41,7 +42,10 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      body{ color: #555; }
+      body { color: #555; }
+      .md-detail-view image-picker { min-height: 250px; }
+      .md-detail-view { overflow-y: auto; }
+      .md-text-field-input { width: 100%; }
       .md-text-field-label { color: #999; }
       .radioLabel, .toggle-text-indicator { font-size: 16px !important; }
       .toggle-label { color: #333; font-size: 17px; }
@@ -50,19 +54,30 @@ CLASS({
 
   properties: [
     {
+      model_: 'BooleanProperty',
+      name: 'clientMode',
+      defaultValue: true
+    },
+    {
+      name: 'dao',
+      lazyFactory: function() {
+        return this.TopicDAO.create({ clientMode: this.clientMode });
+      }
+    },
+    {
       name: 'data',
       factory: function() {
         return this.BrowserConfig.create({
           title: 'WAT Lobby Admin',
           model: this.Topic,
           dao: this.dao,
-          detailView: 'com.google.watlobby.TopicDetailView',
+          innerDetailView: 'com.google.watlobby.TopicDetailView',
           listView: {
             factory_: 'foam.ui.md.DAOListView',
             rowView: 'com.google.watlobby.TopicCitationView',
             minWidth: 450,
-            preferredWidth: 600,
-            maxWidth: 600
+            preferredWidth: 550,
+            maxWidth: 550
           },
           cannedQueryDAO: [
             this.CannedQuery.create({

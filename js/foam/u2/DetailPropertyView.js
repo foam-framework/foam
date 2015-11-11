@@ -18,9 +18,11 @@
 CLASS({
   package: 'foam.u2',
   name: 'DetailPropertyView',
-      
   extends: 'foam.u2.PropertyView',
-  
+  requires: [
+    'foam.u2.Select',
+  ],
+
   templates: [
     function CSS() {/*
       .foam-u2-PropertyView-label {
@@ -41,15 +43,15 @@ CLASS({
       }
     */}
   ],
-      
+
   methods: [
-    function initE(view) {
+    function initE() {
       var prop = this.prop;
       this.cls('foam-u2-PropertyView').add(
         E('td').cls('foam-u2-PropertyView-label').add(prop.label),
         E('td').cls('foam-u2-PropertyView-view').add(
-          view,
-          prop.units && E().cls('foam-u2-PropertyView-units').add(prop.units)));
+          this.child_,
+          prop.units && E('span').cls('foam-u2-PropertyView-units').add(prop.units)));
     }
   ]
 });

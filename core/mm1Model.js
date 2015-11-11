@@ -541,16 +541,16 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       help: 'Messages associated with the entity.',
-      preSet: function(_, newValue) {
-        if ( ! GLOBAL.Message ) return newValue;
+      preSet: function(_, ms) {
+        if ( ! GLOBAL.Message ) return ms;
 
-        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Message);
+        if ( Array.isArray(ms) ) return JSONUtil.arrayToObjArray(this.X, ms, Message);
 
         // convert a map of values to an array of Message objects
         var messages = [];
 
-        for ( var key in newValue ) {
-          var oldValue = newValue[key];
+        for ( var key in ms ) {
+          var oldValue = ms[key];
 
           var message = Message.create({
             name:  key,
@@ -572,27 +572,10 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       adapt: function(_, a) {
         if ( ! Method ) return a;
 
-        function createMethod(X, name, fn) {
-          var method = Method.create({
-            name: name,
-            code: fn
-          });
-
-          if ( FEATURE_ENABLED(['debug']) && Arg ) {
-            var str = fn.toString();
-            var match = str.match(/^function[ _$\w]*\(([ ,\w]+)/);
-            if ( match )
-            method.args = match[1].split(',').
-              map(function(name) { return Arg.create({name: name.trim()}); });
-          }
-
-          return method;
-        }
-
         if ( Array.isArray(a) ) {
           for ( var i = 0 ; i < a.length ; i++ ) {
             a[i] = ( typeof a[i] === 'function' ) ?
-              createMethod(this.X, a[i].name, a[i]) :
+              this.createMethod_(this.X, a[i].name, a[i]) :
               JSONUtil.mapToObj(this.X, a[i], Method, seq) ;
           }
           return a;
@@ -600,7 +583,8 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
 
         // convert a map of functions to an array of Method instances, DEPRECATED
         var methods = [];
-        for ( var key in a ) methods.push(createMethod(this.X, key, a[key]));
+        for ( var key in a )
+          methods.push(this.createMethod_(this.X, key, a[key]));
         return methods;
       },
       documentation: function() { /*
@@ -632,9 +616,19 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       propertyToJSON: function(visitor, output, o) {
         if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
-      preSet: function(_, newValue) {
-        if ( Array.isArray(newValue) ) return JSONUtil.arrayToObjArray(this.X, newValue, Method);
-        return newValue;
+      adapt: function(_, a) {
+        if ( ! Method ) return a;
+
+        if ( Array.isArray(a) ) {
+          for ( var i = 0 ; i < a.length ; i++ ) {
+            a[i] = ( typeof a[i] === 'function' ) ?
+              this.createMethod_(this.X, a[i].name, a[i]) :
+              JSONUtil.mapToObj(this.X, a[i], Method, seq) ;
+          }
+          return a;
+        }
+
+        console.error('Expecting array of listeners.');
       },
       help: 'Event listeners associated with the entity.',
       documentation: function() { /*

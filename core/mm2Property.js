@@ -365,8 +365,8 @@ GLOBAL.Property = {
       labels: ['javascript'],
       defaultValue: function toPropertyE(X) {
         var e = this.displayHeight > 1 ?
-          X.foam.u2.TextArea.create(null, X) :
-          X.foam.u2.Input.create(null, X)    ;
+          X.lookup('foam.u2.TextArea').create(null, X) :
+          X.lookup('foam.u2.Input').create(null, X)    ;
 
         e.attrs({size: this.displayWidth});
 
@@ -872,6 +872,20 @@ GLOBAL.Property = {
     function exprClone() {
       return this;
     },
+    function dot(nextProp) {
+      var PropertySequence = this.X.lookup('foam.mlang.PropertySequence');
+      if ( ! PropertySequence ) {
+        console.warn('Missing foam.mlang.PropertySequence for Property.dot()');
+        return this;
+      }
+      if ( PropertySequence.isInstance(this) ) {
+        if ( this.next_ ) this.next_ = this.next_.dot(nextProp);
+        else              this.next_ = nextProp;
+        return this;
+      } else {
+        return PropertySequence.xbind({ next_: nextProp }).create(this, this.Y);
+      }
+    },
     function initPropertyAgents(proto, fastInit) {
       var prop   = this;
       var name   = prop.name;
@@ -934,31 +948,9 @@ GLOBAL.Property = {
   toString: function() { return "Property"; }
 };
 
+Model.methods = {};
+"createMethod_ getProperty getAction hashCode buildPrototype addTraitToModel_ buildProtoImports_ buildProtoProperties_ buildProtoMethods_ getPrototype isSubModel isInstance getAllRequires arequire getMyFeature getRawFeature getAllMyRawFeatures getFeature getAllRawFeatures atest getRuntimeProperties getRuntimeActions create".split(' ').forEach(function(k) { Model.methods[k] = BootstrapModel[k]; });
 
-Model.methods = {
-  getProperty:              BootstrapModel.getProperty,
-  getAction:                BootstrapModel.getAction,
-  hashCode:                 BootstrapModel.hashCode,
-  buildPrototype:           BootstrapModel.buildPrototype,
-  addTraitToModel_:         BootstrapModel.addTraitToModel_,
-  buildProtoImports_:       BootstrapModel.buildProtoImports_,
-  buildProtoProperties_:    BootstrapModel.buildProtoProperties_,
-  buildProtoMethods_:       BootstrapModel.buildProtoMethods_,
-  getPrototype:             BootstrapModel.getPrototype,
-  isSubModel:               BootstrapModel.isSubModel,
-  isInstance:               BootstrapModel.isInstance,
-  getAllRequires:           BootstrapModel.getAllRequires,
-  arequire:                 BootstrapModel.arequire,
-  getMyFeature:             BootstrapModel.getMyFeature,
-  getRawFeature:            BootstrapModel.getRawFeature,
-  getAllMyRawFeatures:      BootstrapModel.getAllMyRawFeatures,
-  getFeature:               BootstrapModel.getFeature,
-  getAllRawFeatures:        BootstrapModel.getAllRawFeatures,
-  atest:                    BootstrapModel.atest,
-  getRuntimeProperties:     BootstrapModel.getRuntimeProperties,
-  getRuntimeActions:        BootstrapModel.getRuntimeActions,
-  create:                   BootstrapModel.create
-};
 
 // This is the coolest line of code that I've ever written
 // or ever will write. Oct. 4, 2011 -- KGR

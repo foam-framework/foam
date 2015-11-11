@@ -1,5 +1,10 @@
 [
   {
+    "topic": "",
+    "image": "img/googlewat.png",
+    "model": "Background"
+  },
+  {
     "topic": "chrome",
     "image": "img/chrome.png",
     "priority": 5,
@@ -8,14 +13,16 @@
   },
   {
     "topic": "flip",
+    "parentTopic": "chrome",
     "image": "img/flip.png",
-    "priority": 1,
+    "priority": 0,
     "color": "RED"
   },
   {
     "topic": "pixel",
+    "parentTopic": "chrome",
     "image": "img/pixel.png",
-    "priority": 1,
+    "priority": 0,
     "color": "RED"
   },
   {
@@ -27,8 +34,9 @@
   },
   {
     "topic": "appbuilder",
+    "parentTopic": "foam",
     "image": "img/appbuilder.png",
-    "priority": 1,
+    "priority": 0,
     "model": "Video",
     "video": "HvxKHj9QmMI",
     "timeout": 55
@@ -42,6 +50,7 @@
   },
   {
     "topic": "onhubvideo",
+    "parentTopic": "onhub",
     "image": "img/onhublogo.png",
     "priority": 3,
     "color": "BLUE",
@@ -65,8 +74,9 @@
   },
   {
     "topic": "calc",
+    "parentTopic": "foam",
     "image": "img/calculator.png",
-    "priority": 1,
+    "priority": 0,
     "color": "GREEN"
   },
   {
@@ -92,12 +102,13 @@
   },
   {
     "topic": "foam",
+    "parentTopic": "chrome",
     "image": "img/foam_whiteontransparent.png",
     "priority": 3,
     "color": "red",
     "roundImage": true,
     "background": "red",
-    "text": "<font color=white>FOAM is a revolutionary new approach to software development.  By automating the creation of software from high-level specifications, FOAM greatly increases developer productivity. FOAM is open-sourced and available at http://foamdev.com.<br><br>Supports: Android, iOS, Web, Node.js<br><br>This video wall is FOAM Powered.</font>",
+    "text": "<font color=white><center><img style=margin-top:-200px;margin-bottom:-150px; src=img/foam_whiteontransparent.png></center><br>FOAM is a revolutionary new approach to software development.  By automating the creation of software from high-level specifications, FOAM greatly increases developer productivity. FOAM is open-sourced and available at http://foamdev.com.<br><br>Supports: Android, iOS, Web, Node.js<br><br>This video wall is FOAM Powered.</font>",
     "timeout": 35
   },
   {
@@ -113,8 +124,20 @@
     "topic": "photos",
     "image": "img/photoalbum.png",
     "priority": 3,
-    "model": "Album",
+    "model": "Photo",
     "color": "YELLOW",
     "roundImage": true
+  },
+  {
+    "topic": "chromebg",
+    "parentTopic": "chrome",
+    "image": "img/googlewat.png",
+    "model": "Background"
+  },
+  {
+    "topic": "foambg",
+    "parentTopic": "foam",
+    "image": "img/foam_red.png",
+    "model": "Background"
   }
 ]

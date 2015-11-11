@@ -20,11 +20,14 @@ CLASS({
   name: 'Remote',
   extends: 'foam.graphics.CView',
 
+  traits: [ 'com.google.watlobby.RemoteTrait' ],
+
   requires: [
     'com.google.watlobby.Bubble',
-    'com.google.watlobby.TopicBubble',
-    'com.google.watlobby.AlbumBubble',
+    'com.google.watlobby.PhotoBubble',
     'com.google.watlobby.Topic',
+    'com.google.watlobby.TopicBubble',
+    'com.google.watlobby.TopicDAO',
     'com.google.watlobby.VideoBubble',
     'foam.demos.physics.PhysicalCircle',
     'foam.graphics.ImageCView'
@@ -36,26 +39,57 @@ CLASS({
   ],
 
   properties: [
-    { name: 'n',          defaultValue: 25 },
-    { name: 'airBubbles', defaultValue: 0, model_: 'IntProperty' },
+    {
+      model_: 'BooleanProperty',
+      name: 'clientMode',
+      defaultValue: true
+    },
+    {
+      name: 'topics',
+      lazyFactory: function() {
+        return this.TopicDAO.create({ clientMode: this.clientMode });
+      }
+    },
     { name: 'width',      factory: function() { return this.window.innerWidth; } },
     { name: 'height',     factory: function() { return this.window.innerHeight } },
-    { name: 'background', defaultValue: '#ccf' },
-    { name: 'topics' }
+    { name: 'background', defaultValue: '#ccf' }
   ],
 
   listeners: [
     {
-      name: 'onClick',
-      code: function(evt) {
-        var self  = this;
-        var child = this.findChildAt(evt.clientX, evt.clientY);
-
-        if ( ! child || ! child.topic ) return;
-
-        this.topics.where(EQ(this.Topic.SELECTED, true)).update(SET(this.Topic.SELECTED, false))(function() {
-          self.topics.where(EQ(self.Topic.TOPIC, child.topic.topic)).update(SET(self.Topic.SELECTED, true));
+      name: 'updateState',
+      isFramed: true,
+      code: function() {
+        this.topics.find(EQ(this.Topic.TOPIC, this.root), {
+          put: function (t) {
+            t = t.clone();
+            t.selected = this.selected;
+            t.dir = this.dir;
+            this.topics.put(t);
+          }.bind(this)
         });
+      }
+    },
+    {
+      name: 'layout',
+      isFramed: true,
+      code: function() {
+        while ( this.children.length ) {
+          this.removeChild(this.children[this.children.length-1]);
+        }
+
+        if ( this.dir ) {
+          this.putTopic(this.Topic.create({
+            parentTopic: this.dir,
+            topic: this.BACK_TOPIC,
+            image: 'img/back.png',
+            model: "Photo",
+            color: 'gray',
+            roundImage: true
+          }));
+        }
+        this.topics.find(EQ(this.Topic.TOPIC, this.dir),{put:this.putTopic.bind(this)});
+        this.topics.where(EQ(this.Topic.PARENT_TOPIC, this.dir)).select({put: this.putTopic.bind(this)});
       }
     }
   ],
@@ -64,15 +98,17 @@ CLASS({
     function initCView() {
       this.SUPER();
 
-      this.topics.pipe({
-        put:    this.putTopic.bind(this),
-        remove: this.removeTopic.bind(this)
-      });
-
+      this.topics.listen({put: function(t) { if ( t.topic !== this.root ) this.layout(); }.bind(this), remove: this.layout});
       this.document.body.addEventListener('click', this.onClick);
+      this.selected$.addListener(this.updateState);
+      this.dir$.addListener(this.updateState);
+      this.dir$.addListener(this.layout);
+      this.layout();
     },
 
     function putTopic(t) {
+      if ( t.topic === this.root ) return;
+
       // console.log('*** putTopic: ', t, t.topic && t.topic.topic);
       // Don't add if we already have topic
       for ( var i = 0 ; i < this.children.length ; i++ ) {
@@ -87,23 +123,29 @@ CLASS({
 
       var h = (this.height-26) / 4;
       var i = this.children.length;
-
-      var c = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble').create({
+      var m = this.X.lookup('com.google.watlobby.' + t.model + 'Bubble');
+      if ( ! m ) return;
+      var c = m.create({
         x: Math.floor(i / 4) * h + h/2,
         y: ( i % 4 ) * h + h/2
       }, this.Y);
       c.topic = t;
       c.image = t.image;
       var r = h/2-20;
-      t.r = r;
-      c.r = r;
+      t.r = c.r = r;
+      c.scaleX = c.scaleY = 0.1;
       c.roundImage = t.roundImage;
       if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
       this.addChild(c);
-    },
-    function removeTopic(t) {
-      // TODO
+
+      if ( t.topic === this.BACK_TOPIC ) c.alpha = 0.5;
+
+      var close = this.ImageCView.create({alpha: 0.5, x: -r, y: -r, width: 2*r, height: 2*r, src: 'img/close.png'});
+      var s = function() { c.scaleX = c.scaleY = ! this.selected ? 0.9 : this.selected === t.topic ? 1.02 : 0.75; }.bind(this);
+      var l = function() { if ( this.selected === t.topic ) { c.addChild(close); } else { c.removeChild(close); } Movement.animate(300, s)(); }.bind(this);
+      this.selected$.addListener(l);
+      this.X.setTimeout(l,20);
     }
   ]
 });

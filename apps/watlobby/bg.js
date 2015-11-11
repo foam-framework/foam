@@ -1,0 +1,84 @@
+var period = 1;
+
+chrome.runtime.onUpdateAvailable.addListener(function() {
+  // Restart is for Kiosk apps, no-op in non-kiosk
+  chrome.runtime.restart();
+
+  // Reload is for non-kiosk apps.
+  chrome.runtime.reload();
+});
+
+function displayCheck() {
+  chrome.system.display.getInfo(function(info) {
+    chrome.storage.local.get("info", function(stored) {
+      if ( info.length !== stored.infolength ) {
+        chrome.storage.local.set({
+          "info": info
+        }, function(){});
+        launchWindow();
+      }
+    });
+  });
+}
+
+chrome.alarms.onAlarm.addListener(function(alarm) {
+  if ( alarm.name == "update" ) {
+    chrome.runtime.requestUpdateCheck(function(u) {
+      if ( u == 'throttled' ) {
+        period *= 2;
+        chrome.alarms.create("update", {
+          periodInMinutes: period
+        });
+      } else {
+        period = 1;
+      }
+    });
+  } else if ( alarm.name = "displayCheck" ) {
+    displayCheck();
+  }
+});
+
+var launchWindow = (function() {
+  var launching = false;
+
+  return function() {
+    var windows = chrome.app.window.getAll();
+    for ( var i = 0 ; i < windows.length ; i++ ) {
+      windows[i].close();
+    }
+
+    if ( ! launching ) {
+      launching = true;
+      chrome.app.window.create("main.html", {
+        frame: 'none',
+        innerBounds: { left: 1440, top: 0, width: 2560, height: 1600 },
+/*        innerBounds: {
+          left: -3240,
+          top: 0,
+          width: 2700,
+          height: 1920
+        }
+*/      }, function(w) {
+        launching = false;
+      });
+    }
+  };
+})();
+
+chrome.app.runtime.onLaunched.addListener(function() {
+  launchWindow();
+});
+
+chrome.runtime.onInstalled.addListener(function() {
+  launchWindow();
+  chrome.alarms.create("update", {
+    periodInMinutes: period
+  });
+  chrome.alarms.create("displaycheck", {
+    periodInMinutes: 1
+  });
+});
+
+chrome.runtime.onStartup.addListener(function() {
+  launchWindow();
+});

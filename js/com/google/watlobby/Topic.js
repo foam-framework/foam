@@ -19,9 +19,16 @@ CLASS({
   package: 'com.google.watlobby',
   name: 'Topic',
 
-  traits: [ 'com.google.misc.Colors' ],
+  traits: [
+    'foam.core.dao.SyncTrait',
+    'com.google.misc.Colors'
+  ],
 
   properties: [
+    {
+      name: 'id',
+      hidden: true
+    },
     {
       name: 'topic',
       postSet: function(_, t) {
@@ -36,11 +43,16 @@ CLASS({
       defaultValue: true
     },
     {
+      name: 'parentTopic',
+      label: 'Parent'
+    },
+    {
       name: 'priority',
       defaultValue: 3,
       view: {
         factory_: 'foam.ui.md.ChoiceRadioView',
         choices: [
+          [ 0, 'Hidden' ],
           [ 1, 'Low' ],
 //          [ 2, '' ],
           [ 3, 'Medium' ],
@@ -49,11 +61,14 @@ CLASS({
         ]
       },
       postSet: function(_, p) {
-        this.r = ([110, 130, 150, 180, 200])[p-1];
+        this.r = ([90, 110, 130, 150, 180, 200])[p-1];
       }
     },
     {
-      model_: 'BooleanProperty',
+      name: 'dir',
+      hidden: true
+    },
+    {
       name: 'selected',
       hidden: true
     },
@@ -80,6 +95,7 @@ CLASS({
     },
     {
       name: 'r',
+      defaultValue: 180,
       hidden: true
     },
     {
@@ -95,7 +111,7 @@ CLASS({
       view: {
 ///        factory_: 'foam.ui.md.ChoiceMenuView',
         factory_: 'foam.ui.md.ChoiceRadioView',
-        choices: [ 'Album', 'Topic', 'Video' ]
+        choices: [ 'Background', 'Photo', 'Topic', 'Video' ]
       }
     },
     {

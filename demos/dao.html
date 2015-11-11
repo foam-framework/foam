@@ -64,15 +64,27 @@ MyTableDAO.removeAll();
 // DAO Sample
 
 // First, create a Model (like a schema)
+// We'll nest people with hobbies
+CLASS({
+  name: 'Hobby',
+  properties: [
+    { name: 'name' },
+    { name: 'place' }
+  ]
+});
 CLASS({
   name: 'Person',
   properties: [
     { name: 'id' },
     { name: 'name' },
     { name: 'sex', defaultValue: 'M' },
-    { model_: 'IntProperty', name: 'age' }
+    { model_: 'IntProperty', name: 'age' },
+    { type: 'Hobby', name: 'hobby', defaultValue: null },
   ]
 });
+
+var baseball = Hobby.create({ name: 'Baseball', place: 'Diamond' });
+var fingerPainting = Hobby.create({ name: 'Finger Painting', place: 'Anywhere' });
 
 var dao;
 
@@ -103,9 +115,9 @@ dao = MDAO.create({model: Person})/*.addIndex(Person.AGE)*/.addIndex(Person.NAME
 // dao = dao.orderBy(Person.NAME);
 
 // Add some People
-dao.put(Person.create({id:'1', name:'John',  age:21}));
-dao.put(Person.create({id:'2', name:'Dave',  age:21}));
-dao.put(Person.create({id:'3', name:'Steve', age:19}));
+dao.put(Person.create({id:'1', name:'John',  age:21, hobby:baseball}));
+dao.put(Person.create({id:'2', name:'Dave',  age:21, hobby:fingerPainting}));
+dao.put(Person.create({id:'3', name:'Steve', age:19, hobby:baseball}));
 dao.put(Person.create({id:'4', name:'Andy',  age:18}));
 
 // Select to a 'sink'
@@ -143,6 +155,9 @@ dao.find(EQ(Person.NAME, 'Dave'), console.log.json);
 // Another
 dao.find(GT(Person.AGE, 19), console.log.json);
 
+// Nested property lookup: Using PROPERTY1.dot(PROPERTY2) continuation
+dao.where(EQ(Person.HOBBY.dot(Hobby.PLACE), 'Anywhere')).select(console.log.json);
+
 // Add more data
 [
   Person.create({id:'5', name:'Jane',  age:18, sex:'F'}),
@@ -171,6 +186,9 @@ dao.orderBy(Person.AGE).select(console.log.json);
 
 // OrderBy multiple fields, including descending
 dao.orderBy(DESC(Person.AGE), Person.NAME).select(console.log.json);
+
+// OrderBy nested fields: Using PROPERTY1.dot(PROPERTY2) continuation
+dao.orderBy(Person.HOBBY.dot(Hobby.PLACE)).select(console.log.json);
 
 // Limit
 dao.limit(2).select(console.log.json);
@@ -437,7 +455,8 @@ dao.select(document);
        arequire('foam.dao.FutureDAO'),
        arequire('foam.dao.EasyDAO'),
        arequire('foam.dao.IDBDAO'),
-       arequire('foam.dao.NullDAO')
+       arequire('foam.dao.NullDAO'),
+       arequire('foam.mlang.PropertySequence')
     )(function() {
     var demo = X.$('demo');
     var out  = X.$('output');

@@ -36,12 +36,8 @@ CLASS({
 
   methods: [
     function pickNameProperty() {
-      var prop;
-      if (this.model.LABEL) {
-        prop = this.model.LABEL;
-      } else if (this.model.NAME) {
-        prop = this.model.NAME;
-      } else {
+      var prop = this.model.getFeature('label') || this.model.getFeature('name');
+      if (!prop) {
         var props = this.model.getRuntimeProperties();
         var stringProps = [];
         for (var i = 0; i < props.length; i++) {
@@ -60,7 +56,7 @@ CLASS({
         }
         if (!prop && stringProps.length) prop = stringProps[0];
       }
-      if (!prop) prop = this.model.ID;
+      if (!prop) prop = this.model.getFeature('id');
       return prop;
     }
   ],
