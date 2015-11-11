@@ -11,7 +11,7 @@
 
 __DATA({
   model_: 'com.google.ow.DAOData',
-  id: 'com.google.ow.content.ContentData',
+  id: 'com.google.ow.examples.ContentData',
 
   dao: [
     {

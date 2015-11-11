@@ -141,7 +141,7 @@ CLASS({
                  ]);
                }.bind(this)));
       this.X.ModelDAO.find(
-          'com.google.ow.content.ContentData',
+          'com.google.ow.examples.ContentData',
              sink(this.streamDAO,
              undefined,
              fConst(this.idGenerator.fromName(['FOAM', 'Team'])),
