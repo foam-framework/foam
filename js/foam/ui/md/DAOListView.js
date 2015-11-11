@@ -177,7 +177,7 @@ CLASS({
         this.publish(this.ROW_CLICK);
       }).bind(this), d.view.id);
        d.view.setClass('dao-selected', function() {
-        return equals(this.selection.id, d.view.data.id);
+        return this.selection && equals(this.selection.id, d.view.data.id);
       }.bind(this), d.view.id);
     },
 
