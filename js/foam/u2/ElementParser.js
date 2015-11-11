@@ -129,24 +129,22 @@ CLASS({
       if: seq1(1, 'if=', sym('ifExpr')),
 
         ifExpr: alt(
-          seq1(1, '"', sym('value'), '"'),
+          sym('quotedString'),
           sym('braces')),
-      
+
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
       xattribute: seq('x:', sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
       valueOrLiteral: alt(
-        str(seq('"', sym('value'), '"')),
+        sym('quotedString'),
         sym('braces')),
 
       class: seq1(1, 'class=', alt(sym('classList'), sym('classValue'))),
 
         classList: seq1(1, '"', repeat(sym('className'), ' '), '"'),
 
-          className: str(seq(
-            alt(range('a','z'), range('A','Z')),
-            str(repeat(alt(range('a','z'), range('A', 'Z'), '-', range('0', '9')))))),
+          className: sym('symbol'),
 
         classValue: sym('braces'),
 
@@ -156,7 +154,13 @@ CLASS({
 
       styleDelim: seq(sym('whitespace'), ';', sym('whitespace')),
 
-      stylePair: seq(sym('value'), sym('whitespace'), ':', sym('whitespace'), sym('styleValue')),
+      stylePair: seq(sym('styleKey'), sym('whitespace'), ':', sym('whitespace'), sym('styleValue')),
+
+      styleKey: sym('symbol'),
+
+      symbol: str(seq(
+        alt(range('a','z'), range('A','Z')),
+        str(repeat(alt(range('a','z'), range('A', 'Z'), '-', range('0', '9')))))),
 
       styleValue: alt(
         sym('literalStyleValue'),
@@ -169,10 +173,7 @@ CLASS({
         '-',
         '#'))),
 
-      value: str(alt(
-        plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
-        seq1(1, '"', repeat(notChar('"')), '"')
-      )),
+      quotedString: str(seq1(1, '"', repeat(notChar('"')), '"'))),
 
       whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
     }.addActions({
@@ -257,9 +258,9 @@ CLASS({
             if ( this.id ) out('.i(', this.id, ')');
 
             for ( var i = 0 ; i < this.classes.length ; i++ ) {
-              out('.c(', this.classes[i], ')'); 
+              out('.c(', this.classes[i], ')');
             }
-            
+
             this.outputMap(out, 'y', this.style);
             this.outputMap(out, 't', this.attributes);
             this.outputMap(out, 'x', this.xattributes);
