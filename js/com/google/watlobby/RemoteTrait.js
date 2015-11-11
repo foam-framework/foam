@@ -70,6 +70,19 @@ CLASS({
   ],
 
   methods: [
+    function findTopicIndex(t) {
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        var c = this.children[i];
+        if ( c.topic && c.topic.topic === t ) return i;
+      }
+      return -1;
+    },
+    function findTopic(t) {
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        var c = this.children[i];
+        if ( c.topic && c.topic.topic === t ) return c;
+      }
+    },
     function back() {
       var self = this;
       if ( this.dir === this.root ) return;

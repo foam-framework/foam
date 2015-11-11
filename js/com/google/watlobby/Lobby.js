@@ -241,19 +241,6 @@ CLASS({
         l();
       }
     },
-    function findTopicIndex(t) {
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        var c = this.children[i];
-        if ( c.topic && c.topic.topic === t ) return i;
-      }
-      return -1;
-    },
-    function findTopic(t) {
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        var c = this.children[i];
-        if ( c.topic && c.topic.topic === t ) return c;
-      }
-    },
     function addBubbles() {
       var N = this.n;
       for ( var i = 0 ; i < N ; i++ ) {

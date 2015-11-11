@@ -99,6 +99,7 @@ CLASS({
       this.SUPER();
 
       this.topics.listen({put: function(t) { if ( t.topic !== this.root ) this.layout(); }.bind(this), remove: this.layout});
+this.topics.listen(console.log.bind(console));
       this.document.body.addEventListener('click', this.onClick);
       this.selected$.addListener(this.updateState);
       this.dir$.addListener(this.updateState);
@@ -107,16 +108,13 @@ CLASS({
     },
 
     function putTopic(t) {
+console.log('**** Topic: ', t.topic);
       if ( t.topic === this.root ) return;
 
-      // console.log('*** putTopic: ', t, t.topic && t.topic.topic);
-      // Don't add if we already have topic
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        var c = this.children[i];
-        if ( c.topic && c.topic.topic === t.topic ) {
-          this.selected = c;
-          return;
-        }
+      if ( ! t.enabled ) {
+        // Newly disabled, so re-layout.
+        if ( this.findTopic(t.topic) ) this.layout();
+        return;
       }
 
       t = t.clone();
