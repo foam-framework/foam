@@ -17,15 +17,21 @@ CLASS({
   requires: [ 'foam.u2.DAOListView' ],
   exports: [ 'data' ],
 
-  properties: [ [ 'nodeName', 'ORDER' ] ],
+  properties: [
+    [ 'nodeName', 'ORDER' ]
+  ],
 
   methods: [
     function initE() {
-      return this.start('div').cls('md-headline').add('Order').end()
-          .add(this.DAOListView.create({ data: this.data.items }, this.Y))
-          .start('div').cls('md-body')
-            .add('TOTAL: $')
-            .add(function() { return this.data.total.toFixed(2); }.bind(this))
+      return this.start('div').cls('heading').cls('md-headline')
+            .add('Order')
+          .end()
+          .add(this.DAOListView.create({ data: this.data.items }, this.Y.sub({
+            selection$: undefined,
+          })))
+          .start('div').cls('total').cls('md-body')
+            .start('div').add('TOTAL:').end()
+            .add(this.data.TOTAL)
           .end();
     },
   ],
@@ -35,6 +41,13 @@ CLASS({
       order {
         display: flex;
         flex-direction: column;
+      }
+      order .heading, order .total {
+        padding: 10px 5px;
+      }
+      order .total {
+        display: flex;
+        justify-content: space-between;
       }
     */},
   ],

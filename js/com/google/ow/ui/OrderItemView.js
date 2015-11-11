@@ -20,15 +20,18 @@ CLASS({
 
   methods: [
     function initE() {
+      var data = this.data;
+      var product = this.data.product;
       return this
           .start('div').cls('summary').cls('md-body').add(this.data.SUMMARY).end()
           .start('div').cls('quantity').cls('md-body')
               .add(this.data.QUANTITY)
-              .add(' @ $')
-              .add(this.data.product.price.toFixed(2))
+              .add(' @ ')
+              .x({ data: product })
+                .add(this.data.product.PRICE)
+              .x({ data: data })
           .end()
           .start('div').cls('total').cls('md-body')
-              .add('$')
               .add(this.data.TOTAL)
           .end();
     },

@@ -63,7 +63,7 @@ CLASS({
             'display': 'flex',
             'flex-direction': 'row',
           })
-          .add(this.ImageView.create({ data: this.preview, displayHeight: 80 }))
+          .add(this.ImageView.create({ data: this.preview, displayWidth: 80*16/9, displayHeight: 80 }))
           .start().add(this.description$).style({ margin: 10 }).end()
         .end();
     },
