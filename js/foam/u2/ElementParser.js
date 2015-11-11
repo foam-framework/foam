@@ -129,22 +129,24 @@ CLASS({
       if: seq1(1, 'if=', sym('ifExpr')),
 
         ifExpr: alt(
-          sym('quotedString'),
+          seq1(1, '"', sym('value'), '"'),
           sym('braces')),
-
+      
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
       xattribute: seq('x:', sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
       valueOrLiteral: alt(
-        sym('quotedString'),
+        str(seq('"', sym('value'), '"')),
         sym('braces')),
 
       class: seq1(1, 'class=', alt(sym('classList'), sym('classValue'))),
 
         classList: seq1(1, '"', repeat(sym('className'), ' '), '"'),
 
-          className: sym('symbol'),
+          className: str(seq(
+            alt('$', range('a','z'), range('A','Z')),
+            str(repeat(alt(range('a','z'), range('A', 'Z'), '$', '-', range('0', '9')))))),
 
         classValue: sym('braces'),
 
@@ -160,7 +162,7 @@ CLASS({
 
       symbol: str(seq(
         alt(range('a','z'), range('A','Z')),
-        str(repeat(alt(range('a','z'), range('A', 'Z'), '-', range('0', '9')))))),
+        str(repeat(alt(range('a','z'), range('A', 'Z'), '$', '-', range('0', '9')))))),
 
       styleValue: alt(
         sym('literalStyleValue'),
@@ -173,7 +175,10 @@ CLASS({
         '-',
         '#'))),
 
-      quotedString: str(seq1(1, '"', repeat(notChar('"')), '"'))),
+      value: str(alt(
+        plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
+        seq1(1, '"', repeat(notChar('"')), '"')
+      )),
 
       whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
     }.addActions({
@@ -184,11 +189,16 @@ CLASS({
         e.as = e.as || '$e';
         e.output(out, true);
         this.reset();
-        return 'function(){var s=[];' + output.join('') + ';return ' + e.as + ';}';
+        return 'function(opt_e){var s=[];' + output.join('') + ';return ' + e.as + ';}';
       },
       id: function(id) { this.peek().id = id; },
       as: function(as) { this.peek().as = as; },
-      classList: function(cs) { for ( var i = 0 ; i < cs.length ; i++ ) this.peek().classes.push('"' + cs[i] + '"'); },
+      classList: function(cs) {
+        for ( var i = 0 ; i < cs.length ; i++ ) {
+          if (cs[i].indexOf('$') >= 0) cs[i] = cs[i].replace(/\$/g, this.modelName_);
+          this.peek().classes.push('"' + cs[i] + '"');
+        }
+      },
       classValue: function(c) { this.peek().classes.push(c); },
       style: function(ss) {
         for ( var i = 0 ; i < ss.length ; i++ )
@@ -246,7 +256,7 @@ CLASS({
 
             if ( firstE ) {
               if ( this.as ) out('var ', this.as, '=');
-              out('this.X.E(', nn, ')');
+              out('(opt_e || this.X.E(', nn, '))');
             } else {
               if ( this.children.length || this.as ) {
                 out('.s(', nn, ')');

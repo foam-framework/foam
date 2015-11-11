@@ -398,6 +398,11 @@ var camelize = memoize1(function (str) {
 });
 
 
+// Replaces . with -, for eg. foam.u2.md.Input -> foam-u2-md-Input
+var cssClassize = memoize1(function (str) {
+  return str.replace(/\./g, '-');
+});
+
 
 MODEL({
   extendsProto: 'Object',
