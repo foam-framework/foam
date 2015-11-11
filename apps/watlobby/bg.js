@@ -33,8 +33,12 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
         period = 1;
       }
     });
-  } else if ( alarm.name = "displayCheck" ) {
+  } else if ( alarm.name == "displayCheck" ) {
     displayCheck();
+  } else if ( alarm.name == "restart" ) {
+    scheduleRestart();
+    chrome.runtime.restart();
+    chrome.runtime.reload();
   }
 });
 
@@ -69,6 +73,17 @@ chrome.app.runtime.onLaunched.addListener(function() {
   launchWindow();
 });
 
+function scheduleRestart() {
+  var restart = new Date();
+  restart.setHours(2);
+  restart.setMinutes(0);
+  restart.setSeconds(0);
+  restart.setDate(restart.getDate() + 1);
+  chrome.alarms.create("restart", {
+    when: restart.getTime()
+  });
+}
+
 chrome.runtime.onInstalled.addListener(function() {
   launchWindow();
   chrome.alarms.create("update", {
@@ -77,6 +92,7 @@ chrome.runtime.onInstalled.addListener(function() {
   chrome.alarms.create("displaycheck", {
     periodInMinutes: 1
   });
+  scheduleRestart();
 });
 
 chrome.runtime.onStartup.addListener(function() {
