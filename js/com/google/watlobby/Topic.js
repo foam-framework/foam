@@ -111,7 +111,7 @@ CLASS({
       view: {
 ///        factory_: 'foam.ui.md.ChoiceMenuView',
         factory_: 'foam.ui.md.ChoiceRadioView',
-        choices: [ 'Background', 'Photo', 'Topic', 'Video' ]
+        choices: [ 'Background', 'Photo', 'Redirect', 'Topic', 'Video' ]
       }
     },
     {
@@ -124,5 +124,10 @@ CLASS({
       name: 'text',
       displayHeight: 12
     },
+    {
+      model_: 'StringProperty',
+      name: 'redirect',
+      label: 'Redirect Topic'
+    }
   ]
 });

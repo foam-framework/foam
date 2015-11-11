@@ -141,9 +141,11 @@ CLASS({
 
   listeners: [
     function putTopic(t) {
-      if ( t.topic === this.root ) {
+      if ( this.maybeRedirect(t) ) return;
+
+      if ( t.topic === this.symRoot ) {
         if ( this.selected !== t.selected ) this.selected = t.selected;
-        if ( this.dir !== t.dir && ( ! this.root || t.dir ) ) this.dir = t.dir;
+        if ( this.dir !== t.dir && ( ! this.symRoot || t.dir ) ) this.dir = t.dir;
       }
 
       if ( ! ( t.parentTopic == this.dir ||

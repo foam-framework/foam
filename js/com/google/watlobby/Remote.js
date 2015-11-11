@@ -58,7 +58,7 @@ CLASS({
       name: 'updateState',
       isMerged: 200,
       code: function() {
-        this.topics.find(EQ(this.Topic.TOPIC, this.root), {
+        this.topics.find(EQ(this.Topic.TOPIC, this.symRoot), {
           put: function (t) {
             t = t.clone();
             t.selected = this.selected;
@@ -100,7 +100,7 @@ CLASS({
       this.SUPER();
 
       this.window.addEventListener('resize', this.layout);
-      this.topics.listen({put: function(t) { if ( t.topic !== this.root ) this.layout(); }.bind(this), remove: this.layout});
+      this.topics.listen({put: function(t) { if ( t.topic !== this.symRoot ) this.layout(); }.bind(this), remove: this.layout});
       this.document.body.addEventListener('click', this.onClick);
       this.selected$.addListener(this.updateState);
       this.dir$.addListener(this.updateState);
@@ -109,7 +109,8 @@ CLASS({
     },
 
     function putTopic(t) {
-      if ( t.topic === this.root ) return;
+      if ( this.maybeRedirect(t) ) return;
+      if ( t.topic === this.symRoot ) return;
 
       if ( ! t.enabled ) {
         // Newly disabled, so re-layout.
