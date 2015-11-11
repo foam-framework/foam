@@ -254,7 +254,12 @@ CLASS({
               if ( this.as ) out('var ', this.as, '=');
               out('(opt_e || this.X.E(', nn, '))');
             } else {
-              if ( this.children.length || this.as ) {
+              // If this tag is in any way interesting, it needs to use .s()
+              if ( this.children.length || this.as || this.classes.length ||
+                  Object.keys(this.attributes).length ||
+                  Object.keys(this.xattributes).length ||
+                  Object.keys(this.style).length ||
+                  Object.keys(this.listeners).length) {
                 out('.s(', nn, ')');
                 if ( this.as ) out('.p(s);var ', this.as, '=s[0];s[0]');
               } else {
