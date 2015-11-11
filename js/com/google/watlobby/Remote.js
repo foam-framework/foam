@@ -132,7 +132,7 @@ CLASS({
       c.image = t.image;
       var r = h/2-20;
       t.r = c.r = r;
-      c.scaleX = c.scaleY = 0.01;
+      c.scaleX = c.scaleY = 0.001;
       c.roundImage = t.roundImage;
       if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
@@ -144,7 +144,7 @@ CLASS({
       var s = function() { c.scaleX = c.scaleY = ! this.selected ? 0.9 : this.selected === t.topic ? 1.02 : 0.75; }.bind(this);
       var l = function() { if ( this.selected === t.topic ) { c.addChild(close); } else { c.removeChild(close); } Movement.animate(300, s)(); }.bind(this);
       this.selected$.addListener(l);
-      this.X.setTimeout(l,20);
+      this.X.setTimeout(l,100);
     }
   ]
 });
