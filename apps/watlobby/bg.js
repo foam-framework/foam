@@ -12,9 +12,6 @@ function displayCheck() {
   chrome.system.display.getInfo(function(info) {
     chrome.storage.local.get("info", function(stored) {
       if ( info.length !== stored.infolength ) {
-        chrome.storage.local.set({
-          "info": info
-        }, function(){});
         launchWindow();
       }
     });
@@ -46,26 +43,28 @@ var launchWindow = (function() {
   var launching = false;
 
   return function() {
-    var windows = chrome.app.window.getAll();
-    for ( var i = 0 ; i < windows.length ; i++ ) {
-      windows[i].close();
-    }
+    chrome.system.display.getInfo(function(info) {
+      chrome.storage.local.set({ "info": info }, function(){});
+      var windows = chrome.app.window.getAll();
+      for ( var i = 0 ; i < windows.length ; i++ ) {
+        windows[i].close();
+      }
 
-    if ( ! launching ) {
-      launching = true;
-      chrome.app.window.create("main.html", {
-        frame: 'none',
-        innerBounds: { left: 1440, top: 0, width: 2560, height: 1600 },
-/*        innerBounds: {
-          left: -3240,
-          top: 0,
-          width: 2700,
-          height: 1920
-        }
-*/      }, function(w) {
-        launching = false;
-      });
-    }
+      if ( ! launching ) {
+        launching = true;
+        chrome.app.window.create("main.html", {
+          frame: 'none',
+          innerBounds: {
+            left: -3240,
+            top: 0,
+            width: 2700,
+            height: 1920
+          }
+        }, function(w) {
+          launching = false;
+        });
+      }
+    });
   };
 })();
 
