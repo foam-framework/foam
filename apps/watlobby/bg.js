@@ -89,7 +89,7 @@ chrome.runtime.onInstalled.addListener(function() {
   chrome.alarms.create("update", {
     periodInMinutes: period
   });
-  chrome.alarms.create("displaycheck", {
+  chrome.alarms.create("displayCheck", {
     periodInMinutes: 1
   });
   scheduleRestart();
