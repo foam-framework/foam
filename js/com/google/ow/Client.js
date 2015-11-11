@@ -21,20 +21,29 @@ CLASS({
 
   requires: [
     'MDAO',
-    'com.google.ow.model.Envelope',
+    'com.google.ow.IdGenerator',
+    'com.google.ow.Server', // for fake internal server
+    'com.google.ow.examples.VideoA',
     'com.google.ow.model.ColorableProduct',
+    'com.google.ow.model.Envelope',
     'com.google.ow.model.ProductAd',
     'com.google.ow.ui.EnvelopeCitationView',
-    'com.google.plus.ShareList',
-    'com.google.plus.Person',
     'com.google.plus.Circle',
+    'com.google.plus.Person',
+    'com.google.plus.ShareList',
     'foam.browser.BrowserConfig',
     'foam.browser.ui.DAOController',
+    'foam.dao.EasyClientDAO',
     'foam.dao.EasyDAO',
+    'foam.dao.FutureDAO',
+    'foam.dao.LoggingDAO',
+    'foam.dao.ProxyDAO',
     'foam.dao.ProxyDAO',
     'foam.mlang.CannedQuery',
+    'foam.mlang.PropertySequence',
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
+    'foam.u2.DetailView',
     'foam.ui.DAOListView',
     'foam.ui.TextFieldView',
     'foam.ui.Tooltip',
@@ -42,12 +51,10 @@ CLASS({
     'foam.ui.md.CheckboxView',
     'foam.ui.md.PopupView',
     'foam.ui.md.UpdateDetailView',
-    'foam.u2.DetailView',
-    'com.google.ow.Server', // for fake internal server
-    'com.google.ow.examples.VideoA',
     // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
     // 'foam.u2.md.SharedStyles',
   ],
+  imports: [ 'document' ],
   exports: [
     'streamDAO',
     'personDAO',
@@ -57,6 +64,12 @@ CLASS({
   ],
 
   properties: [
+    {
+      name: 'idGenerator',
+      lazyFactory: function() {
+        return this.IdGenerator.create(null, this.Y);
+      },
+    },
     {
       name: 'browserConfig',
       lazyFactory: function() {
@@ -93,37 +106,44 @@ CLASS({
     {
       name: 'currentUser',
       postSet: function(old, nu) {
+        // TODO(markdittmer): This won't work with switching users, but it works
+        // for initialization.
+        if ( old ) throw 'User switching not yet implemented.';
         if (nu) {
-          this.streamDAO.delegate = this.fakeInternalServer.streamDAO.where(EQ(this.Envelope.OWNER, nu.id));
-          this.circleDAO.delegate = nu.circles;
-          this.contactsDAO.delegate = nu.contacts;
+          this.streamFuture_.set(this.clientServer.streamDAO.where(EQ(this.Envelope.OWNER, nu.id)));
+          this.circleFuture_.set(nu.circles);
+          this.contactsFuture_.set(nu.contacts);
         }
       }
     },
+    { name: 'streamFuture_', lazyFactory: function() { return afuture(); } },
     {
       name: 'streamDAO',
       lazyFactory: function() {
-        return this.ProxyDAO.create({ delegate: [].dao });
+        return this.FutureDAO.create({ future: this.streamFuture_.get }, this.Y);
       }
     },
+    { name: 'personFuture_', lazyFactory: function() { return afuture(); } },
     {
       name: 'personDAO',
       lazyFactory: function() {
-        return this.fakeInternalServer.personDAO;
+        return this.clientServer.personDAO;
       }
     },
+    { name: 'circleFuture_', lazyFactory: function() { return afuture(); } },
     {
       name: 'circleDAO',
       type: 'com.google.plus.Circle',
       factory: function() {
-        return this.ProxyDAO.create({ model: this.Circle, delegate: [].dao });
+        return this.FutureDAO.create({ future: this.circleFuture_.get }, this.Y);
       },
     },
+    { name: 'contactsFuture_', lazyFactory: function() { return afuture(); } },
     {
       name: 'contactsDAO',
       type: 'com.google.plus.Person',
       factory: function() {
-        return this.ProxyDAO.create({ model: this.Person, delegate: [].dao });
+        return this.FutureDAO.create({ future: this.contactsFuture_.get }, this.Y);
       },
     },
     {
@@ -138,6 +158,7 @@ CLASS({
       name: 'fakeInternalServer',
       lazyFactory: function() {
         var sX = GLOBAL.sub({
+          idGenerator: this.idGenerator,
           exportDAO: function(dao) {
             console.log("Fake-exporting fake server dao", dao.name);
           }.bind(this)
@@ -215,7 +236,30 @@ Machine Wash Cold*/}),
 
         return serv;
       }
-    }
+    },
+    {
+      name: 'realClient',
+      lazyFactory: function() {
+        var dao = function(model) {
+          return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
+            serverUri: this.document.location.origin + '/api',
+            model: model,
+            logging: true,
+          }, this.Y) }, this.Y);
+        }.bind(this);
+        return {
+          streamDAO: dao(this.Envelope),
+          personDAO: dao(this.Person),
+        };
+      },
+    },
+    {
+      name: 'clientServer',
+      lazyFactory: function() {
+        // Choose desired configuration: fake server or real client.
+        return this.realClient;
+      },
+    },
   ],
 
   methods: [
@@ -224,49 +268,63 @@ Machine Wash Cold*/}),
       // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
       // this.SharedStyles.create(null, this.Y);
 
-      this._populate_test_data_();
+      if ( this.clientServer !== this.realClient )
+        this._populate_test_data_();
+      else
+        this.setInitialUser();
+    },
+    function setInitialUser() {
+      var name = this.idGenerator.testNames[0];
+      this.currentUser = this.Person.create({
+          id: this.idGenerator.fromName(name),
+          givenName: name[0],
+          middleName: name[1],
+          familyName: name[2],
+      }, this.Y);
     },
     function _populate_test_data_() {
       var self = this;
 
       // create test user pool
       var personTestArray = this.testPeople;
-      [
-        ['Henry', 'Joe', 'Carvil'],
-        ['Sammy', 'Davis', 'Junior'],
-        ['Herbert', '', 'Hoover'],
-        ['Jerry', '', 'Seinfeld'],
-        ['Samwise', '', 'Gamgee'],
-        ['Norman', 'J', 'Bates'],
-        ['Doctor', '', 'Who'],
-        ['Charleton', '', 'Heston'],
-      ].forEach(function(name) {
+      var l = this.idGenerator.testNames.length;
+      var i = 0;
+      this.idGenerator.testNames.forEach(function(name) {
         self.personDAO.put(self.Person.create({
+          id: self.idGenerator.fromName(name),
           givenName: name[0],
           middleName: name[1],
           familyName: name[2],
         }), {
-          put: function(p) { personTestArray.put(p); self.contactsDAO.put(p.id); }
+          put: function(p) {
+            ++i;
+            personTestArray.put(p);
+            self.contactsDAO.put(p.id);
+            if ( i === l ) setupUser();
+          }
         });
       });
-      self.currentUser = personTestArray[0];
 
-      // create some circles for currentUser
-      [
-        ['family', [0,1,2]],
-        ['friends', [3,4]],
-        ['neigbors', [4,5,6,7]],
-      ].forEach(function(c) {
-        var nu = self.Circle.create({
-          //owner: self.currentUser.id,
-          id: c[0],
-          displayName: c[0],
+      function setupUser() {
+        self.setInitialUser();
+
+        // create some circles for currentUser
+        [
+          ['family', [0,1,2]],
+          ['friends', [3,4]],
+          ['neigbors', [4,5,6,7]],
+        ].forEach(function(c) {
+          var nu = self.Circle.create({
+            //owner: self.currentUser.id,
+            id: c[0],
+            displayName: c[0],
+          });
+          c[1].forEach(function(pIdx) {
+            nu.people.put(personTestArray[pIdx]);
+          });
+          self.currentUser.circles.put(nu, self.testCircles);
         });
-        c[1].forEach(function(pIdx) {
-          nu.people.put(personTestArray[pIdx]);
-        });
-        self.currentUser.circles.put(nu, self.testCircles);
-      });
+      }
 
       // self.streamDAO.put(
 //         self.Envelope.create({ source: personTestArray[1].id, owner: self.currentUser.id, data: "Data A" })

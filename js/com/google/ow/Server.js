@@ -20,12 +20,15 @@ CLASS({
   package: 'com.google.ow',
 
   requires: [
+    'com.google.ow.IdGenerator',
+    'com.google.ow.model.Envelope',
     'com.google.plus.Person',
     'com.google.plus.ShareSink',
     'foam.dao.EasyDAO',
-    'com.google.ow.model.Envelope',
   ],
   imports: [
+    'console',
+    'idGenerator',
     'exportDAO',
   ],
   exports: [
@@ -38,13 +41,18 @@ CLASS({
 
   properties: [
     {
+      name: 'idGenerator',
+      lazyFactory: function() {
+        return this.IdGenerator.create(null, this.Y);
+      },
+    },
+    {
       name: 'personDAO',
       factory: function() {
         return this.EasyDAO.create({
           model: this.Person,
           name: 'people',
           daoType: MDAO,
-//          cache: true,
           guid: true,
           isServer: true,
         });
@@ -59,22 +67,11 @@ CLASS({
           daoType: MDAO,
           guid: true,
           isServer: true,
+          logging: true,
         });
         return this.ShareSink.create({ delegate: sd });
       },
     },
-    // {
-    //   name: 'contentDAO',
-    //   help: "Pool of shared content duplicated across Envelops in the streamDAO.",
-    //   factory: function() {
-    //     return this.EasyDAO.create({
-    //       model: this.?????,
-    //       name: 'content',
-    //       daoType: MDAO,
-    //       guid: true,
-    //     });
-    //   },
-    // },
     {
       model_: 'FunctionProperty',
       name: 'createStreamItem',
@@ -90,12 +87,42 @@ CLASS({
       },
     },
   ],
-  
+
   methods: [
     function init() {
       this.SUPER();
       this.exportDAO(this.streamDAO);
       this.exportDAO(this.personDAO);
+      if ( this.isNode() ) this.loadData();
     },
-  ]
+    function isNode() {
+      return typeof vm !== 'undefined' && vm.runInThisContext;
+    },
+    function loadData() {
+      var streamDAO = this.streamDAO;
+      var console = this.console;
+      var createStreamItem = this.createStreamItem.bind(this);
+      var fConst = function(v) { return function() { return v; }; };
+      function sink(source, target, dao) {
+        return {
+          put: function(data) {
+            data.dao.pipe({
+              put: function(o) {
+                return dao.put(createStreamItem(source(o), target(o), o));
+              },
+            });
+          },
+          error: function() {
+            console.error('Failed to load modelled data', arguments);
+          },
+        };
+      }
+      this.X.ModelDAO.find(
+          'com.google.ow.AdData',
+          sink(fConst(this.idGenerator.fromName(['FOAM', 'Team'])),
+               fConst(this.idGenerator.fromName(
+                   this.idGenerator.testNames[0])),
+               streamDAO));
+    },
+  ],
 });
