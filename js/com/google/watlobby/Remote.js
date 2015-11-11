@@ -56,7 +56,7 @@ CLASS({
   listeners: [
     {
       name: 'updateState',
-      isFramed: true,
+      isMerged: 200,
       code: function() {
         this.topics.find(EQ(this.Topic.TOPIC, this.root), {
           put: function (t) {
@@ -131,7 +131,7 @@ CLASS({
       c.image = t.image;
       var r = h/2-20;
       t.r = c.r = r;
-      c.scaleX = c.scaleY = 0.1;
+      c.scaleX = c.scaleY = 0.01;
       c.roundImage = t.roundImage;
       if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
