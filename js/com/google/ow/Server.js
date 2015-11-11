@@ -140,6 +140,13 @@ CLASS({
                    o.familyName,
                  ]);
                }.bind(this)));
+      this.X.ModelDAO.find(
+          'com.google.ow.content.ContentData',
+             sink(this.streamDAO,
+             undefined,
+             fConst(this.idGenerator.fromName(['FOAM', 'Team'])),
+             fConst(this.idGenerator.fromName(
+                 this.idGenerator.testNames[0]))));
     },
   ],
 });
