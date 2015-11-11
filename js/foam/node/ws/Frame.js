@@ -46,16 +46,18 @@ CLASS({
           this.opcode, i++);
 
       var length = this.length;
-      if ( length > 65535 ) {
+      if ( length > 0xffffffff ) {
+        console.error("Too large a frame to support in JS");
+      } else if ( length > 65535 ) {
         buffer.writeUInt8(127, i++);
-        buffer.writeUInt8(length >> 56, i++)
-        buffer.writeUInt8(length >> 48, i++)
-        buffer.writeUInt8(length >> 40, i++)
-        buffer.writeUInt8(length >> 32, i++)
-        buffer.writeUInt8(length >> 24, i++)
-        buffer.writeUInt8(length >> 16, i++)
-        buffer.writeUInt8((length & 0xff00) >> 8, i++)
-        buffer.writeUInt8(length & 0xff, i++)
+        buffer.writeUInt8(0, i++);
+        buffer.writeUInt8(0, i++);
+        buffer.writeUInt8(0, i++);
+        buffer.writeUInt8(0, i++);
+        buffer.writeUInt8((length >> 24) & 0xff, i++)
+        buffer.writeUInt8((length >> 16) & 0xff, i++)
+        buffer.writeUInt8((length >> 8) & 0xff, i++)
+        buffer.writeUInt8((length & 0xff), i++)
       } else if ( length > 125 ) {
         buffer.writeUInt8(126, i++);
         buffer.writeUInt8((length & 0xff00) >> 8, i++)
@@ -99,9 +101,13 @@ CLASS({
           //length += byte << 48;
 
           byte = data.readUInt8(i++);
-          length += byte << 40;
+          if ( byte !== 0 ) tolarge = true;
+          //length += byte << 40;
+
           byte = data.readUInt8(i++);
-          length += byte << 32;
+          if ( byte !== 0 ) tolarge = true;
+          //length += byte << 32;
+
           byte = data.readUInt8(i++);
           length += byte << 24;
           byte = data.readUInt8(i++);
