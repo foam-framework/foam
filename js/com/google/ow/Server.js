@@ -124,14 +124,14 @@ CLASS({
       }
 
       this.X.ModelDAO.find(
-          'com.google.ow.AdData',
+          'com.google.ow.examples.AdData',
           sink(this.streamDAO,
                undefined,
                fConst(this.idGenerator.fromName(['FOAM', 'Team'])),
                fConst(this.idGenerator.fromName(
                    this.idGenerator.testNames[0]))));
       this.X.ModelDAO.find(
-          'com.google.ow.PersonData',
+          'com.google.ow.examples.PersonData',
           sink(this.personDAO,
                function(o) {
                  return this.idGenerator.fromName([

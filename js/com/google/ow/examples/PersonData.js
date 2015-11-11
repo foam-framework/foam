@@ -22,7 +22,7 @@
 
 __DATA({
   model_: 'com.google.ow.DAOData',
-  id: 'com.google.ow.PersonData',
+  id: 'com.google.ow.examples.PersonData',
 
   dao: [
     {
