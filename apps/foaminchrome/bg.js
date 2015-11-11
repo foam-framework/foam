@@ -1,6 +1,6 @@
 var FOAM_READY = (function() {
   if ( ! this.FOAM_BOOT_DIR )
-    this.FOAM_BOOT_DIR = "http://localhost:8080/core/";
+    this.FOAM_BOOT_DIR = "http://localhost:8000/core/";
 
   var waiters_ = [];
   var ready_ = false;
@@ -63,7 +63,6 @@ var FOAM_READY = (function() {
     function next(ret) {
       var p = Array.isArray(f[i]) ? f[i][1] : null;
       var file = Array.isArray(f[i]) ? f[i][0] : f[i];
-      if ( file == undefined ) debugger;
       if ( ! p || p() ) {
         loadScript_(ret, file + '.js');
       } else {
