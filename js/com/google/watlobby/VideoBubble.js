@@ -31,7 +31,9 @@ CLASS({
     {
       name: 'playIcon',
       factory: function() { return this.ImageCView.create({src: 'img/play.png', alpha: 0.35}); }
-    }
+    },
+    [ 'selected', false ],
+    [ 'animating', false ]
   ],
 
   methods: [
@@ -48,7 +50,11 @@ CLASS({
       this.playIcon.y = -this.playIcon.height/2;
     },
     function setSelected(selected) {
+      this.selected = selected;
+      if ( this.animating ) return;
+
       var lobby = this.lobby;
+
       if ( selected ) {
         this.children_ = [];
         var w = lobby.width;
@@ -56,7 +62,6 @@ CLASS({
 
         var r = this.SimpleRectangle.create({background: 'black', alpha: 0, x: 0, y: 0, width: w, height: h});
         lobby.addChild(r);
-//        Movement.animate(1500, function() { r.alpha = 0.7; })();
 
         this.children_.push(r);
 
@@ -71,6 +76,7 @@ CLASS({
 
         lobby.collider.stop();
         Movement.compile([
+          function() { this.animating = true; }.bind(this),
           [500, function() { this.alpha = 0; }.bind(this) ],
           [1000, function(i, j) {
             r.alpha = 0.7;
@@ -78,16 +84,16 @@ CLASS({
             v.height = vh;
             v.x = (w-vw)/2;
             v.y = (h-vh)/2;
-          }]
+          }],
+          function() { this.animating = false; if ( ! this.selected ) this.setSelected(false); }.bind(this)
         ])();
         lobby.addChild(v);
         this.children_.push(v);
       } else {
-        // TODO: remove children from lobby when done
         var r = this.children_[0];
         var v = this.children_[1];
-//        lobby.collider.stop();
         Movement.compile([
+          function() { this.animating = true; }.bind(this),
           [ 500, function() { v.x = this.x; v.y = this.y; v.width = v.height = r.alpha = 0; }.bind(this) ],
           [ 500, function() { this.alpha = 1.0; }.bind(this) ],
           function() {
@@ -95,7 +101,8 @@ CLASS({
             lobby.collider.start();
             lobby.removeChild(v);
             lobby.removeChild(r);
-          }
+          },
+          function() { this.animating = false; if ( this.selected ) this.setSelected(true); }.bind(this)
         ])();
         this.children_ = [];
       }
