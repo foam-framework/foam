@@ -50,8 +50,6 @@ CLASS({
         return this.TopicDAO.create({ clientMode: this.clientMode });
       }
     },
-    { name: 'width',      factory: function() { return this.window.innerWidth; } },
-    { name: 'height',     factory: function() { return this.window.innerHeight } },
     { name: 'background', defaultValue: '#ccf' }
   ],
 
@@ -74,6 +72,9 @@ CLASS({
       name: 'layout',
       isFramed: true,
       code: function() {
+        this.width  = this.window.innerWidth;
+        this.height = this.window.innerHeight;
+
         while ( this.children.length ) {
           this.removeChild(this.children[this.children.length-1]);
         }
@@ -98,8 +99,8 @@ CLASS({
     function initCView() {
       this.SUPER();
 
+      this.window.addEventListener('resize', this.layout);
       this.topics.listen({put: function(t) { if ( t.topic !== this.root ) this.layout(); }.bind(this), remove: this.layout});
-this.topics.listen(console.log.bind(console));
       this.document.body.addEventListener('click', this.onClick);
       this.selected$.addListener(this.updateState);
       this.dir$.addListener(this.updateState);
@@ -108,7 +109,6 @@ this.topics.listen(console.log.bind(console));
     },
 
     function putTopic(t) {
-console.log('**** Topic: ', t.topic);
       if ( t.topic === this.root ) return;
 
       if ( ! t.enabled ) {
