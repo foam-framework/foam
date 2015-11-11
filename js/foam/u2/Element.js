@@ -324,7 +324,7 @@ CLASS({
             break;
           }
         }
-        m = m.extends && this.X.lookup(m.extends);
+        m = m.extends && X.lookup(m.extends);
       }
 
       return this.initE(this);
