@@ -123,6 +123,7 @@ CLASS({
           console.warn('Missing Element: ', this.id);
           return
         }
+
         e.classList[enabled ? 'add' : 'remove'](cls);
       },
       onAddListener: function(topic, listener) {
@@ -312,17 +313,21 @@ CLASS({
     function init() {
       this.SUPER();
 
-      for ( var i = 0 ; i < this.model_.templates.length ; i++ ) {
-        var t = this.model_.templates[i];
-        if ( t.name === 'CSS' ) {
-          t.futureTemplate(function() {
-            X.addStyle(this);
-          }.bind(this));
-          break;
+      var m = this.model_;
+      while (m) {
+        for ( var i = 0 ; i < m.templates.length ; i++ ) {
+          var t = m.templates[i];
+          if ( t.name === 'CSS' ) {
+            t.futureTemplate(function(m) {
+              X.addStyle(m.getPrototype());
+            }.bind(this, m));
+            break;
+          }
         }
+        m = m.extends && this.X.lookup(m.extends);
       }
 
-      return this.initE();
+      return this.initE(this);
     },
 
     function initE() {},
@@ -478,6 +483,15 @@ CLASS({
       return this;
     },
 
+    // Constructs a default class name for this view, with an optional extra.
+    // Without an extra, results in eg. 'foam-u2-Input'.
+    // With an extra of "foo", results in 'foam-u2-Input-foo'.
+    function myCls(opt_extra) {
+      var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
+      if (!opt_extra) return base;
+      base.split(/ +/);
+      return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
+    },
     function cls(cls, opt_enabled, opt_negate) {
       function negate(a, b) { return b ? a : ! a; }
 
@@ -495,8 +509,11 @@ CLASS({
         l();
       } else {
         var enabled = negate(opt_enabled === undefined ? true : opt_enabled, opt_negate);
-        this.classes[cls] = enabled;
-        this.onSetCls(cls, enabled);
+        var parts = cls.split(' ');
+        for (var i = 0; i < parts.length; i++) {
+          this.classes[parts[i]] = enabled;
+          this.onSetCls(parts[i], enabled);
+        }
       }
       return this;
     },
