@@ -59,7 +59,7 @@ CLASS({
    function initE() {
       return this.add(
           this.data && this.data.toDetailE ?
-              this.data.toDetailE() :
+              this.data.toDetailE(this.Y) :
               this.DetailView.create({ data$: this.data$ }, this.Y))
           .start('div').cls('add-to-cart')
             .start('div').style({ 'flex-grow': '1' }).add(this.QUANTITY).end()

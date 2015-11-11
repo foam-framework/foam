@@ -30,7 +30,15 @@ CLASS({
     {
       name: 'daoMap',
       factory: function() { return {}; }
-    }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'stringify',
+      factory: function() {
+        var jsonUtil = JSONUtil.compact.where(NOT_TRANSIENT);
+        return jsonUtil.stringify.bind(jsonUtil);
+      }
+    },
   ],
   imports: [
     'log',
@@ -57,6 +65,7 @@ CLASS({
         socket: socket
       });
 
+      var stringify = this.stringify;
       ws.subscribe(ws.ON_MESSAGE, function(_, _, message) {
         // Warning insecure parser.
         var msg = JSONUtil.parse(this.Y, message);
@@ -72,14 +81,14 @@ CLASS({
 
           dao.listen({
             put: function(o) {
-              ws.send(JSONUtil.stringify({
+              ws.send(stringify({
                 msg: {
                   notify: ["put", o]
                 }
               }));
             },
             remove: function(o) {
-              ws.send(JSONUtil.stringify({
+              ws.send(stringify({
                 msg: {
                   notify: ["remove",o]
                 }
@@ -101,13 +110,13 @@ CLASS({
         } else {
           this.handleDAORequest(msg, {
             put: function(m) {
-              ws.send(JSONUtil.stringify({
+              ws.send(stringify({
                 msgid: msgid,
                 msg: m
               }));
             },
             error: function(msg) {
-              ws.send(JSONUtil.stringify({
+              ws.send(stringify({
                 msgid: msgid,
                 msg: { error: msg }
               }));
@@ -171,12 +180,13 @@ CLASS({
 
         // Warning insecure parser.
         var msg = JSONUtil.parse(this.Y, body);
+        var stringify = this.stringify;
 
         this.handleDAORequest(msg, {
           put: function(msg) {
             resp.statusCode = 200;
             resp.setHeader("Content-Type", "application/json");
-            resp.write(JSONUtil.stringify(msg));
+            resp.write(stringify(msg));
             resp.end();
           },
           error: function(err) {

@@ -17,10 +17,7 @@ CLASS({
   requires: [
     'com.google.ow.ui.ShoppingView',
     'foam.u2.Element',
-    'com.google.ow.ui.ImageView',
-    'foam.ui.KeyView',
   ],
-  imports: [ 'imageDAO' ],
 
   properties: [
     {
@@ -35,28 +32,26 @@ CLASS({
 
   methods: [
     // TODO(markdittmer): We should use model-for-model or similar here.
-    function toDetailE() {
-      return this.ShoppingView.create({
+    function toDetailE(X) {
+      X = X.sub({ data: this });
+      return X.lookup('com.google.ow.ui.ShoppingView').create({
         order: this.order,
         products: this.products,
-      }, this.Y);
+      }, X);
     },
-    function toCitationE() {
-      return this.Element.create(null, this.Y)
+    function toCitationE(X) {
+      X = X.sub({ data: this });
+      return X.lookup('foam.u2.Element').create(null, X)
         .start()
-          .add(this.KeyView.create({
-            dao: this.imageDAO,
-            data: this.image,
-            subType: 'com.google.ow.model.Image',
-            subKey: 'ID',
-            innerView: function(args, X) {
-              return this.ImageView.create(args, X || this.Y).style({
-                background: '#000',
-                float: 'left',
-                'margin-right': '10px',
-              });
-            }.bind(this),
-          }, this.Y))
+          .start('div').style({
+            float: 'left',
+            background: '#000',
+            'margin-right': '10px',
+          })
+            .add(function(X, imgUrl) {
+              return imgUrl ? this.IMAGE_URL.toE(X) : '';
+            }.bind(this, X).on$(X, this.imageUrl$))
+          .end()
           .start('div').cls('md-body').add(this.summaryText).end()
         .end();
     },
