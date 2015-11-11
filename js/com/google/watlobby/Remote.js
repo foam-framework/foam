@@ -50,17 +50,15 @@ CLASS({
         return this.TopicDAO.create({ clientMode: this.clientMode });
       }
     },
-    { name: 'width',      factory: function() { return this.window.innerWidth; } },
-    { name: 'height',     factory: function() { return this.window.innerHeight } },
     { name: 'background', defaultValue: '#ccf' }
   ],
 
   listeners: [
     {
       name: 'updateState',
-      isFramed: true,
+      isMerged: 200,
       code: function() {
-        this.topics.find(EQ(this.Topic.TOPIC, this.root), {
+        this.topics.find(EQ(this.Topic.TOPIC, this.symRoot), {
           put: function (t) {
             t = t.clone();
             t.selected = this.selected;
@@ -74,6 +72,9 @@ CLASS({
       name: 'layout',
       isFramed: true,
       code: function() {
+        this.width  = this.window.innerWidth;
+        this.height = this.window.innerHeight;
+
         while ( this.children.length ) {
           this.removeChild(this.children[this.children.length-1]);
         }
@@ -98,8 +99,8 @@ CLASS({
     function initCView() {
       this.SUPER();
 
-      this.topics.listen({put: function(t) { if ( t.topic !== this.root ) this.layout(); }.bind(this), remove: this.layout});
-this.topics.listen(console.log.bind(console));
+      this.window.addEventListener('resize', this.layout);
+      this.topics.listen({put: function(t) { if ( t.topic !== this.symRoot ) this.layout(); }.bind(this), remove: this.layout});
       this.document.body.addEventListener('click', this.onClick);
       this.selected$.addListener(this.updateState);
       this.dir$.addListener(this.updateState);
@@ -108,8 +109,8 @@ this.topics.listen(console.log.bind(console));
     },
 
     function putTopic(t) {
-console.log('**** Topic: ', t.topic);
-      if ( t.topic === this.root ) return;
+      if ( this.maybeRedirect(t) ) return;
+      if ( t.topic === this.symRoot ) return;
 
       if ( ! t.enabled ) {
         // Newly disabled, so re-layout.
@@ -131,7 +132,7 @@ console.log('**** Topic: ', t.topic);
       c.image = t.image;
       var r = h/2-20;
       t.r = c.r = r;
-      c.scaleX = c.scaleY = 0.1;
+      c.scaleX = c.scaleY = 0.01;
       c.roundImage = t.roundImage;
       if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;

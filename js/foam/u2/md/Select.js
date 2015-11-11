@@ -27,25 +27,6 @@ CLASS({
     'document',
   ],
 
-  methods: [
-    function init() {
-      this.SUPER();
-
-      this.cls('foam-u2-md-Select')
-          .on('click', this.onClick);
-
-      this.start('label').cls('foam-u2-md-Select-label').add(this.label$).end();
-      this.start().cls('foam-u2-md-Select-value').add(this.text$).end();
-      this.start('svg')
-          .cls('foam-u2-md-Select-down-arrow')
-          .attrs({ width: '12px', height: '12px', viewBox: '0 0 48 48' })
-          .start('g')
-              .start('path').attrs({ d: 'M0 16 l24 24 24 -24 z' }).end()
-          .end()
-      .end();
-    },
-  ],
-
   listeners: [
     {
       name: 'onClick',
@@ -100,6 +81,15 @@ CLASS({
         margin: 8px 8px 2px 16px;
         width: 12px;
       }
+    */},
+    function initE() {/*#U2
+      <div class="$" onClick="onClick">
+        <label class="$-label foo bar">{{this.label$}}</label>
+        <div class="$-value">{{this.text$}}</div>
+        <svg class="$-down-arrow" width="12px" height="12px" viewBox="0 0 48 48">
+          <g><path d="M0 16 l24 24 24 -24 z"></path></g>
+        </svg>
+      </div>
     */},
   ]
 });

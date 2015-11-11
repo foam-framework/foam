@@ -28,7 +28,7 @@ CLASS({
       attribute: true,
       defaultValue: true
     },
-    ['showLabel', true],
+    'prop',
     {
       name: 'label',
       attribute: true,
@@ -46,18 +46,18 @@ CLASS({
     function init() {
       this.SUPER();
       var self = this;
-      this.cls('foam-u2-md-Input');
+      this.cls(this.myCls());
       if (this.showLabel) {
         this.start('label')
-            .cls2('foam-u2-md-Input-label')
+            .cls2(this.myCls('label'))
             .cls2(function() {
               return (typeof self.data !== 'undefined' && self.data !== '') ||
-                  self.focused ? 'foam-u2-md-Input-label-offset' : '';
+                  self.focused ? self.myCls('label-offset') : '';
             }.on$(this.X, this.data$, this.focused$))
             .add(this.label$)
             .end();
       } else {
-        this.cls2('foam-u2-md-Input-no-label');
+        this.cls2(this.myCls('no-label'));
       }
 
       var input = this.start('input')
@@ -75,14 +75,14 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .foam-u2-md-Input {
+      $ {
         align-items: center;
         display: flex;
         margin: 8px;
         padding: 32px 8px 8px 8px;
         position: relative;
       }
-      .foam-u2-md-Input-label {
+      $-label {
         color: #999;
         flex-grow: 1;
         font-size: 14px;
@@ -92,11 +92,11 @@ CLASS({
         transition: font-size 0.5s, top 0.5s;
         z-index: 0;
       }
-      .foam-u2-md-Input-label-offset {
+      $-label-offset {
         font-size: 85%;
         top: 8px;
       }
-      .foam-u2-md-Input input {
+      $ input {
         background: transparent;
         border-bottom: 1px solid #e0e0e0;
         border-left: none;
@@ -111,7 +111,7 @@ CLASS({
         resize: none;
         z-index: 1;
       }
-      .foam-u2-md-Input input:focus {
+      $ input:focus {
         border-bottom: 2px solid #4285f4;
         padding: 0 0 6px 0;
         outline: none;

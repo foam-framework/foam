@@ -234,7 +234,7 @@ MODEL({
           if ( sink.remove && ( ! obj || predicate.f(obj) ) ) sink.remove(obj, s, fc);
         },
         reset: function() {
-          sink.reset();
+          sink.reset && sink.reset();
         },
         toString: function() {
           return 'PredicatedSink(' +
@@ -397,6 +397,11 @@ var camelize = memoize1(function (str) {
   return ret[0].toLowerCase() + ret.substring(1);
 });
 
+
+// Replaces . with -, for eg. foam.u2.md.Input -> foam-u2-md-Input
+var cssClassize = memoize1(function (str) {
+  return str.replace(/\./g, '-');
+});
 
 
 MODEL({

@@ -24,6 +24,7 @@ CLASS({
       this.SUPER();
       this.data.model$.addListener(this.onModelChange);
       this.onModelChange();
+
     }
   ],
   listeners: [
@@ -33,7 +34,8 @@ CLASS({
       code: function() {
         var model = this.data.model;
         this.videoView.$.style.display = model === 'Video' ? 'block' : 'none';
-        this.textView.$.style.display  = ( model === 'Video' || model === 'Background' ) ? 'none' : 'block';
+        this.textView.$.style.display  = ( model === 'Video' || model === 'Background' || model === 'Redirect' ) ? 'none' : 'block';
+        this.redirectView.$.style.display  = model === 'Redirect' ? 'block' : 'none';
       }
     }
   ]

@@ -55,6 +55,7 @@ CLASS({
           daoType: MDAO,
           guid: true,
           isServer: true,
+          logging: true,
         });
       },
     },
@@ -99,16 +100,20 @@ CLASS({
       return typeof vm !== 'undefined' && vm.runInThisContext;
     },
     function loadData() {
-      var streamDAO = this.streamDAO;
       var console = this.console;
       var createStreamItem = this.createStreamItem.bind(this);
       var fConst = function(v) { return function() { return v; }; };
-      function sink(source, target, dao) {
+
+      function sink(dao, opt_id, opt_source, opt_target) {
         return {
           put: function(data) {
             data.dao.pipe({
               put: function(o) {
-                return dao.put(createStreamItem(source(o), target(o), o));
+                if ( opt_id ) o.id = opt_id(o);
+                if ( opt_source || opt_target )
+                  return dao.put(createStreamItem(opt_source(o), opt_target(o), o));
+                else
+                  return dao.put(o);
               },
             });
           },
@@ -117,12 +122,24 @@ CLASS({
           },
         };
       }
+
       this.X.ModelDAO.find(
           'com.google.ow.AdData',
-          sink(fConst(this.idGenerator.fromName(['FOAM', 'Team'])),
+          sink(this.streamDAO,
+               undefined,
+               fConst(this.idGenerator.fromName(['FOAM', 'Team'])),
                fConst(this.idGenerator.fromName(
-                   this.idGenerator.testNames[0])),
-               streamDAO));
+                   this.idGenerator.testNames[0]))));
+      this.X.ModelDAO.find(
+          'com.google.ow.PersonData',
+          sink(this.personDAO,
+               function(o) {
+                 return this.idGenerator.fromName([
+                   o.givenName,
+                   o.middleName,
+                   o.familyName,
+                 ]);
+               }.bind(this)));
     },
   ],
 });
