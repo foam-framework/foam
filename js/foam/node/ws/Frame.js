@@ -29,8 +29,16 @@ CLASS({
     'buffer',
     ['bufferPos', 0],
     ['needed', 0],
-    ['framing', 'true'],
-    ['finished', 'false'],
+    {
+      model_: 'BooleanProperty',
+      name: 'framing',
+      defaultValue: true
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'finished',
+      defaultValue: false
+    },
   ],
   methods: [
     function toData() {

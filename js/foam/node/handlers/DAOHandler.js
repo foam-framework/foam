@@ -68,7 +68,13 @@ CLASS({
       var stringify = this.stringify;
       ws.subscribe(ws.ON_MESSAGE, function(_, _, message) {
         // Warning insecure parser.
-        var msg = JSONUtil.parse(this.Y, message);
+        try {
+          var msg = JSONUtil.parse(this.Y, message);
+        } catch(e) {
+          console.error("Error parsing message", e)
+          ws.close();
+          return;
+        }
         var msgid = msg.msgid;
 
         if ( msg.method == 'listen' ) {

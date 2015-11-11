@@ -56,6 +56,9 @@ CLASS({
         opcode: opcode
       });
       this.socket.write(frame.toData());
+    },
+    function close() {
+      this.socket.end();
     }
   ],
   listeners: [
