@@ -90,6 +90,7 @@ CLASS({
             var v = UpdateDetailView.create(args, X);
             v.title = (args.data && args.data.data) ? args.data.data.titleText
                         : this.title;
+            v.liveEdit = true;
             return v;
           },
           innerDetailView: function(args, X) {

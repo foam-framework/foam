@@ -20,8 +20,18 @@ CLASS({
   name: 'Browser',
   extends: 'foam.browser.ui.BrowserView',
   requires: [
-
+    'foam.u2.ElementParser',
+    'foam.u2.md.SharedStyles as SharedStyles2',
+    'foam.ui.md.SharedStyles',
   ],
+  methods: [
+    function init() {
+      this.ElementParser.create();
+      this.SharedStyles2.create();
+      this.SharedStyles.create();
+    }
+  ],
+
   properties: [
     {
       name: 'data',
@@ -30,14 +40,6 @@ CLASS({
         return nu;
       }
     },
-//     {
-//       name: 'gestureManager',
-//       factory: function() { return "";}
-//     },
-//     {
-//       name: 'touchManager',
-//       factory: function() { return "";}
-//     },
   ],
 
 });

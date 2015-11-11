@@ -124,14 +124,14 @@ CLASS({
       }
 
       this.X.ModelDAO.find(
-          'com.google.ow.AdData',
+          'com.google.ow.examples.AdData',
           sink(this.streamDAO,
                undefined,
                fConst(this.idGenerator.fromName(['FOAM', 'Team'])),
                fConst(this.idGenerator.fromName(
                    this.idGenerator.testNames[0]))));
       this.X.ModelDAO.find(
-          'com.google.ow.PersonData',
+          'com.google.ow.examples.PersonData',
           sink(this.personDAO,
                function(o) {
                  return this.idGenerator.fromName([
@@ -140,6 +140,27 @@ CLASS({
                    o.familyName,
                  ]);
                }.bind(this)));
+      this.X.ModelDAO.find(
+          'com.google.ow.examples.ContentData',
+             sink(this.streamDAO,
+             undefined,
+             fConst(this.idGenerator.fromName(['FOAM', 'Team'])),
+             fConst(this.idGenerator.fromName(
+                 this.idGenerator.testNames[0]))));
+
+      arequire('com.google.ow.content.Video')(function(videoModel) {
+        var videoDAO = this.EasyDAO.create({
+                   name: 'videoDAO',
+                   model: videoModel,
+                   daoType: MDAO,
+                   //isServer: true,
+                 });
+        this.exportDAO(videoDAO);
+        this.X.ModelDAO.find('com.google.ow.examples.VideoData', sink(videoDAO));
+      }.bind(this));
+
+
+
     },
   ],
 });

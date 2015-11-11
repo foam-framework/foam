@@ -11,7 +11,7 @@
 
 __DATA({
   model_: 'com.google.ow.DAOData',
-  id: 'com.google.ow.AdData',
+  id: 'com.google.ow.examples.AdData',
 
   dao: [
     {
