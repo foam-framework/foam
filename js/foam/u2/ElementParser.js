@@ -128,17 +128,13 @@ CLASS({
 
       if: seq1(1, 'if=', sym('ifExpr')),
 
-        ifExpr: alt(
-          seq1(1, '"', sym('value'), '"'),
-          sym('braces')),
-      
+      ifExpr: alt(sym('braces'), sym('value')),
+
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
       xattribute: seq('x:', sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
-      valueOrLiteral: alt(
-        str(seq('"', sym('value'), '"')),
-        sym('braces')),
+      valueOrLiteral: alt(sym('braces'), sym('value')),
 
       class: seq1(1, 'class=', alt(sym('classList'), sym('classValue'))),
 
@@ -177,7 +173,7 @@ CLASS({
 
       value: str(alt(
         plus(alt(range('a','z'), range('A', 'Z'), range('0', '9'))),
-        seq1(1, '"', repeat(notChar('"')), '"')
+        seq('"', str(repeat(notChar('"'))), '"')
       )),
 
       whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
