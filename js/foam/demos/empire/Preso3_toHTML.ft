@@ -541,7 +541,7 @@ CLASS({
         <div class="flex-grow content small-heading">Tutorial</div>
       </div>
     </div>
-    <div class="flex-row flex-grow flex-stretch">
+    <div class="flex-row flex-grow flex-stretch overflow-hidden">
       <div class="card flex-grow">
         <iframe src="./index.html?model=foam.tutorials.phonecat.Controller" style="height: initial"></iframe>
       </div>
@@ -589,13 +589,11 @@ CLASS({
         <div class="flex-grow content small-heading">OS for The World's Information</div>
       </div>
     </div>
-    <div class="flex-row flex-stretch flex-shrink">
-      <div class="card flex flex-col flex-grow3">
-      <center style="width:1100px">
-        <iframe src="./demos/GoogleSimulator.html"></iframe>
+    <div class="card flex flex-col flex-grow3">
+      <center class="flex flex-col flex-grow" style="width:1100px">
+        <iframe class="flex-grow" style="height: inherit" src="./demos/GoogleSimulator.html"></iframe>
       </center>
-        <i><font size="+2" color="blue">Organize the world's information (y-axis) and make it universally accessible (z-axis) and useful (x-axis).</font></i>
-      </div>
+      <i><font size="+2" color="blue">Organize the world's information (y-axis) and make it universally accessible (z-axis) and useful (x-axis).</font></i>
     </div>
   </slide>
 
