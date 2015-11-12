@@ -6,6 +6,20 @@
     <foam model="com.google.watlobby.Lobby" root="fstofoam" n="10" speedWarp="1.1" showFOAMPowered="false"></foam>
   </slide>
 
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Overview</div>
+      </div>
+    </div>
+    <div class="flex-grow1 flex-stretch">
+      <center>
+        <foam model="foam.demos.FOAMDiagram" x="2" y="2" width="1600" height="800" />
+      </center>
+    </div>
+  </slide>
+
 <!--
   <slide>
     <div class="heading-card">
@@ -80,7 +94,7 @@
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Holistic</div>
+        <div class="flex-grow content small-heading">Full-Stack</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
@@ -582,20 +596,6 @@ CLASS({
       </center>
         <i><font size="+2" color="blue">Organize the world's information (y-axis) and make it universally accessible (z-axis) and useful (x-axis).</font></i>
       </div>
-    </div>
-  </slide>
-
-  <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block blue">&nbsp;</div>
-        <div class="flex-grow content small-heading">Summary</div>
-      </div>
-    </div>
-    <div class="flex-grow1 flex-stretch">
-      <center>
-        <foam model="foam.demos.FOAMDiagram" x="2" y="2" width="1600" height="800" />
-      </center>
     </div>
   </slide>
 
