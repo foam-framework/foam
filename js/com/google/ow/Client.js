@@ -21,14 +21,13 @@ CLASS({
 
   requires: [
     'MDAO',
-    'com.google.ow.IdentityManager',
     'com.google.ow.IdGenerator',
-    //'com.google.ow.Server', // for fake internal server
     'com.google.ow.examples.VideoA',
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.Envelope',
     'com.google.ow.model.ProductAd',
     'com.google.ow.ui.EnvelopeCitationView',
+    'com.google.ow.ui.MenuView',
     'com.google.plus.Circle',
     'com.google.plus.Person',
     'com.google.plus.ShareList',
@@ -62,18 +61,10 @@ CLASS({
     'personDAO',
     'circleDAO', // Note: proxy for currentUser.circles
     'contactsDAO', // Note: proxy for currentUser.contacts
-    'currentUser',
+    'currentUser$',
   ],
 
   properties: [
-    {
-      name: 'identityManager',
-      factory: function() {
-        var idMan = this.IdentityManager.create(null, this.X);
-        Events.follow(idMan.identity$, this.currentUser$);
-        return idMan;
-      },
-    },
     {
       name: 'idGenerator',
       lazyFactory: function() {
@@ -84,7 +75,7 @@ CLASS({
       name: 'browserConfig',
       lazyFactory: function() {
         var UpdateDetailView = this.UpdateDetailView;
-        return this.BrowserConfig.create({
+        var browserConfig = this.BrowserConfig.create({
           title: 'Lifestream',
           model: this.Envelope,
           dao: this.streamDAO.where(NOT(HAS(this.Envelope.SID))),
@@ -95,6 +86,13 @@ CLASS({
               expression: TRUE,
             }),
           ],
+          menuFactory: function() {
+            var view = this.MenuView.create({ data: this }, this.Y);
+            view.subscribe(view.MENU_CLOSE, function() {
+              browserConfig.publish(browserConfig.MENU_CLOSE);
+            });
+            return view;
+          }.bind(this),
           detailView: function(args, X) {
             var v = UpdateDetailView.create(args, X);
             v.title = (args.data && args.data.data) ? args.data.data.titleText
@@ -109,6 +107,7 @@ CLASS({
                 this.DetailView.create({ data: d }, this.Y);
           }.bind(this)
         });
+        return browserConfig;
       },
     },
     {
