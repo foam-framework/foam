@@ -37,25 +37,22 @@ CLASS({
 
   methods: [
     function init() {
-      var view = this.view || this.prop.toPropertyE(this.Y);
+      this.SUPER();
+      this.bindData_(null, this.data);
+    },
+    function initE() {
+      var view = this.view || this.prop.toPropertyE();
       var prop = this.prop;
 
       // TODO: remove check once all views extend View
       view.fromProperty && view.fromProperty(prop);
 
       this.child_ = view;
-
-      // Will call initE.
-      this.SUPER();
-
-      this.bindData_(null, this.data);
+      this.cls('foam-u2-PropertyView').add(this.child_);
     },
     // Set properties on delegate view instead of this
     function attrs(map) {
       return this.attrs_(map, this.view);
-    },
-    function initE() {
-      this.cls('foam-u2-PropertyView').add(this.child_);
     }
   ],
 

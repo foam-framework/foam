@@ -55,6 +55,12 @@ CLASS({
       }
     },
     {
+      name: 'rowView',
+      defaultValue: function(args, opt_X) {
+        return this.DetailView.create(args, opt_X || this.Y);
+      }
+    },
+    {
       name: 'rows',
       factory: function() {
         return {};
@@ -69,11 +75,8 @@ CLASS({
     */}
   ],
   methods: [
-    function init() {
-      this.SUPER();
-      this.dao$Proxy.pipe(this.daoListener_);
-    },
     function initE() {
+      this.dao$Proxy.pipe(this.daoListener_);
       this.cls('foam-u2-DAOListView');
     },
   ],
@@ -89,11 +92,11 @@ CLASS({
         var child = obj.toE ?
             obj.toE(this.Y) :
             obj.toRowE ? obj.toRowE(this.Y) :
-            this.DetailView.create({ data: obj });
+            this.rowView({ data: obj });
 
         child.on('click', function() {
           this.publish(this.ROW_CLICK);
-          if ( this.X.selection$ ) this.selection = obj;
+          this.selection = obj;
         }.bind(this));
 
         this.rows[obj.id] = child;

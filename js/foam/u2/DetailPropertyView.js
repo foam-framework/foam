@@ -48,11 +48,12 @@ CLASS({
   methods: [
     function initE() {
       var prop = this.prop;
-      this.cls('foam-u2-PropertyView').add(
-        this.E('td').cls('foam-u2-PropertyView-label').add(prop.label),
-        this.E('td').cls('foam-u2-PropertyView-view').add(
-          this.child_,
-          prop.units && this.E('span').cls('foam-u2-PropertyView-units').add(prop.units)));
+      this.cls('foam-u2-PropertyView')
+          .start('td').cls('foam-u2-PropertyView-label').add(prop.label).end()
+          .start('td').cls('foam-u2-PropertyView-view').add(
+              this.child_,
+              prop.units && this.E('span').cls('foam-u2-PropertyView-units').add(prop.units))
+          .end();
     }
   ]
 });
