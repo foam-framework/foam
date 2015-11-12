@@ -36,6 +36,11 @@ CLASS({
     function massageForPut(ret, principal, old, nu) {
       // If old exists and old.owner != principal, fail: trying to write someone
       // else's data.
+      if ( ! principal ) {
+        ret(null);
+        return;
+      }
+
       if (old && NEQ(this.ownerProp, principal).f(old)) {
         ret(null);
         return;
@@ -48,6 +53,11 @@ CLASS({
       ret(clone);
     },
     function massageForRead(ret, principal, obj) {
+      if ( ! principal ) {
+        ret(null);
+        return;
+      }
+
       var mine = EQ(this.ownerProp, principal).f(obj);
       if (mine) {
         ret(obj);
@@ -56,6 +66,11 @@ CLASS({
       }
     },
     function shouldAllowRemove(ret, principal, obj) {
+      if ( ! principal ) {
+        ret(null);
+        return;
+      }
+
       if (obj) {
         ret(EQ(this.ownerProp, principal).f(obj));
       } else {
@@ -63,6 +78,11 @@ CLASS({
       }
     },
     function decorateForSelect(ret, principal, dao) {
+      if ( ! principal ) {
+        ret(dao.where(FALSE));
+        return;
+      }
+
       ret(dao.where(EQ(this.ownerProp, principal)));
     },
   ]

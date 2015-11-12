@@ -51,10 +51,6 @@ CLASS({
       // user, and this put should be denied.
       var self = this;
       var principal = opt_X && opt_X.principal;
-      if (!principal) {
-        sink && sink.error && sink.error('Illegal put.');
-        return;
-      }
 
       aseq(
         // Always return null if ID is not set; this is a new object.
@@ -92,13 +88,9 @@ CLASS({
       // whole object instead of an ID, we don't trust any part of it except the
       // ID.
       // When (a) the original object doesn't exist, or (b) it exists but we're
-      // not allowed to 
+      // not allowed to
       var self = this;
       var principal = opt_X && opt_X.principal;
-      if (!principal) {
-        sink && sink.error && sink.error('Illegal remove.');
-        return;
-      }
 
       var id = id_or_obj.id || id_or_obj;
 
@@ -138,10 +130,6 @@ CLASS({
       // The authorizer might return null, in which case we return an error.
       var self = this;
       var principal = opt_X && opt_X.principal;
-      if (!principal) {
-        sink && sink.error && sink.error('Illegal find');
-        return;
-      }
 
       this.delegate.find(id, {
         error: function() {
@@ -175,11 +163,6 @@ CLASS({
       var future = afuture();
       var self = this;
       var principal = opt_X && opt_X.principal;
-      if (!principal) {
-        sink && sink.error && sink.error('Illegal select.');
-        future.set(sink);
-        return future.get;
-      }
 
       aseq(
         function(ret) {
