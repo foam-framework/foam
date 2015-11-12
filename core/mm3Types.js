@@ -304,6 +304,10 @@ CLASS({
     {
       name: 'javaType',
       defaultValue: 'long',
+    },
+    {
+      name: 'swiftType',
+      defaultValue: 'CLong',
     }
   ]
 });
