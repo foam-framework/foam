@@ -33,6 +33,7 @@ CLASS({
     'foam.dao.LoggingDAO',
     'foam.dao.PrivateOwnerAuthorizer',
     'foam.node.dao.JSONFileDAO',
+    'com.google.ow.examples.VideoA',
   ],
   imports: [
     'console',
@@ -120,7 +121,9 @@ CLASS({
     {
       name: 'videoDAO',
       lazyFactory: function() {
-        return this.authorizeFactory(this.Video, this.videoDAO_);
+        // TODO(markdittmer): Authorize access to people.
+        return this.videoDAO_;
+        //return this.authorizeFactory(this.Video, this.videoDAO_);
       },
     },
     {
