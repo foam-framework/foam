@@ -33,6 +33,7 @@ CLASS({
     'com.google.plus.ShareList',
     'foam.browser.BrowserConfig',
     'foam.browser.ui.DAOController',
+    'foam.core.dao.AuthenticatedWebSocketDAO',
     'foam.dao.EasyClientDAO',
     'foam.dao.EasyDAO',
     'foam.dao.FutureDAO',
@@ -110,12 +111,12 @@ CLASS({
         return browserConfig;
       },
     },
+    'currentUserId',
     {
       name: 'currentUser',
       postSet: function(old, nu) {
         if (nu) {
-          // TODO(markdittmer): This should get replaced by an authorizing DAO.
-          this.streamDAO.delegate = this.streamDAO_.where(EQ(this.Envelope.OWNER, nu.id));
+          this.currentUserId = nu.id;
           this.circleDAO.delegate = nu.circles;
           this.contactsDAO.delegate = nu.contacts;
         }
@@ -124,16 +125,10 @@ CLASS({
     {
       name: 'streamDAO',
       lazyFactory: function() {
-        return this.ProxyDAO.create({ delegate: [].dao }, this.Y);
-      }
-    },
-    {
-      // TODO(markdittmer): This should get replaced by an authorizing DAO.
-      name: 'streamDAO_',
-      lazyFactory: function() {
         return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
           serverUri: this.document.location.origin + '/api',
           model: this.Envelope,
+          sockets: true,
         }, this.Y) }, this.Y);
       }
     },
@@ -145,6 +140,7 @@ CLASS({
         return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
           serverUri: this.document.location.origin + '/api',
           model: this.Person,
+          sockets: true,
         }, this.Y) }, this.Y);
       }
     },
@@ -167,6 +163,11 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
+      var WebSocket = this.AuthenticatedWebSocketDAO.xbind({
+        authToken$: this.currentUserId$,
+      });
+      this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
+
       // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
       // this.SharedStyles.create(null, this.Y);
     },
