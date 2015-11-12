@@ -66,7 +66,7 @@ CLASS({
             d = args.data$ || X.data$;
             d = d && d.value;
           }
-          return d.toDetailE(X).style({ 'flex-grow': 1 });
+          return d.toDetailE(X).style({ 'flex-grow': 1, overflow: 'hidden' });
         }
       }
     },
