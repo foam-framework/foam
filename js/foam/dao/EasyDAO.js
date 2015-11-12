@@ -158,10 +158,6 @@ CLASS({
       model_: 'StringProperty',
       name: 'serverUri',
       defaultValueFn: function() {
-        if ( this.sockets ) {
-          var s = this.document.location.origin + '/api';
-          return s.replace(/^https/, "wss").replace(/^http/, "ws");
-        }
         return this.document.location.origin + '/api'
       }
     },
@@ -270,7 +266,7 @@ CLASS({
             this.syncProperty = model.SYNC_PROPERTY;
             this.deletedProperty = model.DELETED;
           } else {
-            throw "Syncing with server requires the foam.core.dao.SyncTrait be applied to your model.";
+            throw "Syncing with server requires the foam.core.dao.SyncTrait be applied to your model, '" + this.model.id + "'.";
           }
         }
       }
@@ -282,7 +278,7 @@ CLASS({
             serverUri: this.serverUri,
             model: model,
             sockets: this.sockets,
-            reconnectPeriod: 30000
+            reconnectPeriod: 5000
           }),
           syncProperty: this.syncProperty,
           deletedProperty: this.deletedProperty,

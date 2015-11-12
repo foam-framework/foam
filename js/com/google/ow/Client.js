@@ -21,6 +21,7 @@ CLASS({
 
   requires: [
     'MDAO',
+    'com.google.ow.IdentityManager',
     'com.google.ow.IdGenerator',
     'com.google.ow.Server', // for fake internal server
     'com.google.ow.examples.VideoA',
@@ -65,6 +66,14 @@ CLASS({
   ],
 
   properties: [
+    {
+      name: 'identityManager',
+      factory: function() {
+        var idMan = this.IdentityManager.create(null, this.X);
+        Events.follow(idMan.identity$, this.currentUser$);
+        return idMan;
+      },
+    },
     {
       name: 'idGenerator',
       lazyFactory: function() {
@@ -132,6 +141,8 @@ CLASS({
     {
       name: 'personDAO',
       lazyFactory: function() {
+        // TODO(markdittmer): This should be an authorized collection of peopl
+        // the current user may know about.
         return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
           serverUri: this.document.location.origin + '/api',
           model: this.Person,
@@ -159,14 +170,6 @@ CLASS({
       this.SUPER();
       // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
       // this.SharedStyles.create(null, this.Y);
-
-      this.setInitialUser();
-    },
-    function setInitialUser() {
-      // First user: Henry Joe Carvil has id -2040776555
-      this.personDAO.where(EQ(this.Person.ID, '-2040776555')).limit(1).select({
-        put: function(o) { this.currentUser = o; }.bind(this),
-      })(nop);
     },
   ],
 });

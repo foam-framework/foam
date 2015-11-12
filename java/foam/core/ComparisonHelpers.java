@@ -35,6 +35,10 @@ public class ComparisonHelpers {
     return i1 - i2;
   }
 
+  public static int compareLongs(Long l1, Long l2) {
+    return l1.equals(l2) ? 0 : l1 < l2 ? -1 : 1;
+  }
+
   public static int compareGeneric(Property prop, Object o1, Object o2) {
     if (o1 == null && o2 == null) return 0;
     if (o1 == null) return -1;
@@ -47,6 +51,7 @@ public class ComparisonHelpers {
     if (type == Property.TYPE_DOUBLE) return compareDoubles((Double) o1, (Double) o2);
     if (type == Property.TYPE_FLOAT) return compareFloats((Float) o1, (Float) o2);
     if (type == Property.TYPE_OBJECT) return compareObjects((Object) o1, (Object) o2);
+    if (type == Property.TYPE_LONG) return compareLongs((Long) o1, (Long) o2);
     return 1;
   }
 }

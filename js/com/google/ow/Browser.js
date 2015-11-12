@@ -26,6 +26,7 @@ CLASS({
   ],
   methods: [
     function init() {
+      this.SUPER();
       this.ElementParser.create();
       this.SharedStyles2.create();
       this.SharedStyles.create();

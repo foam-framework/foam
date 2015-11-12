@@ -19,7 +19,8 @@ CLASS({
   package: 'foam.messaging',
   name: 'WebSocket',
   imports: [
-    'setTimeout'
+    'setTimeout',
+    'window',
   ],
   properties: [
     {
@@ -45,6 +46,7 @@ CLASS({
     function init() {
       this.SUPER();
       this.connect();
+      this.window.addEventListener('online', this.connect);
     },
     function scheduleReconnect() {
       if ( this.reconnectTimer ) return;

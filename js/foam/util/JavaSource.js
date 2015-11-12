@@ -164,6 +164,7 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
       return name === 'int'  ? 'Integer' :
           name === 'double'  ? 'Double'  :
           name === 'float'   ? 'Float'   :
+          name === 'long'    ? 'Long'   :
           name === 'boolean' ? 'Boolean' : name;
     };
 
