@@ -1,0 +1,1599 @@
+<html>
+ <head>
+  <script language="javascript" src="../../../../core/bootFOAM.js"></script>
+  <title>Lobby</title>
+  <style>
+    body {
+      overflow: hidden;
+      margin: 0;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+    .topic-bubble-text {
+      color: #555;
+      font-family: Roboto, Arial;
+      font-size: x-large;
+    }
+  </style>
+ </head>
+ <body>
+   <script>
+    var root = location.search.split('root=')[1];
+    arequire('com.google.watlobby.Lobby')(function(Lobby) {
+      Lobby.create({root: root || 'fsto', timeWarp: 4, n: 0}).write();
+
+GLOBAL.fsto = [
+                {
+                    "start_time": "2015-11-14 10:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdtxff/", 
+                    "times": "10:00am\u00a0-\u00a011:00am", 
+                    "id": "sdtxff", 
+                    "types": [], 
+                    "end_time_epoch": 1447516800, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Innovate. Revise. Repeat.</p>", 
+                            "web_url": "http://lanyrd.com/profile/stevepereira/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/b68d1324174e2c9cd99c3b00d257a3bab94e004d-s300.jpeg", 
+                            "name": "Steve Pereira", 
+                            "elsewhere": [
+                                {
+                                    "url": "http://twitter.com/steveelsewhere"
+                                }, 
+                                {
+                                    "url": "http://stevepereira.ca/"
+                                }
+                            ], 
+                            "role": "Innovate. Revise. Repeat.", 
+                            "twitter": "@SteveElsewhere", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/b68d1324174e2c9cd99c3b00d257a3bab94e004d-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "A DevOps Pipeline | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "106", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 11:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447513200, 
+                    "abstract": "<p>&quot;A guided tour of using Docker and other best-of-breed tools to deliver quality code from developers to production in a fast and scalable process.</p>\n<p>We\u2019ll cover: <br>\n- the state of the ecosystem<br>\n- tools of the trade<br>\n- process overview<br>\n- key automation<br>\n- integrations</p>\n<p>Audience: <br>\nNewcomers or seasoned pros looking for a big-picture view of a modern delivery process.</p>\n<p>What you get: <br>\nStep-by-step guidance on how Docker can fit in your workflow and tools to automate it all.&quot;</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 10:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwq/", 
+                    "times": "10:00am\u00a0-\u00a011:00am", 
+                    "id": "sdhtwq", 
+                    "types": [], 
+                    "end_time_epoch": 1447516800, 
+                    "speakers": [
+                        {
+                            "bio": "<p>President/COO of @Ascendle, a contract software engineering firm specializing in creating mobile apps and the cloud infrastructure that supports them.</p>", 
+                            "web_url": "http://lanyrd.com/profile/dave_todaro/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/cf509ddb03238307c2aff5bb586d964496ad0689-s300.jpeg", 
+                            "name": "Dave Todaro", 
+                            "elsewhere": [], 
+                            "role": "President/COO of @Ascendle, a contract software engineering firm specializing in creating mobile apps and the cloud infrastructure that supports them.", 
+                            "twitter": "@dave_todaro", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/cf509ddb03238307c2aff5bb586d964496ad0689-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Always Ship On Time | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "102", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 11:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447513200, 
+                    "abstract": "<p>Software engineering management expert Dave Todaro walks you step-by-step through agile estimating techniques you can use to understand the size of your project and how long it will take. You and your team will quickly come up with accurate estimates and you\u2019ll be able to forecast completion dates based on how fast the team is moving. You\u2019ll learn how to deal with changes in scope and priority while always being able to tell management \u201cThis is when we\u2019ll be done.\u201d</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 10:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkx/", 
+                    "times": "10:00am\u00a0-\u00a011:00am", 
+                    "id": "sdkdkx", 
+                    "types": [], 
+                    "end_time_epoch": 1447516800, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Architect, Jazz Platform Social Web, IBM Rational</p>", 
+                            "web_url": "http://lanyrd.com/profile/dglozic/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/e7b029e4f6470238cf602986a51d58461aabdb89-s300.png", 
+                            "name": "Dejan Glozic", 
+                            "elsewhere": [], 
+                            "role": "Architect, Jazz Platform Social Web, IBM Rational", 
+                            "twitter": "@dglozic", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/e7b029e4f6470238cf602986a51d58461aabdb89-s75.png", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Breaking the Server-Client Divide with Node.js and ReactJS | FS", 
+                    "event_id": "cchwwy", 
+                    "space": "103", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 11:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447513200, 
+                    "abstract": "<p>Rendering Web applications server or client side has been a war for years, with server side proponents citing &#39;speed to glass&#39; and SEO, and client side boasting speed of transitions after the upfront cost, and desktop-like application feel. For a while it was necessary to pick sides, that is until React. In this talk, I will show a stack we are using in IBM Cloud Data Services that uses Node.js and React to bring the best of both worlds in isomorphic apps. Server or client? Yes!</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 10:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtxb/", 
+                    "times": "10:00am\u00a0-\u00a011:00am", 
+                    "id": "sdhtxb", 
+                    "types": [], 
+                    "end_time_epoch": 1447516800, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Partner Engineer Developer Relations Associate @Twitter focusing on MoPub product in NYC.  Chirps are my own and not a reflection of my employer @BigBird</p>", 
+                            "web_url": "http://lanyrd.com/profile/sweetiewill/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/05a74b1a708976f0980dc5574c39ca5f6b035262-s300.jpeg", 
+                            "name": "William Hoang", 
+                            "elsewhere": [], 
+                            "role": "Partner Engineer Developer Relations Associate @Twitter focusing on MoPub product in NYC.  Chirps are my own and not a reflection of my employer @BigBird", 
+                            "twitter": "@sweetiewill", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/05a74b1a708976f0980dc5574c39ca5f6b035262-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "No Bars, No Problem:  Mobile Applications that work Offline | CC", 
+                    "event_id": "cchwwy", 
+                    "space": "105", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 11:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447513200, 
+                    "abstract": "<p>What happens when your mobile device does not have a network connection?  That device will have no content; no experience and the amazing application that you spent so much effort to build just simply will not work.</p>\n<p>This talk would be around the implementation story of creating offline and online applications on Mobile.   <br>\nThe journey begins with NoSQL database modeling and what we can do with a NoSQL technology for mobile.  The session will go through how to create data object model relations, design for performance in difficult areas with no signal, and how to develop a local NoSQL datebase that syncs to the cloud.</p>\n<p>We will go over code on how to have your mobile application function offline without relying on the network.  You will gain knowledge in NoSQL databases technologies and walk away with insights on how to create offline type of applications that to sync to the cloud.</p>\n<p>Couchbase Mobile is a thin client library that would help developers with their mobile projects in creating a local data layer for offline user experience and will provide fast sync capabilities when there is available network connectivity.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 10:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdtxgr/", 
+                    "times": "10:00am\u00a0-\u00a011:00am", 
+                    "id": "sdtxgr", 
+                    "types": [], 
+                    "end_time_epoch": 1447516800, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Head of Engineering @Mashape, Technologist, Entrepreneur, Dog Lover.  Creator of @RESTConsole. Organizer of @YeomanTO &amp; @TorontoFacebook.</p>", 
+                            "web_url": "http://lanyrd.com/profile/ahmadnassri/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/8eecd9f47f70acc1cbd7c97e3416491bc9bac1b2-s300.jpeg", 
+                            "name": "Ahmad Nassri", 
+                            "elsewhere": [], 
+                            "role": "Head of Engineering @Mashape, Technologist, Entrepreneur, Dog Lover.  Creator of @RESTConsole. Organizer of @YeomanTO & @TorontoFacebook.", 
+                            "twitter": "@AhmadNassri", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/8eecd9f47f70acc1cbd7c97e3416491bc9bac1b2-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "What is The Open Development Methodology | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "101", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 11:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447513200, 
+                    "abstract": "<p>While Scrum, Agile and other methodologies may have made more sense in the early \u201890s, much has changed in the years since. Startups and businesses with workforces spread over many countries and time zones can no longer co-locate their employees as they were once expected to be able to. As our world continues to evolve, our businesses too are finding themselves in a position where they need to evolve too. To that effect, perhaps our software development methods should be reconsidered and rebuilt for this new world.</p>\n<p>Open source in 2015 is ubiquitous. Potentially every person in the free world benefiting from modern technology is also benefiting from open source in some fashion. When you consider the potential sea of diversity developing for the world\u2019s most popular open source projects, you can\u2019t help but wonder how they\u2019ve been able to succeed without the benefit of managers, meetings, and code sprints.</p>\n<p>Upon researching how these types of projects have succeeded, I\u2019ve been able to determine that these projects share a set of principles which could be considered the tenets of the Open Development Method.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 11:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhttr/", 
+                    "times": "11:00am\u00a0-\u00a011:15am", 
+                    "id": "sdhttr", 
+                    "types": [], 
+                    "end_time_epoch": 1447517700, 
+                    "speakers": [], 
+                    "title": "Networking Break | FL", 
+                    "event_id": "cchwwy", 
+                    "space": "Hall", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 11:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447516800, 
+                    "abstract": "<p>Join your fellow developers in the hallways to enjoy snacks from Mindful Snacks and network with our sponsors and other attendees.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 11:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhttt/", 
+                    "times": "11:15am\u00a0-\u00a012:15pm", 
+                    "id": "sdhttt", 
+                    "types": [], 
+                    "end_time_epoch": 1447521300, 
+                    "speakers": [
+                        {
+                            "bio": "", 
+                            "web_url": "http://lanyrd.com/profile/oreng/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/051888fbe059aa6092ca06c02fe2aca4fdac6e82-s300.jpeg", 
+                            "name": "Oren Golan", 
+                            "elsewhere": [], 
+                            "role": "", 
+                            "twitter": "@oreng", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/051888fbe059aa6092ca06c02fe2aca4fdac6e82-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Docker as a catalyst of culture change? are you nuts? | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "101", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 12:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447517700, 
+                    "abstract": "<p>Docker is here to stay whether you like it or not. so embrace it.</p>\n<p>In this talk I&#39;ll explain how Docker, Micro Services and Conway Law are going to change not only the way we write software but  also the social structure of the entire organization.</p>\n<p>I&#39;ll talk about Lean, CI and CD and how they are all playing nice with their new friend, Docker.</p>\n<p>But I will not stop at theory. I&#39;ll dive into the code, tools and technologies that transforms our company, Sanguine BioSciences, and can help all of the attendees.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 11:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwb/", 
+                    "times": "11:15am\u00a0-\u00a012:15pm", 
+                    "id": "sdhtwb", 
+                    "types": [], 
+                    "end_time_epoch": 1447521300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Developer at Braintree, graduate student at the University of Chicago.</p>", 
+                            "web_url": "http://lanyrd.com/profile/lionelbarrow/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/f188b7839d20daa57e1b2d6845c11c4485ae867a-s300.jpeg", 
+                            "name": "Lionel Barrow", 
+                            "elsewhere": [], 
+                            "role": "Developer at Braintree, graduate student at the University of Chicago.", 
+                            "twitter": "@LionelBarrow", 
+                            "image_75": "https://s3.amazonaws.com/static.lanyrd.net/cropped-profile-photos/f188b7839d20daa57e1b2d6845c11c4485ae867a-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Evolving High Availability at Braintree | FS", 
+                    "event_id": "cchwwy", 
+                    "space": "103", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 12:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447517700, 
+                    "abstract": "<p>Braintree is a payment gateway, so any downtime on our API makes both us and our customers lose money. We therefore focus a lot of time and energy on keeping our gateway, a Ruby on Rails application, as healthy as possible.</p>\n<p>In this talk, I&#39;ll give equal importance to examining our high availability stack and showing how it has evolved as our systems and traffic have evolved. Specifically, I&#39;ll discuss:</p>\n<ul class=\"bullets\">\n  <li>How we wrote, ran, and ultimately moved away from a totally custom web server, the Braintree proxy or &quot;&quot;Broxy&quot;&quot;.</li>\n  <li>Our techniques for safely performing schema changes and long-running data migrations on our Postgres clusters.</li>\n  <li>How we keep our applications healthy and responsive in a service-oriented architecture.</li>\n</ul>\n<p>Throughout the talk, I&#39;ll pay particular attention to showcasing mistakes we made and thinks that didn&#39;t go as planned. By the end of the talk, you&#39;ll have a thorough understanding of the architecture of a highly available Rails stack.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 11:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhttx/", 
+                    "times": "11:15am\u00a0-\u00a012:15pm", 
+                    "id": "sdhttx", 
+                    "types": [], 
+                    "end_time_epoch": 1447521300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Educator. Seasoned frontend web developer. Android enthusiast. Robot-lover. DIY-enabler. Foodie.</p>", 
+                            "web_url": "http://lanyrd.com/profile/pearlchen/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/85cf37e2888dbbc40baafda652f0e14feb10c47c-s300.jpg", 
+                            "name": "Pearl Chen", 
+                            "elsewhere": [], 
+                            "role": "Educator. Seasoned frontend web developer. Android enthusiast. Robot-lover. DIY-enabler. Foodie.", 
+                            "twitter": "@PearlChen", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/85cf37e2888dbbc40baafda652f0e14feb10c47c-s75.jpg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Internetting Your Things | CC", 
+                    "event_id": "cchwwy", 
+                    "space": "105", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 12:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447517700, 
+                    "abstract": "<p>From big consumer success stories, such as the Nest Thermostat, to more offbeat monitoring systems, such as Botanicalls (which lets your plant call you when it is thirsty), your *things* are finding their own voice through small but powerful embedded microcontrollers.</p>\n<p>The market for the Internet of Things (IoT) and wearables is exploding. But as a software developer, what are your options for getting started with making physical things when you\u2019re more used to writing software? Luckily, the world of hardware tinkering has become incredibly accessible and you don\u2019t need an electrical engineering degree to prototype your next IoT project.</p>\n<p>You\u2019ve probably heard of Arduino \u2013 an inexpensive and flexible microcontroller taking the maker world by storm \u2013 but in this session, I will go through a few hardware options great for hobbyist and rapid prototyping that were built with connectivity in mind.</p>\n<p>Find out the various ways you can get your things to talk, including Wi-Fi and Bluetooth.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 11:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwt/", 
+                    "times": "11:15am\u00a0-\u00a012:15pm", 
+                    "id": "sdhtwt", 
+                    "types": [], 
+                    "end_time_epoch": 1447521300, 
+                    "speakers": [
+                        {
+                            "bio": "", 
+                            "web_url": "http://lanyrd.com/profile/scalafacts/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/02945400c15364f4e903c196eb40764660065a3d-s300.png", 
+                            "name": "Marconi Lanna", 
+                            "elsewhere": [], 
+                            "role": "", 
+                            "twitter": "@ScalaFacts", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/02945400c15364f4e903c196eb40764660065a3d-s75.png", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Powerful, elegant Scala one*-liners | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "102", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 12:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447517700, 
+                    "abstract": "<p>Traditionally, proponents of dynamic scripting languages have been particularly proud of their mighty one-liners, bragging about how much they can accomplish with but a few keystrokes.</p>\n<p>Statically typed languages, on the other hand, have earned quite a reputation as painfully verbose. A meager hello world in Java, for instance, requires no less than 5 lines and 124 characters of code (a little less if you indent with tabs).</p>\n<p>It&#39;s been said that Scala is the static language that feels dynamic. With its powerful and expressive syntax, concise yet not terse, a single line of Scala code can leverage an impressive amount of JVM power.</p>\n<p>In this interactive, hands-on session I show you some of the most powerful and elegant Scala one*-liners that give us dynamic productivity in a static language. Ready your REPL, we are going to write some code!</p>\n<p>(*for different values of &quot;one&quot;)</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 11:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhttz/", 
+                    "times": "11:15am\u00a0-\u00a012:15pm", 
+                    "id": "sdhttz", 
+                    "types": [], 
+                    "end_time_epoch": 1447521300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Magento community member, developer, eCommerce merchant &amp; CEO of a Magento Solutions Partner</p>", 
+                            "web_url": "http://lanyrd.com/profile/joshuawarren/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/4495ea51e03d7bb58742b204d479eb0cac2cc581-s300.jpeg", 
+                            "name": "Joshua Warren", 
+                            "elsewhere": [
+                                {
+                                    "url": "http://keybase.io/joshuaswarren"
+                                }, 
+                                {
+                                    "url": "http://joshuawarren.com/"
+                                }, 
+                                {
+                                    "url": "http://twitter.com/joshuaswarren"
+                                }
+                            ], 
+                            "role": "Magento community member, developer, eCommerce merchant & CEO of a Magento Solutions Partner", 
+                            "twitter": "@JoshuaSWarren", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/4495ea51e03d7bb58742b204d479eb0cac2cc581-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Work-Life Balance For Passionate Developers | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "106", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 12:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447517700, 
+                    "abstract": "<p>\u2018Work-life balance\u2019 is touted in job postings everywhere - but what does it really mean? If you\u2019re a passionate developer that\u2019s excited about the technology you work with every day, you probably spend a fair bit of time outside of the office doing something that looks a lot like what you do at work. Even if you\u2019re excited about your work, it\u2019s important to find ways to rest, recharge and disconnect periodically. After spending 7 years building a team of passionate developers, I\u2019ve learned that everyone approaches work-life balance differently, with vastly different results.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 12:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwc/", 
+                    "times": "12:15pm\u00a0-\u00a01:45pm", 
+                    "id": "sdhtwc", 
+                    "types": [], 
+                    "end_time_epoch": 1447526700, 
+                    "speakers": [], 
+                    "title": "Lunch Break | FL", 
+                    "event_id": "cchwwy", 
+                    "space": "Hall", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 13:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447521300, 
+                    "abstract": "<p>Lunch is on your own. There are many fine establishments around the venue. Check the footer of the website for discounts!</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 13:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmc/", 
+                    "times": "1:45pm\u00a0-\u00a02:45pm", 
+                    "id": "sdkdmc", 
+                    "types": [], 
+                    "end_time_epoch": 1447530300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Senior UX Architect @Guardian. Before that Poke and Yahoo!. Views are spectacular.</p>", 
+                            "web_url": "http://lanyrd.com/profile/mr_mr/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/092a74e6cdb752f5ea2709a2427e18f620167a0b-s300.jpeg", 
+                            "name": "Chris Clarke", 
+                            "elsewhere": [], 
+                            "role": "Senior UX Architect @Guardian. Ex Yahoo! Answers. Teacher of UX @GA. Views are spectacular.", 
+                            "twitter": "@mr_mr", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/092a74e6cdb752f5ea2709a2427e18f620167a0b-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "All the news that fits to print: rethinking digital news consumption | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "101", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 14:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447526700, 
+                    "abstract": "<p>Consuming news is not something people spend a lot of time thinking about. It\u2019s usually in a quick and efficient manner to achieve a desired result; a need to know what\u2019s going on in the world right now. The Guardian newspaper \u2018Next Gen\u2019 web team wanted to ensure this overview of news was achieved when moving to our new responsive website.</p>\n<p>As a team we needed to recognise that we were way too embedded in the design to think about the context of the reader. By thinking from the perspective of the reader we were able to create a concept around the product technique \u2018jobs to be done\u2019 and suggest a responsive homepage that focussed on the time a reader had to spend and not the design of the page itself.</p>\n<p>This talk will focus on how a small, dedicated product team created this solution, leading to the launch of a radically different Guardian news homepage and website in 2015.</p>\n<p>Takeaways<br>\n- Understand the problem properly, don\u2019t just throw resource at it<br>\n- Admit when you\u2019re wrong<br>\n- Create a culture of small thinking teams<br>\n- A big problem needs a big step back to gain perspective and solve</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 13:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwk/", 
+                    "times": "1:45pm\u00a0-\u00a02:45pm", 
+                    "id": "sdhtwk", 
+                    "types": [], 
+                    "end_time_epoch": 1447530300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Software guy, technology enthusiast and dad.</p>", 
+                            "web_url": "http://lanyrd.com/profile/guw/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/f64cc8f7ed139d38c4ae764e8ce6745fa8d73470-s300.png", 
+                            "name": "Gunnar Wagenknecht", 
+                            "elsewhere": [
+                                {
+                                    "url": "http://about.me/guw"
+                                }
+                            ], 
+                            "role": "Software guy, technology enthusiast and dad.", 
+                            "twitter": "@guw", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/f64cc8f7ed139d38c4ae764e8ce6745fa8d73470-s75.png", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "A Scalable Stack for Modular Web Application | FS", 
+                    "event_id": "cchwwy", 
+                    "space": "103", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 14:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447526700, 
+                    "abstract": "<p>Modularity reduces software complexity. OSGi is the best model to modularize Java. It works at development as well as runtime and scales from embedded devices to large, distributed clusters. Web applications implementing modularity at runtime provide interesting capabilities to adapt quickly to customer needs and dynamic environments.</p>\n<p>But there is no out-of-the-box infrastructure. Few containers provide OSGi support, which is not always complete. Very often, developers start with an OSGi framework by themselves and add technology individually, which results into additional maintenance effort going forward.</p>\n<p>The open source Eclipse Gyrex Project addresses this problem by providing an infrastructure for building OSGi clusters. It combines successful Eclipse RT technologies such as the Equinox OSGi framework, p2 and Jetty with standards such as JAX-RS, dependency injection and web sockets allowing seamless and pain-free creation and operation of clustered OSGi applications.</p>\n<p>In this session we\u2019ll present a technology stack based on Eclipse Gyrex that can be used for building scalable and modular web applications. We\u2019ll start with an overview and continue with a deep dive through the stack using a sample application. You will also learn about typical cluster deployments for web applications and batch processing, understanding the development workflow and best practices.</p>\n<p>We\u2019ll also show you how HTML5 and JavaScript based frontends can be developed and deployment alongside the backend supporting its modularity.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 13:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwg/", 
+                    "times": "1:45pm\u00a0-\u00a02:45pm", 
+                    "id": "sdhtwg", 
+                    "types": [], 
+                    "end_time_epoch": 1447530300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Never let a computer know you&#39;re in a hurry. Security Lead at @braintree, Crypto Geek, Robotics Mentor with @FIRSTweets</p>", 
+                            "web_url": "http://lanyrd.com/profile/jtdowney/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/6e64b28b87dfa4627d831a6aa25883eb8e41ed25-s300.jpeg", 
+                            "name": "John Downey", 
+                            "elsewhere": [], 
+                            "role": "Never let a computer know you're in a hurry. Security Lead at @braintree, Crypto Geek, Robotics Mentor with @FIRSTweets", 
+                            "twitter": "@jtdowney", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/6e64b28b87dfa4627d831a6aa25883eb8e41ed25-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Cryptography Pitfalls | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "105", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 14:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447526700, 
+                    "abstract": "<p>As developers we often do a poor job of implementing cryptography and other security measures in our systems. Often the primitives used are out of date and overlook very subtle flaws.</p>\n<p>These mistakes lead to systems that are hopelessly insecure despite our perception that we\u2019ve build an impenetrable fortress.</p>\n<p>Fortunately there are a few tools and techniques at our disposal that can ease some of the pain.</p>\n<p>In this talk we\u2019ll explore some of the most common pitfalls developers encounter with cryptography and restore some of our sanity.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 13:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwf/", 
+                    "times": "1:45pm\u00a0-\u00a02:45pm", 
+                    "id": "sdhtwf", 
+                    "types": [], 
+                    "end_time_epoch": 1447530300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>vArchitect @ VCE. VMware fiend, Vblock evangelist. (CCNA,VCP,VCAP4-DCD,VCAP4-DCA) vExpert, Bourbon aristocrat, UK sports nut, @VideoEditorGirl is my wife</p>", 
+                            "web_url": "http://lanyrd.com/profile/kendrickcoleman/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/6c6459d3216846af8f668c3fb7d33036b22e87a6-s300.jpg", 
+                            "name": "Kendrick Coleman", 
+                            "elsewhere": [], 
+                            "role": "vArchitect @ VCE. VMware fiend, Vblock evangelist. (CCNA,VCP,VCAP4-DCD,VCAP4-DCA) vExpert, Bourbon aristocrat, UK sports nut, @VideoEditorGirl is my wife", 
+                            "twitter": "@KendrickColeman", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/6c6459d3216846af8f668c3fb7d33036b22e87a6-s75.jpg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Making the Switch Ruby on Rails to Node.js + Express | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "102", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 14:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447526700, 
+                    "abstract": "<p>Have you been building applications in Ruby on Rails? Been wanting to take that leap in Node.js? Wait no longer! In this talk, the audience will learn about the differences between ruby and Node.js.</p>\n<p>This talk will cover how to build a complete CRUD application with all the REST baked in using the MongoDB, Express.js, Node.js stack.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 13:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwh/", 
+                    "times": "1:45pm\u00a0-\u00a02:45pm", 
+                    "id": "sdhtwh", 
+                    "types": [], 
+                    "end_time_epoch": 1447530300, 
+                    "speakers": [
+                        {
+                            "bio": "", 
+                            "web_url": "http://lanyrd.com/profile/joelatengrenage/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/f7bd534eed82265736c030be19e301c31195c34f-s300.jpeg", 
+                            "name": "Joel Lord", 
+                            "elsewhere": [], 
+                            "role": "", 
+                            "twitter": "@joelatengrenage", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/f7bd534eed82265736c030be19e301c31195c34f-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Robocalypse: Controlling Nodebots with Kinect gestures | CC", 
+                    "event_id": "cchwwy", 
+                    "space": "106", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 14:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447526700, 
+                    "abstract": "<p>Building Arduino robots is pretty cool, but being able to program a robot in Javascript is even better.  However, what is even more awesome is the ability to control a robot with Kinect gestures.</p>\n<p>This presentation provides attendees with a brief introduction to the awesome world of NodeJs, Johnny-Five and Socket.io. The session will deliver an overview of a Kinect gesture detection library and how to connect it to a node-bot.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 14:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwm/", 
+                    "times": "2:45pm\u00a0-\u00a03:00pm", 
+                    "id": "sdhtwm", 
+                    "types": [], 
+                    "end_time_epoch": 1447531200, 
+                    "speakers": [], 
+                    "title": "Networking Break | FL", 
+                    "event_id": "cchwwy", 
+                    "space": "Hall", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 15:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447530300, 
+                    "abstract": ""
+                }, 
+                {
+                    "start_time": "2015-11-14 15:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtxd/", 
+                    "times": "3:00pm\u00a0-\u00a04:00pm", 
+                    "id": "sdhtxd", 
+                    "types": [], 
+                    "end_time_epoch": 1447534800, 
+                    "speakers": [
+                        {
+                            "bio": "", 
+                            "web_url": "http://lanyrd.com/profile/arushisrivastav/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/f7efcd716f443cf4c0afc200de459bd536f7bd4a-s300.jpeg", 
+                            "name": "Arushi Srivastava", 
+                            "elsewhere": [], 
+                            "role": "", 
+                            "twitter": "@arushisrivastav", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/f7efcd716f443cf4c0afc200de459bd536f7bd4a-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Design Thinking for IoT | CC", 
+                    "event_id": "cchwwy", 
+                    "space": "105", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 16:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447531200, 
+                    "abstract": "<p>Just because you can, does not mean you should. That seems to be the big lesson learnt from early IoT startups. Consumers are rejecting novel technology ideas and do not seem to connect to IoT. They are sometimes accepting IoT applications in their own way, and not as designed. Where are the designers going wrong? Is technology part of the problem or the user mindset is?</p>\n<p>We will explore answers to these questions and learn about the importance and techniques of design thinking which can be used for developing IoT products and applications. We will explore some examples and observe how different aspects of design thinking can improve different areas of IoT design and development</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 15:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmk/", 
+                    "times": "3:00pm\u00a0-\u00a04:00pm", 
+                    "id": "sdkdmk", 
+                    "types": [], 
+                    "end_time_epoch": 1447534800, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Front-End Developer</p>", 
+                            "web_url": "http://lanyrd.com/profile/rchristiani/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/8c15461cc072f8b9a3072666d6f7d4ecb7a9e501-4e9ee9-s300.jpeg", 
+                            "name": "Ryan Christiani", 
+                            "elsewhere": [], 
+                            "role": "Front-End Developer ", 
+                            "twitter": "@RChristiani", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/8c15461cc072f8b9a3072666d6f7d4ecb7a9e501-4e9ee9-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "ES6 Easy Wins | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "106", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 16:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447531200, 
+                    "abstract": "<p>ES6 is here, and for new JS developers some of the new features and syntax can be confusing. For this talk lets breakdown concepts like let, const, Classes, Arrow functions, Promises and Template Strings. We will look at the easy win features that do not require much research to implement.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 15:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwr/", 
+                    "times": "3:00pm\u00a0-\u00a04:00pm", 
+                    "id": "sdhtwr", 
+                    "types": [], 
+                    "end_time_epoch": 1447534800, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Software Developer that gets things done \u2022\u00a0Author of The Senior Software Engineer and Build Awesome Command-Line Applications in Ruby</p>", 
+                            "web_url": "http://lanyrd.com/profile/davetron5000/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/980d8f67f8cee7b229be86e894ed518b1518ea6d-s300.jpg", 
+                            "name": "David Copeland", 
+                            "elsewhere": [], 
+                            "role": "Software Developer that gets things done \u2022\u00a0Author of The Senior Software Engineer and Build Awesome Command-Line Applications in Ruby", 
+                            "twitter": "@davetron5000", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/980d8f67f8cee7b229be86e894ed518b1518ea6d-s75.jpg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Rails, Postgres, Angular, and Bootstrap: The Power Stack | FS", 
+                    "event_id": "cchwwy", 
+                    "space": "103", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 16:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447531200, 
+                    "abstract": "<p>Ruby on Rails is a great application layer, with tons of support and an amazing community.  Postgres is a high-performing and amazingly powerful open-source database that can do pretty much anything.  AngularJS is the most popular framework for making highly dynamic user interfaces.  And Twitter Bootstrap enables anyone to make it look good.</p>\n<p>This talk will show you two things: why each of these tools should be in your toolbox, and how to use them together to make amazing applications.  This is the true \u201cfull stack\u201d and it packs quite a wallop.  If you want to ship valuable, quality, high-performing software quickly, you need the power stack.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 15:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdtxgq/", 
+                    "times": "3:00pm\u00a0-\u00a04:00pm", 
+                    "id": "sdtxgq", 
+                    "types": [], 
+                    "end_time_epoch": 1447534800, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Developer Evangelist, JavaScript Hacker, Geek, Notre Dame Fan. Did I mention I sing too?</p>", 
+                            "web_url": "http://lanyrd.com/profile/kellyjandrews/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/dbf412c93d46980c778094d938dcd4d3f8db1540-s300.png", 
+                            "name": "Kelly Andrews", 
+                            "elsewhere": [], 
+                            "role": "Developer Evangelist, JavaScript Hacker, Geek, Notre Dame Fan. Did I mention I sing too?", 
+                            "twitter": "@kellyjandrews", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/dbf412c93d46980c778094d938dcd4d3f8db1540-s75.png", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Stop Building The Backend! | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "102", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 16:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447531200, 
+                    "abstract": "<p>Building applications should be fun, and focused on solving real problems. Unfortunately, as a frontend developer, we rely on someone to develop the backend pieces, or struggling through them ourselves.</p>\n<p>Innovation and speed are often sacrificed at the hand of backend development, however as an industry we are moving towards a revolution where the frontend developer rules, and backends become admin tasks.</p>\n<p>Many solutions such as BaaS or JS app platforms, approach developing websites with a serverless, frontend first persepective, and offload many backend tasks.  It&#39;s time to stop building the backend, and make building apps fun again!&quot;&quot;</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 15:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwz/", 
+                    "times": "3:00pm\u00a0-\u00a04:00pm", 
+                    "id": "sdhtwz", 
+                    "types": [], 
+                    "end_time_epoch": 1447534800, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Software Engineer at Comcast Interactive Media</p>", 
+                            "web_url": "http://lanyrd.com/profile/bengreenberg/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/bb2ddeb6fa7130906b78f1bf90386a3079d51b2b-s300.jpeg", 
+                            "name": "Benjamin Greenberg", 
+                            "elsewhere": [], 
+                            "role": "Software Engineer at Comcast Interactive Media", 
+                            "twitter": null, 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/bb2ddeb6fa7130906b78f1bf90386a3079d51b2b-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Using Hypermedia APIs to Drive Interactive Mobile Applications | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "101", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 16:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447531200, 
+                    "abstract": "<p>At Comcast, the backbone of our cross-platform X1 Entertainment Operating System is a hypermedia API supporting both XHTML and HAL as media types. It\u2019s given us several expected benefits: self-documentation, loose coupling, and discoverability.</p>\n<p>At the same time, it also uncovered some limitations of hypermedia. Hypermedia is designed so that the API works similarly to a traditional web site\u2014load a resource, follow a link, and then load the next resource. Modern, native mobile apps, on the other hand, try very hard to NOT present a page-oriented, wait and load experience. Users expect their apps to be responsive, fast, and not beholden to a page-like paradigm.</p>\n<p>In this presentation, Ben will discuss the design of our hypermedia API and demonstrate some of the strategies we\u2019ve come up in the API and on the mobile client to address these concerns.</p>\n<p>We\u2019ll use different examples from our API to illustrate how we promoted parallel requests, improved cacheability, and minimized response sizes, all while staying true to the link- and form-driven spirit of hypermedia.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 16:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwx/", 
+                    "times": "4:00pm\u00a0-\u00a04:15pm", 
+                    "id": "sdhtwx", 
+                    "types": [], 
+                    "end_time_epoch": 1447535700, 
+                    "speakers": [], 
+                    "title": "Networking Break | FL", 
+                    "event_id": "cchwwy", 
+                    "space": "Hall", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 16:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447534800, 
+                    "abstract": ""
+                }, 
+                {
+                    "start_time": "2015-11-14 16:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdqhbr/", 
+                    "times": "4:15pm\u00a0-\u00a05:15pm", 
+                    "id": "sdqhbr", 
+                    "types": [], 
+                    "end_time_epoch": 1447539300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Developer and Innovator, father, and husband. I&#39;m always working on new development and research projects. This is my twitter to post more about them.</p>", 
+                            "web_url": "http://lanyrd.com/profile/jonfontanez/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/4f9d963406360ab339ad99d56a8fda53be02877e-s300.jpeg", 
+                            "name": "Jonathan Fontanez", 
+                            "elsewhere": [], 
+                            "role": "Developer and Innovator, father, and husband. I'm always working on new development and research projects. This is my twitter to post more about them.", 
+                            "twitter": "@jonfontanez", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/4f9d963406360ab339ad99d56a8fda53be02877e-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Building modular enterprise AngularJS applications | FS", 
+                    "event_id": "cchwwy", 
+                    "space": "103", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 17:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447535700, 
+                    "abstract": "<p>AngularJS enables developers to rapidly build single page applications. However, the framework leaves many decisions to development teams including structuring content, script loading, and asset management. When building large scale applications for businesses and enterprises this can quickly become challenging to maintain, test, iterate, and extend.</p>\n<p>The talk will focus on best practices and strategies for structuring large AngularJS applications, maintainable code styling for modular code, and finally introduce tools and strategies for teams to effectively build, package, deliver, and deploy in an enterprise environment.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 16:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtxc/", 
+                    "times": "4:15pm\u00a0-\u00a05:15pm", 
+                    "id": "sdhtxc", 
+                    "types": [], 
+                    "end_time_epoch": 1447539300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Software guy, technology enthusiast and dad.</p>", 
+                            "web_url": "http://lanyrd.com/profile/guw/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/f64cc8f7ed139d38c4ae764e8ce6745fa8d73470-s300.png", 
+                            "name": "Gunnar Wagenknecht", 
+                            "elsewhere": [
+                                {
+                                    "url": "http://about.me/guw"
+                                }
+                            ], 
+                            "role": "Software guy, technology enthusiast and dad.", 
+                            "twitter": "@guw", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/f64cc8f7ed139d38c4ae764e8ce6745fa8d73470-s75.png", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "HTTP/2 and Java | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "106", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 17:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447535700, 
+                    "abstract": "<p>HTTP is the fundamental networking protocol that powers the web. A new version of the protocol named HTTP/2 is on its way. In this session I\u2019ll explore the possibilities of HTTP/2 and Java.</p>\n<p>We\u2019ll look at popular containers such as Jetty and Tomcat and explore how to setup HTTP/2 in those environments. HTTP/2 brings a lot of additional functionality to the table.</p>\n<p>We\u2019ll also review the new features and discuss the ones applicable from a Java backend as well as front-end/client developer\u2019s perspective.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 16:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwp/", 
+                    "times": "4:15pm\u00a0-\u00a05:15pm", 
+                    "id": "sdhtwp", 
+                    "types": [], 
+                    "end_time_epoch": 1447539300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Dev @ #ResIM. Raver, writer, thinker, ranter.  Cyclist. Kandi Kid. Festival Hopper. Unicorn. The Queen. Electronic Music. GuvLuv. PLUR. Turn Up The Love.</p>", 
+                            "web_url": "http://lanyrd.com/profile/rachfee/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/07e46d03c313c76aa3b6da980ad14f0a3a5b3afe-s300.jpeg", 
+                            "name": "Rachel Fee", 
+                            "elsewhere": [], 
+                            "role": "Dev @ #ResIM. Raver, writer, thinker, ranter.  Cyclist. Kandi Kid. Festival Hopper. Unicorn. The Queen. Electronic Music. GuvLuv. PLUR. Turn Up The Love.", 
+                            "twitter": "@RachFee", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/07e46d03c313c76aa3b6da980ad14f0a3a5b3afe-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Learning by Teaching | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "102", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 17:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447535700, 
+                    "abstract": "<p>This talk will discuss the values and experiences gained by transitioning from a student of web development, to a practicing developer, to a teacher. Based on this, I will discuss different learning methods, from standard classroom learning, to practical on-the-job learning, to learning with teaching others in mind. I will detail how students of web development today have evolved from several years ago, and how we must adapt to better lead the next generation of industry professionals.</p>\n<p>Overall, this talk will detail how you can use teaching others as one of the most effective learning tools for yourself.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 16:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdtzfk/", 
+                    "times": "4:15pm\u00a0-\u00a05:15pm", 
+                    "id": "sdtzfk", 
+                    "types": [], 
+                    "end_time_epoch": 1447539300, 
+                    "speakers": [
+                        {
+                            "bio": "<p>CTO on the run - Around JavaScript, node.js, WebGL and cool HTML5 game stuff</p>", 
+                            "web_url": "http://lanyrd.com/profile/jerome_etienne/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/0ce353460a9b61001bb9abdd41c92e0e6c7e2bc0-s300.jpg", 
+                            "name": "Jerome Etienne", 
+                            "elsewhere": [], 
+                            "role": "CTO on the run - Around JavaScript, node.js, WebGL and cool HTML5 game stuff", 
+                            "twitter": "@jerome_etienne", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/0ce353460a9b61001bb9abdd41c92e0e6c7e2bc0-s75.jpg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "WebAR: Augmented Reality for Web in Open Source | CC", 
+                    "event_id": "cchwwy", 
+                    "space": "101", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 17:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447535700, 
+                    "abstract": "<p>Augmented Reality is everywhere. It is a hot and powerful topic. Everyone is doing it: Facebook with Occulus Rift, Microsoft with Hololens, Google with google glass or DAQRI with the Smart Helmet.</p>\n<p>We wanted to experiment with Augmented Reality on the web as well. That&#39;s how WebAR was born, an open source project which does Augmented Reality using web standards. We were wondering how far we could push the technology...the good news is that we can go pretty far!</p>\n<p>First, we succeeded on making AR run in a browser. We were already quite happy with this, but then we went for the moon and wanted to run that on mobile phones too. And it turns out it actually works! Imagine that: Being able to provide free AR for everybody to use in their everyday life with their mobile devices!</p>\n<p>WebAR shows us how to get Augmented Reality using only web technologies. It is an open source threex extension for three.js. It captures the video with webrtc, localizes the AR markers using artoolkit,<br>\nand displays the 3d on top of your reality with three.js.</p>\n<p>I will tell you everything you need to know to write your own Augmented Reality application! Trust me, it&#39;s gonna be fun!</p>"
+                }, 
+                {
+                    "start_time": "2015-11-14 17:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtxf/", 
+                    "times": "5:15pm\u00a0-\u00a05:30pm", 
+                    "id": "sdhtxf", 
+                    "types": [], 
+                    "end_time_epoch": 1447540200, 
+                    "speakers": [], 
+                    "title": "Networking Break | FL", 
+                    "event_id": "cchwwy", 
+                    "space": "Hall", 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 17:30:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447539300, 
+                    "abstract": ""
+                }, 
+                {
+                    "start_time": "2015-11-14 18:30:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtxg/", 
+                    "times": "6:30pm\u00a0-\u00a011:59pm", 
+                    "id": "sdhtxg", 
+                    "types": [], 
+                    "end_time_epoch": 1447563540, 
+                    "speakers": [], 
+                    "title": "Networking Party | FL", 
+                    "event_id": "cchwwy", 
+                    "space": null, 
+                    "day": "Saturday 14th November", 
+                    "end_time": "2015-11-14 23:59:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447543800, 
+                    "abstract": "<p>Join us for drinks and appetizers and continue the conversations of the day and meet new people!</p>"
+                },
+                {
+                    "start_time": "2015-11-15 09:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkd/", 
+                    "times": "9:00am\u00a0-\u00a010:00am", 
+                    "id": "sdkdkd", 
+                    "types": [], 
+                    "end_time_epoch": 1447599600, 
+                    "speakers": [], 
+                    "title": "Registration | FL", 
+                    "event_id": "cchwwy", 
+                    "space": "Hall", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 10:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447596000, 
+                    "abstract": "<p>Registration</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 10:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkw/", 
+                    "times": "10:00am\u00a0-\u00a011:00am", 
+                    "id": "sdkdkw", 
+                    "types": [], 
+                    "end_time_epoch": 1447603200, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Partner at <a href=\"http://expectedbehavior.com\" rel=\"nofollow\">http://expectedbehavior.com</a>, perfectionist, beer snob, sarcasm enthusiast.</p>", 
+                            "web_url": "http://lanyrd.com/profile/mediocretes/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/fbc89a8a242c579ecadc6e9c0439a618a22812ae-s300.jpeg", 
+                            "name": "Nathan D Acuff", 
+                            "elsewhere": [], 
+                            "role": "Partner at http://expectedbehavior.com, perfectionist, beer snob, sarcasm enthusiast.", 
+                            "twitter": "@mediocretes", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/fbc89a8a242c579ecadc6e9c0439a618a22812ae-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Application Performance Monitoring is the new Unit Testing | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "105", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 11:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447599600, 
+                    "abstract": "<p>Time is money.  You use automated testing to save time.  You should be using application performance monitoring to save money.  Like testing, application monitoring is useful when it measures the right thing - quantity without quality is a waste.  Like testing, application monitoring will tell you things are wrong before your boss (or customer!) shows up at your desk. Like testing, you can use an install-and-forget module, but the real value is when your monitoring is as aware as you are.  Let us show you how diving deep into your application monitoring can deliver software faster and better.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 10:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkg/", 
+                    "times": "10:00am\u00a0-\u00a011:00am", 
+                    "id": "sdkdkg", 
+                    "types": [], 
+                    "end_time_epoch": 1447603200, 
+                    "speakers": [
+                        {
+                            "bio": "", 
+                            "web_url": "http://lanyrd.com/profile/kgrgreer/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/b9d1b0fbd94cbfe51bc710afc0caa2e27d905f66-s300.png", 
+                            "name": "Kevin Glen Roy Greer", 
+                            "elsewhere": [], 
+                            "role": "", 
+                            "twitter": "@kgrgreer", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/b9d1b0fbd94cbfe51bc710afc0caa2e27d905f66-s75.png", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Introduction to FOAM | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "102", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 11:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447599600, 
+                    "abstract": "<p>FOAM is a cross-platform full-stack modeling framework. FOAM creates all tiers of a client/server application from high-level specifications, called models. Modeling provides an order-of-magnitude increase in productivity by allowing developers to program at a higher, more succinct level. FOAM generates the code needed to adapt between stack layers, and can be targeted to produce code for any combination of database, query language, server language, network protocol, client language and UI library. FOAM has been used at Google for C++/ChromeOS, Java/Android, Swift/iOS, and most extensively, Javascript/Web development.</p>\n<p>Google&#39;s &quot;Chrome App Builder&quot;, which currently has more than 30k users, is an example of a FOAM model designed for non-programmers to develop ChromeOS (and soon Android) kiosk applications without coding.</p>\n<p>FOAM is open-source and available at: <a href=\"http://github.foamdev.com/\" rel=\"nofollow\">http://github.foamdev.com/</a></p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 10:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkm/", 
+                    "times": "10:00am\u00a0-\u00a011:00am", 
+                    "id": "sdkdkm", 
+                    "types": [], 
+                    "end_time_epoch": 1447603200, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Startup guy and technology nomad. I&#39;ve built everything from trading systems to consumer mobile apps. True believer in the open web...helping it go mobile.</p>", 
+                            "web_url": "http://lanyrd.com/profile/persingerscott/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/5cb767ee33ecc8233c23bd0f42bbdcce5d053082-s300.jpg", 
+                            "name": "Scott Persinger", 
+                            "elsewhere": [], 
+                            "role": "Startup guy and technology nomad. I've built everything from trading systems to consumer mobile apps. True believer in the open web...helping it go mobile.", 
+                            "twitter": "@persingerscott", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/5cb767ee33ecc8233c23bd0f42bbdcce5d053082-s75.jpg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "The 3R stack - Building Real-time RESTful web apps with Node and React | FS", 
+                    "event_id": "cchwwy", 
+                    "space": "103", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 11:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447599600, 
+                    "abstract": "<p>Come learn about new patterns for building rich, client-side web apps with React.js backed by RESTful APIs implemented in Node. See how Redis and websockets can be used to easily push all state changes in real-time to the browser. This model integrates seamlessly with the React/Flux architecture to elegantly record and display state changes to the user. The 3R stack produces a cleaner separation of concerns, more responsive interface, and elegantly supports both web and native mobile.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 10:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkk/", 
+                    "times": "10:00am\u00a0-\u00a011:00am", 
+                    "id": "sdkdkk", 
+                    "types": [], 
+                    "end_time_epoch": 1447603200, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Software Developurr, Homebrewer, Occasional Blogger, Level 12 Retweeter</p>", 
+                            "web_url": "http://lanyrd.com/profile/chris_saunders/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/3a862b8c164f054b3417e45870e50b28661bd2fe-s300.jpeg", 
+                            "name": "Christopher Saunders", 
+                            "elsewhere": [], 
+                            "role": "Software Developurr, Homebrewer, Occasional Blogger, Level 12 Retweeter", 
+                            "twitter": "@chris_saunders", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/3a862b8c164f054b3417e45870e50b28661bd2fe-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "The path to building low-inertia, cross-platform tools | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "101", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 11:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447599600, 
+                    "abstract": "<p>Building and maintaining tools that work on all platforms can be a challenge, and this was the case with theme synchronization at Shopify.</p>\n<p>What started off as the maintenance of a small Ruby gem turned into a 2 year journey to make a tool that worked for everyone.</p>\n<p>Solutions were prototyped using a number of different tools and technologies, which all had their own disadvantages.</p>\n<p>Would we build another solution in Ruby (and Rails), or would native binaries make more sense?</p>\n<p>We&#39;ll cover the original project, some of the prototypes as well as the final decision. We&#39;ll also cover some tools that were vital to the development process.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 10:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkf/", 
+                    "times": "10:00am\u00a0-\u00a011:00am", 
+                    "id": "sdkdkf", 
+                    "types": [], 
+                    "end_time_epoch": 1447603200, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Senior Software Engineer @ Digium | Director and Founder @ Nimble Ape Ltd All things tech</p>", 
+                            "web_url": "http://lanyrd.com/profile/dan_jenkins/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/02fb78a088e48efe5dcc30c5f2b043b9ab299101-s300.jpeg", 
+                            "name": "Dan Jenkins", 
+                            "elsewhere": [], 
+                            "role": "Director and Founder @ Nimble Ape Ltd All things tech", 
+                            "twitter": "@dan_jenkins", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/02fb78a088e48efe5dcc30c5f2b043b9ab299101-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "WebRTC Reborn | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "106", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 11:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447599600, 
+                    "abstract": "<p>WebRTC has had a real tough 3 or 4 years, and so have those working with it. Only a few short years ago, the development world were excited about WebRTC and proclaiming how awesome it was.</p>\n<p>You might have played with the technology a couple of years ago, only to find the extra infrastructure requirements were painful to implement and poorly documented. This probably left a bitter taste in your mouth, especially when things went wrong.</p>\n<p>Those in the industry have been working hard to sweeten the deal again - efforts have been made to bring WebRTC into the mainstream and as a result the technology is experiencing a rebirth. Thanks to those who have remained dedicated to improving the situation for those around them, WebRTC is finally starting to fulfil the original expectations that were had of it. Both the technology and the support networks have been built up to make experimenting with it again a pleasure, not a pain.</p>\n<p>WebRTC has grown up; in this talk you will learn how far along the tech has come, its current capabilities, the amazing things that people are starting to do with it, and how simple getting started with the new toolsets available.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 11:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkp/", 
+                    "times": "11:00am\u00a0-\u00a011:15am", 
+                    "id": "sdkdkp", 
+                    "types": [], 
+                    "end_time_epoch": 1447604100, 
+                    "speakers": [], 
+                    "title": "Networking Break | FL", 
+                    "event_id": "cchwwy", 
+                    "space": "Hall", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 11:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447603200, 
+                    "abstract": ""
+                }, 
+                {
+                    "start_time": "2015-11-15 11:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkq/", 
+                    "times": "11:15am\u00a0-\u00a012:15pm", 
+                    "id": "sdkdkq", 
+                    "types": [], 
+                    "end_time_epoch": 1447607700, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Lead Developer @ResolutionIM | Organizes @LdnGirlHackers | McGill CS &#39;12 | Sci-fi fan | Gamer | Urban-ag Enthusiast | Fitness &amp; Yoga</p>", 
+                            "web_url": "http://lanyrd.com/profile/kristinabalaam/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/d18252400ec1ac3aa323a3ae7c81c12a2a191605-s300.jpeg", 
+                            "name": "Kristina Balaam", 
+                            "elsewhere": [], 
+                            "role": "Lead Developer @ResolutionIM | Organizes @LdnGirlHackers | McGill CS '12 | Sci-fi fan | Gamer | Urban-ag Enthusiast | Fitness & Yoga", 
+                            "twitter": "@KristinaBalaam", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/d18252400ec1ac3aa323a3ae7c81c12a2a191605-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Adventures in Product Development | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "101", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 12:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447604100, 
+                    "abstract": "<p>As developers we face different challenges in building products for clients as compared to traditional websites. Use cases typically expand from the single to double or triple digits, code has to be scalable to account for potentially colossal growth in both user base and requirements, and feature creep becomes further reaching.</p>\n<p>User feedback becomes an even more crucial component of the development process and leniency in code quality can mean the difference between finalizing a new feature in three days and seven. When additions can impact every aspect of your project, and each day without a launched product costs the client (and your team) users, time, and money, initial detailed planning becomes immensely important.</p>\n<p>We&#39;ll discuss the technology our team uses, the challenges we didn&#39;t expect, the things we didn&#39;t think of, the things that worked, and the things that didn&#39;t.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 11:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkt/", 
+                    "times": "11:15am\u00a0-\u00a012:15pm", 
+                    "id": "sdkdkt", 
+                    "types": [], 
+                    "end_time_epoch": 1447607700, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Software Solutions Architect, Microsoft Windows Azure MVP, Cloud computing nerd, Cloud boy</p>", 
+                            "web_url": "http://lanyrd.com/profile/pkefal/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/0ecb6c0a38f1380560856a9fb3635dad630c7d3e-s300.jpg", 
+                            "name": "Panagiotis Kefalidis", 
+                            "elsewhere": [], 
+                            "role": "Software Solutions Architect, Microsoft Windows Azure MVP, Cloud computing nerd, Cloud boy", 
+                            "twitter": "@pkefal", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/0ecb6c0a38f1380560856a9fb3635dad630c7d3e-s75.jpg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Azure - How do we build, run and maintain a multimillion view webapp | FS", 
+                    "event_id": "cchwwy", 
+                    "space": "106", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 12:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447604100, 
+                    "abstract": "<p>Building, deploying and running <a href=\"http://Azure.microsoft.com\" rel=\"nofollow\">Azure.microsoft.com</a> is a very exciting task. I will share lessons learned from our everyday experiences on all the various steps of the website&#39;s lifecycle, starting from developing, continuing to deploying and how we CI everyday for the last 387 days without a stop and ending with how we run and monitor that everything is 200 - OK. Join me on a talk on how we use GitHub, TeamCity, Search, WebApps, Redis and a bunch of other Azure services to make <a href=\"http://Azure.microsoft.com\" rel=\"nofollow\">Azure.microsoft.com</a> run.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 11:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdtxfg/", 
+                    "times": "11:15am\u00a0-\u00a012:15pm", 
+                    "id": "sdtxfg", 
+                    "types": [], 
+                    "end_time_epoch": 1447607700, 
+                    "speakers": [
+                        {
+                            "bio": "", 
+                            "web_url": null, 
+                            "image_300": "https://d3brtmsfoeeao4.cloudfront.net/img/icons/flatset/person-300x300.aae55363.png", 
+                            "name": "Nick Matantsev", 
+                            "elsewhere": [], 
+                            "role": null, 
+                            "twitter": null, 
+                            "image_75": "https://d3brtmsfoeeao4.cloudfront.net/img/icons/flatset/person-75x75.dc1c8979.png", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "BARC Stack: Quick Web Interfaces for Your Node Hacks | FS", 
+                    "event_id": "cchwwy", 
+                    "space": "103", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 12:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447604100, 
+                    "abstract": "<p>&quot;Anyone coding a Node prototype in their spare time knows that it&#39;s a pain to add a Web interface on top.</p>\n<p>First you have to code up the actual app (jQuery or Angular or React or other frameworks), then you have to import Bootstrap or hand-code CSS, then serve it all up, then connect it to the actual prototype server using some sort of an ad-hoc REST interface. All that for a quick-and-simple in-browser screen with a few buttons and some text.</p>\n<p>Even using Yeoman or prebuilt seed projects is annoying - because the core frontend frameworks are geared towards production and stability, not fast iteration of prototyping work. And dropping down to basic jQuery loses a lot of the productivity gains of richer toolsets.</p>\n<p>BARC (a tongue-in-cheek term!) is a set of simple NPM modules that streamline all that drudgery. Skip boilerplate CSS cruft with Boxbits, use Atomic Routes for easy back-button support, and Remote Control to bypass fiddling with Express POST routes and just call your server JS functions from the browser. UI rendering is driven by vdom-live - a tiny module that leverages virtual DOM to rapidly set up reactive frontend code.</p>\n<p>This is a radical departure from the typical legacy Web stack, but it is geared towards maximum prototyping speed without worrying about stylesheets, AJAX or manually updating view widgets. Don&#39;t try this in production (yet)!&quot;</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 11:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkr/", 
+                    "times": "11:15am\u00a0-\u00a012:15pm", 
+                    "id": "sdkdkr", 
+                    "types": [], 
+                    "end_time_epoch": 1447607700, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Software engineer @shapesecurity, co-author of Third-party JavaScript. Warning: I reach dangerous levels of sarcasm.</p>", 
+                            "web_url": "http://lanyrd.com/profile/bentlegen/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/49543f5037bd52ef5a4b4d563c6ac147f59de64d-s300.jpeg", 
+                            "name": "Ben Vinegar", 
+                            "elsewhere": [], 
+                            "role": "Front-end engineer @getsentry, co-author of Third-party JavaScript.", 
+                            "twitter": "@bentlegen", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/49543f5037bd52ef5a4b4d563c6ac147f59de64d-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Re-evaluating Front-end Performance Best Practices | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "102", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 12:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447604100, 
+                    "abstract": "<p>High Performance Websites, by Steve Souders, was first released in 2007. The follow-up \u2013 Even Faster Web Sites \u2013 was published in 2009. These books have served as web optimization canon for a generation of web developers.</p>\n<p>The problem is: it\u2019s now 2015. Browsers, browser features, internet connectivity \u2013 they\u2019ve all changed dramatically. A lot of the best practices from 2007 and 2009 no longer apply. And yet, many developers are still holding on to those practices \u2013 advocating for performance tweaks that are no longer relevant.</p>\n<p>In this talk, I want to revisit many of these best practices. Some of them will focus on networking (e.g. # of HTTP requests), some on pure JavaScript, and some even on CSS. Basically: the whole web platform.</p>\n<p>I\u2019ll use a mix of real world applications, developer tool walkthroughs, JSPerf benchmarks, etc. to demonstrate my points.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 11:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkh/", 
+                    "times": "11:15am\u00a0-\u00a012:15pm", 
+                    "id": "sdkdkh", 
+                    "types": [], 
+                    "end_time_epoch": 1447607700, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Head of Engineering @Mashape, Technologist, Entrepreneur, Dog Lover.  Creator of @RESTConsole. Organizer of @YeomanTO &amp; @TorontoFacebook.</p>", 
+                            "web_url": "http://lanyrd.com/profile/ahmadnassri/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/8eecd9f47f70acc1cbd7c97e3416491bc9bac1b2-s300.jpeg", 
+                            "name": "Ahmad Nassri", 
+                            "elsewhere": [], 
+                            "role": "Head of Engineering @Mashape, Technologist, Entrepreneur, Dog Lover.  Creator of @RESTConsole. Organizer of @YeomanTO & @TorontoFacebook.", 
+                            "twitter": "@AhmadNassri", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/8eecd9f47f70acc1cbd7c97e3416491bc9bac1b2-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "The Hacker's Bio: World Premiere at #fstoconf15 | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "105", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 12:15:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447604100, 
+                    "abstract": "<p>Ahmad has been traveling around the globe, interviewing engineers, developers, programmers, and hackers, in an effort to break through the negative stereotypes surrounding this generation&#39;s technologists and to better understand who these people are and what motivates them.</p>\n<p>What he found was an unexpected level of passion and creativity, through a deep exploration of the hacker community mindset and lives of those working with technology.</p>\n<p>Technologists will recognize some of the traits and learnings that drives and motivates them as well, finding familiar stories that reflect their own experiences.</p>\n<p>For the non-technologist, this series sheds a new light onto the hacker culture, and the rich lives of individuals within it.</p>\n<p>Take part in the world premiere of the video series at #fstoconf15 with an exclusive documentary short.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 12:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdky/", 
+                    "times": "12:15pm\u00a0-\u00a01:45pm", 
+                    "id": "sdkdky", 
+                    "types": [], 
+                    "end_time_epoch": 1447613100, 
+                    "speakers": [], 
+                    "title": "Lunch | FL", 
+                    "event_id": "cchwwy", 
+                    "space": "Hall", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 13:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447607700, 
+                    "abstract": "<p>On your own</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 13:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmd/", 
+                    "times": "1:45pm\u00a0-\u00a02:45pm", 
+                    "id": "sdkdmd", 
+                    "types": [], 
+                    "end_time_epoch": 1447616700, 
+                    "speakers": [
+                        {
+                            "bio": "<p>British software developer living in Canada</p>", 
+                            "web_url": "http://lanyrd.com/profile/sibartlett/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/2c798e4ad7d6989254a934539920d35afea56533-s300.jpeg", 
+                            "name": "Simon Bartlett", 
+                            "elsewhere": [], 
+                            "role": "British software developer living in Canada", 
+                            "twitter": "@sibartlett", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/2c798e4ad7d6989254a934539920d35afea56533-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Building web applications and services with hapi.js | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "106", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 14:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447613100, 
+                    "abstract": "<p>hapi is a rich node.js framework for building applications and services. It is highly modular, pluggable, testable and drives some of the most trafficked web applications in the world.</p>\n<p>In this presentation, I will show and demonstrate how to use hapi - live coding a web API from scratch. I&#39;ll cover authentication, sessions, validation, logging, documentation, plugins, testing and more.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 13:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmf/", 
+                    "times": "1:45pm\u00a0-\u00a02:45pm", 
+                    "id": "sdkdmf", 
+                    "types": [], 
+                    "end_time_epoch": 1447616700, 
+                    "speakers": [
+                        {
+                            "bio": "<p>I&#39;m a software developer living and working in Newfoundland. Apache Karaf PMC, I tend to spend a lot of time blogging and tweeting about the project :)</p>", 
+                            "web_url": "http://lanyrd.com/profile/icbts/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/63351f0522eefe5e4f6c9e648f49ade10123e015-s300.jpeg", 
+                            "name": "Jamie Goodyear", 
+                            "elsewhere": [], 
+                            "role": "I'm a software developer living and working in Newfoundland. Apache Karaf PMC, I tend to spend a lot of time blogging and tweeting about the project :)", 
+                            "twitter": "@icbts", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/63351f0522eefe5e4f6c9e648f49ade10123e015-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Empowering MicroServices with Apache Karaf | FS", 
+                    "event_id": "cchwwy", 
+                    "space": "103", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 14:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447613100, 
+                    "abstract": "<p>Deploying modular Java applications requires a container capable of supporting their special needs out of the box - Apache Karaf provides this and more.</p>\n<p>Apache Karaf has become the defacto modular application container for Service Oriented Architectures and Software Defined Networking. These Karaf-based projects are powering web services and network infrastructure world wide.</p>\n<p>In this session we&#39;ll present how Apache Karaf provides an ecosystem for supporting modular development and deployments of modern micro service architectures found in today&#39;s largest SOA and SDN infrastructures.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 13:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdkz/", 
+                    "times": "1:45pm\u00a0-\u00a02:45pm", 
+                    "id": "sdkdkz", 
+                    "types": [], 
+                    "end_time_epoch": 1447616700, 
+                    "speakers": [
+                        {
+                            "bio": "<p>engineering lead, salesforce sos</p>", 
+                            "web_url": "http://lanyrd.com/profile/ianlivingstone/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/8dbdd1703bf57c1d2cbacd5f85127780acf14336-s300.jpeg", 
+                            "name": "Ian Livingstone", 
+                            "elsewhere": [], 
+                            "role": "engineering lead, salesforce sos", 
+                            "twitter": "@ianlivingstone", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/8dbdd1703bf57c1d2cbacd5f85127780acf14336-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Enabling Autonomy | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "101", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 14:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447613100, 
+                    "abstract": "<p>The drastic increase in the importance of knowledge workers has turned traditional management structures and philosophy upside down. Previously, all of the information and authority was centralized in management and workers simply operated according to some proscribed procedure with limited ability to make their own decisions. However, the rise of the knowledge worker such as developers, designers, and product managers has thrown these structures out the window as they&#39;ve proven unable to deliver incredible products and technology.</p>\n<p>The new name of the game is enabling teams to operate autonomously and build towards a vision that is seeded by the leadership but authored by the team. How do we enable teams to operate autonomously while ensuring that they are held accountable? How does this change as organizations grow? Why does this matter and what are the results?&quot;</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 13:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmb/", 
+                    "times": "1:45pm\u00a0-\u00a02:45pm", 
+                    "id": "sdkdmb", 
+                    "types": [], 
+                    "end_time_epoch": 1447616700, 
+                    "speakers": [
+                        {
+                            "bio": "<p>I&#39;m a Designer &amp; Developer, I run Atedrake, <a href=\"http://www.atedrake.com\" rel=\"nofollow\">www.atedrake.com</a>, and grow amazing facial hair in Somerville MA. @ hi me when you follow!</p>", 
+                            "web_url": "http://lanyrd.com/profile/mkivikoski/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/5e40e69cdf1f2d77610c91793a430e0fdb349907-s300.jpg", 
+                            "name": "Mike Kivikoski", 
+                            "elsewhere": [], 
+                            "role": "I'm a Designer & Developer, I run Atedrake, www.atedrake.com, and grow amazing facial hair in Somerville MA. @ hi me when you follow! ", 
+                            "twitter": "@mkivikoski", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/5e40e69cdf1f2d77610c91793a430e0fdb349907-s75.jpg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Evolving Web Applications with Module Based Design Components | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "102", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 14:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447613100, 
+                    "abstract": "<p>Web applications need to evolve over time. The best way to encourage this evolution is by building module based design component systems. This allows for easier iteration, less refactoring, and better products for the consumers.</p>\n<p>Mike Kivikoski will show how to design a module based component system using a CSS preprocessor, such as Sass. This technique allows us to design faster and in the browser, gives us the chance to put together various layouts while reusing UI patterns, and to help create cohesion and comfort for the user. Mike will demonstrate how to setup this system, build it, and use it within a product.</p>\n<p>At the end of this talk, you\u2019ll understand the concepts of:<br>\n- What a module component system is<br>\n- Sketching layouts using components<br>\n- Building reusable components<br>\n- Putting together a flexible system</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 13:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdhtwd/", 
+                    "times": "1:45pm\u00a0-\u00a02:45pm", 
+                    "id": "sdhtwd", 
+                    "types": [], 
+                    "end_time_epoch": 1447616700, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Dad, Educator &amp; UX Designer with a focus on Mobile Design. Coffee aficionado and HTML5 Evangelist.</p>", 
+                            "web_url": "http://lanyrd.com/profile/andrewsmyk/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/b4d7a3262618988af1f808001cb23123c46a79dc-s300.jpg", 
+                            "name": "Andrew Smyk", 
+                            "elsewhere": [], 
+                            "role": "Dad, Educator & UX Designer with a focus on Mobile Design. Coffee aficionado and HTML5 Evangelist.", 
+                            "twitter": "@andrewsmyk", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/b4d7a3262618988af1f808001cb23123c46a79dc-s75.jpg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "What You Can Learn From a 4 Year Old About Ponies and Mobile UX | OL", 
+                    "event_id": "cchwwy", 
+                    "space": "105", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 14:45:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447613100, 
+                    "abstract": "<p>Look at mobile from a child\u2019s perspective to gain insight to practical take-a-ways for implementation with real world examples. See how storytelling, usability and interactive design change the mobile user experience when designed and developed with a four year in mind.</p>\n<p>In this session, explore a project case study involving the UX for the various mobile platforms and decisions regarding navigation, content strategy based on testing the user experience with my then 4 year old daughter by changing to kid friendly content and images.</p>\n<p>Take advantage of the humbling and brutal honesty of kids to build practical and engaging mobile web applications. Feedback was used to make changes to the RWD site\u2019s user experience and the content strategy.  If you can engage a 4 year old with good UX, you can certainly engage the target market with good UI/UX, presentation and navigation.</p>\n<p>Answer the pressing question \u201cwhere are the ponies?\u201d in your mobile UX.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 14:45:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmg/", 
+                    "times": "2:45pm\u00a0-\u00a03:00pm", 
+                    "id": "sdkdmg", 
+                    "types": [], 
+                    "end_time_epoch": 1447617600, 
+                    "speakers": [], 
+                    "title": "Networking Break | FL", 
+                    "event_id": "cchwwy", 
+                    "space": "Hall", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 15:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447616700, 
+                    "abstract": ""
+                }, 
+                {
+                    "start_time": "2015-11-15 15:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmq/", 
+                    "times": "3:00pm\u00a0-\u00a04:00pm", 
+                    "id": "sdkdmq", 
+                    "types": [], 
+                    "end_time_epoch": 1447621200, 
+                    "speakers": [
+                        {
+                            "bio": "<p>CTO at rangle.io by day, UofT scholar by night</p>", 
+                            "web_url": "http://lanyrd.com/profile/qaramazov/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/fbdb9acb9fbedb282c3e79845ad3e6ddf5e7bd71-s300.jpeg", 
+                            "name": "Yuri Takhteyev", 
+                            "elsewhere": [], 
+                            "role": "CTO at rangle.io by day, UofT scholar by night", 
+                            "twitter": "@qaramazov", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/fbdb9acb9fbedb282c3e79845ad3e6ddf5e7bd71-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Beyond Angular and React: handling the deeper parts of the front end stack with Flux and Redux | FS", 
+                    "event_id": "cchwwy", 
+                    "space": "103", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 16:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447617600, 
+                    "abstract": "<p>When picking a frontend framework, a lot of developers think in terms of Angular vs React. For a larger application, however, it is important to think about how you would handle the deeper layers of the frontend stack. The choices at this point can be largely orthogonal to the choice between Angular and React. Yuri Takhteyev (the CTO at Rangle.io) will discuss how Rangle.io approaches frontend architecture today, focusing on the use of Redux framework in combination with either Angular or React.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 15:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmp/", 
+                    "times": "3:00pm\u00a0-\u00a04:00pm", 
+                    "id": "sdkdmp", 
+                    "types": [], 
+                    "end_time_epoch": 1447621200, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Developer Evangelist at Microsoft Canada. I mix tech, creativity, design &amp; art. Writing books on Growth, Startups &amp; Marketing. Mission: Make Montreal awesome.</p>", 
+                            "web_url": "http://lanyrd.com/profile/sayar/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/a4bbcd007ae02f9d9739bec7f17793a5e3ba33dc-s300.png", 
+                            "name": "Rami Sayar", 
+                            "elsewhere": [
+                                {
+                                    "url": "http://ramisayar.com/"
+                                }
+                            ], 
+                            "role": "Developer Evangelist at Microsoft Canada. I mix tech, creativity, design & art. Writing books on Growth, Startups & Marketing. Mission: Make Montreal awesome.", 
+                            "twitter": "@ramisayar", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/a4bbcd007ae02f9d9739bec7f17793a5e3ba33dc-s75.png", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Data Visualization in Practice | CC", 
+                    "event_id": "cchwwy", 
+                    "space": "106", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 16:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447617600, 
+                    "abstract": "<p>Data visualization is crucial to understanding the big data being generated by apps and services. Data visualization tool-kits such as D3.js and charting tool kits are immensely popular but it remains difficult to create meaningful dashboards or usable analytics tools or clear data visualizations. This talk will discuss data visualization principles, present best practices, showcase excellent visualizations in practice, and share useful tips and mistakes learned.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 15:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmm/", 
+                    "times": "3:00pm\u00a0-\u00a04:00pm", 
+                    "id": "sdkdmm", 
+                    "types": [], 
+                    "end_time_epoch": 1447621200, 
+                    "speakers": [
+                        {
+                            "bio": "<p>Developer Advocate at Drifty Co.</p>", 
+                            "web_url": "http://lanyrd.com/profile/mike-hartington/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/97fa2919c90c2389c1b79a5a9de226181c8f6804-s300.png", 
+                            "name": "Mike Hartington", 
+                            "elsewhere": [
+                                {
+                                    "url": "https://twitter.com/mhartington"
+                                }
+                            ], 
+                            "role": "Developer Advocate at Drifty Co.", 
+                            "twitter": "@mhartington", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/97fa2919c90c2389c1b79a5a9de226181c8f6804-s75.png", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Ionic: Superpowers for Web Developers | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "105", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 16:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447617600, 
+                    "abstract": "<p>Ionic has become one of the best ways to create Cordova apps, providing developers with everything you need to build high-quality apps using web technologies. What else can Ionic do for developers? We&#39;ll look at some services that Ionic provides thats give web developers superpower to create high quality native apps with push notifications and more</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 15:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdtykr/", 
+                    "times": "3:00pm\u00a0-\u00a04:00pm", 
+                    "id": "sdtykr", 
+                    "types": [], 
+                    "end_time_epoch": 1447621200, 
+                    "speakers": [
+                        {
+                            "bio": "", 
+                            "web_url": null, 
+                            "image_300": "https://d3brtmsfoeeao4.cloudfront.net/img/icons/flatset/person-300x300.aae55363.png", 
+                            "name": "Jason Matthews", 
+                            "elsewhere": [], 
+                            "role": null, 
+                            "twitter": null, 
+                            "image_75": "https://d3brtmsfoeeao4.cloudfront.net/img/icons/flatset/person-75x75.dc1c8979.png", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Reduce complexity with Functional JS | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "102", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 16:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447617600, 
+                    "abstract": "<p>&quot;The art of programming is the art of organizing complexity, of mastering multitude and avoiding its chaos as effectively as possible\u201d - Edsger Dijkstra. Functional programming is a programming paradigm\u2014a style of building the structure and elements of an application. Languages such as Scala, Swift, and Haskell are great examples of functional languages. Multi-dimensional languages such as JavaScript have the capabilities to solve complex problems with the power of abstraction. Functional JavaScript provides you with the tools to better organize, debug, and test your code. It allows these things by constructing operations into reusable and composable building blocks. We will show you tips on how to reduce complexity in your application by employing functional practices such as monads, currying, high-order functions, map, reduce, and filter.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 15:00:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmh/", 
+                    "times": "3:00pm\u00a0-\u00a04:00pm", 
+                    "id": "sdkdmh", 
+                    "types": [], 
+                    "end_time_epoch": 1447621200, 
+                    "speakers": [
+                        {
+                            "bio": "<p>I&#39;m a software developer with a passion for everything tech. Java developer by day and Javascript/Node/Ruby developer by night.</p>", 
+                            "web_url": "http://lanyrd.com/profile/arthurkalm/", 
+                            "image_300": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/0b0fecbeac36a84775293ad98185140544bc8a0a-s300.jpeg", 
+                            "name": "Arthur Maltson", 
+                            "elsewhere": [], 
+                            "role": "Husband and father of two wonderful daughters. Practicing DevOps during the day and DadOps at night.", 
+                            "twitter": "@amaltson", 
+                            "image_75": "https://d8142femxnlg1.cloudfront.net/cropped-profile-photos/0b0fecbeac36a84775293ad98185140544bc8a0a-s75.jpeg", 
+                            "speaker_bio": ""
+                        }
+                    ], 
+                    "title": "Test Driven Infrastructure | PL", 
+                    "event_id": "cchwwy", 
+                    "space": "101", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 16:00:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447617600, 
+                    "abstract": "<p>Test Driven Development is a popular concept in Software Development, leading to higher quality code that&#39;s easier to maintain. Automated testing is normally a foreign concept in the Operations world, but as you ssh into your servers to make that quick fix or run your updated script (fingers crossed), you might be wondering if there&#39;s a better way. A way that gives you the confidence in your script and lets you test those scripts in isolation. Well I have good news for you, there is a better way! Test Driven Infrastructure (TDI) is now possible. I know, it sounds crazy.</p>\n<p>At this session you&#39;ll learn the how, and more importantly the why, of TDI. You&#39;ll see how Chef (or any other Config Management framework) can be tested with Test Kitchen and ServerSpec. You&#39;ll also learn how to improve your feedback cycle with Docker, and using the Docker approach on a CI server. There may even be some live demos!</p>\n<p>Finally, the Ops world collides with the Dev world in true DevOps testing bliss.</p>"
+                }, 
+                {
+                    "start_time": "2015-11-15 16:15:00", 
+                    "topics": [], 
+                    "web_url": "http://lanyrd.com/2015/fstoconf/sdkdmt/", 
+                    "times": "4:15pm\u00a0-\u00a04:30pm", 
+                    "id": "sdkdmt", 
+                    "types": [], 
+                    "end_time_epoch": 1447623000, 
+                    "speakers": [], 
+                    "title": "Closing Remarks | FL", 
+                    "event_id": "cchwwy", 
+                    "space": "103", 
+                    "day": "Sunday 15th November", 
+                    "end_time": "2015-11-15 16:30:00", 
+                    "other_url": null, 
+                    "start_time_epoch": 1447622100, 
+                    "abstract": ""
+                }
+    ];
+
+    setTimeout(function() {
+    var ts = [];
+    fsto.forEach(function(e) {
+      if ( ! e.speakers.length ) return;
+      var t = com.google.watlobby.Topic.create({
+        topic: e.id,
+        parentTopic: 'fsto',
+        r: Math.random()*35+20,
+        roundImage: true,
+        image: e.speakers[0].image_75,
+        text: '<font size="0.8em">' + e.abstract + '</font>'
+      });
+      GLOBAL.lobby.topics.put(t);
+      ts.push(t);
+    });
+    console.log(JSON.stringify(ts));
+    }, 1000);
+    });
+   </script>
+  </body>
+</html>
