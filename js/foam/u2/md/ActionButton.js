@@ -53,14 +53,16 @@ CLASS({
         return this.Icon.create({
           url$: this.action.iconUrl$,
           ligature$: this.action.ligature$,
-          color$: this.currentColor_$
+          color$: this.color_$
         }, this.Y);
       }
     },
     {
       model_: 'foam.ui.ColorProperty',
       name: 'color',
-      defaultValue: '#02A8F3',
+      defaultValueFn: function() {
+        return this.type === 'label' ? '#02A8F3' : 'currentColor';
+      }
     },
     {
       model_: 'FloatProperty',
