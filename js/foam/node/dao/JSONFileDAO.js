@@ -19,6 +19,8 @@ CLASS({
   name: 'JSONFileDAO',
   extends: 'MDAO',
 
+  imports: [ 'console' ],
+
   properties: [
     {
       name: 'fs',
@@ -27,7 +29,6 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
       name:  'filename',
       label: 'File Name',
       defaultValueFn: function() {
@@ -45,10 +46,19 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      if ( this.fs.existsSync(this.filename) ) {
-        var content = this.fs.readFileSync(this.filename, { encoding: 'utf-8' });
-        JSONUtil.parse(this.X, content).select(this);
+      if ( Array.isArray(this.filename) ) {
+        for ( var i = 0; i < this.filename.length; ++i ) {
+          if ( this.loadFile(this.filename[i]) ) {
+            this.filename = this.filename[i];
+            break;
+          }
+          this.console.warn('Failed to load JSON file:', this.filename[i]);
+        }
+      } else {
+        this.loadFile(this.filename);
       }
+
+      if ( Array.isArray(this.filename) ) this.fileName = this.fileName[0] || '';
 
       this.addRawIndex({
         execute: function() {},
@@ -60,6 +70,14 @@ CLASS({
         put: this.updated,
         remove: this.updated
       });
+    },
+    loadFile: function(filename) {
+      if ( ! this.fs.existsSync(filename) ) return undefined;
+      var content = this.fs.readFileSync(filename, { encoding: 'utf-8' });
+      var data = JSONUtil.parse(this.X, content);
+      if ( ! data ) return undefined;
+      data.select(this);
+      return data;
     }
   },
 

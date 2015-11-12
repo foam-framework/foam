@@ -22,6 +22,7 @@ CLASS({
 
   traits: [
     'foam.core.dao.SyncTrait',
+    'foam.core.types.JSONModelTrait',
   ],
   requires: [
     'com.google.plus.Circle'
@@ -53,7 +54,7 @@ CLASS({
   ],
 
   properties: [
-    { model_: 'Property', name: 'id', help: 'The FOAM ID, globally unique.' },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'id', help: 'The FOAM and/or Google Plus ID, globally unique.' },
     { model_: 'StringProperty', name: 'objectType', defaultValue: 'person',
       documentation: function() {/* "person" - represents an actual person.
         "page" - represents a page. */},
@@ -78,25 +79,25 @@ CLASS({
     },
 
 
-    { model_: 'StringProperty', name: 'nickname'  },
-    { model_: 'StringProperty', name: 'occupation'  },
-    { model_: 'StringProperty', name: 'skills'  },
-    { model_: 'StringProperty', name: 'birthday'  },
-    { model_: 'StringProperty', name: 'gender'  },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'nickname' },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'occupation'  },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'skills'  },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'birthday'  },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'gender'  },
 
-    { model_: 'StringProperty', name: 'formattedName'  },
-    { model_: 'StringProperty', name: 'familyName'  },
-    { model_: 'StringProperty', name: 'givenName'  },
-    { model_: 'StringProperty', name: 'middleName'  },
-    { model_: 'StringProperty', name: 'honorificPrefixName'  },
-    { model_: 'StringProperty', name: 'honorificSuffixName'  },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'formattedName', jsonPath: [ 'name', 'formatted' ] },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'familyName', jsonPath: [ 'name', 'familyName' ] },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'givenName', jsonPath: [ 'name', 'givenName' ] },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'middleName', jsonPath: [ 'name', 'middleName' ] },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'honorificPrefixName', jsonPath: [ 'name', 'honorificPrefix' ] },
+    { model_: 'foam.core.types.JSONStringProperty', name: 'honorificSuffixName', jsonPath: [ 'name', 'honorificSuffix' ] },
 
-    { model_: 'StringArrayProperty', name: 'emails' },
+    { model_: 'foam.core.types.JSONArrayProperty', name: 'emails', fromItemJSON: function(vt) { return vt.value; } },
 
     { model_: 'ArrayProperty', subType: 'com.google.plus.Person.Url', name: 'urls' },
 
     {
-      model_: 'StringProperty',
+      model_: 'foam.core.types.JSONStringProperty',
       name: 'displayName',
       defaultValueFn: function() {
         return [ // TODO: right-to-left i18n
@@ -107,7 +108,7 @@ CLASS({
           this.honorificSuffixName ].join(' ');
       }
     },
-    { model_: 'ImageProperty', name: 'image' },
+    { model_: 'foam.core.types.JSONImageProperty', name: 'image', jsonPath: [ 'image', 'url' ] },
   ],
 });
 //   { model_: 'StringProperty', name: 'tagline'  },
@@ -156,4 +157,3 @@ CLASS({
 //     }
 //   },
 //   { model_: 'StringProperty', name: 'domain'  },
-

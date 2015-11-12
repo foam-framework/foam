@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2013 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-CLASS({
-  package: 'foam.core.types',
-  name: 'JSONModelTrait',
-  methods: [
-    function fromJSON(json) {
-      var props = this.model_.getRuntimeProperties();
-      var rtn = {};
-      for (var i = 0; i < props.length; i++) {
-        var prop = props[i];
-        if (prop.fromJSON) {
-          rtn[prop.name] = prop.fromJSON(this, json);
-        }
-      }
-      return rtn;
-    },
-  ]
-});
+
+package foam.core;
+
+public abstract class AbstractLongProperty extends AbstractProperty<Long> {
+  public int compareValues(Long i1, Long i2) {
+    return ComparisonHelpers.compareLongs(i1, i2);
+  }
+  @Override
+  public int getType() {
+    return Property.TYPE_LONG;
+  }
+}

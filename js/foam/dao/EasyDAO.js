@@ -270,7 +270,7 @@ CLASS({
             this.syncProperty = model.SYNC_PROPERTY;
             this.deletedProperty = model.DELETED;
           } else {
-            throw "Syncing with server requires the foam.core.dao.SyncTrait be applied to your model.";
+            throw "Syncing with server requires the foam.core.dao.SyncTrait be applied to your model, '" + this.model.id + "'.";
           }
         }
       }

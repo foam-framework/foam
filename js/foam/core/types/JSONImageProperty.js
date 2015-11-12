@@ -16,28 +16,7 @@
  */
 CLASS({
   package: 'foam.core.types',
-  name: 'JSONPropertyTrait',
-  properties: [
-    {
-      name: 'jsonPath',
-      lazyFactory: function() {
-        return this.name;
-      },
-      adapt: function(old, nu) {
-        return typeof nu === 'string' ? [nu] : nu;
-      }
-    }
-  ],
-
-  methods: [
-    function fromJSON(obj, json) {
-      if ( ! (this.jsonPath && this.jsonPath.length) ) return undefined;
-      for (var i = 0; i < this.jsonPath.length; i++) {
-        json = json[this.jsonPath[i]];
-        if (typeof json === 'undefined') return undefined;
-      }
-      obj[this.name] = json;
-      return json;
-    }
-  ]
+  name: 'JSONImageProperty',
+  extends: 'ImageProperty',
+  traits: ['foam.core.types.JSONPropertyTrait']
 });
