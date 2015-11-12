@@ -22,7 +22,7 @@ CLASS({
 
   requires: [ 'foam.graphics.Circle', 'foam.util.Timer' ],
 
-  imports: [ 'colors$', 'width$', 'height$' ],
+  imports: [ 'colorList$', 'width$', 'height$' ],
 
   properties: [
     {
@@ -61,7 +61,7 @@ CLASS({
         alpha: 0.4,
         color: null,
         borderWidth: 2,
-        border: this.colors[Math.floor(Math.random() * this.colors.length)]}) || '#000000';
+        border: this.colorList[Math.floor(Math.random() * this.colorList.length)]}) || '#000000';
 
       this.addChild(circle);
       circle.stop = Movement.animate(
@@ -107,10 +107,10 @@ CLASS({
       c.lineWidth = 3;
       c.strokeStyle = '#888';
       c.globalCompositeOperation = '';
-      c.strokeText(this.text, 0, this.height-5);
+      c.strokeText(this.text, 0, this.height-30);
       c.globalCompositeOperation = 'destination-out';
 
-      c.fillText(this.text, 0, this.height-5);
+      c.fillText(this.text, 0, this.height-30);
     }
   }
 });
@@ -128,13 +128,13 @@ CLASS({
     'foam.ui.TextFieldView'
   ],
 
-  exports: [ 'text$', 'font$', 'colors$', 'width$', 'height$' ],
+  exports: [ 'text$', 'font$', 'colorList$', 'width$', 'height$' ],
 
   properties: [
     [ 'duration', 0 ],
     {
       model_: 'StringArrayProperty',
-      name: 'colors',
+      name: 'colorList',
       singular: 'color',
       factory: function() { return this.COLORS; }
     },
