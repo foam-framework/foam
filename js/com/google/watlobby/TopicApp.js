@@ -101,7 +101,6 @@ CLASS({
         return this.BrowserConfig.create({
           title: 'WAT Lobby Admin',
           model: this.Topic,
-//          dao: this.TopicDAO.create({ clientMode: this.clientMode }),
           dao: this.dao,
           innerDetailView: 'com.google.watlobby.TopicDetailView',
           listView: {
