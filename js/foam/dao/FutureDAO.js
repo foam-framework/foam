@@ -52,6 +52,7 @@ CLASS({
         this.daoListeners_ = [];
         this.delegate = delegate;
         this.daoListeners_ = listeners;
+        this.delegate.listen(this.relay());
       }.bind(this));
     },
 
