@@ -50,6 +50,7 @@ CLASS({
   constants: {
     INITIAL: {
       output: function(out) {
+        this.initE(this);
         this.output_(out);
 
         this.state = this.OUTPUT;
@@ -333,8 +334,6 @@ CLASS({
         }
         m = m.extends && X.lookup(m.extends);
       }
-
-      return this.initE(this);
     },
 
     function initE() {},
