@@ -87,7 +87,7 @@ CLASS({
         .add(this.DAOController.create({
           data: this.dao,
           rowView: this.contentRowE || this.contentRowView,
-          innerDetailView: this.contentDetailE || this.contentDetailView;
+          innerDetailView: this.contentDetailE || this.contentDetailView,
         }))
 //         .start().style({
 //           'display': 'flex',
