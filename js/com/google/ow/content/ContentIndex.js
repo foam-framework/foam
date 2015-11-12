@@ -44,9 +44,31 @@ CLASS({
       defaultValueFn: function() { return this.X.document.location.origin + '/api'; },
     },
     {
+      model_: 'ModelProperty',
       name: 'model',
       help: 'The type of the content items. Should have an id property.',
       defaultValue: 'com.google.ow.model.StreamableTrait',
+      postSet: function(_,model) {
+        // Model not always ready in node, but don't need views there anyway
+        if ( ! model.getFeature ) return;
+
+        if ( model.getFeature('toCitationE') ) this.contentRowView = function(args,X) {
+          var d = args.data || X.data;
+          if ( ! d ) {
+            d = args.data$ || X.data$;
+            d = d && d.value;
+          }
+          return d.toCitationE(X).style({ margin: '8px 0px' });
+        }
+        if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
+          var d = args.data || X.data;
+          if ( ! d ) {
+            d = args.data$ || X.data$;
+            d = d && d.value;
+          }
+          return d.toDetailE(X).style({ 'flex-grow': 1 });
+        }
+      }
     },
     {
       name: 'dao',
@@ -91,7 +113,7 @@ CLASS({
           name: this.description,
           data: this.dao,
           rowView: this.contentRowE || this.contentRowView,
-          innerDetailView: this.contentDetailE || this.contentDetailView,
+          innerEditView: this.contentDetailE || this.contentDetailView,
         }, Y))
     },
     function toCitationE(X) {
