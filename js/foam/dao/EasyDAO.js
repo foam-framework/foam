@@ -282,7 +282,7 @@ CLASS({
             serverUri: this.serverUri,
             model: model,
             sockets: this.sockets,
-            reconnectPeriod: 30000
+            reconnectPeriod: 5000
           }),
           syncProperty: this.syncProperty,
           deletedProperty: this.deletedProperty,
