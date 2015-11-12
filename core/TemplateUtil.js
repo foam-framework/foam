@@ -219,8 +219,7 @@ MODEL({
         "out('",
     FOOTERS: {
       html: "');return out.toString();",
-      css: "');return " +
-          'X.foam.grammars.CSSDecl.create().parser.parseString(out.toString());'
+      css: "');return X.foam.grammars.CSSDecl.create({model:this.model_}).parser.parseString(out.toString());"
     },
   },
 
