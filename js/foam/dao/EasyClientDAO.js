@@ -23,6 +23,8 @@ CLASS({
     'XHR',
     'foam.core.dao.ClientDAO',
     'foam.core.dao.WebSocketDAO',
+    'foam.dao.FutureDAO',
+    'foam.messaging.WebSocket',
     'foam.oauth2.GoogleSignIn'
   ],
   properties: [
@@ -63,10 +65,24 @@ CLASS({
       name: 'delegate',
       factory: function() {
         if ( this.sockets ) {
-          return this.WebSocketDAO.create({
-            uri: this.serverUri,
-            model: this.model,
+          var uri = this.serverUri.replace(/^https/, "wss").replace(/^http/, "ws");
+
+          var socket = this.WebSocket.create({
+            uri: uri,
             reconnectPeriod: this.reconnectPeriod
+          });
+
+          var future = afuture();
+          socket.subscribe(socket.ON_CONNECT, EventService.oneTime(function() {
+            future.set(this.WebSocketDAO.create({
+              uri: this.serverUri,
+              model: this.model,
+              socket: socket
+            }));
+          }.bind(this)));
+
+          return this.FutureDAO.create({
+            future: future.get
           });
         }
 

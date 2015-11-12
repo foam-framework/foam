@@ -158,10 +158,6 @@ CLASS({
       model_: 'StringProperty',
       name: 'serverUri',
       defaultValueFn: function() {
-        if ( this.sockets ) {
-          var s = this.document.location.origin + '/api';
-          return s.replace(/^https/, "wss").replace(/^http/, "ws");
-        }
         return this.document.location.origin + '/api'
       }
     },
