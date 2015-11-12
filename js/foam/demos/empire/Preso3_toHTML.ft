@@ -603,14 +603,16 @@ CLASS({
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Efficiency</div>
+        <div class="flex-grow content small-heading">Value Proposition</div>
       </div>
     </div>
     <div class="flex-row" style="height: 100%;">
       <div class="center" style="padding: 5%; min-width: 80%">
         <span class="flex-col" style="font-size: 32px;">
+            <foam model="foam.demos.graphics.Logo" text="Efficiency" width="560"
+                  height="180" /><br>
           <div style="font-size:48px;color:gray;">
-            <i style="color:red;">Efficiency</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
+<!--            <i style="color:red;">Efficiency</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br> -->
             Application <font color="red">Performance</font><br>
             Application <font color="red">Size</font><br>
             Developer <font color="red">Efficiency</font><br><br>
