@@ -23,7 +23,7 @@ CLASS({
     'MDAO',
     'com.google.ow.IdentityManager',
     'com.google.ow.IdGenerator',
-    'com.google.ow.Server', // for fake internal server
+    //'com.google.ow.Server', // for fake internal server
     'com.google.ow.examples.VideoA',
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.Envelope',

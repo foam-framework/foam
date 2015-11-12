@@ -64,7 +64,7 @@ CLASS({
           daoType: this.MDAO,
           guid: true,
           isServer: true,
-          // logging: true,
+           logging: true,
         });
       },
     },
