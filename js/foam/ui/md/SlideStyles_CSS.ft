@@ -111,7 +111,12 @@ div.flex-items-start {
 .card {
   -webkit-animation: card-anim 0.2s 0s cubic-bezier(0,.3,.8,1) both;
 
+  overflow:hidden;
   transform: translateY(200vh) rotate(20deg);
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }
 
 .heading-card {
