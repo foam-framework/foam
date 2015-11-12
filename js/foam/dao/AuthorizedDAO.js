@@ -196,6 +196,34 @@ CLASS({
     function removeAll(sink, options, opt_X) {
       // TODO(braden): Implement me. Use the select+remove scheme.
     },
+    function listen(sink, options, opt_X) {
+      var principal = opt_X && opt_X.principal
+      var self = this;
+      var mysink = {
+        put: function(obj) {
+          self.authorizer.massageForRead(function(obj) {
+            if ( obj !== null ) {
+              sink && sink.put && sink.put(obj);
+            }
+          }, principal, obj);
+        },
+        remove: function(obj) {
+          self.authorizer.massageForRead(function(obj) {
+            if ( obj !== null ) {
+              sink && sink.remove && sink.remove(obj);
+            }
+          }, principal, obj);
+        },
+        reset: function() {
+          sink && sink.reset && sink.reset();
+        }
+      };
+      // TODO(adamvy): this is a bit hackish
+      if ( options ) {
+        mysink = AbstractDAO.getPrototype().decorateSink_(sink, options, true);
+      }
+      this.delegate.listen(mysink);
+    },
     function where(query) {
       return X.FilteredDAO_.create({ query: query, delegate: this }, this.Y);
     },
