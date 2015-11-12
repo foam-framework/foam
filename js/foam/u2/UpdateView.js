@@ -14,29 +14,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// TODO: Add datalist support.
-
 CLASS({
   package: 'foam.u2',
-  name: 'Checkbox',
+  name: 'UpdateView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'dao',
+  ],
+
   properties: [
-    [ 'nodeName', 'input' ],
     {
-      model_: 'BooleanProperty',
-      name: 'data'
-    }
+      name: 'delegate',
+      required: true,
+      documentation: 'An inner element, which receives data. Whenever that ' +
+          'data changes, this view will save it to the DAO.',
+    },
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if (old === nu) return;
+        if (old) old.removeListener(this.onUpdate);
+        if (nu) nu.addListener(this.onUpdate);
+        if (this.delegate) this.delegate.data = nu;
+      },
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'onUpdate',
+      isFramed: true,
+      code: function() {
+        this.commit_();
+      }
+    },
   ],
 
   methods: [
-    function initE() {
-      this.attrs({type: 'checkbox'});
-      Events.link(this.data$, this.attrValue('checked', 'change'));
+    function commit_() {
+      this.dao.put(obj);
     },
-    function updateMode_(mode) {
-      this.setAttribute('disabled', mode === 'disabled' || mode === 'ro');
-    }
+    function initE() {
+      this.add(this.delegate);
+    },
   ]
 });

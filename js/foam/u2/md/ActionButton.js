@@ -101,7 +101,7 @@ CLASS({
             return this.action &&
                 this.action.isAvailable.call(this.data, this.action) ?
                 this.myCls('available') : '';
-          })
+          }.bind(this))
           .cls(this.myCls(this.TYPE_CLASSES[this.type]))
           .cls('noselect')
           .on('click', this.onClick)

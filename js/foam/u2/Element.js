@@ -339,10 +339,12 @@ CLASS({
     function initE() {},
 
     function E(opt_nodeName) {
-      var e = this.X.elementForName(opt_nodeName);
+      var Y = this.Y;
+      if (this.data && (this.Y.data !== this.data)) Y = Y.sub({ data: this.data });
+      var e = Y.elementForName(opt_nodeName);
 
       if ( ! e ) {
-        e = foam.u2.Element.create(null, this.Y);
+        e = foam.u2.Element.create(null, Y);
         if ( opt_nodeName ) e.nodeName = opt_nodeName;
       }
 

@@ -152,12 +152,17 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'listView',
       defaultValue: {
-        factory_: 'foam.ui.DAOListView',
-        rowView: 'foam.ui.md.CitationView',
+        factory_: 'foam.u2.DAOListView',
+        rowView: 'foam.u2.md.CitationView',
         minWidth: 350,
         preferredWidth: 500,
         maxWidth: 500,
       }
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'rowView',
+      defaultValue: 'foam.ui.md.CitationView',
     },
     {
       model_: 'ViewFactoryProperty',

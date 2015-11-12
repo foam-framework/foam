@@ -23,7 +23,11 @@ CLASS({
     'foam.browser.u2.StackView',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
+    'foam.u2.ElementParser',
     'foam.u2.md.ActionButton',
+    'foam.u2.md.Checkbox',
+    'foam.u2.md.Input',
+    'foam.u2.md.Select',
     'foam.u2.md.SharedStyles',
   ],
 
@@ -38,6 +42,7 @@ CLASS({
       name: 'InnerBrowserView',
       extends: 'foam.u2.View',
       requires: [
+        'foam.u2.DAOListView',
         'foam.u2.PropertyView',
         'foam.u2.md.ActionButton',
         'foam.u2.md.Input',
@@ -81,9 +86,8 @@ CLASS({
                 put: function(obj) {
                   this.stack.pushView(this.data.detailView({
                     data: obj,
-                    controllerMode: 'update',
                     innerView: this.data.innerDetailView
-                  }, this.Y.sub({ dao: this.data.dao })));
+                  }, this.Y.sub({ dao: this.data.dao, controllerMode: 'update' })));
                 }.bind(this)
               });
             } else {
@@ -375,6 +379,7 @@ CLASS({
             var button = this.CREATE_BUTTON.toE(this.Y);
             button.type = 'floating';
             button.color = '#fff';
+            button.data = this;
             this.add(button);
           }
 
@@ -410,7 +415,7 @@ CLASS({
     },
     {
       name: 'stack',
-      factory: function() {
+      lazyFactory: function() {
         return this.StackView.create();
       }
     },
@@ -418,8 +423,12 @@ CLASS({
 
   methods: [
     function init() {
-      this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
+      this.ElementParser.create();
       this.SharedStyles.create();
+      this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
+      this.Y.registerModel(this.Checkbox, 'foam.u2.Checkbox');
+      this.Y.registerModel(this.Input, 'foam.u2.Input');
+      this.Y.registerModel(this.Select, 'foam.u2.Select');
       this.SUPER();
     },
     function initE() {

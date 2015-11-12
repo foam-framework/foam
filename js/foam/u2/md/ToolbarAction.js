@@ -15,20 +15,13 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.tutorials.todo.model',
-  name: 'Todo',
+  package: 'foam.u2.md',
+  name: 'ToolbarAction',
   properties: [
+    'data',
     {
-      name: 'id',
-      hidden: true
-    },
-    {
-      name: 'title',
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'isCompleted',
-      label: 'Completed',
+      type: 'Action',
+      name: 'action',
     },
   ],
 });

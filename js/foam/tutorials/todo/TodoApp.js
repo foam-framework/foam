@@ -17,19 +17,24 @@
 CLASS({
   package: 'foam.tutorials.todo',
   name: 'TodoApp',
-  extends: 'foam.browser.ui.BrowserView',
+  extends: 'foam.browser.u2.BrowserView',
   requires: [
     'foam.browser.BrowserConfig',
     'foam.dao.EasyDAO',
     'foam.mlang.CannedQuery',
     'foam.tutorials.todo.model.Todo',
-    'foam.tutorials.todo.ui.TodoCitationView',
+    'foam.tutorials.todo.u2.TodoCitationView',
+    'foam.u2.DAOListView',
+    'foam.u2.UpdateView',
+    'foam.u2.md.DetailView',
+    'foam.u2.md.WithToolbar',
   ],
 
   properties: [
     {
       name: 'data',
       factory: function() {
+        var self = this;
         return this.BrowserConfig.create({
           model: this.Todo,
           dao: this.EasyDAO.create({
@@ -38,9 +43,26 @@ CLASS({
             cache: true,
             seqNo: true
           }),
-          listView: {
-            factory_: 'foam.ui.DAOListView',
-            rowView: 'foam.tutorials.todo.ui.TodoCitationView',
+          listView: function(args, opt_X) {
+            args.rowView = self.data.rowView;
+            return self.DAOListView.create(args, opt_X);
+          },
+          rowView: function(args, opt_X) {
+            return self.TodoCitationView.create(args, opt_X);
+          },
+          innerDetailView: function(args, opt_X) {
+            return self.DetailView.create(args, opt_X);
+          },
+          detailView: function(args, opt_X) {
+            var wt = self.WithToolbar.create({
+              title: (opt_X.controllerMode === 'update' ? 'Edit' : 'New') +
+                  ' ' + args.data.model_.name
+            }, opt_X);
+            var uv = self.UpdateView.create({
+              delegate: self.data.innerDetailView(args, opt_X)
+            }, opt_X);
+            wt.add(uv);
+            return wt;
           },
           cannedQueryDAO: [
             this.CannedQuery.create({

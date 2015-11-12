@@ -31,15 +31,36 @@ CLASS({
   ],
 
   properties: [
-    'prop', 'view', 'child_',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        this.bindData_(old, nu);
+      },
+    },
+    {
+      name: 'prop'
+    },
+    {
+      name: 'view',
+      attribute: true,
+      adapt: function(old, nu) {
+        if (typeof nu === 'string') {
+          var m = this.X.lookup(nu);
+          if (m) return m.create();
+        } else if (typeof nu === 'function') {
+          return nu(this.Y);
+        } else {
+          return nu;
+        }
+      },
+    },
+    {
+      name: 'child_',
+    },
     [ 'nodeName', 'tr' ]
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      this.bindData_(null, this.data);
-    },
     function initE() {
       var view = this.view || this.prop.toPropertyE();
       var prop = this.prop;
@@ -48,7 +69,8 @@ CLASS({
       view.fromProperty && view.fromProperty(prop);
 
       this.child_ = view;
-      this.cls('foam-u2-PropertyView').add(this.child_);
+      this.cls(this.myCls()).add(this.child_);
+      this.bindData_(null, this.data);
     },
     // Set properties on delegate view instead of this
     function attrs(map) {

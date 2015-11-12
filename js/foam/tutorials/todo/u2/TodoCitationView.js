@@ -15,20 +15,24 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.tutorials.todo.model',
-  name: 'Todo',
-  properties: [
-    {
-      name: 'id',
-      hidden: true
-    },
-    {
-      name: 'title',
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'isCompleted',
-      label: 'Completed',
-    },
-  ],
+  package: 'foam.tutorials.todo.u2',
+  name: 'TodoCitationView',
+  extends: 'foam.u2.View',
+  templates: [
+    function CSS() {/*
+      $ {
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        min-height: 48px;
+        padding: 16px;
+      }
+    */},
+    function initE() {/*#U2
+      <div class="$">
+        <:isCompleted />
+        {{this.data.title$}}
+      </div>
+    */},
+  ]
 });
