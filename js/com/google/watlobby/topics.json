@@ -148,24 +148,37 @@
   {
     "topic": "fstofoambg",
     "parentTopic": "fstofoam",
-    "image": "img/foam_red.png",
+    "image": "img/fstofoambg.png",
     "model": "Background"
   },
   {
     "topic": "fstofoam",
-    "enabled": false,
+    "enabled": true,
     "parentTopic": "fsto",
     "image": "img/foam_whiteontransparent.png",
     "priority": 1,
     "color": "red",
     "roundImage": true,
     "background": "red",
-    "model": "Photo"
+    "model": "Topic",
+    "text": "<font color=white size=+2><img style=margin-top:-50px; width=80% src=img/foam_whiteontransparent.png><br><a href=http://foamdev.com style=color:white;>foamdev.com</a><br><br><a href=http://github.foamdev.com style=color:white;>github.foamdev.com</a></font>"
+  },
+  {
+    "topic": "fstofoamphoto",
+    "parentTopic": "fstofoam",
+    "image": "img/photo.png",
+    "priority": 1,
+    "color": "red",
+    "roundImage": true,
+    "model": "Topic",
+    "text": "<br><br>kgr@google.com<br><br><a href=\"http://plus.google.com/+KevinGreer\" style=color:red;>+KevinGreer</a><br><br><a href=\"http://twitter.com/kgrgreer/\" style=color:red;>@kgrgreer</a>"
   },
   {
     "topic": "fstowat",
     "parentTopic": "fstofoam",
-    "image": "img/googlewat.png",
+    "image": "img/googlewat_square.png",
+    "roundImage": true,
+    "r": 80,
     "model": "Photo"
   }
 ]
