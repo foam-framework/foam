@@ -139,5 +139,33 @@
     "parentTopic": "foam",
     "image": "img/foam_red.png",
     "model": "Background"
+  },
+  {
+    "topic": "fsto",
+    "image": "https://fsto.co/static/images/logo.png",
+    "model": "Background"
+  },
+  {
+    "topic": "fstofoambg",
+    "parentTopic": "fstofoam",
+    "image": "img/foam_red.png",
+    "model": "Background"
+  },
+  {
+    "topic": "fstofoam",
+    "enabled": false,
+    "parentTopic": "fsto",
+    "image": "img/foam_whiteontransparent.png",
+    "priority": 1,
+    "color": "red",
+    "roundImage": true,
+    "background": "red",
+    "model": "Photo"
+  },
+  {
+    "topic": "fstowat",
+    "parentTopic": "fstofoam",
+    "image": "img/googlewat.png",
+    "model": "Photo"
   }
 ]
