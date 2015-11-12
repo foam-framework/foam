@@ -68,7 +68,7 @@ CLASS({
       var stringify = this.stringify;
       ws.subscribe(ws.ON_MESSAGE, function(_, _, message) {
         try {
-          var msg = JSONUtil.mapToObj(this.Y, JSON.parse(message));
+          var envelope = JSONUtil.mapToObj(this.Y, JSON.parse(message));
           // TODO (adamvy): USe JSONParser
           // var msg = JSONUtil.mapToObj(this.Y, JSONParser.parseString(message, JSONParser.obj));
         } catch(e) {
@@ -76,7 +76,12 @@ CLASS({
           ws.close();
           return;
         }
-        var msgid = msg.msgid;
+        var msgid = envelope.msgid;
+        var msg = envelope.msg;
+
+        var subX = this.Y;
+        if (envelope['x-foam-auth'])
+          subX = subX.sub({ authHeader: envelope['x-foam-auth'] });
 
         if ( msg.method == 'listen' ) {
           var dao = this.daoMap[msg.subject];
@@ -85,6 +90,8 @@ CLASS({
             ws.send(JSON.stringify({ msgid: msgid, msg: { error: 'No dao found.' } }));
             return;
           }
+
+          var options = msg.params ? msg.params[1] : undefined;
 
           dao.listen({
             put: function(o) {
@@ -99,7 +106,7 @@ CLASS({
                 msg: {
                   notify: ["remove",o]
                 }
-              }));p
+              }));
             },
             reset: function() {
               ws.send(JSON.stringify({
@@ -108,7 +115,7 @@ CLASS({
                 }
               }));
             }
-          });
+          }, options, subX);
 
           ws.send(JSON.stringify({
             msgid: msgid,
@@ -128,7 +135,7 @@ CLASS({
                 msg: { error: msg }
               }));
             }
-          });
+          }, subX);
         }
       }.bind(this));
 
@@ -186,7 +193,7 @@ CLASS({
         }
 
         var msg = JSONUtil.mapToObj(this.Y, JSON.parse(message));
-        // TODO (adamvy): USe JSONParser
+        // TODO (adamvy): Use FOAM's JSONParser
         // var msg = JSONUtil.mapToObj(this.Y, JSONParser.parseString(message, JSONParser.obj));
         var stringify = this.stringify;
 

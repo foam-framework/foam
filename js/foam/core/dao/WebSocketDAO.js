@@ -68,15 +68,22 @@ CLASS({
       name: 'asend',
       factory: function() {
         return function(ret, data) {
-          data.msgid = this.msgid;
-          this.msgid += 1;
-          this.pending[data.msgid] = ret;
-          this.socket.send(this.json.stringify(data));
+          var msg = this.envelope(data);
+          this.pending[msg.msgid] = ret;
+          this.socket.send(this.json.stringify(msg));
         }
       }
     }
   ],
   methods: [
+    function envelope(msg) {
+      var msgid = this.msgid;
+      this.msgid += 1;
+      return {
+        msgid: msgid,
+        msg: msg
+      };
+    },
     function remoteListen() {
       var self = this;
       this.asend(function(resp) {
@@ -86,7 +93,7 @@ CLASS({
       }, {
         subject: self.subject,
         method: 'listen',
-        params: [null]
+        params: [null, null]
       });
     },
     function listen(sink, options) {
