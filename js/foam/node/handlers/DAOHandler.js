@@ -192,7 +192,7 @@ CLASS({
           subX = subX.sub({ authHeader: req.headers['x-foam-auth'] });
         }
 
-        var msg = JSONUtil.mapToObj(this.Y, JSON.parse(message));
+        var msg = JSONUtil.mapToObj(this.Y, JSON.parse(body));
         // TODO (adamvy): Use FOAM's JSONParser
         // var msg = JSONUtil.mapToObj(this.Y, JSONParser.parseString(message, JSONParser.obj));
         var stringify = this.stringify;
