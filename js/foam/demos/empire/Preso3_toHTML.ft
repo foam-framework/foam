@@ -381,7 +381,7 @@ CLASS({
       </div>
     </div>
     -->
-    <div class="card flex-col flex-grow" style="overflow: hidden">
+    <div class="card flex-col flex-grow" style="padding: 0; -webkit-align-items: stretch; align-items: stretch; overflow: hidden">
       <foam model="foam.apps.ctm.TaskManager" />
     </div>
   </slide>
