@@ -20,11 +20,15 @@ CLASS({
   package: 'com.google.ow',
 
   requires: [
+    'MDAO',
     'com.google.ow.IdGenerator',
+    'com.google.ow.content.Video',
     'com.google.ow.model.Envelope',
+    'com.google.ow.model.ProductAd',
     'com.google.plus.Person',
     'com.google.plus.ShareSink',
     'foam.dao.EasyDAO',
+    'foam.node.dao.JSONFileDAO',
   ],
   imports: [
     'console',
@@ -37,7 +41,12 @@ CLASS({
     'createStreamItem',
   ],
 
-  documentation: function() {/*  */},
+  constants: {
+    DATA_PATHS: [
+      global.FOAM_BOOT_DIR + '/../js/com/google/ow/local/',
+      global.FOAM_BOOT_DIR + '/../js/com/google/ow/examples/',
+    ],
+  },
 
   properties: [
     {
@@ -48,11 +57,11 @@ CLASS({
     },
     {
       name: 'personDAO',
-      factory: function() {
+      lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Person,
           name: 'people',
-          daoType: MDAO,
+          daoType: this.MDAO,
           guid: true,
           isServer: true,
           // logging: true,
@@ -61,17 +70,41 @@ CLASS({
     },
     {
       name: 'streamDAO',
-      factory: function() {
+      lazyFactory: function() {
         var sd = this.EasyDAO.create({
           model: this.Envelope,
           name: 'streams',
-          daoType: MDAO,
+          daoType: this.MDAO,
           guid: true,
           isServer: true,
           // logging: true,
         });
         return this.ShareSink.create({ delegate: sd });
       },
+    },
+    {
+      name: 'videoDAO',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.Video,
+          name: 'videos',
+          daoType: this.MDAO,
+          // isServer: true,
+          // logging: true,
+        });
+      },
+    },
+    {
+      name: 'personData',
+      factory: function() { return this.dataFactory('people', this.Person); },
+    },
+    {
+      name: 'adData',
+      factory: function() { return this.dataFactory('ads', this.ProductAd); },
+    },
+    {
+      name: 'videoData',
+      factory: function() { return this.dataFactory('videos', this.Video); },
     },
     {
       model_: 'FunctionProperty',
@@ -90,103 +123,43 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
+    function dataFactory(name, model) {
+        return this.EasyDAO.create({
+          name: name,
+          model: model,
+          daoType: this.JSONFileDAO.xbind({
+            filename: this.DATA_PATHS.map(function(p) {
+              return p + name + '.json';
+            })
+          }),
+          guid: true,
+        }, this.Y);
+    },
+    function execute() {
       this.exportDAO(this.streamDAO);
       this.exportDAO(this.personDAO);
-      if ( this.isNode() ) this.loadData();
-    },
-    function isNode() {
-      return typeof vm !== 'undefined' && vm.runInThisContext;
+      this.loadData();
+      // if ( this.isNode() ) this.loadData();
     },
     function loadData() {
-      var console = this.console;
-      var createStreamItem = this.createStreamItem.bind(this);
-      var fConst = function(v) { return function() { return v; }; };
-
-      function sink(dao, opt_id, opt_source, opt_target) {
-        return {
-          put: function(data) {
-            data.dao.pipe({
-              put: function(o) {
-                if ( opt_id ) o.id = opt_id(o);
-                if ( opt_source || opt_target )
-                  return dao.put(createStreamItem(opt_source(o), opt_target(o), o));
-                else
-                  return dao.put(o);
-              },
-            });
-          },
-          error: function() {
-            console.error('Failed attempt to find modelled data', arguments);
-          },
-        };
-      }
-
-      function find(keys, sink, ret, opt_i) {
-        var i = opt_i || 0;
-        if ( i >= keys.length ) {
-          console.error('Failed to load modelled data', keys);
-          ret && ret.call(this, undefined);
-          return;
-        }
-        var put = sink.put ? sink.put.bind(sink) : null;
-        sink.put = function() {
-          put && put.apply(this, arguments);
-          ret && ret.apply(this, arguments);
-        };
-        var error = sink.error ? sink.error.bind(sink) : null;
-        sink.error = function() {
-          error && error.apply(this, arguments);
-          find(keys, sink, ret, i + 1);
-        };
-        this.X.ModelDAO.find(keys[i], sink);
-      }
-
-      var firstPerson = null;
-      var personSink = {
-        __proto__: sink(this.personDAO,
-                        function(o) {
-                          return o.id ? o.id : this.idGenerator.fromName([
-                            o.givenName,
-                            o.middleName,
-                            o.familyName,
-                          ]);
-                        }.bind(this)),
-        put: function(o) {
-          if ( ! firstPerson ) firstPerson = o.dao[0];
-          return this.__proto__.put(o);
-        },
-      };
-      find(
-          ['com.google.ow.local.PersonData', 'com.google.ow.examples.PersonData'],
-          personSink,
-          function() {
-            find(
-                ['com.google.ow.local.AdData', 'com.google.ow.examples.AdData'],
-                sink(this.streamDAO,
-                     undefined,
-                     fConst(this.idGenerator.fromName(['FOAM', 'Team'])),
-                     fConst(firstPerson.id)));
-          }.bind(this));
-      find(
-          ['com.google.ow.local.ContentData', 'com.google.ow.examples.ContentData'],
-          sink(this.streamDAO,
-               undefined,
-               fConst(this.idGenerator.fromName(['FOAM', 'Team'])),
-               fConst(this.idGenerator.fromName(
-                   this.idGenerator.testNames[0]))));
-
-      arequire('com.google.ow.content.Video')(function(videoModel) {
-        var videoDAO = this.EasyDAO.create({
-          name: 'videoDAO',
-          model: videoModel,
-          daoType: MDAO,
-          //isServer: true,
-        });
-        this.exportDAO(videoDAO);
-        this.X.ModelDAO.find('com.google.ow.examples.VideoData', sink(videoDAO));
-      }.bind(this));
+      // Give everyone the ads.
+      this.personDAO.pipe({
+        put: function(person) {
+          this.adData.select({
+            put: function(ad) {
+              this.streamDAO.put(this.Envelope.create({
+                owner: person.id,
+                source: '0',
+                data: ad,
+              }, this.Y));
+            }.bind(this),
+          });
+        }.bind(this),
+      });
+      // Bootstrap people.
+      this.personData.select(this.personDAO);
+      // Bootstrap videos.
+      this.videoData.select(this.videoDAO);
     },
   ],
 });
