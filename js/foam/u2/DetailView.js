@@ -110,11 +110,11 @@ CLASS({
       this.cls('foam-u2-DetailView').add(function(model, properties) {
         return ! model ?
           'Set model or data.' :
-          this.E('table').add(E('tr').add(E('td').cls('foam-u2-DetailView-title').attrs({colspan: 2}).add(this.title$))).add(properties) ;
+          this.E('table').add(this.E('tr').add(this.E('td').cls('foam-u2-DetailView-title').attrs({colspan: 2}).add(this.title$))).add(properties) ;
       }.bind(this).on$(this.Y, this.model$, this.properties$));
     },
     function elementForFeature(fName) {
-      var f = this.model_.getFeature(fName) || this.X.data.model_.getFeature(fName); 
+      var f = this.model_.getFeature(fName) || this.X.data.model_.getFeature(fName);
       return f ? f.toE(this.Y) : this.E('Unknown feature: ' + fName).style({color: 'red'});
     }
   ]
