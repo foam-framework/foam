@@ -11,13 +11,12 @@
 
 CLASS({
   package: 'com.google.ow',
-  name: 'DAOData',
+  name: 'Context',
 
   properties: [
-    'id',
     {
-      model_: 'foam.core.types.DAOProperty',
-      name: 'dao',
-    }
+      model_: 'StringProperty',
+      name: 'accessToken',
+    },
   ],
 });

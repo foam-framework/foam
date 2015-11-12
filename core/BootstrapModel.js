@@ -208,7 +208,6 @@ var BootstrapModel = {
   },
 
   buildPrototype: function() { /* Internal use only. */
-    if ( this.id === 'foam.graphics.Rectangle' ) debugger;
     // save our pure state
     // Note: Only documentation browser uses this, and it will be replaced
     // by the new Feature Oriented bootstrapping process, so only use the

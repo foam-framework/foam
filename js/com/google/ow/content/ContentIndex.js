@@ -19,6 +19,7 @@ CLASS({
     'foam.ui.DAOListView',
     'foam.dao.EasyClientDAO',
     'foam.dao.LoggingDAO',
+    'foam.browser.ui.DAOController',
   ],
 
   documentation: function() {/* Connects to a remote DAO and offers the
@@ -60,34 +61,42 @@ CLASS({
     },
     {
       model_: 'ViewFactoryProperty',
-      name: 'contentItemView',
+      name: 'contentRowView',
       help: 'The row view for the content item list.',
+      defaultValue: 'foam.ui.md.CitationView',
     },
     {
-      name: 'contentItemE',
+      name: 'contentRowE',
+      help: 'The row element for the content item list.',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'contentDetailView',
+      help: 'The row view for the content item list.',
+      defaultValue: 'foam.ui.md.DetailView',
+    },
+    {
+      name: 'contentDetailE',
       help: 'The row element for the content item list.',
     },
   ],
 
   methods: [
     // TODO(markdittmer): We should use model-for-model or similar here.
-    function toDetailE() {
-      return this.Element.create(null, this.Y.sub({controllerMode: 'read-only'}))
-        .start().style({
-          'display': 'flex',
-          'flex-direction': 'column',
-          'margin': '16px'
-        })
-          .start().add(this.titleText$).cls('md-title').end()
-          .start().add(this.description$).cls('md-subhead').end()
-          .add(this.DAOListView.create({
-            data: this.dao,
-            rowView: this.contentItemE || this.contentItemView,
-          }))
-        .end();
+    function toDetailE(X) {
+      var Y = X || this.Y;
+      return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
+        .style({ display: 'flex', 'flex-grow': 1, 'flex-direction': 'column' })
+        .add(this.DAOController.create({
+          name: this.description,
+          data: this.dao,
+          rowView: this.contentRowE || this.contentRowView,
+          innerDetailView: this.contentDetailE || this.contentDetailView,
+        }, Y))
     },
-    function toCitationE() {
-      return this.Element.create(null, this.Y)
+    function toCitationE(X) {
+      var Y = X || this.Y;
+      return this.Element.create(null, Y)
         .start().style({
             'display': 'flex',
             'flex-direction': 'row',

@@ -16,28 +16,28 @@
  */
 CLASS({
   package: 'foam.core.types',
-  name: 'JSONPropertyTrait',
+  name: 'JSONArrayProperty',
+  extends: 'ArrayProperty',
+  traits: [ 'foam.core.types.JSONPropertyTrait' ],
+
   properties: [
     {
-      name: 'jsonPath',
-      lazyFactory: function() {
-        return this.name;
+      name: 'fromItemJSON',
+      defaultValue: function(item) {
+        return this.subType ? this.subType.create(item, this.X) : item;
       },
-      adapt: function(old, nu) {
-        return typeof nu === 'string' ? [nu] : nu;
-      }
-    }
+    },
   ],
 
   methods: [
     function fromJSON(obj, json) {
-      if ( ! (this.jsonPath && this.jsonPath.length) ) return undefined;
-      for (var i = 0; i < this.jsonPath.length; i++) {
-        json = json[this.jsonPath[i]];
-        if (typeof json === 'undefined') return undefined;
-      }
+      var a = this.SUPER(obj, json);
+      if ( ! a ) return a;
+      json = a.map(function(item) {
+        return this.fromItemJSON(item);
+      }.bind(this));
       obj[this.name] = json;
       return json;
-    }
+    },
   ]
 });

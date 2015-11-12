@@ -22,17 +22,18 @@ CLASS({
   requires: [
     'MDAO',
     'com.google.ow.IdGenerator',
-    'com.google.ow.Server', // for fake internal server
     'com.google.ow.examples.VideoA',
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.Envelope',
     'com.google.ow.model.ProductAd',
     'com.google.ow.ui.EnvelopeCitationView',
+    'com.google.ow.ui.MenuView',
     'com.google.plus.Circle',
     'com.google.plus.Person',
     'com.google.plus.ShareList',
     'foam.browser.BrowserConfig',
     'foam.browser.ui.DAOController',
+    'foam.core.dao.AuthenticatedWebSocketDAO',
     'foam.dao.EasyClientDAO',
     'foam.dao.EasyDAO',
     'foam.dao.FutureDAO',
@@ -61,7 +62,7 @@ CLASS({
     'personDAO',
     'circleDAO', // Note: proxy for currentUser.circles
     'contactsDAO', // Note: proxy for currentUser.contacts
-    'currentUser',
+    'currentUser$',
   ],
 
   properties: [
@@ -75,7 +76,7 @@ CLASS({
       name: 'browserConfig',
       lazyFactory: function() {
         var UpdateDetailView = this.UpdateDetailView;
-        return this.BrowserConfig.create({
+        var browserConfig = this.BrowserConfig.create({
           title: 'Lifestream',
           model: this.Envelope,
           dao: this.streamDAO.where(NOT(HAS(this.Envelope.SID))),
@@ -86,6 +87,13 @@ CLASS({
               expression: TRUE,
             }),
           ],
+          menuFactory: function() {
+            var view = this.MenuView.create({ data: this }, this.Y);
+            view.subscribe(view.MENU_CLOSE, function() {
+              browserConfig.publish(browserConfig.MENU_CLOSE);
+            });
+            return view;
+          }.bind(this),
           detailView: function(args, X) {
             var v = UpdateDetailView.create(args, X);
             v.title = (args.data && args.data.data) ? args.data.data.titleText
@@ -100,14 +108,15 @@ CLASS({
                 this.DetailView.create({ data: d }, this.Y);
           }.bind(this)
         });
+        return browserConfig;
       },
     },
+    'currentUserId',
     {
       name: 'currentUser',
       postSet: function(old, nu) {
         if (nu) {
-          // TODO(markdittmer): This should get replaced by an authorizing DAO.
-          this.streamDAO.delegate = this.streamDAO_.where(EQ(this.Envelope.OWNER, nu.id));
+          this.currentUserId = nu.id;
           this.circleDAO.delegate = nu.circles;
           this.contactsDAO.delegate = nu.contacts;
         }
@@ -116,25 +125,22 @@ CLASS({
     {
       name: 'streamDAO',
       lazyFactory: function() {
-        return this.ProxyDAO.create({ delegate: [].dao }, this.Y);
-      }
-    },
-    {
-      // TODO(markdittmer): This should get replaced by an authorizing DAO.
-      name: 'streamDAO_',
-      lazyFactory: function() {
         return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
           serverUri: this.document.location.origin + '/api',
           model: this.Envelope,
+          sockets: true,
         }, this.Y) }, this.Y);
       }
     },
     {
       name: 'personDAO',
       lazyFactory: function() {
+        // TODO(markdittmer): This should be an authorized collection of peopl
+        // the current user may know about.
         return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
           serverUri: this.document.location.origin + '/api',
           model: this.Person,
+          sockets: true,
         }, this.Y) }, this.Y);
       }
     },
@@ -157,16 +163,13 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
+      var WebSocket = this.AuthenticatedWebSocketDAO.xbind({
+        authToken$: this.currentUserId$,
+      });
+      this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
+
       // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
       // this.SharedStyles.create(null, this.Y);
-
-      this.setInitialUser();
-    },
-    function setInitialUser() {
-      // First user: Henry Joe Carvil has id -2040776555
-      this.personDAO.where(EQ(this.Person.ID, '-2040776555')).limit(1).select({
-        put: function(o) { this.currentUser = o; }.bind(this),
-      })(nop);
     },
   ],
 });

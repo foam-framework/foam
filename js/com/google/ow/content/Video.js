@@ -43,7 +43,8 @@ CLASS({
   methods: [
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE() {
-      return this.Element.create(null, this.Y.sub({controllerMode: 'read-only'}))
+      var Y = X || this.Y;
+      return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
         .start().style({
           'display': 'flex',
           'flex-direction': 'column',
@@ -58,7 +59,8 @@ CLASS({
         .end();
     },
     function toCitationE() {
-      return this.Element.create(null, this.Y)
+      var Y = X || this.Y;
+      return this.Element.create(null, Y)
         .start().style({
             'display': 'flex',
             'flex-direction': 'row',

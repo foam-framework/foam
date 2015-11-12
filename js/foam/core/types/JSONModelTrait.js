@@ -20,12 +20,14 @@ CLASS({
   methods: [
     function fromJSON(json) {
       var props = this.model_.getRuntimeProperties();
+      var rtn = {};
       for (var i = 0; i < props.length; i++) {
         var prop = props[i];
         if (prop.fromJSON) {
-          prop.fromJSON(this, json);
+          rtn[prop.name] = prop.fromJSON(this, json);
         }
       }
+      return rtn;
     },
   ]
 });

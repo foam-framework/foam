@@ -108,7 +108,7 @@
     "color": "red",
     "roundImage": true,
     "background": "red",
-    "text": "<font color=white><center><img style=margin-top:-200px;margin-bottom:-150px; src=img/foam_whiteontransparent.png></center><br>FOAM is a revolutionary new approach to software development.  By automating the creation of software from high-level specifications, FOAM greatly increases developer productivity. FOAM is open-sourced and available at http://foamdev.com.<br><br>Supports: Android, iOS, Web, Node.js<br><br>This video wall is FOAM Powered.</font>",
+    "text": "<font color=white><center><img style=margin-top:-200px;margin-bottom:-150px; src=/js/com/google/watlobby/img/foam_whiteontransparent.png></center><br>FOAM is a revolutionary new approach to software development.  By automating the creation of software from high-level specifications, FOAM greatly increases developer productivity. FOAM is open-sourced and available at http://foamdev.com.<br><br>Supports: Android, iOS, Web, Node.js<br><br>This video wall is FOAM Powered.</font>",
     "timeout": 35
   },
   {
@@ -148,24 +148,38 @@
   {
     "topic": "fstofoambg",
     "parentTopic": "fstofoam",
-    "image": "img/foam_red.png",
+    "image": "img/fstofoambg.png",
     "model": "Background"
   },
   {
     "topic": "fstofoam",
-    "enabled": false,
+    "enabled": true,
     "parentTopic": "fsto",
     "image": "img/foam_whiteontransparent.png",
     "priority": 1,
     "color": "red",
     "roundImage": true,
     "background": "red",
-    "model": "Photo"
+    "timeout": 555555,
+    "model": "Topic",
+    "text": "<font color=\"white\" size=\"+3\"><img style=\"margin-top:-50px;\" width=\"80%\" src=\"/js/com/google/watlobby/img/foam_whiteontransparent.png\"><a href=\"http://foamdev.com\" style=\"color:white;\">foamdev.com</a><br><br><a href=\"http://github.foamdev.com\" style=\"color:white;\">github.foamdev.com</a></font>"
+  },
+  {
+    "topic": "fstofoamphoto",
+    "parentTopic": "fstofoam",
+    "image": "img/photo.png",
+    "priority": 1,
+    "color": "red",
+    "roundImage": true,
+    "model": "Topic",
+    "text": "<font size=\"+4\"><br>kgr@google.com<br><br><a href=\"http://plus.google.com/+KevinGreer\" style=\"color:red;\">+KevinGreer</a><br><br><a href=\"http://twitter.com/kgrgreer/\" style=\"color:red;\">@kgrgreer</a></font>"
   },
   {
     "topic": "fstowat",
     "parentTopic": "fstofoam",
-    "image": "img/googlewat.png",
+    "image": "img/googlewat_square.png",
+    "roundImage": true,
+    "r": 80,
     "model": "Photo"
   }
 ]
