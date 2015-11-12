@@ -35,7 +35,7 @@ CLASS({
     {
       name: 'image',
       postSet: function(_, i) {
-        this.img.src = i;
+        this.img.src = '/js/com/google/watlobby/' + i;
       }
     },
     { name: 'roundImage' },
@@ -54,7 +54,7 @@ CLASS({
     {
       name: 'img',
       factory: function() {
-        return this.ImageCView.create({ src: this.image });
+        return this.ImageCView.create({ src: '/js/com/google/watlobby/' + this.image });
       }
     },
   ],
