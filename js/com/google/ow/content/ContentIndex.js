@@ -60,11 +60,22 @@ CLASS({
     },
     {
       model_: 'ViewFactoryProperty',
-      name: 'contentItemView',
+      name: 'contentRowView',
       help: 'The row view for the content item list.',
+      defaultValue: 'foam.ui.md.CitationView',
     },
     {
-      name: 'contentItemE',
+      name: 'contentRowE',
+      help: 'The row element for the content item list.',
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'contentDetailView',
+      help: 'The row view for the content item list.',
+      defaultValue: 'foam.ui.md.DetailView',
+    },
+    {
+      name: 'contentDetailE',
       help: 'The row element for the content item list.',
     },
   ],
@@ -73,18 +84,23 @@ CLASS({
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE() {
       return this.Element.create(null, this.Y.sub({controllerMode: 'read-only'}))
-        .start().style({
-          'display': 'flex',
-          'flex-direction': 'column',
-          'margin': '16px'
-        })
-          .start().add(this.titleText$).cls('md-title').end()
-          .start().add(this.description$).cls('md-subhead').end()
-          .add(this.DAOListView.create({
-            data: this.dao,
-            rowView: this.contentItemE || this.contentItemView,
-          }))
-        .end();
+        .add(this.DAOController.create({
+          data: this.dao,
+          rowView: this.contentRowE || this.contentRowView,
+          innerDetailView: this.contentDetailE || this.contentDetailView;
+        }))
+//         .start().style({
+//           'display': 'flex',
+//           'flex-direction': 'column',
+//           'margin': '16px'
+//         })
+//           .start().add(this.titleText$).cls('md-title').end()
+//           .start().add(this.description$).cls('md-subhead').end()
+//           .add(this.DAOListView.create({
+//             data: this.dao,
+//             rowView: this.contentRowE || this.contentRowView,
+//           }))
+//         .end();
     },
     function toCitationE() {
       return this.Element.create(null, this.Y)

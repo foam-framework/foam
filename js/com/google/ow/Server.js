@@ -160,6 +160,7 @@ CLASS({
       this.personData.select(this.personDAO);
       // Bootstrap videos.
       this.videoData.select(this.videoDAO);
+      this.exportDAO(this.videoDAO);
     },
   ],
 });
