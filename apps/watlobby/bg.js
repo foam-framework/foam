@@ -12,7 +12,7 @@ function displayCheck() {
   chrome.system.display.getInfo(function(info) {
     chrome.storage.local.get("info", function(stored) {
       chrome.storage.local.set({ "info": info });
-      if ( info.length !== stored.infolength ) {
+      if ( info.length !== stored.info.length ) {
         launchWindow();
       }
     });
