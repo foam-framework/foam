@@ -20,6 +20,8 @@ CLASS({
   name: 'Robot',
   extends: 'foam.graphics.CView',
   requires: [
+    'foam.graphics.CView',
+    'foam.graphics.ImageCView',
     'foam.util.Timer',
     'foam.graphics.Circle',
     'foam.graphics.SimpleRectangle as Rectangle'
@@ -27,58 +29,61 @@ CLASS({
   methods: [
     function initCView() {
       this.SUPER();
-        
-      var engine = this.Circle.create();
-      engine.r = 8;
-      engine.color = 'red';
-      engine.x = 10;
-      engine.y=30;
-      this.addChild(engine);
 
-        var neck1 =this.Rectangle.create();
-        neck1.background = 'black';
-        neck1.width =2;
-        neck1.y = -13;
-        neck1.x = 9;
-        neck1.height = 15;
-        this.addChild(neck1);
-        
+      var body = this.Rectangle.create();
+      body.width = 20;
+      body.height = 30;
+      body.background = '#ccc';
+      this.addChild(body);
+
+      var logo = this.ImageCView.create({src:'/js/com/google/watlobby/img/foam_red.png', x:17, y:3, width: 30, height: 5, a: Math.PI/2});
+      body.addChild(logo);
+
+      var neck =this.Rectangle.create();
+      neck.background = 'black';
+      neck.width =2;
+      neck.y = -13;
+      neck.x = 9;
+      neck.height = 15;
+      body.addChild(neck);
+
       var head = this.Circle.create();
       head.r = 8;
       head.color = 'purple';
       head.x = 0;
       head.y=-5;
-      neck1.addChild(head);
+      neck.addChild(head);
 
-      var body = this.Rectangle.create();
-      body.width = 20;
-      body.height = 30;
-      body.background = 'yellow';
-      this.addChild(body);
-        
+      var engine = this.Circle.create();
+      engine.r = 8;
+      engine.color = 'red';
+      engine.x = 10;
+      engine.y = 30;
+      engine.startAngle = Math.PI;
+      engine.endAngle = 2*Math.PI;
+      body.addChild(engine);
+
       var eye =this.Circle.create();
-        eye.r=5;
-        eye.color='white';
+      eye.r=5;
+      eye.color='white';
       head.addChild(eye);
-        
-        var pupil =this.Circle.create();
-        eye.addChild(pupil);
-        pupil.r=2;
-        pupil.color='lightblue';
-        
-        // animate
-        var robot = this;
-        var timer = this.Timer.create();
-        var startY = this.y;
-        timer.time$.addListener(function() {
-            robot.y = startY + 400 + 100 * Math.cos(timer.i/10);
-            robot.a = Math.PI / 4 * Math.cos(timer.i/15);
-            pupil.x = 4* Math.cos(timer.i/5);
-            neck1.height = 15 + 10* Math.cos(timer.i/5);
-            neck1.y = -13 - 10* Math.cos(timer.i/5);
-            if ( robot.view) robot.view.paint();
-        });
-        timer.start();
+
+      var pupil =this.Circle.create();
+      eye.addChild(pupil);
+      pupil.r=2;
+      pupil.color='lightblue';
+
+      // animate
+      var timer = this.Timer.create();
+      timer.time$.addListener(function() {
+        body.y = 20 * Math.cos(timer.i/10);
+        body.a = Math.PI / 4 * Math.cos(timer.i/30);
+        pupil.x = 4* Math.cos(timer.i/15);
+        neck.height = 15 + 10* Math.cos(timer.i/15);
+        neck.y = -13 - 10* Math.cos(timer.i/15);
+        if ( this.view ) body.view.paint();
+      });
+      timer.start();
     }
   ]
 });
