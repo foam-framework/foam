@@ -52,13 +52,26 @@ CLASS({
       factory: function() { return {}; }
     },
     {
+      name: 'json',
+      factory: function() {
+        return JSONUtil.where(function(prop, obj) {
+	  if ( Property.isInstance(obj) &&
+	       prop.name !== 'name' &&
+	       prop.name !== 'modelId' ) {
+	    return false;
+	  }
+	  return true;
+        });
+      }
+    },
+    {
       name: 'asend',
       factory: function() {
         return function(ret, data) {
           data.msgid = this.msgid;
           this.msgid += 1;
           this.pending[data.msgid] = ret;
-          this.socket.send(JSONUtil.stringify(data));
+          this.socket.send(this.json.stringify(data));
         }
       }
     }

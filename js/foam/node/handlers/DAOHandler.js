@@ -67,9 +67,10 @@ CLASS({
 
       var stringify = this.stringify;
       ws.subscribe(ws.ON_MESSAGE, function(_, _, message) {
-        // Warning insecure parser.
         try {
-          var msg = JSONUtil.parse(this.Y, message);
+          var msg = JSONUtil.mapToObj(this.Y, JSON.parse(message));
+          // TODO (adamvy): USe JSONParser
+          // var msg = JSONUtil.mapToObj(this.Y, JSONParser.parseString(message, JSONParser.obj));
         } catch(e) {
           console.error("Error parsing message", e)
           ws.close();
@@ -184,8 +185,9 @@ CLASS({
           subX = subX.sub({ authHeader: req.headers['x-foam-auth'] });
         }
 
-        // Warning insecure parser.
-        var msg = JSONUtil.parse(this.Y, body);
+        var msg = JSONUtil.mapToObj(this.Y, JSON.parse(message));
+        // TODO (adamvy): USe JSONParser
+        // var msg = JSONUtil.mapToObj(this.Y, JSONParser.parseString(message, JSONParser.obj));
         var stringify = this.stringify;
 
         this.handleDAORequest(msg, {

@@ -109,7 +109,18 @@ var JSONParser = SkipGrammar.create({
     return m;
   },
   "null": function() { return null; },
-  "undefined": function() { return undefined; }
+  "undefined": function() { return undefined; },
+  "number": function(v) {
+    var str = ""
+    if ( v[0] ) {
+      str += v[0];
+    }
+    str += v[1].join("");
+    if ( v[2] ){
+      str += v[2][0] + v[2][1].join("");
+    }
+    return v[2] ? parseFloat(str) : parseInt(str);
+  }
 }), repeat0(alt(' ', '\t', '\n', '\r')));
 
 /*
