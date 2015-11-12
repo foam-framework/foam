@@ -167,6 +167,7 @@ CLASS({
       .shadow0515 { box-shadow: 0 5px 15px rgba(0,0,0,0.33); }
       .flex-grow1 { flex-grow: 1; }
       .flex-grow3 { flex-grow: 3; }
+      .medalController .scrollbar { display: none; }
     */}
   ]
 });

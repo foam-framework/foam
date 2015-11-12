@@ -716,7 +716,7 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <div tabindex="99" class="tableView" style="display:flex;display:-webkit-flex;width:100%;">
+      <div tabindex="99" class="tableView" style="display:flex;display:-webkit-flex;width:100%;overflow:hidden">
         <span id="%%id" style="flex:1 1 100%;-webkit-flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">
           <% this.tableToHTML(out); %>
         </span>

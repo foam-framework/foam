@@ -175,7 +175,11 @@ CLASS({
       .tableView, .mdTableView {
         outline: none;
       }
-      .medalController { display: flex; }
+      body > .medalController {
+        width: 100%;
+        height: 100%;
+      }
+      .medalController { display: flex; overflow: hidden; }
       .searchPanel { color: #666; }
       .foamSearchView select { width: 300px; }
       .tableView { width: auto !important; }
@@ -192,7 +196,6 @@ CLASS({
       .searchResults {
         margin-left: 40px;
         position: relative;
-        height: 100%;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
