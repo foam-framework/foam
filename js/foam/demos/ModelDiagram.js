@@ -31,7 +31,7 @@ CLASS({
 
   properties: [
     [ 'width', 1200/0.75 ],
-    [ 'height', 800/0.75 ],
+    [ 'height', 680/0.75 ],
     [ 'scaleX', 1 ],
     [ 'scaleY', 1 ],
     [ 'background', 'gray' ]
@@ -59,7 +59,7 @@ GLOBAL.cls = cls;
 
       var fnum = 0;
       function feature(f, anim, xo, yo) {
-        var f = self.Box.create({width: v.width/5, height: v.height/5, x: v.x, y: v.y, text: f.name});
+        var f = self.Box.create({width: v.width/5+15, height: v.height/5, x: v.x, y: v.y, text: f.name, font: '12pt Arial'});
         var num = fnum++;
         var x = num % 5;
         var y = Math.floor(num/5);
@@ -73,18 +73,18 @@ GLOBAL.cls = cls;
       }
 
       var fs = [
-        { name: 'Class/Prototype' },
+        { name: 'Class' },
         { name: '.hashCode()' },
         { name: '.copyFrom()' },
         { name: '.clone()' },
         { name: '.deepClone()' },
         { name: '.equals()' },
         { name: '.compareTo()' },
-        { name: 'Observer Support' },
+        { name: 'Observer' },
         { name: 'XML Adapter' },
         { name: 'JSON Adapter' },
         { name: 'UML' },
-        { name: 'Reference Docs' },
+        { name: 'Docs' },
         { name: 'Detail View' },
         { name: 'MD Detail View' },
         { name: 'Table View' },
@@ -99,10 +99,10 @@ GLOBAL.cls = cls;
         { name: 'FileDAO' },
         { name: 'MongoDB' },
         { name: 'Postgres' },
-        { name: 'Google Cloud Store' },
+        { name: 'Google CS' },
         { name: 'Firebase' },
         { name: 'Controller' },
-        { name: 'Your Feature Here' }
+        { name: '...' }
       ];
 
       fs.forEach(function(f) { feature(f, anim, 0, 0); });

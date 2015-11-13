@@ -75,9 +75,9 @@ CLASS({
           var query        = box({text: 'Queries'});
           var concur       = box({text: 'Concurrency'});
           var doc          = box({text: 'Interactive Documents'});
-          var models       = box({text: 'Models'});
-          var otherm       = box({text: '...'});
-            var mp         = box({text: 'Classes',       font: 20});
+          var models       = box({text: '...'});
+          var otherm       = box({text: 'Classes'});
+            var mp         = box({text: 'Traits',        font: 20});
             var mm         = box({text: 'Dependencies',  font: 20});
             var ma         = box({text: 'Type-Checking', font: 20});
             var ml         = box({text: 'Reflection',    font: 20});
@@ -110,7 +110,7 @@ CLASS({
       this.addChild(click);
 
       children(foam, [modeler, lib], true);
-      children(modeler, [ani, parse, query, concur, doc, models, otherm], true);
+      children(modeler, [otherm, ani, parse, query, concur, doc, models], true);
       children(lib, [c, s], false);
       children(c, [android, web, ios], true);
       children(s, [node, java, other], false);
