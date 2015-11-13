@@ -40,8 +40,8 @@ CLASS({
   methods: {
     initCView: function() {
       var self  = this;
-      var v     = this.Box.create({width: 500, height: 600, x:100, y: 120});
-      var robot = this.Robot.create({x:400,y:180,width:200,height:220,scaleX:0,scaleY:0});
+      var v     = this.Box.create({width: 500, height: 600, x:100, y: 115, text: 'Model'});
+      var robot = this.Robot.create({x:400,y:165,width:200,height:220,scaleX:0,scaleY:0});
 
       this.addChildren(
         v, robot
@@ -58,52 +58,89 @@ CLASS({
       ];
 
       var fnum = 0;
-      function feature(n) {
-        var f = self.Box.create({width: v.width/5, height: v.height/5, x: v.x, y: v.y, text: n});
+      function feature(f, anim, xo, yo) {
+        var f = self.Box.create({width: v.width/5, height: v.height/5, x: v.x, y: v.y, text: f.name});
         var num = fnum++;
         var x = num % 5;
         var y = Math.floor(num/5);
 
 //        anim.push([[0]]);
         anim.push(function() { self.addChild(f); });
-        anim.push([100, function() { f.x = robot.x; }]);
-        anim.push([400, function() { f.x += 250; f.scaleX = f.scaleY = 6; }]);
+        anim.push([10, function() { f.x = robot.x; }]);
+        anim.push([40, function() { f.x += 250; f.scaleX = f.scaleY = 6; }]);
 //        anim.push([[0]]);
-        anim.push([100, function() { f.scaleX = f.scaleY = 1; f.x += x * f.width*1.4; f.y += -80 + f.height*1.2 * y; }]);
+        anim.push([10, function() { f.scaleX = f.scaleY = 1; f.x += xo + x * f.width*1.4; f.y += yo + -80 + f.height*1.2 * y; }]);
       }
 
-      feature('Class/Prototype');
-      feature('.hashCode()');
-      feature('.copyFrom()');
-      feature('.clone()');
-      feature('.deepClone()');
-      feature('.equals()');
-      feature('.compareTo()');
-      feature('Observer Support');
-      feature('XML Adapter');
-      feature('JSON Adapter');
-      feature('UML');
-      feature('Detail View');
-      feature('MD Detail View');
-      feature('Table View');
-      feature('Grid View');
-      feature('mLang');
-      feature('Query Parser');
-      feature('Local Storage');
-      feature('IndexedDB');
-      feature('ClientDAO');
-      feature('ServerDAO');
-      feature('Offline Sync');
-      feature('FileDAO');
-      feature('MongoDB');
-      feature('Postgres');
-      feature('Google Cloud Store');
-      feature('Firebase');
-      feature('Controller');
-      feature('...');
-      feature('...');
+      var fs = [
+        { name: 'Class/Prototype' },
+        { name: '.hashCode()' },
+        { name: '.copyFrom()' },
+        { name: '.clone()' },
+        { name: '.deepClone()' },
+        { name: '.equals()' },
+        { name: '.compareTo()' },
+        { name: 'Observer Support' },
+        { name: 'XML Adapter' },
+        { name: 'JSON Adapter' },
+        { name: 'UML' },
+        { name: 'Reference Docs' },
+        { name: 'Detail View' },
+        { name: 'MD Detail View' },
+        { name: 'Table View' },
+        { name: 'Grid View' },
+        { name: 'mLang' },
+        { name: 'Query Parser' },
+        { name: 'Local Storage' },
+        { name: 'IndexedDB' },
+        { name: 'ClientDAO' },
+        { name: 'ServerDAO' },
+        { name: 'Offline Sync' },
+        { name: 'FileDAO' },
+        { name: 'MongoDB' },
+        { name: 'Postgres' },
+        { name: 'Google Cloud Store' },
+        { name: 'Firebase' },
+        { name: 'Controller' },
+        { name: '...' }
+      ];
 
-      console.log(anim);
+      fs.forEach(function(f) { feature(f, anim, 0, 0); });
+
+      anim.push([0]);
+      anim.push([500, function() { self.scaleX = self.scaleY = 0.6; }]);
+      var anim2 = [];
+      fnum = 0;
+      fs.forEach(function(f) { var a = []; feature(f, a, 900, 0); anim2.push(a); });
+      anim.push(anim2);
+
+      anim.push([0]);
+      anim.push([500, function() { self.scaleX = self.scaleY = 0.6 * 0.6; }]);
+      anim2 = [];
+      fnum = 0;
+      fs.forEach(function(f) { var a = []; feature(f, a, 1800, 0); anim2.push(a); });
+      anim.push(anim2);
+
+      anim.push([0]);
+      anim2 = [];
+      fnum = 0;
+      fs.forEach(function(f) { var a = []; feature(f, a, 0, 1000); anim2.push(a); });
+      anim.push(anim2);
+
+      anim.push([0]);
+      var ys1 = self.Box.create({x: 1550, y: 1030, width: 660, height: 850, scaleX: 0, scaleY: 0, font: '50pt Arial', text: 'Your Stack Here'});
+      var ys2 = self.Box.create({x: 1550, y: 1030, width: 0, height: 0, font: '50pt Arial'});
+      var ys3 = self.Box.create({x: 1550, y: 1030, width: 0, height: 0, font: '50pt Arial'});
+      var ys4 = self.Box.create({x: 1550, y: 1030, width: 0, height: 0, font: '50pt Arial'});
+      this.addChildren(ys4, ys3, ys2, ys1);
+      anim.push([300, function() { ys1.scaleX = ys1.scaleY = 1; }]);
+      anim.push([300, function() { ys2.width = 660; ys2.height = 850; ys2.x += 40; ys2.y-=40;}]);
+      anim.push([300, function() { ys3.width = 660; ys3.height = 850; ys3.x += 80; ys3.y-=80;}]);
+      anim.push([300, function() { ys4.width = 660; ys4.height = 850; ys4.x += 120; ys4.y-=120;}]);
+
+      anim.push([0]);
+      anim.push([500, function() { self.scaleX = self.scaleY = 1; }]);
+
       M.compile(anim)();
     }
   }
