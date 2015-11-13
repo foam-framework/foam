@@ -22,9 +22,12 @@ CLASS({
   extends: 'foam.graphics.CView',
 
   requires: [
+    'foam.demos.modeldiagram.Person',
     'foam.demos.supersnake.Robot',
     'foam.ui.DetailView',
+    'foam.ui.md.DetailView as MDDetailView',
     'foam.graphics.CView',
+    'foam.graphics.ViewCView',
     'foam.graphics.LabelledBox as Box',
     'foam.graphics.Circle'
   ],
@@ -43,8 +46,18 @@ CLASS({
       var v     = this.Box.create({width: 500, height: 600, x:100, y: 145, text: 'Model', background: '#ccf', color: 'white', font: '24pt Arial'});
       var cls   = this.Box.create({width: 500, height: 600, x:800, y: 145, text: 'Class', font: '24pt Arial'});
       var robot = this.Robot.create({x:400,y:165,width:200,height:220,scaleX:0,scaleY:0});
+      var display = self.ViewCView.create({
+        innerView: { toHTML: function() { return '<div id="display" class="foam-demos-modeldiagra-display"></div>'; }, initHTML: function() { } },
+        x: 100,
+        y: 400,
+        width: 700,
+        height: 700,
+        background: 'pink'
+      });
 
-      this.addChildren(v, robot, cls);
+GLOBAL.display = display;
+
+      this.addChildren(v, robot, cls, display);
 
       var M = Movement;
       var B = M.bounce(0.2, 0.08, 3);
@@ -64,35 +77,47 @@ CLASS({
         var x = num % 5;
         var y = Math.floor(num/5);
 
+
 //        if ( f.pause ) anim.push([[0]]);
         anim.push(function() { self.addChild(b); });
         anim.push([100*timeWarp, function() { b.x = robot.x; }]);
         if ( f.pause ) {
-          anim.push([400*timeWarp, function() { b.x += 250; b.y-=80; b.scaleX = b.scaleY = 6.5; }]);
+          if ( f.factory ) anim.push(function() { self.setDisplay(f.factory); });
+          anim.push([400*timeWarp, function() { b.x += 250; b.y-=80; b.scaleX = b.scaleY = 3; }]);
           anim.push([[0]]);
+          if ( f.factory ) anim.push(function() { self.setDisplay(); });
           anim.push([200*timeWarp, function() { b.scaleX = b.scaleY = 1; b.x += xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y; }]);
         } else {
           anim.push([600*timeWarp, function() { b.x += 250 + xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y - 80; }]);
         }
       }
 
+      var p = this.Person.create({
+        id: 1,
+        firstName: 'John',
+        lastName: 'Smith',
+        age: 42,
+        married: true
+      });
+
       var fs = [
         { name: 'Class' },
+        { name: 'Detail View', pause: true, factory: function() { return self.DetailView.create({data:p}); /**/ } },
+        { name: 'MD Detail View', pause: true, factory: function() { return self.MDDetailView.create({data:p}); /**/ } },
         { name: '.hashCode()' },
         { name: '.copyFrom()' },
         { name: '.clone()' },
         { name: '.equals()' },
         { name: '.compareTo()' },
-        { name: '.diff()' },
         { name: 'Observer' },
-        { name: 'XML Adapter', pause: true  },
-        { name: 'JSON Adapter', pause: true  },
-        { name: 'UML', pause: true  },
-        { name: 'Docs', pause: true  },
-        { name: 'Detail View', pause: true  },
-        { name: 'MD Detail View', pause: true  },
-        { name: 'Table View', pause: true  },
-        { name: 'Grid View', pause: true  },
+        { name: 'XML Adapter', pause: true },
+        { name: 'JSON Adapter', pause: true },
+        { name: 'UML', pause: true },
+        { name: 'Docs', pause: true },
+        { name: 'MD Detail View', pause: true },
+        { name: 'Table View', pause: true },
+        { name: 'Grid View', pause: true },
+        { name: 'Warped Grid' },
         { name: 'mLang' },
         { name: 'Query Parser' },
         { name: 'Local Storage' },
@@ -140,6 +165,15 @@ CLASS({
 //      anim.push([500, function() { self.scaleX = self.scaleY = 1; }]);
 
       M.compile(anim)();
+    },
+    setDisplay: function(txt) {
+      if ( typeof txt === 'function' ) {
+        var v = txt();
+        this.setDisplay(v.toHTML());
+        v.initHTML();
+      } else {
+        this.X.$('display').innerHTML = txt || '';
+      }
     }
   }
 });
