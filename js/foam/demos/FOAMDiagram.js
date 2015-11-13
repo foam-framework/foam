@@ -33,7 +33,7 @@ CLASS({
     [ 'x',          50      ],
     [ 'y',          50      ],
     [ 'width',      1500    ],
-    [ 'height',     800     ],
+    [ 'height',     750     ],
     [ 'background', 'black' ]
   ],
 
@@ -68,7 +68,7 @@ CLASS({
         }
       }
 
-      var foam = box({text: 'FOAM', font: 60, width: this.width, height: this.height, x: 0, y: 0, alpha: 1});
+      var foam = box({text: 'FOAM', font: 60, width: this.width-2, height: this.height, x: 0, y: 0, alpha: 1});
         var modeler        = box({text: 'Modeler', font: 36});
           var ani          = box({text: 'Animations'});
           var parse        = box({text: 'Parsers'});
