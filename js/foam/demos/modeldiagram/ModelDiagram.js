@@ -49,13 +49,13 @@ CLASS({
   methods: {
     initCView: function() {
       var self  = this;
-      var v     = this.Box.create({width: 500, height: 600, x:100, y: 145, text: 'Model', background: '#ccf', color: 'white', font: '24pt Arial'});
-      var cls   = this.Box.create({width: 500, height: 600, x:800, y: 145, text: 'Class', font: '24pt Arial'});
+      var v     = this.Box.create({width: 500, height: 600, x:100, y: 145, text: 'Model', background: '#ccf', color: 'white', font: '28pt Arial'});
+      var cls   = this.Box.create({width: 500, height: 600, x:800, y: 145, text: 'Class', font: '28pt Arial'});
       var robot = this.Robot.create({x:400,y:165,width:200,height:220,scaleX:0,scaleY:0});
       var display = self.ViewCView.create({
         innerView: { toHTML: function() { return '<div id="display" class="foam-demos-modeldiagra-display"></div>'; }, initHTML: function() { } },
         x: 100,
-        y: 450,
+        y: 550,
         width: 1200,
         height: 740,
         background: 'pink'
@@ -70,29 +70,30 @@ GLOBAL.display = display;
 
       var anim = [
         [0],
-        [500, function() { v.width /= 5; v.height /= 5; cls.alpha = 0; } ],
+        [500, function() { v.width /= 4.5; v.height /= 4.5; cls.alpha = 0; } ],
         [500, function() { robot.scaleX = robot.scaleY = 3; } ],
         [0]
       ];
 
       var fnum = 0;
       function feature(f, anim, xo, yo, timeWarp) {
-        if ( f.factory ) f.pause = true;
+        var factory = f.factory;
+        var pause   = f.factory || f.pause;
+
         timeWarp = timeWarp || 1;
-        var b = self.Box.create({width: v.width/5+15, height: v.height/5, x: v.x, y: v.y, text: f.name, font: '12pt Arial'});
+        var b = self.Box.create({width: v.width/5+15, height: v.height/5, x: v.x, y: v.y, text: f.name, font: '14pt Arial'});
         var num = fnum++;
         var x = num % 5;
         var y = Math.floor(num/5);
 
-
 //        if ( f.pause ) anim.push([[0]]);
         anim.push(function() { self.addChild(b); });
         anim.push([100*timeWarp, function() { b.x = robot.x; }]);
-        if ( f.pause ) {
-          if ( f.factory ) anim.push(function() { self.setDisplay(f.factory); });
+        if ( pause ) {
+          if ( f.factory ) anim.push(function() { self.setDisplay(factory); });
           anim.push([400*timeWarp, function() { b.x += 250; b.y-=80; b.scaleX = b.scaleY = 3; }]);
           anim.push([[0]]);
-          if ( f.factory ) anim.push(function() { self.setDisplay(); });
+          if ( factory ) anim.push(function() { self.setDisplay(); });
           anim.push([200*timeWarp, function() { b.scaleX = b.scaleY = 1; b.x += xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y; }]);
         } else {
           anim.push([600*timeWarp, function() { b.x += 250 + xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y - 80; }]);
@@ -122,12 +123,6 @@ var p = this.Person.create({
    married: true
 });
         */}) },
-        { name: 'UML', factory: function() { return self.DocDiagramView.create({data:self.Person}); }},
-//        { name: 'Docs', factory: function() { return self.DocViewPicker.create({data:self.Person}); }},
-        { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); /**/ } },
-        { name: 'Detail View', factory: function() { return self.DetailView.create({data:p}); /**/ } },
-        { name: 'Help View', factory: function() { return self.HelpView.create({model:Model}); /**/ } },
-        { name: 'MD Detail View', factory: function() { return self.MDDetailView.create({data:p}); /**/ } },
         { name: '.hashCode()', factory: multiline(function() {/*
 > p.hashCode();
 < 343020328
@@ -141,7 +136,7 @@ var p = this.Person.create({
         { name: '.equals()' },
         { name: '.compareTo()' },
         { name: 'Observer' },
-        { name: 'XML Adapter', factory: multiline(function() {/*
+        { name: 'XML', factory: multiline(function() {/*
 > p.toXML();
 < "<foam>
 <object model="Person">
@@ -153,7 +148,7 @@ var p = this.Person.create({
 </object>
 </foam>"
 */}) },
-        { name: 'JSON Adapter',  factory: multiline(function() {/*
+        { name: 'JSON',  factory: multiline(function() {/*
 > p.toJSON();"
 < "{
    "model_": "foam.demos.modeldiagram.Person",
@@ -163,23 +158,25 @@ var p = this.Person.create({
    "age": 42,
    "married": true
 }"*/})  },
-        { name: 'Docs', pause: true },
-        { name: 'MD Detail View', pause: true },
-        { name: 'Grid View', pause: true },
-        { name: 'Warped Grid' },
-        { name: 'mLang' },
-        { name: 'Query Parser' },
-        { name: 'Local Storage' },
+        { name: 'Detail View', factory: function() { return self.DetailView.create({data:p}); /**/ } },
+        { name: 'MD View', factory: function() { return self.MDDetailView.create({data:p}); /**/ } },
+        { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); /**/ } },
+        { name: 'Help View', factory: function() { return self.HelpView.create({model:Model}); /**/ } },
+        { name: 'Grid View', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="border:1px solid;max-height:530px" width="50%" src="./js/foam/demos/modeldiagram/WarpedGrid.png">'; }, initHTML: function() { }}; } },
+        { name: 'Query' },
+        { name: 'Local Store' },
         { name: 'IndexedDB' },
         { name: 'ClientDAO' },
         { name: 'ServerDAO' },
-        { name: 'Offline Sync' },
+        { name: 'Offline' },
         { name: 'FileDAO' },
         { name: 'MongoDB' },
         { name: 'Postgres' },
-        { name: 'Google CS' },
+        { name: 'Cloud Store' },
         { name: 'Firebase' },
-        { name: 'Controller' },
+        { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="margin-left: 100px;border:1px solid;max-height:530px" src="./demos/democat/GMail.png">'; }, initHTML: function() { }}; } },
+        { name: 'UML', factory: function() { return self.DocDiagramView.create({data:self.Person}); }},
+//        { name: 'Docs', factory: function() { return self.DocViewPicker.create({data:self.Person}); }},
         { name: '...' }
       ];
 
@@ -187,26 +184,25 @@ var p = this.Person.create({
       fs.forEach(function(f) { feature(f, anim, 0, 0); });
 
       // Java
+      anim.push([0]);
       fs.forEach(function(f) { f.factory = false; f.pause = false; });
-      anim.push(function() {
-        fs[0].factory = self.JavaSource.create().generate(self.Person);
-      });
+      fs[0].factory = self.JavaSource.create().generate(self.Person);
       anim.push([500, function() { self.scaleX = self.scaleY = 0.6; }]);
       fnum = 0;
-      fs.forEach(function(f) { feature(f, anim, 900, 0, 0.3); });
+      fs.forEach(function(f) { feature(f, anim, 900, 0, 0.2); });
 
       // Swift
-      anim.push(function() {
-        fs[0].factory = self.SwiftSource.create().generate(self.Person);
-      });
+      anim.push([0]);
+      fs[0].factory = self.SwiftSource.create().generate(self.Person);
       anim.push([500, function() { self.scaleX = self.scaleY = 0.6 * 0.6; }]);
       fnum = 0;
-      fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.3); });
+      fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.2); });
 
       // Other
+      anim.push([0]);
       fs.forEach(function(f) { f.factory = false; f.pause = false; });
       fnum = 0;
-      fs.forEach(function(f) { feature(f, anim, 0, 1000, 0.3); });
+      fs.forEach(function(f) { feature(f, anim, 0, 1000, 0.2); });
 
       // Your Stack Here
       anim.push([0]);
