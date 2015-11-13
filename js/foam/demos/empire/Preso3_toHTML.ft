@@ -546,7 +546,7 @@ CLASS({
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Tutorial</div>
+        <div class="flex-grow content small-heading">Tutorials</div>
       </div>
     </div>
     <div class="flex-row flex-grow flex-stretch overflow-hidden">

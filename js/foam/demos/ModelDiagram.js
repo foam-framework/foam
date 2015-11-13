@@ -58,18 +58,23 @@ GLOBAL.cls = cls;
       ];
 
       var fnum = 0;
-      function feature(f, anim, xo, yo) {
-        var f = self.Box.create({width: v.width/5+15, height: v.height/5, x: v.x, y: v.y, text: f.name, font: '12pt Arial'});
+      function feature(f, anim, xo, yo, timeWarp) {
+        timeWarp = timeWarp || 1;
+        var b = self.Box.create({width: v.width/5+15, height: v.height/5, x: v.x, y: v.y, text: f.name, font: '12pt Arial'});
         var num = fnum++;
         var x = num % 5;
         var y = Math.floor(num/5);
 
-//        anim.push([[0]]);
-        anim.push(function() { self.addChild(f); });
-        anim.push([10, function() { f.x = robot.x; }]);
-        anim.push([40, function() { f.x += 250; f.scaleX = f.scaleY = 6; }]);
-//        anim.push([[0]]);
-        anim.push([10, function() { f.scaleX = f.scaleY = 1; f.x += xo + x * f.width*1.4; f.y += yo + -80 + f.height*1.2 * y; }]);
+//        if ( f.pause ) anim.push([[0]]);
+        anim.push(function() { self.addChild(b); });
+        anim.push([100*timeWarp, function() { b.x = robot.x; }]);
+        if ( f.pause ) {
+          anim.push([400*timeWarp, function() { b.x += 250; b.y-=80; b.scaleX = b.scaleY = 6.5; }]);
+          anim.push([[0]]);
+          anim.push([200*timeWarp, function() { b.scaleX = b.scaleY = 1; b.x += xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y; }]);
+        } else {
+          anim.push([200*timeWarp, function() { b.x += 250 + xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y - 80; }]);
+        }
       }
 
       var fs = [
@@ -77,18 +82,18 @@ GLOBAL.cls = cls;
         { name: '.hashCode()' },
         { name: '.copyFrom()' },
         { name: '.clone()' },
-        { name: '.deepClone()' },
         { name: '.equals()' },
         { name: '.compareTo()' },
+        { name: '.diff()' },
         { name: 'Observer' },
-        { name: 'XML Adapter' },
-        { name: 'JSON Adapter' },
-        { name: 'UML' },
-        { name: 'Docs' },
-        { name: 'Detail View' },
-        { name: 'MD Detail View' },
-        { name: 'Table View' },
-        { name: 'Grid View' },
+        { name: 'XML Adapter', pause: true  },
+        { name: 'JSON Adapter', pause: true  },
+        { name: 'UML', pause: true  },
+        { name: 'Docs', pause: true  },
+        { name: 'Detail View', pause: true  },
+        { name: 'MD Detail View', pause: true  },
+        { name: 'Table View', pause: true  },
+        { name: 'Grid View', pause: true  },
         { name: 'mLang' },
         { name: 'Query Parser' },
         { name: 'Local Storage' },
@@ -107,25 +112,19 @@ GLOBAL.cls = cls;
 
       fs.forEach(function(f) { feature(f, anim, 0, 0); });
 
-      anim.push([0]);
+      fs.forEach(function(f) { f.pause = false; });
+      fs[0].pause = true;
+
       anim.push([500, function() { self.scaleX = self.scaleY = 0.6; }]);
-      var anim2 = [];
       fnum = 0;
-      fs.forEach(function(f) { var a = []; feature(f, a, 900, 0); anim2.push(a); });
-      anim.push(anim2);
+      fs.forEach(function(f) { feature(f, anim, 900, 0, 0.05); });
 
-      anim.push([0]);
       anim.push([500, function() { self.scaleX = self.scaleY = 0.6 * 0.6; }]);
-      anim2 = [];
       fnum = 0;
-      fs.forEach(function(f) { var a = []; feature(f, a, 1800, 0); anim2.push(a); });
-      anim.push(anim2);
+      fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.05); });
 
-      anim.push([0]);
-      anim2 = [];
       fnum = 0;
-      fs.forEach(function(f) { var a = []; feature(f, a, 0, 1000); anim2.push(a); });
-      anim.push(anim2);
+      fs.forEach(function(f) { feature(f, anim, 0, 1000, 0.05); });
 
       anim.push([0]);
       var ys1 = self.Box.create({x: 1550, y: 1060, width: 660, height: 850, scaleX: 0, scaleY: 0, font: '50pt Arial', text: 'Your Stack Here'});
