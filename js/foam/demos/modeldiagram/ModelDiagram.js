@@ -40,10 +40,10 @@ CLASS({
 
   properties: [
     [ 'width', 1200/0.75 ],
-    [ 'height', 680/0.75 ],
-    [ 'scaleX', 1 ],
-    [ 'scaleY', 1 ],
-    [ 'background', 'gray' ]
+    [ 'height', 750/0.75 ]
+//    [ 'scaleX', 1 ],
+//    [ 'scaleY', 1 ]
+//    [ 'background', 'gray' ]
   ],
 
   methods: {
@@ -53,9 +53,9 @@ CLASS({
       var cls   = this.Box.create({width: 500, height: 600, x:800, y: 145, text: 'Class', font: '28pt Arial'});
       var robot = this.Robot.create({x:400,y:165,width:200,height:220,scaleX:0,scaleY:0});
       var display = self.ViewCView.create({
-        innerView: { toHTML: function() { return '<div id="display" class="foam-demos-modeldiagra-display"></div>'; }, initHTML: function() { } },
+        innerView: { toHTML: function() { return '<div id="display" class="foam-demos-modeldiagram-display"></div>'; }, initHTML: function() { } },
         x: 100,
-        y: 550,
+        y: 650,
         width: 1200,
         height: 740,
         background: 'pink'
@@ -81,14 +81,15 @@ GLOBAL.display = display;
         var pause   = f.factory || f.pause;
 
         timeWarp = timeWarp || 1;
-        var b = self.Box.create({width: v.width/5+15, height: v.height/5, x: v.x, y: v.y, text: f.name, font: '14pt Arial'});
+        var b = self.Box.create({width: v.width/5+15, height: v.height/5, x: robot.x, y: v.y, text: f.name, font: '14pt Arial'});
         var num = fnum++;
         var x = num % 5;
         var y = Math.floor(num/5);
 
 //        if ( f.pause ) anim.push([[0]]);
         anim.push(function() { self.addChild(b); });
-        anim.push([100*timeWarp, function() { b.x = robot.x; }]);
+//        anim.push([100*timeWarp, function() { b.x = robot.x; }]);
+//        anim.push(function() { b.background = 'white'; });
         if ( pause ) {
           if ( f.factory ) anim.push(function() { self.setDisplay(factory); });
           anim.push([400*timeWarp, function() { b.x += 250; b.y-=80; b.scaleX = b.scaleY = 3; }]);
@@ -161,8 +162,9 @@ var p = this.Person.create({
         { name: 'Detail View', factory: function() { return self.DetailView.create({data:p}); /**/ } },
         { name: 'MD View', factory: function() { return self.MDDetailView.create({data:p}); /**/ } },
         { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); /**/ } },
+        { name: 'List View' },
         { name: 'Help View', factory: function() { return self.HelpView.create({model:Model}); /**/ } },
-        { name: 'Grid View', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="border:1px solid;max-height:530px" width="50%" src="./js/foam/demos/modeldiagram/WarpedGrid.png">'; }, initHTML: function() { }}; } },
+        { name: 'Grid View', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="border:1px solid;max-height:510px" width="45%" src="./js/foam/demos/modeldiagram/WarpedGrid.png">'; }, initHTML: function() { }}; } },
         { name: 'Query' },
         { name: 'Local Store' },
         { name: 'IndexedDB' },
@@ -174,9 +176,10 @@ var p = this.Person.create({
         { name: 'Postgres' },
         { name: 'Cloud Store' },
         { name: 'Firebase' },
-        { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="margin-left: 100px;border:1px solid;max-height:530px" src="./demos/democat/GMail.png">'; }, initHTML: function() { }}; } },
+        { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" height="65%" style="margin-left: 100px;border:1px solid;max-height:510px" src="./demos/democat/GMail.png">'; }, initHTML: function() { }}; } },
         { name: 'UML', factory: function() { return self.DocDiagramView.create({data:self.Person}); }},
 //        { name: 'Docs', factory: function() { return self.DocViewPicker.create({data:self.Person}); }},
+        { name: '...' },
         { name: '...' }
       ];
 
@@ -187,14 +190,14 @@ var p = this.Person.create({
       anim.push([0]);
       fs.forEach(function(f) { f.factory = false; f.pause = false; });
       fs[0].factory = self.JavaSource.create().generate(self.Person);
-      anim.push([500, function() { self.scaleX = self.scaleY = 0.6; }]);
+      anim.push([500, function() { self.scaleX = self.scaleY = 0.7; }]);
       fnum = 0;
       fs.forEach(function(f) { feature(f, anim, 900, 0, 0.2); });
 
       // Swift
       anim.push([0]);
       fs[0].factory = self.SwiftSource.create().generate(self.Person);
-      anim.push([500, function() { self.scaleX = self.scaleY = 0.6 * 0.6; }]);
+      anim.push([500, function() { self.scaleX = self.scaleY = 0.7 * 0.7; }]);
       fnum = 0;
       fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.2); });
 
@@ -227,7 +230,7 @@ var p = this.Person.create({
         this.X.$('display').innerHTML = v.toHTML();
         v.initHTML();
       } else {
-        this.X.$('display').innerHTML = txt ? '<textarea style="font-size:24px" rows="20" cols="75">' + txt + '</textarea>' : '';
+        this.X.$('display').innerHTML = txt ? '<textarea style="font-size:24px" rows="16" cols="77">' + txt + '</textarea>' : '';
       }
     }
   }

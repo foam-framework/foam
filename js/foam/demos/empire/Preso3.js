@@ -123,6 +123,7 @@ CLASS({
         font-family: Roboto, Arial;
         font-size: x-large;
       }
+      .foam-demos-modeldiagram-display .md-detail-view { width: 600px; }
       html, body { margin: 0; padding: 0; }
       slides deck { position: relative; }
       foam-components { font-size: 100%; }
