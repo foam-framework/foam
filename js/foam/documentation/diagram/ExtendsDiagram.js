@@ -80,7 +80,7 @@ CLASS({
     construct: function() {
       this.SUPER();
 
-      var childX = this.X.sub({
+      var childX = this.Y.sub({
         documentViewRef: this.SimpleValue.create(
           this.DocRef.create({ ref: this.data.extends })
       )});
