@@ -199,7 +199,7 @@
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
-      <img src="./js/foam/demos/empire/benchmarks.png">
+      <img src="./js/foam/demos/empire/benchmarks.png" width="110%">
     </div>
   </slide>
 
@@ -372,14 +372,11 @@ CLASS({
           <viewChoice>
             <label>Animation</label>
             <p:view>
-<div class="scale05 origin0" style="margin-left:100px">
+<div class="scale05 origin0" style="margin-left:100px;margin-top:200px;">
 <table>
 <tr>
- <td align="center"><foam model="foam.demos.graphics.Dragon" timer=""/></td>
- <td align="center"><foam model="foam.demos.graphics.Complements2a"/></td>
-</tr><tr>
  <td valign="top" align="center"><foam model="foam.demos.graphics.Spin" width="800" height="800"/></td>
- <td align="center"><foam model="foam.demos.supersnake.Robot" scaleX="8" scaleY="8" width="600" height="1000" x="450"/></td>
+ <td style="padding-left:250px;"><foam model="foam.demos.graphics.Complements2a"/></td>
 </tr>
 </table>
 </div>
@@ -428,8 +425,10 @@ CLASS({
             <label>Graphical</label>
             <p:view>
               <code>
-      clock1.x = mouse.x;
-      clock1.y = mouse.y;
+    this.dynamic(function() {
+        clock1.x = mouse.x;
+        clock1.y = mouse.y;
+    });
               </code>
               <foam model="foam.demos.ReactiveClocks" stage="0"/>
             </p:view>
@@ -451,11 +450,11 @@ CLASS({
             <label>Time</label>
             <p:view>
               <code>
-      clock1.x = mouse.x;
-      clock1.y = mouse.y;
+  clock1.x = mouse.x;
+  clock1.y = mouse.y;
 
-      clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
-      clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
+  clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
+  clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
               </code>
               <foam model="foam.demos.ReactiveClocks" stage="2"/>
             </p:view>
