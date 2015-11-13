@@ -46,12 +46,6 @@ CLASS({
   ],
 
   methods: [
-    function toPeople() {
-      return this.id;
-    },
-    function toChipE(X) {
-      /* Implement to return a contact chip view Element */
-    },
     function toRowE(X) {
       return this.Element.create({ nodeName: 'DIV' }, X)
           .add(this.displayName$);
