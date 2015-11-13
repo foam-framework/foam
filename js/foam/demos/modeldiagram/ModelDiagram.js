@@ -49,8 +49,8 @@ CLASS({
       var display = self.ViewCView.create({
         innerView: { toHTML: function() { return '<div id="display" class="foam-demos-modeldiagra-display"></div>'; }, initHTML: function() { } },
         x: 100,
-        y: 400,
-        width: 700,
+        y: 420,
+        width: 800,
         height: 700,
         background: 'pink'
       });
@@ -71,6 +71,7 @@ GLOBAL.display = display;
 
       var fnum = 0;
       function feature(f, anim, xo, yo, timeWarp) {
+        if ( f.factory ) f.pause = true;
         timeWarp = timeWarp || 1;
         var b = self.Box.create({width: v.width/5+15, height: v.height/5, x: v.x, y: v.y, text: f.name, font: '12pt Arial'});
         var num = fnum++;
@@ -99,19 +100,57 @@ GLOBAL.display = display;
         age: 42,
         married: true
       });
+      GLOBAL.p = p;
 
       var fs = [
-        { name: 'Class' },
+        { name: 'Class', pause: true, factory: multiline(function() {/*
+var p = this.Person.create({
+   id: 1,
+   firstName: 'John',
+   lastName: 'Smith',
+   age: 42,
+   married: true
+});
+        */}) },
         { name: 'Detail View', pause: true, factory: function() { return self.DetailView.create({data:p}); /**/ } },
         { name: 'MD Detail View', pause: true, factory: function() { return self.MDDetailView.create({data:p}); /**/ } },
-        { name: '.hashCode()' },
+        { name: '.hashCode()', pause: true, factory: multiline(function() {/*
+> p.hashCode();
+< 343020328
+> p.firstName = 'Steve';
+< "Steve"
+> p.hashCode();
+< 1609175968
+*/}) },
         { name: '.copyFrom()' },
         { name: '.clone()' },
         { name: '.equals()' },
         { name: '.compareTo()' },
         { name: 'Observer' },
-        { name: 'XML Adapter', pause: true },
-        { name: 'JSON Adapter', pause: true },
+        { name: 'XML Adapter', factory: multiline(function() {/*
+<textarea style="font-size:28px" rows="12" cols="45">
+> p.toXML();
+< "<foam>
+<object model="Person">
+  <property name="id">1</property>
+  <property name="firstName">John</property>
+  <property name="lastName">Smith</property>
+  <property name="age">42</property>
+  <property name="married">true</property>
+</object>
+</foam>"
+</textarea>
+*/}) },
+        { name: 'JSON Adapter',  factory: multiline(function() {/*
+> p.toJSON();"
+< "{
+   "model_": "foam.demos.modeldiagram.Person",
+   "id": 1,
+   "firstName": "John",
+   "lastName": "Smith",
+   "age": 42,
+   "married": true
+}"*/})  },
         { name: 'UML', pause: true },
         { name: 'Docs', pause: true },
         { name: 'MD Detail View', pause: true },
@@ -169,10 +208,10 @@ GLOBAL.display = display;
     setDisplay: function(txt) {
       if ( typeof txt === 'function' ) {
         var v = txt();
-        this.setDisplay(v.toHTML());
+        this.X.$('display').innerHTML = v.toHTML();
         v.initHTML();
       } else {
-        this.X.$('display').innerHTML = txt || '';
+        this.X.$('display').innerHTML = txt ? '<pre style="font-size:30px">' + txt + '</pre>' : '';
       }
     }
   }
