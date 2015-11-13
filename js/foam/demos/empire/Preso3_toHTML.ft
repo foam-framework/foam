@@ -56,14 +56,23 @@
         <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw"
              style="border: 1px solid;">
         <br>
-        <span style="font-size: 60%">(22k 1-week active users)</span>
+        <span style="font-size: 60%">(38k 1-week active users)</span>
       </div>
     </div>
   </slide>
 -->
 
   <slide>
-    <foam model="foam.demos.FOAMComponents" />
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Models, Features and Platforms</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <foam model="foam.demos.ModelDiagram" />
+    </div>
+<!--    <foam model="foam.demos.FOAMComponents" /> -->
   </slide>
 
   <slide>

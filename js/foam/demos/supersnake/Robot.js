@@ -76,7 +76,7 @@ CLASS({
       // animate
       var timer = this.Timer.create();
       timer.time$.addListener(function() {
-        body.y = 20 * Math.cos(timer.i/10);
+        body.y = 20 * Math.cos(timer.i/9);
         body.a = Math.PI / 4 * Math.cos(timer.i/30);
         pupil.x = 4* Math.cos(timer.i/15);
         neck.height = 15 + 10* Math.cos(timer.i/15);

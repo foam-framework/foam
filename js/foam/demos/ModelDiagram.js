@@ -40,19 +40,19 @@ CLASS({
   methods: {
     initCView: function() {
       var self  = this;
-      var v     = this.Box.create({width: 500, height: 600, x:100, y: 115, text: 'Model'});
+      var v     = this.Box.create({width: 500, height: 600, x:100, y: 145, text: 'Model', background: '#ccf', color: 'white', font: '24pt Arial'});
+      var cls   = this.Box.create({width: 500, height: 600, x:800, y: 145, text: 'Class', font: '24pt Arial'});
       var robot = this.Robot.create({x:400,y:165,width:200,height:220,scaleX:0,scaleY:0});
 
-      this.addChildren(
-        v, robot
-      );
+GLOBAL.cls = cls;
+      this.addChildren(v, robot, cls);
 
       var M = Movement;
       var B = M.bounce(0.2, 0.08, 3);
 
       var anim = [
         [0],
-        [500, function() { v.width /= 5; v.height /= 5; } ],
+        [500, function() { v.width /= 5; v.height /= 5; cls.alpha = 0; } ],
         [500, function() { robot.scaleX = robot.scaleY = 3; } ],
         [0]
       ];
@@ -102,7 +102,7 @@ CLASS({
         { name: 'Google Cloud Store' },
         { name: 'Firebase' },
         { name: 'Controller' },
-        { name: '...' }
+        { name: 'Your Feature Here' }
       ];
 
       fs.forEach(function(f) { feature(f, anim, 0, 0); });
@@ -128,10 +128,10 @@ CLASS({
       anim.push(anim2);
 
       anim.push([0]);
-      var ys1 = self.Box.create({x: 1550, y: 1030, width: 660, height: 850, scaleX: 0, scaleY: 0, font: '50pt Arial', text: 'Your Stack Here'});
-      var ys2 = self.Box.create({x: 1550, y: 1030, width: 0, height: 0, font: '50pt Arial'});
-      var ys3 = self.Box.create({x: 1550, y: 1030, width: 0, height: 0, font: '50pt Arial'});
-      var ys4 = self.Box.create({x: 1550, y: 1030, width: 0, height: 0, font: '50pt Arial'});
+      var ys1 = self.Box.create({x: 1550, y: 1060, width: 660, height: 850, scaleX: 0, scaleY: 0, font: '50pt Arial', text: 'Your Stack Here'});
+      var ys2 = self.Box.create({x: 1550, y: 1060, width: 0, height: 0, font: '50pt Arial'});
+      var ys3 = self.Box.create({x: 1550, y: 1060, width: 0, height: 0, font: '50pt Arial'});
+      var ys4 = self.Box.create({x: 1550, y: 1060, width: 0, height: 0, font: '50pt Arial'});
       this.addChildren(ys4, ys3, ys2, ys1);
       anim.push([300, function() { ys1.scaleX = ys1.scaleY = 1; }]);
       anim.push([300, function() { ys2.width = 660; ys2.height = 850; ys2.x += 40; ys2.y-=40;}]);
@@ -139,7 +139,7 @@ CLASS({
       anim.push([300, function() { ys4.width = 660; ys4.height = 850; ys4.x += 120; ys4.y-=120;}]);
 
       anim.push([0]);
-      anim.push([500, function() { self.scaleX = self.scaleY = 1; }]);
+//      anim.push([500, function() { self.scaleX = self.scaleY = 1; }]);
 
       M.compile(anim)();
     }
