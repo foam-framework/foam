@@ -17,7 +17,7 @@
 
 // TODO(kgr): add rotation to CView to complete demo
 CLASS({
-  package: 'foam.demos',
+  package: 'foam.demos.modeldiagram',
   name: 'ModelDiagram',
   extends: 'foam.graphics.CView',
 
@@ -44,7 +44,6 @@ CLASS({
       var cls   = this.Box.create({width: 500, height: 600, x:800, y: 145, text: 'Class', font: '24pt Arial'});
       var robot = this.Robot.create({x:400,y:165,width:200,height:220,scaleX:0,scaleY:0});
 
-GLOBAL.cls = cls;
       this.addChildren(v, robot, cls);
 
       var M = Movement;
@@ -73,7 +72,7 @@ GLOBAL.cls = cls;
           anim.push([[0]]);
           anim.push([200*timeWarp, function() { b.scaleX = b.scaleY = 1; b.x += xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y; }]);
         } else {
-          anim.push([200*timeWarp, function() { b.x += 250 + xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y - 80; }]);
+          anim.push([600*timeWarp, function() { b.x += 250 + xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y - 80; }]);
         }
       }
 
@@ -117,14 +116,14 @@ GLOBAL.cls = cls;
 
       anim.push([500, function() { self.scaleX = self.scaleY = 0.6; }]);
       fnum = 0;
-      fs.forEach(function(f) { feature(f, anim, 900, 0, 0.05); });
+      fs.forEach(function(f) { feature(f, anim, 900, 0, 0.3); });
 
       anim.push([500, function() { self.scaleX = self.scaleY = 0.6 * 0.6; }]);
       fnum = 0;
-      fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.05); });
+      fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.3); });
 
       fnum = 0;
-      fs.forEach(function(f) { feature(f, anim, 0, 1000, 0.05); });
+      fs.forEach(function(f) { feature(f, anim, 0, 1000, 0.3); });
 
       anim.push([0]);
       var ys1 = self.Box.create({x: 1550, y: 1060, width: 660, height: 850, scaleX: 0, scaleY: 0, font: '50pt Arial', text: 'Your Stack Here'});
