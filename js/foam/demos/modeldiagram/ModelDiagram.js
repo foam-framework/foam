@@ -88,8 +88,6 @@ GLOBAL.display = display;
 
 //        if ( f.pause ) anim.push([[0]]);
         anim.push(function() { self.addChild(b); });
-//        anim.push([100*timeWarp, function() { b.x = robot.x; }]);
-//        anim.push(function() { b.background = 'white'; });
         if ( pause ) {
           if ( f.factory ) anim.push(function() { self.setDisplay(factory); });
           anim.push([400*timeWarp, function() { b.x += 250; b.y-=80; b.scaleX = b.scaleY = 3; }]);
@@ -159,11 +157,11 @@ var p = this.Person.create({
    "age": 42,
    "married": true
 }"*/})  },
-        { name: 'Detail View', factory: function() { return self.DetailView.create({data:p}); /**/ } },
-        { name: 'MD View', factory: function() { return self.MDDetailView.create({data:p}); /**/ } },
-        { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); /**/ } },
+        { name: 'Detail View', factory: function() { return self.DetailView.create({data:p}); } },
+        { name: 'MD View', factory: function() { return self.MDDetailView.create({data:p}); } },
+        { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); } },
         { name: 'List View' },
-        { name: 'Help View', factory: function() { return self.HelpView.create({model:Model}); /**/ } },
+        { name: 'Help View', factory: function() { return self.HelpView.create({model:Model}); } },
         { name: 'Grid View', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="border:1px solid;max-height:510px" width="45%" src="./js/foam/demos/modeldiagram/WarpedGrid.png">'; }, initHTML: function() { }}; } },
         { name: 'Query' },
         { name: 'Local Store' },
@@ -176,7 +174,7 @@ var p = this.Person.create({
         { name: 'Postgres' },
         { name: 'Cloud Store' },
         { name: 'Firebase' },
-        { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" height="65%" style="margin-left: 100px;border:1px solid;max-height:510px" src="./demos/democat/GMail.png">'; }, initHTML: function() { }}; } },
+        { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" height="60%" style="margin-left: 100px;border:1px solid;max-height:510px" src="./demos/democat/GMail.png">'; }, initHTML: function() { }}; } },
         { name: 'UML', factory: function() { return self.DocDiagramView.create({data:self.Person}); }},
 //        { name: 'Docs', factory: function() { return self.DocViewPicker.create({data:self.Person}); }},
         { name: '...' },
@@ -227,7 +225,9 @@ var p = this.Person.create({
     setDisplay: function(txt) {
       if ( typeof txt === 'function' ) {
         var v = txt();
-        this.X.$('display').innerHTML = v.toHTML();
+        var t = txt.toString();
+        t = t.length < 60 ? t.substring(26, t.length-2) : '';
+        this.X.$('display').innerHTML = '<div style="font-size:24px">' + t + '</div><br><br>' + v.toHTML();
         v.initHTML();
       } else {
         this.X.$('display').innerHTML = txt ? '<textarea style="font-size:24px" rows="16" cols="77">' + txt + '</textarea>' : '';
