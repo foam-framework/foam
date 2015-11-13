@@ -25,10 +25,16 @@ CLASS({
     'foam.demos.modeldiagram.Person',
     'foam.demos.supersnake.Robot',
     'foam.ui.DetailView',
+    'foam.ui.TableView',
+    'foam.ui.HelpView',
     'foam.ui.md.DetailView as MDDetailView',
+    'foam.documentation.DocViewPicker',
+    'foam.documentation.diagram.DocDiagramView',
     'foam.graphics.CView',
     'foam.graphics.ViewCView',
     'foam.graphics.LabelledBox as Box',
+    'foam.util.JavaSource',
+    'foam.util.swift.SwiftSource',
     'foam.graphics.Circle'
   ],
 
@@ -49,9 +55,9 @@ CLASS({
       var display = self.ViewCView.create({
         innerView: { toHTML: function() { return '<div id="display" class="foam-demos-modeldiagra-display"></div>'; }, initHTML: function() { } },
         x: 100,
-        y: 420,
-        width: 800,
-        height: 700,
+        y: 450,
+        width: 1200,
+        height: 740,
         background: 'pink'
       });
 
@@ -100,6 +106,10 @@ GLOBAL.display = display;
         age: 42,
         married: true
       });
+      var people = [
+        p,
+        this.Person.create({id: 2, firstName: 'Janet', lastName: 'Jones', age: 38, married: true}),
+        this.Person.create({id: 2, firstName: 'Jimmy', lastName: 'Jones', age: 8, married: false})      ];
       GLOBAL.p = p;
 
       var fs = [
@@ -112,9 +122,13 @@ var p = this.Person.create({
    married: true
 });
         */}) },
-        { name: 'Detail View', pause: true, factory: function() { return self.DetailView.create({data:p}); /**/ } },
-        { name: 'MD Detail View', pause: true, factory: function() { return self.MDDetailView.create({data:p}); /**/ } },
-        { name: '.hashCode()', pause: true, factory: multiline(function() {/*
+        { name: 'UML', factory: function() { return self.DocDiagramView.create({data:self.Person}); }},
+//        { name: 'Docs', factory: function() { return self.DocViewPicker.create({data:self.Person}); }},
+        { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); /**/ } },
+        { name: 'Detail View', factory: function() { return self.DetailView.create({data:p}); /**/ } },
+        { name: 'Help View', factory: function() { return self.HelpView.create({model:Model}); /**/ } },
+        { name: 'MD Detail View', factory: function() { return self.MDDetailView.create({data:p}); /**/ } },
+        { name: '.hashCode()', factory: multiline(function() {/*
 > p.hashCode();
 < 343020328
 > p.firstName = 'Steve';
@@ -128,7 +142,6 @@ var p = this.Person.create({
         { name: '.compareTo()' },
         { name: 'Observer' },
         { name: 'XML Adapter', factory: multiline(function() {/*
-<textarea style="font-size:28px" rows="12" cols="45">
 > p.toXML();
 < "<foam>
 <object model="Person">
@@ -139,7 +152,6 @@ var p = this.Person.create({
   <property name="married">true</property>
 </object>
 </foam>"
-</textarea>
 */}) },
         { name: 'JSON Adapter',  factory: multiline(function() {/*
 > p.toJSON();"
@@ -151,10 +163,8 @@ var p = this.Person.create({
    "age": 42,
    "married": true
 }"*/})  },
-        { name: 'UML', pause: true },
         { name: 'Docs', pause: true },
         { name: 'MD Detail View', pause: true },
-        { name: 'Table View', pause: true },
         { name: 'Grid View', pause: true },
         { name: 'Warped Grid' },
         { name: 'mLang' },
@@ -173,22 +183,32 @@ var p = this.Person.create({
         { name: '...' }
       ];
 
+      // JS
       fs.forEach(function(f) { feature(f, anim, 0, 0); });
 
-      fs.forEach(function(f) { f.pause = false; });
-      fs[0].pause = true;
-
+      // Java
+      fs.forEach(function(f) { f.factory = false; f.pause = false; });
+      anim.push(function() {
+        fs[0].factory = self.JavaSource.create().generate(self.Person);
+      });
       anim.push([500, function() { self.scaleX = self.scaleY = 0.6; }]);
       fnum = 0;
       fs.forEach(function(f) { feature(f, anim, 900, 0, 0.3); });
 
+      // Swift
+      anim.push(function() {
+        fs[0].factory = self.SwiftSource.create().generate(self.Person);
+      });
       anim.push([500, function() { self.scaleX = self.scaleY = 0.6 * 0.6; }]);
       fnum = 0;
       fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.3); });
 
+      // Other
+      fs.forEach(function(f) { f.factory = false; f.pause = false; });
       fnum = 0;
       fs.forEach(function(f) { feature(f, anim, 0, 1000, 0.3); });
 
+      // Your Stack Here
       anim.push([0]);
       var ys1 = self.Box.create({x: 1550, y: 1060, width: 660, height: 850, scaleX: 0, scaleY: 0, font: '50pt Arial', text: 'Your Stack Here'});
       var ys2 = self.Box.create({x: 1550, y: 1060, width: 0, height: 0, font: '50pt Arial'});
@@ -211,7 +231,7 @@ var p = this.Person.create({
         this.X.$('display').innerHTML = v.toHTML();
         v.initHTML();
       } else {
-        this.X.$('display').innerHTML = txt ? '<pre style="font-size:30px">' + txt + '</pre>' : '';
+        this.X.$('display').innerHTML = txt ? '<textarea style="font-size:24px" rows="20" cols="75">' + txt + '</textarea>' : '';
       }
     }
   }
