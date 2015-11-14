@@ -607,6 +607,8 @@ CLASS({
   </slide>
 
   <slide>
+    <!-- TODO: Dirty hack to prevent display from slide 3 from showing up in legend mode. -->
+    <% setTimeout(function() { $('display').style.display='none'; }, 6000); %>
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>

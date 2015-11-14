@@ -880,7 +880,6 @@ MODEL({
 
       function compilePause(op, rest) {
         return function() {
-          // TODO: use once()
           var l = function() {
             document.removeEventListener('click', l);
             rest();
