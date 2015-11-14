@@ -52,7 +52,7 @@ CLASS({
       var display = self.ViewCView.create({
         innerView: { toHTML: function() { return '<div id="display" class="foam-demos-modeldiagram-display"></div>'; }, initHTML: function() { } },
         x: 100,
-        y: 640,
+        y: 540,
         width: 1260,
         height: 680
       });
@@ -84,12 +84,12 @@ CLASS({
         anim.push(function() { self.addChild(b); });
         if ( pause ) {
           if ( f.factory ) anim.push(function() { self.setDisplay(factory); });
-          anim.push([400*timeWarp, function() { b.x += 250 + xo; b.y-=80; b.scaleX = b.scaleY = 3; }]);
+          anim.push([300*timeWarp, function() { b.x += 250 + xo; b.y-=80; b.scaleX = b.scaleY = 3; }]);
           anim.push([[0]]);
           if ( factory ) anim.push(function() { self.setDisplay(); });
-          anim.push([200*timeWarp, function() { b.scaleX = b.scaleY = 1; b.x += x * b.width*1.4; b.y += yo + b.height*1.2 * y; }]);
+          anim.push([150*timeWarp, function() { b.scaleX = b.scaleY = 1; b.x += x * b.width*1.4; b.y += yo + b.height*1.2 * y; }]);
         } else {
-          anim.push([600*timeWarp, function() { b.x += 250 + xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y - 80; }]);
+          anim.push([500*timeWarp, function() { b.x += 250 + xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y - 80; }]);
         }
       }
 
@@ -151,7 +151,7 @@ var p = this.Person.create({
    "age": 42,
    "married": true
 }"*/})  },
-        { name: 'Detail View', factory: function() { return self.DetailView.create({data:p}); } },
+        { name: 'Detail View', factory: function() { return self.DetailView.create({data:p, showActions:true}); } },
         { name: 'MD View', factory: function() { return self.MDDetailView.create({data:p}); } },
         { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); } },
         { name: 'List View' },

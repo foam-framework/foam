@@ -63,16 +63,17 @@
 -->
 
   <slide>
+  <!--
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block blue">&nbsp;</div>
         <div class="flex-grow content small-heading">Models</div>
       </div>
     </div>
+    -->
     <div class="card flex-col center flex-grow" style="overflow: auto">
       <foam model="foam.demos.modeldiagram.ModelDiagram" />
     </div>
-<!--    <foam model="foam.demos.FOAMComponents" /> -->
   </slide>
 
   <slide>

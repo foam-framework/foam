@@ -20,25 +20,18 @@ CLASS({
   name: 'Person',
 
   properties: [
-    {
-      model_: 'IntProperty',
-      name: 'id'
-    },
-    {
-      model_: 'StringProperty',
-      name: 'firstName'
-    },
-    {
-      model_: 'StringProperty',
-      name: 'lastName'
-    },
-    {
-      model_: 'IntProperty',
-      name: 'age'
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'married'
-    }
+    { type: 'Int',     name: 'id'        },
+    { type: 'String',  name: 'firstName' },
+    { type: 'String',  name: 'lastName'  },
+    { type: 'Int',     name: 'age'       },
+    { type: 'Boolean', name: 'married', defaultValue: true }
+  ],
+
+  methods: [
+    function fullName() { return this.firstName + ' ' + this.lastName; }
+  ],
+
+  actions: [
+    function sayHello() { console.alert("Hello, I'm " + this.firstName); }
   ]
 });
