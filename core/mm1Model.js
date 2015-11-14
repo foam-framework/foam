@@ -478,26 +478,28 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         if ( o[this.name].length ) visitor.visitArray(o[this.name]);
       },
       help: 'Actions associated with the entity.',
-      preSet: function(_, newValue) {
-        if ( ! Action ) return newValue;
+      adapt: function(_, a) {
+        if ( ! Action ) return a;
 
-        // Convert Maps to Properties if required
-        for ( var i = 0 ; i < newValue.length ; i++ ) {
-          var p = newValue[i];
+        // Convert Maps to Actions if required
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var p = a[i];
 
-          if ( ! p.model_ ) {
-            newValue[i] = Action.create(p);
+          if ( typeof p === 'function' ) {
+            a[i] = Action.create({name: p.name, code: p});
+          } else if ( ! p.model_ ) {
+            a[i] = Action.create(p);
           } else if ( typeof p.model_ === 'string' ) {
-            newValue[i] = FOAM(p);
+            a[i] = FOAM(p);
           }
 
           // create property constant
           if ( p.name && ! this[constantize(p.name)] ) {
-            this[constantize(p.name)] = newValue[i];
+            this[constantize(p.name)] = a[i];
           }
         }
 
-        return newValue;
+        return a;
       },
       documentation: function() { /*
         <p>$$DOC{ref:'Action',usePlural:true} implement a behavior and attach a label, icon, and typically a
