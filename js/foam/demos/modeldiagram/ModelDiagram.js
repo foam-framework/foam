@@ -39,11 +39,8 @@ CLASS({
   ],
 
   properties: [
-    [ 'width', 1200/0.75 ],
-    [ 'height', 750/0.75 ]
-//    [ 'scaleX', 1 ],
-//    [ 'scaleY', 1 ]
-//    [ 'background', 'gray' ]
+    [ 'width', 1220/0.75 ],
+    [ 'height', 680/0.75 ]
   ],
 
   methods: {
@@ -55,13 +52,10 @@ CLASS({
       var display = self.ViewCView.create({
         innerView: { toHTML: function() { return '<div id="display" class="foam-demos-modeldiagram-display"></div>'; }, initHTML: function() { } },
         x: 100,
-        y: 650,
-        width: 1200,
-        height: 740,
-        background: 'pink'
+        y: 640,
+        width: 1260,
+        height: 680
       });
-
-GLOBAL.display = display;
 
       this.addChildren(v, robot, cls, display);
 
@@ -90,10 +84,10 @@ GLOBAL.display = display;
         anim.push(function() { self.addChild(b); });
         if ( pause ) {
           if ( f.factory ) anim.push(function() { self.setDisplay(factory); });
-          anim.push([400*timeWarp, function() { b.x += 250; b.y-=80; b.scaleX = b.scaleY = 3; }]);
+          anim.push([400*timeWarp, function() { b.x += 250 + xo; b.y-=80; b.scaleX = b.scaleY = 3; }]);
           anim.push([[0]]);
           if ( factory ) anim.push(function() { self.setDisplay(); });
-          anim.push([200*timeWarp, function() { b.scaleX = b.scaleY = 1; b.x += xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y; }]);
+          anim.push([200*timeWarp, function() { b.scaleX = b.scaleY = 1; b.x += x * b.width*1.4; b.y += yo + b.height*1.2 * y; }]);
         } else {
           anim.push([600*timeWarp, function() { b.x += 250 + xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y - 80; }]);
         }
@@ -162,7 +156,7 @@ var p = this.Person.create({
         { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); } },
         { name: 'List View' },
         { name: 'Help View', factory: function() { return self.HelpView.create({model:Model}); } },
-        { name: 'Grid View', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="border:1px solid;max-height:510px" width="45%" src="./js/foam/demos/modeldiagram/WarpedGrid.png">'; }, initHTML: function() { }}; } },
+        { name: 'Grid View', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="border:1px solid;max-height:510px" width="35%" src="./js/foam/demos/modeldiagram/WarpedGrid.png">'; }, initHTML: function() { }}; } },
         { name: 'Query' },
         { name: 'Local Store' },
         { name: 'IndexedDB' },
@@ -174,7 +168,7 @@ var p = this.Person.create({
         { name: 'Postgres' },
         { name: 'Cloud Store' },
         { name: 'Firebase' },
-        { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" height="60%" style="margin-left: 100px;border:1px solid;max-height:510px" src="./demos/democat/GMail.png">'; }, initHTML: function() { }}; } },
+        { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" height="55%" style="margin-left: 100px;border:1px solid;max-height:510px" src="./demos/democat/GMail.png">'; }, initHTML: function() { }}; } },
         { name: 'UML', factory: function() { return self.DocDiagramView.create({data:self.Person}); }},
 //        { name: 'Docs', factory: function() { return self.DocViewPicker.create({data:self.Person}); }},
         { name: '...' },
@@ -195,7 +189,7 @@ var p = this.Person.create({
       // Swift
       anim.push([0]);
       fs[0].factory = self.SwiftSource.create().generate(self.Person);
-      anim.push([500, function() { self.scaleX = self.scaleY = 0.7 * 0.7; }]);
+      anim.push([500, function() { self.scaleX = self.scaleY = 0.65 * 0.65; }]);
       fnum = 0;
       fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.2); });
 
@@ -226,11 +220,11 @@ var p = this.Person.create({
       if ( typeof txt === 'function' ) {
         var v = txt();
         var t = txt.toString();
-        t = t.length < 60 ? t.substring(26, t.length-2) : '';
+        t = t.length < 80 ? t.substring(26, t.length-2) : '';
         this.X.$('display').innerHTML = '<div style="font-size:24px">' + t + '</div><br><br>' + v.toHTML();
         v.initHTML();
       } else {
-        this.X.$('display').innerHTML = txt ? '<textarea style="font-size:24px" rows="16" cols="77">' + txt + '</textarea>' : '';
+        this.X.$('display').innerHTML = txt ? '<textarea style="font-size:24px" rows="13" cols="77">' + txt + '</textarea>' : '';
       }
     }
   }
