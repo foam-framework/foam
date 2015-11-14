@@ -31,6 +31,8 @@ CLASS({
     'foam.documentation.DocViewPicker',
     'foam.documentation.diagram.DocDiagramView',
     'foam.graphics.CView',
+    'foam.graphics.Rectangle',
+    'foam.graphics.ImageCView',
     'foam.graphics.ViewCView',
     'foam.graphics.LabelledBox as Box',
     'foam.util.JavaSource',
@@ -59,11 +61,50 @@ CLASS({
 
       this.addChildren(v, robot, cls, display);
 
-      var M = Movement;
-      var B = M.bounce(0.2, 0.08, 3);
+      function addImage(parent, src) {
+        var bg  = self.Rectangle.create({background: 'white', width: parent.width-1, height: parent.height-1});
+        var img = self.ImageCView.create({src: src});
+
+        parent.addChildren(bg);
+        bg.addChildren(img);
+
+        img.height$.addListener(function() {
+          var scale = Math.min((parent.width-2)/img.width, (parent.height-2)/img.height);
+          img.width = img.width*scale;
+          img.height = img.height*scale;
+        });
+
+        return bg;
+      }
+
+      var m0, m1;
+      var c0, c1;
 
       var anim = [
         [0],
+        function() {
+          c0 = addImage(cls, 'js/foam/demos/modeldiagram/PersonES6.png');
+        },
+        [0],
+        function() {
+          m0 = addImage(v, 'js/foam/demos/modeldiagram/PersonV0.png');
+        },
+        [0],
+        function() {
+          c1 = addImage(cls, 'js/foam/demos/modeldiagram/PersonJava.png');
+        },
+        [0],
+        [500, function() {
+          cls.x += 150;
+        }],
+        function() {
+          v.width += 200;
+          m1 = addImage(v, 'js/foam/demos/modeldiagram/PersonV1.png');
+        },
+        [0],
+        [500, function() {
+          m0.alpha = m1.alpha = 0;
+        }],
         [500, function() { v.width /= 4.5; v.height /= 4.5; cls.alpha = 0; } ],
         [500, function() { robot.scaleX = robot.scaleY = 3; } ],
         [0]
@@ -214,7 +255,7 @@ var p = this.Person.create({
       anim.push([0]);
 //      anim.push([500, function() { self.scaleX = self.scaleY = 1; }]);
 
-      M.compile(anim)();
+      Movement.compile(anim)();
     },
     setDisplay: function(txt) {
       if ( typeof txt === 'function' ) {

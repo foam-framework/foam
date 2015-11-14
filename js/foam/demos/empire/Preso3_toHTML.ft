@@ -354,7 +354,7 @@ CLASS({
               <foam model="foam.demos.graphics.EyeCView" color="yellow"/>
               <span style="width:200px;display:inline-block;"></span>
               <foam model="foam.demos.graphics.EyesCView"/>
-              <%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.6, scaleY: 0.6, timer: foam.util.Timer.create(), blowBubbles: false}) %>
+              <div style="margin-top:-250px;"><%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.6, scaleY: 0.6, timer: foam.util.Timer.create(), blowBubbles: false}) %></div>
             </p:view>
           </viewChoice>
           <viewChoice>

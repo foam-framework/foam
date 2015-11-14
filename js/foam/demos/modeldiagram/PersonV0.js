@@ -28,7 +28,6 @@ CLASS({
   ]
 });
 
-/*
 package foam.demos.modeldiagram;
 
 public class Person
@@ -39,7 +38,13 @@ public class Person
   int age;
   boolean married;
 
-  public Person(int id, String firstName, String lastName, int age, boolean married) {
+  public Person(
+    int id,
+    String firstName,
+    String lastName,
+    int age,
+    boolean married)
+  {
     this.id        = id;
     this.firstName = firstName;
     this.lastName  = lastName;
@@ -49,7 +54,13 @@ public class Person
 }
 
 class Person {
-  constructor(id, firstName, lastName, age, married) {
+  constructor(
+    id,
+    firstName,
+    lastName,
+    age,
+    married)
+  {
     this.id        = id;
     this.firstName = firstName;
     this.lastName  = lastName;
@@ -57,4 +68,6 @@ class Person {
     this.married   = married;
   }
 }
+
+
 */

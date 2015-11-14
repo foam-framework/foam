@@ -97,6 +97,8 @@ CLASS({
           color: '#444',
           x: 10,
           y: 25+i*50,
+          width: 30,
+          height: 10,
           text: is[i][2]}));
         this.addChild(graphs[i]);
         (function (i) {
