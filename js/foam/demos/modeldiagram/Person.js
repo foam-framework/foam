@@ -28,10 +28,14 @@ CLASS({
   ],
 
   methods: [
-    function fullName() { return this.firstName + ' ' + this.lastName; }
+    function fullName() {
+      return this.firstName + ' ' + this.lastName;
+    }
   ],
 
   actions: [
-    function sayHello() { console.alert("Hello, I'm " + this.firstName); }
+    function sayHello() {
+      window.alert("Hello, I'm " + this.firstName);
+    }
   ]
 });
