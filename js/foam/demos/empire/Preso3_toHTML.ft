@@ -96,7 +96,7 @@
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
-      <div class="scale085 origin0"><foam model="foam.demos.ArchitectureDiagram" /></div>
+      <div style="transform: scale(0.7);" class="origin0"><foam model="foam.demos.ArchitectureDiagram" /></div>
     </div>
   </slide>
 
@@ -187,8 +187,8 @@
         <div class="flex-grow content small-heading">DAO Strategies &amp; Decorators</div>
       </div>
     </div>
-    <div class="card flex-col flex-grow flex-start" style="overflow: auto">
-      <foam model="foam.demos.DAOStrategies" />
+    <div class="card flex-col flex-grow flex-start" style="overflow:auto;">
+      <foam model="foam.demos.DAOStrategies" scaleX="0.8" scaleY="0.8"/>
     </div>
   </slide>
 
