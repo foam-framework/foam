@@ -436,7 +436,13 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
           }
 
           if ( ! p.model_ ) {
-            p = newValue[i] = Property.create(p);
+            if ( p.type && this.X.lookup(p.type + 'Property') ) {
+              p.model_ = p.type + 'Property';
+              p.type = undefined;
+              p = newValue[i] = JSONUtil.mapToObj(this.X, p);
+            } else {
+              p = newValue[i] = Property.create(p);
+            }
           } else if ( typeof p.model_ === 'string' ) {
             p = newValue[i] = JSONUtil.mapToObj(this.X, p);
           }
