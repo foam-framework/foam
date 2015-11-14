@@ -25,8 +25,8 @@ CLASS({
       name: 'src',
       label: 'Source'
     },
-    'width',
-    'height'
+    ['width',  -1],
+    ['height', -1]
   ],
 
   methods: {
@@ -34,6 +34,8 @@ CLASS({
       this.SUPER();
       this.image_ = new Image();
       this.image_.onload = function() {
+        if ( this.width  == -1 ) this.width  = this.image_.width;
+        if ( this.height == -1 ) this.height = this.image_.height;
         this.view.paint();
       }.bind(this);
       this.image_.src = this.src;
