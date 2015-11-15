@@ -52,7 +52,10 @@ CLASS({
     },
 
     paintSelf: function() {
-      this.canvas.drawImage(this.image_, 0, 0);
+      try {
+        this.canvas.drawImage(this.image_, 0, 0);
+      } catch(err) {
+      }
     }
   }
 });

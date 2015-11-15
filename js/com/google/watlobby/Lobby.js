@@ -159,9 +159,10 @@ CLASS({
       }
 
       if ( t.model === 'Background' ) {
+        var src = t.image.startsWith('http') ? t.image : '/js/com/google/watlobby/' + t.image;
         this.$.style.backgroundRepeat = 'no-repeat';
         this.$.style.backgroundPosition = 'center center';
-        this.$.style.backgroundImage = 'url(' + '/js/com/google/watlobby/' + t.image + ')';
+        this.$.style.backgroundImage = 'url(' + src + ')';
         return;
       }
       var i = this.findTopicIndex(t.topic);
