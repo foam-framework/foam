@@ -54,7 +54,7 @@ CLASS({
       var display = self.ViewCView.create({
         innerView: { toHTML: function() { return '<div id="display" class="foam-demos-modeldiagram-display"></div>'; }, initHTML: function() { } },
         x: 100,
-        y: 540,
+        y: 600,
         width: 1260,
         height: 680
       });

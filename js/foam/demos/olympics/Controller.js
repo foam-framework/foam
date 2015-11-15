@@ -226,7 +226,7 @@ CLASS({
           %%query
           %%fromYear %%toYear %%city %%discipline %%event %%country %%color %%gender
           $$clear{model_: 'foam.ui.md.FlatButton'}<br>
-          <!--<br>SQL:<br>-->$$sql{mode: 'read-only'}
+          <br>SQL:<br>$$sql{mode: 'read-only'}
           <br><br><%= FOAM_POWERED %>
         </div>
         <div class="searchResults">

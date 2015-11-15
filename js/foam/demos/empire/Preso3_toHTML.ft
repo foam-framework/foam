@@ -96,7 +96,7 @@
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
-      <div style="transform: scale(0.7);" class="origin0"><foam model="foam.demos.ArchitectureDiagram" /></div>
+      <div style="transform: scale(0.9);" class="origin0"><foam model="foam.demos.ArchitectureDiagram" /></div>
     </div>
   </slide>
 
@@ -188,7 +188,7 @@
       </div>
     </div>
     <div class="card flex-col flex-grow flex-start" style="overflow:auto;">
-      <foam model="foam.demos.DAOStrategies" scaleX="0.8" scaleY="0.8"/>
+      <foam model="foam.demos.DAOStrategies" scaleX="0.9" scaleY="0.9"/>
     </div>
   </slide>
 
