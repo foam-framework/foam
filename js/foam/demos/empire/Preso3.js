@@ -118,6 +118,7 @@ CLASS({
     // (4) Two-pane controller styling.
     // (4) Summary list element element styling.
     function CSS() {/*
+      span[name="sql"] { font-size: 0.5em; }
       .topic-bubble-text {
         color: #555;
         font-family: Roboto, Arial;
