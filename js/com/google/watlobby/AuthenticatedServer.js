@@ -76,27 +76,34 @@ CLASS({
       this.exportDAO(this.topicDAO);
       this.exportDAO(this.accountDAO);
     },
-    function isAdmin(ret, principal) {
-      this.accountDAO.find(principal, {
+    function isAdmin(ret, X) {
+      if ( ! X.principal ) {
+        ret(false);
+        return;
+      }
+
+      this.accountDAO.find(X.principal, {
         put: function(o) {
           ret(o.level == "admin");
         },
         error: function() {
           // auto account creation.
+          console.log("Auto adding account", X.email, X.principal);
           this.accountDAO.delegate.delegate.put(
             this.Account.create({
-              id: principal
+              id: X.principal,
+              email: X.userInfo.email
             }));
           ret(false);
         }.bind(this)
       });
     },
-    function massageForPut(ret, principal, old, obj) {
+    function massageForPut(ret, X, old, obj) {
       // Only put if admin.
       var self = this;
       aseq(
         function(ret) {
-          self.isAdmin(ret, principal);
+          self.isAdmin(ret, X);
         },
         function(ret, admin) {
           if ( ! admin ) {
@@ -109,15 +116,15 @@ CLASS({
           }
         })(ret);
     },
-    function shouldAllowRemove(ret, principal, obj) {
+    function shouldAllowRemove(ret, X, obj) {
       // Only remove if admin
-      this.isAdmin(ret, principal);
+      this.isAdmin(ret, X);
     },
-    function massageForRead(ret, principal, obj) {
+    function massageForRead(ret, X, obj) {
       // All data is public
       ret(obj);
     },
-    function decorateForSelect(ret, principal, dao) {
+    function decorateForSelect(ret, X, dao) {
       // All data is public.
       ret(dao);
     }

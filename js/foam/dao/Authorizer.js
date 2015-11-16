@@ -41,7 +41,7 @@ __DATA({
       */},
       args: [
         { name: 'ret', type: 'Function', documentation: 'afunc return callback' },
-        { name: 'principal', documentation: 'The current user. Type is implementation-defined.' },
+        { name: 'X', documentation: 'The context that this request is coming in' },
         { name: 'old', documentation: 'The original object, or null if this is a new ID.' },
         { name: 'nu', documentation: 'The new object the user wishes to put.' }
       ]
@@ -67,7 +67,7 @@ __DATA({
       */},
       args: [
         { name: 'ret', type: 'Function', documentation: 'afunc return callback' },
-        { name: 'principal', documentation: 'The current user. Type is implementation-defined.' },
+        { name: 'X', documentation: 'The context that this request is coming in' },
         { name: 'obj', documentation: 'The object to be returned.' }
       ],
       returnType: 'Function'
@@ -82,7 +82,7 @@ __DATA({
       */},
       args: [
         { name: 'ret', type: 'Function', documentation: 'afunc return callback' },
-        { name: 'principal', documentation: 'The current user. Type is implementation-defined.' },
+        { name: 'X', documentation: 'The context that this request is coming in' },
         { name: 'obj', documentation: 'The original object. null if it doesn\'t exist.' }
       ]
     },
@@ -97,7 +97,7 @@ __DATA({
       */},
       args: [
         { name: 'ret', type: 'Function', documentation: 'afunc return callback' },
-        { name: 'principal', documentation: 'The current user. Type is implementation-defined.' },
+        { name: 'X', documentation: 'The context that this request is coming in' },
         { name: 'dao', documentation: 'The original DAO, to be decorated.' }
       ]
     }

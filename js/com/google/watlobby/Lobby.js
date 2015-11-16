@@ -166,7 +166,11 @@ CLASS({
         return;
       }
       var i = this.findTopicIndex(t.topic);
-      if ( i != -1 ) this.children.splice(i, 1);
+      if ( i != -1 ) {
+        var oldC = this.children[i];
+        this.removeChild(oldC)
+        this.collider.remove(oldC);
+      }
 
       if ( ! t.enabled ) return;
 

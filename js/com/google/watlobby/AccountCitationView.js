@@ -16,23 +16,23 @@
  */
 
 CLASS({
-  package: 'foam.dao.auth',
-  name: 'Account',
+  package: 'com.google.watlobby',
+  name: 'AccountCitationView',
+  extends: 'foam.ui.md.DetailView',
   properties: [
-    'id',
-    {
-      model_: 'EMailProperty',
-      name: 'email',
-      mode: 'read-only'
-    },
-    {
-      model_: 'foam.core.types.StringEnumProperty',
-      name: 'level',
-      defaultValue: 'user',
-      choices: [
-        'user',
-        'admin'
-      ]
-    }
+    ['className', 'account-citation']
+  ],
+  templates: [
+    function CSS() {/*
+     .account-citation {
+       align-items: center;
+       border-bottom: center;
+       display: flex;
+       min-height: 48px;
+       }*/},
+    function toHTML() {/*
+<div id="%%id" <%= this.cssClassAttr() %>>
+  $$email{ mode: 'read-only', floatingLabel: false }$$level{ model_: 'foam.ui.TextFieldView', mode: 'read-only', floatingLabel: false }
+</div>*/}
   ]
 });
