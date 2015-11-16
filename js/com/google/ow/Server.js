@@ -200,7 +200,6 @@ CLASS({
           });
           this.videoDAO_.select({
             put: function(ad) {
-              console.log("Putting video: ", person.id, ad, ad.sid);
               this.streamDAO_.put(this.Envelope.create({
                 owner: person.id,
                 source: '0',
