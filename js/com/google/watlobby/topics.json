@@ -146,56 +146,5 @@
     "parentTopic": "foam",
     "image": "img/foam_red.png",
     "model": "Background"
-  },
-  {
-    "topic": "fsto",
-    "image": "https://fsto.co/static/images/logo.png",
-    "model": "Background"
-  },
-  {
-    "topic": "fstofoambg",
-    "parentTopic": "fstofoam",
-    "image": "img/fstofoambg.png",
-    "model": "Background"
-  },
-  {
-    "topic": "fstofoam",
-    "enabled": true,
-    "parentTopic": "fsto",
-    "image": "img/foam_whiteontransparent.png",
-    "priority": 1,
-    "color": "red",
-    "roundImage": true,
-    "background": "red",
-    "timeout": 555555,
-    "model": "Topic",
-    "text": "<font color=\"white\" size=\"+3\"><img style=\"margin-top:-50px;\" width=\"80%\" src=\"/js/com/google/watlobby/img/foam_whiteontransparent.png\"><a href=\"http://foamdev.com\" style=\"color:white;\">foamdev.com</a><br><br><a href=\"http://github.foamdev.com\" style=\"color:white;\">github.foamdev.com</a></font>"
-  },
-  {
-    "topic": "fstofoamphoto",
-    "parentTopic": "fstofoam",
-    "image": "img/photo.png",
-    "priority": 1,
-    "color": "red",
-    "roundImage": true,
-    "model": "Topic",
-    "text": "<font size=\"+4\"><br>kgr@google.com<br><br><a href=\"http://plus.google.com/+KevinGreer\" style=\"color:red;\">+KevinGreer</a><br><br><a href=\"http://twitter.com/kgrgreer/\" style=\"color:red;\">@kgrgreer</a></font>"
-  },
-  {
-    "topic": "fstowat",
-    "parentTopic": "fstofoam",
-    "image": "img/googlewat_square.png",
-    "roundImage": true,
-    "r": 80,
-    "model": "Photo"
-  },
-  {
-    "topic": "appbuilder2",
-    "parentTopic": "fstofoam",
-    "image": "img/appbuilder.png",
-    "r": 45,
-    "model": "Video",
-    "video": "HvxKHj9QmMI",
-    "timeout": 58
   }
 ]
