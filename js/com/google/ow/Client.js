@@ -22,7 +22,7 @@ CLASS({
   requires: [
     'MDAO',
     'com.google.ow.IdGenerator',
-    'com.google.ow.examples.VideoA',
+    'com.google.ow.examples.VideoB',
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.Envelope',
     'com.google.ow.model.ProductAd',
