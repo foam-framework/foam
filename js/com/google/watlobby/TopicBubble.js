@@ -31,6 +31,8 @@ CLASS({
   imports: [ 'lobby' ],
 
   properties: [
+    { name: 'x', preSet: function(_, x) { return Math.floor(x); } },
+    { name: 'y', preSet: function(_, y) { return Math.floor(y); } },
     { name: 'topic' },
     {
       name: 'image',
