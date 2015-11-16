@@ -33,15 +33,15 @@ CLASS({
   ],
 
   methods: [
-    function massageForPut(ret, principal, old, nu) {
+    function massageForPut(ret, X, old, nu) {
       // If old exists and old.owner != principal, fail: trying to write someone
       // else's data.
-      if ( ! principal ) {
+      if ( ! X.principal ) {
         ret(null);
         return;
       }
 
-      if (old && NEQ(this.ownerProp, principal).f(old)) {
+      if (old && NEQ(this.ownerProp, X.principal).f(old)) {
         ret(null);
         return;
       }
@@ -49,41 +49,41 @@ CLASS({
       // Now either old exists but is owned by me, or this is a new put.
       // Either way, clone nu and set its owner to the principal.
       var clone = nu.clone();
-      clone[this.ownerProp.name] = principal;
+      clone[this.ownerProp.name] = X.principal;
       ret(clone);
     },
-    function massageForRead(ret, principal, obj) {
-      if ( ! principal ) {
+    function massageForRead(ret, X, obj) {
+      if ( ! X.principal ) {
         ret(null);
         return;
       }
 
-      var mine = EQ(this.ownerProp, principal).f(obj);
+      var mine = EQ(this.ownerProp, X.principal).f(obj);
       if (mine) {
         ret(obj);
       } else {
         ret(null);
       }
     },
-    function shouldAllowRemove(ret, principal, obj) {
-      if ( ! principal ) {
+    function shouldAllowRemove(ret, X, obj) {
+      if ( ! X.principal ) {
         ret(null);
         return;
       }
 
       if (obj) {
-        ret(EQ(this.ownerProp, principal).f(obj));
+        ret(EQ(this.ownerProp, X.principal).f(obj));
       } else {
         ret(false);
       }
     },
-    function decorateForSelect(ret, principal, dao) {
-      if ( ! principal ) {
+    function decorateForSelect(ret, X, dao) {
+      if ( ! X.principal ) {
         ret(dao.where(FALSE));
         return;
       }
 
-      ret(dao.where(EQ(this.ownerProp, principal)));
+      ret(dao.where(EQ(this.ownerProp, X.principal)));
     },
   ]
 });

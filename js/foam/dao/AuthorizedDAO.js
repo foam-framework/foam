@@ -50,13 +50,13 @@ CLASS({
       // It might return null, indicating that the object is owned by another
       // user, and this put should be denied.
       var self = this;
-      var principal = opt_X && opt_X.principal;
+      opt_X = opt_X || GLOBAL;
 
       aseq(
         // Always return null if ID is not set; this is a new object.
         obj.id ? this.adelegateFind_(obj.id) : aconstant(null),
         function(ret, old) {
-          self.authorizer.massageForPut(ret, principal, old, obj);
+          self.authorizer.massageForPut(ret, opt_X, old, obj);
         },
         function(ret, massaged) {
           if (massaged === null) {
@@ -74,7 +74,7 @@ CLASS({
                   // So we always call sink.put, maybe with null.
                   sink && sink.put && sink.put(massaged || obj);
                   ret();
-                }, principal, postPut);
+                }, opt_X, postPut);
               }
             });
           }
@@ -90,14 +90,14 @@ CLASS({
       // When (a) the original object doesn't exist, or (b) it exists but we're
       // not allowed to
       var self = this;
-      var principal = opt_X && opt_X.principal;
+      opt_X = opt_X || GLOBAL;
 
       var id = id_or_obj.id || id_or_obj;
 
       aseq(
         this.adelegateFind_(id),
         function(ret, old) {
-          self.authorizer.shouldAllowRemove(ret, principal, old);
+          self.authorizer.shouldAllowRemove(ret, opt_X, old);
         }
       )(function(allowed) {
         if (allowed) {
@@ -110,7 +110,7 @@ CLASS({
                   massaged = obj.model_.create({ id: id });
                 }
                 sink && sink.remove && sink.remove(massaged);
-              }, principal, obj);
+              }, opt_X, obj);
             },
             error: function() {
               // Generic error to avoid data leaks.
@@ -129,7 +129,7 @@ CLASS({
       // authorizer to massage it for this principal, and return it.
       // The authorizer might return null, in which case we return an error.
       var self = this;
-      var principal = opt_X && opt_X.principal;
+      opt_X = opt_X || GLOBAL;
 
       this.delegate.find(id, {
         error: function() {
@@ -143,7 +143,7 @@ CLASS({
             } else {
               sink && sink.put && sink.put(obj);
             }
-          }, principal, obj);
+          }, opt_X, obj);
         }
       });
     },
@@ -162,11 +162,11 @@ CLASS({
       if (!sink) sink = [].sink;
       var future = afuture();
       var self = this;
-      var principal = opt_X && opt_X.principal;
+      opt_X = opt_X || GLOBAL;
 
       aseq(
         function(ret) {
-          self.authorizer.decorateForSelect(ret, principal, self.delegate);
+          self.authorizer.decorateForSelect(ret, opt_X, self.delegate);
         },
         function(ret, dao) {
           dao.select({
@@ -179,7 +179,7 @@ CLASS({
                 if (massaged !== null) {
                   sink && sink.put && sink.put(massaged);
                 }
-              }, principal, obj);
+              }, opt_X, obj);
             },
             eof: function() {
               sink && sink.eof && sink.eof();
@@ -195,24 +195,26 @@ CLASS({
     },
     function removeAll(sink, options, opt_X) {
       // TODO(braden): Implement me. Use the select+remove scheme.
+      opt_X = opt_X || GLOBAL;
     },
     function listen(sink, options, opt_X) {
-      var principal = opt_X && opt_X.principal
       var self = this;
+      opt_X = opt_X || GLOBAL;
+
       var mysink = {
         put: function(obj) {
           self.authorizer.massageForRead(function(obj) {
             if ( obj !== null ) {
               sink && sink.put && sink.put(obj);
             }
-          }, principal, obj);
+          }, opt_X, obj);
         },
         remove: function(obj) {
           self.authorizer.massageForRead(function(obj) {
             if ( obj !== null ) {
               sink && sink.remove && sink.remove(obj);
             }
-          }, principal, obj);
+          }, opt_X, obj);
         },
         reset: function() {
           sink && sink.reset && sink.reset();
