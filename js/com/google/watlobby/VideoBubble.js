@@ -30,7 +30,7 @@ CLASS({
   properties: [
     {
       name: 'playIcon',
-      factory: function() { return this.ImageCView.create({src: 'img/play.png', alpha: 0.35}); }
+      factory: function() { return this.ImageCView.create({src: '/js/com/google/watlobby/img/play.png', alpha: 0.35}); }
     },
     [ 'selected', false ],
     [ 'animating', false ]

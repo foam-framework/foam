@@ -41,7 +41,8 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'speedWarp', defaultValue: 1 },
+    { name: 'speedWarp', defaultValue: 1, model_: 'FloatProperty' },
+    { name: 'showFOAMPowered', defaultValue: true, model_: 'BooleanProperty' },
     { name: 'clientMode', defaultValue: false, model_: 'BooleanProperty' },
     { name: 'n',          defaultValue: 25 },
     { name: 'slideshowDelay', model_: 'IntProperty' },
@@ -71,7 +72,7 @@ CLASS({
 
           // The 0.9 gives it a slight outward push
           if ( c1.mass != c1.INFINITE_MASS )
-            c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/8/self.speedWarp, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
+            c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/8*self.speedWarp, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
 
           // Make collision detection 5X faster by only checking every fifth time.
           if ( ( self.timer.i + i ) % 5 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
@@ -158,7 +159,10 @@ CLASS({
       }
 
       if ( t.model === 'Background' ) {
-        document.body.style.backgroundImage = 'url(' + t.image + ')';
+        var src = t.image.startsWith('http') ? t.image : '/js/com/google/watlobby/' + t.image;
+        this.$.style.backgroundRepeat = 'no-repeat';
+        this.$.style.backgroundPosition = 'center center';
+        this.$.style.backgroundImage = 'url(' + src + ')';
         return;
       }
       var i = this.findTopicIndex(t.topic);
@@ -215,6 +219,9 @@ CLASS({
     function initCView() {
       this.SUPER();
 
+//      this.height = this.$.height;
+//      this.width = this.$.width;
+
       GLOBAL.lobby = this;
 
       if ( ! this.timer ) {
@@ -231,8 +238,10 @@ CLASS({
 
       document.body.addEventListener('click', this.onClick);
 
-      var foam = this.ImageCView.create({x: 5, y: this.height-5-269/4, width: 837/4, height: 269/4, src: 'img/foampowered_red.png'});
-      this.addChild(foam);
+      if ( this.showFOAMPowered ) {
+        var foam = this.ImageCView.create({x: 5, y: this.height-5-269/4, width: 837/4, height: 269/4, src: '/js/com/google/watlobby/img/foampowered_red.png'});
+        this.addChild(foam);
+      }
 
       this.collider.start();
 

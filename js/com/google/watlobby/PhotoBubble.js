@@ -38,7 +38,7 @@ CLASS({
       this.SUPER();
 
       this.r = this.topic.r;
-      this.addChild(this.img = this.ImageCView.create({src: this.image}));
+      this.addChild(this.img = this.ImageCView.create({src: '/js/com/google/watlobby/' + this.image}));
     },
     function setSelected(selected) {
       var self = this;

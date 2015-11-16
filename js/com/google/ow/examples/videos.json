@@ -1,20 +1,65 @@
 [
   {
-    "model_": "com.google.ow.content.Video",
+    "model_": "com.google.ow.examples.VideoB",
     "id": "vid1-jnh32kj432kjh432kjhg432k",
     "titleText": "Video 1",
-    "description": "The first video."
+    "description": "The first video.",
+    "sid": "contentIndex/ci4873296573765766590",
   },
   {
-    "model_": "com.google.ow.content.Video",
+    "model_": "com.google.ow.examples.VideoB",
     "id": "vid2-jnh32kj432kjh432kjhg432k",
     "titleText": "Video 2",
-    "description": "The second video."
+    "description": "The second video.",
+    "sid": "contentIndex/ci4873296573765766590",
   },
   {
-    "model_": "com.google.ow.content.Video",
+    "model_": "com.google.ow.examples.VideoB",
     "id": "vid3-jnh32kj432kjh432kjhg432k",
     "titleText": "Video 3",
-    "description": "The third video."
+    "description": "The third video.",
+    "sid": "contentIndex/ci4873296573765766590",
+  },
+  {
+    "model_": "com.google.ow.examples.VideoB",
+    "id": "vid4-jnh32kj432kjh432kjhg432k",
+    "titleText": "Video 4",
+    "description": "The fourth video.",
+    "sid": "contentIndex/ci4873296573765766590",
+  },
+  {
+    "model_": "com.google.ow.examples.VideoB",
+    "id": "vid5-jnh32kj432kjh432kjhg432k",
+    "titleText": "Video 5",
+    "description": "The fifth video.",
+    "sid": "contentIndex/ci4873296573765766590",
+  },
+  {
+    "model_": "com.google.ow.examples.VideoB",
+    "id": "vid6-jnh32kj432kjh432kjhg432k",
+    "titleText": "Video 6",
+    "description": "The sixth video.",
+    "sid": "contentIndex/ci4873296573765766590",
+  },
+  {
+    "model_": "com.google.ow.examples.VideoB",
+    "id": "vid7-jnh32kj432kjh432kjhg432k",
+    "titleText": "Video 7",
+    "description": "The seventh video.",
+    "sid": "contentIndex/ci4873296573765766590",
+  },
+  {
+    "model_": "com.google.ow.examples.VideoB",
+    "id": "vid8-jnh32kj432kjh432kjhg432k",
+    "titleText": "Video 8",
+    "description": "The eighth video.",
+    "sid": "contentIndex/ci4873296573765766590",
+  },
+  {
+    "model_": "com.google.ow.examples.VideoB",
+    "id": "vid9-jnh32kj432kjh432kjhg432k",
+    "titleText": "Video 9",
+    "description": "The ninth video.",
+    "sid": "contentIndex/ci4873296573765766590",
   }
 ]

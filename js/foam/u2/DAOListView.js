@@ -25,6 +25,11 @@ CLASS({
   imports: [
     'selection$',
   ],
+
+  constants: {
+    ROW_CLICK: ['row-click'],
+  },
+
   properties: [
     {
       model_: 'foam.core.types.DAOProperty',
@@ -82,13 +87,13 @@ CLASS({
 
         var child = obj.toE ?
             obj.toE(this.Y) :
+            obj.toRowE ? obj.toRowE(this.Y) :
             this.DetailView.create({ data: obj });
 
-        if (this.X.selection$) {
-          child.on('click', function() {
-            this.selection = obj;
-          }.bind(this));
-        }
+        child.on('click', function() {
+          this.publish(this.ROW_CLICK);
+          if ( this.X.selection$ ) this.selection = obj;
+        }.bind(this));
 
         this.rows[obj.id] = child;
         this.add(child);

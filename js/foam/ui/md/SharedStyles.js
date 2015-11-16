@@ -283,6 +283,7 @@ input[name=q]::-webkit-input-placeholder {
 
 .md-button:not(.icon-only) {
   min-width: 64px;
+  min-height: 36px;
   height: 36px;
 }
 

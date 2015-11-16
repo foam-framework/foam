@@ -76,6 +76,12 @@ GLOBAL.Property = {
          */}
     },
     {
+      name: 'translationHint',
+      type: 'String',
+      required: false,
+      documentation: 'Used to describe the property for translators.',
+    },
+    {
       name: 'speechLabel',
       type: 'String',
       required: false,

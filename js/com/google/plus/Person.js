@@ -25,7 +25,8 @@ CLASS({
     'foam.core.types.JSONModelTrait',
   ],
   requires: [
-    'com.google.plus.Circle'
+    'com.google.plus.Circle',
+    'foam.u2.Element',
   ],
 
   models: [
@@ -45,11 +46,9 @@ CLASS({
   ],
 
   methods: [
-    function toPeople() {
-      return this.id;
-    },
-    function toChipE() {
-      /* Implement to return a contact chip view Element */
+    function toRowE(X) {
+      return this.Element.create({ nodeName: 'DIV' }, X)
+          .add(this.displayName$);
     },
   ],
 
@@ -77,7 +76,6 @@ CLASS({
       // use for 'blocked' circle. Only authorized circles would allow content
       // through.
     },
-
 
     { model_: 'foam.core.types.JSONStringProperty', name: 'nickname' },
     { model_: 'foam.core.types.JSONStringProperty', name: 'occupation'  },

@@ -304,6 +304,10 @@ CLASS({
     {
       name: 'javaType',
       defaultValue: 'long',
+    },
+    {
+      name: 'swiftType',
+      defaultValue: 'CLong',
     }
   ]
 });
@@ -1067,6 +1071,12 @@ CLASS({
   name: 'PasswordProperty',
   extends: 'StringProperty',
   label: 'Password that displays protected or hidden text',
+  properties: [
+    {
+      name: 'swiftView',
+      defaultValue: 'PasswordFieldView',
+    },
+  ],
 });
 
 CLASS({

@@ -880,11 +880,11 @@ MODEL({
 
       function compilePause(op, rest) {
         return function() {
-          // TODO: use once()
-          document.onclick = function() {
-            document.onclick = null;
+          var l = function() {
+            document.removeEventListener('click', l);
             rest();
           };
+          document.addEventListener('click', l);
         };
       }
 

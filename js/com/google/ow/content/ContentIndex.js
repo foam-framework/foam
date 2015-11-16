@@ -19,6 +19,13 @@ CLASS({
     'foam.ui.DAOListView',
     'foam.dao.EasyClientDAO',
     'foam.dao.LoggingDAO',
+    'foam.browser.ui.DAOController',
+    'com.google.ow.model.Envelope',
+  ],
+
+  imports: [
+    'streamDAO',
+    'createStreamItem',
   ],
 
   documentation: function() {/* Connects to a remote DAO and offers the
@@ -30,6 +37,10 @@ CLASS({
       name: 'id'
     },
     {
+      name: 'substreams',
+      lazyFactory: function() { return ['contentIndex/' + this.id]; }
+    },
+    {
       model_: 'StringProperty',
       name: 'titleText'
     },
@@ -38,31 +49,47 @@ CLASS({
       name: 'description'
     },
     {
-      model_: 'URLProperty',
-      name: 'serverUri',
-      defaultValueFn: function() { return this.X.document.location.origin + '/api'; },
-    },
-    {
+      model_: 'ModelProperty',
       name: 'model',
       help: 'The type of the content items. Should have an id property.',
       defaultValue: 'com.google.ow.model.StreamableTrait',
+      postSet: function(_,model) {
+        // Model not always ready in node, but don't need views there anyway
+        if ( ! model.getFeature ) return;
+
+        if ( model.getFeature('toCitationE') ) this.contentRowView = function(args,X) {
+          var d = args.data || X.data;
+          if ( ! d ) {
+            d = args.data$ || X.data$;
+            d = d && d.value;
+          }
+          if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
+          return d.toCitationE(X).style({ margin: '8px 0px' });
+        }
+        if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
+          var d = args.data || X.data;
+          if ( ! d ) {
+            d = args.data$ || X.data$;
+            d = d && d.value;
+          }
+          if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
+          return d.toDetailE(X).style({ 'flex-grow': 1, overflow: 'hidden' });
+        }
+      }
     },
     {
       name: 'dao',
       hidden: true,
       transient: true,
       lazyFactory: function() {
-        return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
-          serverUri: this.serverUri,
-          model: this.model,
-        }) });
+        return this.streamDAO.where(EQ(this.Envelope.SID, this.substreams[0]));
       }
     },
     {
       model_: 'ViewFactoryProperty',
       name: 'contentRowView',
       help: 'The row view for the content item list.',
-      defaultValue: 'foam.ui.md.CitationView',
+      defaultValue: 'com.google.ow.ui.EnvelopeCitationView',
     },
     {
       name: 'contentRowE',
@@ -72,7 +99,7 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'contentDetailView',
       help: 'The row view for the content item list.',
-      defaultValue: 'foam.ui.md.DetailView',
+      defaultValue: 'com.google.ow.ui.EnvelopeDetailView',
     },
     {
       name: 'contentDetailE',
@@ -81,29 +108,37 @@ CLASS({
   ],
 
   methods: [
+    function put(envelope, sink) {
+      /* this is a substream target, implement put handler */
+      var self = this;
+      // Since this should be running on the server, grab all the owners
+      // of this contentIndex, based on stream id, and share the new substream
+      // content with those owners.
+      self.streamDAO.where(IN(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
+        MAP(self.Envelope.OWNER, { put: function(owner) {
+          self.streamDAO.put(
+            self.createStreamItem(self.substreams[0], owner, envelope.data, self.substreams[0])
+          );
+        } })
+      );
+    },
+
+
     // TODO(markdittmer): We should use model-for-model or similar here.
-    function toDetailE() {
-      return this.Element.create(null, this.Y.sub({controllerMode: 'read-only'}))
+    function toDetailE(X) {
+      var Y = X || this.Y;
+      return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
+        .style({ display: 'flex', 'flex-grow': 1, 'flex-direction': 'column' })
         .add(this.DAOController.create({
+          name: this.description,
           data: this.dao,
           rowView: this.contentRowE || this.contentRowView,
-          innerDetailView: this.contentDetailE || this.contentDetailView,
-        }))
-//         .start().style({
-//           'display': 'flex',
-//           'flex-direction': 'column',
-//           'margin': '16px'
-//         })
-//           .start().add(this.titleText$).cls('md-title').end()
-//           .start().add(this.description$).cls('md-subhead').end()
-//           .add(this.DAOListView.create({
-//             data: this.dao,
-//             rowView: this.contentRowE || this.contentRowView,
-//           }))
-//         .end();
+          innerEditView: this.contentDetailE || this.contentDetailView,
+        }, Y))
     },
-    function toCitationE() {
-      return this.Element.create(null, this.Y)
+    function toCitationE(X) {
+      var Y = X || this.Y;
+      return this.Element.create(null, Y)
         .start().style({
             'display': 'flex',
             'flex-direction': 'row',

@@ -3,27 +3,20 @@
                 this.memento$ }, this.Y)">
 
   <slide>
-    <div class="flex-row">
-      <div class="card center" style="padding: 5%;">
-        <span class="flex-col" style="font-size: 32px;">
-          <span class="big-heading center">Introducing</span>
-          <p class="center">
-            <foam model="foam.demos.graphics.Logo" text="FOAM" width="360"
-                  height="140" />
-          </p>
-          <span class="small-heading center">
-            <font color="#33f">F</font>eature <font color="#f00">O</font>riented <font color="#fc0">A</font>ctive <font color="#3c0">M</font>odeller
-          </span>
-          <br />
-          <p class="center">
-            <a href="http://foamdev.com">foamdev.com</a>
-          </p>
-          <br />
-          <p class="center">
-            Kevin Greer, <a href="mailto:kgr@google.com">kgr@google.com</a>
-          </p>
-        </span>
+    <foam model="com.google.watlobby.Lobby" root="fstofoam" n="10" speedWarp="1.1" showFOAMPowered="false"></foam>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Overview</div>
       </div>
+    </div>
+    <div class="flex-grow1 flex-stretch">
+      <center>
+        <foam model="foam.demos.FOAMDiagram" x="2" y="2" width="1600" height="800" />
+      </center>
     </div>
   </slide>
 
@@ -70,7 +63,17 @@
 -->
 
   <slide>
-    <foam model="foam.demos.FOAMComponents" />
+  <!--
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Models</div>
+      </div>
+    </div>
+    -->
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <foam model="foam.demos.modeldiagram.ModelDiagram" />
+    </div>
   </slide>
 
   <slide>
@@ -93,7 +96,7 @@
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
-      <div class="scale085 origin0"><foam model="foam.demos.ArchitectureDiagram" /></div>
+      <div style="transform: scale(0.9);" class="origin0"><foam model="foam.demos.ArchitectureDiagram" /></div>
     </div>
   </slide>
 
@@ -101,7 +104,7 @@
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Holistic</div>
+        <div class="flex-grow content small-heading">Full-Stack</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
@@ -120,41 +123,41 @@
     <div class="flex-row flex-grow flex-stretch">
       <div class="card flex-grow" style="overflow: auto">
         <pre class="theme-light prettyprint prettyprinted"><span class="kwd">interface</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln"> put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln"> remove</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln"> eof</span><span class="pun">();</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln"> error</span><span class="pun">(</span><span class="pln">msg</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln"> put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln"> remove</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln"> eof</span><span class="pun">();</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln"> error</span><span class="pun">(</span><span class="pln">msg</span><span class="pun">);</span><span class="pln">
 </span><span class="pun">}</span><span class="pln">
 
 </span><span class="kwd">interface</span><span class="pln"> DAO </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   remove</span><span class="pun">(</span><span class="pln">id</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   find</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="typ">Future</span><span class="pln"> </span><span class="kwd">select</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="typ">Future</span><span class="pln"> removeAll</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="typ">Future</span><span class="pln"> update</span><span class="pun">(</span><span class="pln">expression</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   listen</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   pipe</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">):</span><span class="pln">  </span><span class="com">// select() + listen()</span><span class="pln">
-          </span><span class="kwd">void</span><span class="pln">   unlisten</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
-          DAO    </span><span class="kwd">where</span><span class="pun">(</span><span class="pln">query</span><span class="pun">);</span><span class="pln">
-          DAO    limit</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
-          DAO    skip</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
-          DAO    orderBy</span><span class="pun">(</span><span class="pln">comparators</span><span class="pun">...);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   remove</span><span class="pun">(</span><span class="pln">id</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   find</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="typ">Future</span><span class="pln"> </span><span class="kwd">select</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="typ">Future</span><span class="pln"> removeAll</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="typ">Future</span><span class="pln"> update</span><span class="pun">(</span><span class="pln">expression</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   listen</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   pipe</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">):</span><span class="pln">  </span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   unlisten</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+    DAO    </span><span class="kwd">where</span><span class="pun">(</span><span class="pln">query</span><span class="pun">);</span><span class="pln">
+    DAO    limit</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
+    DAO    skip</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
+    DAO    orderBy</span><span class="pun">(</span><span class="pln">comparators</span><span class="pun">...);</span><span class="pln">
 </span><span class="pun">}</span></pre>
       </div>
       <div class="card flex-grow" style="overflow: auto">
-        <pre class="theme-dark prettyprint prettyprinted"><span class="pln">dao
-          </span><span class="pun">.</span><span class="pln">skip</span><span class="pun">(</span><span class="lit">200</span><span class="pun">)</span><span class="pln">
-          </span><span class="pun">.</span><span class="pln">limit</span><span class="pun">(</span><span class="lit">50</span><span class="pun">)</span><span class="pln">
-          </span><span class="pun">.</span><span class="pln">orderBy</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">)</span><span class="pln">
-          </span><span class="pun">.</span><span class="kwd">where</span><span class="pun">(</span><span class="pln">
-              AND</span><span class="pun">(</span><span class="pln">
-                EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TO</span><span class="pun">,</span><span class="pln">        </span><span class="str">'kgr@google.com'</span><span class="pun">),</span><span class="pln">
-                EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">FROM</span><span class="pun">,</span><span class="pln">      </span><span class="str">'mymom@gmail.com'</span><span class="pun">),</span><span class="pln">
-                GT</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">,</span><span class="pln"> startOfYear</span><span class="pun">)))</span><span class="pln">
-          </span><span class="pun">.</span><span class="kwd">select</span><span class="pun">(</span><span class="pln">
-              GROUP_BY</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">SUBJECT</span><span class="pun">,</span><span class="pln"> COUNT</span><span class="pun">()));</span></pre>
-      </div>
+        <pre class="theme-dark prettyprint prettyprinted"><span class="pln">   dao
+     </span><span class="pun">.</span><span class="pln">skip</span><span class="pun">(</span><span class="lit">200</span><span class="pun">)</span><span class="pln">
+     </span><span class="pun">.</span><span class="pln">limit</span><span class="pun">(</span><span class="lit">50</span><span class="pun">)</span><span class="pln">
+     </span><span class="pun">.</span><span class="pln">orderBy</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">)</span><span class="pln">
+     </span><span class="pun">.</span><span class="kwd">where</span><span class="pun">(</span><span class="pln">
+         AND</span><span class="pun">(</span><span class="pln">
+           EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TO</span><span class="pun">,</span><span class="pln">        </span><span class="str">'kgr@google.com'</span><span class="pun">),</span><span class="pln">
+           EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">FROM</span><span class="pun">,</span><span class="pln">      </span><span class="str">'mymom@gmail.com'</span><span class="pun">),</span><span class="pln">
+           GT</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">,</span><span class="pln"> startOfYear</span><span class="pun">)))</span><span class="pln">
+     </span><span class="pun">.</span><span class="kwd">select</span><span class="pun">(</span><span class="pln">
+         GROUP_BY</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">SUBJECT</span><span class="pun">,</span><span class="pln"> COUNT</span><span class="pun">()));</span></pre>
+    </div>
     </div>
 
     <div class="card flex-col"><a href="./demos/dao.html">DAO Examples</a></div>
@@ -165,14 +168,14 @@
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block yellow">&nbsp;</div>
-        <div class="flex-grow content small-heading">TodoMVC</div>
+        <div class="flex-grow content small-heading">Benchmark Applications</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
-      <iframe style="width:60%;height:70%;" xxxsrc="http://todomvc.com/examples/foam/" src="./apps/todo/index.html"></iframe>
-      <div>
-<!--        <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="https://github.com/foam-framework/foam/tree/master/apps/todo">Source</a> -->
-        <a href="http://TodoMVC.com">TodoMVC.com</a>, <a href="/apps/todo/index.html">Source</a>
+      <div style="width:95%;" class="flex-row">
+        <iframe class="flex-grow" style="width:60%;height:70%;" src="./apps/todo/index.html"></iframe>
+        <span style="width:50px;"/>
+        <iframe class="flex-grow" style="width:60%;height:70%;" src="./js/foam/demos/sevenguis/index.html"></iframe>
       </div>
     </div>
   </slide>
@@ -184,8 +187,8 @@
         <div class="flex-grow content small-heading">DAO Strategies &amp; Decorators</div>
       </div>
     </div>
-    <div class="card flex-col flex-grow flex-start" style="overflow: auto">
-      <foam model="foam.demos.DAOStrategies" />
+    <div class="card flex-col flex-grow flex-start" style="overflow:auto;">
+      <foam model="foam.demos.DAOStrategies" scaleX="0.9" scaleY="0.9"/>
     </div>
   </slide>
 
@@ -197,7 +200,7 @@
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
-      <img src="./js/foam/demos/empire/benchmarks.png">
+      <img src="./js/foam/demos/empire/benchmarks.png" width="110%">
     </div>
   </slide>
 
@@ -351,7 +354,7 @@ CLASS({
               <foam model="foam.demos.graphics.EyeCView" color="yellow"/>
               <span style="width:200px;display:inline-block;"></span>
               <foam model="foam.demos.graphics.EyesCView"/>
-              <%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.6, scaleY: 0.6, timer: foam.util.Timer.create(), blowBubbles: false}) %>
+              <div style="margin-top:-250px;"><%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.6, scaleY: 0.6, timer: foam.util.Timer.create(), blowBubbles: false}) %></div>
             </p:view>
           </viewChoice>
           <viewChoice>
@@ -370,14 +373,11 @@ CLASS({
           <viewChoice>
             <label>Animation</label>
             <p:view>
-<div class="scale05 origin0" style="margin-left:100px">
+<div class="scale05 origin0" style="margin-left:100px;margin-top:200px;">
 <table>
 <tr>
- <td align="center"><foam model="foam.demos.graphics.Dragon" timer=""/></td>
- <td align="center"><foam model="foam.demos.graphics.Complements2a"/></td>
-</tr><tr>
  <td valign="top" align="center"><foam model="foam.demos.graphics.Spin" width="800" height="800"/></td>
- <td align="center"><foam model="foam.demos.supersnake.Robot" scaleX="8" scaleY="8" width="600" height="1000" x="450"/></td>
+ <td style="padding-left:250px;"><foam model="foam.demos.graphics.Complements2a"/></td>
 </tr>
 </table>
 </div>
@@ -426,8 +426,10 @@ CLASS({
             <label>Graphical</label>
             <p:view>
               <code>
-      clock1.x = mouse.x;
-      clock1.y = mouse.y;
+    this.dynamic(function() {
+        clock1.x = mouse.x;
+        clock1.y = mouse.y;
+    });
               </code>
               <foam model="foam.demos.ReactiveClocks" stage="0"/>
             </p:view>
@@ -449,11 +451,11 @@ CLASS({
             <label>Time</label>
             <p:view>
               <code>
-      clock1.x = mouse.x;
-      clock1.y = mouse.y;
+  clock1.x = mouse.x;
+  clock1.y = mouse.y;
 
-      clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
-      clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
+  clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
+  clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
               </code>
               <foam model="foam.demos.ReactiveClocks" stage="2"/>
             </p:view>
@@ -545,10 +547,10 @@ CLASS({
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Tutorial</div>
+        <div class="flex-grow content small-heading">Tutorials</div>
       </div>
     </div>
-    <div class="flex-row flex-grow flex-stretch">
+    <div class="flex-row flex-grow flex-stretch overflow-hidden">
       <div class="card flex-grow">
         <iframe src="./index.html?model=foam.tutorials.phonecat.Controller" style="height: initial"></iframe>
       </div>
@@ -596,45 +598,33 @@ CLASS({
         <div class="flex-grow content small-heading">OS for The World's Information</div>
       </div>
     </div>
-    <div class="flex-row flex-stretch flex-shrink">
-      <div class="card flex flex-col flex-grow3">
-      <center style="width:1100px">
-        <iframe src="./demos/GoogleSimulator.html"></iframe>
+    <div class="card flex flex-col flex-grow3">
+      <center class="flex flex-col flex-grow" style="width:1100px">
+        <iframe class="flex-grow" style="height: inherit" src="./demos/GoogleSimulator.html"></iframe>
       </center>
-        <i><font size="+2" color="blue">Organize the world's information (y-axis) and make it universally accessible (z-axis) and useful (x-axis).</font></i>
-      </div>
+      <i><font size="+2" color="blue">Organize the world's information (y-axis) and make it universally accessible (z-axis) and useful (x-axis).</font></i>
     </div>
   </slide>
 
   <slide>
-    <div class="heading-card">
-      <div class="flex-row">
-        <div class="small-color-block blue">&nbsp;</div>
-        <div class="flex-grow content small-heading">Summary</div>
-      </div>
-    </div>
-    <div class="flex-grow1 flex-stretch">
-      <center>
-        <foam model="foam.demos.FOAMDiagram" x="2" y="2" width="1600" height="800" />
-      </center>
-    </div>
-  </slide>
-
-  <slide>
+    <!-- TODO: Dirty hack to prevent display from slide 3 from showing up in legend mode. -->
+    <% setTimeout(function() { $('display').style.display='none'; }, 6000); %>
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Efficiency</div>
+        <div class="flex-grow content small-heading">Value Proposition</div>
       </div>
     </div>
     <div class="flex-row" style="height: 100%;">
       <div class="center" style="padding: 5%; min-width: 80%">
         <span class="flex-col" style="font-size: 32px;">
+            <foam model="foam.demos.graphics.Logo" text="Efficiency" width="560"
+                  height="180" /><br>
           <div style="font-size:48px;color:gray;">
-            <i style="color:red;">Efficiency</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br>
+<!--            <i style="color:red;">Efficiency</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br> -->
             Application <font color="red">Performance</font><br>
             Application <font color="red">Size</font><br>
-            Developer <font color="red">Efficiency</font><br><br>
+            Developer <font color="red">Productivity</font><br><br>
             <i style="color:#3c0;font-size:50px;">"Fast Apps Fast"</i><br>
           </div>
         </span>

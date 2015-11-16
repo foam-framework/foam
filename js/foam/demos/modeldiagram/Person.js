@@ -15,27 +15,27 @@
  * limitations under the License.
  */
 
-// CLASS({
-//   name: 'ShareTarget',
-//   package: 'com.google.plus',
+CLASS({
+  package: 'foam.demos.modeldiagram',
+  name: 'Person',
 
-//   documentation: function() {/* A Person, Circle, or ShareList that can be
-//      shared to (one of the targets of a share). */},
+  properties: [
+    { type: 'Int',     name: 'id'        },
+    { type: 'String',  name: 'firstName' },
+    { type: 'String',  name: 'lastName'  },
+    { type: 'Int',     name: 'age'       },
+    { type: 'Boolean', name: 'married', defaultValue: true }
+  ],
 
-//   properties: [
-//     {
-//       model_: 'StringProperty',
-//       name: 'displayName',
-//     }
-//   ],
+  methods: [
+    function fullName() {
+      return this.firstName + ' ' + this.lastName;
+    }
+  ],
 
-//   methods: [
-//     function toPeople() {
-//       /* Implement to return the flat list of Person ids this share target references. */
-//     },
-//     function toChipE() {
-//       /* Implement to return a contact chip view Element */
-//     },
-//   ],
-
-// });
+  actions: [
+    function sayHello() {
+      window.alert("Hello, I'm " + this.firstName);
+    }
+  ]
+});

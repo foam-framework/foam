@@ -23,6 +23,10 @@ CLASS({
       name: 'id'
     },
     {
+      name: 'sid',
+      help: 'TODO: this is just for test data, remove!',
+    },
+    {
       model_: 'StringProperty',
       name: 'titleText'
     },
@@ -42,29 +46,34 @@ CLASS({
 
   methods: [
     // TODO(markdittmer): We should use model-for-model or similar here.
-    function toDetailE() {
-      return this.Element.create(null, this.Y.sub({controllerMode: 'read-only'}))
+    function toDetailE(X) {
+      var Y = X || this.Y;
+      return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
         .start().style({
           'display': 'flex',
           'flex-direction': 'column',
-          'margin': '16px'
         })
-          .start().add(this.titleText$).cls('md-title').end()
-          .start().add(this.description$).cls('md-subhead').end()
+          .start().style({ 'margin': '16px' })
+            .start().add(this.titleText$).cls('md-title').end()
+            .start().add(this.description$).cls('md-subhead').end()
+          .end()
           .start('video')
             .attrs({ src: this.content, controls: 'true', preload:'auto'})
-            .style({ width: '100%' })
           .end()
         .end();
     },
-    function toCitationE() {
-      return this.Element.create(null, this.Y)
+    function toCitationE(X) {
+      var Y = X || this.Y;
+      return this.Element.create(null, Y)
         .start().style({
             'display': 'flex',
             'flex-direction': 'row',
           })
           .add(this.ImageView.create({ data: this.preview, displayWidth: 80*16/9, displayHeight: 80 }))
-          .start().add(this.description$).style({ margin: 10 }).end()
+            .start().style({ 'display': 'flex', 'flex-direction': 'column', margin: '16px' })
+              .start().add(this.titleText$).cls('md-subhead').end()
+              .start().add(this.description$).cls('md-body').end()
+          .end()
         .end();
     },
   ],

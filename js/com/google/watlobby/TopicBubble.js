@@ -31,11 +31,13 @@ CLASS({
   imports: [ 'lobby' ],
 
   properties: [
+    { name: 'x', preSet: function(_, x) { return Math.floor(x); } },
+    { name: 'y', preSet: function(_, y) { return Math.floor(y); } },
     { name: 'topic' },
     {
       name: 'image',
       postSet: function(_, i) {
-        this.img.src = i;
+        this.img.src = i.startsWith('http') ? i : '/js/com/google/watlobby/' + i;
       }
     },
     { name: 'roundImage' },
@@ -54,7 +56,7 @@ CLASS({
     {
       name: 'img',
       factory: function() {
-        return this.ImageCView.create({ src: this.image });
+        return this.ImageCView.create({ src: '/js/com/google/watlobby/' + this.image });
       }
     },
   ],
