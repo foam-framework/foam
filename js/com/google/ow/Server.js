@@ -143,11 +143,12 @@ CLASS({
       name: 'createStreamItem',
       hidden: true,
       factory: function() {
-        return function(source, target, data) {
+        return function(source, target, data, opt_sid) {
           return this.Envelope.create({
             owner: target,
             source: source,
             data: data,
+            sid: opt_sid || data.sid || '',
           });
         }.bind(this);
       },
@@ -197,12 +198,24 @@ CLASS({
               }, this.Y));
             }.bind(this),
           });
+          this.videoDAO_.select({
+            put: function(ad) {
+              console.log("Putting video: ", person.id, ad, ad.sid);
+              this.streamDAO_.put(this.Envelope.create({
+                owner: person.id,
+                source: '0',
+                data: ad,
+                sid: ad.sid,
+              }, this.Y));
+            }.bind(this),
+          });
         }.bind(this),
       });
-      // Bootstrap people.
-      this.personData.select(this.personDAO_);
       // Bootstrap videos.
       this.videoData.select(this.videoDAO_);
+
+      // Bootstrap people.
+      this.personData.select(this.personDAO_);
     },
   ],
 });

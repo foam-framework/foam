@@ -31,5 +31,6 @@
     "description": "A list of video items.",
     "model": "com.google.ow.content.Video",
     "contentItemView": "foam.ui.md.CitationView",
+    "id": "ci4873296573765766590",
   },
 ]

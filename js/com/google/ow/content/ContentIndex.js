@@ -20,6 +20,12 @@ CLASS({
     'foam.dao.EasyClientDAO',
     'foam.dao.LoggingDAO',
     'foam.browser.ui.DAOController',
+    'com.google.ow.model.Envelope',
+  ],
+
+  imports: [
+    'streamDAO',
+    'createStreamItem',
   ],
 
   documentation: function() {/* Connects to a remote DAO and offers the
@@ -31,17 +37,16 @@ CLASS({
       name: 'id'
     },
     {
+      name: 'substreams',
+      lazyFactory: function() { return ['contentIndex/' + this.id]; }
+    },
+    {
       model_: 'StringProperty',
       name: 'titleText'
     },
     {
       model_: 'StringProperty',
       name: 'description'
-    },
-    {
-      model_: 'URLProperty',
-      name: 'serverUri',
-      defaultValueFn: function() { return this.X.document.location.origin + '/api'; },
     },
     {
       model_: 'ModelProperty',
@@ -58,6 +63,7 @@ CLASS({
             d = args.data$ || X.data$;
             d = d && d.value;
           }
+          if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
           return d.toCitationE(X).style({ margin: '8px 0px' });
         }
         if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
@@ -66,6 +72,7 @@ CLASS({
             d = args.data$ || X.data$;
             d = d && d.value;
           }
+          if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
           return d.toDetailE(X).style({ 'flex-grow': 1, overflow: 'hidden' });
         }
       }
@@ -75,17 +82,14 @@ CLASS({
       hidden: true,
       transient: true,
       lazyFactory: function() {
-        return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
-          serverUri: this.serverUri,
-          model: this.model,
-        }) });
+        return this.streamDAO.where(EQ(this.Envelope.SID, this.substreams[0]));
       }
     },
     {
       model_: 'ViewFactoryProperty',
       name: 'contentRowView',
       help: 'The row view for the content item list.',
-      defaultValue: 'foam.ui.md.CitationView',
+      defaultValue: 'com.google.ow.ui.EnvelopeCitationView',
     },
     {
       name: 'contentRowE',
@@ -95,7 +99,7 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'contentDetailView',
       help: 'The row view for the content item list.',
-      defaultValue: 'foam.ui.md.DetailView',
+      defaultValue: 'com.google.ow.ui.EnvelopeDetailView',
     },
     {
       name: 'contentDetailE',
@@ -104,6 +108,22 @@ CLASS({
   ],
 
   methods: [
+    function put(envelope, sink) {
+      /* this is a substream target, implement put handler */
+      var self = this;
+      // Since this should be running on the server, grab all the owners
+      // of this contentIndex, based on stream id, and share the new substream
+      // content with those owners.
+      self.streamDAO.where(IN(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
+        MAP(self.Envelope.OWNER, { put: function(owner) {
+          self.streamDAO.put(
+            self.createStreamItem(self.substreams[0], owner, envelope.data, self.substreams[0])
+          );
+        } })
+      );
+    },
+
+
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
       var Y = X || this.Y;

@@ -42,7 +42,7 @@ CLASS({
   methods: [
     function put(o, sink) {
       // TODO: rename .sid to .addr (Box address?)
-      if ( o.sid ) {
+      if ( o.substreams ) {
         this.putToTargets(o, sink);
       }
     },
@@ -55,9 +55,10 @@ CLASS({
       var self = this;
       // TODO: eventually the target could be a third party URL, so we
       // would load that instead of hitting the streamDAO
-      self.streamDAO.where(EQ(this.Envelope.SID, env.sid)).select({
+      // TODO: if we don't find exact match, try for partial
+      self.streamDAO.where(IN(this.Envelope.SUBSTREAMS, env.sid)).select({
         put: function(target) {
-          // TODO: anything else to do to "wake" the clone target the DAO
+          // TODO: anything else to do to "wake" the cloned targets the DAO
           // gives us? (are listeners connected, etc.?)
           target.put && target.put(env, sink);
         }

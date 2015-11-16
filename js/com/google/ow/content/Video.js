@@ -23,6 +23,10 @@ CLASS({
       name: 'id'
     },
     {
+      name: 'sid',
+      help: 'TODO: this is just for test data, remove!',
+    },
+    {
       model_: 'StringProperty',
       name: 'titleText'
     },
