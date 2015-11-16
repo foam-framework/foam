@@ -144,9 +144,13 @@ CLASS({
       hidden: true,
       factory: function() {
         return function(source, target, data, opt_sid) {
+          var srcId = source.id || source;
+          var tgtId = target.id || target;
+          // share handler, if some sort of setup is needed
+          if ( data.onShare ) data.onShare(srcId, tgtId, opt_sid);
           return this.Envelope.create({
-            owner: target,
-            source: source,
+            owner: tgtId,
+            source: srcId,
             data: data,
             sid: opt_sid || data.sid || '',
           });

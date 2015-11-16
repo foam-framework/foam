@@ -122,7 +122,24 @@ CLASS({
         } })
       );
     },
-
+    function onShare(source, target, opt_sid) {
+      /* React to share events. Called just before this item is shared. */
+      var self = this;
+      // Duplicate source user's stream content for the new target user
+      // TODO: don't duplicate if it's already there?
+      self.dao.where(EQ(self.Envelope.OWNER, source)).select({
+        put: function(env) {
+          self.streamDAO.put(
+            self.createStreamItem(
+              self.substreams[0],
+              target,
+              env.data,
+              self.substreams[0]
+            )
+          );
+        }
+      });
+    },
 
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
