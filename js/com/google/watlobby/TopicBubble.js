@@ -130,10 +130,15 @@ CLASS({
         this.r + 2 :
         Math.SQRT1_2 * this.r ;
 
-      this.img.x      = -r2;
-      this.img.y      = -r2;
-      this.img.width  = 2 * r2;
-      this.img.height = 2 * r2;
+      if ( this.img.image_ && this.img.image_.width ) {
+        var w = this.img.image_.width;
+        var h = this.img.image_.height;
+        var min = Math.min(w, h);
+        this.img.x      = -r2 + (min-w)/4;
+        this.img.y      = -r2 + (min-h)/4;
+        this.img.width  = w * (2 * r2)/min;
+        this.img.height = h * (2 * r2)/min;
+      }
     },
     function paint() {
       this.layout();
@@ -142,14 +147,12 @@ CLASS({
     function paintBorder() { },
     function paintChildren() {
       var c = this.canvas;
-      if ( this.roundImage ) {
-        c.save();
-        c.beginPath();
-        c.arc(0, 0, this.r, 0, 2 * Math.PI, false);
-        c.clip();
-      }
+      c.save();
+      c.beginPath();
+      c.arc(0, 0, this.r, 0, 2 * Math.PI, false);
+      c.clip();
       this.SUPER();
-      if ( this.roundImage ) c.restore();
+      c.restore();
       foam.graphics.Circle.getPrototype().paintBorder.call(this);
     }
   ]
