@@ -22,10 +22,11 @@ CLASS({
     'id',
     {
       model_: 'EMailProperty',
-      name: 'email'
+      name: 'email',
+      mode: 'read-only'
     },
     {
-      model_: 'StringProperty',
+      model_: 'foam.core.types.StringEnumProperty',
       name: 'level',
       defaultValue: 'user',
       choices: [
