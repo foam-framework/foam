@@ -1071,6 +1071,7 @@ CLASS({
   name: 'PasswordProperty',
   extends: 'StringProperty',
   label: 'Password that displays protected or hidden text',
+  swiftView: 'PasswordFieldView',
 });
 
 CLASS({
