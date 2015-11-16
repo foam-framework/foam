@@ -26,6 +26,13 @@
     "color": "RED"
   },
   {
+    "topic": "chromecast",
+    "parentTopic": "chrome",
+    "image": "img/chromecast.jpeg",
+    "priority": 5,
+    "color": "RED"
+  },
+  {
     "topic": "googlecanada",
     "image": "img/googlecanada.png",
     "priority": 5,
