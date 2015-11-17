@@ -16,6 +16,13 @@ CLASS({
   traits: ['com.google.ow.content.VotableTrait'],
 
   methods: [
+    function init() {
+      console.log("t:",this.streamDAO, " X:", this.X.streamDAO);
+      //console.assert(this.streamDAO === this.X.streamDAO, "StreamDAO mismatch1!" );
+      this.SUPER();
+      //console.assert(this.streamDAO === this.X.streamDAO, "StreamDAO mismatch2!");
+    },
+
     function toDetailE(X) {
       return this.SUPER().add(this.vote.toDetailE(X));
     },

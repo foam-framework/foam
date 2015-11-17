@@ -124,7 +124,7 @@ CLASS({
     },
     {
       name: 'streamDAO',
-      lazyFactory: function() {
+      factory: function() {
         return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
           serverUri: this.document.location.origin + '/api',
           model: this.Envelope,
@@ -134,7 +134,7 @@ CLASS({
     },
     {
       name: 'personDAO',
-      lazyFactory: function() {
+      factory: function() {
         // TODO(markdittmer): This should be an authorized collection of peopl
         // the current user may know about.
         return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
