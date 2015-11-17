@@ -19,14 +19,8 @@ CLASS({
   exports: [ 'as board' ],
 
   properties: [
-    {
-      name: 'width',
-      defaultValue: 14
-    },
-    {
-      name: 'height',
-      defaultValue: 14
-    },
+    [ 'width', 14 ],
+    [ 'height', 14 ],
     {
       name: 'cells',
       lazyFactory: function() {
@@ -42,7 +36,7 @@ CLASS({
         return cells;
       }
     },
-    { name: 'className', defaultValue: 'sweeper-board' }
+    [ 'className', 'sweeper-board' ]
   ],
 
   methods: {
@@ -78,15 +72,13 @@ CLASS({
         display: inline-block;
         margin: 24px;
       }
-    */}
+   */}
   ],
 
   listeners: [
-    {
-      name: 'cellUncovered',
-      code: function(cell) {
-        if ( cell.mineCount ) return;
-        this.X.setTimeout(function() {
+    function cellUncovered(cell) {
+      if ( cell.mineCount ) return;
+      this.X.setTimeout(function() {
         for ( var x = -1 ; x <= 1 ; x++ ) {
           for ( var y = -1 ; y <= 1 ; y++ ) {
             try {
@@ -95,7 +87,6 @@ CLASS({
             } catch(x) {}
           }
         }}.bind(this), 32);
-      }
     }
   ]
 });
