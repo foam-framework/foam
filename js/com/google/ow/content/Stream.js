@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'com.google.ow.content',
-  name: 'ContentIndex',
+  name: 'Stream',
 
   requires: [
     'foam.u2.Element',

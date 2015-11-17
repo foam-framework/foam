@@ -26,7 +26,7 @@
     ]
   },
   {
-    "model_": "com.google.ow.content.ContentIndex",
+    "model_": "com.google.ow.content.Stream",
     "titleText": "Video List",
     "description": "A list of video items.",
     "model": "com.google.ow.content.Video",

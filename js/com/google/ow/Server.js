@@ -128,14 +128,17 @@ CLASS({
     },
     {
       name: 'personData',
+      help: 'Test data',
       factory: function() { return this.dataFactory('people', this.Person); },
     },
     {
       name: 'adData',
+      help: 'Test data',
       factory: function() { return this.dataFactory('ads', this.ProductAd); },
     },
     {
       name: 'videoData',
+      help: 'Test data',
       factory: function() { return this.dataFactory('videos', this.Video); },
     },
     {
@@ -186,7 +189,6 @@ CLASS({
     function execute() {
       this.exportDAO(this.streamDAO);
       this.exportDAO(this.personDAO);
-      this.exportDAO(this.videoDAO);
       this.loadData();
     },
     function loadData() {
