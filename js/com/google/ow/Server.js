@@ -33,7 +33,7 @@ CLASS({
     'foam.dao.LoggingDAO',
     'foam.dao.PrivateOwnerAuthorizer',
     'foam.node.dao.JSONFileDAO',
-    'com.google.ow.examples.VideoA',
+    'com.google.ow.SubstreamSink',
   ],
   imports: [
     'console',
@@ -88,7 +88,7 @@ CLASS({
     {
       name: 'streamDAO_',
       lazyFactory: function() {
-        return this.EasyDAO.create({
+        var nuDAO = this.EasyDAO.create({
           model: this.Envelope,
           name: 'streams',
           daoType: this.MDAO,
@@ -96,6 +96,8 @@ CLASS({
           isServer: true,
           // logging: true,
         });
+        nuDAO.listen(this.SubstreamSink.create());
+        return nuDAO;
       },
     },
     {
