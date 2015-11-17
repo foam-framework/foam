@@ -124,6 +124,10 @@ CLASS({
               '}'),
         }.addActions({
           rulePrefix: function(parts) {
+            // Look for $ signs, and turn them into the model name.
+            parts = parts.map(function(p) {
+              return p.indexOf('$') >= 0 ? p.replace(/\$/g, css.modelName_) : p;
+            });
             return parts.join(' ');
           },
           block: function(parts) {
@@ -154,6 +158,22 @@ CLASS({
           },
         }), seq('/*', repeat(not('*/', anyChar)), '*/'));
       },
+    },
+    {
+      name: 'model',
+      documentation: 'Optional model which contains this CSS template. Used ' +
+          'to expand $ signs in CSS selectors to the model name.',
+      postSet: function(old, nu) {
+        if (nu) this.modelName_ = nu.CSS_CLASS || cssClassize(nu.id);
+      },
+    },
+    {
+      name: 'modelName_',
+      documentation: 'The converted model name itself.',
+      adapt: function(old, nu) {
+        // Turns 'foo-bar quux' into '.foo-bar.quux'
+        return '.' + nu.split(/ +/).join('.');
+      }
     },
   ],
 });

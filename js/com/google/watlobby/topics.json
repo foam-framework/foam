@@ -26,6 +26,13 @@
     "color": "RED"
   },
   {
+    "topic": "chromecast",
+    "parentTopic": "chrome",
+    "image": "img/chromecast.jpeg",
+    "priority": 5,
+    "color": "RED"
+  },
+  {
     "topic": "googlecanada",
     "image": "img/googlecanada.png",
     "priority": 5,
@@ -39,7 +46,7 @@
     "priority": 0,
     "model": "Video",
     "video": "HvxKHj9QmMI",
-    "timeout": 55
+    "timeout": 58
   },
   {
     "topic": "onhub",
@@ -108,7 +115,7 @@
     "color": "red",
     "roundImage": true,
     "background": "red",
-    "text": "<font color=white><center><img style=margin-top:-200px;margin-bottom:-150px; src=img/foam_whiteontransparent.png></center><br>FOAM is a revolutionary new approach to software development.  By automating the creation of software from high-level specifications, FOAM greatly increases developer productivity. FOAM is open-sourced and available at http://foamdev.com.<br><br>Supports: Android, iOS, Web, Node.js<br><br>This video wall is FOAM Powered.</font>",
+    "text": "<font color=white><center><img style=margin-top:-200px;margin-bottom:-150px; src=/js/com/google/watlobby/img/foam_whiteontransparent.png></center><br>FOAM is a revolutionary new approach to software development.  By automating the creation of software from high-level specifications, FOAM greatly increases developer productivity. FOAM is open-sourced and available at http://foamdev.com.<br><br>Supports: Android, iOS, Web, Node.js<br><br>This video wall is FOAM Powered.</font>",
     "timeout": 35
   },
   {

@@ -15,11 +15,8 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'com.google.ow.ui.ImageView',
     'foam.u2.md.Select',
-    'foam.ui.KeyView',
   ],
-  imports: [ 'imageDAO' ],
   exports: [ 'data' ],
 
   properties: [ [ 'nodeName', 'PRODUCT' ] ],
@@ -35,21 +32,10 @@ CLASS({
       return this.start('div').cls('md-subhead').cls('heading')
           .add(this.data.name)
         .end()
-        // TODO(markdittmer): u2-ify KeyView.
-        .add(this.KeyView.create({
-          dao: this.imageDAO,
-          data: this.data.colorableImage,
-          subType: 'com.google.ow.model.Image',
-          subKey: 'ID',
-          innerView: function(args, X) {
-            return this.ImageView.create(args, X || this.Y)
-                .cls('colorable-img').style({
-                  'float': 'right',
-                  'margin-left': '5px',
-                  background: this.data.color$,
-                });
-          }.bind(this),
-        }, this.Y))
+
+        .start('div').cls('image')
+          .add(this.data.COLORABLE_IMAGE_URL)
+        .end()
         .start('div').cls('md-body').cls('summary')
           .add(this.data.summary)
         .end()
@@ -66,9 +52,8 @@ CLASS({
         display: block;
         width: 100%;
       }
-      product .colorable-img {
+      product .image {
         float: right;
-        background: #000;
         margin: 10px;
         width: 200px;
         height: 200px;

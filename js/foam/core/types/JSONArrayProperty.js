@@ -14,28 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+CLASS({
+  package: 'foam.core.types',
+  name: 'JSONArrayProperty',
+  extends: 'ArrayProperty',
+  traits: [ 'foam.core.types.JSONPropertyTrait' ],
 
-// CLASS({
-//   name: 'ShareTarget',
-//   package: 'com.google.plus',
+  properties: [
+    {
+      name: 'fromItemJSON',
+      defaultValue: function(item) {
+        return this.subType ? this.subType.create(item, this.X) : item;
+      },
+    },
+  ],
 
-//   documentation: function() {/* A Person, Circle, or ShareList that can be
-//      shared to (one of the targets of a share). */},
-
-//   properties: [
-//     {
-//       model_: 'StringProperty',
-//       name: 'displayName',
-//     }
-//   ],
-
-//   methods: [
-//     function toPeople() {
-//       /* Implement to return the flat list of Person ids this share target references. */
-//     },
-//     function toChipE() {
-//       /* Implement to return a contact chip view Element */
-//     },
-//   ],
-
-// });
+  methods: [
+    function fromJSON(obj, json) {
+      var a = this.SUPER(obj, json);
+      if ( ! a ) return a;
+      json = a.map(function(item) {
+        return this.fromItemJSON(item);
+      }.bind(this));
+      obj[this.name] = json;
+      return json;
+    },
+  ]
+});

@@ -48,14 +48,17 @@ CLASS({
     */},
     function CSS() {/*
       body, task-manager {
-        width: 100%;
-        height: 100%;
         color: rgba(0, 0, 0, 0.87);
         font-family: 'Roboto', sans-serif;
         font-size: 13px;
         font-weight: 400;
       }
+      body > task-manager {
+        width: 100%;
+        height: 100%;
+      }
       task-manager {
+        overflow: hidden;
         background: rgb(238,238,238);
         flex-direction: column;
       }

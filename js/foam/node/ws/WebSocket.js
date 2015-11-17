@@ -56,6 +56,9 @@ CLASS({
         opcode: opcode
       });
       this.socket.write(frame.toData());
+    },
+    function close() {
+      this.socket.end();
     }
   ],
   listeners: [
@@ -78,7 +81,6 @@ CLASS({
               opcode: 10
             });
             var written = this.socket.write(resp.toData());
-            console.log("Written is", written);
           }
           return;
         }

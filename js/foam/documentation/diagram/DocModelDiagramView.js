@@ -110,7 +110,7 @@ CLASS({
       this.SUPER();
       // Crude delay to let the featureDAO children populate before painting.
       // TODO(jacksonic): implement a better way for children to notify of async operations
-      X.setTimeout(function() {
+      this.X.setTimeout(function() {
         this.autoSizeLayout.suspended = false;
         this.autoSizeLayout.paint();
       }.bind(this), 300);

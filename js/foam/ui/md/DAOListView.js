@@ -15,12 +15,9 @@
  * limitations under the License.
  */
 
-// TODO(kgr): remove use of SimpleValue, just use data$ binding instead.
 CLASS({
   package: 'foam.ui.md',
   name: 'DAOListView',
-
-  requires: ['SimpleValue'],
 
   extends: 'foam.ui.SimpleView',
   traits: ['foam.ui.DAODataViewTrait'],
@@ -103,31 +100,31 @@ CLASS({
 
     put: function(o) {
       /* Sink function to receive updates from the dao */
+      if ( this.mode === 'read-write' ) o = o.model_.create(o, this.Y); //.clone();
+
       if ( this.rowCache_[o.id] ) {
         //console.log("put cached", o.id);
         var d = this.rowCache_[o.id];
-        if ( ! equals(d.view.data, o) ) d.view.data = o;
+        var view = d.view;
+        view.data = o;
+//        if ( ! equals(d.view.data, o) ) d.view.data = o;
         if ( d.ordering < 0 ) d.ordering = this.count_++; // reset on removal check
       } else {
-        //console.log("put new", o.id);
-
-        if ( this.mode === 'read-write' ) o = o.model_.create(o, this.Y); //.clone();
-        var view = this.rowView({data: o, model: o.model_}, this.Y);
-        // TODO: Something isn't working with the Context, fix
-        view.DAO = this.dao;
-        if ( this.mode === 'read-write' ) {
-          o.addPropertyListener(null, function(o, topic) {
-            var prop = o.model_.getProperty(topic[1]);
-            // TODO(kgr): remove the deepClone when the DAO does this itself.
-            if ( ! prop.transient ) {
-              // TODO: if o.id changed, remove the old one?
-              view.DAO.put(o.deepClone());
-            }
-          });
-        }
+        view = this.rowView({ data: o, model: o.model_}, this.Y);
         this.addChild(view);
         this.rowCache_[o.id] = { view: view, ordering: this.count_++ };
-        //this.onDAOUpdate();
+      }
+
+      var dao = this.dao;
+      if ( this.mode === 'read-write' ) {
+        o.addPropertyListener(null, function(o, topic) {
+          var prop = o.model_.getProperty(topic[1]);
+          // TODO(kgr): remove the deepClone when the DAO does this itself.
+          if ( ! prop.transient ) {
+            // TODO: if o.id changed, remove the old one?
+            dao.put(o.deepClone());
+          }
+        });
       }
     },
 
@@ -180,7 +177,7 @@ CLASS({
         this.publish(this.ROW_CLICK);
       }).bind(this), d.view.id);
        d.view.setClass('dao-selected', function() {
-        return equals(this.selection.id, d.view.data.id);
+        return this.selection && equals(this.selection.id, d.view.data.id);
       }.bind(this), d.view.id);
     },
 

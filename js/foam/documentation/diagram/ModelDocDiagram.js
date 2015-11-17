@@ -138,10 +138,10 @@ CLASS({
         prop: this.data.model_.PROPERTIES,
         copyFrom: {
           model_: 'foam.documentation.diagram.FeatureListDiagram',
-          model: this.X.Property,
+          model: this.Y.Property,
           featureType:'properties'
         }
-      }, this.X);
+      }, this.Y);
       this.addDataChild(v);
 
     },

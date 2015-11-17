@@ -256,21 +256,23 @@ MODEL({
           'return function(' + args.join(',') + '){' + code + '};})()' +
           (model ? '\n\n//# sourceURL=' + model.id.replace(/\./g, '/') + '.' + t.name + '\n' : ''));
     },
-    parseCSS: function(t) {
+    parseCSS: function(t, model) {
       var parser = this.CSSParser_ || ( this.CSSParser_ = X.foam.grammars.CSSDecl.create());
+      parser.model = model;
       return parser.parser.parseString(t).toString();
     },
-    parseU2: function(t) {
+    parseU2: function(t, model) {
       var parser = this.U2Parser_ || ( this.U2Parser_ = X.foam.u2.ElementParser.parser__.create() );
+      parser.modelName_ = cssClassize(model.id);
       return parser.parseString(t.trim()).toString();
     },
     compile: function(t, model) {
       if ( t.name !== 'CSS' ) {
         if ( model.isSubModel(X.lookup('foam.u2.Element')) ) {
-          return eval('(function() { return ' + this.parseU2(t.template) + '; })()');
+          return eval('(function() { return ' + this.parseU2(t.template, model) + '; })()');
         }
         if ( t.template.startsWith('#U2') ) {
-          var code = '(function() { return ' + this.parseU2(t.template.substring(3)) + '; })()';
+          var code = '(function() { return ' + this.parseU2(t.template.substring(3), model) + '; })()';
           return eval(code);
         }
       }
@@ -280,7 +282,7 @@ MODEL({
       // Simple case, just a string literal
       if ( parseResult[0] )
         return ConstantTemplate(t.language === 'css' ?
-            this.parseCSS(t.template) :
+            this.parseCSS(t.template, model) :
             t.template) ;
 
       var code = this.HEADER + parseResult[1] + this.FOOTERS[t.language];

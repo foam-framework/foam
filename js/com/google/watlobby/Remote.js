@@ -50,17 +50,15 @@ CLASS({
         return this.TopicDAO.create({ clientMode: this.clientMode });
       }
     },
-    { name: 'width',      factory: function() { return this.window.innerWidth; } },
-    { name: 'height',     factory: function() { return this.window.innerHeight } },
     { name: 'background', defaultValue: '#ccf' }
   ],
 
   listeners: [
     {
       name: 'updateState',
-      isFramed: true,
+      isMerged: 200,
       code: function() {
-        this.topics.find(EQ(this.Topic.TOPIC, this.root), {
+        this.topics.find(EQ(this.Topic.TOPIC, this.symRoot), {
           put: function (t) {
             t = t.clone();
             t.selected = this.selected;
@@ -74,6 +72,9 @@ CLASS({
       name: 'layout',
       isFramed: true,
       code: function() {
+        this.width  = this.window.innerWidth;
+        this.height = this.window.innerHeight;
+
         while ( this.children.length ) {
           this.removeChild(this.children[this.children.length-1]);
         }
@@ -98,7 +99,8 @@ CLASS({
     function initCView() {
       this.SUPER();
 
-      this.topics.listen({put: function(t) { if ( t.topic !== this.root ) this.layout(); }.bind(this), remove: this.layout});
+      this.window.addEventListener('resize', this.layout);
+      this.topics.listen({put: function(t) { if ( t.topic !== this.symRoot ) this.layout(); }.bind(this), remove: this.layout});
       this.document.body.addEventListener('click', this.onClick);
       this.selected$.addListener(this.updateState);
       this.dir$.addListener(this.updateState);
@@ -107,16 +109,13 @@ CLASS({
     },
 
     function putTopic(t) {
-      if ( t.topic === this.root ) return;
+      if ( this.maybeRedirect(t) ) return;
+      if ( t.topic === this.symRoot ) return;
 
-      // console.log('*** putTopic: ', t, t.topic && t.topic.topic);
-      // Don't add if we already have topic
-      for ( var i = 0 ; i < this.children.length ; i++ ) {
-        var c = this.children[i];
-        if ( c.topic && c.topic.topic === t.topic ) {
-          this.selected = c;
-          return;
-        }
+      if ( ! t.enabled ) {
+        // Newly disabled, so re-layout.
+        if ( this.findTopic(t.topic) ) this.layout();
+        return;
       }
 
       t = t.clone();
@@ -133,7 +132,7 @@ CLASS({
       c.image = t.image;
       var r = h/2-20;
       t.r = c.r = r;
-      c.scaleX = c.scaleY = 0.1;
+      c.scaleX = c.scaleY = 0.001;
       c.roundImage = t.roundImage;
       if ( t.color ) c.border = t.color;
       if ( t.background ) c.color = t.background;
@@ -145,7 +144,7 @@ CLASS({
       var s = function() { c.scaleX = c.scaleY = ! this.selected ? 0.9 : this.selected === t.topic ? 1.02 : 0.75; }.bind(this);
       var l = function() { if ( this.selected === t.topic ) { c.addChild(close); } else { c.removeChild(close); } Movement.animate(300, s)(); }.bind(this);
       this.selected$.addListener(l);
-      this.X.setTimeout(l,20);
+      this.X.setTimeout(l,100);
     }
   ]
 });

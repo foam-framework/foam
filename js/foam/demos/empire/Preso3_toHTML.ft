@@ -1,0 +1,635 @@
+<slides style="width: 100%;height:100%;"
+        oninit="this.X.foam.memento.FragmentMementoMgr.create({ mementoValue:
+                this.memento$ }, this.Y)">
+
+  <slide>
+    <foam model="com.google.watlobby.Lobby" root="fstofoam" n="10" speedWarp="1.1" showFOAMPowered="false"></foam>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Overview</div>
+      </div>
+    </div>
+    <div class="flex-grow1 flex-stretch">
+      <center>
+        <foam model="foam.demos.FOAMDiagram" x="2" y="2" width="1600" height="800" />
+      </center>
+    </div>
+  </slide>
+
+<!--
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Overview</div>
+      </div>
+    </div>
+    <div class="card flex-grow">
+      <foam model="foam.demos.FOAMDiagram" width="1600" height="680" />
+    </div>
+  </slide>
+-->
+<!--
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Overview</div>
+      </div>
+    </div>
+    <div class="flex-row flex-grow flex-stretch">
+      <div class="card flex-grow">
+        <foam model="foam.demos.FOAMDiagram" />
+      </div>
+      <div class="card flex-col flex-grow">
+        <span class="small-heading">
+          <a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome
+            App Builder</a>
+        </span>
+
+        <br>
+
+        <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw"
+             style="border: 1px solid;">
+        <br>
+        <span style="font-size: 60%">(38k 1-week active users)</span>
+      </div>
+    </div>
+  </slide>
+-->
+
+  <slide>
+  <!--
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Models</div>
+      </div>
+    </div>
+    -->
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <foam model="foam.demos.modeldiagram.ModelDiagram" />
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">History Lesson: Feature-Oriented OS</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <iframe src="./demos/UnixSimulator.html"></iframe>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Architecture</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <div style="transform: scale(0.9);" class="origin0"><foam model="foam.demos.ArchitectureDiagram" /></div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Full-Stack</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <iframe src="./demos/demo10b2.html"></iframe>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block green">&nbsp;</div>
+        <div class="flex-grow content small-heading">Data Accesss Objects (DAOs)</div>
+      </div>
+    </div>
+
+    <div class="flex-row flex-grow flex-stretch">
+      <div class="card flex-grow" style="overflow: auto">
+        <pre class="theme-light prettyprint prettyprinted"><span class="kwd">interface</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln"> put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln"> remove</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln"> eof</span><span class="pun">();</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln"> error</span><span class="pun">(</span><span class="pln">msg</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">interface</span><span class="pln"> DAO </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">Sink</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   put</span><span class="pun">(</span><span class="pln">obj</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   remove</span><span class="pun">(</span><span class="pln">id</span><span class="pun">,</span><span class="pln"> opt_sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   find</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="typ">Future</span><span class="pln"> </span><span class="kwd">select</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="typ">Future</span><span class="pln"> removeAll</span><span class="pun">(</span><span class="pln">query</span><span class="pun">,</span><span class="pln"> sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="typ">Future</span><span class="pln"> update</span><span class="pun">(</span><span class="pln">expression</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   listen</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   pipe</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">):</span><span class="pln">  </span><span class="pln">
+    </span><span class="kwd">void</span><span class="pln">   unlisten</span><span class="pun">(</span><span class="pln">sink</span><span class="pun">);</span><span class="pln">
+    DAO    </span><span class="kwd">where</span><span class="pun">(</span><span class="pln">query</span><span class="pun">);</span><span class="pln">
+    DAO    limit</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
+    DAO    skip</span><span class="pun">(</span><span class="pln">count</span><span class="pun">);</span><span class="pln">
+    DAO    orderBy</span><span class="pun">(</span><span class="pln">comparators</span><span class="pun">...);</span><span class="pln">
+</span><span class="pun">}</span></pre>
+      </div>
+      <div class="card flex-grow" style="overflow: auto">
+        <pre class="theme-dark prettyprint prettyprinted"><span class="pln">   dao
+     </span><span class="pun">.</span><span class="pln">skip</span><span class="pun">(</span><span class="lit">200</span><span class="pun">)</span><span class="pln">
+     </span><span class="pun">.</span><span class="pln">limit</span><span class="pun">(</span><span class="lit">50</span><span class="pun">)</span><span class="pln">
+     </span><span class="pun">.</span><span class="pln">orderBy</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">)</span><span class="pln">
+     </span><span class="pun">.</span><span class="kwd">where</span><span class="pun">(</span><span class="pln">
+         AND</span><span class="pun">(</span><span class="pln">
+           EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TO</span><span class="pun">,</span><span class="pln">        </span><span class="str">'kgr@google.com'</span><span class="pun">),</span><span class="pln">
+           EQ</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">FROM</span><span class="pun">,</span><span class="pln">      </span><span class="str">'mymom@gmail.com'</span><span class="pun">),</span><span class="pln">
+           GT</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">TIMESTAMP</span><span class="pun">,</span><span class="pln"> startOfYear</span><span class="pun">)))</span><span class="pln">
+     </span><span class="pun">.</span><span class="kwd">select</span><span class="pun">(</span><span class="pln">
+         GROUP_BY</span><span class="pun">(</span><span class="typ">EMail</span><span class="pun">.</span><span class="pln">SUBJECT</span><span class="pun">,</span><span class="pln"> COUNT</span><span class="pun">()));</span></pre>
+    </div>
+    </div>
+
+    <div class="card flex-col"><a href="./demos/dao.html">DAO Examples</a></div>
+
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">Benchmark Applications</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <div style="width:95%;" class="flex-row">
+        <iframe class="flex-grow" style="width:60%;height:70%;" src="./apps/todo/index.html"></iframe>
+        <span style="width:50px;"/>
+        <iframe class="flex-grow" style="width:60%;height:70%;" src="./js/foam/demos/sevenguis/index.html"></iframe>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">DAO Strategies &amp; Decorators</div>
+      </div>
+    </div>
+    <div class="card flex-col flex-grow flex-start" style="overflow:auto;">
+      <foam model="foam.demos.DAOStrategies" scaleX="0.9" scaleY="0.9"/>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Query-Optimizing Cache</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow" style="overflow: auto">
+      <img src="./js/foam/demos/empire/benchmarks.png" width="110%">
+    </div>
+  </slide>
+
+  <slide>
+    <!--
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Task Manager</div>
+      </div>
+    </div>
+    -->
+    <div class="card flex-col flex-grow" style="overflow: hidden">
+      <foam model="foam.demos.olympics.Controller" />
+    </div>
+  </slide>
+
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">Language-Like Features</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-no-shrink" id="pong-container">
+      <foam model="foam.demos.pong.Pong" />
+    </div>
+    <div class="card flex-col flex-grow" style="overflow: auto">
+      <foam model="foam.flow.Pong" />
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block green">&nbsp;</div>
+        <div class="flex-grow content small-heading">Dependency Injection</div>
+      </div>
+    </div>
+    <div class="flex-row flex-grow flex-stretch">
+      <div class="card flex-grow" style="overflow: auto">
+        <code><a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Game.js">com.google.sweeper.Game</a>
+
+<a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Board.js">com.google.sweeper.Board</a>
+CLASS({
+  package: 'com.google.sweeper',
+  name: 'Board',
+
+  extendsModel: 'foam.ui.View',
+
+  requires: [ 'com.google.sweeper.Cell' ],
+  <b>exports: [ 'as board' ],</b>
+  ...
+
+<a href="https://github.com/foam-framework/foam/blob/master/js/com/google/sweeper/Cell.js">com.google.sweeper.Cell</a>
+CLASS({
+  package: 'com.google.sweeper',
+  name: 'Cell',
+
+  extendsModel: 'foam.ui.View',
+
+  <b>imports: [ 'board' ],</b>
+  ...</code>
+      </div>
+      <div class="card flex-col flex-grow">
+        <foam model="com.google.sweeper.Game"/><br>
+        <div class="flex-row">
+          <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Game}) %>
+          <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Board}) %>
+          <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Cell}) %>
+        </div>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">Canvas Views</div>
+      </div>
+    </div>
+    <div class="card flex-col flex-grow">
+      <div style="height: 100%; width: 100%; overflow: hidden">
+      <foam model="foam.ui.md.TwoPaneView">
+        <views>
+          <viewChoice>
+            <label>Data-Binding</label>
+            <p:view><div id="%%id" class="scale12 origin0" style="width:367px;margin-left:64px;">
+                <%
+                   CLASS({
+                   name: 'DataBindingDemo',
+                   properties: [
+                   { name: 'value' },
+                   ],
+                   actions: [
+                   { name: 'minus', action: function() { this.value--; } },
+                   { name: 'plus',  action: function() { this.value++; } },
+                   ]
+                   });
+                   var value = DataBindingDemo.create({value:5});
+                   var gauge = foam.graphics.Gauge.create({data$: value.value$, label: 'FOAM'});
+                   out(foam.ui.DetailView.create({data:value, showActions: true}), '<br>', gauge);
+                   %>
+            </div></p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Event Handling</label>
+            <p:view>
+              <%
+                 CLASS({
+                 name: 'test',
+                 properties: [ 'set' ],
+                 actions: [
+                 {
+                 name: 'tick',
+                 isAvailable: function() { return this.set; },
+                 action: function() { this.set = false; }
+                 },
+                 {
+                 name: 'tock',
+                 isAvailable: function() { return ! this.set; },
+                 action: function() { this.set = true; }
+                 }
+                 ],
+                 templates: [ function toDetailHTML() { /*
+                 $$tick{model_: 'foam.graphics.ActionButtonCView', color: 'white', width: 90, height: 90, radius: 40, background: '#aaa', font: '300 18px Arial'}$$tock{model_: 'foam.graphics.ActionButtonCView', color: 'white', width: 90, height: 90, radius: 40, background: '#aaa', font: '300 18px Arial'}*/ } ]
+                 });
+                 out(foam.ui.DetailView.create({data:test.create()}));
+                 %>
+            </p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Configuration</label>
+            <p:view><div id="%%id" class="flex" style="width:500px;margin-left:64px">
+                <%
+                   var circle = foam.graphics.Circle.create({x:400, y:300});
+                   circle.addListener(function() { circle.view.paint(); });
+                   out(foam.ui.DetailView.create({data:circle}), circle);
+                   %>
+            </div></p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Composition</label>
+            <p:view>
+              <foam model="foam.demos.graphics.EyeCView" color="white"/>
+              <foam model="foam.demos.graphics.EyeCView" pupilColor="white"/>
+              <span style="width:200px;display:inline-block;"></span>
+              <foam model="foam.demos.graphics.EyeCView" color="red"/>
+              <foam model="foam.demos.graphics.EyeCView" color="yellow"/>
+              <span style="width:200px;display:inline-block;"></span>
+              <foam model="foam.demos.graphics.EyesCView"/>
+              <div style="margin-top:-250px;"><%= foam.demos.graphics.Dragon.create({y: 200, x: 800, scaleX: 0.6, scaleY: 0.6, timer: foam.util.Timer.create(), blowBubbles: false}) %></div>
+            </p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Reaction</label>
+            <p:view>
+              <%
+                 var eyes = foam.demos.graphics.EyesCView.create({x:400, y:250, width: 800, height: 800, scaleX: 2, scaleY: 2});
+                 var mouse = foam.input.Mouse.create();
+                 eyes.watch(mouse);
+                 this.addInitializer(function() { mouse.connect(eyes.view.$); });
+                 Events.dynamic(function() { mouse.x; mouse.y; }, function() { if ( eyes.view ) eyes.view.paint(); });
+                 out(eyes);
+                 %>
+            </p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Animation</label>
+            <p:view>
+<div class="scale05 origin0" style="margin-left:100px;margin-top:200px;">
+<table>
+<tr>
+ <td valign="top" align="center"><foam model="foam.demos.graphics.Spin" width="800" height="800"/></td>
+ <td style="padding-left:250px;"><foam model="foam.demos.graphics.Complements2a"/></td>
+</tr>
+</table>
+</div>
+</p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Interpolation</label>
+            <p:view><foam model="foam.demos.InterpolatedEyes"/></p:view>
+          </viewChoice>
+        </views>
+      </foam>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <!--
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Task Manager</div>
+      </div>
+    </div>
+    -->
+    <div class="card flex-col flex-grow" style="padding: 0; -webkit-align-items: stretch; align-items: stretch; overflow: hidden">
+      <foam model="foam.apps.ctm.TaskManager" />
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">Reactive Programming</div>
+      </div>
+    </div>
+    <div class="card flex-col flex-grow">
+      <div style="height: 100%; width: 100%; overflow: hidden">
+      <foam model="foam.ui.md.TwoPaneView">
+        <views>
+          <viewChoice>
+            <label>Spreadsheets</label>
+            <p:view><div class="scale15 origin0" style="margin-left: 100px"><foam model="foam.demos.sevenguis.Cells" rows="9" columns="6" /></div></p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Graphical</label>
+            <p:view>
+              <code>
+    this.dynamic(function() {
+        clock1.x = mouse.x;
+        clock1.y = mouse.y;
+    });
+              </code>
+              <foam model="foam.demos.ReactiveClocks" stage="0"/>
+            </p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Graphical (2nd Order)</label>
+            <p:view>
+              <code>
+      clock1.x = mouse.x;
+      clock1.y = mouse.y;
+
+      clock2.x = clock1.x + 200;
+      clock2.y = clock1.y + 200;
+              </code>
+              <foam model="foam.demos.ReactiveClocks" stage="1"/>
+            </p:view>
+          </viewChoice>
+          <viewChoice>
+            <label>Time</label>
+            <p:view>
+              <code>
+  clock1.x = mouse.x;
+  clock1.y = mouse.y;
+
+  clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
+  clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
+              </code>
+              <foam model="foam.demos.ReactiveClocks" stage="2"/>
+            </p:view>
+          </viewChoice>
+        </views>
+      </foam>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">Reactive Animation</div>
+      </div>
+    </div>
+    <div class="card flex-col flex-grow" style="overflow: hidden">
+      <foam model="foam.demos.SolarSystem" />
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Physics</div>
+      </div>
+    </div>
+    <div class="card flex-col flex-grow" style="overflow: hidden">
+      <% X.timer = undefined; %>
+      <%=
+        foam.ui.md.TwoPaneView.create({views: [
+          {label: 'Gravity&nbsp;+&nbsp;Friction', view: { factory_: 'foam.demos.physics.Bubbles', height: 1000, width: 1200, scaleX: 1.5, scaleY: 1.5}},
+          {label: 'Collision',                    view: 'foam.demos.physics.Collision'},
+          {label: 'Spring',                       view: {factory_: 'foam.demos.physics.Spring', n: 10, scaleX: 2, scaleY: 2}},
+          {label: 'Collision&nbsp;+&nbsp;Spring', view: 'foam.demos.physics.CollisionWithSpring'},
+          {label: 'Baloons',                      view: 'foam.demos.physics.Baloons'}
+        ]})
+      %>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">Live-Coding</div>
+      </div>
+    </div>
+    <div class="card flex-col flex-grow" style="overflow: scroll">
+      <foam model="foam.demos.DragonLiveCoding" />
+    </div>
+  </slide>
+
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block yellow">&nbsp;</div>
+        <div class="flex-grow content small-heading">Calculator App</div>
+      </div>
+    </div>
+    <div class="card flex-col center flex-grow flex-stretch flex-space-around">
+      <div>
+        <iframe src="./apps/acalc/Calc.html" style="height: 70%; width: 80%"></iframe>
+      </div>
+      <div>
+        <a href="./apps/acalc/Calc.html">Hosted Version</a>, <a href="https://chrome.google.com/webstore/detail/calculator/joodangkbfjnajiiifokapkpmhfnpleo">Chrome Web Store</a>, <a href="./apps/pcalc/Calc.html">Polymer Version</a>, <a href="./apps/calc/RawCalc.html">Raw Version</a>, <a href="./demos/DemoCat.html?q=calc">Other Versions</a>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block green">&nbsp;</div>
+        <div class="flex-grow content small-heading">Reusable Controllers</div>
+      </div>
+    </div>
+    <div class="card flex-row center flex-grow" style="overflow: auto">
+      <a href="http://foam-framework.github.io/foam/apps/mbug/main.html" target="_blank"><img class="shadow0515" style="max-height:530px" src="./demos/democat/MBug.png"></a>
+      <a href="http://foam-framework.github.io/foam/apps/gmail/main.html" target="_blank"><img class="shadow0515" style="margin-left: 200px;border:1px solid;max-height:530px" src="./demos/democat/GMail.png"></a>
+      <a href="/index.html?model=foam.tutorials.todo.TodoApp" target="_blank"><img class="shadow0515" style="margin-left: 200px;border:1px solid;max-height:530px" src="./demos/democat/TodoBrowser.png"></a>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Tutorials</div>
+      </div>
+    </div>
+    <div class="flex-row flex-grow flex-stretch overflow-hidden">
+      <div class="card flex-grow">
+        <iframe src="./index.html?model=foam.tutorials.phonecat.Controller" style="height: initial"></iframe>
+      </div>
+      <div class="card flex-col flex-grow">
+        <iframe src="http://foam-framework.github.io/foam/tutorial/0-intro/"></iframe>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block green">&nbsp;</div>
+        <div class="flex-grow content small-heading">Toolability (meta-programming)</div>
+      </div>
+    </div>
+    <div class="flex-row flex-grow flex-stretch">
+      <div class="card flex-grow" style="overflow: auto">
+        <ul>
+          <li><a href="./apps/docs/docbrowser.html">API Browsers</a></li>
+          <li>Code Generators</li>
+          <li>Type Checking</li>
+          <li>Linting</li>
+          <li>Refactoring</li>
+          <li>Templates</li>
+          <li>Syntax Highlighting</li>
+          <li>Beautifiers</li>
+          <li>Minifiers</li>
+          <li>Code Coverage</li>
+          <li>Unit Tests</li>
+          <li>Editing</li>
+          <li>Code Visualization</li>
+        </ul>
+      </div>
+      <div class="card flex-col flex-grow">
+        <%= foam.documentation.diagram.DocDiagramView.create({data: foam.documentation.diagram.ModelDocDiagram}) %>
+      </div>
+    </div>
+  </slide>
+
+  <slide>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block blue">&nbsp;</div>
+        <div class="flex-grow content small-heading">OS for The World's Information</div>
+      </div>
+    </div>
+    <div class="card flex flex-col flex-grow3">
+      <center class="flex flex-col flex-grow" style="width:1100px">
+        <iframe class="flex-grow" style="height: inherit" src="./demos/GoogleSimulator.html"></iframe>
+      </center>
+      <i><font size="+2" color="blue">Organize the world's information (y-axis) and make it universally accessible (z-axis) and useful (x-axis).</font></i>
+    </div>
+  </slide>
+
+  <slide>
+    <!-- TODO: Dirty hack to prevent display from slide 3 from showing up in legend mode. -->
+    <% setTimeout(function() { $('display').style.display='none'; }, 6000); %>
+    <div class="heading-card">
+      <div class="flex-row">
+        <div class="small-color-block red">&nbsp;</div>
+        <div class="flex-grow content small-heading">Value Proposition</div>
+      </div>
+    </div>
+    <div class="flex-row" style="height: 100%;">
+      <div class="center" style="padding: 5%; min-width: 80%">
+        <span class="flex-col" style="font-size: 32px;">
+            <foam model="foam.demos.graphics.Logo" text="Efficiency" width="560"
+                  height="180" /><br>
+          <div style="font-size:48px;color:gray;">
+<!--            <i style="color:red;">Efficiency</i> is <font color="#33f">F</font><font color="#f00">O</font><font color="#fc0">A</font><font color="#3c0">M</font>'s Value Proposition<br> -->
+            Application <font color="red">Performance</font><br>
+            Application <font color="red">Size</font><br>
+            Developer <font color="red">Productivity</font><br><br>
+            <i style="color:#3c0;font-size:50px;">"Fast Apps Fast"</i><br>
+          </div>
+        </span>
+      </div>
+    </div>
+  </slide>
+
+</slides>

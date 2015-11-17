@@ -121,7 +121,7 @@ CLASS({
         this.getCertificates_.bind(this),
         function(ret, certs) {
           var response = this.verifyAuthToken_(certs, token);
-          ret(response ? X.sub({ principal: response }) : X);
+          ret(response ? X.sub({ principal: response.sub, userInfo: response }) : X.sub({ principal: null, userInfo: {} }));
         }.bind(this)
       );
     },
@@ -164,7 +164,7 @@ CLASS({
       if (this.validTokenCache_[jwt]) {
         var obj = this.validTokenCache_[jwt];
         if (now < obj.exp + this.CLOCK_SKEW) {
-          return obj.sub;
+          return obj;
         }
         delete this.validTokenCache_[jwt];
       }
@@ -249,7 +249,7 @@ CLASS({
 
       // Token is valid! Cache it to avoid doing all this legwork again.
       this.validTokenCache_[jwt] = payload;
-      return payload.sub;
+      return payload;
     },
   ]
 });

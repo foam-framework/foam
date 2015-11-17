@@ -32,31 +32,38 @@ CLASS({
   ],
 
   methods: [
-    function massageForPut(ret, principal, old, nu) {
+    function massageForPut(ret, X, old, nu) {
+      // Cannot write anonymously
+      if ( ! X.principal ) {
+        ret(null);
+        return;
+      }
+
       // If old exists and old.owner != principal, fail: trying to write someone
       // else's data.
-      if (old && NEQ(this.ownerProp, principal).f(old)) {
+      if (old && NEQ(this.ownerProp, X.principal).f(old)) {
         ret(null);
         return;
       }
 
       // Now either old exists but is owned by me, or this is a new put.
-      // Either way, clone nu and set its owner to the principal.
+      // Either way, clone nu and set its owner to the X.principal.
       var clone = nu.clone();
-      clone[this.ownerProp.name] = principal;
+      clone[this.ownerProp.name] = X.principal;
       ret(clone);
     },
-    function massageForRead(ret, principal, obj) {
+    function massageForRead(ret, X, obj) {
+      // All data is public, anyone can read it.
       ret(obj);
     },
-    function shouldAllowRemove(ret, principal, obj) {
-      if (obj) {
-        ret(EQ(this.ownerProp, principal).f(obj));
+    function shouldAllowRemove(ret, X, obj) {
+      if (X.principal && obj) {
+        ret(EQ(this.ownerProp, X.principal).f(obj));
       } else {
         ret(false);
       }
     },
-    function decorateForSelect(ret, principal, dao) {
+    function decorateForSelect(ret, X, dao) {
       ret(dao);
     },
   ]

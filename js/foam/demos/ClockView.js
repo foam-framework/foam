@@ -71,7 +71,7 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.border = this.BLUE;
+      this.border = this.color;
       this.borderWidth = 5;
       this.color = 'white';
       

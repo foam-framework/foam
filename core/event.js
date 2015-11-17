@@ -880,10 +880,11 @@ MODEL({
 
       function compilePause(op, rest) {
         return function() {
-          document.onclick = function() {
-            document.onclick = null;
+          var l = function() {
+            document.removeEventListener('click', l);
             rest();
           };
+          document.addEventListener('click', l);
         };
       }
 
@@ -906,11 +907,12 @@ MODEL({
         })(op.length);
 
         return function() {
-          for ( var i = 0 ; i < op.length ; i++ )
+          for ( var i = 0 ; i < op.length ; i++ ) {
             if ( isSimple(op[i]) )
               Movement.animate(op[i][0], op[i][1], op[i][2], Movement.seq(op[i][3], join))();
-          else
-            Movement.compile(op[i], join)();
+            else
+              Movement.compile(op[i], join)();
+          }
         };
       }
 
@@ -924,11 +926,10 @@ MODEL({
         var rest = compile_(a, i+1);
         var op = a[i];
 
-        if ( isPause(op)    ) return compilePause(op, rest);
-        if ( isSimple(op)   ) return compileSimple(op, rest);
-        if ( isParallel(op) ) return compileParallel(op, rest);
-
-        return compileFn(op, rest);
+        return isPause(op)    ? compilePause(op, rest)    :
+               isSimple(op)   ? compileSimple(op, rest)   :
+               isParallel(op) ? compileParallel(op, rest) :
+                                compileFn(op, rest)       ;
       }
 
       return compile_(a, 0);

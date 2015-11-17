@@ -33,7 +33,7 @@ CLASS({
     [ 'x',          50      ],
     [ 'y',          50      ],
     [ 'width',      1500    ],
-    [ 'height',     800     ],
+    [ 'height',     750     ],
     [ 'background', 'black' ]
   ],
 
@@ -68,16 +68,16 @@ CLASS({
         }
       }
 
-      var foam = box({text: 'FOAM', font: 60, width: this.width, height: this.height, x: 0, y: 0, alpha: 1});
+      var foam = box({text: 'FOAM', font: 60, width: this.width-2, height: this.height, x: 0, y: 0, alpha: 1});
         var modeler        = box({text: 'Modeler', font: 36});
           var ani          = box({text: 'Animations'});
           var parse        = box({text: 'Parsers'});
           var query        = box({text: 'Queries'});
           var concur       = box({text: 'Concurrency'});
           var doc          = box({text: 'Interactive Documents'});
-          var models       = box({text: 'Models'});
-          var otherm       = box({text: '...'});
-            var mp         = box({text: 'Classes',       font: 20});
+          var models       = box({text: '...'});
+          var otherm       = box({text: 'Classes'});
+            var mp         = box({text: 'Traits',        font: 20});
             var mm         = box({text: 'Dependencies',  font: 20});
             var ma         = box({text: 'Type-Checking', font: 20});
             var ml         = box({text: 'Reflection',    font: 20});
@@ -110,7 +110,7 @@ CLASS({
       this.addChild(click);
 
       children(foam, [modeler, lib], true);
-      children(modeler, [ani, parse, query, concur, doc, models, otherm], true);
+      children(modeler, [otherm, ani, parse, query, concur, doc, models], true);
       children(lib, [c, s], false);
       children(c, [android, web, ios], true);
       children(s, [node, java, other], false);

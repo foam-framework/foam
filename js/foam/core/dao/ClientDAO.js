@@ -52,7 +52,7 @@ CLASS({
           } else if ( resp.remove ) {
             self.notify_('remove', [params[0]]);
             sink && sink.remove && sink.remove(resp.remove);
-          } else if ( resp.error ) sink.error(resp.error);
+          } else if ( resp.error ) sink.error && sink.error(resp.error);
         }, {
           subject: self.subject,
           method: method,

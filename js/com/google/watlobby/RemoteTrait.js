@@ -27,6 +27,11 @@ CLASS({
     {
       name: 'root',
       defaultValue: '',
+      postSet: function(_, n) { this.symRoot = n; }
+    },
+    {
+      name: 'symRoot',
+      defaultValue: '',
       postSet: function(_, n) { this.dir = n; }
     },
     {
@@ -70,9 +75,29 @@ CLASS({
   ],
 
   methods: [
+    function maybeRedirect(t) {
+      if ( t.topic === this.root && t.model === 'Redirect' ) {
+        this.symRoot = t.redirect;
+        return true;
+      }
+      return false;
+    },
+    function findTopicIndex(t) {
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        var c = this.children[i];
+        if ( c.topic && c.topic.topic === t ) return i;
+      }
+      return -1;
+    },
+    function findTopic(t) {
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        var c = this.children[i];
+        if ( c.topic && c.topic.topic === t ) return c;
+      }
+    },
     function back() {
       var self = this;
-      if ( this.dir === this.root ) return;
+      if ( this.dir === this.symRoot ) return;
       // CD up a directory
       this.topics.find(EQ(this.Topic.TOPIC, this.dir), {
         put: function(t) { self.dir = t.parentTopic; },

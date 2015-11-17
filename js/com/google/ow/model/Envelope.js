@@ -30,6 +30,16 @@ CLASS({
     'owner',
     'source',
     'data',
+    {
+      name: 'substreams',
+      getter: function(name) {
+        // TODO: be careful here with changing substreams (i.e. adding one) and
+        // not re-putting to streamDAO to update the index
+        return this.instance_['substreams'] ||
+          ( this.data && this.data.substreams) ||
+          [];
+      }
+    },
   ],
 
   methods: [

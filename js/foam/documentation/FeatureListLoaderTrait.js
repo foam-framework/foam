@@ -113,6 +113,7 @@ CLASS({
           console.warn("this.documentViewRef not set");
         } else if (!this.documentViewRef.get().valid) {
           console.warn("this.documentViewRef not valid");
+          this.documentViewRef.get().valid$.addListener(this.rebuildSelfDAOs);
         } else {
 
           this.selfFeaturesDAO = [].sink;

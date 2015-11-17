@@ -31,8 +31,15 @@ CLASS({
   imports: [ 'lobby' ],
 
   properties: [
+    { name: 'x', preSet: function(_, x) { return Math.floor(x); } },
+    { name: 'y', preSet: function(_, y) { return Math.floor(y); } },
     { name: 'topic' },
-    { name: 'image' },
+    {
+      name: 'image',
+      postSet: function(_, i) {
+        this.img.src = i.startsWith('http') ? i : '/js/com/google/watlobby/' + i;
+      }
+    },
     { name: 'roundImage' },
     { name: 'zoom', defaultValue: 0 },
     {
@@ -45,14 +52,20 @@ CLASS({
 //          data: 'foobar\nblah\nblah\nblah'
         })});
       }
-    }
+    },
+    {
+      name: 'img',
+      factory: function() {
+        return this.ImageCView.create({ src: '/js/com/google/watlobby/' + this.image });
+      }
+    },
   ],
 
   methods: [
     function initCView() {
       this.SUPER();
 
-      this.addChild(this.img = this.ImageCView.create({src: this.image}));
+      this.addChild(this.img);
       this.addChild(this.textArea);
       this.textArea.innerView.data = '<font style="color:' + this.topic.color + ';"><b>' + ( this.topic.text || 'INSERT TEXT HERE' ) + '</b></font>';
       this.textArea.alpha = 0;
@@ -117,10 +130,15 @@ CLASS({
         this.r + 2 :
         Math.SQRT1_2 * this.r ;
 
-      this.img.x      = -r2;
-      this.img.y      = -r2;
-      this.img.width  = 2 * r2;
-      this.img.height = 2 * r2;
+      if ( this.img.image_ && this.img.image_.width ) {
+        var w = this.img.image_.width;
+        var h = this.img.image_.height;
+        var min = Math.min(w, h);
+        this.img.x      = -r2 + (min-w)/4;
+        this.img.y      = -r2 + (min-h)/4;
+        this.img.width  = w * (2 * r2)/min;
+        this.img.height = h * (2 * r2)/min;
+      }
     },
     function paint() {
       this.layout();
@@ -129,14 +147,15 @@ CLASS({
     function paintBorder() { },
     function paintChildren() {
       var c = this.canvas;
-      if ( this.roundImage ) {
+      var needsCrop = this.roundImage || this.img.width != this.img.height;
+      if ( needsCrop ) {
         c.save();
         c.beginPath();
         c.arc(0, 0, this.r, 0, 2 * Math.PI, false);
         c.clip();
       }
       this.SUPER();
-      if ( this.roundImage ) c.restore();
+      if ( needsCrop ) c.restore();
       foam.graphics.Circle.getPrototype().paintBorder.call(this);
     }
   ]

@@ -30,7 +30,15 @@ CLASS({
     {
       name: 'daoMap',
       factory: function() { return {}; }
-    }
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'stringify',
+      factory: function() {
+        var jsonUtil = JSONUtil.compact.where(NOT_TRANSIENT);
+        return jsonUtil.stringify.bind(jsonUtil);
+      }
+    },
   ],
   imports: [
     'log',
@@ -57,10 +65,23 @@ CLASS({
         socket: socket
       });
 
+      var stringify = this.stringify;
       ws.subscribe(ws.ON_MESSAGE, function(_, _, message) {
-        // Warning insecure parser.
-        var msg = JSONUtil.parse(this.Y, message);
-        var msgid = msg.msgid;
+        try {
+          var envelope = JSONUtil.mapToObj(this.Y, JSON.parse(message));
+          // TODO (adamvy): USe JSONParser
+          // var msg = JSONUtil.mapToObj(this.Y, JSONParser.parseString(message, JSONParser.obj));
+        } catch(e) {
+          console.error("Error parsing message", e)
+          ws.close();
+          return;
+        }
+        var msgid = envelope.msgid;
+        var msg = envelope.msg;
+
+        var subX = this.Y;
+        if (envelope['x-foam-auth'])
+          subX = subX.sub({ authHeader: envelope['x-foam-auth'] });
 
         if ( msg.method == 'listen' ) {
           var dao = this.daoMap[msg.subject];
@@ -70,20 +91,22 @@ CLASS({
             return;
           }
 
+          var options = msg.params ? msg.params[1] : undefined;
+
           dao.listen({
             put: function(o) {
-              ws.send(JSONUtil.stringify({
+              ws.send(stringify({
                 msg: {
                   notify: ["put", o]
                 }
               }));
             },
             remove: function(o) {
-              ws.send(JSONUtil.stringify({
+              ws.send(stringify({
                 msg: {
                   notify: ["remove",o]
                 }
-              }));p
+              }));
             },
             reset: function() {
               ws.send(JSON.stringify({
@@ -92,7 +115,7 @@ CLASS({
                 }
               }));
             }
-          });
+          }, options, subX);
 
           ws.send(JSON.stringify({
             msgid: msgid,
@@ -101,18 +124,18 @@ CLASS({
         } else {
           this.handleDAORequest(msg, {
             put: function(m) {
-              ws.send(JSONUtil.stringify({
+              ws.send(stringify({
                 msgid: msgid,
                 msg: m
               }));
             },
             error: function(msg) {
-              ws.send(JSONUtil.stringify({
+              ws.send(stringify({
                 msgid: msgid,
                 msg: { error: msg }
               }));
             }
-          });
+          }, subX);
         }
       }.bind(this));
 
@@ -169,14 +192,16 @@ CLASS({
           subX = subX.sub({ authHeader: req.headers['x-foam-auth'] });
         }
 
-        // Warning insecure parser.
-        var msg = JSONUtil.parse(this.Y, body);
+        var msg = JSONUtil.mapToObj(this.Y, JSON.parse(body));
+        // TODO (adamvy): Use FOAM's JSONParser
+        // var msg = JSONUtil.mapToObj(this.Y, JSONParser.parseString(message, JSONParser.obj));
+        var stringify = this.stringify;
 
         this.handleDAORequest(msg, {
           put: function(msg) {
             resp.statusCode = 200;
             resp.setHeader("Content-Type", "application/json");
-            resp.write(JSONUtil.stringify(msg));
+            resp.write(stringify(msg));
             resp.end();
           },
           error: function(err) {

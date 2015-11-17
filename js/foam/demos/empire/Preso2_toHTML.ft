@@ -63,7 +63,7 @@
         <img src="https://lh3.googleusercontent.com/afwtWKq2E4u1zyex_n7blA6CqPmRkL7qaWTX5g6q9s8pF8d1ZYXH2Kg-hqfcmSj31Fu3YiBKhw=s640-h400-e365-rw"
              style="border: 1px solid;">
         <br>
-        <span style="font-size: 60%">(22k 1-week active users)</span>
+        <span style="font-size: 60%">(38k 1-week active users)</span>
       </div>
     </div>
   </slide>
@@ -402,7 +402,7 @@ CLASS({
       </div>
     </div>
     -->
-    <div class="card flex-col flex-grow" style="overflow: hidden">
+    <div class="card flex-col flex-grow" style="padding: 0; -webkit-align-items: stretch; align-items: stretch; overflow: hidden">
       <foam model="foam.apps.ctm.TaskManager" />
     </div>
   </slide>
