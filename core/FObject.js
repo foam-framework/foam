@@ -647,6 +647,8 @@ var FObject = {
         var prop = this.model_.getProperty(key);
         if ( prop && prop.cloneProperty )
           m[key] = prop.cloneProperty.call(prop, value);
+        else if ( ! prop.model_ ) // happens during bootstrap
+          m[key] = value;
       }
     }
     return this.model_.create(m, this.X);
