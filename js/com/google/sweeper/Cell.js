@@ -12,7 +12,6 @@
 CLASS({
   package: 'com.google.sweeper',
   name: 'Cell',
-
   extends: 'foam.ui.View',
 
   imports: [ 'board' ],
