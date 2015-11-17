@@ -54,7 +54,7 @@ CLASS({
     {
       name: 'swiftType',
       defaultValue: 'String',
-    }
+    },
     {
       name: 'view',
       labels: ['javascript'],
@@ -251,7 +251,7 @@ CLASS({
     {
       name: 'swiftType',
       defaultValue: 'Int',
-    }
+    },
     {
       name: 'view',
       labels: ['javascript'],
@@ -317,7 +317,7 @@ CLASS({
     {
       name: 'swiftType',
       defaultValue: 'CLong',
-    }
+    },
   ]
 });
 
