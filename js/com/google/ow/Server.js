@@ -88,7 +88,7 @@ CLASS({
     {
       name: 'streamDAO_',
       lazyFactory: function() {
-        var nuDAO = this.EasyDAO.create({
+        return  this.EasyDAO.create({
           model: this.Envelope,
           name: 'streams',
           daoType: this.MDAO,
@@ -96,8 +96,6 @@ CLASS({
           isServer: true,
           // logging: true,
         });
-        nuDAO.listen(this.SubstreamSink.create());
-        return nuDAO;
       },
     },
     {
@@ -165,6 +163,10 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.streamDAO_.listen(this.SubstreamSink.create());
+    },
+
     function authorizeFactory(model, delegate) {
       return this.DebugAuthDAO.create({
         delegate: this.AuthorizedDAO.create({

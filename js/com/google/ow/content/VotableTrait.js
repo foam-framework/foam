@@ -43,7 +43,8 @@ CLASS({
           data: vote,
         }), {
           put: function(puttedVote) {
-            this.vote = puttedVote;
+            console.error("Putted vote env: ", puttedVote.id,"vote:", puttedVote.data);
+            this.vote = puttedVote.data;
           }.bind(this)
         });
         return vote;

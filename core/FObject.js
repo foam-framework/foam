@@ -661,7 +661,7 @@ var FObject = {
       var value = this[key];
       if ( value !== undefined ) {
         var prop = this.model_.getProperty(key);
-        if ( prop && prop.deepCloneProperty )
+        if ( prop && prop.deepCloneProperty && !prop.transient )
           m[key] = prop.deepCloneProperty.call(prop, value);
       }
     }
