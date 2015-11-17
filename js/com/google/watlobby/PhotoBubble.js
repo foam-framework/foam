@@ -30,6 +30,8 @@ CLASS({
   imports: [ 'lobby', 'window' ],
 
   properties: [
+    { name: 'x', preSet: function(_, x) { return Math.floor(x); } },
+    { name: 'y', preSet: function(_, y) { return Math.floor(y); } },
     'topic', 'image', 'roundImage', [ 'zoom', 0 ]
   ],
 
@@ -48,7 +50,7 @@ CLASS({
         this.mass = this.INFINITE_MASS;
         this.vx = this.vy = 0;
         this.cancel_ = Movement.compile([
-          [ 800, function() {
+          [ 400, function() {
             var w = self.lobby.width;
             var h = self.lobby.height;
             self.x = w/2;
@@ -59,27 +61,39 @@ CLASS({
       } else {
         this.mass = this.oldMass_;
         Movement.compile([
-          [ 800, function() { self.zoom = 0; } ]
+          [ 400, function() { self.zoom = 0; } ]
         ])();
       }
     },
     function layout() {
       if ( ! this.img ) return;
 
-      var w = this.window.innerWidth;
-      var h = this.window.innerHeight;
-      var maxR = Math.min(w, h)/3;
-      this.r = this.topic.r * ( 1-this.zoom ) + this.zoom * maxR;
       var c = this.canvas;
+      var z = this.zoom;
+
+      this.r = this.topic.r;
+
+      if ( z ) {
+        var w = this.lobby.width;
+        var h = this.lobby.height;
+        var r = Math.min(w, h)/3;
+
+        this.r += (r - this.topic.r) * z;
+      }
 
       var r2 = this.roundImage ?
-        (this.r + 4) :
+        this.r + 2 :
         Math.SQRT1_2 * this.r ;
 
-      this.img.width  = 2*r2;
-      this.img.height = 2*r2;
-      this.img.x      = -this.img.width/2;
-      this.img.y      = -this.img.height/2;
+      if ( this.img.image_ && this.img.image_.width ) {
+        var w = this.img.image_.width;
+        var h = this.img.image_.height;
+        var min = Math.min(w, h);
+        this.img.width  = w * (2 * r2)/min;
+        this.img.height = h * (2 * r2)/min;
+        this.img.x      = -this.img.width/2;
+        this.img.y      = -this.img.height/2;
+      }
     },
     function paint() {
       this.layout();
@@ -88,14 +102,15 @@ CLASS({
     function paintBorder() { },
     function paintChildren() {
       var c = this.canvas;
-      if ( this.roundImage ) {
+      var needsCrop = this.roundImage || this.img.width != this.img.height;
+      if ( needsCrop ) {
         c.save();
         c.beginPath();
         c.arc(0, 0, this.r, 0, 2 * Math.PI, false);
         c.clip();
       }
       this.SUPER();
-      if ( this.roundImage ) c.restore();
+      if ( needsCrop ) c.restore();
       foam.graphics.Circle.getPrototype().paintBorder.call(this);
     }
   ]
