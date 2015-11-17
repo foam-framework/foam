@@ -25,18 +25,18 @@ CLASS({
   properties: [
     {
       name: 'displayHeight',
-      type: 'int',
       displayWidth: 8,
       defaultValue: 1,
       help: 'The display height of the property.'
     },
+    /*
     {
       name: 'type',
-      type: 'String',
       displayWidth: 20,
       defaultValue: 'String',
       help: 'The FOAM type of this property.'
     },
+    */
     {
       name: 'adapt',
       labels: ['javascript'],
@@ -47,7 +47,6 @@ CLASS({
     },
     {
       name: 'javaType',
-      type: 'String',
       displayWidth: 70,
       defaultValue: 'String',
       help: 'The Java type of this property.'
@@ -64,7 +63,6 @@ CLASS({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -80,6 +78,7 @@ CLASS({
   label: 'True/false, yes/no, or on/off',
 
   properties: [
+    /*
     {
       name: 'type',
       type: 'String',
@@ -87,6 +86,7 @@ CLASS({
       defaultValue: 'Boolean',
       help: 'The FOAM type of this property.'
     },
+    */
     {
       name: 'swiftType',
       type: 'String',
@@ -121,7 +121,6 @@ CLASS({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
@@ -150,6 +149,7 @@ CLASS({
   label: 'Date, including year, month, and day',
 
   properties: [
+    /*
     {
       name: 'type',
       type: 'String',
@@ -157,10 +157,10 @@ CLASS({
       defaultValue: 'Date',
       help: 'The FOAM type of this property.'
     },
+    */
     [ 'displayWidth', 50 ],
     {
       name: 'javaType',
-      type: 'String',
       defaultValue: 'java.util.Date',
       help: 'The Java type of this property.'
     },
@@ -168,7 +168,6 @@ CLASS({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
@@ -199,6 +198,7 @@ CLASS({
   label: 'Date and time, including year, month, day, hour, minute and second',
 
   properties: [
+    /*
     {
       name: 'type',
       type: 'String',
@@ -206,6 +206,7 @@ CLASS({
       defaultValue: 'datetime',
       help: 'The FOAM type of this property.'
     },
+    */
     {
       name: 'adapt',
       defaultValue: function(_, d) {
@@ -227,6 +228,7 @@ CLASS({
   label: 'Round numbers such as 1, 0, or -245',
 
   properties: [
+    /*
     {
       name: 'type',
       type: 'String',
@@ -234,10 +236,10 @@ CLASS({
       defaultValue: 'Int',
       help: 'The FOAM type of this property.'
     },
+    */
     [ 'displayWidth', 10 ],
     {
       name: 'javaType',
-      type: 'String',
       displayWidth: 10,
       defaultValue: 'int',
       help: 'The Java type of this property.'
@@ -258,21 +260,18 @@ CLASS({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
     {
       name: 'minValue',
       label: 'Minimum Value',
-      type: 'Int',
       required: false,
       help: 'The minimum value this property accepts.'
     },
     {
       name: 'maxValue',
       label: 'Maximum Value',
-      type: 'Int',
       required: false,
       help: 'The maximum value this property accepts.'
     },
@@ -293,10 +292,12 @@ CLASS({
   label: 'Round long numbers such as 1, 0, or -245',
 
   properties: [
+    /*
     {
       name: 'type',
       defaultValue: 'Long'
     },
+    */
     {
       name: 'displayWidth',
       defaultValue: 12
@@ -321,6 +322,7 @@ CLASS({
   label: 'Decimal numbers such as 1.34 or -0.00345',
 
   properties: [
+    /*
     {
       name: 'type',
       type: 'String',
@@ -328,13 +330,13 @@ CLASS({
       defaultValue: 'Float',
       help: 'The FOAM type of this property.'
     },
+    */
     {
       name: 'defaultValue',
       defaultValue: 0.0
     },
     {
       name: 'javaType',
-      type: 'String',
       displayWidth: 10,
       defaultValue: 'double',
       help: 'The Java type of this property.'
@@ -356,21 +358,18 @@ CLASS({
     {
       name: 'minValue',
       label: 'Minimum Value',
-      type: 'Float',
       required: false,
       help: 'The minimum value this property accepts.'
     },
     {
       name: 'maxValue',
       label: 'Maximum Value',
-      type: 'Float',
       required: false,
       help: 'The maximum value this property accepts.'
     },
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -386,6 +385,7 @@ CLASS({
   label: 'Code that can be run',
 
   properties: [
+    /*
     {
       name: 'type',
       type: 'String',
@@ -393,9 +393,9 @@ CLASS({
       defaultValue: 'Function',
       help: 'The FOAM type of this property.'
     },
+    */
     {
       name: 'javaType',
-      type: 'String',
       displayWidth: 10,
       defaultValue: 'Function',
       help: 'The Java type of this property.'
@@ -476,6 +476,7 @@ CLASS({
   label: 'List of items',
 
   properties: [
+    /*
     {
       name: 'type',
       type: 'String',
@@ -483,6 +484,7 @@ CLASS({
       defaultValue: 'Array',
       help: 'The FOAM type of this property.'
     },
+    */
     {
       name: 'swiftType',
       defaultValue: '[AnyObject]'
@@ -493,7 +495,6 @@ CLASS({
     },
     {
       name: 'singular',
-      type: 'String',
       displayWidth: 70,
       defaultValueFn: function() { return this.name.replace(/s$/, ''); },
       help: 'The plural form of this model\'s name.',
@@ -501,7 +502,6 @@ CLASS({
     },
     {
       name: 'subType',
-      type: 'String',
       displayWidth: 20,
       defaultValue: '',
       help: 'The FOAM sub-type of this property.'
@@ -539,7 +539,6 @@ CLASS({
     },
     {
       name: 'javaType',
-      type: 'String',
       displayWidth: 10,
       defaultValueFn: function(p) { return this.subType + '[]'; },
       help: 'The Java type of this property.'
@@ -599,7 +598,6 @@ CLASS({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -615,6 +613,7 @@ CLASS({
   label: 'Reference to another object',
 
   properties: [
+    /*
     {
       name: 'type',
       type: 'String',
@@ -622,23 +621,21 @@ CLASS({
       defaultValue: 'Reference',
       help: 'The FOAM type of this property.'
     },
+    */
     {
       name: 'subType',
-      type: 'String',
       displayWidth: 20,
       defaultValue: '',
       help: 'The FOAM sub-type of this property.'
     },
     {
       name: 'subKey',
-      type: 'EXPR',
       displayWidth: 20,
       defaultValue: 'ID',
       help: 'The foreign key that this property references.'
     },
     {
       name: 'javaType',
-      type: 'String',
       displayWidth: 10,
       defaultValueFn: function() {
         return this.X.lookup(this.subType)[this.subKey].javaType;
@@ -654,7 +651,6 @@ CLASS({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     }
@@ -670,13 +666,14 @@ CLASS({
   label: 'List of text strings',
 
   properties: [
+    /*
     {
       name: 'type',
-      type: 'String',
       displayWidth: 20,
       defaultValue: 'Array',
       help: 'The FOAM type of this property.'
     },
+    */
     {
       name: 'swiftType',
       defaultValue: '[String]'
@@ -687,7 +684,6 @@ CLASS({
     },
     {
       name: 'singular',
-      type: 'String',
       displayWidth: 70,
       defaultValueFn: function() { return this.name.replace(/s$/, ''); },
       help: 'The plural form of this model\'s name.',
@@ -695,7 +691,6 @@ CLASS({
     },
     {
       name: 'subType',
-      type: 'String',
       displayWidth: 20,
       defaultValue: 'String',
       help: 'The FOAM sub-type of this property.'
@@ -716,7 +711,6 @@ CLASS({
     },
     {
       name: 'javaType',
-      type: 'String',
       displayWidth: 10,
       defaultValue: 'String[]',
       help: 'The Java type of this property.'
@@ -728,7 +722,6 @@ CLASS({
     {
       name: 'prototag',
       label: 'Protobuf tag',
-      type: 'Int',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
@@ -776,7 +769,7 @@ CLASS({
   label: 'Data Model definition',
 
   properties: [
-    [ 'type', 'Model' ],
+//    [ 'type', 'Model' ],
     {
       name: 'getter',
       defaultValue: function(name) {
@@ -1008,12 +1001,14 @@ CLASS({
   extends: 'ReferenceProperty',
 
   properties: [
+    /*
     {
       name: 'type',
       defaultValue: 'Array',
       displayWidth: 20,
       help: 'The FOAM type of this property.'
     },
+    */
     {
       name: 'factory',
       defaultValue: function() { return []; },
@@ -1093,14 +1088,15 @@ if ( DEBUG ) CLASS({
   documentation: "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation.",
 
   properties: [
+    /*
     {
       name: 'type',
       type: 'String',
       defaultvalue: 'Documentation'
     },
+    */
     { // Note: defaultValue: for the getter function didn't work. factory: does.
       name: 'getter',
-      type: 'Function',
       labels: ['debug'],
       defaultValue: function(name) {
         var doc = this.instance_[name]
