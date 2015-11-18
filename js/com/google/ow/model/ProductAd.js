@@ -35,6 +35,7 @@ CLASS({
     function toDetailE(X) {
       X = X.sub({ data: this });
       return X.lookup('com.google.ow.ui.ShoppingView').create({
+        data: this,
         order: this.order,
         products: this.products,
       }, X);
