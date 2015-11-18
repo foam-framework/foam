@@ -657,27 +657,16 @@ var FObject = {
   /** Create a deep copy of this object. **/
   deepClone: function() {
     var m = {};
-    var transients = {};
     for ( var key in this.instance_ ) {
       var value = this[key];
       if ( value !== undefined ) {
         var prop = this.model_.getProperty(key);
         if ( prop && prop.deepCloneProperty ) {
-          if ( prop.transient )
-            transients[prop.name] = [ prop, value ];
-          else
-            m[key] = prop.deepCloneProperty.call(prop, value);
+          m[key] = prop.deepCloneProperty.call(prop, value);
         }
       }
     }
     var clone = this.model_.create(m, this.X);
-    for ( var tkey in transients ) {
-      if ( ! clone.instance_.hasOwnProperty(tkey) ) {
-        var prop = transients[tkey][0];
-        var value = transients[tkey][1];
-        clone[tkey] = prop.deepCloneProperty.call(prop, value);
-      }
-    }
     return clone;
   },
 

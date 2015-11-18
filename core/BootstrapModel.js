@@ -133,13 +133,9 @@ var BootstrapModel = {
         alias = alias.slice(0, alias.length-1);
 
       if ( ! this.getProperty(alias) ) {
-        var prop = Property.create({
-          name:      alias,
-          transient: true,
-          hidden:    true
-        });
+        var prop = ImportedProperty.create({ name: alias });
         // Prevent imports from being cloned.
-        prop.cloneProperty = prop.deepCloneProperty = null;
+        // This line doesn't seem to work: prop.cloneProperty = prop.deepCloneProperty = null;
         props.push(prop);
       }
     }.bind(this));
