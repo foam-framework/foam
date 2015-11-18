@@ -18,10 +18,6 @@ CLASS({
     'com.google.plus.ShareableTrait',
   ],
 
-  requires: [
-    'com.google.ow.ui.EnvelopeCitationView as CitationView',
-  ],
-
   //TODO: hack to get Envelope.SID to show up
   properties: [
     {
@@ -48,7 +44,24 @@ CLASS({
 
   methods: [
     function toE(X) {
-      return this.CitationView.create({ data: this }, X);
+      return X.lookup('com.google.ow.ui.EnvelopeCitationView').create({
+        data: this,
+      }, X);
+    },
+    function toRowE(X) {
+      return X.lookup('com.google.ow.ui.EnvelopeCitationView').create({
+        data: this,
+      }, X);
+    },
+    function toCitationE(X) {
+      return X.lookup('com.google.ow.ui.EnvelopeCitationView').create({
+        data: this,
+      }, X);
+    },
+    function toDetailE(X) {
+      return X.lookup('com.google.ow.ui.EnvelopeDetailView').create({
+        data: this,
+      }, X);
     },
   ],
 });
