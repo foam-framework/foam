@@ -33,11 +33,11 @@ CLASS({
     console.log('Running Element.static().');
 
     Function.prototype.toE = function(X) {
-      var dyn = E('span');
+      var dyn = X.E('span');
       var last = null;
 
       X.dynamic(this, function(e) {
-        e = E('span').add(e);
+        e = X.E('span').add(e);
         if ( last ) dyn.removeChild(last); //last.remove();
         dyn.add(last = e);
       });
@@ -612,10 +612,11 @@ CLASS({
     },
 
     function valueE_(value) {
-      var dyn = E('span');
+      var dyn = this.E('span');
       var last = null;
+      var X = this.Y;
       var l = function() {
-        var e = E('span');
+        var e = X.E('span');
         /*if ( value.get() ) */e.add(value.get() || '');
         if ( last ) dyn.removeChild(last); //last.remove();
         dyn.add(last = e);
