@@ -292,7 +292,6 @@ CLASS({
       .md-update-detail-view-body {
         overflow-x: hidden;
         overflow-y: auto;
-        display: flex;
       }
     */},
     function toHTML() {/*
