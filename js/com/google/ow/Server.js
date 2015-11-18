@@ -235,7 +235,7 @@ CLASS({
                   source: '0',
                   substreams: videoStreamEnv.substreams,
                   sid: videoStreamEnv.sid,
-                  data: videoStreamEnv.data,
+                  data: videoStreamEnv.data.clone(),
                 }));
               }
             });
@@ -266,6 +266,7 @@ CLASS({
                 source: '0',
                 sid: baseAdStreamEnv.substreams[0],
                 promoted: true,
+                data: ad,
               }, this.Y));
             }.bind(this),
           });
