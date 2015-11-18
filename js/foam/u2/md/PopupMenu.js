@@ -30,7 +30,7 @@ CLASS({
       'element that launches it with $$DOC{ref:".open"}.',
 
   properties: [
-    ['hMargin', 16],
+    ['hMargin', 8],
     ['vMargin', 8],
     ['maxDisplayCount', 5],
     ['itemHeight', 48],
@@ -243,7 +243,7 @@ CLASS({
           for (var i = 0; i < this.choices.length; i++) {
             this.start('li')
                 .cls('foam-u2-md-PopupMenu-choice')
-                .cls(function(i) {
+                .cls2(function(i) {
                   return this.index === i ? 'selected' : '';
                 }.bind(this, i).on$(this.index$))
                 .style({
