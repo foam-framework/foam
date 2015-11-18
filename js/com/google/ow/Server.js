@@ -165,6 +165,7 @@ CLASS({
             source: srcId,
             data: data,
             sid: opt_sid || data.sid || '',
+            substreams: data.substreams || [],
           });
         }.bind(this);
       },
@@ -247,6 +248,8 @@ CLASS({
                 sid: baseAdStreamEnv.substreams[0],
                 promoted: true,
                 data: ad,
+                sid: ad.sid || '',
+                substreams: ad.substreams || [],
               }, this.Y));
             }.bind(this),
           });

@@ -122,7 +122,7 @@ CLASS({
       // Since this should be running on the server, grab all the owners
       // of this contentIndex, based on stream id, and share the new substream
       // content with those owners.
-      self.streamDAO.where(IN(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
+      self.streamDAO.where(EQ(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
         MAP(self.Envelope.OWNER, { put: function(owner) {
           self.streamDAO.put(
             self.createStreamItem(self.substreams[0], owner, envelope.data, self.substreams[0])
