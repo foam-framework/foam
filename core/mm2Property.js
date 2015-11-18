@@ -869,11 +869,11 @@ GLOBAL.Property = {
     function toSQL() { return this.name; },
     function toMQL() { return this.name; },
     function toBQL() { return this.name; },
-    function cloneProperty(/* this=prop, */ value) {
-      return ( value && value.clone ) ? value.clone() : value;
+    function cloneProperty(value, cloneArgs) {
+      cloneArgs[this.name] = ( value && value.clone ) ? value.clone() : value;
     },
-    function deepCloneProperty(/* this=prop, */ value) {
-      return ( value && value.deepClone ) ? value.deepClone() : value;
+    function deepCloneProperty(value, cloneArgs) {
+      cloneArgs[this.name] = ( value && value.deepClone ) ? value.deepClone() : value;
     },
     function exprClone() {
       return this;
