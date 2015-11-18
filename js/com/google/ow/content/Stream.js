@@ -37,6 +37,11 @@ CLASS({
       name: 'id'
     },
     {
+      model_: 'StringProperty',
+      name: 'name',
+      lazyFactory: function() { return this.id.toString(); },
+    },
+    {
       name: 'substreams',
       lazyFactory: function() { return ['contentIndex/' + this.id]; }
     },
