@@ -41,7 +41,7 @@ CLASS({
       }
     },
     { name: 'roundImage' },
-    { name: 'zoom', defaultValue: 0 },
+    [ 'zoom', 0 ],
     {
       name: 'textArea',
       factory: function() {
@@ -134,10 +134,10 @@ CLASS({
         var w = this.img.image_.width;
         var h = this.img.image_.height;
         var min = Math.min(w, h);
-        this.img.x      = -r2 + (min-w)/4;
-        this.img.y      = -r2 + (min-h)/4;
         this.img.width  = w * (2 * r2)/min;
         this.img.height = h * (2 * r2)/min;
+        this.img.x      = -this.img.width/2;
+        this.img.y      = -this.img.height/2;
       }
     },
     function paint() {

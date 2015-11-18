@@ -647,6 +647,8 @@ var FObject = {
         var prop = this.model_.getProperty(key);
         if ( prop && prop.cloneProperty )
           m[key] = prop.cloneProperty.call(prop, value);
+        else if ( ! prop.model_ ) // happens during bootstrap
+          m[key] = value;
       }
     }
     return this.model_.create(m, this.X);
@@ -659,7 +661,7 @@ var FObject = {
       var value = this[key];
       if ( value !== undefined ) {
         var prop = this.model_.getProperty(key);
-        if ( prop && prop.deepCloneProperty )
+        if ( prop && prop.deepCloneProperty && !prop.transient )
           m[key] = prop.deepCloneProperty.call(prop, value);
       }
     }

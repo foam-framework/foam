@@ -33,7 +33,7 @@ CLASS({
     'foam.dao.LoggingDAO',
     'foam.dao.PrivateOwnerAuthorizer',
     'foam.node.dao.JSONFileDAO',
-    'com.google.ow.examples.VideoA',
+    'com.google.ow.SubstreamSink',
   ],
   imports: [
     'console',
@@ -88,7 +88,7 @@ CLASS({
     {
       name: 'streamDAO_',
       lazyFactory: function() {
-        return this.EasyDAO.create({
+        return  this.EasyDAO.create({
           model: this.Envelope,
           name: 'streams',
           daoType: this.MDAO,
@@ -163,6 +163,10 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.streamDAO_.listen(this.SubstreamSink.create());
+    },
+
     function authorizeFactory(model, delegate) {
       return this.DebugAuthDAO.create({
         delegate: this.AuthorizedDAO.create({

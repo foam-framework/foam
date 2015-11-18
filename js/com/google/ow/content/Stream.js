@@ -53,6 +53,9 @@ CLASS({
       name: 'model',
       help: 'The type of the content items. Should have an id property.',
       defaultValue: 'com.google.ow.model.StreamableTrait',
+      propertyToJSON: function() {
+        return (this.model && this.model.id) || '';
+      },
       postSet: function(_,model) {
         // Model not always ready in node, but don't need views there anyway
         if ( ! model.getFeature ) return;

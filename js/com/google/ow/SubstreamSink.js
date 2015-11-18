@@ -56,13 +56,27 @@ CLASS({
       // TODO: eventually the target could be a third party URL, so we
       // would load that instead of hitting the streamDAO
       // TODO: if we don't find exact match, try for partial
-      self.streamDAO.where(IN(this.Envelope.SUBSTREAMS, env.sid)).select({
-        put: function(target) {
-          // TODO: anything else to do to "wake" the cloned targets the DAO
-          // gives us? (are listeners connected, etc.?)
-          target.put && target.put(env, sink);
-        }
-      });
+
+      var processSID = function(currSID) {
+        var found = false; // TODO: stop if found, or always hit all root sids?
+        console.log("SubstreamSink trying SID: ", currSID);
+        self.streamDAO.where(IN(self.Envelope.SUBSTREAMS, currSID)).select({
+          put: function(target) {
+            // TODO: anything else to do to "wake" the cloned targets the DAO
+            // gives us? (are listeners connected, etc.?)
+            found = true;
+            target.put && target.put(env, sink);
+          },
+          eof: function() {
+            if ( ! found ) {
+              console.log("   SubstreamSink SID",currSID,"not found, retrying...");
+              processSID(currSID.split('/').splice(-1, 1).join('/'));
+            }
+          }
+        });
+      };
+
+      processSID(env.sid);
     }
   ],
 });
