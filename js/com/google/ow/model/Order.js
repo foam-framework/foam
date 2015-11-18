@@ -17,7 +17,7 @@ CLASS({
     'com.google.ow.model.Envelope',
     'com.google.ow.model.OrderItem',
     'com.google.ow.model.Product',
-    'com.google.ow.ui.OrderCitationView',
+    'com.google.ow.ui.OrderItemView',
     'com.google.ow.ui.OrderView',
     'foam.dao.EasyDAO',
   ],
@@ -110,7 +110,7 @@ CLASS({
       return this.OrderView.create({ data: this }, X);
     },
     function toCitationE(X) {
-      return this.OrderCitationView.create({ data: this }, X);
+      return this.OrderItemView.create({ data: this }, X);
     },
     function toEnvelope(X) {
       var envelope = X.envelope;
