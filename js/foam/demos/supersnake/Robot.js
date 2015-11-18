@@ -39,7 +39,7 @@ CLASS({
       body.background = '#ccc';
       this.addChild(body);
 
-      var logo = this.ImageCView.create({src:'/js/com/google/watlobby/img/foam_red.png', x:17, y:3, width: 30, height: 5, a: Math.PI/2});
+      var logo = this.ImageCView.create({src:'./js/com/google/watlobby/img/foam_red.png', x:17, y:3, width: 30, height: 5, a: Math.PI/2});
       body.addChild(logo);
 
       var neck =this.Rectangle.create();

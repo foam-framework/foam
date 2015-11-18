@@ -1158,9 +1158,11 @@ CLASS({
   ],
 
   methods: [
-    function deepCloneProperty() { /* nop */ },
-    function cloneProperty() { /* nop */ },
+    function deepCloneProperty(value, cloneArgs) {
+      this.cloneProperty(value, cloneArgs);
+    },
+    function cloneProperty(value, cloneArgs) {
+      cloneArgs[this.name] = value;
+    },
   ]
 });
-
-
