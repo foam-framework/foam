@@ -24,6 +24,7 @@ CLASS({
     'foam.core.dao.ClientDAO',
     'foam.core.dao.WebSocketDAO',
     'foam.dao.FutureDAO',
+    'foam.dao.LoggingDAO',
     'foam.messaging.WebSocket',
     'foam.oauth2.GoogleSignIn'
   ],
@@ -62,8 +63,16 @@ CLASS({
       defaultValue: 0
     },
     {
+      model_: 'BooleanProperty',
+      name: 'logging',
+      defaultValue: false,
+      documentation: "Enable logging on the $$DOC{ref:'DAO'}."
+    },
+    {
       name: 'delegate',
       factory: function() {
+        var dao = this.logging ? this.LoggingDAO.create(null, this.Y) :
+            this.X.lookup('foam.dao.ProxyDAO').create(null, this.Y);
         if ( this.sockets ) {
           var uri = this.serverUri.replace(/^https/, "wss").replace(/^http/, "ws");
 
@@ -74,11 +83,12 @@ CLASS({
 
           var future = afuture();
           socket.subscribe(socket.ON_CONNECT, EventService.oneTime(function() {
-            future.set(this.WebSocketDAO.create({
+            dao.delegate = this.WebSocketDAO.create({
               uri: this.serverUri,
               model: this.model,
               socket: socket
-            }));
+            }, this.Y);
+            future.set(dao);
           }.bind(this)));
 
           return this.FutureDAO.create({
@@ -86,11 +96,12 @@ CLASS({
           });
         }
 
-	return this.ClientDAO.create({
+        dao.delegate = this.ClientDAO.create({
 	  asend: this.asend.bind(this),
 	  model: this.model,
           subject: this.subject
-	});
+	}, this.Y);
+	return dao;
       }
     }
   ],
