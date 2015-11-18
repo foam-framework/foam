@@ -1158,13 +1158,8 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      var prot = this.model_.getPrototype();
-      prot.deepCloneProperty = null;
-      prot.cloneProperty = null;
-    },
-    function deepCloneProperty() { debugger; return null; },
-    function cloneProperty() { debugger; return null; },
+    function deepCloneProperty() { /* nop */ },
+    function cloneProperty() { /* nop */ },
   ]
 });
 
