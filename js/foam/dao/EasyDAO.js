@@ -158,7 +158,9 @@ CLASS({
       model_: 'StringProperty',
       name: 'serverUri',
       defaultValueFn: function() {
-        return this.document.location.origin + '/api'
+        return this.document && this.document.location ?
+            this.document.location.origin + '/api' :
+            '';
       }
     },
     {
@@ -263,8 +265,10 @@ CLASS({
       if ( this.syncWithServer || this.isServer ) {
         if ( ! this.syncProperty || ! this.deletedProperty ) {
           if ( model.traits.indexOf('foam.core.dao.SyncTrait') != -1 ) {
-            this.syncProperty = model.SYNC_PROPERTY;
-            this.deletedProperty = model.DELETED;
+            // TODO(adamvy): This doesn't work without getPrototype();
+            // should models be built such that getPrototype() is unnecessary?
+            this.syncProperty = model.getPrototype().SYNC_PROPERTY;
+            this.deletedProperty = model.getPrototype().DELETED;
           } else {
             throw "Syncing with server requires the foam.core.dao.SyncTrait be applied to your model, '" + this.model.id + "'.";
           }
