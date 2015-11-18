@@ -57,6 +57,7 @@ CLASS({
       },
       load:          function() { console.error('Must output before loading.'); },
       unload:        function() { console.error('Must output and load before unloading.'); },
+      remove:        function() { },
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
@@ -85,6 +86,7 @@ CLASS({
         this.state = this.UNLOADED;
         this.visitChildren('unload');
       },
+      remove:        function() { },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
         throw "Mutations not allowed in OUTPUT state.";
@@ -117,6 +119,7 @@ CLASS({
         this.state = this.UNLOADED;
         this.visitChildren('unload');
       },
+      remove:        function() { this.unload(); },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
         var e = this.id$el;
@@ -176,6 +179,7 @@ CLASS({
         this.visitChildren('load');
       },
       unload:        function() { },
+      remove:        function() { console.error('Remove after unload.'); },
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
@@ -189,6 +193,7 @@ CLASS({
       output:        function() { throw 'Attempt to output() destroyed Element.'; },
       load:          function() { throw 'Attempt to load() destroyed Element.'; },
       unload:        function() { throw 'Attempt to unload() destroyed Element.';},
+      remove:        function() { console.error('Remove after destroy.'); },
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
@@ -458,7 +463,7 @@ CLASS({
     },
 
     function remove() {
-      this.unload();
+      this.state.remove.call(this);
     },
 
     //
