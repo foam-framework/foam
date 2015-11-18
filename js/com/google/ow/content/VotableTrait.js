@@ -72,7 +72,7 @@ CLASS({
       code: function(action) {
         // this is a client action, so X.envelope is available on the context
         console.assert(this.envelope, "X.envelope not found! Vote can't update its envelope.");
-        console.assert(this.envelope.vote === this, "X.envelope doesn't contain this JS object");
+        console.assert(this.envelope.data === this, "X.envelope doesn't contain this JS object");
 
         // propagate change to server
         this.vote = 1;
@@ -87,7 +87,7 @@ CLASS({
       code: function(action) {
         // this is a client action, so X.envelope is available on the context
         console.assert(this.envelope, "X.envelope not found! Vote can't update its envelope.");
-        console.assert(this.envelope.vote === this, "X.envelope doesn't contain this JS object");
+        console.assert(this.envelope.data === this, "X.envelope doesn't contain this JS object");
 
         // propagate change to server
         this.vote = -1;
@@ -125,6 +125,8 @@ CLASS({
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toVoteE(X) {
       /* Client: render a UI */
+      if ( X.envelope ) this.envelope = X.envelope; // TODO: propagate envelope better
+
       var Y = (X || this.Y).sub({ data: this });
       return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
         .start().style({
