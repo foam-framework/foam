@@ -154,6 +154,7 @@ CLASS({
     },
     function onShare(source, target, opt_sid) {
       /* React to share events. Called just before this item is shared. */
+      console.log("Sharing stream", source, target, opt_sid);
       var self = this;
       // Duplicate source user's stream content for the new target user
       // TODO: don't duplicate if it's already there?

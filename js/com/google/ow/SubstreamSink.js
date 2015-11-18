@@ -58,19 +58,21 @@ CLASS({
       // TODO: if we don't find exact match, try for partial
 
       var processSID = function(currSID) {
+        console.log("processSID", currSID);
         var found = false; // TODO: stop if found, or always hit all root sids?
         self.streamDAO.where(EQ(self.Envelope.SUBSTREAMS, currSID)).select({
           put: function(sinkEnv) {
+            console.log("    processSID found", env.source, env.id, env.owner);
             // TODO: anything else to do to "wake" the cloned targets the DAO
             // gives us? (are listeners connected, etc.?)
             found = true;
             sinkEnv.data && sinkEnv.data.put && sinkEnv.data.put(env, sink);
           },
           eof: function() {
-            if ( ! found ) {
-              if ( currSID.indexOf('/') >= 0 )
-                processSID(currSID.split('/').splice(-1, 1).join('/'));
-            }
+//             if ( ! found ) {
+//               if ( currSID.indexOf('/') >= 0 )
+//                 processSID(currSID.split('/').splice(-1, 1).join('/'));
+//             }
           }
         });
       };

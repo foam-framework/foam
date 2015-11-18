@@ -100,6 +100,7 @@ CLASS({
   methods: [
     function put(envelope, sink) {
       /* Server: this is a substream target, implement put handler */
+      console.log("VotablePut");
       var self = this;
       // Since this should be running on the server, grab all the owners
       // of this vote, based on stream id, tally it up, update self.tally.
@@ -116,7 +117,7 @@ CLASS({
           self.count += 1;
         },
         eof: function() {
-          console.assert(envelope.vote === this, "Vote.put envelope does not contain this!");
+          console.assert(envelope.data === this, "Vote.put envelope does not contain this!");
           self.streamDAO.put(envelope); // check that sync is inc'd
         },
       });
