@@ -22,6 +22,8 @@ CLASS({
   requires: [
     'MDAO',
     'com.google.ow.IdGenerator',
+    'com.google.ow.SubstreamSink',
+    'com.google.ow.content.Stream',
     'com.google.ow.content.Video',
     'com.google.ow.model.Envelope',
     'com.google.ow.model.ProductAd',
@@ -32,8 +34,8 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.LoggingDAO',
     'foam.dao.PrivateOwnerAuthorizer',
+    'foam.mlang.PropertySequence',
     'foam.node.dao.JSONFileDAO',
-    'com.google.ow.SubstreamSink',
   ],
   imports: [
     'console',
@@ -42,7 +44,9 @@ CLASS({
   ],
   exports: [
     'personDAO',
-    'streamDAO',
+    // TODO(markdittmer): This bypasses authorization for server components.
+    // We should do better.
+    'streamDAO_ as streamDAO',
     'createStreamItem',
   ],
 
@@ -73,7 +77,7 @@ CLASS({
           daoType: this.MDAO,
           guid: true,
           isServer: true,
-           logging: true,
+          // logging: true,
         });
       },
     },
@@ -88,14 +92,14 @@ CLASS({
     {
       name: 'streamDAO_',
       lazyFactory: function() {
-        return  this.EasyDAO.create({
+        return this.EasyDAO.create({
           model: this.Envelope,
           name: 'streams',
           daoType: this.MDAO,
           guid: true,
           isServer: true,
           // logging: true,
-        });
+        }, this.Y);
       },
     },
     {
@@ -103,7 +107,7 @@ CLASS({
       lazyFactory: function() {
         return this.authorizeFactory(
             this.Envelope,
-            this.ShareSink.create({ delegate: this.streamDAO_ }));
+            this.ShareSink.create({ delegate: this.streamDAO_ }, this.Y));
       },
     },
     {
@@ -115,7 +119,7 @@ CLASS({
           daoType: this.MDAO,
           // isServer: true,
           // logging: true,
-        });
+        }, this.Y);
       },
     },
     {
@@ -125,6 +129,11 @@ CLASS({
         return this.videoDAO_;
         //return this.authorizeFactory(this.Video, this.videoDAO_);
       },
+    },
+    {
+      name: 'streamData',
+      help: 'Test data',
+      factory: function() { return this.dataFactory('streams', this.Stream); },
     },
     {
       name: 'personData',
@@ -164,9 +173,9 @@ CLASS({
 
   methods: [
     function init() {
-      this.streamDAO_.listen(this.SubstreamSink.create());
+      this.SUPER();
+      this.streamDAO_.listen(this.SubstreamSink.create(null, this.Y));
     },
-
     function authorizeFactory(model, delegate) {
       return this.DebugAuthDAO.create({
         delegate: this.AuthorizedDAO.create({
@@ -196,7 +205,38 @@ CLASS({
       this.loadData();
     },
     function loadData() {
-      // Give everyone the ads.
+      // Bootstrap streams.
+      var self = this, baseAdStreamEnv, videoStreamEnv;
+      self.streamData.select({
+        put: function(o) {
+          // HACK(markdittmer): Manual setup tasks for various test streams.
+          if ( o.data.name === 'Test Ad' ) {
+            baseAdStreamEnv = o;
+            self.adData.select({
+              put: function(ad) {
+                var adStream = baseAdStreamEnv.data.clone();
+                adStream.merchant = '0';
+                self.streamDAO_.put(self.Envelope.create({
+                  owner: '0',
+                  source: '0',
+                  substreams: baseAdStreamEnv.substreams.map(
+                    function(sid) { return sid + '/' + ad.id; }),
+                  data: adStream
+                }, self.Y));
+              },
+            });
+          } else if ( o.data.name === 'Test Videos' ) {
+            videoStreamEnv = o;
+            self.streamDAO_.put(o);
+          } else {
+            self.streamDAO_.put(o);
+          }
+        },
+      });
+      self.loadData_(baseAdStreamEnv, videoStreamEnv);
+    },
+    function loadData_(baseAdStreamEnv, videoStreamEnv) {
+      // Give everyone the ads and videos.
       this.personDAO_.pipe({
         put: function(person) {
           this.adData.select({
@@ -204,23 +244,25 @@ CLASS({
               this.streamDAO_.put(this.Envelope.create({
                 owner: person.id,
                 source: '0',
+                sid: baseAdStreamEnv.substreams[0],
+                promoted: true,
                 data: ad,
               }, this.Y));
             }.bind(this),
           });
           this.videoDAO_.select({
-            put: function(ad) {
+            put: function(video) {
               this.streamDAO_.put(this.Envelope.create({
                 owner: person.id,
                 source: '0',
-                data: ad,
-                sid: ad.sid,
+                data: video,
+                sid: videoStreamEnv.substreams[0],
               }, this.Y));
             }.bind(this),
           });
         }.bind(this),
       });
-      // Bootstrap videos.
+      // Bootstrap video data.
       this.videoData.select(this.videoDAO_);
 
       // Bootstrap people.
