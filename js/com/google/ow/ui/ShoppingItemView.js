@@ -40,7 +40,6 @@ CLASS({
       ligature: 'add_shopping_cart',
       isEnabled: function() { return this.quantity > 0; },
       code: function(X) {
-        console.log('Add to order', X.purchaseOrder);
         if ( ! this.purchaseOrder ) return;
         // TODO(markdittmer): It would be nice to be able to recover the import
         // from the view here.
@@ -70,6 +69,9 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      shopping-item {
+        display: block;
+      }
       shopping-item .add-to-cart {
         clear: both;
         display: flex;

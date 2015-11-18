@@ -37,6 +37,11 @@ CLASS({
       name: 'id'
     },
     {
+      model_: 'StringProperty',
+      name: 'name',
+      lazyFactory: function() { return this.id.toString(); },
+    },
+    {
       name: 'substreams',
       lazyFactory: function() { return ['contentIndex/' + this.id]; }
     },
@@ -53,6 +58,9 @@ CLASS({
       name: 'model',
       help: 'The type of the content items. Should have an id property.',
       defaultValue: 'com.google.ow.model.StreamableTrait',
+      propertyToJSON: function() {
+        return (this.model && this.model.id) || '';
+      },
       postSet: function(_,model) {
         // Model not always ready in node, but don't need views there anyway
         if ( ! model.getFeature ) return;
@@ -114,7 +122,7 @@ CLASS({
       // Since this should be running on the server, grab all the owners
       // of this contentIndex, based on stream id, and share the new substream
       // content with those owners.
-      self.streamDAO.where(IN(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
+      self.streamDAO.where(EQ(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
         MAP(self.Envelope.OWNER, { put: function(owner) {
           self.streamDAO.put(
             self.createStreamItem(self.substreams[0], owner, envelope.data, self.substreams[0])

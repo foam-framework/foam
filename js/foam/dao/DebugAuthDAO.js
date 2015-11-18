@@ -16,28 +16,33 @@ CLASS({
 
   methods: [
     function find(id, sink, opt_X) {
-      this.delegate.find(id, sink, (opt_X || this.Y).sub({
-        principal: (opt_X || this.Y).authHeader,
+      var X = opt_X && opt_X.sub ? opt_X : this.Y;
+      this.delegate.find(id, sink, X.sub({
+        principal: X.authHeader,
       }));
     },
     function put(obj, sink, opt_X) {
-      this.delegate.put(obj, sink, (opt_X || this.Y).sub({
-        principal: (opt_X || this.Y).authHeader,
+      var X = opt_X && opt_X.sub ? opt_X : this.Y;
+      this.delegate.put(obj, sink, X.sub({
+        principal: X.authHeader,
       }));
     },
     function remove(id, sink, opt_X) {
-      this.delegate.remove(id, sink, (opt_X || this.Y).sub({
-        principal: (opt_X || this.Y).authHeader,
+      var X = opt_X && opt_X.sub ? opt_X : this.Y;
+      this.delegate.remove(id, sink, X.sub({
+        principal: X.authHeader,
       }));
     },
     function select(sink, options, opt_X) {
-      return this.delegate.select(sink, options, (opt_X || this.Y).sub({
-        principal: (opt_X || this.Y).authHeader,
+      var X = opt_X && opt_X.sub ? opt_X : this.Y;
+      return this.delegate.select(sink, options, X.sub({
+        principal: X.authHeader,
       }));
     },
     function removeAll(sink, options, opt_X) {
-      return this.delegate.removeAll(sink, options, (opt_X || this.Y).sub({
-        principal: (opt_X || this.Y).authHeader,
+      var X = opt_X && opt_X.sub ? opt_X : this.Y;
+      return this.delegate.removeAll(sink, options, X.sub({
+        principal: X.authHeader,
       }));
     },
   ],

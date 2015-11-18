@@ -39,15 +39,17 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      var self = this;
       this.data$ = this.attrValue();
+    },
+    function initE() {
+      var self = this;
       this.setChildren(function(options, placeholder) {
         var cs = [];
         if ( placeholder )
-          cs.push(E('option').attrs({disabled: 'disabled'}).add(self.placeholder));
+          cs.push(self.E('option').attrs({disabled: 'disabled'}).add(self.placeholder));
         for ( var i = 0 ; i < options.length ; i++ ) {
           var o = options[i];
-          cs.push(E('option').attrs({value: o[0]}).add(o[1]));
+          cs.push(self.E('option').attrs({value: o[0]}).add(o[1]));
         }
         return cs;
       }.on$(this.X, this.options$, this.placeholder$));

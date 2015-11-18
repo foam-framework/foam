@@ -22,6 +22,7 @@ CLASS({
   requires: [
     'MDAO',
     'com.google.ow.IdGenerator',
+    'com.google.ow.content.OrderStream',
     'com.google.ow.examples.VideoB',
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.Envelope',
@@ -79,7 +80,9 @@ CLASS({
         var browserConfig = this.BrowserConfig.create({
           title: 'Lifestream',
           model: this.Envelope,
-          dao: this.streamDAO.where(NOT(HAS(this.Envelope.SID))),
+          dao: this.streamDAO.where(OR(
+              NOT(HAS(this.Envelope.SID)),
+              EQ(this.Envelope.PROMOTED, true))),
           listView: 'foam.u2.DAOListView',
           cannedQueryDAO: [
             this.CannedQuery.create({
@@ -103,9 +106,11 @@ CLASS({
           },
           innerDetailView: function(args, X) {
             // TODO(markdittmer): This should be more robust.
-            var d = (args.data || args.data$.get()).data;
+            var envelope = args.data || args.data$.get();
+            var d = envelope.data;
+            X = X.sub({ envelope: envelope });
             return d && d.toDetailE ? d.toDetailE(X) :
-                this.DetailView.create({ data: d }, this.Y);
+                this.DetailView.create({ data: d }, X);
           }.bind(this)
         });
         return browserConfig;
@@ -125,11 +130,12 @@ CLASS({
     {
       name: 'streamDAO',
       lazyFactory: function() {
-        return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
+        return this.EasyClientDAO.create({
           serverUri: this.document.location.origin + '/api',
           model: this.Envelope,
           sockets: true,
-        }, this.Y) }, this.Y);
+          logging: true,
+        }, this.Y);
       }
     },
     {
@@ -137,11 +143,12 @@ CLASS({
       lazyFactory: function() {
         // TODO(markdittmer): This should be an authorized collection of peopl
         // the current user may know about.
-        return this.LoggingDAO.create({ delegate: this.EasyClientDAO.create({
+        return this.EasyClientDAO.create({
           serverUri: this.document.location.origin + '/api',
           model: this.Person,
           sockets: true,
-        }, this.Y) }, this.Y);
+          logging: true,
+        }, this.Y);
       }
     },
     {

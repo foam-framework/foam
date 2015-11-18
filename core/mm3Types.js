@@ -52,6 +52,10 @@ CLASS({
       help: 'The Java type of this property.'
     },
     {
+      name: 'swiftType',
+      defaultValue: 'String',
+    },
+    {
       name: 'view',
       labels: ['javascript'],
       defaultValue: 'foam.ui.TextFieldView',
@@ -245,6 +249,10 @@ CLASS({
       help: 'The Java type of this property.'
     },
     {
+      name: 'swiftType',
+      defaultValue: 'Int',
+    },
+    {
       name: 'view',
       labels: ['javascript'],
       defaultValue: 'foam.ui.IntFieldView',
@@ -309,7 +317,7 @@ CLASS({
     {
       name: 'swiftType',
       defaultValue: 'CLong',
-    }
+    },
   ]
 });
 
@@ -340,6 +348,10 @@ CLASS({
       displayWidth: 10,
       defaultValue: 'double',
       help: 'The Java type of this property.'
+    },
+    {
+      name: 'swiftType',
+      defaultValue: 'Float',
     },
     {
       name: 'displayWidth',

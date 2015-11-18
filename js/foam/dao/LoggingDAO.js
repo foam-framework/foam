@@ -47,8 +47,14 @@ CLASS({
       this.SUPER(query, sink);
     },
     function select(sink, options) {
+      var put = sink.put.bind(sink);
+      var newSink = { __proto__: sink };
+      newSink.put = function(o) {
+        this.logger('read', o);
+        return put.apply(null, arguments);
+      }.bind(this);
       this.logger('select', options || "");
-      return this.SUPER(sink, options);
+      return this.SUPER(newSink, options);
     },
     function removeAll(sink, options) {
       this.logger('removeAll', options);

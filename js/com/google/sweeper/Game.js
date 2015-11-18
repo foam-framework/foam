@@ -12,14 +12,13 @@
 CLASS({
   package: 'com.google.sweeper',
   name: 'Game',
-
   extends: 'foam.ui.View',
 
   requires: [ 'com.google.sweeper.Board' ],
 
   properties: [
     {
-      model: 'IntProperty',
+      type: 'Int',
       name: 'time'
     },
     {
@@ -42,12 +41,8 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      body {
-        -webkit-user-select: none;
-      }
-      span[name="time"] {
-        margin-left: 24px;
-      }
+      body { -webkit-user-select: none; }
+      span[name="time"] { margin-left: 24px; }
     */},
     function toHTML() {/*
       $$time{mode: 'read-only'}

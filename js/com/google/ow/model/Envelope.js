@@ -24,21 +24,25 @@ CLASS({
 
   //TODO: hack to get Envelope.SID to show up
   properties: [
-    'id',
+    {
+      name: 'id',
+      lazyFactory: function() {
+        return createGUID();
+      },
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'promoted',
+      defaultValue: false,
+    },
     'sid',
     'shares',
     'owner',
     'source',
     'data',
     {
+      model_: 'StringArrayProperty',
       name: 'substreams',
-      getter: function(name) {
-        // TODO: be careful here with changing substreams (i.e. adding one) and
-        // not re-putting to streamDAO to update the index
-        return this.instance_['substreams'] ||
-          ( this.data && this.data.substreams) ||
-          [];
-      }
     },
   ],
 
