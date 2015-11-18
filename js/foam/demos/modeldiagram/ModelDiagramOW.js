@@ -217,13 +217,13 @@ var p = this.Person.create({
       ];
 
       // JS
-      fs.forEach(function(f) { feature(f, anim, 0, 0); });
+      fs.forEach(function(f) { feature(f, anim, 0, 0, 0.5); });
 
       // Java
       anim.push([0]);
       fs.forEach(function(f) { f.factory = false; f.pause = false; });
       fs[0].factory = self.JavaSource.create().generate(self.Person);
-      anim.push([500, function() { self.scaleX = self.scaleY = 0.7; }]);
+      anim.push([300, function() { self.scaleX = self.scaleY = 0.7; }]);
       fnum = 0;
       fs.forEach(function(f) { feature(f, anim, 900, 0, 0.1); });
 
@@ -252,7 +252,7 @@ var p = this.Person.create({
               }
             }
           }
-          }.bind(self, i), i * 150);
+          }.bind(self, i), i * 50);
         }
       });
 
@@ -260,7 +260,7 @@ var p = this.Person.create({
       anim.push(function() { self.removeChild(robot); self.addChildren(robot); });
       anim.push([1000, function() { robot.x = v.x-40; robot.y += 65; }]);
       anim.push([0]);
-      anim.push([800, function() { robot.scaleX = robot.scaleY = 20; }]);
+      anim.push([800, function() { robot.scaleX = robot.scaleY = 25; }]);
       anim.push([0]);
       anim.push([800, function() { robot.scaleX = robot.scaleY = 3; }]);
 
