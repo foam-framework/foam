@@ -8,6 +8,14 @@ chrome.runtime.onUpdateAvailable.addListener(function() {
   chrome.runtime.reload();
 });
 
+function windowCheck() {
+  var windows = chrome.app.window.getAll();
+  if ( ! windows.length ) {
+    launchWindow();
+    return;
+  }
+}
+
 function displayCheck() {
   chrome.system.display.getInfo(function(info) {
     chrome.storage.local.get("info", function(stored) {
@@ -37,6 +45,8 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
     scheduleRestart();
     chrome.runtime.restart();
     chrome.runtime.reload();
+  } else if ( alarm.name == "windowCheck" ) {
+    windowCheck();
   }
 });
 
@@ -86,6 +96,9 @@ function scheduleRestart() {
 
 chrome.runtime.onInstalled.addListener(function() {
   launchWindow();
+  chrome.alarms.create("windowCheck", {
+    periodInMinutes: 1
+  });
   chrome.alarms.create("update", {
     periodInMinutes: period
   });
