@@ -1146,3 +1146,21 @@ if ( DEBUG ) CLASS({
    }
   ]
 });
+
+CLASS({
+  name: 'ImportedProperty',
+  extends: 'Property',
+  label: 'A pseudo-property that does not clone its value.',
+
+  properties: [
+    [ 'transient', true ],
+    [ 'hidden',    true ],
+  ],
+
+  methods: [
+    function deepCloneProperty() { /* nop */ },
+    function cloneProperty() { /* nop */ },
+  ]
+});
+
+
