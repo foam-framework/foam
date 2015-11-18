@@ -28,7 +28,7 @@ var __DATA;
   var path = document.location.pathname;
   path = path.substring(0, path.lastIndexOf('/'));
 
-  var pEl = X.document.createElement('a'); // ie11 compat
+  var pEl = X.document.createElement('a');
   pEl.href = window.FOAM_BOOT_DIR;
   var foamdir = pEl.pathname;
   foamdir = foamdir.substring(0, foamdir.lastIndexOf('/'));
@@ -44,15 +44,6 @@ var __DATA;
       primary: X.ModelDAO
     });
   }
-
-  // add third_party to the search path
-  X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
-    delegate: X.foam.core.bootstrap.BrowserFileDAO.create({
-      rootPath: path + '/third_party/js/'
-    }),
-    primary: X.ModelDAO
-  });
-
 
   // Hookup ModelDAO callback as CLASS and __DATA global functions.
   var oldClass = CLASS;
