@@ -29,7 +29,7 @@
     "model_": "com.google.ow.content.Stream",
     "titleText": "Video List",
     "description": "A list of video items.",
-    "model": "com.google.ow.content.Video",
+    "model": "com.google.ow.content.VotableVideo",
     "contentItemView": "foam.ui.md.CitationView",
     "id": "ci4873296573765766590",
   },
