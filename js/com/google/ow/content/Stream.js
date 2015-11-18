@@ -135,11 +135,13 @@ CLASS({
           .select({
             put: function(env) {
               // existing envelope for the content
+              //console.log("Stream: Found existing");
               found = true;
               // TODO: try to merge/update the content?
             },
             eof: function() {
               if ( ! found ) {
+                console.log("Stream: not found, copying:", envelope);
                 self.streamDAO.put(self.createStreamItem(
                   self.substreams[0],
                   ownerId,

@@ -32,6 +32,7 @@ CLASS({
     'foam.dao.AuthorizedDAO',
     'foam.dao.DebugAuthDAO',
     'foam.dao.EasyDAO',
+    'foam.dao.ProxyDAO',
     'foam.dao.LoggingDAO',
     'foam.dao.PrivateOwnerAuthorizer',
     'foam.mlang.PropertySequence',
@@ -47,6 +48,7 @@ CLASS({
     // TODO(markdittmer): This bypasses authorization for server components.
     // We should do better.
     'streamDAO_ as streamDAO',
+    'streamDAO_no_loopback',
     'createStreamItem',
   ],
 
@@ -91,6 +93,12 @@ CLASS({
     },
     {
       name: 'streamDAO_',
+      lazyFactory: function() {
+        return this.ProxyDAO.create({ delegate: this.streamDAO_no_loopback });
+      },
+    },
+    {
+      name: 'streamDAO_no_loopback',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Envelope,
@@ -284,6 +292,7 @@ CLASS({
                 source: incr,
                 data: video,
                 sid: videoStreamEnv.substreams[0],
+                substreams: videoStreamEnv.substreams,
               }, this.Y));
             }.bind(this),
           });

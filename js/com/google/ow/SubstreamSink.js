@@ -62,13 +62,14 @@ CLASS({
         var found = false; // TODO: stop if found, or always hit all root sids?
         self.streamDAO.where(EQ(self.Envelope.SUBSTREAMS, currSID)).select({
           put: function(sinkEnv) {
-            console.log("    processSID found", env.source, env.id, env.owner);
+            console.log("    processSID found", sinkEnv.source, sinkEnv.id, sinkEnv.owner);
             // TODO: anything else to do to "wake" the cloned targets the DAO
             // gives us? (are listeners connected, etc.?)
             found = true;
-            sinkEnv.data && sinkEnv.data.put && sinkEnv.data.put(env, sink);
+            sinkEnv.data && sinkEnv.data.put && sinkEnv.data.put(env, sink, sinkEnv);
           },
           eof: function() {
+            console.log("    processSID EOF", env.source, env.id, env.owner);
 //             if ( ! found ) {
 //               if ( currSID.indexOf('/') >= 0 )
 //                 processSID(currSID.split('/').splice(-1, 1).join('/'));
