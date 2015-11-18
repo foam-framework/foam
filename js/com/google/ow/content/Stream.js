@@ -66,22 +66,22 @@ CLASS({
         if ( ! model.getFeature ) return;
 
         if ( model.getFeature('toCitationE') ) this.contentRowView = function(args,X) {
-          var d = args.data || X.data;
-          if ( ! d ) {
-            d = args.data$ || X.data$;
-            d = d && d.value;
+          var env = args.data || X.data;
+          if ( ! env ) {
+            env = args.data$ || X.data$;
+            env = env && env.value;
           }
-          if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
-          return d.toCitationE(X.sub({ envelope: d })).style({ margin: '8px 0px' });
+          var d = env.data || env;
+          return d.toCitationE(X.sub({ envelope: env })).style({ margin: '8px 0px' });
         }
         if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
-          var d = args.data || X.data;
-          if ( ! d ) {
-            d = args.data$ || X.data$;
-            d = d && d.value;
+          var env = args.data || X.data;
+          if ( ! env ) {
+            env = args.data$ || X.data$;
+            env = env && env.value;
           }
-          if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
-          return d.toDetailE(X.sub({ envelope: d })).style({ 'flex-grow': 1, overflow: 'hidden' });
+          var d = env.data || env;
+          return d.toDetailE(X.sub({ envelope: env })).style({ 'flex-grow': 1, overflow: 'hidden' });
         }
       }
     },
