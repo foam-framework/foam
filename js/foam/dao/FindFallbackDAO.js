@@ -20,6 +20,12 @@ CLASS({
   package: 'foam.dao',
   name: 'FindFallbackDAO',
 
+
+  documentation: function() {/* Passes through to the delegate except on
+    a failed find: The fallback DAO is queried, and returns the result
+    if found there. Like a simple cache, a find from the fallback is also
+    put() into the primary delegate. */},
+
   extends: 'foam.dao.ProxyDAO',
 
   properties: [
@@ -30,34 +36,25 @@ CLASS({
 
   methods: {
     find: function(id, sink) {
-      var sid = ""+id;
-      //console.log("FFD find: ", sid);
-      this.delegate.find(sid, {
-         put: function(o) {
-           //console.log("FFD found primary: ", sid);
-           this.delegate.put(o);
-           sink && sink.put && sink.put(o);
-         }.bind(this),
-         error: function() {
-           if ( ! this.fallback ) {
-             //console.log("FFD primary fail, no fallback: ", sid);
-             sink && sink.error && sink.error();
-           } else {
-             var fid = ""+sid;
-             //console.log("FFD fallback find: ", fid);
-             this.fallback.find(fid, {
-               put: function(o) {
-                //console.log("FFD fallback found: ", fid);
-                this.delegate.put(o);
+      var delegate = this.delegate;
+      var fallback = this.fallback;
+      delegate.find(id, {
+        put: sink.put.bind(sink),
+        error: function() {
+          if ( fallback ) {
+            fallback.find(id, {
+              put: function(o) {
+                delegate.put(o); // put result back to primary
                 sink && sink.put && sink.put(o);
-               }.bind(this),
-               error: function() {
-                 //console.log("FFD fallback not found: ", fid);
-                 sink && sink.error && sink.error();
-               }.bind(this)
-             });
-           }
-         }.bind(this)
+              },
+              error: function() {
+                sink && sink.error && sink.error();
+              }
+            });
+          } else {
+            sink && sink.error && sink.error();
+          }
+        }
       });
     }
   }

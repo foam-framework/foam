@@ -14,7 +14,8 @@ CLASS({
   name: 'TestA',
 
   requires: [
-    'com.nodeca.Pako',
+    'com.nodeca.pako.Pako',
+    'com.lazarsoft.jsqrcode.JSQRCode',
   ],
 
   properties: [
@@ -26,14 +27,46 @@ CLASS({
       }
     },
     {
+      name: 'QrDecoder',
+      factory: function() {
+        var r = this.JSQRCode.create();
+        this.compressedSource$ = r.data$;
+        return r.qrcode;
+      }
+    },
+    {
       name: 'source',
       postSet: function(old, nu) {
-        this.compressed = "bytes: " + nu.length +", compressed: " + this.pako.deflate(nu).length;
+        this.label = "bytes: " + nu.length +", compressed: (9)" + this.pako.deflate(nu, { level: 9 }).length + " or (6)" + this.pako.deflate(nu, { level: 6 }).length;
+
+        this.qr = this.pako.deflate(nu, { level: 9 });
       }
     },
     {
       name: 'compressed',
     },
+    {
+      name: 'qr',
+    },
+    {
+      name: 'dataURL',
+      postSet: function(old,nu) {
+        this.QrDecoder.decode(nu);
+      }
+    },
+    {
+      name: 'compressedSource',
+      postSet: function(old,nu) {
+        try {
+          this.reinflated = this.pako.inflate(nu, { to: 'string' });
+        } catch (e) {
+          console.log("Inflate failed",e);
+        }
+      }
+    },
+    {
+      name: 'reinflated'
+    }
   ],
 
 

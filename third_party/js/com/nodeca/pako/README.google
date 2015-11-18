@@ -1,0 +1,6 @@
+URL: https://github.com/nodeca/pako/archive/7385ffd8dac7568462495d6cb6b607c677a6a0e4.zip
+Version: 7385ffd8dac7568462495d6cb6b607c677a6a0e4
+License: MIT
+License File: LICENSE
+Description: A zlib compression library implementation.
+Local Modifications: Repackaged into FOAM Model.
