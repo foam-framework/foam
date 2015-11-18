@@ -92,6 +92,7 @@ CLASS({
         },
         [0],
         function() {
+          m0 = addImage(v, 'js/foam/demos/modeldiagram/PersonV05.png');
           c1 = addImage(cls, 'js/foam/demos/modeldiagram/PersonJava.png');
         },
         [0],
@@ -118,7 +119,7 @@ CLASS({
         var pause   = f.factory || f.pause;
 
         timeWarp = timeWarp || 1;
-        var b = self.Box.create({alpha: 0.5, width: v.width/5+15, height: v.height/5, x: robot.x, y: v.y, text: f.name, font: '14pt Arial'});
+        var b = self.Box.create({alpha: 0.7, width: v.width/5+15, height: v.height/5, x: robot.x, y: v.y, text: f.name, font: '14pt Arial'});
         var num = fnum++;
         var x = num % 5;
         var y = Math.floor(num/5);
@@ -236,7 +237,7 @@ var p = this.Person.create({
       fs[0].factory = self.SwiftSource.create().generate(self.Person);
       anim.push([500, function() { self.scaleX = self.scaleY = 0.65 * 0.65; }]);
       fnum = 0;
-      fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.2); });
+      fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.15); });
 
       // Unit Tests
       anim.push([0]);
@@ -246,7 +247,7 @@ var p = this.Person.create({
           var c = cs[j];
           if ( self.Box.isInstance(c) ) {
             if ( c.text !== 'Model') {
-              c = self.Box.create({alpha: 0, text: 'Unit Test', x: c.x+20, y: c.y-20, width: c.width, height: c.height, color: c.color, font: c.font, background: 'pink'});
+              c = self.Box.create({alpha: 0, text: 'Unit Test', x: c.x+15, y: c.y-15, width: c.width, height: c.height, color: c.color, font: c.font, background: 'pink'});
               self.addChildren(c);
             }
           }
@@ -282,7 +283,7 @@ var p = this.Person.create({
       }
 
       anim.push([0]);
-      anim.push(function() { robot.timer.stop(); });
+      anim.push(function() { robot.timer.stop(); robot.timer.i = 0;});
       anim.push(function() {
         var cs = self.children.clone();
         for ( var i = 1 ; i < 15 ; i++ ) {
@@ -309,6 +310,31 @@ var p = this.Person.create({
         }
       });
       anim.push([1500, function() { robot.scaleX += 0.0001; self.scaleX = self.scaleY = 1; }]);
+      anim.push([0]);
+      anim.push(function() { self.removeChild(robot); self.addChildren(robot); });
+      anim.push([1500, function() { robot.x = v.x-25; robot.y += 35; }]);
+      anim.push([0]);
+      anim.push([1000, function() { robot.scaleX = robot.scaleY = 18; }]);
+      anim.push([0]);
+      anim.push([1000, function() { robot.scaleX = robot.scaleY = 3; }]);
+
+      anim.push([0]);
+      anim.push(function() { self.removeChild(v); self.addChildren(v); });
+      anim.push([1000, function() { v.scaleX = v.scaleY = 5; }]);
+      anim.push([0]);
+      anim.push(function() { self.removeChild(v); self.addChildren(v); v.font = '18pt Arial'; v.text = "Class Model"; });
+      anim.push([0]);
+      anim.push(function() { v.text = "Query Model"; });
+      anim.push([0]);
+      anim.push(function() { v.text = "Parser Model"; });
+      anim.push([0]);
+      anim.push(function() { v.font = '12pt Arial'; v.text = "Concurrency Model"; });
+      anim.push([0]);
+      anim.push(function() { v.font = '14pt Arial'; v.text = "Animation Model"; });
+      anim.push([0]);
+      anim.push(function() { v.font = '18pt Arial'; v.text = "Kiosk Model"; });
+      anim.push([0]);
+      anim.push(function() { v.alpha = 0; });
 
       /*
       // Your Stack Here
