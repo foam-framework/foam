@@ -26,13 +26,14 @@ CLASS({
       return this.start('div').cls('heading').cls('md-headline')
             .add('Order')
           .end()
-          .add(this.DAOListView.create({ data: this.data.items }, this.Y.sub({
+          .add(this.DAOListView.create({ data: this.data.items_ }, this.Y.sub({
             selection$: undefined,
           })))
           .start('div').cls('total').cls('md-body')
             .start('div').add('TOTAL:').end()
             .add(this.data.TOTAL)
-          .end();
+          .end()
+          .add(this.data.METHOD_OF_PAYMENT);
     },
   ],
 
