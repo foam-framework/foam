@@ -42,7 +42,8 @@ var FOAMargs = process.argv.slice(2);
     }
   }
 
-  var CLASSPATH = args.classpath ? args.classpath.split(',') : [];
+  if ( args.classpath )
+    var CLASSPATH = args.classpath.split(',');
 
   if ( args.flags ) {
     args.flags = args.flags.split(',');
@@ -57,14 +58,15 @@ var FOAMargs = process.argv.slice(2);
 
   require('../core/bootFOAMnode.js');
 
-  CLASSPATH.push(global.FOAM_BOOT_DIR+'/../third_party/js/');
-  for ( var i = 0 ; i < CLASSPATH.length ; i++ ) {
-    X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
-      delegate: X.node.dao.ModelFileDAO.create({
-        classpath: CLASSPATH[i]
-      }),
-      primary: X.ModelDAO
-    });
+  if ( CLASSPATH ) {
+    for ( var i = 0 ; i < CLASSPATH.length ; i++ ) {
+      X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
+        delegate: X.node.dao.ModelFileDAO.create({
+          classpath: CLASSPATH[i]
+        }),
+        primary: X.ModelDAO
+      });
+    }
   }
 
   arequire(FOAMargs[0])(function(model) {
