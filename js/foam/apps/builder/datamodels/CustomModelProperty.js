@@ -21,6 +21,10 @@ CLASS({
 
   properties: [
     [ 'type', 'Model' ],
+    [ 'deepCloneProperty', function deepCloneProperty(model) {
+      // TODO(jacksonic): this.X will be from when the CustomModelProperty instance was created...
+      return Model.create(model, this.X);
+    }],
     {
       name: 'adapt',
       defaultValue: function(old, nu) {
@@ -46,10 +50,4 @@ CLASS({
     },
   ],
 
-  methods: [
-    function deepCloneProperty(model) {
-      // TODO(jacksonic): this.X will be from when the CustomModelProperty instance was created...
-      return Model.create(model, this.X);
-    }
-  ]
 });

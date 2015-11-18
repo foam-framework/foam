@@ -18,9 +18,10 @@ CLASS({
 
   help: 'Describes a property that will not clone its value.',
 
-  methods: [
-    function deepCloneProperty(val) {
-      return val;
-    }
-  ]
+  properties: [
+    ['deepCloneProperty', null],
+    ['cloneProperty',     null],
+  ],
+
+
 });

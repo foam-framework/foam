@@ -743,6 +743,32 @@ GLOBAL.Property = {
       documentation: "A comparator function two compare two instances of this $$DOC{ref:'Property'}."
     },
     {
+      name: 'cloneProperty',
+      type: 'Function',
+      labels: ['javascript'],
+      view: 'foam.ui.FunctionView',
+      displayWidth: 70,
+      displayHeight: 5,
+      defaultValue: function(/* this=prop, */ value) {
+        return ( value && value.clone ) ? value.clone() : value;
+      },
+      help: 'Clone function.',
+      documentation: "Creates a shallow copy of the contents of this property.",
+    },
+    {
+      name: 'deepCloneProperty',
+      type: 'Function',
+      labels: ['javascript'],
+      view: 'foam.ui.FunctionView',
+      displayWidth: 70,
+      displayHeight: 5,
+      defaultValue: function(/* this=prop, */ value) {
+        return ( value && value.deepClone ) ? value.deepClone() : value;
+      },
+      help: 'Deep clone function.',
+      documentation: "Creates a deep copy of the contents of this property.",
+    },
+    {
       name: 'fromString',
       labels: ['javascript'],
       defaultValue: function(s, p) { this[p.name] = s; },
@@ -869,12 +895,6 @@ GLOBAL.Property = {
     function toSQL() { return this.name; },
     function toMQL() { return this.name; },
     function toBQL() { return this.name; },
-    function cloneProperty(/* this=prop, */ value) {
-      return ( value && value.clone ) ? value.clone() : value;
-    },
-    function deepCloneProperty(/* this=prop, */ value) {
-      return ( value && value.deepClone ) ? value.deepClone() : value;
-    },
     function exprClone() {
       return this;
     },
