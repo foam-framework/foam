@@ -26,6 +26,9 @@ CLASS({
     'foam.graphics.Circle',
     'foam.graphics.SimpleRectangle as Rectangle'
   ],
+  properties: [
+    { name: 'timer', factory: function() { return this.Timer.create(); } }
+  ],
   methods: [
     function initCView() {
       this.SUPER();
@@ -63,23 +66,23 @@ CLASS({
       engine.endAngle = 2*Math.PI;
       body.addChild(engine);
 
-      var eye =this.Circle.create();
+      var eye = this.Circle.create();
       eye.r=5;
       eye.color='white';
       head.addChild(eye);
 
-      var pupil =this.Circle.create();
+      var pupil = this.Circle.create();
       eye.addChild(pupil);
       pupil.r=2;
       pupil.color='lightblue';
 
       // animate
-      var timer = this.Timer.create();
+      var timer = this.timer;
       timer.time$.addListener(function() {
-        body.y = 20 * Math.cos(timer.i/9);
-        body.a = Math.PI / 4 * Math.cos(timer.i/30);
+        body.y = 10 * Math.cos(timer.i/9);
+        body.a = Math.PI / 8 * Math.cos(timer.i/30);
         pupil.x = 4* Math.cos(timer.i/15);
-        neck.height = 15 + 10* Math.cos(timer.i/15);
+        neck.height = 15 + 10 * Math.cos(timer.i/15);
         neck.y = -13 - 10* Math.cos(timer.i/15);
         if ( this.view ) body.view.paint();
       });

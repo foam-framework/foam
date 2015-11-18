@@ -137,7 +137,7 @@ var JSONUtil = {
         j++;
       }
 
-      if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj);
+      if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj, X);
 
       if ( obj.model_ ) {
         var newObj = X.lookup(obj.model_);
@@ -152,7 +152,7 @@ var JSONUtil = {
               future.set(obj);
               return;
             }
-            var tmp = model.create(obj);
+            var tmp = model.create(obj, X);
             obj.become(tmp);
             future.set(obj);
           });

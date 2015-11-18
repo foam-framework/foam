@@ -15,19 +15,14 @@ CLASS({
   extends: 'com.google.ow.content.Video',
   traits: ['com.google.ow.content.VotableTrait'],
 
-  methods: [
-    function init() {
-      console.log("t:",this.streamDAO, " X:", this.X.streamDAO);
-      //console.assert(this.streamDAO === this.X.streamDAO, "StreamDAO mismatch1!" );
-      this.SUPER();
-      //console.assert(this.streamDAO === this.X.streamDAO, "StreamDAO mismatch2!");
-    },
+  // substreams and sid inherited from Vote
 
+  methods: [
     function toDetailE(X) {
-      return this.SUPER().add(this.vote.toDetailE(X));
+      return this.SUPER(X).add(this.toVoteE(X));
     },
     function toCitationE(X) {
-      return this.SUPER().add(this.vote.toCitationE(X));
-    }
+      return this.SUPER(X);
+    },
   ],
 });
