@@ -175,7 +175,7 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.streamDAO_.listen(this.SubstreamSink.create(null, this.Y));
+      //this.streamDAO_.listen(this.SubstreamSink.create(null, this.Y));
     },
     function authorizeFactory(model, delegate) {
       return this.DebugAuthDAO.create({
@@ -228,7 +228,17 @@ CLASS({
             });
           } else if ( o.data.name === 'Test Videos' ) {
             videoStreamEnv = o;
-            self.streamDAO_.put(o);
+            self.personDAO_.pipe({
+              put: function(person) {
+                self.streamDAO_.put(self.Envelope.create({
+                  owner: person.id,
+                  source: '0',
+                  substreams: videoStreamEnv.substreams,
+                  sid: videoStreamEnv.sid,
+                  data: videoStreamEnv.data,
+                }));
+              }
+            });
           } else {
             self.streamDAO_.put(o);
           }
@@ -241,14 +251,13 @@ CLASS({
       this.personDAO_.pipe({
         put: function(person) {
           // put in copies of the root streams
-          var adStrEnv = baseAdStreamEnv.deepClone();
-          adStrEnv.owner = person.id;
-          this.streamDAO_.put(adStrEnv);
+//           var adStrEnv = baseAdStreamEnv.deepClone();
+//           adStrEnv.owner = person.id;
+//           this.streamDAO_.put(adStrEnv);
 
-          var vidStrEnv = videoStreamEnv.deepClone();
-          vidStrEnv.owner = person.id;
-          this.streamDAO_.put(vidStrEnv);
-
+//           var vidStrEnv = videoStreamEnv.deepClone();
+//           vidStrEnv.owner = person.id;
+//           this.streamDAO_.put(vidStrEnv);
 
           this.adData.select({
             put: function(ad) {
