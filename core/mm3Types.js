@@ -1153,12 +1153,19 @@ CLASS({
   label: 'A pseudo-property that does not clone its value.',
 
   properties: [
-    ['transient',         true],
-    ['hidden',            true],
-    ['deepCloneProperty', null],
-    ['cloneProperty',     null],
+    [ 'transient', true ],
+    [ 'hidden',    true ],
   ],
 
+  methods: [
+    function init() {
+      var prot = this.model_.getPrototype();
+      prot.deepCloneProperty = null;
+      prot.cloneProperty = null;
+    },
+    function deepCloneProperty() { debugger; return null; },
+    function cloneProperty() { debugger; return null; },
+  ]
 });
 
 
