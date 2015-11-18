@@ -44,11 +44,7 @@ CLASS({
       var customerSid = orderSid + '/' + customer;
       // Construct update streams for merchant and customer.
       // console.log('Putting update stream (merchant)');
-
       var self = this;
-
-      if ( self.X.streamDAO !== self.streamDAO ) debugger;
-
       self.streamDAO.put(self.Envelope.create({
         owner: merchant,
         source: customer,
@@ -63,7 +59,6 @@ CLASS({
             data: self.UpdateStream.create(null, self.Y),
           }, self.Y), {
             put: function() {
-
               self.streamDAO.put(self.Envelope.create({
                 owner: customer,
                 source: customer,
@@ -82,11 +77,6 @@ CLASS({
         source: envelope.owner,
         data: this,
       }, X);
-    },
-    function init() {
-      if ( this.X.streamDAO !== this.streamDAO ) debugger;
-      this.SUPER();
-      if ( this.X.streamDAO !== this.streamDAO ) debugger;
     },
   ],
 });
