@@ -14,12 +14,21 @@ CLASS({
   name: 'UpdateStream',
   extends: 'com.google.ow.content.Stream',
 
+  properties: [
+    {
+      model_: 'StringProperty',
+      name: 'titleText',
+      defaultValue: 'Your order',
+    },
+  ],
+
   methods: [
+    function put(envelope, sink) {},
     function toDetailE(X) {
-      return X.lookup('com.google.ow.content.UpdateStreamDetailView').toDetailE(X);
+      return X.lookup('com.google.ow.ui.UpdateStreamDetailView').create({ data: this }, X);
     },
     function toCitationE(X) {
-      return X.lookup('com.google.ow.content.UpdateStreamCitationView').create({ data: this }, X);
+      return X.lookup('com.google.ow.ui.UpdateStreamCitationView').create({ data: this }, X);
     },
   ],
 });
