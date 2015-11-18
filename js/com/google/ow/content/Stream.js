@@ -72,7 +72,7 @@ CLASS({
             d = d && d.value;
           }
           if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
-          return d.toCitationE(X).style({ margin: '8px 0px' });
+          return d.toCitationE(X.sub({ envelope: d })).style({ margin: '8px 0px' });
         }
         if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
           var d = args.data || X.data;
@@ -81,7 +81,7 @@ CLASS({
             d = d && d.value;
           }
           if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
-          return d.toDetailE(X).style({ 'flex-grow': 1, overflow: 'hidden' });
+          return d.toDetailE(X.sub({ envelope: d })).style({ 'flex-grow': 1, overflow: 'hidden' });
         }
       }
     },
