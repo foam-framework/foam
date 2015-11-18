@@ -41,8 +41,8 @@ CLASS({
   ],
 
   properties: [
-    [ 'width', 1220/0.75 ],
-    [ 'height', 680/0.75 ]
+    [ 'width', 1700 ],
+    [ 'height', 1000 ]
   ],
 
   methods: {
@@ -59,6 +59,7 @@ CLASS({
         height: 680
       });
 
+      GLOBAL.robot = robot;
       this.addChildren(v, robot, cls, display);
 
       function addImage(parent, src) {
@@ -106,6 +107,7 @@ CLASS({
           m0.alpha = m1.alpha = 0;
         }],
         [500, function() { v.width /= 4.5; v.height /= 4.5; cls.alpha = 0; } ],
+        function() { self.removeChild(cls); },
         [500, function() { robot.scaleX = robot.scaleY = 3; } ],
         [0]
       ];
@@ -116,7 +118,7 @@ CLASS({
         var pause   = f.factory || f.pause;
 
         timeWarp = timeWarp || 1;
-        var b = self.Box.create({width: v.width/5+15, height: v.height/5, x: robot.x, y: v.y, text: f.name, font: '14pt Arial'});
+        var b = self.Box.create({alpha: 0.5, width: v.width/5+15, height: v.height/5, x: robot.x, y: v.y, text: f.name, font: '14pt Arial'});
         var num = fnum++;
         var x = num % 5;
         var y = Math.floor(num/5);
@@ -192,6 +194,7 @@ var p = this.Person.create({
    "age": 42,
    "married": true
 }"*/})  },
+        { name: 'ProtoBuf' },
         { name: 'Detail View', factory: function() { return self.DetailView.create({data:p, showActions:true}); } },
         { name: 'MD View', factory: function() { return self.MDDetailView.create({data:p}); } },
         { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); } },
@@ -212,7 +215,6 @@ var p = this.Person.create({
         { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" height="55%" style="margin-left: 100px;border:1px solid;max-height:510px" src="./demos/democat/GMail.png">'; }, initHTML: function() { }}; } },
         { name: 'UML', factory: function() { return self.DocDiagramView.create({data:self.Person}); }},
 //        { name: 'Docs', factory: function() { return self.DocViewPicker.create({data:self.Person}); }},
-        { name: '...' },
         { name: '...' }
       ];
 
@@ -234,12 +236,67 @@ var p = this.Person.create({
       fnum = 0;
       fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.2); });
 
+      anim.push([0]);
+      anim.push(function() {
+        var cs = self.children.clone();
+        for ( var j = 0 ; j < cs.length ; j++ ) {
+          var c = cs[j];
+          if ( self.Box.isInstance(c) ) {
+            if ( c.text !== 'Model') {
+              c = self.Box.create({alpha: 0, text: 'Unit Test', x: c.x+20, y: c.y-20, width: c.width, height: c.height, color: c.color, font: c.font, background: 'pink'});
+              self.addChildren(c);
+            }
+          }
+        }
+      });
+      anim.push([1000, function() {
+        var cs = self.children.clone();
+        for ( var j = 0 ; j < cs.length ; j++ ) {
+          var c = cs[j];
+          if ( self.Box.isInstance(c) && c.text === 'Unit Test') c.alpha = 0.25;
+        }
+      }]);
+      anim.push([0]);
+      anim.push([1000, function() {
+        var cs = self.children.clone();
+        for ( var j = 0 ; j < cs.length ; j++ ) {
+          var c = cs[j];
+          if ( self.Box.isInstance(c) && c.text === 'Unit Test' ) self.removeChild(c);
+        }
+      }]);
+
       // Other
       anim.push([0]);
-      fs.forEach(function(f) { f.factory = false; f.pause = false; });
-      fnum = 0;
-      fs.forEach(function(f) { feature(f, anim, 0, 1000, 0.2); });
+      var anim2 = [];
+      anim.push(anim2);
+      for ( var i = 0 ; i < 3 ; i++ ) {
+        var anim3 = [];
+        anim2.push(anim3);
+        fs.forEach(function(f) { f.factory = false; f.pause = false; });
+        fnum = 0;
+        fs.forEach(function(f) { feature(f, anim3, 900*i, 1000, 0.15); });
+      }
 
+      anim.push([0]);
+      anim.push(function() {
+        var cs = self.children.clone();
+        for ( var i = 1 ; i < 15 ; i++ ) {
+          setTimeout(function(i) {
+          for ( var j = 0 ; j < cs.length ; j++ ) {
+            var c = cs[j];
+            if ( self.Box.isInstance(c) ) {
+              if ( c.text === 'Class' || c.text === 'Model' || Math.random() < 0.5 ) {
+                c = self.Box.create({text: c.text, x: c.x-7*i, y: c.y+6*i, width: c.width, height: c.height, color: c.color, background: c.background});
+                self.addChildren(c);
+              }
+            }
+          }
+          }.bind(self, i), i * 150);
+        }
+      });
+      anim.push(function() { robot.timer.stop(); });
+
+      /*
       // Your Stack Here
       anim.push([0]);
       var ys1 = self.Box.create({x: 1550, y: 1060, width: 660, height: 850, scaleX: 0, scaleY: 0, font: '50pt Arial', text: 'Your Stack Here'});
@@ -251,6 +308,7 @@ var p = this.Person.create({
       anim.push([300, function() { ys2.width = 660; ys2.height = 850; ys2.x += 40; ys2.y-=40;}]);
       anim.push([300, function() { ys3.width = 660; ys3.height = 850; ys3.x += 80; ys3.y-=80;}]);
       anim.push([300, function() { ys4.width = 660; ys4.height = 850; ys4.x += 120; ys4.y-=120;}]);
+      */
 
       anim.push([0]);
 //      anim.push([500, function() { self.scaleX = self.scaleY = 1; }]);
