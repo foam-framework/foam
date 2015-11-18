@@ -20,6 +20,7 @@ CLASS({
   name: 'Element',
 
   requires: [
+    'foam.input.touch.GestureTarget',
     'foam.u2.ElementValue'
   ],
 
@@ -75,7 +76,7 @@ CLASS({
         this.state = this.LOADED;
         for ( var i = 0 ; i < this.elListeners.length ; i++ ) {
           var l = this.elListeners[i];
-          this.id$el.addEventListener(l[0], l[1]);
+          this.addEventListener_(l[0], l[1]);
         }
 
         this.visitChildren('load');
@@ -127,7 +128,7 @@ CLASS({
         e.classList[enabled ? 'add' : 'remove'](cls);
       },
       onAddListener: function(topic, listener) {
-        this.id$el.addEventListener(topic, listener);
+        this.addEventListener_(topic, listener);
       },
       onSetStyle:    function(key, value) {
         this.id$el.style[key] = value;
@@ -717,6 +718,32 @@ CLASS({
       l();
 
       return this;
+    },
+
+    function addEventListener_(topic, listener) {
+      if (this.X.gestureManager && topic === 'click') {
+        var manager = this.X.gestureManager;
+        var self = this;
+        var target = this.GestureTarget.create({
+          containerID: this.id$el.id,
+          enforceContainment: true,
+          gesture: 'tap',
+          handler: {
+            tapClick: function(pointMap) {
+              return listener({
+                preventDefault: function() { },
+                stopPropagation: function() { },
+                pointMap: pointMap,
+                target: self.id$el
+              });
+            }
+          }
+        });
+        manager.install(target);
+        // TODO: Uninstall when the element is unloaded.
+      } else {
+        this.id$el.addEventListener(topic, listener);
+      }
     },
 
     //
