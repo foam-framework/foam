@@ -59,7 +59,7 @@ CLASS({
         height: 680
       });
 
-      GLOBAL.robot = robot;
+      GLOBAL.anim = this;
       this.addChildren(v, robot, cls, display);
 
       function addImage(parent, src) {
@@ -134,6 +134,8 @@ CLASS({
         } else {
           anim.push([500*timeWarp, function() { b.x += 250 + xo + x * b.width*1.4; b.y += yo + b.height*1.2 * y - 80; }]);
         }
+
+        return b;
       }
 
       var p = this.Person.create({
@@ -236,6 +238,7 @@ var p = this.Person.create({
       fnum = 0;
       fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.2); });
 
+      // Unit Tests
       anim.push([0]);
       anim.push(function() {
         var cs = self.children.clone();
@@ -256,6 +259,7 @@ var p = this.Person.create({
           if ( self.Box.isInstance(c) && c.text === 'Unit Test') c.alpha = 0.25;
         }
       }]);
+
       anim.push([0]);
       anim.push([1000, function() {
         var cs = self.children.clone();
@@ -278,6 +282,7 @@ var p = this.Person.create({
       }
 
       anim.push([0]);
+      anim.push(function() { robot.timer.stop(); });
       anim.push(function() {
         var cs = self.children.clone();
         for ( var i = 1 ; i < 15 ; i++ ) {
@@ -286,7 +291,7 @@ var p = this.Person.create({
             var c = cs[j];
             if ( self.Box.isInstance(c) ) {
               if ( c.text === 'Class' || c.text === 'Model' || Math.random() < 0.5 ) {
-                c = self.Box.create({text: c.text, x: c.x-7*i, y: c.y+6*i, width: c.width, height: c.height, color: c.color, background: c.background});
+                c = self.Box.create({text: c.text, font: c.font, x: c.x-7*i, y: c.y+6*i, width: c.width, height: c.height, color: c.color, background: c.background});
                 self.addChildren(c);
               }
             }
@@ -294,7 +299,16 @@ var p = this.Person.create({
           }.bind(self, i), i * 150);
         }
       });
-      anim.push(function() { robot.timer.stop(); });
+
+      anim.push([0]);
+      anim.push(function() {
+        var cs = self.children;
+        for ( var j = cs.length-1 ; j > -1 ; j-- ) {
+          var c = cs[j];
+          if ( self.Box.isInstance(c) && ( c.x > 1295 || c.y > 765 ) ) self.removeChild(c);
+        }
+      });
+      anim.push([1500, function() { robot.scaleX += 0.0001; self.scaleX = self.scaleY = 1; }]);
 
       /*
       // Your Stack Here
@@ -310,7 +324,6 @@ var p = this.Person.create({
       anim.push([300, function() { ys4.width = 660; ys4.height = 850; ys4.x += 120; ys4.y-=120;}]);
       */
 
-      anim.push([0]);
 //      anim.push([500, function() { self.scaleX = self.scaleY = 1; }]);
 
       Movement.compile(anim)();
