@@ -28,10 +28,10 @@ CLASS({
       lazyFactory: function() { return createGUID(); },
     },
     {
-      model_: 'foam.core.types.DAOProperty',
+      model_: 'ArrayProperty',
       subType: 'com.google.ow.model.OrderItem',
       name: 'items',
-      lazyFactory: function() { return [].dao; },
+      lazyFactory: function() { return []; },
     },
     {
       model_: 'FloatProperty',
