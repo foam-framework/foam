@@ -37,6 +37,11 @@ CLASS({
       name: 'id'
     },
     {
+      model_: 'StringProperty',
+      name: 'name',
+      lazyFactory: function() { return this.id.toString(); },
+    },
+    {
       name: 'substreams',
       lazyFactory: function() { return ['contentIndex/' + this.id]; }
     },
@@ -53,6 +58,9 @@ CLASS({
       name: 'model',
       help: 'The type of the content items. Should have an id property.',
       defaultValue: 'com.google.ow.model.StreamableTrait',
+      propertyToJSON: function() {
+        return (this.model && this.model.id) || '';
+      },
       postSet: function(_,model) {
         // Model not always ready in node, but don't need views there anyway
         if ( ! model.getFeature ) return;
@@ -64,7 +72,7 @@ CLASS({
             d = d && d.value;
           }
           if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
-          return d.toCitationE(X).style({ margin: '8px 0px' });
+          return d.toCitationE(X.sub({ envelope: d })).style({ margin: '8px 0px' });
         }
         if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
           var d = args.data || X.data;
@@ -73,7 +81,7 @@ CLASS({
             d = d && d.value;
           }
           if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
-          return d.toDetailE(X).style({ 'flex-grow': 1, overflow: 'hidden' });
+          return d.toDetailE(X.sub({ envelope: d })).style({ 'flex-grow': 1, overflow: 'hidden' });
         }
       }
     },
@@ -113,12 +121,34 @@ CLASS({
       var self = this;
       // Since this should be running on the server, grab all the owners
       // of this contentIndex, based on stream id, and share the new substream
-      // content with those owners.
-      self.streamDAO.where(IN(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
-        MAP(self.Envelope.OWNER, { put: function(owner) {
-          self.streamDAO.put(
-            self.createStreamItem(self.substreams[0], owner, envelope.data, self.substreams[0])
-          );
+      // content with those ownerIds.
+      self.streamDAO.where(EQ(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
+        MAP(self.Envelope.OWNER, { put: function(ownerId) {
+          // if an envelope doens't already exist, make one
+          var found = false;
+          self.streamDAO.where(
+            AND(
+              EQ(self.Envelope.SID, envelope.sid),
+              EQ(self.Envelope.OWNER, ownerId)),
+              EQ(self.Envelope.DATA.dot(self.model_.ID), envelope.data.id) // this.model_.ID is a bit of a hack to extract ID from data, when we don't know what model data really is.
+            )
+          .select({
+            put: function(env) {
+              // existing envelope for the content
+              found = true;
+              // TODO: try to merge/update the content?
+            },
+            eof: function() {
+              if ( ! found ) {
+                self.streamDAO.put(self.createStreamItem(
+                  self.substreams[0],
+                  ownerId,
+                  envelope.data,
+                  self.substreams[0]
+                ));
+              }
+            }
+          });
         } })
       );
     },

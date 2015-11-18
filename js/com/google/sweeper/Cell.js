@@ -12,7 +12,6 @@
 CLASS({
   package: 'com.google.sweeper',
   name: 'Cell',
-
   extends: 'foam.ui.View',
 
   imports: [ 'board' ],
@@ -22,27 +21,18 @@ CLASS({
   },
 
   properties: [
+    'x', 'y', 'mineCount',
     {
-      name: 'x'
-    },
-    {
-      name: 'y'
-    },
-    {
-      name: 'mineCount'
-    },
-    {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'covered',
       defaultValue: true
     },
     {
-      model_: 'BooleanProperty',
-      name: 'marked',
-      defaultValue: false
+      type: 'Boolean',
+      name: 'marked'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'mined',
       factory: function() { return Math.random() < 0.18; }
     },
@@ -68,25 +58,23 @@ CLASS({
         background: #ccc;
         box-shadow: -2px -2px 10px rgba(0,0,0,.25) inset, 2px 2px 10px white inset;        
       }
-      .sweeper-cell.covered font {
-        display: none;
+      .sweeper-cell.covered font { display: none; }
+      .sweeper-cell.marked font { display: none; }
+      .sweeper-cell .flag { display: none; }
+      .sweeper-cell.marked .flag {
+        display: block;
+        color: #BD1616;
       }
-      .sweeper-cell.marked font {
-        display: none;
-      }
-      .sweeper-cell.marked {
-        background-color: #ccc;
-        background-image: url('js/com/google/sweeper/flag.png');
-        background-repeat: no-repeat;
-      }
+      .sweeper-cell.marked { background-color: #ccc; }
     */}
   ],
 
   methods: {
     toInnerHTML: function() {
       this.mineCount = this.board.getMineCount(this);
-      return this.mined ? '<font color="black"><img src="js/com/google/sweeper/mine.jpg"></font>' :
-        this.mineCount ? '<font color="' + this.COUNT_COLOURS[this.mineCount] + '">' + this.mineCount + '</font>' : '';
+      return '<span class="flag">&#x2691</span>' + (
+        this.mined     ? '<font color="#E04D2B"><span class="material-icons-extended">chrome_product</span></font>' :
+        this.mineCount ? '<font color="' + this.COUNT_COLOURS[this.mineCount] + '">' + this.mineCount + '</font>' : '');
     },
     initHTML: function() {
       this.setClass(
@@ -104,23 +92,17 @@ CLASS({
   },
 
   listeners: [
-    {
-      name: 'mark',
-      code: function(e) {
-        this.marked = ! this.marked;
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
+    function mark(e) {
+      this.marked = ! this.marked;
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
     },
-    {
-      name: 'sweep',
-      code: function(e) {
-        this.covered = false;
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
+    function sweep(e) {
+      this.covered = false;
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
     }
   ]
 });

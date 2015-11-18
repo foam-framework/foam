@@ -42,7 +42,7 @@ CLASS({
   methods: [
     function put(o, sink) {
       // TODO: rename .sid to .addr (Box address?)
-      if ( o.substreams ) {
+      if ( o.sid ) {
         this.putToTargets(o, sink);
       }
     },
@@ -56,13 +56,26 @@ CLASS({
       // TODO: eventually the target could be a third party URL, so we
       // would load that instead of hitting the streamDAO
       // TODO: if we don't find exact match, try for partial
-      self.streamDAO.where(IN(this.Envelope.SUBSTREAMS, env.sid)).select({
-        put: function(target) {
-          // TODO: anything else to do to "wake" the cloned targets the DAO
-          // gives us? (are listeners connected, etc.?)
-          target.put && target.put(env, sink);
-        }
-      });
+
+      var processSID = function(currSID) {
+        var found = false; // TODO: stop if found, or always hit all root sids?
+        self.streamDAO.where(EQ(self.Envelope.SUBSTREAMS, currSID)).select({
+          put: function(sinkEnv) {
+            // TODO: anything else to do to "wake" the cloned targets the DAO
+            // gives us? (are listeners connected, etc.?)
+            found = true;
+            sinkEnv.data && sinkEnv.data.put && sinkEnv.data.put(env, sink);
+          },
+          eof: function() {
+            if ( ! found ) {
+              if ( currSID.indexOf('/') >= 0 )
+                processSID(currSID.split('/').splice(-1, 1).join('/'));
+            }
+          }
+        });
+      };
+
+      processSID(env.sid);
     }
   ],
 });

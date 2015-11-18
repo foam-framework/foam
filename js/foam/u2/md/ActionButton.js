@@ -64,10 +64,15 @@ CLASS({
 
   methods: [
     function initE() {
-      return this.cls('md-button').style({
-        color: this.color_$,
-        opacity: this.alpha$,
-      })
+      return this.cls('md-button')
+        .cls2(function() {
+          return (this.action &&
+              this.action.isAvailable.call(this.data, this.action)) ?
+              'available' : '';
+        }.bind(this)).style({
+          color: this.color_$,
+          opacity: this.alpha$,
+        })
         .on('click', this.onClick)
           // TODO(markdittmer): We need a better story for adapting CViews into
           // u2.
@@ -100,7 +105,7 @@ CLASS({
   templates: [
     function CSS() {/*
       action-button {
-        display: inline-flex;
+        display: none;
         align-items: baseline;
         justify-content: center;
         overflow: hidden;
@@ -108,6 +113,10 @@ CLASS({
         border-radius: 2px;
         cursor: pointer;
         color: #02A8F3;
+      }
+
+      action-button.available {
+        display: inline-flex;
       }
 
       action-button .halo {

@@ -332,6 +332,7 @@ var scroll = E('input').attrs({
 
 E('div').add("Scroll amount").add(scroll).write();
 
+/*
 foam.u2.DAOListView.create({
   data: foam.dao.ScrollDAO.create({
     src: dao,
@@ -340,6 +341,7 @@ foam.u2.DAOListView.create({
     model: TestObject
   })
 }).write();
+*/
 
 setInterval((function() {
   var i = 0;
@@ -449,11 +451,11 @@ MODEL({
 
 MODEL({
   name: 'PersonWithTemplate',
-  properties: ['firstName', 'lastName', 'age'],
+  properties: ['firstName', 'lastName', 'age', 'brother'],
   actions: [
     {
       name: 'go',
-      code: function() { console.log('Go!'); }
+      code: function() { console.log('Go!' + this.firstName); }
     }
   ],
   listeners: [
@@ -464,7 +466,7 @@ MODEL({
   ],
   templates: [
     function toE() {/*#U2
-    <div as="top" id="special" class="c1 c2" x:data={{this}} x:timer={{timer}} foo="bar" bar={{'foo'}} onClick="click"
+    <div as="top" id="special" class="c1 c2" x:brother={{this.brother}} x:data={{this}} x:timer={{timer}} foo="bar" bar={{'foo'}} onClick="click"
       style="
         background: #f9f9f9;
         color: gray;
@@ -479,6 +481,7 @@ MODEL({
       <div><b>First Name: </b>{{this.firstName$}}</div>
       <br/>
 
+      Brother: <brother:firstName/> <brother:go/>       <!-- A Property           -->
       <:firstName/>        <!-- A Property           -->
       <:go/>               <!-- An Action            -->
       <:toEMethod/>        <!-- A Method             -->
@@ -529,7 +532,10 @@ MODEL({
   ]
 });
 
-var p = PersonWithTemplate.create({firstName: 'Sebastian', lastName: 'Greer', age: 11});
+var p  = PersonWithTemplate.create({firstName: 'Sebastian', lastName: 'Greer', age: 11});
+var p2 = PersonWithTemplate.create({firstName: 'Alexey',    lastName: 'Greer', age: 19});
+p.brother = p2;
+
 var e = p.toE();
 console.log(p.toE.toString());
 e.write();

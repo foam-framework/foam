@@ -1,0 +1,6 @@
+URL: https://github.com/LazarSoft/jsqrcode/archive/67e77fe14bb96463ef7cc1a44facbec250f4240b.zip
+Version: 67e77fe14bb96463ef7cc1a44facbec250f4240b
+License: Apache 2
+License File: LICENSE
+Description: A QR code decoder, based on Google's ZXing decoder.
+Local Modifications: Repackaged into FOAM Model.

@@ -245,7 +245,10 @@ function registerE(name, model) {
 // Utility function for creating U2 elements in a short format. Expects to be
 // run on a conteXt object.
 function E(opt_nodeName) {
-  var e = this.elementForName && this.elementForName(opt_nodeName);
+  if (this === X || this === window) {
+    console.log('Deprecated global E() call', new Error());
+  }
+var e = this.elementForName && this.elementForName(opt_nodeName);
 
   if ( ! e ) {
     e = this.lookup('foam.u2.Element').create(null, this);
