@@ -30,13 +30,6 @@ CLASS({
       help: 'Merchant user id.',
       defaultValue: '0',
     },
-    {
-      name: 'streamDAO',
-      preSet: function(old, nu, prop) {
-        debugger;
-        return nu;
-      },
-    },
   ],
 
   methods: [
@@ -51,8 +44,6 @@ CLASS({
       var customerSid = orderSid + '/' + customer;
       // Construct update streams for merchant and customer.
       // console.log('Putting update stream (merchant)');
-
-      debugger;
 
       var self = this;
 
@@ -72,8 +63,6 @@ CLASS({
             data: self.UpdateStream.create(null, self.Y),
           }, self.Y), {
             put: function() {
-
-              debugger;
 
               self.streamDAO.put(self.Envelope.create({
                 owner: customer,

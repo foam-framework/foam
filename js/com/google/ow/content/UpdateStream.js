@@ -15,10 +15,6 @@ CLASS({
   extends: 'com.google.ow.content.Stream',
 
   methods: [
-    function put() {
-      debugger;
-      this.SUPER.apply(this, arguments);
-    },
     function toDetailE(X) {
       return X.lookup('com.google.ow.content.UpdateStreamDetailView').toDetailE(X);
     },

@@ -240,6 +240,16 @@ CLASS({
       // Give everyone the ads and videos.
       this.personDAO_.pipe({
         put: function(person) {
+          // put in copies of the root streams
+          var adStrEnv = baseAdStreamEnv.deepClone();
+          adStrEnv.owner = person.id;
+          this.streamDAO_.put(adStrEnv);
+
+          var vidStrEnv = videoStreamEnv.deepClone();
+          vidStrEnv.owner = person.id;
+          this.streamDAO_.put(vidStrEnv);
+
+
           this.adData.select({
             put: function(ad) {
               this.streamDAO_.put(this.Envelope.create({
@@ -247,9 +257,6 @@ CLASS({
                 source: '0',
                 sid: baseAdStreamEnv.substreams[0],
                 promoted: true,
-                data: ad,
-                sid: ad.sid || '',
-                substreams: ad.substreams || [],
               }, this.Y));
             }.bind(this),
           });

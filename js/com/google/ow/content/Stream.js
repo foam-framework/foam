@@ -121,12 +121,34 @@ CLASS({
       var self = this;
       // Since this should be running on the server, grab all the owners
       // of this contentIndex, based on stream id, and share the new substream
-      // content with those owners.
+      // content with those ownerIds.
       self.streamDAO.where(EQ(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
-        MAP(self.Envelope.OWNER, { put: function(owner) {
-          self.streamDAO.put(
-            self.createStreamItem(self.substreams[0], owner, envelope.data, self.substreams[0])
-          );
+        MAP(self.Envelope.OWNER, { put: function(ownerId) {
+          // if an envelope doens't already exist, make one
+          var found = false;
+          self.streamDAO.where(
+            AND(
+              EQ(self.Envelope.SID, envelope.sid),
+              EQ(self.Envelope.OWNER, ownerId)),
+              EQ(self.Envelope.DATA.dot(self.model_.ID), envelope.data.id) // this.model_.ID is a bit of a hack to extract ID from data, when we don't know what model data really is.
+            )
+          .select({
+            put: function(env) {
+              // existing envelope for the content
+              found = true;
+              // TODO: try to merge/update the content?
+            },
+            eof: function() {
+              if ( ! found ) {
+                self.streamDAO.put(self.createStreamItem(
+                  self.substreams[0],
+                  ownerId,
+                  envelope.data,
+                  self.substreams[0]
+                ));
+              }
+            }
+          });
         } })
       );
     },
