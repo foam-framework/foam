@@ -21,8 +21,9 @@ CLASS({
   ],
 
   exports: [
+    'data as envelope',
     'data',
-    'toolbar as mdToolbar'
+    'toolbar as mdToolbar',
   ],
 
   properties: [
@@ -55,7 +56,9 @@ CLASS({
           .add(this.data.SHARES)
         .end()
         .start('div').cls('content')
-          .add(d.toCitationE(this.Y))
+          .add(d.toCitationE(this.Y.sub({
+            controllerMode: 'view',
+          })))
         .end();
     },
   ],
