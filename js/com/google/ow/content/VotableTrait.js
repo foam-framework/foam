@@ -20,6 +20,7 @@ CLASS({
   requires: [
     'foam.u2.Element',
     'foam.ui.Icon',
+    'com.google.ow.model.Envelope',
   ],
 
   exports: [
@@ -28,6 +29,7 @@ CLASS({
 
   imports: [
     'envelope', // used client-side
+    'streamDAO_no_loopback',
     'streamDAO',
   ],
 
@@ -47,6 +49,7 @@ CLASS({
       defaultValue: 'Vote',
     },
     {
+      model_: 'IntProperty',
       name: 'vote',
       help: 'The client plus one/minus one vote',
       defaultValue: 0,
@@ -98,8 +101,9 @@ CLASS({
   ],
 
   methods: [
-    function put(envelope, sink) {
+    function put(envelope, sink, yourEnvelope) {
       /* Server: this is a substream target, implement put handler */
+      console.log("VotablePut");
       var self = this;
       // Since this should be running on the server, grab all the owners
       // of this vote, based on stream id, tally it up, update self.tally.
@@ -108,16 +112,22 @@ CLASS({
       // Also note that since new vote instances default to zero, we don't care
       // if this gets copied and shared, since it will get included in the tallies
       // once it changes from zero and is put back to streamDAO on the client.
+      var originalTally = self.tally;
+
       self.tally = 0;
       self.count = 0;
-      self.streamDAO.where(EQ(self.Envelope.SID, self.sid)).select({
+      self.streamDAO_no_loopback.where(EQ(self.Envelope.SID, self.sid)).select({
         put: function(vote) {
-          self.tally += vote.vote;
+          //console.log("Tally", self.tally, self.count, vote.data.vote);
+          self.tally += vote.data.vote;
           self.count += 1;
         },
         eof: function() {
-          console.assert(envelope.vote === this, "Vote.put envelope does not contain this!");
-          self.streamDAO.put(envelope); // check that sync is inc'd
+          if ( self.tally == originalTally ) return; // don't save if no change
+
+          console.assert(yourEnvelope.data.id === self.id, "Vote.put yourEnvelope does not contain this!");
+          yourEnvelope.data = self;
+          self.streamDAO_no_loopback.put(yourEnvelope); // check that sync is inc'd
         },
       });
     },

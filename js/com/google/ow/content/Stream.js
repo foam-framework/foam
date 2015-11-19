@@ -135,11 +135,13 @@ CLASS({
           .select({
             put: function(env) {
               // existing envelope for the content
+              //console.log("Stream: Found existing");
               found = true;
               // TODO: try to merge/update the content?
             },
             eof: function() {
               if ( ! found ) {
+                console.log("Stream: not found, copying:", envelope);
                 self.streamDAO.put(self.createStreamItem(
                   self.substreams[0],
                   ownerId,
@@ -154,6 +156,7 @@ CLASS({
     },
     function onShare(source, target, opt_sid) {
       /* React to share events. Called just before this item is shared. */
+      console.log("Sharing stream", source, target, opt_sid);
       var self = this;
       // Duplicate source user's stream content for the new target user
       // TODO: don't duplicate if it's already there?
