@@ -50,6 +50,9 @@ CLASS({
       model_: 'IntProperty',
       name: 'age',
       label: 'How many years old are you?',
+      toPropertyE: function(X) {
+        return X.data.Select.create({ choices: X.data.ageDAO }, X);
+      }
     },
     {
       name: 'location',
@@ -98,6 +101,26 @@ CLASS({
           'District 9',
         ];
       },
+    },
+    {
+      model_: 'StringArrayProperty',
+      name: 'ageDAO',
+      hidden: true,
+      lazyFactory: function() {
+        return [
+          [6,'6'],
+          [7,'7'],
+          [8,'8'],
+          [9,'9'],
+          [10,'10'],
+          [11,'11'],
+          [12,'12'],
+          [13,'13'],
+          [14,'14'],
+          [15,'15'],
+          [20,'Older. I can volunteer to help'],
+        ];
+      },
     }
   ],
 
@@ -132,7 +155,14 @@ CLASS({
             .start('p').add(this.currentUser.displayName).cls('md-subhead').end()
             .start('p').add(this.description$).cls('md-subhead').end()
             .start().add(this.LANGUAGE).end()
-            .start().add(this.AGE.label).add(this.AGE).cls('md-style-trait-standard').end()
+            .start().style({
+              'display': 'flex',
+              'flex-direction': 'row',
+              'align-items': 'baseline'
+            })
+              .start().cls('md-style-trait-standard').add(this.AGE.label).end()
+              .start().add(this.AGE).style({'flex-grow':'99'}).end()
+            .end()
             .start().add(this.LOCATION).end()
             .start().add(this.SCHOOL_BOARD).end()
             .add(this.DONE)
