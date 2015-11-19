@@ -33,16 +33,18 @@ CLASS({
   methods: [
     function init() {
       var substreams = this.envelope.substreams;
+      var sink = {
+        put: function(o) {
+          var arr = this.versions.slice();
+          arr.push(o);
+          this.versions = arr;
+        }.bind(this),
+      };
       for ( var i = 0; i < substreams.length; ++i ) {
         var substream = substreams[i];
+        var filteredDAO = this.streamDAO.where(EQ(this.Envelope.SID, substream));
         // TODO(markdittmer): Add date-based ordering and limit(1).
-        this.streamDAO.where(EQ(this.Envelope.SID, substream)).select({
-          put: function(o) {
-            var arr = this.versions.slice();
-            arr.push(o);
-            this.versions = arr;
-          }.bind(this),
-        })(nop);
+        filteredDAO.select(sink)(function() { filteredDAO.listen(sink); });
       }
       this.SUPER();
     },
