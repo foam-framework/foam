@@ -83,6 +83,8 @@ CLASS({
       },
     },
     ['titleText', 'Lifestream'],
+    ['backgroundColor', '#ffffff'],
+    ['headerColor', '#3e50b4'],
     {
       name: 'browserConfig',
       lazyFactory: function() {
@@ -90,6 +92,8 @@ CLASS({
         var browserConfig = this.BrowserConfig.create({
           title$: this.titleText$,
           model: this.Envelope,
+          backgroundColor: this.backgroundColor,
+          headerColor: this.headerColor,
           dao: this.streamDAO.where(OR(
               NOT(HAS(this.Envelope.SID)),
               EQ(this.Envelope.PROMOTED, true))),

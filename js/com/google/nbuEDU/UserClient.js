@@ -21,6 +21,8 @@ CLASS({
       defaultValue: function() {
         return this.Client.create({
           titleText: 'EDUConnect',
+          backgroundColor: '#3B84D9',
+          headerColor: '#3B84D9',
           currentUserId$: this.currentUserId$,
         });
       },
