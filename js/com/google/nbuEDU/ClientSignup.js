@@ -19,7 +19,7 @@ CLASS({
   ],
 
   imports: [
-    'currentUser',
+    'currentUser$',
     'streamDAO',
     'createStreamItem',
     'stack',
@@ -128,8 +128,9 @@ CLASS({
           'flex-direction': 'column',
         })
           .start().style({ 'margin': '16px', 'overflow-y': 'auto' })
-            .start().add(this.titleText$).cls('md-title').end()
-            .start().add(this.description$).cls('md-subhead').end()
+            .start('p').add(this.titleText$).cls('md-title').end()
+            .start('p').add(this.currentUser.displayName).cls('md-subhead').end()
+            .start('p').add(this.description$).cls('md-subhead').end()
             .start().add(this.LANGUAGE).end()
             .start().add(this.AGE.label).add(this.AGE).cls('md-style-trait-standard').end()
             .start().add(this.LOCATION).end()
