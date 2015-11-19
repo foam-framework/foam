@@ -42,6 +42,7 @@ CLASS({
     'console',
     'idGenerator',
     'exportDAO',
+    'exportDirectory',
   ],
   exports: [
     'personDAO',
@@ -213,6 +214,7 @@ CLASS({
     function execute() {
       this.exportDAO(this.streamDAO);
       this.exportDAO(this.personDAO);
+      this.exportDirectory('/static', 'static');
       this.loadData();
     },
     function loadData() {

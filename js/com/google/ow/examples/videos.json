@@ -5,6 +5,7 @@
     "titleText": "Video 1",
     "description": "The first video.",
     "sid": "contentIndexci4873296573765766590",
+    "content": "/static/videos/MkpbtCRwcCE.mp4"
   },
   {
     "model_": "com.google.ow.examples.VideoB",
@@ -12,6 +13,7 @@
     "titleText": "Video 2",
     "description": "The second video.",
     "sid": "contentIndexci4873296573765766590",
+    "content": "/static/videos/MkpbtCRwcCE.mp4"
   },
   {
     "model_": "com.google.ow.examples.VideoB",
@@ -19,6 +21,7 @@
     "titleText": "Video 3",
     "description": "The third video.",
     "sid": "contentIndexci4873296573765766590",
+    "content": "/static/videos/MkpbtCRwcCE.mp4"
   },
   {
     "model_": "com.google.ow.examples.VideoB",
@@ -26,6 +29,7 @@
     "titleText": "Video 4",
     "description": "The fourth video.",
     "sid": "contentIndexci4873296573765766590",
+    "content": "/static/videos/MkpbtCRwcCE.mp4"
   },
   {
     "model_": "com.google.ow.examples.VideoB",
@@ -33,6 +37,7 @@
     "titleText": "Video 5",
     "description": "The fifth video.",
     "sid": "contentIndexci4873296573765766590",
+    "content": "/static/videos/MkpbtCRwcCE.mp4"
   },
   {
     "model_": "com.google.ow.examples.VideoB",
@@ -40,6 +45,7 @@
     "titleText": "Video 6",
     "description": "The sixth video.",
     "sid": "contentIndexci4873296573765766590",
+    "content": "/static/videos/MkpbtCRwcCE.mp4"
   },
   {
     "model_": "com.google.ow.examples.VideoB",
@@ -47,6 +53,7 @@
     "titleText": "Video 7",
     "description": "The seventh video.",
     "sid": "contentIndexci4873296573765766590",
+    "content": "/static/videos/MkpbtCRwcCE.mp4"
   },
   {
     "model_": "com.google.ow.examples.VideoB",
@@ -54,6 +61,7 @@
     "titleText": "Video 8",
     "description": "The eighth video.",
     "sid": "contentIndexci4873296573765766590",
+    "content": "/static/videos/MkpbtCRwcCE.mp4"
   },
   {
     "model_": "com.google.ow.examples.VideoB",
@@ -61,5 +69,6 @@
     "titleText": "Video 9",
     "description": "The ninth video.",
     "sid": "contentIndexci4873296573765766590",
+    "content": "/static/videos/MkpbtCRwcCE.mp4"
   }
 ]
