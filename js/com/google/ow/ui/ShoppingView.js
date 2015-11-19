@@ -89,8 +89,27 @@ CLASS({
         return ! this.purchaseOrder.isEmpty;
       },
       code: function(X) {
-        var env = X.purchaseOrder.toEnvelope(X);
-        X.streamDAO.put(env);
+        var envelope = X.envelope;
+        var envSid = envelope.sid;
+        // X.data.id = ad id.
+        var adSid = envSid + ((X.data && X.data.id) ? '/' + X.data.id : '');
+        var orderSid = envSid + ((X.purchaseOrder && X.purchaseOrder.id) ?
+            '/' + X.purchaseOrder.id : '');
+        // Customer's order stream.
+        X.streamDAO.put(X.purchaseOrder.toStream(X).toEnvelope(X.sub({
+          substreams: [orderSid],
+        })));
+        // Order processed by order streams.
+        X.streamDAO.put(X.purchaseOrder.toEnvelope(X.sub({
+          sid: orderSid,
+        })));
+        // Notification of order for ad stream.
+        X.streamDAO.put(X.lookup('com.google.ow.model.Envelope').create({
+          source: envelope.owner,
+          owner: envelope.owner,
+          sid: adSid,
+          data: orderSid,
+        }));
         X.stack.popView();
       },
     },

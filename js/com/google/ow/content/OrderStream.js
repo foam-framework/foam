@@ -34,41 +34,23 @@ CLASS({
 
   methods: [
     function put(e) {
-      this.put_(e.sid, e.data, e.source);
-    },
-    function put_(baseSid,order, source) {
-      var merchant = this.merchant;
-      var customer = source;
-      var orderSid = baseSid + '/' + order.id;
-      var merchantSid = orderSid + '/' + this.merchant;
-      var customerSid = orderSid + '/' + customer;
-      // Construct update streams for merchant and customer.
-      // console.log('Putting update stream (merchant)');
-      var self = this;
-      self.streamDAO.put(self.Envelope.create({
-        owner: merchant,
-        source: customer,
+      var orderSid = e.data;
+      // Construct stream for merchant.
+      this.streamDAO.put(this.Envelope.create({
+        owner: this.merchant,
+        source: e.source,
         substreams: [orderSid],
-        data: self.UpdateStream.create(null, self.Y),
-      }, self.Y), {
-        put: function() {
-          self.streamDAO.put(self.Envelope.create({
-            owner: customer,
-            source: customer,
-            substreams: [orderSid],
-            data: self.UpdateStream.create(null, self.Y),
-          }, self.Y), {
-            put: function() {
-              self.streamDAO.put(self.Envelope.create({
-                owner: customer,
-                source: customer,
-                sid: orderSid,
-                data: order,
-              }, self.Y));
-            },
-          });
-        },
-      });
+        data: this.UpdateStream.create(),
+      }));
+      // HACK(markdittmer): Notify put on existing stream items to trigger
+      // new stream.
+      var orders = [];
+      this.streamDAO.where(EQ(this.Envelope.SID, orderSid))
+          .select(orders)(function() {
+            for ( var i = 0; i < orders.length; ++i ) {
+              this.streamDAO.put(orders[i]);
+            }
+          }.bind(this));
     },
     function toEnvelope(X) {
       var envelope = X.envelope;
