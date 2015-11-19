@@ -410,7 +410,7 @@ input[name=q]::-webkit-input-placeholder {
 
 @media (max-width: 600px) {
   .md-card-shell {
-    margin: 0;
+    margin: 4;
   }
   .md-popup-view-content {
     max-width: 100%;
