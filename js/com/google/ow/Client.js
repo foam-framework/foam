@@ -149,7 +149,7 @@ CLASS({
     {
       name: 'streamDAO',
       lazyFactory: function() {
-        return this.EasyDAO.create({
+        var dao = this.EasyDAO.create({
           daoType: 'MDAO',
           model: this.Envelope,
           guid: true,
@@ -158,8 +158,14 @@ CLASS({
           dedup: true,
           sockets: true,
           syncWithServer: true,
-          logging: true,
+          // logging: true,
         }, this.Y);
+        dao.listen({
+          put: function(e) {
+            console.log('Put', e.toString());
+          },
+        });
+        return dao;
       }
     },
     {
