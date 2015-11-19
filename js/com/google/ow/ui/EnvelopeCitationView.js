@@ -52,8 +52,13 @@ CLASS({
         .start('div').cls('md-subhead').cls('heading')
           .add(d.titleText)
           .start('div').cls('envelope-spacer').end()
-          .start().add('Shared With:').cls('md-grey').end()
-          .add(this.data.SHARES)
+          .start().cls2(function() {
+            return this.data.shares && this.data.shares.length > 0 ?
+                'show' : 'hide';
+          }.bind(this).on$(this.X, this.data$))
+            .start().add('Shared With:').cls('md-grey').end()
+            .add(this.data.SHARES)
+          .end()
         .end()
         .start('div').cls('content')
           .add(d.toCitationE(this.Y.sub({
@@ -92,7 +97,7 @@ CLASS({
           flex-direction: column;
         }
       }
-
+      envelope-citation .hide { display: none; }
     */},
   ],
 });
