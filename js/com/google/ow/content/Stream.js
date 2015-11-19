@@ -117,9 +117,12 @@ CLASS({
   ],
 
   methods: [
-    function put(envelope, sink) {
+    function put(envelope, sink, yourEnvelope) {
       /* this is a substream target, implement put handler */
       var self = this;
+      // propagate out the object to other owners, but only if we own it
+      if ( envelope.owner !== yourEnvelope.owner ) return;
+
       // Since this should be running on the server, grab all the owners
       // of this contentIndex, based on stream id, and share the new substream
       // content with those ownerIds.
