@@ -242,7 +242,7 @@ CLASS({
             videoStreamEnv = o;
             self.personDAO_.pipe({
               put: function(person) {
-                console.log("Person vid list create", person.id, videoStreamEnv.substreams);
+                //console.log("Person vid list create", person.id, videoStreamEnv.substreams);
                 self.streamDAO_.put(self.Envelope.create({
                   owner: person.id,
                   source: '0',
@@ -252,9 +252,10 @@ CLASS({
                 }));
               }
             });
-          } else if ( o.data ) {
+          } else if ( o.data.name === 'User Data' ) {
             self.personDAO_.pipe({
               put: function(person) {
+                //console.log("Person *** data create", o.data.name_, person.id);
                 self.streamDAO_.put(self.Envelope.create({
                   owner: person.id,
                   source: '0',
@@ -294,7 +295,7 @@ CLASS({
           if ( videoStreamEnv ) {
             this.videoDAO_.select({
               put: function(video) {
-                console.log("Create vid:",person.id, video.id, videoStreamEnv.substreams[0]);
+                //console.log("Create vid:",person.id, video.id, videoStreamEnv.substreams[0]);
                 this.streamDAO_.put(this.Envelope.create({
   //                id: 'fakeIDVid'+incr++,
                   owner: person.id,
@@ -303,7 +304,7 @@ CLASS({
                   sid: videoStreamEnv.substreams[0] + '/fakeIDVid'+incr,
                   substreams: [videoStreamEnv.substreams[0] + '/fakeIDVid'+incr],
                 }, this.Y));
-                console.log('vid sid:',videoStreamEnv.substreams[0] + '/fakeIDVid'+incr);
+                //console.log('vid sid:',videoStreamEnv.substreams[0] + '/fakeIDVid'+incr);
               }.bind(this),
             });
           }

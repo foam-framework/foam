@@ -109,6 +109,10 @@ CLASS({
         // Something on the server should be listening for the sid that
         // was set on this.
         this.streamDAO.put(this.createStreamItem(this.sid, this, this.sid));
+        // change the invite text
+        this.X.envelope.data.inviteComplete();
+        this.streamDAO.put(this.X.envelope);
+
         this.stack && this.stack.popView();
       }
     },

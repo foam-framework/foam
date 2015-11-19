@@ -75,6 +75,21 @@ CLASS({
           "id": "eduVidStream487673295"
         })
       }));
+
+      self.streamDAO.put(self.Envelope.create({
+        "model_": "com.google.ow.model.Envelope",
+        "owner": newUserId,
+        "source": self.substreams[0],
+        "substreams": ["eduVidStream487673295"],
+        data: self.Stream.create({
+          "name": "ExamPrepVideos",
+          "titleText": "Exam Prep Videos",
+          "description": "Exam prep videos.",
+          "model": "com.google.ow.content.VotableVideo",
+          "contentItemView": "foam.ui.md.CitationView",
+          "id": "eduVidStream487673295"
+        })
+      }));
     },
 
     // Not really used, since this runs server-side for the administrator

@@ -22,6 +22,7 @@ CLASS({
     {
       name: 'id'
     },
+    [ 'name', 'unused' ],
     {
       name: 'signupSid',
       help: 'Add an envelope with this sid to complete signup.',
@@ -37,23 +38,24 @@ CLASS({
       name: 'description',
       defaultValue: 'You are invited to join the EDU-Connect community. Tap this card to get help.'
     },
+    ['resetInviteTitle', 'nbuEDU-Connect'],
+    ['resetInviteText', 'Welcome! You have already enrolled.'],
+    ['complete', false],
   ],
 
   methods: [
+    function inviteComplete() {
+      this.titleText = this.resetInviteTitle;
+      this.description = this.resetInviteText;
+      this.complete = true;
+    },
+
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
-      var Y = X || this.Y;
-      return this.ClientSignup.create({ sid: this.signupSid }, Y).toDetailE(Y);
-//       return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
-//         .start().style({
-//           'display': 'flex',
-//           'flex-direction': 'column',
-//         })
-//           .start().style({ 'margin': '16px' })
-//             .start().add(this.titleText$).cls('md-title').end()
-//             .start().add(this.description$).cls('md-subhead').end()
-//           .end()
-//         .end();
+      var Y = (X || this.Y);
+      return ( this.complete ) ?
+        this.toCitationE(Y).add("TODO: show control panel stuff here") :
+        this.ClientSignup.create({ sid: this.signupSid }, Y).toDetailE(Y);
     },
     function toCitationE(X) {
       var Y = X || this.Y;
