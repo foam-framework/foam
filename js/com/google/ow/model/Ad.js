@@ -14,6 +14,7 @@ CLASS({
   name: 'Ad',
 
   properties: [
+    'id',
     {
       model_: 'StringProperty',
       name: 'titleText',

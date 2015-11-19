@@ -34,7 +34,11 @@ CLASS({
 
   properties: [
     {
-      name: 'id'
+      name: 'id',
+      lazyFactory: function() {
+        debugger; // Should never happen.
+        return createGUID();
+      },
     },
     {
       model_: 'StringProperty',
@@ -63,7 +67,7 @@ CLASS({
       },
       postSet: function(_,model) {
         // Model not always ready in node, but don't need views there anyway
-        if ( ! model.getFeature ) return;
+        if ( ! (model && model.getFeature) ) return;
 
         if ( model.getFeature('toCitationE') ) this.contentRowView = function(args,X) {
           var env = args.data || X.data;

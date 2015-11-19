@@ -30,7 +30,10 @@ CLASS({
     'com.google.ow.model.Envelope',
     'com.google.ow.model.ProductAd',
     'com.google.ow.ui.EnvelopeCitationView',
+    'com.google.ow.ui.EnvelopeDetailView',
     'com.google.ow.ui.MenuView',
+    'com.google.ow.ui.UpdateStreamCitationView',
+    'com.google.ow.ui.UpdateStreamDetailView',
     'com.google.plus.Circle',
     'com.google.plus.Person',
     'com.google.plus.ShareList',
@@ -60,7 +63,9 @@ CLASS({
     // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
     // 'foam.u2.md.SharedStyles',
   ],
-  imports: [ 'document' ],
+  imports: [
+    'document',
+  ],
   exports: [
     'streamDAO',
     'personDAO',
@@ -112,21 +117,31 @@ CLASS({
           innerDetailView: function(args, X) {
             // TODO(markdittmer): This should be more robust.
             var envelope = args.data || args.data$.get();
-            var d = envelope.data;
-            X = X.sub({ envelope: envelope });
-            return d && d.toDetailE ? d.toDetailE(X) :
-                this.DetailView.create({ data: d }, X);
+            return envelope.toDetailE ? envelope.toDetailE(X) :
+                this.DetailView.create({ data: envelope }, X);
           }.bind(this)
         });
         return browserConfig;
       },
     },
-    'currentUserId',
+    {
+      model_: 'StringProperty',
+      name: 'currentUserId',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( ! this.currentUser || nu !== this.currentUser.id ) {
+          this.personDAO.find(nu, { put: function(user) {
+            this.currentUser = user;
+          }.bind(this) });
+        }
+      },
+    },
     {
       name: 'currentUser',
       postSet: function(old, nu) {
-        if (nu) {
-          this.currentUserId = nu.id;
+        if ( old === nu ) return;
+        if ( nu ) {
+          if ( nu.id !== this.currentUserId ) this.currentUserId = nu.id;
           this.circleDAO.delegate = nu.circles;
           this.contactsDAO.delegate = nu.contacts;
         }
@@ -135,14 +150,23 @@ CLASS({
     {
       name: 'streamDAO',
       lazyFactory: function() {
-        return this.VideoOffloadDAO.create({
-          delegate: this.EasyClientDAO.create({
-            serverUri: this.document.location.origin + '/api',
-            model: this.Envelope,
-            sockets: true,
-            logging: true,
-          })
+        var dao = this.EasyDAO.create({
+          daoType: 'MDAO',
+          model: this.Envelope,
+          guid: true,
+          cloning: true,
+          contextualize: true,
+          dedup: true,
+          sockets: true,
+          syncWithServer: true,
+          // logging: true,
+        }, this.Y);
+        dao.listen({
+          put: function(e) {
+            console.log('Put', e.toString());
+          },
         });
+        return dao;
       }
     },
     {

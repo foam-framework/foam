@@ -14,7 +14,10 @@ CLASS({
   name: 'OrderView',
   extends: 'foam.u2.View',
 
-  requires: [ 'foam.u2.DAOListView' ],
+  requires: [
+    'foam.u2.DAOListView',
+    'foam.u2.md.Select',
+  ],
   exports: [ 'data' ],
 
   properties: [
@@ -34,6 +37,12 @@ CLASS({
             .add(this.data.TOTAL)
           .end()
           .add(this.data.METHOD_OF_PAYMENT);
+    },
+    function init() {
+      // For *EnumProperty.toPropertyE().
+      this.Y.registerModel(this.Select, 'foam.u2.Select');
+
+      this.SUPER();
     },
   ],
 
