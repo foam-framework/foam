@@ -70,20 +70,12 @@ CLASS({
         if ( ! (model && model.getFeature) ) return;
 
         if ( model.getFeature('toCitationE') ) this.contentRowView = function(args,X) {
-          var env = args.data || X.data;
-          if ( ! env ) {
-            env = args.data$ || X.data$;
-            env = env && env.value;
-          }
+          var env = args.data || (args.data$ && args.data$.value) ||  X.data || (X.data$ && X.data$.value);
           var d = env.data || env;
           return d.toCitationE(X.sub({ envelope: env })).style({ margin: '8px 0px' });
         }
         if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
-          var env = args.data || X.data;
-          if ( ! env ) {
-            env = args.data$ || X.data$;
-            env = env && env.value;
-          }
+          var env = args.data || (args.data$ && args.data$.value) ||  X.data || (X.data$ && X.data$.value);
           var d = env.data || env;
           return d.toDetailE(X.sub({ envelope: env })).style({ 'flex-grow': 1, overflow: 'hidden' });
         }

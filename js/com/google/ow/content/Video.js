@@ -57,6 +57,7 @@ CLASS({
       defaultValue: 'none'
     },
     {
+      model_: 'ImportedProperty',
       name: 'envelope_',
       transient: true,
       compareProperty: function() { return 0; }
