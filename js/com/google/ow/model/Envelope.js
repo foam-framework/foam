@@ -23,6 +23,7 @@ CLASS({
     {
       name: 'id',
       lazyFactory: function() {
+        debugger; // Should never happen.
         return createGUID();
       },
     },
@@ -35,7 +36,13 @@ CLASS({
     'shares',
     'owner',
     'source',
-    'data',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( ! nu.id ) nu.id = createGUID();
+      },
+    },
     {
       model_: 'StringArrayProperty',
       name: 'substreams',
@@ -62,6 +69,18 @@ CLASS({
       return X.lookup('com.google.ow.ui.EnvelopeDetailView').create({
         data: this,
       }, X);
+    },
+    // For debugging/logging purposes.
+    function toString() {
+      var str = (this.data && this.data.model_ ? this.data.model_.id : '') + '(' +
+          '\n  envelope id: ' + this.id +
+          '\n  data id: ' + (this.data ? this.data.id : '') +
+          '\n  source: ' + this.source +
+          '\n  owner: ' + this.owner +
+          '\n  sid: ' + this.sid +
+          '\n  substreams: ' + this.substreams.join(', ') +
+          '\n)';
+      return str;
     },
   ],
 });
