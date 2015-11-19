@@ -51,6 +51,7 @@ CLASS({
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
     'foam.u2.DAOListView',
+    'foam.u2.md.DAOListView',
     'foam.u2.DetailView',
     'foam.u2.md.ActionButton',
     'foam.ui.DAOListView',
@@ -97,7 +98,7 @@ CLASS({
           dao: this.streamDAO.where(OR(
               NOT(HAS(this.Envelope.SID)),
               EQ(this.Envelope.PROMOTED, true))),
-          listView: 'foam.u2.DAOListView',
+          listView: 'foam.u2.md.DAOListView',
           cannedQueryDAO: [
             this.CannedQuery.create({
               label: 'All',
