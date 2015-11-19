@@ -36,7 +36,6 @@ CLASS({
     'foam.dao.LoggingDAO',
     'foam.dao.PrivateOwnerAuthorizer',
     'foam.mlang.PropertySequence',
-    'foam.node.dao.JSONFileDAO',
   ],
   imports: [
     'console',
@@ -61,6 +60,10 @@ CLASS({
   },
 
   properties: [
+    {
+      name: 'fs',
+      factory: function() { return require('fs'); }
+    },
     {
       name: 'util',
       lazyFactory: function() { return require('util'); },
@@ -200,16 +203,33 @@ CLASS({
       }, this.Y);
     },
     function dataFactory(name, model) {
-      return this.EasyDAO.create({
+      var dao = this.EasyDAO.create({
         name: name,
         model: model,
-        daoType: this.JSONFileDAO.xbind({
-          filename: this.DATA_PATHS.map(function(p) {
-            return p + name + '.json';
-          })
-        }),
+        daoType: this.MDAO,
         guid: true,
       }, this.Y);
+
+      var dataPaths = this.DATA_PATHS.map(function(p) {
+        return p + name + '.json';
+      });
+      for ( var i = 0; i < dataPaths.length; ++i ) {
+        try {
+          console.log('TRY', dataPaths[i]);
+          var result = this.fs.readFileSync(dataPaths[i]);
+          if ( result ) {
+            console.log('GOT', dataPaths[i]);
+            JSONUtil.arrayToObjArray(this.Y, eval('(' + result + ')'), model).select(dao);
+            break;
+          } else {
+            console.log('1 FAILED', dataPaths[i]);
+          }
+        } catch (e) {
+          console.log('2 FAILED', dataPaths[i], e);
+        }
+      }
+
+      return dao;
     },
     function execute() {
       this.exportDAO(this.streamDAO);
