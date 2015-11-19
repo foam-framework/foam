@@ -275,7 +275,7 @@ CLASS({
           } else if ( o.data.name === 'User Data' ) {
             self.personDAO_.pipe({
               put: function(person) {
-                //console.log("Person *** data create", o.data.name_, person.id);
+                console.log("Person *** data create", o.data.name_, person.id);
                 self.streamDAO_.put(self.Envelope.create({
                   owner: person.id,
                   source: '0',

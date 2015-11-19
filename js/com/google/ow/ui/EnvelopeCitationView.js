@@ -39,7 +39,7 @@ CLASS({
       name: 'data',
       postSet: function(old,nu) {
         if (nu.data) {
-          this.title$ = nu.data.title$ || nu.data.titleText$;
+          this.title = nu.data.title || nu.data.titleText;
         }
       }
     }

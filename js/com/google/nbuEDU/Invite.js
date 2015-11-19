@@ -52,10 +52,14 @@ CLASS({
 
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
-      var Y = (X || this.Y);
-      return ( this.complete ) ?
-        this.toCitationE(Y).add("TODO: show control panel stuff here") :
-        this.ClientSignup.create({ sid: this.signupSid }, Y).toDetailE(Y);
+      var self = this;
+      var Y = (X || self.Y);
+      return self.Element.create(null, Y).add(
+        function() { return ( self.complete ) ?
+          self.toCitationE(Y).add("TODO: show control panel stuff here") :
+          self.ClientSignup.create({ sid: self.signupSid }, Y).toDetailE(Y)
+        }.on$(self.complete)
+      );
     },
     function toCitationE(X) {
       var Y = X || this.Y;

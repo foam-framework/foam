@@ -51,45 +51,56 @@ CLASS({
 
   methods: [
     function put(env, sink, yourEnv) {
-      console.log("ServerSignup put: ", env, env.data);
+      console.log("ServerSignup put", env.owner);
 
       var self = this;
       var newUserId = env.owner;
 
       var signup = env.data;
       console.assert(signup.name_ == 'ClientSignup', "ServerSignup got a put that's not a ClientSignup!");
+      self.streamDAO.where(
+        AND(
+          EQ(self.Envelope.SOURCE, self.substreams[0]+"ServerSignup"),
+          EQ(self.Envelope.OWNER, newUserId)),
+          EQ(self.Envelope.SUBSTREAMS, "eduVidStream487673295")
+        )
+      .select(COUNT())(function(count) {
+//          console.log("Count: ", count.count);
+        if (count.count <= 0) {
+          // IF not added already, add some streams:
+          // determine the curriculum streams to add
+          // Fake stream
+          self.streamDAO.put(self.Envelope.create({
+            "model_": "com.google.ow.model.Envelope",
+            "owner": newUserId,
+            "source": self.substreams[0]+"ServerSignup",
+            "substreams": ["eduVidStream487673295"],
+            data: self.Stream.create({
+              "name": "MathVideos",
+              "titleText": "Math Videos",
+              "description": "Your grade level, math videos.",
+              "model": "com.google.ow.content.VotableVideo",
+              "contentItemView": "foam.ui.md.CitationView",
+              "id": "eduVidStream487673295"
+            })
+          }));
 
-      // determine the curriculum streams to add
-      // Fake stream
-      self.streamDAO.put(self.Envelope.create({
-        "model_": "com.google.ow.model.Envelope",
-        "owner": newUserId,
-        "source": self.substreams[0],
-        "substreams": ["eduVidStream487673295"],
-        data: self.Stream.create({
-          "name": "MathVideos",
-          "titleText": "Math Videos",
-          "description": "Your grade level, math videos.",
-          "model": "com.google.ow.content.VotableVideo",
-          "contentItemView": "foam.ui.md.CitationView",
-          "id": "eduVidStream487673295"
-        })
-      }));
-
-      self.streamDAO.put(self.Envelope.create({
-        "model_": "com.google.ow.model.Envelope",
-        "owner": newUserId,
-        "source": self.substreams[0],
-        "substreams": ["eduVidStream487673295"],
-        data: self.Stream.create({
-          "name": "ExamPrepVideos",
-          "titleText": "Exam Prep Videos",
-          "description": "Exam prep videos.",
-          "model": "com.google.ow.content.VotableVideo",
-          "contentItemView": "foam.ui.md.CitationView",
-          "id": "eduVidStream487673295"
-        })
-      }));
+          self.streamDAO.put(self.Envelope.create({
+            "model_": "com.google.ow.model.Envelope",
+            "owner": newUserId,
+            "source": self.substreams[0]+"ServerSignup",
+            "substreams": ["eduVidStream487673295"],
+            data: self.Stream.create({
+              "name": "ExamPrepVideos",
+              "titleText": "Exam Prep Videos",
+              "description": "Exam prep videos.",
+              "model": "com.google.ow.content.VotableVideo",
+              "contentItemView": "foam.ui.md.CitationView",
+              "id": "eduVidStream487673295"
+            })
+          }));
+        }
+      });
     },
 
     // Not really used, since this runs server-side for the administrator

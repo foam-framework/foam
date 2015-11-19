@@ -35,7 +35,9 @@ CLASS({
     'sid',
     'shares',
     'owner',
-    'source',
+    {
+      name: 'source',
+    },
     {
       name: 'data',
       postSet: function(old, nu) {
