@@ -262,14 +262,6 @@ CLASS({
       this.personDAO_.pipe({
         put: function(person) {
           console.log("Person put!", person.id);
-          // put in copies of the root streams
-//           var adStrEnv = baseAdStreamEnv.deepClone();
-//           adStrEnv.owner = person.id;
-//           this.streamDAO_.put(adStrEnv);
-
-//           var vidStrEnv = videoStreamEnv.deepClone();
-//           vidStrEnv.owner = person.id;
-//           this.streamDAO_.put(vidStrEnv);
 
           var incr = 0;
           this.adData.select({
@@ -287,13 +279,14 @@ CLASS({
             put: function(video) {
               console.log("Create vid:",person.id, video.id, videoStreamEnv.substreams[0]);
               this.streamDAO_.put(this.Envelope.create({
-                //id: 'fakeIDVid'+incr++,
+//                id: 'fakeIDVid'+incr++,
                 owner: person.id,
                 source: incr,
                 data: video,
-                sid: videoStreamEnv.substreams[0],
-                substreams: videoStreamEnv.substreams,
+                sid: videoStreamEnv.substreams[0] + '/fakeIDVid'+incr,
+                substreams: [videoStreamEnv.substreams[0] + '/fakeIDVid'+incr],
               }, this.Y));
+              console.log('vid sid:',videoStreamEnv.substreams[0] + '/fakeIDVid'+incr);
             }.bind(this),
           });
         }.bind(this),
