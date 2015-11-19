@@ -263,6 +263,8 @@ var p = this.Person.create({
       anim.push([800, function() { robot.scaleX = robot.scaleY = 25; }]);
       anim.push([0]);
       anim.push([800, function() { robot.scaleX = robot.scaleY = 3; }]);
+      anim.push([0]);
+      anim.push([400, function() { robot.y -= 600; }, Movement.easeIn(1)]);
 
       /*
       anim.push([0]);
