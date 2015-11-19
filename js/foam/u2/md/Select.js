@@ -32,6 +32,7 @@ CLASS({
       name: 'onClick',
       isFramed: true,
       code: function() {
+        if ( this.mode !== 'rw' ) return;
         // Blur any active input element.
         var active = this.document.activeElement;
         if (active) active.blur();
