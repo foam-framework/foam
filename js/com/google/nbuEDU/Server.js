@@ -28,7 +28,6 @@ CLASS({
 
   constants: {
     DATA_PATHS: [
-      global.FOAM_BOOT_DIR + '/../js/com/google/nbuEDU/local/',
       global.FOAM_BOOT_DIR + '/../js/com/google/nbuEDU/examples/',
     ],
   },

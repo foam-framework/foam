@@ -15,6 +15,8 @@ CLASS({
 
   requires: [
     'com.google.ow.model.Envelope',
+    'foam.u2.Element',
+    'com.google.ow.content.Stream',
     //'com.google.nbuEDU.
   ],
 
@@ -49,6 +51,9 @@ CLASS({
 
   methods: [
     function put(env, sink, yourEnv) {
+      console.log("ServerSignup put: ", env, env.data);
+
+      var self = this;
       var newUserId = env.owner;
 
       var signup = env.data;
@@ -56,12 +61,12 @@ CLASS({
 
       // determine the curriculum streams to add
       // Fake stream
-      this.streamDAO.put(this.Envelope.create({
+      self.streamDAO.put(self.Envelope.create({
         "model_": "com.google.ow.model.Envelope",
         "owner": newUserId,
-        "source": this.substreams[0],
+        "source": self.substreams[0],
         "substreams": ["eduVidStream487673295"],
-        data: this.Stream.create({
+        data: self.Stream.create({
           "name": "MathVideos",
           "titleText": "Math Videos",
           "description": "Your grade level, math videos.",
@@ -73,7 +78,7 @@ CLASS({
     },
 
     // Not really used, since this runs server-side for the administrator
-    function toDetailE(X) {
+    function toCitationE(X) {
       var Y = X || this.Y;
       return this.Element.create(null, Y)
         .start().style({

@@ -11,5 +11,32 @@
       "signupSid": "nbuEDUSignup",
       "id": "eduInv124567"
     }
+  },
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "id" : "singletonSignup2323",
+    "substreams": ["nbuEDUSignup"],
+    "owner": "0",
+    "source": "0",
+    "data": {
+      "model_": "com.google.nbuEDU.ServerSignup",
+      "substreams": ["nbuEDUSignup"],
+      "id": "eduServerSignup124567"
+    }
+  },
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "owner": "0",
+    "source": "0",
+    "substreams": ["eduVidStream487673295"],
+    "data": {
+      "model_": "com.google.ow.content.Stream",
+      "name": "Test Videos",
+      "titleText": "Video List",
+      "description": "A list of video items.",
+      "model": "com.google.ow.content.VotableVideo",
+      "contentItemView": "foam.ui.md.CitationView",
+      "id": "eduVidStream487673295"
+    }
   }
 ]

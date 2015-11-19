@@ -22,6 +22,7 @@ CLASS({
     'currentUser',
     'streamDAO',
     'createStreamItem',
+    'stack',
   ],
 
   properties: [
@@ -107,7 +108,8 @@ CLASS({
         // save 'this' to the streamDAO for sync to the server.
         // Something on the server should be listening for the sid that
         // was set on this.
-        this.createStreamItem(this.sid, this.currentUser.id, this, this.sid);
+        this.streamDAO.put(this.createStreamItem(this.sid, this, this.sid));
+        this.stack && this.stack.popView();
       }
     },
   ],
@@ -125,9 +127,10 @@ CLASS({
             .start().add(this.titleText$).cls('md-title').end()
             .start().add(this.description$).cls('md-subhead').end()
             .start().add(this.LANGUAGE).end()
-            .start().add(this.AGE.label).add(this.AGE).end()
+            .start().add(this.AGE.label).add(this.AGE).cls('md-style-trait-standard').end()
             .start().add(this.LOCATION).end()
             .start().add(this.SCHOOL_BOARD).end()
+            .add(this.DONE)
           .end()
         .end();
     },

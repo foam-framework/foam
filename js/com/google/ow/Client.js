@@ -67,6 +67,7 @@ CLASS({
     'circleDAO', // Note: proxy for currentUser.circles
     'contactsDAO', // Note: proxy for currentUser.contacts
     'currentUser$',
+    'createStreamItem',
   ],
 
   properties: [
@@ -170,6 +171,25 @@ CLASS({
         return this.ProxyDAO.create({ model: this.Person, delegate: [].dao }, this.Y);
       },
     },
+    {
+      model_: 'FunctionProperty',
+      name: 'createStreamItem',
+      hidden: true,
+      factory: function() {
+        return function(source, data, opt_sid) {
+          var srcId = source.id || source;
+          var tgtId = this.currentUser.id;
+          return this.Envelope.create({
+            owner: tgtId,
+            source: srcId,
+            data: data,
+            sid: opt_sid || data.sid || '',
+            substreams: data.substreams || [],
+          });
+        }.bind(this);
+      },
+    },
+
   ],
 
   methods: [
