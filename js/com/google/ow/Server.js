@@ -49,7 +49,7 @@ CLASS({
     // TODO(markdittmer): This bypasses authorization for server components.
     // We should do better.
     'streamDAO_ as streamDAO',
-    'streamDAO_no_loopback',
+    'streamDAO_no_loopback', // TODO: remove this, probably unnecessary in the one place it is used
     'createStreamItem',
   ],
 
@@ -252,6 +252,18 @@ CLASS({
                 }));
               }
             });
+          } else if ( o.data ) {
+            self.personDAO_.pipe({
+              put: function(person) {
+                self.streamDAO_.put(self.Envelope.create({
+                  owner: person.id,
+                  source: '0',
+                  substreams: o.substreams,
+                  sid: o.sid,
+                  data: o.data.clone(),
+                }));
+              }
+            });
           } else {
             self.streamDAO_.put(o);
           }
@@ -266,31 +278,35 @@ CLASS({
           console.log("Person put!", person.id);
 
           var incr = 0;
-          this.adData.select({
-            put: function(ad) {
-              this.streamDAO_.put(this.Envelope.create({
-                owner: person.id,
-                source: '0',
-                sid: baseAdStreamEnv.substreams[0],
-                promoted: true,
-                data: ad,
-              }, this.Y));
-            }.bind(this),
-          });
-          this.videoDAO_.select({
-            put: function(video) {
-              console.log("Create vid:",person.id, video.id, videoStreamEnv.substreams[0]);
-              this.streamDAO_.put(this.Envelope.create({
-//                id: 'fakeIDVid'+incr++,
-                owner: person.id,
-                source: incr,
-                data: video,
-                sid: videoStreamEnv.substreams[0] + '/fakeIDVid'+incr,
-                substreams: [videoStreamEnv.substreams[0] + '/fakeIDVid'+incr],
-              }, this.Y));
-              console.log('vid sid:',videoStreamEnv.substreams[0] + '/fakeIDVid'+incr);
-            }.bind(this),
-          });
+          if ( baseAdStreamEnv ) {
+            this.adData.select({
+              put: function(ad) {
+                this.streamDAO_.put(this.Envelope.create({
+                  owner: person.id,
+                  source: '0',
+                  sid: baseAdStreamEnv.substreams[0],
+                  promoted: true,
+                  data: ad,
+                }, this.Y));
+              }.bind(this),
+            });
+          }
+          if ( videoStreamEnv ) {
+            this.videoDAO_.select({
+              put: function(video) {
+                console.log("Create vid:",person.id, video.id, videoStreamEnv.substreams[0]);
+                this.streamDAO_.put(this.Envelope.create({
+  //                id: 'fakeIDVid'+incr++,
+                  owner: person.id,
+                  source: incr,
+                  data: video,
+                  sid: videoStreamEnv.substreams[0] + '/fakeIDVid'+incr,
+                  substreams: [videoStreamEnv.substreams[0] + '/fakeIDVid'+incr],
+                }, this.Y));
+                console.log('vid sid:',videoStreamEnv.substreams[0] + '/fakeIDVid'+incr);
+              }.bind(this),
+            });
+          }
         }.bind(this),
       });
       // Bootstrap video data.

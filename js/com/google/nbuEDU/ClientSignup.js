@@ -42,23 +42,24 @@ CLASS({
       name: 'language',
       defaultValue: 'English',
       toPropertyE: function(X) {
-        return this.Select.create({ dao: this.languageDAO }, X).toE(X);
+        return X.data.Select.create({ choices: X.data.languageDAO }, X);
       }
     },
     {
       model_: 'IntProperty',
       name: 'age',
+      label: 'How many years old are you?',
     },
     {
       name: 'location',
       toPropertyE: function(X) {
-        return this.Select.create({ dao: this.locationDAO }, X).toE(X);
+        return X.data.Select.create({ choices: X.data.locationDAO }, X);
       }
     },
     {
       name: 'schoolBoard',
       toPropertyE: function(X) {
-        return this.Select.create({ dao: this.schoolBoardDAO }, X).toE(X);
+        return X.data.Select.create({ choices: X.data.schoolBoardDAO }, X);
       }
     },
 
@@ -115,7 +116,7 @@ CLASS({
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
       var Y = X || this.Y;
-      return this.Element.create(null, Y)
+      return this.Element.create(null, Y.sub({data: this}))
         .start().style({
           'display': 'flex',
           'flex-direction': 'column',
@@ -124,7 +125,7 @@ CLASS({
             .start().add(this.titleText$).cls('md-title').end()
             .start().add(this.description$).cls('md-subhead').end()
             .start().add(this.LANGUAGE).end()
-            .start().add(this.AGE).end()
+            .start().add(this.AGE.label).add(this.AGE).end()
             .start().add(this.LOCATION).end()
             .start().add(this.SCHOOL_BOARD).end()
           .end()

@@ -1,0 +1,15 @@
+[
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "owner": "0",
+    "source": "0",
+    "data": {
+      "model_": "com.google.nbuEDU.Invite",
+      "name": "nbuEDUInvite",
+      "titleText": "EDU Invite",
+      "description": "Tap to get help with school.",
+      "signupSid": "nbuEDUSignup",
+      "id": "eduInv124567"
+    }
+  }
+]

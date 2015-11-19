@@ -55,19 +55,19 @@ CLASS({
       console.assert(signup.name_ == 'ClientSignup', "ServerSignup got a put that's not a ClientSignup!");
 
       // determine the curriculum streams to add
-      // Fake stream TODO: change the ciXXX id used below
+      // Fake stream
       this.streamDAO.put(this.Envelope.create({
         "model_": "com.google.ow.model.Envelope",
         "owner": newUserId,
         "source": this.substreams[0],
-        "substreams": ["contentIndexci4873296573765766590"],
+        "substreams": ["eduVidStream487673295"],
         data: this.Stream.create({
           "name": "MathVideos",
           "titleText": "Math Videos",
           "description": "Your grade level, math videos.",
           "model": "com.google.ow.content.VotableVideo",
           "contentItemView": "foam.ui.md.CitationView",
-          "id": "ci4873296573765766590"
+          "id": "eduVidStream487673295"
         })
       }));
     },

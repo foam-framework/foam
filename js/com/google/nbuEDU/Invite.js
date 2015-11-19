@@ -29,7 +29,7 @@ CLASS({
     },
     {
       model_: 'StringProperty',
-      name: 'titleText'
+      name: 'titleText',
       defaultValue: 'nbuEDU-Connect: Help with School',
     },
     {
