@@ -31,15 +31,15 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValue: 'nbuEDU-Connect: Help with School',
+      defaultValue: 'EDU-Connect: Help with School',
     },
     {
       model_: 'StringProperty',
       name: 'description',
-      defaultValue: 'You are invited to join the EDU-Connect community. <br/>Tap this card to get help with school.'
+      defaultValue: '<p>You are invited to join the EDU-Connect community.</p><p>Tap this card to get help with school.</p>'
     },
-    ['resetInviteTitle', 'nbuEDU-Connect'],
-    ['resetInviteText', 'Welcome! You have already enrolled.'],
+    ['resetInviteTitle', 'EDU-Connect'],
+    ['resetInviteText', '<p>Welcome! You have already enrolled.</p> <p>Tap this card to see your profile.</p>'],
     ['complete', false],
   ],
 

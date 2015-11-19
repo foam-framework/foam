@@ -18,6 +18,7 @@ CLASS({
   requires: [
     'foam.u2.Element',
     'foam.ui.Icon',
+    'com.google.ow.content.CommentThread',
   ],
 
   exports: [
@@ -32,6 +33,9 @@ CLASS({
   properties: [
     {
       name: 'comments',
+      lazyFactory: function() {
+        return this.CommentThread.create({ id: this.id+"comments" });
+      }
     },
   ],
 

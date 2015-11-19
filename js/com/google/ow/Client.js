@@ -124,7 +124,9 @@ CLASS({
             var envelope = args.data || args.data$.get();
             return envelope.toDetailE ? envelope.toDetailE(X) :
                 this.DetailView.create({ data: envelope }, X);
-          }.bind(this)
+          }.bind(this),
+          createFunction: function() { },
+          showAdd: false,
         });
         return browserConfig;
       },
