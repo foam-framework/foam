@@ -40,12 +40,36 @@ CLASS({
       name: 'description',
       defaultValue: 'Responds to EDU-connect signup requests.',
     },
+    {
+      name: 'curriculumData_',
+      hidden: true,
+      defaultValue: '',
+    },
   ],
 
   methods: [
     function put(env, sink, yourEnv) {
+      var newUserId = env.owner;
 
+      var signup = env.data;
+      console.assert(signup.name_ == 'ClientSignup', "ServerSignup got a put that's not a ClientSignup!");
 
+      // determine the curriculum streams to add
+      // Fake stream TODO: change the ciXXX id used below
+      this.streamDAO.put(this.Envelope.create({
+        "model_": "com.google.ow.model.Envelope",
+        "owner": newUserId,
+        "source": this.substreams[0],
+        "substreams": ["contentIndexci4873296573765766590"],
+        data: this.Stream.create({
+          "name": "MathVideos",
+          "titleText": "Math Videos",
+          "description": "Your grade level, math videos.",
+          "model": "com.google.ow.content.VotableVideo",
+          "contentItemView": "foam.ui.md.CitationView",
+          "id": "ci4873296573765766590"
+        })
+      }));
     },
 
     // Not really used, since this runs server-side for the administrator
@@ -55,7 +79,7 @@ CLASS({
         .start().style({
           'display': 'flex',
           'flex-direction': 'column',
-        })
+          })
           .start().style({ 'margin': '16px', 'overflow-y': 'auto' })
             .start().add(this.titleText$).cls('md-title').end()
             .start().add(this.description$).cls('md-subhead').end()

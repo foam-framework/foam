@@ -46,6 +46,10 @@ CLASS({
       }
     },
     {
+      model_: 'IntProperty',
+      name: 'age',
+    },
+    {
       name: 'location',
       toPropertyE: function(X) {
         return this.Select.create({ dao: this.locationDAO }, X).toE(X);
@@ -120,6 +124,7 @@ CLASS({
             .start().add(this.titleText$).cls('md-title').end()
             .start().add(this.description$).cls('md-subhead').end()
             .start().add(this.LANGUAGE).end()
+            .start().add(this.AGE).end()
             .start().add(this.LOCATION).end()
             .start().add(this.SCHOOL_BOARD).end()
           .end()
