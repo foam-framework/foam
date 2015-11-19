@@ -77,12 +77,13 @@ CLASS({
         return this.IdGenerator.create(null, this.Y);
       },
     },
+    ['titleText', 'Lifestream'],
     {
       name: 'browserConfig',
       lazyFactory: function() {
         var UpdateDetailView = this.UpdateDetailView;
         var browserConfig = this.BrowserConfig.create({
-          title: 'Lifestream',
+          title$: this.titleText$,
           model: this.Envelope,
           dao: this.streamDAO.where(OR(
               NOT(HAS(this.Envelope.SID)),

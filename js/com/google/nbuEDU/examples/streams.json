@@ -6,8 +6,6 @@
     "data": {
       "model_": "com.google.nbuEDU.Invite",
       "name": "User Data",
-      "titleText": "EDU Invite",
-      "description": "Tap to get help with school.",
       "signupSid": "nbuEDUSignup",
       "id": "eduInv124567"
     }
@@ -33,7 +31,7 @@
       "model_": "com.google.ow.content.Stream",
       "name": "Test Videos",
       "titleText": "Video List",
-      "description": "A list of video items.",
+      "description": "(ignore me)",
       "model": "com.google.ow.content.VotableVideo",
       "contentItemView": "foam.ui.md.CitationView",
       "id": "eduVidStream487673295"

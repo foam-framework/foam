@@ -36,7 +36,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'description',
-      defaultValue: 'You are invited to join the EDU-Connect community. Tap this card to get help.'
+      defaultValue: 'You are invited to join the EDU-Connect community. <br/>Tap this card to get help with school.'
     },
     ['resetInviteTitle', 'nbuEDU-Connect'],
     ['resetInviteText', 'Welcome! You have already enrolled.'],
@@ -61,8 +61,7 @@ CLASS({
       var Y = X || this.Y;
       return this.Element.create(null, Y)
         .start().style({ 'display': 'flex', 'flex-direction': 'column', margin: '16px' })
-            .start().add(this.titleText$).cls('md-subhead').end()
-            .start().add(this.description$).cls('md-body').end()
+            .start().add(this.description$).cls('md-subhead').end()
         .end()
     },
   ],
