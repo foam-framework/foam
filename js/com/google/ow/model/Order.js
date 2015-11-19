@@ -17,7 +17,7 @@ CLASS({
     'com.google.ow.model.Envelope',
     'com.google.ow.model.OrderItem',
     'com.google.ow.model.Product',
-    'com.google.ow.ui.OrderItemView',
+    'com.google.ow.ui.OrderCitationView',
     'com.google.ow.ui.OrderView',
     'foam.dao.EasyDAO',
   ],
@@ -110,18 +110,23 @@ CLASS({
       return this.OrderView.create({ data: this }, X);
     },
     function toCitationE(X) {
-      return this.OrderItemView.create({ data: this }, X);
+      return this.OrderCitationView.create({ data: this }, X);
     },
     function toEnvelope(X) {
       var envelope = X.envelope;
       var Envelope = X.lookup('com.google.ow.model.Envelope');
       return Envelope.create({
-        // Add Ad ID to sid.
-        sid: envelope.sid + ((X.data && X.data.id) ? '/' + X.data.id : ''),
+        sid: X.sid || '',
         owner: envelope.owner,
         source: envelope.owner,
         data: this,
       }, X);
+    },
+    function toStream(X) {
+      var envelope = X.envelope;
+      var Envelope = X.lookup('com.google.ow.model.Envelope');
+      var UpdateStream = X.lookup('com.google.ow.content.UpdateStream');
+      return UpdateStream.create(null, X);
     },
   ],
 
