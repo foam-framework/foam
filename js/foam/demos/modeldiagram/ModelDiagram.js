@@ -223,7 +223,7 @@ var p = this.Person.create({
       ];
 
       // JS
-      fs.forEach(function(f) { feature(f, anim, 0, 0); });
+      fs.forEach(function(f) { feature(f, anim, 0, 0, 0.5); });
 
       // Java
       anim.push([0]);
@@ -310,14 +310,14 @@ var p = this.Person.create({
           if ( self.Box.isInstance(c) && ( c.x > 1295 || c.y > 765 ) ) self.removeChild(c);
         }
       });
-      anim.push([1500, function() { robot.scaleX += 0.0001; self.scaleX = self.scaleY = 1; }]);
+      anim.push([1000, function() { robot.scaleX += 0.0001; self.scaleX = self.scaleY = 1; }]);
       anim.push([0]);
       anim.push(function() { self.removeChild(robot); self.addChildren(robot); });
-      anim.push([1500, function() { robot.x = v.x-25; robot.y += 35; }]);
+      anim.push([1000, function() { robot.x = v.x-25; robot.y += 35; }]);
       anim.push([0]);
-      anim.push([1000, function() { robot.scaleX = robot.scaleY = 18; }]);
+      anim.push([800, function() { robot.scaleX = robot.scaleY = 18; }]);
       anim.push([0]);
-      anim.push([1000, function() { robot.scaleX = robot.scaleY = 3; }]);
+      anim.push([800, function() { robot.scaleX = robot.scaleY = 3; }]);
 
       anim.push([0]);
       anim.push(function() { self.removeChild(v); self.addChildren(v); });
