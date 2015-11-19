@@ -28,7 +28,7 @@ CLASS({
               .add(this.data.QUANTITY)
               .add(' @ ')
               .x({ data: product })
-                .add(this.data.product.PRICE)
+                .add(product.PRICE)
               .x({ data: data })
           .end()
           .start('div').cls('total').cls('md-body')
