@@ -43,7 +43,7 @@ CLASS({
     },
     {
       name: 'substreams',
-      lazyFactory: function() { return ['contentIndex/' + this.id]; }
+      lazyFactory: function() { return ['contentIndex' + this.id]; }
     },
     {
       model_: 'StringProperty',
@@ -90,7 +90,8 @@ CLASS({
       hidden: true,
       transient: true,
       lazyFactory: function() {
-        return this.streamDAO.where(EQ(this.Envelope.SID, this.substreams[0]));
+        console.log("Stream where:", this.Envelope.SID, this.substreams[0])
+        return this.streamDAO.where(CONTAINS(this.Envelope.SID, this.substreams[0])); // TODO: slightly hacky, path split alternative
       }
     },
     {
@@ -116,9 +117,12 @@ CLASS({
   ],
 
   methods: [
-    function put(envelope, sink) {
+    function put(envelope, sink, yourEnvelope) {
       /* this is a substream target, implement put handler */
       var self = this;
+      // propagate out the object to other owners, but only if we own it
+      if ( envelope.owner !== yourEnvelope.owner ) return;
+
       // Since this should be running on the server, grab all the owners
       // of this contentIndex, based on stream id, and share the new substream
       // content with those ownerIds.
@@ -146,7 +150,7 @@ CLASS({
                   self.substreams[0],
                   ownerId,
                   envelope.data,
-                  self.substreams[0]
+                  envelope.substreams
                 ));
               }
             }

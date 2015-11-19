@@ -104,6 +104,8 @@ CLASS({
     function put(envelope, sink, yourEnvelope) {
       /* Server: this is a substream target, implement put handler */
       console.log("VotablePut");
+      if ( ! this.streamDAO_no_loopback ) { console.warn("No streamDAO in Votable!"); return; }
+      
       var self = this;
       // Since this should be running on the server, grab all the owners
       // of this vote, based on stream id, tally it up, update self.tally.
@@ -113,6 +115,7 @@ CLASS({
       // if this gets copied and shared, since it will get included in the tallies
       // once it changes from zero and is put back to streamDAO on the client.
       var originalTally = self.tally;
+      var originalCount = self.count;
 
       self.tally = 0;
       self.count = 0;
@@ -123,7 +126,7 @@ CLASS({
           self.count += 1;
         },
         eof: function() {
-          if ( self.tally == originalTally ) return; // don't save if no change
+          if ( self.tally == originalTally && originalCount == self.count ) return; // don't save if no change
 
           console.assert(yourEnvelope.data.id === self.id, "Vote.put yourEnvelope does not contain this!");
           yourEnvelope.data = self;
@@ -147,7 +150,7 @@ CLASS({
         })
           .add(this.VOTE_UP)
           .add(this.VOTE_DOWN)
-          .add(this.TALLY).add("/").add(this.COUNT)
+          .add(this.tally$).add("/").add(this.count$)
         .end()
     },
   ],

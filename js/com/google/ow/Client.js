@@ -22,7 +22,9 @@ CLASS({
   requires: [
     'MDAO',
     'com.google.ow.IdGenerator',
+    'com.google.ow.dao.VideoOffloadDAO',
     'com.google.ow.content.OrderStream',
+    'com.google.ow.content.Video',
     'com.google.ow.examples.VideoB',
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.Envelope',
@@ -47,6 +49,7 @@ CLASS({
     'foam.tutorials.todo.ui.TodoCitationView',
     'foam.u2.DAOListView',
     'foam.u2.DetailView',
+    'foam.u2.md.ActionButton',
     'foam.ui.DAOListView',
     'foam.ui.TextFieldView',
     'foam.ui.Tooltip',
@@ -130,12 +133,14 @@ CLASS({
     {
       name: 'streamDAO',
       lazyFactory: function() {
-        return this.EasyClientDAO.create({
-          serverUri: this.document.location.origin + '/api',
-          model: this.Envelope,
-          sockets: true,
-          logging: true,
-        }, this.Y);
+        return this.VideoOffloadDAO.create({
+          delegate: this.EasyClientDAO.create({
+            serverUri: this.document.location.origin + '/api',
+            model: this.Envelope,
+            sockets: true,
+            logging: true,
+          })
+        });
       }
     },
     {
@@ -169,6 +174,7 @@ CLASS({
 
   methods: [
     function init() {
+      this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
       this.SUPER();
       var WebSocket = this.AuthenticatedWebSocketDAO.xbind({
         authToken$: this.currentUserId$,
