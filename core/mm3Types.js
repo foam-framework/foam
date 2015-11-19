@@ -618,6 +618,29 @@ CLASS({
 
 
 CLASS({
+  name: 'BlobProperty',
+  extends: 'Property',
+  help: 'A chunk of binary data.',
+  label: 'Binary data',
+
+  properties: [
+    {
+      name: 'type',
+      type: 'String',
+      defaultValue: 'Blob',
+      help: 'The FOAM type of this property.',
+    },
+    {
+      name: 'javaType',
+      type: 'String',
+      defaultValue: 'byte[]',
+      help: 'The Java type for this property.',
+    },
+  ]
+});
+
+
+CLASS({
   name:  'ReferenceProperty',
   extends: 'Property',
 
