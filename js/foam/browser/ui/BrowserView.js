@@ -402,6 +402,7 @@ CLASS({
           <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
             <style>
               .browser-header-color { background-color: <%= this.data.headerColor %>; }
+              .browser-body-color { background-color: <%= this.data.backgroundColor %>; }
             </style>
 
             <div id="<%= this.id %>-header" class="browser-header browser-header-color">
@@ -435,7 +436,7 @@ CLASS({
                   !self.searchMode);
               if ( self.searchMode ) self.searchView.focus();
             }); %>
-            <div class="browser-body">
+            <div class="browser-body browser-body-color">
               <%= this.listView_ = this.data.listView({ data$: this.data.filteredDAO$ }, this.Y) %>
             </div>
             <% if (this.data.showAdd) { %>

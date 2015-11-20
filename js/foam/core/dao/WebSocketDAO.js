@@ -55,9 +55,9 @@ CLASS({
       name: 'json',
       factory: function() {
         return JSONUtil.where(function(prop, obj) {
-	  if ( Property.isInstance(obj) &&
-	       prop.name !== 'name' &&
-	       prop.name !== 'modelId' ) {
+	  if ( prop.transient || (Property.isInstance(obj) &&
+	      prop.name !== 'name' &&
+	      prop.name !== 'modelId') ) {
 	    return false;
 	  }
 	  return true;

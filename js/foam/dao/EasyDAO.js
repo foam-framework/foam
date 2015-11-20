@@ -158,7 +158,9 @@ CLASS({
       model_: 'StringProperty',
       name: 'serverUri',
       defaultValueFn: function() {
-        return this.document.location.origin + '/api'
+        return this.document && this.document.location ?
+            this.document.location.origin + '/api' :
+            '';
       }
     },
     {
@@ -214,7 +216,7 @@ CLASS({
 
       if ( MDAO.isInstance(dao) ) {
         this.mdao = dao;
-        if ( this.dedup ) dao = this.DeDupDAO.create({delegate: dao});
+        if ( this.dedup ) dao = this.DeDupDAO.create({delegate: dao}, this.Y);
       } else {
         if ( this.migrationRules && this.migrationRules.length ) {
           dao = this.MigrationDAO.create({
@@ -224,13 +226,13 @@ CLASS({
           }, this.Y);
         }
         if ( this.cache ) {
-          this.mdao = this.MDAO.create(params);
+          this.mdao = this.MDAO.create(params, this.Y);
           dao = this.CachingDAO.create({
             cache: this.dedup ?
               this.mdao :
               this.DeDupDAO.create({delegate: this.mdao}),
             src: dao,
-            model: this.model});
+            model: this.model}, this.Y);
         }
       }
 
@@ -239,22 +241,22 @@ CLASS({
       if ( this.seqNo ) {
         var args = {__proto__: params, delegate: dao, model: this.model};
         if ( this.seqProperty ) args.property = this.seqProperty;
-        dao = this.SeqNoDAO.create(args);
+        dao = this.SeqNoDAO.create(args, this.Y);
       }
 
       if ( this.guid ) {
         var args = {__proto__: params, delegate: dao, model: this.model};
         if ( this.seqProperty ) args.property = this.seqProperty;
-        dao = this.GUIDDAO.create(args);
+        dao = this.GUIDDAO.create(args, this.Y);
       }
 
       if ( this.contextualize ) dao = this.ContextualizingDAO.create({
         delegate: dao
-      });
+      }, this.Y);
 
       if ( this.cloning ) dao = this.CloningDAO.create({
         delegate: dao
-      });
+      }, this.Y);
 
       var model = this.model;
 
@@ -263,8 +265,10 @@ CLASS({
       if ( this.syncWithServer || this.isServer ) {
         if ( ! this.syncProperty || ! this.deletedProperty ) {
           if ( model.traits.indexOf('foam.core.dao.SyncTrait') != -1 ) {
-            this.syncProperty = model.SYNC_PROPERTY;
-            this.deletedProperty = model.DELETED;
+            // TODO(adamvy): This doesn't work without getPrototype();
+            // should models be built such that getPrototype() is unnecessary?
+            this.syncProperty = model.getPrototype().SYNC_PROPERTY;
+            this.deletedProperty = model.getPrototype().DELETED;
           } else {
             throw "Syncing with server requires the foam.core.dao.SyncTrait be applied to your model, '" + this.model.id + "'.";
           }
@@ -279,18 +283,18 @@ CLASS({
             model: model,
             sockets: this.sockets,
             reconnectPeriod: 5000
-          }),
+          }, this.Y),
           syncProperty: this.syncProperty,
           deletedProperty: this.deletedProperty,
           delegate: dao,
           period: 1000
-        });
+        }, this.Y);
         dao.syncRecordDAO = foam.dao.EasyDAO.create({
           model: dao.SyncRecord,
           cache: true,
           daoType: this.daoType,
           name: this.name + '_SyncRecords'
-        });
+        }, this.Y);
       }
 
       if ( this.isServer ) {
@@ -298,11 +302,11 @@ CLASS({
           delegate: dao,
           property: this.syncProperty,
           version: 2
-        });
+        }, this.Y);
       }
 
-      if ( this.timing  ) dao = this.TimingDAO.create({ name: this.model.plural + 'DAO', delegate: dao });
-      if ( this.logging ) dao = this.LoggingDAO.create({ delegate: dao });
+      if ( this.timing  ) dao = this.TimingDAO.create({ name: this.model.plural + 'DAO', delegate: dao }, this.Y);
+      if ( this.logging ) dao = this.LoggingDAO.create({ delegate: dao }, this.Y);
 
       this.delegate = dao;
     },

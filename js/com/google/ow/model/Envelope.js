@@ -18,33 +18,81 @@ CLASS({
     'com.google.plus.ShareableTrait',
   ],
 
-  requires: [
-    'com.google.ow.ui.EnvelopeCitationView as CitationView',
-  ],
-
   //TODO: hack to get Envelope.SID to show up
   properties: [
-    'id',
+    {
+      name: 'id',
+      lazyFactory: function() {
+        debugger; // Should never happen.
+        return createGUID();
+      },
+    },
+    {
+      model_: 'DateTimeProperty',
+      name: 'timestamp',
+      factory: function() { return new Date(); },
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'promoted',
+      defaultValue: false,
+    },
     'sid',
     'shares',
     'owner',
-    'source',
-    'data',
     {
+      name: 'source',
+    },
+    {
+      model_: 'StringArrayProperty',
+      name:'tags',
+    },
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( ! nu.id ) nu.id = createGUID();
+      },
+    },
+    {
+      model_: 'StringArrayProperty',
       name: 'substreams',
-      getter: function(name) {
-        // TODO: be careful here with changing substreams (i.e. adding one) and
-        // not re-putting to streamDAO to update the index
-        return this.instance_['substreams'] ||
-          ( this.data && this.data.substreams) ||
-          [];
-      }
     },
   ],
 
   methods: [
     function toE(X) {
-      return this.CitationView.create({ data: this }, X);
+      return X.lookup('com.google.ow.ui.EnvelopeCitationView').create({
+        data: this,
+      }, X);
+    },
+    function toRowE(X) {
+      return X.lookup('com.google.ow.ui.EnvelopeCitationView').create({
+        data: this,
+      }, X);
+    },
+    function toCitationE(X) {
+      return X.lookup('com.google.ow.ui.EnvelopeCitationView').create({
+        data: this,
+      }, X);
+    },
+    function toDetailE(X) {
+      return X.lookup('com.google.ow.ui.EnvelopeDetailView').create({
+        data: this,
+      }, X);
+    },
+    // For debugging/logging purposes.
+    function toString() {
+      var str = (this.data && this.data.model_ ? this.data.model_.id : '') + '(' +
+          '\n  envelope id: ' + this.id +
+          '\n  data id: ' + (this.data ? this.data.id : '') +
+          '\n  timestamp: ' + this.timestamp.toString() +
+          '\n  source: ' + this.source +
+          '\n  owner: ' + this.owner +
+          '\n  sid: ' + this.sid +
+          '\n  substreams: ' + this.substreams.join(', ') +
+          '\n)';
+      return str;
     },
   ],
 });

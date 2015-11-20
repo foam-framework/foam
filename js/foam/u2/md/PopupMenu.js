@@ -21,6 +21,7 @@ CLASS({
 
   imports: [
     'E',
+    'clearTimeout',
     'document',
     'setTimeout',
     'window',
@@ -30,12 +31,14 @@ CLASS({
       'element that launches it with $$DOC{ref:".open"}.',
 
   properties: [
-    ['hMargin', 16],
+    ['hMargin', 8],
     ['vMargin', 8],
     ['maxDisplayCount', 5],
     ['itemHeight', 48],
     ['itemWidth', 100],
-    ['isHidden', true]
+    ['isHidden', true],
+    ['removeTimeout', 0],
+    ['isClosing', false],
   ],
 
   methods: [
@@ -205,10 +208,17 @@ CLASS({
     },
 
     function close() {
+      if ( this.isClosing ) return;
+      this.isClosing = true;
       this.animateToHidden();
-      this.setTimeout(function() {
+      this.removeTimeout = this.setTimeout(function() {
         this.delegate_.remove();
       }.bind(this), 500);
+    },
+
+    function unload() {
+      if ( this.removeTimeout ) this.clearTimeout(this.removeTimeout);
+      this.SUPER();
     },
 
     function scrollToIndex(index) {
@@ -243,7 +253,7 @@ CLASS({
           for (var i = 0; i < this.choices.length; i++) {
             this.start('li')
                 .cls('foam-u2-md-PopupMenu-choice')
-                .cls(function(i) {
+                .cls2(function(i) {
                   return this.index === i ? 'selected' : '';
                 }.bind(this, i).on$(this.index$))
                 .style({

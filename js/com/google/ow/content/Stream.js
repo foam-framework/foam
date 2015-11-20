@@ -33,12 +33,15 @@ CLASS({
     shared. */},
 
   properties: [
+    'id',
     {
-      name: 'id'
+      model_: 'StringProperty',
+      name: 'name',
+      lazyFactory: function() { return this.id.toString(); },
     },
     {
       name: 'substreams',
-      lazyFactory: function() { return ['contentIndex/' + this.id]; }
+      lazyFactory: function() { return [this.id]; }
     },
     {
       model_: 'StringProperty',
@@ -53,36 +56,33 @@ CLASS({
       name: 'model',
       help: 'The type of the content items. Should have an id property.',
       defaultValue: 'com.google.ow.model.StreamableTrait',
+      propertyToJSON: function() {
+        return (this.model && this.model.id) || '';
+      },
       postSet: function(_,model) {
         // Model not always ready in node, but don't need views there anyway
-        if ( ! model.getFeature ) return;
+        if ( ! (model && model.getFeature) ) return;
 
         if ( model.getFeature('toCitationE') ) this.contentRowView = function(args,X) {
-          var d = args.data || X.data;
-          if ( ! d ) {
-            d = args.data$ || X.data$;
-            d = d && d.value;
-          }
-          if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
-          return d.toCitationE(X).style({ margin: '8px 0px' });
+          var env = args.data || (args.data$ && args.data$.value) ||  X.data || (X.data$ && X.data$.value);
+          var d = env.data || env;
+          return d.toCitationE(X.sub({ envelope: env })).style({ margin: '8px 0px' });
         }
         if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
-          var d = args.data || X.data;
-          if ( ! d ) {
-            d = args.data$ || X.data$;
-            d = d && d.value;
-          }
-          if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
-          return d.toDetailE(X).style({ 'flex-grow': 1, overflow: 'hidden' });
+          var env = args.data || (args.data$ && args.data$.value) ||  X.data || (X.data$ && X.data$.value);
+          var d = env.data || env;
+          return d.toDetailE(X.sub({ envelope: env })).style({ 'flex-grow': 1, overflow: 'hidden' });
         }
       }
     },
     {
+      model_: 'ImportedProperty',
       name: 'dao',
       hidden: true,
       transient: true,
       lazyFactory: function() {
-        return this.streamDAO.where(EQ(this.Envelope.SID, this.substreams[0]));
+        console.log("Stream where:", this.Envelope.SID, this.substreams[0])
+        return this.streamDAO.where(CONTAINS(this.Envelope.SID, this.substreams[0])); // TODO: slightly hacky, path split alternative
       }
     },
     {
@@ -108,22 +108,52 @@ CLASS({
   ],
 
   methods: [
-    function put(envelope, sink) {
+    function put(envelope, sink, yourEnvelope) {
       /* this is a substream target, implement put handler */
       var self = this;
+      // propagate out the object to other owners, but only if we own it
+      if ( envelope.owner !== yourEnvelope.owner ) return;
+      console.log("Processing new env for stream ", yourEnvelope.substreams[0], yourEnvelope.owner, envelope.data.id);
       // Since this should be running on the server, grab all the owners
       // of this contentIndex, based on stream id, and share the new substream
-      // content with those owners.
-      self.streamDAO.where(IN(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
-        MAP(self.Envelope.OWNER, { put: function(owner) {
-          self.streamDAO.put(
-            self.createStreamItem(self.substreams[0], owner, envelope.data, self.substreams[0])
-          );
+      // content with those ownerIds.
+      self.streamDAO.where(EQ(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
+        MAP(self.Envelope.OWNER, { put: function(ownerId) {
+          // if an envelope doens't already exist, make one
+          console.log("Stream put for owner", ownerId);
+          var found = false;
+          self.streamDAO.where(
+            AND(
+              EQ(self.Envelope.SID, envelope.sid),
+              EQ(self.Envelope.OWNER, ownerId))// ,
+//               EQ(self.Envelope.DATA.dot(self.model_.ID), envelope.data.id)// this.model_.ID is a bit of a hack to extract ID from data, when we don't know what model data really is.
+            )
+          .select({
+            put: function(env) {
+              if (env.data.id !== envelope.data.id) return;
+              // existing envelope for the content
+              //console.log("Stream: Found existing", env.data.id, env);
+              found = true;
+              // TODO: try to merge/update the content?
+            },
+            eof: function() {
+              if ( ! found ) {
+                console.log("Stream: not found, copying to:", ownerId, envelope.data);
+                self.streamDAO.put(self.createStreamItem(
+                  self.substreams[0],
+                  ownerId,
+                  envelope.data,
+                  envelope.sid
+                ));
+              }
+            }
+          });
         } })
       );
     },
     function onShare(source, target, opt_sid) {
       /* React to share events. Called just before this item is shared. */
+      console.log("Sharing stream", source, target, opt_sid);
       var self = this;
       // Duplicate source user's stream content for the new target user
       // TODO: don't duplicate if it's already there?
@@ -144,9 +174,9 @@ CLASS({
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
       var Y = X || this.Y;
-      return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
+      return this.Element.create(null, Y.sub({controllerMode: 'ro'}))
         .style({ display: 'flex', 'flex-grow': 1, 'flex-direction': 'column' })
-        .add(this.DAOController.create({
+        .add(this.DAOListView.create({
           name: this.description,
           data: this.dao,
           rowView: this.contentRowE || this.contentRowView,

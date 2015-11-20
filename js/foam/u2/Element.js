@@ -20,6 +20,7 @@ CLASS({
   name: 'Element',
 
   requires: [
+    'foam.input.touch.GestureTarget',
     'foam.u2.ElementValue'
   ],
 
@@ -32,11 +33,11 @@ CLASS({
     console.log('Running Element.static().');
 
     Function.prototype.toE = function(X) {
-      var dyn = E('span');
+      var dyn = X.E('span');
       var last = null;
 
       X.dynamic(this, function(e) {
-        e = E('span').add(e);
+        e = X.E('span').add(e);
         if ( last ) dyn.removeChild(last); //last.remove();
         dyn.add(last = e);
       });
@@ -56,6 +57,7 @@ CLASS({
       },
       load:          function() { console.error('Must output before loading.'); },
       unload:        function() { console.error('Must output and load before unloading.'); },
+      remove:        function() { },
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
@@ -75,7 +77,7 @@ CLASS({
         this.state = this.LOADED;
         for ( var i = 0 ; i < this.elListeners.length ; i++ ) {
           var l = this.elListeners[i];
-          this.id$el.addEventListener(l[0], l[1]);
+          this.addEventListener_(l[0], l[1]);
         }
 
         this.visitChildren('load');
@@ -84,6 +86,7 @@ CLASS({
         this.state = this.UNLOADED;
         this.visitChildren('unload');
       },
+      remove:        function() { },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
         throw "Mutations not allowed in OUTPUT state.";
@@ -116,6 +119,7 @@ CLASS({
         this.state = this.UNLOADED;
         this.visitChildren('unload');
       },
+      remove:        function() { this.unload(); },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
         var e = this.id$el;
@@ -127,7 +131,7 @@ CLASS({
         e.classList[enabled ? 'add' : 'remove'](cls);
       },
       onAddListener: function(topic, listener) {
-        this.id$el.addEventListener(topic, listener);
+        this.addEventListener_(topic, listener);
       },
       onSetStyle:    function(key, value) {
         this.id$el.style[key] = value;
@@ -175,6 +179,7 @@ CLASS({
         this.visitChildren('load');
       },
       unload:        function() { },
+      remove:        function() { console.error('Remove after unload.'); },
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
@@ -188,6 +193,7 @@ CLASS({
       output:        function() { throw 'Attempt to output() destroyed Element.'; },
       load:          function() { throw 'Attempt to load() destroyed Element.'; },
       unload:        function() { throw 'Attempt to unload() destroyed Element.';},
+      remove:        function() { console.error('Remove after destroy.'); },
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
@@ -457,7 +463,7 @@ CLASS({
     },
 
     function remove() {
-      this.unload();
+      this.state.remove.call(this);
     },
 
     //
@@ -611,10 +617,11 @@ CLASS({
     },
 
     function valueE_(value) {
-      var dyn = E('span');
+      var dyn = this.E('span');
       var last = null;
+      var X = this.Y;
       var l = function() {
-        var e = E('span');
+        var e = X.E('span');
         /*if ( value.get() ) */e.add(value.get() || '');
         if ( last ) dyn.removeChild(last); //last.remove();
         dyn.add(last = e);
@@ -717,6 +724,32 @@ CLASS({
       l();
 
       return this;
+    },
+
+    function addEventListener_(topic, listener) {
+      if (this.X.gestureManager && topic === 'click') {
+        var manager = this.X.gestureManager;
+        var self = this;
+        var target = this.GestureTarget.create({
+          containerID: this.id$el.id,
+          enforceContainment: true,
+          gesture: 'tap',
+          handler: {
+            tapClick: function(pointMap) {
+              return listener({
+                preventDefault: function() { },
+                stopPropagation: function() { },
+                pointMap: pointMap,
+                target: self.id$el
+              });
+            }
+          }
+        });
+        manager.install(target);
+        // TODO: Uninstall when the element is unloaded.
+      } else {
+        this.id$el.addEventListener(topic, listener);
+      }
     },
 
     //

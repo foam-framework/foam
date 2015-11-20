@@ -12,7 +12,7 @@
 CLASS({
   package: 'com.google.ow.examples',
   name: 'VideoB',
-  extends: 'com.google.ow.content.Video',
+  extends: 'com.google.ow.content.VotableVideo',
 
   properties: [
     ['id', 'aasdf-435-dsfghj-547'],

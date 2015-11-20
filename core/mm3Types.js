@@ -618,6 +618,29 @@ CLASS({
 
 
 CLASS({
+  name: 'BlobProperty',
+  extends: 'Property',
+  help: 'A chunk of binary data.',
+  label: 'Binary data',
+
+  properties: [
+    {
+      name: 'type',
+      type: 'String',
+      defaultValue: 'Blob',
+      help: 'The FOAM type of this property.',
+    },
+    {
+      name: 'javaType',
+      type: 'String',
+      defaultValue: 'byte[]',
+      help: 'The Java type for this property.',
+    },
+  ]
+});
+
+
+CLASS({
   name:  'ReferenceProperty',
   extends: 'Property',
 
@@ -1146,5 +1169,25 @@ if ( DEBUG ) CLASS({
       factory: function() { return "The developer documentation for this $$DOC{ref:'.'}. Use a $$DOC{ref:'DocModelView'} to view documentation."; },
       labels: ['debug']
    }
+  ]
+});
+
+CLASS({
+  name: 'ImportedProperty',
+  extends: 'Property',
+  label: 'A pseudo-property that does not clone its value.',
+
+  properties: [
+    [ 'transient', true ],
+    [ 'hidden',    true ],
+  ],
+
+  methods: [
+    function deepCloneProperty(value, cloneArgs) {
+      this.cloneProperty(value, cloneArgs);
+    },
+    function cloneProperty(value, cloneArgs) {
+      cloneArgs[this.name] = value;
+    },
   ]
 });

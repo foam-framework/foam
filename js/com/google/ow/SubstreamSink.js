@@ -42,7 +42,7 @@ CLASS({
   methods: [
     function put(o, sink) {
       // TODO: rename .sid to .addr (Box address?)
-      if ( o.substreams ) {
+      if ( o.sid ) {
         this.putToTargets(o, sink);
       }
     },
@@ -58,19 +58,22 @@ CLASS({
       // TODO: if we don't find exact match, try for partial
 
       var processSID = function(currSID) {
+        console.log("processSID", currSID);
         var found = false; // TODO: stop if found, or always hit all root sids?
-        console.log("SubstreamSink trying SID: ", currSID);
-        self.streamDAO.where(IN(self.Envelope.SUBSTREAMS, currSID)).select({
-          put: function(target) {
+        self.streamDAO.where(EQ(self.Envelope.SUBSTREAMS, currSID)).select({
+          put: function(sinkEnv) {
+            ///console.log("    processSID found", sinkEnv.source, sinkEnv.id, sinkEnv.owner);
             // TODO: anything else to do to "wake" the cloned targets the DAO
             // gives us? (are listeners connected, etc.?)
-            found = true;
-            target.put && target.put(env, sink);
+            //found = true;
+            sinkEnv.data && sinkEnv.data.put && sinkEnv.data.put(env, sink, sinkEnv);
           },
           eof: function() {
+            console.log("    processSID EOF", env.source, env.id, env.owner);
             if ( ! found ) {
-              console.log("   SubstreamSink SID",currSID,"not found, retrying...");
-              processSID(currSID.split('/').splice(-1, 1).join('/'));
+              if ( currSID.indexOf('/') >= 0 ) {
+                processSID(currSID.split('/').slice(0, -1).join('/'));
+              }
             }
           }
         });
