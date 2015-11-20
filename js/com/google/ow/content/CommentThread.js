@@ -35,6 +35,7 @@ CLASS({
     'envelope', // used client-side
     'streamDAO',
     'currentUser$',
+    'setTimeout',
   ],
 
   properties: [
@@ -86,8 +87,14 @@ CLASS({
           );
           // reset editor 
           this.newMessage = '';
+          this.setTimeout(function() { 
+            this.scrollEl && this.scrollEl.id$el.scrollIntoView(false);
+           }.bind(this), 300);
         }
       }
+    },
+    {
+      name: 'scrollEl',
     }
   ],
 
@@ -113,15 +120,16 @@ CLASS({
       var e = this.Element.create(null, Y.sub({controllerMode: 'rw'}));
       e.style({ display: 'flex', 'flex-direction': 'column'})
 //        .start().add(this.titleText$).cls('md-subhead').end()
-        .start().add(this.DAOListView.create({
-            mode: 'read-only',
-            name: this.description,
-            data: this.dao,
-            rowView: this.contentRowE || this.contentRowView,
-          }, Y))
-          .on('click', function() { e.id$el.scrollIntoView(false); })
-        .end()
-        .add(this.NEW_MESSAGE)
+      .start().add(this.DAOListView.create({
+          mode: 'read-only',
+          name: this.description,
+          data: this.dao,
+          rowView: this.contentRowE || this.contentRowView,
+        }, Y))
+        .on('click', function() { e.id$el.scrollIntoView(false); })
+      .end()
+      .add(this.NEW_MESSAGE);
+      this.scrollEl = e;
       return e;
     },
     
