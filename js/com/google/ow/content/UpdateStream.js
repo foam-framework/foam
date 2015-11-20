@@ -20,7 +20,13 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValue: 'Your order',
+      defaultValueFn: function() {
+        return this.X.envelope ?
+            this.X.envelope.owner === this.X.envelope.source ?
+            'Your order' :
+            'Customer order' :
+            'Order';
+      },
     },
   ],
 

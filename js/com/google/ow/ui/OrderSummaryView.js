@@ -11,7 +11,7 @@
 
 CLASS({
   package: 'com.google.ow.ui',
-  name: 'OrderView',
+  name: 'OrderSummaryView',
   extends: 'foam.u2.View',
 
   requires: [
@@ -21,7 +21,7 @@ CLASS({
   exports: [ 'data' ],
 
   properties: [
-    [ 'nodeName', 'ORDER' ]
+    [ 'nodeName', 'ORDER-SUMMARY' ]
   ],
 
   methods: [
@@ -48,14 +48,14 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      order {
+      order-summary {
         display: flex;
         flex-direction: column;
       }
-      order .heading, order .total {
+      order-summary .heading, order-summary .total {
         padding: 10px 5px;
       }
-      order .total {
+      order-summary .total {
         display: flex;
         justify-content: space-between;
       }

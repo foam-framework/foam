@@ -40,6 +40,7 @@ CLASS({
   imports: [
     'console',
     'idGenerator',
+    'exportToContext',
     'exportDAO',
     'exportDirectory',
   ],
@@ -98,7 +99,9 @@ CLASS({
     {
       name: 'streamDAO_',
       lazyFactory: function() {
-        return this.ProxyDAO.create({ delegate: this.streamDAO_no_loopback });
+        return this.ProxyDAO.create({
+          delegate: this.streamDAO_no_loopback.orderBy(this.Envelope.TIMESTAMP),
+        });
       },
     },
     {
@@ -110,7 +113,7 @@ CLASS({
           daoType: this.MDAO,
           guid: true,
           isServer: true,
-          autoIndex: true,
+          // autoIndex: true,
           // logging: true,
         }, this.Y);
       },
@@ -215,18 +218,12 @@ CLASS({
       });
       for ( var i = 0; i < dataPaths.length; ++i ) {
         try {
-          console.log('TRY', dataPaths[i]);
           var result = this.fs.readFileSync(dataPaths[i]);
           if ( result ) {
-            console.log('GOT', dataPaths[i]);
             JSONUtil.arrayToObjArray(this.Y, eval('(' + result + ')'), model).select(dao);
             break;
-          } else {
-            console.log('1 FAILED', dataPaths[i]);
           }
-        } catch (e) {
-          console.log('2 FAILED', dataPaths[i], e);
-        }
+        } catch (e) {}
       }
 
       return dao;
@@ -234,6 +231,9 @@ CLASS({
     function execute() {
       this.exportDAO(this.streamDAO);
       this.exportDAO(this.personDAO);
+      this.exportToContext({
+        streamDAO: this.streamDAO_,
+      });
       this.exportDirectory('/static', 'static');
       this.loadData();
     },
@@ -252,6 +252,7 @@ CLASS({
                 self.streamDAO_.put(self.Envelope.create({
                   owner: '0',
                   source: '0',
+                  sid: 'DO_NOT_SHOW',
                   substreams: baseAdStreamEnv.substreams.map(
                     function(sid) { return sid + '/' + ad.id; }),
                   data: adStream

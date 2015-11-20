@@ -25,6 +25,7 @@ CLASS({
   ],
   exports: [
     'log',
+    'exportToContext',
     'exportDAO',
     'exportFile',
     'exportDirectory',
@@ -124,6 +125,12 @@ CLASS({
           this.log_("Loaded ", m.id);
         }.bind(this));
       }
+    },
+    function exportToContext(args) {
+      Object_forEach(args, function(v, k) {
+        debugger;
+        this.Y[k] = v;
+      }.bind(this));
     },
     function exportDAO(dao, opt_name) {
       opt_name = opt_name || ( dao.model.id + "DAO" );

@@ -28,6 +28,11 @@ CLASS({
       },
     },
     {
+      model_: 'DateTimeProperty',
+      name: 'timestamp',
+      factory: function() { return new Date(); },
+    },
+    {
       model_: 'BooleanProperty',
       name: 'promoted',
       defaultValue: false,
@@ -77,6 +82,7 @@ CLASS({
       var str = (this.data && this.data.model_ ? this.data.model_.id : '') + '(' +
           '\n  envelope id: ' + this.id +
           '\n  data id: ' + (this.data ? this.data.id : '') +
+          '\n  timestamp: ' + this.timestamp.toString() +
           '\n  source: ' + this.source +
           '\n  owner: ' + this.owner +
           '\n  sid: ' + this.sid +

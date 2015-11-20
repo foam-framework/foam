@@ -33,13 +33,7 @@ CLASS({
     shared. */},
 
   properties: [
-    {
-      name: 'id',
-      lazyFactory: function() {
-        debugger; // Should never happen.
-        return createGUID();
-      },
-    },
+    'id',
     {
       model_: 'StringProperty',
       name: 'name',

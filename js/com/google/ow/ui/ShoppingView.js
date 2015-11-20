@@ -17,7 +17,7 @@ CLASS({
   requires: [
     'com.google.ow.model.Envelope',
     'com.google.ow.model.Order',
-    'com.google.ow.ui.OrderView',
+    'com.google.ow.ui.OrderSummaryView',
     'com.google.ow.ui.ShoppingItemView',
     'com.google.plus.ShareList',
     'foam.u2.DAOListView',
@@ -52,10 +52,13 @@ CLASS({
       type: 'com.google.ow.model.Order',
       name: 'purchaseOrder',
       factory: function() {
-        return this.Order.create(null, this.Y);
+        return this.Order.create({
+          customer: this.X.envelope.owner,
+          merchant: this.X.envelope.source,
+        }, this.Y);
       },
       toPropertyE: function(X) {
-        return X.lookup('com.google.ow.ui.OrderView').create({
+        return X.lookup('com.google.ow.ui.OrderSummaryView').create({
           data: X.purchaseOrder,
         }, X);
       },
