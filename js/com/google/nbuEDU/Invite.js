@@ -55,9 +55,10 @@ CLASS({
       var self = this;
       var Y = (X || self.Y);
       return self.Element.create(null, Y).add(
-        function() { return ( self.complete ) ?
-          self.toCitationE(Y).add("TODO: show control panel stuff here") :
-          self.ClientSignup.create({ sid: self.signupSid }, Y).toDetailE(Y)
+        function() { //return ( self.complete ) ?
+          var nY = ( self.complete ) ? Y.sub({controllerMode: 'ro'}) : Y
+          //self.toCitationE(Y).add("TODO: show control panel stuff here") :
+          return self.ClientSignup.create({ sid: self.signupSid }, nY).toDetailE(nY);
         }.on$(self.complete)
       );
     },

@@ -86,7 +86,7 @@ CLASS({
   methods: [
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
-      var Y = (X || this.Y).sub({ controllerMode: 'read-only' });
+      var Y = (X || this.Y).sub({ controllerMode: 'ro' });
       this.envelope_ = X.envelope;
       return this.Element.create(null, Y)
         .start().style({

@@ -141,7 +141,7 @@ CLASS({
       if ( X.envelope ) this.envelope = X.envelope; // TODO: propagate envelope better
 
       var Y = (X || this.Y).sub({ data: this });
-      return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
+      return this.Element.create(null, Y.sub({controllerMode: 'rw'}))
         .start().style({
           'display': 'flex',
           'flex-direction': 'row',

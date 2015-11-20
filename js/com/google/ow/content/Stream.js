@@ -172,7 +172,7 @@ CLASS({
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
       var Y = X || this.Y;
-      return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
+      return this.Element.create(null, Y.sub({controllerMode: 'ro'}))
         .style({ display: 'flex', 'flex-grow': 1, 'flex-direction': 'column' })
         .add(this.DAOController.create({
           name: this.description,

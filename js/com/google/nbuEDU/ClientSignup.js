@@ -152,9 +152,9 @@ CLASS({
           height:'calc(100% - 57px)',
         })
           .start().style({ 'margin': '16px', 'flex-grow': '1' }).cls('md-flex-col')
-            .start('p').add(this.titleText$).cls('md-title').end()
+            .start('p').add((Y.controllerMode !== 'ro') ? this.titleText$ : '').cls('md-title').end()
             .start('p').add(this.currentUser.displayName).cls('md-subhead').end()
-            .start('p').add(this.description$).cls('md-subhead').end()
+            .start('p').add((Y.controllerMode !== 'ro') ? this.description$ : '').cls('md-subhead').end()
             .start().add(this.LANGUAGE).end()
             .start().style({
               'display': 'flex',

@@ -28,7 +28,7 @@ CLASS({
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toCitationE(X) {
       var Y = (X || this.Y).sub({'selection$': null});;
-      return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
+      return this.Element.create(null, Y.sub({controllerMode: 'ro'}))
         .style({ display: 'flex', 'flex-grow': 1, 'flex-direction': 'column' })
         .start().add(this.description$).style({ margin: 10 }).end()
         .add(this.DAOListView.create({
