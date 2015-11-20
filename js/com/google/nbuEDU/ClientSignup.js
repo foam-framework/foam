@@ -149,8 +149,9 @@ CLASS({
         .start().style({
           'display': 'flex',
           'flex-direction': 'column',
+          height:'calc(100% - 57px)',
         })
-          .start().style({ 'margin': '16px', 'overflow-y': 'auto' })
+          .start().style({ 'margin': '16px', 'flex-grow': '1' }).cls('md-flex-col')
             .start('p').add(this.titleText$).cls('md-title').end()
             .start('p').add(this.currentUser.displayName).cls('md-subhead').end()
             .start('p').add(this.description$).cls('md-subhead').end()
@@ -165,7 +166,20 @@ CLASS({
             .end()
             .start().add(this.LOCATION).end()
             .start().add(this.SCHOOL_BOARD).end()
-            .add(this.DONE)
+            .start().style({
+              'display': 'flex',
+              'flex-direction': 'column',
+              'justify-content': 'flex-end',
+              'flex-grow': '1',
+            })
+              .start().style({
+                'display': 'flex',
+                'flex-direction': 'row',
+                'justify-content': 'flex-end',
+              })
+                .add(this.DONE)
+              .end()
+            .end()
           .end()
         .end();
     },
