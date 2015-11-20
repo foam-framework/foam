@@ -237,7 +237,7 @@ CLASS({
       this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
 
       // hack to fix missing updates when the server creates new streamDAO items
-      var pollEnvelope = this.Envelope.create({ owner: this.currentUser.id, id: 'pollEnv1212' });
+      var pollEnvelope = this.Envelope.create({ owner: this.currentUser.id, id: 'pollEnv1212', data: "fake!", sid: 'fakeSID34343434434' });
       this.X.setInterval(function() {
         pollEnvelope.owner = this.currentUser.id;
         this.streamDAO.put(pollEnvelope)
