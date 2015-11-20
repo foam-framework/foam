@@ -34,7 +34,12 @@ CLASS({
       lazyFactory: function() {
         return console.log.bind(console, this.name);
       }
-    }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'logReads',
+      defaultValue: false
+    },
   ],
 
   methods: [
@@ -47,13 +52,16 @@ CLASS({
       this.SUPER(query, sink);
     },
     function select(sink, options) {
-      var put = sink.put.bind(sink);
-      var newSink = { __proto__: sink };
-      newSink.put = function(o) {
-        this.logger('read', o);
-        return put.apply(null, arguments);
-      }.bind(this);
       this.logger('select', options || "");
+      if ( this.logRead ) {
+        var put = sink.put.bind(sink);
+        var newSink = { __proto__: sink };
+        newSink.put = function(o) {
+          this.logger('read', o);
+          return put.apply(null, arguments);
+        }.bind(this);
+        return this.SUPER(newSink, options);
+      }
       return this.SUPER(newSink, options);
     },
     function removeAll(sink, options) {
