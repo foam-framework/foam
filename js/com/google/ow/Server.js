@@ -49,7 +49,6 @@ CLASS({
     // TODO(markdittmer): This bypasses authorization for server components.
     // We should do better.
     'streamDAO_ as streamDAO',
-    'streamDAO_no_loopback', // TODO: remove this, probably unnecessary in the one place it is used
     'createStreamItem',
   ],
 
@@ -99,14 +98,6 @@ CLASS({
     {
       name: 'streamDAO_',
       lazyFactory: function() {
-        return this.ProxyDAO.create({
-          delegate: this.streamDAO_no_loopback.orderBy(this.Envelope.TIMESTAMP),
-        });
-      },
-    },
-    {
-      name: 'streamDAO_no_loopback',
-      lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Envelope,
           name: 'streams',
@@ -115,7 +106,7 @@ CLASS({
           isServer: true,
           // autoIndex: true,
           // logging: true,
-        }, this.Y);
+        }, this.Y).orderBy(this.Envelope.TIMESTAMP);
       },
     },
     {

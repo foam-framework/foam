@@ -29,7 +29,6 @@ CLASS({
 
   imports: [
     'envelope', // used client-side
-    'streamDAO_no_loopback',
     'streamDAO',
   ],
 
@@ -104,7 +103,6 @@ CLASS({
     function put(envelope, sink, yourEnvelope) {
       /* Server: this is a substream target, implement put handler */
       console.log("VotablePut");
-      if ( ! this.streamDAO_no_loopback ) { console.warn("No streamDAO in Votable!"); return; }
       
       var self = this;
       // Since this should be running on the server, grab all the owners
@@ -119,7 +117,7 @@ CLASS({
 
       self.tally = 0;
       self.count = 0;
-      self.streamDAO_no_loopback.where(EQ(self.Envelope.SID, self.sid)).select({
+      self.streamDAO.where(EQ(self.Envelope.SID, self.sid)).select({
         put: function(vote) {
           //console.log("Tally", self.tally, self.count, vote.data.vote);
           self.tally += vote.data.vote;
@@ -130,7 +128,7 @@ CLASS({
 
           console.assert(yourEnvelope.data.id === self.id, "Vote.put yourEnvelope does not contain this!");
           yourEnvelope.data = self;
-          self.streamDAO_no_loopback.put(yourEnvelope); // check that sync is inc'd
+          self.streamDAO.put(yourEnvelope); // check that sync is inc'd
         },
       });
     },

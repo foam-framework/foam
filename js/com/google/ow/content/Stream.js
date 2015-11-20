@@ -113,14 +113,14 @@ CLASS({
       var self = this;
       // propagate out the object to other owners, but only if we own it
       if ( envelope.owner !== yourEnvelope.owner ) return;
-      console.log("Processing new env for stream ", yourEnvelope.substreams[0], yourEnvelope.owner, envelope.data.id);
+      //console.log("Processing new env for stream ", yourEnvelope.substreams[0], yourEnvelope.owner, envelope.data.id);
       // Since this should be running on the server, grab all the owners
       // of this contentIndex, based on stream id, and share the new substream
       // content with those ownerIds.
       self.streamDAO.where(EQ(self.Envelope.SUBSTREAMS, self.substreams[0])).select(
         MAP(self.Envelope.OWNER, { put: function(ownerId) {
           // if an envelope doens't already exist, make one
-          console.log("Stream put for owner", ownerId);
+          //console.log("Stream put for owner", ownerId);
           var found = false;
           self.streamDAO.where(
             AND(
@@ -132,13 +132,13 @@ CLASS({
             put: function(env) {
               if (env.data.id !== envelope.data.id) return;
               // existing envelope for the content
-              console.log("Stream: Found existing", env.data.id, env);
+              //console.log("Stream: Found existing", env.data.id, env);
               found = true;
               // TODO: try to merge/update the content?
             },
             eof: function() {
               if ( ! found ) {
-                console.log("Stream: not found, copying:", envelope);
+                //console.log("Stream: not found, copying:", envelope);
                 self.streamDAO.put(self.createStreamItem(
                   self.substreams[0],
                   ownerId,
