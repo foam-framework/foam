@@ -126,6 +126,8 @@ CLASS({
         }.bind(this));
       }
     },
+    // TODO(markdittmer): We shouldn't be mutating contexts. We should have
+    // a robust enough ContextualizingDAO to take care of this.
     function exportToContext(args) {
       Object_forEach(args, function(v, k) {
         this.Y[k] = v;
