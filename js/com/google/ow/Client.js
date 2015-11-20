@@ -170,7 +170,7 @@ CLASS({
           sockets: true,
           syncWithServer: true,
           // logging: true,
-        }, this.Y);
+        }, this.Y).orderBy(this.Envelope.TIMESTAMP);
         dao.listen({
           put: function(e) {
             console.log('Put', e.toString());

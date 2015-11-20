@@ -176,7 +176,7 @@ CLASS({
       var Y = X || this.Y;
       return this.Element.create(null, Y.sub({controllerMode: 'ro'}))
         .style({ display: 'flex', 'flex-grow': 1, 'flex-direction': 'column' })
-        .add(this.DAOController.create({
+        .add(this.DAOListView.create({
           name: this.description,
           data: this.dao,
           rowView: this.contentRowE || this.contentRowView,
