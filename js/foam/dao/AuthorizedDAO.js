@@ -37,12 +37,12 @@ CLASS({
   ],
 
   methods: [
-    function adelegateFind_(id) {
+    function adelegateFind_(id, X) {
       return function(ret) {
         this.delegate.find(id, {
           put: ret,
           error: function() { ret(null); }
-        });
+        }, X);
       }.bind(this);
     },
     function put(obj, sink, opt_X) {
@@ -76,7 +76,7 @@ CLASS({
                   ret();
                 }, opt_X, postPut);
               }
-            });
+            }, opt_X);
           }
         }
       )(function(massaged) {
@@ -224,7 +224,7 @@ CLASS({
       if ( options ) {
         mysink = AbstractDAO.getPrototype().decorateSink_(sink, options, true);
       }
-      this.delegate.listen(mysink);
+      this.delegate.listen(mysink, opt_X);
     },
     function where(query) {
       return X.FilteredDAO_.create({ query: query, delegate: this }, this.Y);
