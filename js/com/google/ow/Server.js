@@ -32,21 +32,24 @@ CLASS({
     'foam.dao.AuthorizedDAO',
     'foam.dao.DebugAuthDAO',
     'foam.dao.EasyDAO',
+    'foam.dao.ProxyDAO',
     'foam.dao.LoggingDAO',
     'foam.dao.PrivateOwnerAuthorizer',
     'foam.mlang.PropertySequence',
-    'foam.node.dao.JSONFileDAO',
   ],
   imports: [
     'console',
     'idGenerator',
+    'exportToContext',
     'exportDAO',
+    'exportDirectory',
   ],
   exports: [
     'personDAO',
     // TODO(markdittmer): This bypasses authorization for server components.
     // We should do better.
     'streamDAO_ as streamDAO',
+    'streamDAO_no_loopback', // TODO: remove this, probably unnecessary in the one place it is used
     'createStreamItem',
   ],
 
@@ -58,6 +61,10 @@ CLASS({
   },
 
   properties: [
+    {
+      name: 'fs',
+      factory: function() { return require('fs'); }
+    },
     {
       name: 'util',
       lazyFactory: function() { return require('util'); },
@@ -92,12 +99,21 @@ CLASS({
     {
       name: 'streamDAO_',
       lazyFactory: function() {
+        return this.ProxyDAO.create({
+          delegate: this.streamDAO_no_loopback.orderBy(this.Envelope.TIMESTAMP),
+        });
+      },
+    },
+    {
+      name: 'streamDAO_no_loopback',
+      lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Envelope,
           name: 'streams',
           daoType: this.MDAO,
           guid: true,
           isServer: true,
+          // autoIndex: true,
           // logging: true,
         }, this.Y);
       },
@@ -175,7 +191,8 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.streamDAO_.listen(this.SubstreamSink.create(null, this.Y));
+      // Done in loadData at the moment
+      //this.streamDAO_.listen(this.SubstreamSink.create(null, this.Y));
     },
     function authorizeFactory(model, delegate) {
       return this.DebugAuthDAO.create({
@@ -189,20 +206,35 @@ CLASS({
       }, this.Y);
     },
     function dataFactory(name, model) {
-      return this.EasyDAO.create({
+      var dao = this.EasyDAO.create({
         name: name,
         model: model,
-        daoType: this.JSONFileDAO.xbind({
-          filename: this.DATA_PATHS.map(function(p) {
-            return p + name + '.json';
-          })
-        }),
+        daoType: this.MDAO,
         guid: true,
       }, this.Y);
+
+      var dataPaths = this.DATA_PATHS.map(function(p) {
+        return p + name + '.json';
+      });
+      for ( var i = 0; i < dataPaths.length; ++i ) {
+        try {
+          var result = this.fs.readFileSync(dataPaths[i]);
+          if ( result ) {
+            JSONUtil.arrayToObjArray(this.Y, eval('(' + result + ')'), model).select(dao);
+            break;
+          }
+        } catch (e) {}
+      }
+
+      return dao;
     },
     function execute() {
       this.exportDAO(this.streamDAO);
       this.exportDAO(this.personDAO);
+      this.exportToContext({
+        streamDAO: this.streamDAO_,
+      });
+      this.exportDirectory('/static', 'static');
       this.loadData();
     },
     function loadData() {
@@ -220,6 +252,7 @@ CLASS({
                 self.streamDAO_.put(self.Envelope.create({
                   owner: '0',
                   source: '0',
+                  sid: 'DO_NOT_SHOW',
                   substreams: baseAdStreamEnv.substreams.map(
                     function(sid) { return sid + '/' + ad.id; }),
                   data: adStream
@@ -228,7 +261,31 @@ CLASS({
             });
           } else if ( o.data.name === 'Test Videos' ) {
             videoStreamEnv = o;
-            self.streamDAO_.put(o);
+            self.personDAO_.pipe({
+              put: function(person) {
+                //console.log("Person vid list create", person.id, videoStreamEnv.substreams);
+                self.streamDAO_.put(self.Envelope.create({
+                  owner: person.id,
+                  source: '0',
+                  substreams: videoStreamEnv.substreams,
+                  sid: videoStreamEnv.sid,
+                  data: videoStreamEnv.data.clone(),
+                }));
+              }
+            });
+          } else if ( o.data.name === 'User Data' ) {
+            self.personDAO_.pipe({
+              put: function(person) {
+                console.log("Person *** data create", o.data.name_, person.id);
+                self.streamDAO_.put(self.Envelope.create({
+                  owner: person.id,
+                  source: '0',
+                  substreams: o.substreams,
+                  sid: o.sid,
+                  data: o.data.clone(),
+                }));
+              }
+            });
           } else {
             self.streamDAO_.put(o);
           }
@@ -240,43 +297,48 @@ CLASS({
       // Give everyone the ads and videos.
       this.personDAO_.pipe({
         put: function(person) {
-          // put in copies of the root streams
-          var adStrEnv = baseAdStreamEnv.deepClone();
-          adStrEnv.owner = person.id;
-          this.streamDAO_.put(adStrEnv);
+          console.log("Person put!", person.id);
 
-          var vidStrEnv = videoStreamEnv.deepClone();
-          vidStrEnv.owner = person.id;
-          this.streamDAO_.put(vidStrEnv);
-
-
-          this.adData.select({
-            put: function(ad) {
-              this.streamDAO_.put(this.Envelope.create({
-                owner: person.id,
-                source: '0',
-                sid: baseAdStreamEnv.substreams[0],
-                promoted: true,
-              }, this.Y));
-            }.bind(this),
-          });
-          this.videoDAO_.select({
-            put: function(video) {
-              this.streamDAO_.put(this.Envelope.create({
-                owner: person.id,
-                source: '0',
-                data: video,
-                sid: videoStreamEnv.substreams[0],
-              }, this.Y));
-            }.bind(this),
-          });
+          var incr = 0;
+          if ( baseAdStreamEnv ) {
+            this.adData.select({
+              put: function(ad) {
+                this.streamDAO_.put(this.Envelope.create({
+                  owner: person.id,
+                  source: '0',
+                  sid: baseAdStreamEnv.substreams[0],
+                  promoted: true,
+                  data: ad,
+                }, this.Y));
+              }.bind(this),
+            });
+          }
+          if ( videoStreamEnv ) {
+            this.videoDAO_.select({
+              put: function(video) {
+                //console.log("Create vid:",person.id, video.id, videoStreamEnv.substreams[0]);
+                this.streamDAO_.put(this.Envelope.create({
+  //                id: 'fakeIDVid'+incr++,
+                  owner: person.id,
+                  source: incr,
+                  data: video,
+                  sid: videoStreamEnv.substreams[0] + '/fakeIDVid'+incr,
+                  substreams: [videoStreamEnv.substreams[0] + '/fakeIDVid'+incr],
+                }, this.Y));
+                //console.log('vid sid:',videoStreamEnv.substreams[0] + '/fakeIDVid'+incr);
+              }.bind(this),
+            });
+          }
         }.bind(this),
       });
       // Bootstrap video data.
-      this.videoData.select(this.videoDAO_);
+      this.videoData.select(this.videoDAO_)(function() {
+        // Bootstrap people.
+        this.personData.select(this.personDAO_)(function() {
+           this.streamDAO_.listen(this.SubstreamSink.create(null, this.Y));
+        }.bind(this));
+      }.bind(this));
 
-      // Bootstrap people.
-      this.personData.select(this.personDAO_);
     },
   ],
 });

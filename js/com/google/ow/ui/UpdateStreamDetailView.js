@@ -11,35 +11,28 @@
 
 CLASS({
   package: 'com.google.ow.ui',
-  name: 'EnvelopeDetailView',
-  extends: 'foam.u2.View',
+  name: 'UpdateStreamDetailView',
+  extends: 'com.google.ow.ui.UpdateStreamView',
 
-  requires: [
-    'foam.u2.DetailView',
-  ],
-
-  exports: [
-    'data as envelope',
-    'data',
-  ],
+  exports: [ 'data' ],
 
   properties: [
-    [ 'nodeName', 'ENVELOPE-DETAIL' ],
+    [ 'nodeName', 'UPDATE-STREAM' ],
   ],
 
   methods: [
     function initE() {
-      var d = this.data.data;
-      return this.add(d.toDetailE ? d.toDetailE(this.Y) :
-          this.DetailView.create({ data: d }, this.Y));
+      // TODO(markdittmer): Add differences between versions.
+      return this.add(function (versions) {
+        var version = versions[versions.length - 1];
+        return version ? version.toDetailE(this.Y) : '';
+      }.bind(this).on$(this.X, this.versions$));
     },
   ],
 
   templates: [
     function CSS() {/*
-      envelope-citation {
-        display: block;
-      }
+      update-stream { display: block; }
     */},
   ],
 });

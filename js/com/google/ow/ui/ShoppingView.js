@@ -17,7 +17,7 @@ CLASS({
   requires: [
     'com.google.ow.model.Envelope',
     'com.google.ow.model.Order',
-    'com.google.ow.ui.OrderView',
+    'com.google.ow.ui.OrderSummaryView',
     'com.google.ow.ui.ShoppingItemView',
     'com.google.plus.ShareList',
     'foam.u2.DAOListView',
@@ -52,10 +52,13 @@ CLASS({
       type: 'com.google.ow.model.Order',
       name: 'purchaseOrder',
       factory: function() {
-        return this.Order.create(null, this.Y);
+        return this.Order.create({
+          customer: this.X.envelope.owner,
+          merchant: this.X.envelope.source,
+        }, this.Y);
       },
       toPropertyE: function(X) {
-        return X.lookup('com.google.ow.ui.OrderView').create({
+        return X.lookup('com.google.ow.ui.OrderSummaryView').create({
           data: X.purchaseOrder,
         }, X);
       },
@@ -89,8 +92,27 @@ CLASS({
         return ! this.purchaseOrder.isEmpty;
       },
       code: function(X) {
-        var env = X.purchaseOrder.toEnvelope(X);
-        X.streamDAO.put(env);
+        var envelope = X.envelope;
+        var envSid = envelope.sid;
+        // X.data.id = ad id.
+        var adSid = envSid + ((X.data && X.data.id) ? '/' + X.data.id : '');
+        var orderSid = envSid + ((X.purchaseOrder && X.purchaseOrder.id) ?
+            '/' + X.purchaseOrder.id : '');
+        // Customer's order stream.
+        X.streamDAO.put(X.purchaseOrder.toStream(X).toEnvelope(X.sub({
+          substreams: [orderSid],
+        })));
+        // Order processed by order streams.
+        X.streamDAO.put(X.purchaseOrder.toEnvelope(X.sub({
+          sid: orderSid,
+        })));
+        // Notification of order for ad stream.
+        X.streamDAO.put(X.lookup('com.google.ow.model.Envelope').create({
+          source: envelope.owner,
+          owner: envelope.owner,
+          sid: adSid,
+          data: orderSid,
+        }));
         X.stack.popView();
       },
     },

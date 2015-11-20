@@ -18,7 +18,7 @@
 // TODO(kgr): add rotation to CView to complete demo
 CLASS({
   package: 'foam.demos.modeldiagram',
-  name: 'ModelDiagram',
+  name: 'ModelDiagramOW',
   extends: 'foam.graphics.CView',
 
   requires: [
@@ -59,7 +59,7 @@ CLASS({
         height: 680
       });
 
-      GLOBAL.anim = this;
+      GLOBAL.robot = robot;
       this.addChildren(v, robot, cls, display);
 
       function addImage(parent, src) {
@@ -98,7 +98,7 @@ CLASS({
         },
         [0],
         [500, function() {
-          cls.x += 150;
+          cls.alpha = 0;
         }],
         function() {
           v.width += 200;
@@ -175,6 +175,7 @@ var p = this.Person.create({
         { name: '.clone()' },
         { name: '.equals()' },
         { name: '.compareTo()' },
+        { name: '.diff()' },
         { name: 'Observer' },
         { name: 'XML', factory: multiline(function() {/*
 > p.toXML();
@@ -203,22 +204,15 @@ var p = this.Person.create({
         { name: 'MD View', factory: function() { return self.MDDetailView.create({data:p}); } },
         { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); } },
         { name: 'List View' },
-        { name: 'Help View', factory: function() { return self.HelpView.create({model:Model}); } },
         { name: 'Grid View', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="border:1px solid;max-height:510px" width="35%" src="./js/foam/demos/modeldiagram/WarpedGrid.png">'; }, initHTML: function() { }}; } },
         { name: 'Query' },
         { name: 'Local Store' },
         { name: 'IndexedDB' },
         { name: 'ClientDAO' },
-        { name: 'ServerDAO' },
         { name: 'Offline' },
-        { name: 'FileDAO' },
-        { name: 'MongoDB' },
-        { name: 'Postgres' },
         { name: 'Cloud Store' },
         { name: 'Firebase' },
         { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" height="55%" style="margin-left: 100px;border:1px solid;max-height:510px" src="./demos/democat/GMail.png">'; }, initHTML: function() { }}; } },
-        { name: 'UML', factory: function() { return self.DocDiagramView.create({data:self.Person}); }},
-//        { name: 'Docs', factory: function() { return self.DocViewPicker.create({data:self.Person}); }},
         { name: '...' }
       ];
 
@@ -229,62 +223,22 @@ var p = this.Person.create({
       anim.push([0]);
       fs.forEach(function(f) { f.factory = false; f.pause = false; });
       fs[0].factory = self.JavaSource.create().generate(self.Person);
-      anim.push([500, function() { self.scaleX = self.scaleY = 0.7; }]);
+      anim.push([300, function() { self.scaleX = self.scaleY = 0.7; }]);
       fnum = 0;
-      fs.forEach(function(f) { feature(f, anim, 900, 0, 0.2); });
+      fs.forEach(function(f) { feature(f, anim, 900, 0, 0.1); });
 
-      // Swift
-      anim.push([0]);
-      fs[0].factory = self.SwiftSource.create().generate(self.Person);
-      anim.push([500, function() { self.scaleX = self.scaleY = 0.65 * 0.65; }]);
-      fnum = 0;
-      fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.15); });
-
-      // Unit Tests
       anim.push([0]);
       anim.push(function() {
-        var cs = self.children.clone();
-        for ( var j = 0 ; j < cs.length ; j++ ) {
+        var cs = self.children;
+        for ( var j = cs.length-1 ; j > -1 ; j-- ) {
           var c = cs[j];
-          if ( self.Box.isInstance(c) ) {
-            if ( c.text !== 'Model') {
-              c = self.Box.create({alpha: 0, text: 'Unit Test', x: c.x+15, y: c.y-15, width: c.width, height: c.height, color: c.color, font: c.font, background: 'pink'});
-              self.addChildren(c);
-            }
-          }
+          if ( self.Box.isInstance(c) && ( c.x > 1295 || c.y > 765 ) ) self.removeChild(c);
         }
       });
-      anim.push([1000, function() {
-        var cs = self.children.clone();
-        for ( var j = 0 ; j < cs.length ; j++ ) {
-          var c = cs[j];
-          if ( self.Box.isInstance(c) && c.text === 'Unit Test') c.alpha = 0.25;
-        }
-      }]);
+      anim.push([800, function() { robot.scaleX += 0.0001; self.scaleX = self.scaleY = 1.1; }]);
 
       anim.push([0]);
-      anim.push([1000, function() {
-        var cs = self.children.clone();
-        for ( var j = 0 ; j < cs.length ; j++ ) {
-          var c = cs[j];
-          if ( self.Box.isInstance(c) && c.text === 'Unit Test' ) self.removeChild(c);
-        }
-      }]);
-
-      // Other
-      anim.push([0]);
-      var anim2 = [];
-      anim.push(anim2);
-      for ( var i = 0 ; i < 3 ; i++ ) {
-        var anim3 = [];
-        anim2.push(anim3);
-        fs.forEach(function(f) { f.factory = false; f.pause = false; });
-        fnum = 0;
-        fs.forEach(function(f) { feature(f, anim3, 900*i, 1000, 0.15); });
-      }
-
-      anim.push([0]);
-      anim.push(function() { robot.timer.stop(); robot.timer.i = 0;});
+      anim.push(function() { robot.timer.stop(); robot.timer.i = 45; robot.timer.time = 0; });
       anim.push(function() {
         var cs = self.children.clone();
         for ( var i = 1 ; i < 15 ; i++ ) {
@@ -298,27 +252,21 @@ var p = this.Person.create({
               }
             }
           }
-          }.bind(self, i), i * 150);
+          }.bind(self, i), i * 50);
         }
       });
 
-      anim.push([0]);
-      anim.push(function() {
-        var cs = self.children;
-        for ( var j = cs.length-1 ; j > -1 ; j-- ) {
-          var c = cs[j];
-          if ( self.Box.isInstance(c) && ( c.x > 1295 || c.y > 765 ) ) self.removeChild(c);
-        }
-      });
-      anim.push([1000, function() { robot.scaleX += 0.0001; self.scaleX = self.scaleY = 1; }]);
       anim.push([0]);
       anim.push(function() { self.removeChild(robot); self.addChildren(robot); });
-      anim.push([1000, function() { robot.x = v.x-25; robot.y += 35; }]);
+      anim.push([1000, function() { robot.x = v.x-40; robot.y += 65; }]);
       anim.push([0]);
-      anim.push([800, function() { robot.scaleX = robot.scaleY = 18; }]);
+      anim.push([800, function() { robot.scaleX = robot.scaleY = 25; }]);
       anim.push([0]);
       anim.push([800, function() { robot.scaleX = robot.scaleY = 3; }]);
+      anim.push([0]);
+      anim.push([400, function() { robot.y -= 600; }, Movement.easeIn(1)]);
 
+      /*
       anim.push([0]);
       anim.push(function() { self.removeChild(v); self.addChildren(v); });
       anim.push([1000, function() { v.scaleX = v.scaleY = 5; }]);
@@ -329,29 +277,10 @@ var p = this.Person.create({
       anim.push([0]);
       anim.push(function() { v.text = "Parser Model"; });
       anim.push([0]);
-      anim.push(function() { v.font = '12pt Arial'; v.text = "Concurrency Model"; });
-      anim.push([0]);
       anim.push(function() { v.font = '14pt Arial'; v.text = "Animation Model"; });
       anim.push([0]);
-      anim.push(function() { v.font = '18pt Arial'; v.text = "Kiosk Model"; });
-      anim.push([0]);
       anim.push(function() { v.alpha = 0; });
-
-      /*
-      // Your Stack Here
-      anim.push([0]);
-      var ys1 = self.Box.create({x: 1550, y: 1060, width: 660, height: 850, scaleX: 0, scaleY: 0, font: '50pt Arial', text: 'Your Stack Here'});
-      var ys2 = self.Box.create({x: 1550, y: 1060, width: 0, height: 0, font: '50pt Arial'});
-      var ys3 = self.Box.create({x: 1550, y: 1060, width: 0, height: 0, font: '50pt Arial'});
-      var ys4 = self.Box.create({x: 1550, y: 1060, width: 0, height: 0, font: '50pt Arial'});
-      this.addChildren(ys4, ys3, ys2, ys1);
-      anim.push([300, function() { ys1.scaleX = ys1.scaleY = 1; }]);
-      anim.push([300, function() { ys2.width = 660; ys2.height = 850; ys2.x += 40; ys2.y-=40;}]);
-      anim.push([300, function() { ys3.width = 660; ys3.height = 850; ys3.x += 80; ys3.y-=80;}]);
-      anim.push([300, function() { ys4.width = 660; ys4.height = 850; ys4.x += 120; ys4.y-=120;}]);
       */
-
-//      anim.push([500, function() { self.scaleX = self.scaleY = 1; }]);
 
       Movement.compile(anim)();
     },

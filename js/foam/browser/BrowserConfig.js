@@ -236,6 +236,11 @@ CLASS({
       defaultValue: '#3e50b4'
     },
     {
+      name: 'backgroundColor',
+      documentation: 'Globally sets a browser-body-color CSS class',
+      defaultValue: '#ffffff'
+    },
+    {
       name: 'showAllWithNoQuery',
       documentation: 'When there is no query set, should the browser ' +
           'render all the data, or none of it? Defaults to all, set false if ' +

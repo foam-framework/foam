@@ -11,14 +11,17 @@
 
 CLASS({
   package: 'com.google.ow.ui',
-  name: 'OrderView',
+  name: 'OrderSummaryView',
   extends: 'foam.u2.View',
 
-  requires: [ 'foam.u2.DAOListView' ],
+  requires: [
+    'foam.u2.DAOListView',
+    'foam.u2.md.Select',
+  ],
   exports: [ 'data' ],
 
   properties: [
-    [ 'nodeName', 'ORDER' ]
+    [ 'nodeName', 'ORDER-SUMMARY' ]
   ],
 
   methods: [
@@ -35,18 +38,24 @@ CLASS({
           .end()
           .add(this.data.METHOD_OF_PAYMENT);
     },
+    function init() {
+      // For *EnumProperty.toPropertyE().
+      this.Y.registerModel(this.Select, 'foam.u2.Select');
+
+      this.SUPER();
+    },
   ],
 
   templates: [
     function CSS() {/*
-      order {
+      order-summary {
         display: flex;
         flex-direction: column;
       }
-      order .heading, order .total {
+      order-summary .heading, order-summary .total {
         padding: 10px 5px;
       }
-      order .total {
+      order-summary .total {
         display: flex;
         justify-content: space-between;
       }

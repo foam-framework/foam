@@ -33,9 +33,7 @@ CLASS({
     shared. */},
 
   properties: [
-    {
-      name: 'id'
-    },
+    'id',
     {
       model_: 'StringProperty',
       name: 'name',
@@ -43,7 +41,7 @@ CLASS({
     },
     {
       name: 'substreams',
-      lazyFactory: function() { return ['contentIndex/' + this.id]; }
+      lazyFactory: function() { return [this.id]; }
     },
     {
       model_: 'StringProperty',
@@ -63,34 +61,28 @@ CLASS({
       },
       postSet: function(_,model) {
         // Model not always ready in node, but don't need views there anyway
-        if ( ! model.getFeature ) return;
+        if ( ! (model && model.getFeature) ) return;
 
         if ( model.getFeature('toCitationE') ) this.contentRowView = function(args,X) {
-          var d = args.data || X.data;
-          if ( ! d ) {
-            d = args.data$ || X.data$;
-            d = d && d.value;
-          }
-          if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
-          return d.toCitationE(X.sub({ envelope: d })).style({ margin: '8px 0px' });
+          var env = args.data || (args.data$ && args.data$.value) ||  X.data || (X.data$ && X.data$.value);
+          var d = env.data || env;
+          return d.toCitationE(X.sub({ envelope: env })).style({ margin: '8px 0px' });
         }
         if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
-          var d = args.data || X.data;
-          if ( ! d ) {
-            d = args.data$ || X.data$;
-            d = d && d.value;
-          }
-          if ( d.data ) d = d.data; // TODO: hacky! assuming it's an envelope
-          return d.toDetailE(X.sub({ envelope: d })).style({ 'flex-grow': 1, overflow: 'hidden' });
+          var env = args.data || (args.data$ && args.data$.value) ||  X.data || (X.data$ && X.data$.value);
+          var d = env.data || env;
+          return d.toDetailE(X.sub({ envelope: env })).style({ 'flex-grow': 1, overflow: 'hidden' });
         }
       }
     },
     {
+      model_: 'ImportedProperty',
       name: 'dao',
       hidden: true,
       transient: true,
       lazyFactory: function() {
-        return this.streamDAO.where(EQ(this.Envelope.SID, this.substreams[0]));
+        console.log("Stream where:", this.Envelope.SID, this.substreams[0])
+        return this.streamDAO.where(CONTAINS(this.Envelope.SID, this.substreams[0])); // TODO: slightly hacky, path split alternative
       }
     },
     {
@@ -116,9 +108,12 @@ CLASS({
   ],
 
   methods: [
-    function put(envelope, sink) {
+    function put(envelope, sink, yourEnvelope) {
       /* this is a substream target, implement put handler */
       var self = this;
+      // propagate out the object to other owners, but only if we own it
+      if ( envelope.owner !== yourEnvelope.owner ) return;
+
       // Since this should be running on the server, grab all the owners
       // of this contentIndex, based on stream id, and share the new substream
       // content with those ownerIds.
@@ -135,16 +130,18 @@ CLASS({
           .select({
             put: function(env) {
               // existing envelope for the content
+              //console.log("Stream: Found existing");
               found = true;
               // TODO: try to merge/update the content?
             },
             eof: function() {
               if ( ! found ) {
+                console.log("Stream: not found, copying:", envelope);
                 self.streamDAO.put(self.createStreamItem(
                   self.substreams[0],
                   ownerId,
                   envelope.data,
-                  self.substreams[0]
+                  envelope.substreams
                 ));
               }
             }
@@ -154,6 +151,7 @@ CLASS({
     },
     function onShare(source, target, opt_sid) {
       /* React to share events. Called just before this item is shared. */
+      console.log("Sharing stream", source, target, opt_sid);
       var self = this;
       // Duplicate source user's stream content for the new target user
       // TODO: don't duplicate if it's already there?
@@ -174,7 +172,7 @@ CLASS({
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
       var Y = X || this.Y;
-      return this.Element.create(null, Y.sub({controllerMode: 'read-only'}))
+      return this.Element.create(null, Y.sub({controllerMode: 'ro'}))
         .style({ display: 'flex', 'flex-grow': 1, 'flex-direction': 'column' })
         .add(this.DAOController.create({
           name: this.description,

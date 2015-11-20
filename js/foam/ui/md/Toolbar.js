@@ -25,6 +25,7 @@ CLASS({
   properties: [
     'data',
     'title',
+    [ 'extraClassName', 'browser-header-color' ],
     {
       name: 'leftActionList',
       lazyFactory: function() {
