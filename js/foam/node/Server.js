@@ -27,6 +27,7 @@ CLASS({
     'log',
     'exportDAO',
     'exportFile',
+    'addHandler',
     'exportDirectory',
   ],
   imports: [
@@ -124,6 +125,9 @@ CLASS({
           this.log_("Loaded ", m.id);
         }.bind(this));
       }
+    },
+    function addHandler(handler) {
+      this.handlers.push(handler);
     },
     function exportDAO(dao, opt_name) {
       opt_name = opt_name || ( dao.model.id + "DAO" );
