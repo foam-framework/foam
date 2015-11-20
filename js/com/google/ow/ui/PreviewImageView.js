@@ -27,7 +27,7 @@ CLASS({
         }.bind(this).on$(this.X, this.data$),
         width: 80,
         height: 50
-      }).style({ 'margin': '4px' });
+      }).style({ 'margin': '4px', 'flex-shrink':'0' });
     },
   ],
 });
