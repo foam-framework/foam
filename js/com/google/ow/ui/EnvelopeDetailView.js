@@ -11,22 +11,35 @@
 
 CLASS({
   package: 'com.google.ow.ui',
-  name: 'EnvelopeCitationView',
-  extends: 'foam.u2.DetailView',
+  name: 'EnvelopeDetailView',
+  extends: 'foam.u2.View',
 
   requires: [
-    'foam.u2.ActionButton',
-    'foam.ui.md.Toolbar',
+    'foam.u2.DetailView',
+  ],
+
+  exports: [
+    'data as envelope',
+    'data',
   ],
 
   properties: [
-    {
-      name: 'data',
-      adapt: function(old,nu) {
-        //TODO: check if it's an envelope
-        return nu.data;
-      }
-    }
+    [ 'nodeName', 'ENVELOPE-DETAIL' ],
   ],
 
+  methods: [
+    function initE() {
+      var d = this.data.data;
+      return this.add(d.toDetailE ? d.toDetailE(this.Y) :
+          this.DetailView.create({ data: d }, this.Y));
+    },
+  ],
+
+  templates: [
+    function CSS() {/*
+      envelope-citation {
+        display: block;
+      }
+    */},
+  ],
 });

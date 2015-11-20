@@ -3,7 +3,7 @@
     "model_": "com.google.ow.model.Envelope",
     "owner": "0",
     "source": "0",
-    "substreams": ["contentIndex/ci3594342070601638467"],
+    "substreams": ["ci3594342070601638467"],
     "data": {
       "model_": "com.google.ow.content.OrderStream",
       "name": "Test Ad",
@@ -14,7 +14,7 @@
     "model_": "com.google.ow.model.Envelope",
     "owner": "0",
     "source": "0",
-    "substreams": ["contentIndex/ci4873296573765766590"],
+    "substreams": ["ci4873296573765766590"],
     "data": {
       "model_": "com.google.ow.content.Stream",
       "name": "Test Videos",

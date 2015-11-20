@@ -1,0 +1,82 @@
+[
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "owner": "0",
+    "source": "0",
+    "data": {
+      "model_": "com.google.nbuEDU.Invite",
+      "name": "User Data",
+      "signupSid": "nbuEDUSignup",
+      "id": "eduInv124567"
+    }
+  },
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "id" : "singletonSignup2323",
+    "substreams": ["nbuEDUSignup"],
+    "owner": "0",
+    "source": "0",
+    "data": {
+      "model_": "com.google.nbuEDU.ServerSignup",
+      "substreams": ["nbuEDUSignup"],
+      "id": "eduServerSignup124567"
+    }
+  },
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "owner": "0",
+    "source": "0",
+    "substreams": ["eduVidStream487673295"],
+    "sid": "hideMe",
+    "data": {
+      "model_": "com.google.ow.content.PreviewStream",
+      "name": "Test Videos",
+      "titleText": "Video List",
+      "description": "(ignore me)",
+      "model": "com.google.ow.content.VotableVideo",
+      "contentItemView": "foam.ui.md.CitationView",
+      "id": "eduVidStream487673295"
+    }
+  },
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "owner": "0",
+    "source": "0",
+    "substreams": ["eduComments458937"],
+    "data": {
+      "model_": "com.google.ow.content.CommentThread",
+      "name": "User Data",
+      "id": "eduComments458937"
+    }
+  },
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "owner": "0",
+    "source": "0",
+    "sid": "eduComments458937",
+    "data": {
+      "model_": "com.google.ow.content.Message",
+      "name": "User Data",
+      "id": "eduMessageTest223222",
+      "sid": "eduComments458937",
+      "from": "USERID298329398",
+      "content": "Hello! How are you?",
+    }
+  },
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "owner": "0",
+    "source": "0",
+    "sid": "eduComments458937",
+    "data": {
+      "model_": "com.google.ow.content.Message",
+      "name": "User Data",
+      "id": "eduMessageTest2345422",
+      "sid": "eduComments458937",
+      "from": "USERID298345454",
+      "content": "I am learning.",
+    }
+  }
+  
+  
+]

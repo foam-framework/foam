@@ -618,6 +618,29 @@ CLASS({
 
 
 CLASS({
+  name: 'BlobProperty',
+  extends: 'Property',
+  help: 'A chunk of binary data.',
+  label: 'Binary data',
+
+  properties: [
+    {
+      name: 'type',
+      type: 'String',
+      defaultValue: 'Blob',
+      help: 'The FOAM type of this property.',
+    },
+    {
+      name: 'javaType',
+      type: 'String',
+      defaultValue: 'byte[]',
+      help: 'The Java type for this property.',
+    },
+  ]
+});
+
+
+CLASS({
   name:  'ReferenceProperty',
   extends: 'Property',
 
@@ -784,6 +807,7 @@ CLASS({
 //    [ 'type', 'Model' ],
     {
       name: 'getter',
+      labels: ['javascript'],
       defaultValue: function(name) {
         var value = this.instance_[name];
         if ( typeof value === 'undefined' ) {
@@ -816,6 +840,7 @@ CLASS({
     },
     {
       name: 'propertyToJSON',
+      labels: ['javascript'],
       defaultValue: function(visitor, output, o) {
         if ( ! this.transient ) output[this.name] = o[this.name].id;
       }

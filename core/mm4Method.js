@@ -352,6 +352,12 @@ CLASS({
       defaultValueFn: function() { return this.type; },
     },
     {
+      name: 'swiftIsMutable',
+      type: 'Boolean',
+      labels: ['swift'],
+      defaultValue: false,
+    },
+    {
       name:  'name',
       type:  'String',
       required: true,
@@ -850,7 +856,7 @@ CLASS({
     {
       name: 'swiftReturnType',
       labels: ['swift'],
-      defaultValueFn: function() { return this.returnType; }
+      defaultValue: 'Void',
     },
     {
       model_: 'BooleanProperty',
@@ -911,10 +917,33 @@ CLASS({
       model_: 'TemplateProperty',
       name: 'swiftSource',
       labels: ['swift'],
-      defaultValue: function() {/*
-<% if ( this.isMerged || this.isFramed ) {
+      defaultValue: function() {/*<%
+var model = arguments[1];
+var extendsModel = model && model.extends;
+var self = this;
+var filter = function(m) {
+  if ( m.name === self.name) {
+    return true;
+  }
+};
+
+var override = '';
+var args = this.args;
+var swiftReturnType = this.swiftReturnType;
+while (extendsModel) {
+  extendsModel = model.X.lookup(extendsModel);
+  var method = extendsModel.methods.filter(filter);
+  method = method.length > 0 && method[0];
+  override = override || method ? 'override' : '';
+  args = method && method.args || args;
+  swiftReturnType = method && method.swiftReturnType || swiftReturnType;
+  extendsModel = extendsModel.extends
+}
+
+
+%><% if ( this.isMerged || this.isFramed ) {
 %>  var <%= this.name %>_fired_: Bool = false
-  func <%= this.name %>() {
+  <%=override%> func <%= this.name %>() {
     if <%= this.name %>_fired_ {
       return
     }
@@ -926,20 +955,20 @@ CLASS({
       userInfo: nil,
       repeats: false)
   }
-  func _<%= this.name %>_wrapper_() {
+  <%=override%> func _<%= this.name %>_wrapper_() {
     <%= this.name %>_fired_ = false
     <%= this.name %>_code()
   }
-  func <%= this.name %>_code() {
+  <%=override%> func <%= this.name %>_code() {
 <%= this.swiftCode %>
   }
 <% } else if ( this.swiftCode ) { %>
-  func <%= this.name %>(<%
-for ( var i = 0 ; i < this.args.length ; i++ ) {
-%>var <%= this.args[i].name %>: <%= this.args[i].swiftType %><%
-if ( i != this.args.length - 1 ) { %>, <% }
+  <%=override%> func `<%= this.name %>`(<%
+for ( var i = 0 ; i < args.length ; i++ ) {
+%><%= args[i].swiftIsMutable ? ' var ' : '' %><%= args[i].name %>: <%= args[i].swiftType %><%
+if ( i != args.length - 1 ) { %>, <% }
 }
-%>) -> <%= this.swiftReturnType %> {
+%>) -> <%= swiftReturnType %> {
 <%= this.swiftCode %>
   }
 <% } %>*/}

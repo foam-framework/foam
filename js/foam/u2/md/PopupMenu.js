@@ -21,6 +21,7 @@ CLASS({
 
   imports: [
     'E',
+    'clearTimeout',
     'document',
     'setTimeout',
     'window',
@@ -35,7 +36,9 @@ CLASS({
     ['maxDisplayCount', 5],
     ['itemHeight', 48],
     ['itemWidth', 100],
-    ['isHidden', true]
+    ['isHidden', true],
+    ['removeTimeout', 0],
+    ['isClosing', false],
   ],
 
   methods: [
@@ -205,10 +208,17 @@ CLASS({
     },
 
     function close() {
+      if ( this.isClosing ) return;
+      this.isClosing = true;
       this.animateToHidden();
-      this.setTimeout(function() {
+      this.removeTimeout = this.setTimeout(function() {
         this.delegate_.remove();
       }.bind(this), 500);
+    },
+
+    function unload() {
+      if ( this.removeTimeout ) this.clearTimeout(this.removeTimeout);
+      this.SUPER();
     },
 
     function scrollToIndex(index) {

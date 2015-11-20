@@ -17,8 +17,6 @@ CLASS({
     'com.google.ow.model.Envelope',
     'com.google.ow.model.OrderItem',
     'com.google.ow.model.Product',
-    'com.google.ow.ui.OrderItemView',
-    'com.google.ow.ui.OrderView',
     'foam.dao.EasyDAO',
   ],
 
@@ -28,10 +26,19 @@ CLASS({
       lazyFactory: function() { return createGUID(); },
     },
     {
-      model_: 'foam.core.types.DAOProperty',
+      model_: 'ReferenceProperty',
+      type: 'com.google.plus.Person',
+      name: 'customer',
+    },
+    {
+      model_: 'ReferenceProperty',
+      name: 'merchant',
+    },
+    {
+      model_: 'ArrayProperty',
       subType: 'com.google.ow.model.OrderItem',
       name: 'items',
-      lazyFactory: function() { return [].dao; },
+      lazyFactory: function() { return []; },
     },
     {
       model_: 'FloatProperty',
@@ -52,6 +59,71 @@ CLASS({
       choices: [
         [ 'COD', 'Cash on delivery' ],
       ],
+    },
+    // TODO(markdittmer): Status choice modeling needs clean-up.
+    {
+      model_: 'foam.core.types.StringEnumProperty',
+      name: 'status',
+      defaultValue: 'PENDING',
+      choices: [
+        [ 'PENDING', 'Pending' ],
+        [ 'CANCELED', 'Canceled' ],
+        [ 'ACCEPTED', 'Accepted' ],
+        [ 'READY', 'Ready for pick-up' ],
+        [ 'DELIVERED', 'Delivered' ],
+      ],
+    },
+    {
+      name: 'statusChoices',
+      lazyFactory: function() {
+        return {
+          PENDING: 'Pending',
+          CANCELED: 'Canceled',
+          ACCEPTED: 'Accepted',
+          READY: 'Ready for pick-up',
+          DELIVERED: 'Delivered',
+        };
+      },
+    },
+    {
+      name: 'customerStatusChoices',
+      getter: function() {
+        if ( this.status === 'CANCELED' )
+          return [ [ 'CANCELED', 'Canceled' ] ];
+        else
+          return [
+            [ this.status, this.statusChoices[this.status] ],
+            [ 'CANCELED', 'Canceled' ],
+          ];
+      },
+    },
+    {
+      name: 'merchantStatusChoices',
+      getter: function() {
+        if ( this.status === 'CANCELED' )
+          return [ [ 'CANCELED', 'Canceled' ] ];
+        else if ( this.status === 'PENDING' )
+          return [
+            [ 'PENDING', 'Pending' ],
+            [ 'CANCELED', 'Canceled' ],
+            [ 'ACCEPTED', 'Accepted' ],
+            [ 'READY', 'Ready for pick-up' ],
+          ];
+        else if ( this.status === 'ACCEPTED' )
+          return [
+            [ 'ACCEPTED', 'Accepted' ],
+            [ 'CANCELED', 'Canceled' ],
+            [ 'READY', 'Ready for pick-up' ],
+          ];
+        else if ( this.status === 'READY' )
+          return [
+            [ 'READY', 'Ready for pick-up' ],
+            [ 'CANCELED', 'Canceled' ],
+            [ 'DELIVERED', 'Delivered' ],
+          ];
+        else
+          return [ [ this.status, this.statusChoices[this.status] ] ];
+      },
     },
     {
       model_: 'BooleanProperty',
@@ -104,24 +176,29 @@ CLASS({
           })(nop);
     },
     function toE(X) {
-      return this.OrderView.create({ data: this }, X);
+      return X.lookup('com.google.ow.ui.OrderSummaryView').create({ data: this }, X);
+    },
+    function toSummaryE(X) {
+      return X.lookup('com.google.ow.ui.OrderSummaryView').create({ data: this }, X);
     },
     function toDetailE(X) {
-      return this.OrderView.create({ data: this }, X);
+      return X.lookup('com.google.ow.ui.OrderDetailView').create({ data: this }, X);
     },
     function toCitationE(X) {
-      return this.OrderItemView.create({ data: this }, X);
+      return X.lookup('com.google.ow.ui.OrderCitationView').create({ data: this }, X);
     },
     function toEnvelope(X) {
       var envelope = X.envelope;
       var Envelope = X.lookup('com.google.ow.model.Envelope');
       return Envelope.create({
-        // Add Ad ID to sid.
-        sid: envelope.sid + ((X.data && X.data.id) ? '/' + X.data.id : ''),
+        sid: X.sid || '',
         owner: envelope.owner,
         source: envelope.owner,
         data: this,
       }, X);
+    },
+    function toStream(X) {
+      return X.lookup('com.google.ow.content.UpdateStream').create(null, X);
     },
   ],
 

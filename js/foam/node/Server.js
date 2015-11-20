@@ -25,6 +25,7 @@ CLASS({
   ],
   exports: [
     'log',
+    'exportToContext',
     'exportDAO',
     'exportFile',
     'exportDirectory',
@@ -124,6 +125,13 @@ CLASS({
           this.log_("Loaded ", m.id);
         }.bind(this));
       }
+    },
+    // TODO(markdittmer): We shouldn't be mutating contexts. We should have
+    // a robust enough ContextualizingDAO to take care of this.
+    function exportToContext(args) {
+      Object_forEach(args, function(v, k) {
+        this.Y[k] = v;
+      }.bind(this));
     },
     function exportDAO(dao, opt_name) {
       opt_name = opt_name || ( dao.model.id + "DAO" );

@@ -32,7 +32,8 @@ CLASS({
   properties: [
     {
       name: 'delegate',
-      type: 'DAO',
+      swiftType: 'AbstractDAO',
+      swiftDefaultValue: 'AbstractDAO()',
       mode: "read-only",
       hidden: true,
       required: true,
@@ -52,6 +53,7 @@ CLASS({
       model_: 'ModelProperty',
       name: 'model',
       type: 'Model',
+      required: false,
       defaultValueFn: function() { return this.delegate.model; },
       documentation: function() { /*
           <p>Determines the expected $$DOC{ref:'Model'} type for the items
@@ -62,8 +64,8 @@ CLASS({
     }
   ],
 
-  methods: {
-    relay: function() { /* Sets up relay for listening to delegate changes. */
+  methods: [
+    function relay() { /* Sets up relay for listening to delegate changes. */
       if ( ! this.relay_ ) {
         var self = this;
 
@@ -78,27 +80,33 @@ CLASS({
       return this.relay_;
     },
 
-    put: function(value, sink) { /* Passthrough to delegate. */
+    function put(value, sink) { /* Passthrough to delegate. */
       this.delegate.put(value, sink);
     },
 
-    remove: function(query, sink) { /* Passthrough to delegate. */
+    function remove(query, sink) { /* Passthrough to delegate. */
       this.delegate.remove(query, sink);
     },
 
-    removeAll: function() { /* Passthrough to delegate. */
+    function removeAll() { /* Passthrough to delegate. */
       return this.delegate.removeAll.apply(this.delegate, arguments);
     },
 
-    find: function(key, sink) { /* Passthrough to delegate. */
+    function find(key, sink) { /* Passthrough to delegate. */
       this.delegate.find(key, sink);
     },
 
-    select: function(sink, options) { /* Passthrough to delegate. */
-      return this.delegate.select(sink, options);
+    {
+      name: 'select',
+      code: function(sink, options) { /* Passthrough to delegate. */
+        return this.delegate.select(sink, options);
+      },
+      swiftCode: function() {/*
+        return delegate.select(sink, options: options)
+      */},
     },
 
-    listen: function(sink, options) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
+    function listen(sink, options) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
       // Adding first listener, so listen to delegate
       if ( ! this.daoListeners_.length && this.delegate ) {
         this.delegate.listen(this.relay());
@@ -107,7 +115,7 @@ CLASS({
       this.SUPER(sink, options);
     },
 
-    unlisten: function(sink) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
+    function unlisten(sink) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
       this.SUPER(sink);
 
       // Remove last listener, so unlisten to delegate
@@ -116,8 +124,8 @@ CLASS({
       }
     },
 
-    toString: function() { /* String representation. */
+    function toString() { /* String representation. */
       return this.name_ + '(' + this.delegate + ')';
     }
-  }
+  ]
 });

@@ -23,12 +23,20 @@ CLASS({
     'MDAO',
     'com.google.ow.IdGenerator',
     'com.google.ow.content.OrderStream',
+    'com.google.ow.content.Video',
+    'com.google.ow.dao.VideoOffloadDAO',
     'com.google.ow.examples.VideoB',
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.Envelope',
     'com.google.ow.model.ProductAd',
     'com.google.ow.ui.EnvelopeCitationView',
+    'com.google.ow.ui.EnvelopeDetailView',
     'com.google.ow.ui.MenuView',
+    'com.google.ow.ui.OrderCitationView',
+    'com.google.ow.ui.OrderDetailView',
+    'com.google.ow.ui.OrderSummaryView',
+    'com.google.ow.ui.UpdateStreamCitationView',
+    'com.google.ow.ui.UpdateStreamDetailView',
     'com.google.plus.Circle',
     'com.google.plus.Person',
     'com.google.plus.ShareList',
@@ -46,7 +54,9 @@ CLASS({
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
     'foam.u2.DAOListView',
+    'foam.u2.md.DAOListView',
     'foam.u2.DetailView',
+    'foam.u2.md.ActionButton',
     'foam.ui.DAOListView',
     'foam.ui.TextFieldView',
     'foam.ui.Tooltip',
@@ -57,13 +67,16 @@ CLASS({
     // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
     // 'foam.u2.md.SharedStyles',
   ],
-  imports: [ 'document' ],
+  imports: [
+    'document',
+  ],
   exports: [
     'streamDAO',
     'personDAO',
     'circleDAO', // Note: proxy for currentUser.circles
     'contactsDAO', // Note: proxy for currentUser.contacts
     'currentUser$',
+    'createStreamItem',
   ],
 
   properties: [
@@ -73,17 +86,22 @@ CLASS({
         return this.IdGenerator.create(null, this.Y);
       },
     },
+    ['titleText', 'Lifestream'],
+    ['backgroundColor', '#ffffff'],
+    ['headerColor', '#3e50b4'],
     {
       name: 'browserConfig',
       lazyFactory: function() {
         var UpdateDetailView = this.UpdateDetailView;
         var browserConfig = this.BrowserConfig.create({
-          title: 'Lifestream',
+          title$: this.titleText$,
           model: this.Envelope,
+          backgroundColor: this.backgroundColor,
+          headerColor: this.headerColor,
           dao: this.streamDAO.where(OR(
               NOT(HAS(this.Envelope.SID)),
               EQ(this.Envelope.PROMOTED, true))),
-          listView: 'foam.u2.DAOListView',
+          listView: 'foam.u2.md.DAOListView',
           cannedQueryDAO: [
             this.CannedQuery.create({
               label: 'All',
@@ -107,21 +125,33 @@ CLASS({
           innerDetailView: function(args, X) {
             // TODO(markdittmer): This should be more robust.
             var envelope = args.data || args.data$.get();
-            var d = envelope.data;
-            X = X.sub({ envelope: envelope });
-            return d && d.toDetailE ? d.toDetailE(X) :
-                this.DetailView.create({ data: d }, X);
-          }.bind(this)
+            return envelope.toDetailE ? envelope.toDetailE(X) :
+                this.DetailView.create({ data: envelope }, X);
+          }.bind(this),
+          createFunction: function() { },
+          showAdd: false,
         });
         return browserConfig;
       },
     },
-    'currentUserId',
+    {
+      model_: 'StringProperty',
+      name: 'currentUserId',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( ! this.currentUser || nu !== this.currentUser.id ) {
+          this.personDAO.find(nu, { put: function(user) {
+            this.currentUser = user;
+          }.bind(this) });
+        }
+      },
+    },
     {
       name: 'currentUser',
       postSet: function(old, nu) {
-        if (nu) {
-          this.currentUserId = nu.id;
+        if ( old === nu ) return;
+        if ( nu ) {
+          if ( nu.id !== this.currentUserId ) this.currentUserId = nu.id;
           this.circleDAO.delegate = nu.circles;
           this.contactsDAO.delegate = nu.contacts;
         }
@@ -130,12 +160,23 @@ CLASS({
     {
       name: 'streamDAO',
       lazyFactory: function() {
-        return this.EasyClientDAO.create({
-          serverUri: this.document.location.origin + '/api',
+        var dao = this.EasyDAO.create({
+          daoType: 'MDAO',
           model: this.Envelope,
+          guid: true,
+          cloning: true,
+          contextualize: true,
+          dedup: true,
           sockets: true,
-          logging: true,
-        }, this.Y);
+          syncWithServer: true,
+          // logging: true,
+        }, this.Y).orderBy(this.Envelope.TIMESTAMP);
+        dao.listen({
+          put: function(e) {
+            console.log('Put', e.toString());
+          },
+        });
+        return dao;
       }
     },
     {
@@ -165,10 +206,30 @@ CLASS({
         return this.ProxyDAO.create({ model: this.Person, delegate: [].dao }, this.Y);
       },
     },
+    {
+      model_: 'FunctionProperty',
+      name: 'createStreamItem',
+      hidden: true,
+      factory: function() {
+        return function(source, data, opt_sid) {
+          var srcId = source.id || source;
+          var tgtId = this.currentUser.id;
+          return this.Envelope.create({
+            owner: tgtId,
+            source: srcId,
+            data: data,
+            sid: opt_sid || data.sid || '',
+            substreams: data.substreams || [],
+          });
+        }.bind(this);
+      },
+    },
+
   ],
 
   methods: [
     function init() {
+      this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
       this.SUPER();
       var WebSocket = this.AuthenticatedWebSocketDAO.xbind({
         authToken$: this.currentUserId$,
