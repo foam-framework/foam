@@ -37,5 +37,31 @@
       "contentItemView": "foam.ui.md.CitationView",
       "id": "eduVidStream487673295"
     }
+  },
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "owner": "0",
+    "source": "0",
+    "substreams": ["eduComments458937"],
+    "data": {
+      "model_": "com.google.ow.content.CommentThread",
+      "name": "User Data",
+      "id": "eduComments458937"
+    }
+  },
+  {
+    "model_": "com.google.ow.model.Envelope",
+    "owner": "0",
+    "source": "0",
+    "sid": "eduComments458937",
+    "data": {
+      "model_": "com.google.ow.content.Message",
+      "name": "User Data",
+      "id": "eduMessageTest223222",
+      "sid": "eduComments458937",
+      "from": "USERID298329398",
+      "content": "Hello! How are you?",
+    }
   }
+  
 ]
