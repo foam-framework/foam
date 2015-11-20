@@ -32,6 +32,7 @@ var files = [
   [ 'safari',   function() { return window.navigator && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1; }],
   [ 'internetexplorer',  function() { return ( window.Element && (!('remove' in Element.prototype))); }],
   [ 'node',     IN_NODEJS ],
+  [ 'XMLHttpRequest', IN_NODEJS],
   [ 'i18n',     IN_BROWSER ],
   'stdlib',
   ['WeakMap',  function() { return ! this['WeakMap']; }],
