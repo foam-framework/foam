@@ -33,6 +33,10 @@ CLASS({
         'user',
         'admin'
       ]
+    },
+    {
+      name: 'authorizationCode',
+      type: 'String'
     }
   ]
 });
