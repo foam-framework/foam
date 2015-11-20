@@ -128,7 +128,6 @@ CLASS({
     },
     function exportToContext(args) {
       Object_forEach(args, function(v, k) {
-        debugger;
         this.Y[k] = v;
       }.bind(this));
     },
