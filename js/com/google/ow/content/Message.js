@@ -49,6 +49,7 @@ CLASS({
         .start().style({
           'display': 'flex',
           'flex-direction': 'column',
+          'border-bottom': '1px solid rgba(1,1,1,0.25)' 
         })
           .start().style({ 'margin': '8px' })
             .start().add(this.from$).cls('md-subhead').end()
