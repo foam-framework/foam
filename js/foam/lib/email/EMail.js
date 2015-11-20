@@ -64,7 +64,7 @@ CLASS({
       hidden: true
     },
     {
-      name: 'owner'
+      name: 'owner',
       hidden: true
     },
     {
