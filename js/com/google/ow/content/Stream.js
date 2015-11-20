@@ -19,7 +19,7 @@ CLASS({
     'foam.ui.DAOListView',
     'foam.dao.EasyClientDAO',
     'foam.dao.LoggingDAO',
-    'foam.browser.ui.DAOController',
+    'com.google.ow.ui.CitationOnlyDAOController',
     'com.google.ow.model.Envelope',
   ],
 
@@ -138,7 +138,7 @@ CLASS({
             },
             eof: function() {
               if ( ! found ) {
-                console.log("Stream: not found, copying to:", ownerId, envelope.data);
+                console.log("Stream: not found, copying to:", ownerId, envelope.sid);
                 self.streamDAO.put(self.createStreamItem(
                   self.substreams[0],
                   ownerId,
@@ -176,7 +176,7 @@ CLASS({
       var Y = X || this.Y;
       return this.Element.create(null, Y.sub({controllerMode: 'ro'}))
         .style({ display: 'flex', 'flex-grow': 1, 'flex-direction': 'column' })
-        .add(this.DAOListView.create({
+        .add(this.CitationOnlyDAOController.create({
           name: this.description,
           data: this.dao,
           rowView: this.contentRowE || this.contentRowView,
