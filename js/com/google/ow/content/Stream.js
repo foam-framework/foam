@@ -82,6 +82,7 @@ CLASS({
       }
     },
     {
+      model_: 'ImportedProperty',
       name: 'dao',
       hidden: true,
       transient: true,

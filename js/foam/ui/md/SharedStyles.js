@@ -295,6 +295,18 @@ input[name=q]::-webkit-input-placeholder {
   letter-spacing: 0;
 }
 
+.md-flex-row {
+  display: flex;  
+  flex-direction: row;
+  overflow-x: auto;
+}
+.md-flex-col {
+  display: flex;  
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+
 .floatingActionButton {
   position: absolute;
   bottom: 10px;

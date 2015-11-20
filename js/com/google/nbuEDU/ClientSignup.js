@@ -32,7 +32,7 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValue: 'EDU-Connect Sign Up',
+      defaultValue: 'StudyBuddy Sign Up',
     },
     {
       model_: 'StringProperty',

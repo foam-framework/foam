@@ -27,8 +27,9 @@
     "owner": "0",
     "source": "0",
     "substreams": ["eduVidStream487673295"],
+    "sid": "hideMe",
     "data": {
-      "model_": "com.google.ow.content.Stream",
+      "model_": "com.google.ow.content.PreviewStream",
       "name": "Test Videos",
       "titleText": "Video List",
       "description": "(ignore me)",

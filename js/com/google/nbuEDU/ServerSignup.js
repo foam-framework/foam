@@ -16,7 +16,7 @@ CLASS({
   requires: [
     'com.google.ow.model.Envelope',
     'foam.u2.Element',
-    'com.google.ow.content.Stream',
+    'com.google.ow.content.PreviewStream',
     //'com.google.nbuEDU.
   ],
 
@@ -35,12 +35,12 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValue: 'EDU-Connect Signup Server',
+      defaultValue: 'StudyBuddy Signup Server',
     },
     {
       model_: 'StringProperty',
       name: 'description',
-      defaultValue: 'Responds to EDU-connect signup requests.',
+      defaultValue: 'Responds to StudyBuddy signup requests.',
     },
     {
       name: 'curriculumData_',
@@ -75,7 +75,7 @@ CLASS({
             "owner": newUserId,
             "source": self.substreams[0]+"ServerSignup",
             "substreams": ["eduVidStream487673295"],
-            data: self.Stream.create({
+            data: self.PreviewStream.create({
               "name": "MathVideos",
               "titleText": "Math Videos",
               "description": "Your grade level, math videos.",
@@ -90,7 +90,7 @@ CLASS({
             "owner": newUserId,
             "source": self.substreams[0]+"ServerSignup",
             "substreams": ["eduVidStream487673295"],
-            data: self.Stream.create({
+            data: self.PreviewStream.create({
               "name": "ExamPrepVideos",
               "titleText": "Exam Prep Videos",
               "description": "Exam prep videos.",

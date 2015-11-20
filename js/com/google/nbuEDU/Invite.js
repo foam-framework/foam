@@ -31,14 +31,14 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValue: 'EDU-Connect: Help with School',
+      defaultValue: 'StudyBuddy: Help with School',
     },
     {
       model_: 'StringProperty',
       name: 'description',
-      defaultValue: '<p>You are invited to join the EDU-Connect community.</p><p>Tap this card to get help with school.</p>'
+      defaultValue: '<p>You are invited to join the StudyBuddy community.</p><p>Tap this card to get help with school.</p>'
     },
-    ['resetInviteTitle', 'EDU-Connect'],
+    ['resetInviteTitle', 'StudyBuddy'],
     ['resetInviteText', '<p>Welcome! You have already enrolled.</p> <p>Tap this card to see your profile.</p>'],
     ['complete', false],
   ],
