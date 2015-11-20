@@ -94,19 +94,29 @@ CLASS({
   properties: [
     {
       name: 'query',
+      swiftType: 'ExprProtocol!',
+      swiftDefaultValue: 'nil',
       required: true
     }
   ],
-  methods: {
-    select: function(sink, options, opt_X) {
-      return this.delegate.select(sink, options ? {
-        __proto__: options,
-        query: options.query ?
-          AND(this.query, options.query) :
-          this.query
-      } : {query: this.query}, opt_X);
+  methods: [
+    {
+      name: 'select',
+      code: function(sink, options, opt_X) {
+        return this.delegate.select(sink, options ? {
+          __proto__: options,
+          query: options.query ?
+            AND(this.query, options.query) :
+            this.query
+        } : {query: this.query}, opt_X);
+      },
+      swiftCode: function() {/*
+        if options.query != nil { options.query = AND(query, options.query) }
+        else { options.query = query }
+        return delegate.select(sink, options: options)
+      */},
     },
-    removeAll: function(sink, options, opt_X) {
+    function removeAll(sink, options, opt_X) {
       return this.delegate.removeAll(sink, options ? {
         __proto__: options,
         query: options.query ?
@@ -114,7 +124,7 @@ CLASS({
           this.query
       } : {query: this.query}, opt_X);
     },
-    listen: function(sink, options) {
+    function listen(sink, options) {
       return this.SUPER(sink, options ? {
         __proto__: options,
         query: options.query ?
@@ -122,10 +132,10 @@ CLASS({
           this.query
       } : {query: this.query});
     },
-    toString: function() {
+    function toString() {
       return this.delegate + '.where(' + this.query + ')';
     }
-  }
+  ]
 });
 
 
@@ -299,20 +309,49 @@ CLASS({
     }
   ],
 
-  methods: {
-    update: function(expr) { /* Applies a change to the DAO contents. */
+  methods: [
+    function update(expr) { /* Applies a change to the DAO contents. */
       return this.select(UPDATE(expr, this));
     },
 
-    select: function(sink, options) {
-      /* Template method. Override to copy the contents of this DAO (filtered or ordered as
-      necessary) to sink. */
+    {
+      name: 'select',
+      code: function(sink, options) {
+        /* Template method. Override to copy the contents of this DAO (filtered or ordered as
+        necessary) to sink. */
+      },
+      args: [
+        {
+          name: 'sink',
+          swiftType: 'Sink = ArraySink()',
+        },
+        {
+          name: 'options',
+          swiftType: 'DAOQueryOptions = DAOQueryOptions()',
+        },
+      ],
+      swiftReturnType: 'Future',
+      swiftCode: 'return Future().set(sink)',
     },
-    remove: function(query, sink) {
+    {
+      name: 'put',
+      args: [
+        {
+          name: 'obj',
+          swiftType: 'FObject',
+        },
+        {
+          name: 'sink',
+          swiftType: 'Sink = ArraySink()',
+        },
+      ],
+      swiftCode: '// todo',
+    },
+    function remove(query, sink) {
       /* Template method. Override to remove matching items and put them into sink if supplied. */
     },
 
-    pipe: function(sink, options) { /* A $$DOC{ref:'.select'} followed by $$DOC{ref:'.listen'}.
+    function pipe(sink, options) { /* A $$DOC{ref:'.select'} followed by $$DOC{ref:'.listen'}.
            Dump our contents to sink, then send future changes there as well. */
       sink = this.decorateSink_(sink, options, true);
 
@@ -339,58 +378,95 @@ CLASS({
       }, options, fc);
     },
 
-    decorateSink_: function(sink, options, isListener, disableLimit) {
-      if ( options ) {
-        if ( ! disableLimit ) {
-          if ( options.limit ) sink = limitedSink(options.limit, sink);
-          if ( options.skip )  sink = skipSink(options.skip, sink);
+    {
+      name: 'decorateSink_',
+      code: function (sink, options, isListener, disableLimit) {
+        if ( options ) {
+          if ( ! disableLimit ) {
+            if ( options.limit ) sink = limitedSink(options.limit, sink);
+            if ( options.skip )  sink = skipSink(options.skip, sink);
+          }
+
+          if ( options.order && ! isListener ) {
+            sink = orderedSink(options.order, sink);
+          }
+
+          if ( options.query ) {
+            sink = predicatedSink(
+              options.query.partialEval ?
+                options.query.partialEval() :
+                options.query,
+              sink) ;
+          }
         }
 
-        if ( options.order && ! isListener ) {
-          sink = orderedSink(options.order, sink);
+        return sink;
+      },
+      args: [
+        {
+          name: 'sink',
+          swiftIsMutable: true,
+          swiftType: 'Sink',
+        },
+        {
+          name: 'options',
+          swiftType: 'DAOQueryOptions',
+        },
+      ],
+      swiftReturnType: 'Sink',
+      swiftCode: function() {/*
+        if options.query != nil {
+          sink = PredicatedSink(delegate: sink, expr: options.query!)
         }
-
-        if ( options.query ) {
-          sink = predicatedSink(
-            options.query.partialEval ?
-              options.query.partialEval() :
-              options.query,
-            sink) ;
-        }
-      }
-
-      return sink;
+        return sink
+      */},
     },
 
-    createFlowControl_: function() {
+    function createFlowControl_() {
       return {
         stop: function() { this.stopped = true; },
         error: function(e) { this.errorEvt = e; }
       };
     },
 
-    where: function(query) { /* Return a DAO that contains a filtered subset of this one. */
-      // only use X if we are an invalid instance without a this.Y
-      return (this.Y || X).lookup('FilteredDAO_').create({query: query, delegate: this});
+    {
+      name: 'where',
+      code: function(query) { /* Return a DAO that contains a filtered subset of this one. */
+        // only use X if we are an invalid instance without a this.Y
+        return (this.Y || X).lookup('FilteredDAO_').create({query: query, delegate: this});
+      },
+      args: [
+        {
+          name: 'query',
+          swiftType: 'ExprProtocol',
+        },
+      ],
+      swiftReturnType: 'AbstractDAO',
+      swiftCode: function() {/*
+        let filteredDAO = FilteredDAO_()
+        filteredDAO.delegate = self
+        filteredDAO.query = query
+        return filteredDAO
+      */}
     },
 
-    limit: function(count) { /* Return a DAO that contains a count limited subset of this one. */
+    function limit(count) { /* Return a DAO that contains a count limited subset of this one. */
       return (this.Y || X).lookup('LimitedDAO_').create({count:count, delegate:this});
     },
 
-    skip: function(skip) { /* Return a DAO that contains a subset of this one, skipping initial items. */
+    function skip(skip) { /* Return a DAO that contains a subset of this one, skipping initial items. */
       return (this.Y || X).lookup('SkipDAO_').create({skip:skip, delegate:this});
     },
 
-    orderBy: function() { /* Return a DAO that contains a subset of this one, ordered as specified. */
+    function orderBy() { /* Return a DAO that contains a subset of this one, ordered as specified. */
       return (this.Y || X).lookup('OrderedDAO_').create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
     },
 
-    listen: function(sink, options) { /* Send future changes to sink. */
+    function listen(sink, options) { /* Send future changes to sink. */
       this.daoListeners_.push(this.decorateSink_(sink, options, true));
     },
 
-    unlisten: function(sink) { /* Stop sending updates to the given sink. */
+    function unlisten(sink) { /* Stop sending updates to the given sink. */
       var ls = this.daoListeners_;
 //      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
       for ( var i = 0; i < ls.length ; i++ ) {
@@ -404,7 +480,7 @@ CLASS({
 
     // Default removeAll: calls select() with the same options and
     // calls remove() for all returned values.
-    removeAll: function(sink, options) { /* Default $$DOC{ref:'.removeAll'}: calls
+    function removeAll(sink, options) { /* Default $$DOC{ref:'.removeAll'}: calls
             $$DOC{ref:'.select'} with the same options and calls $$DOC{ref:'.remove'}
              for all returned values. */
       var self = this;
@@ -425,7 +501,7 @@ CLASS({
      * @param fName the name of the method in the listeners to call.
      *        possible values: 'put', 'remove'
      **/
-    notify_: function(fName, args) {
+    function notify_(fName, args) {
       // console.log(this.name_, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
       for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
         var l = this.daoListeners_[i];
@@ -451,7 +527,7 @@ CLASS({
       }
     },
 
-  }
+  ]
 });
 
 
