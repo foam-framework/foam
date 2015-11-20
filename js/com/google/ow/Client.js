@@ -236,6 +236,13 @@ CLASS({
       });
       this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
 
+      // hack to fix missing updates when the server creates new streamDAO items
+      var pollEnvelope = this.Envelope.create({ owner: this.currentUser.id, id: 'pollEnv1212' });
+      this.X.setInterval(function() {
+        pollEnvelope.owner = this.currentUser.id;
+        this.streamDAO.put(pollEnvelope)
+      }.bind(this), 1000);
+
       // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
       // this.SharedStyles.create(null, this.Y);
     },
