@@ -128,6 +128,8 @@ CLASS({
       }
     },
     function addHandler(handler) {
+      // TODO(adamvy): Not wild about this design, consider a better model for handling
+      // oauth.
       this.handlers.push(handler);
     },
     function exportToContext(args) {
