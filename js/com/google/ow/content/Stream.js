@@ -108,7 +108,7 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.model = this.model;
+      //this.model = this.model;
     },
     
     function put(envelope, sink, yourEnvelope) {

@@ -110,7 +110,7 @@ CLASS({
     function toCitationE(X) {
       var Y = (X || this.Y).sub({selection$: null});
       return this.Element.create(null, Y.sub({controllerMode: 'ro'}))
-        .style({ display: 'flex', 'flex-direction': 'column', 'min-height':'50px'})
+        .style({ display: 'flex', 'flex-direction': 'column', 'min-height':'50px'}).cls('md-card-shell')
         .add(this.DAOListView.create({
           mode: 'read-only',
           name: this.description,
@@ -122,7 +122,7 @@ CLASS({
       var Y = (X || this.Y).sub({selection$: null, data: this });
       this.envelope = Y.envelope;
       var e = this.Element.create(null, Y.sub({controllerMode: 'rw'}));
-      e.style({ display: 'flex', 'flex-direction': 'column'}).cls2(
+      e.style({ display: 'flex', 'flex-direction': 'column' }).cls2(
         function() { return (this.border) ? 'md-card-shell' : ''; }.bind(this))
 //        .start().add(this.titleText$).cls('md-subhead').end()
       .start().add(this.DAOListView.create({
