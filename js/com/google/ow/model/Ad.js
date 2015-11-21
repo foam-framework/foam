@@ -15,6 +15,8 @@ CLASS({
 
   properties: [
     'id',
+    'merchant',
+    'adStream',
     {
       model_: 'StringProperty',
       name: 'titleText',

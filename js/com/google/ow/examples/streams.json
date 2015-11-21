@@ -3,17 +3,6 @@
     "model_": "com.google.ow.model.Envelope",
     "owner": "0",
     "source": "0",
-    "substreams": ["ci3594342070601638467"],
-    "data": {
-      "model_": "com.google.ow.content.OrderStream",
-      "name": "Test Ad",
-      "id": "ci3594342070601638467"
-    }
-  },
-  {
-    "model_": "com.google.ow.model.Envelope",
-    "owner": "0",
-    "source": "0",
     "substreams": ["ci4873296573765766590"],
     "data": {
       "model_": "com.google.ow.content.Stream",

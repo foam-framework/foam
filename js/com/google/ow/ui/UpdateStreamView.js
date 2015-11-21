@@ -18,7 +18,6 @@ CLASS({
     'com.google.ow.model.Envelope',
   ],
   imports: [
-    'envelope',
     'streamDAO',
   ],
 
@@ -32,7 +31,6 @@ CLASS({
 
   methods: [
     function init() {
-      var substreams = this.envelope.substreams;
       var sink = {
         put: function(o) {
           var arr = this.versions.slice();
@@ -40,9 +38,9 @@ CLASS({
           this.versions = arr;
         }.bind(this),
       };
+      var substreams = this.data.substreams;
       for ( var i = 0; i < substreams.length; ++i ) {
-        var substream = substreams[i];
-        var filteredDAO = this.streamDAO.where(EQ(this.Envelope.SID, substream));
+        var filteredDAO = this.streamDAO.where(EQ(this.Envelope.SID, substreams[i]));
         // TODO(markdittmer): Add date-based ordering and limit(1).
         filteredDAO.select(sink)(function() { filteredDAO.listen(sink); });
       }
