@@ -32,6 +32,7 @@ CLASS({
     },
     {
       model_: 'ReferenceProperty',
+      type: 'com.google.plus.Person',
       name: 'merchant',
     },
     {
@@ -74,58 +75,6 @@ CLASS({
       ],
     },
     {
-      name: 'statusChoices',
-      lazyFactory: function() {
-        return {
-          PENDING: 'Pending',
-          CANCELED: 'Canceled',
-          ACCEPTED: 'Accepted',
-          READY: 'Ready for pick-up',
-          DELIVERED: 'Delivered',
-        };
-      },
-    },
-    {
-      name: 'customerStatusChoices',
-      getter: function() {
-        if ( this.status === 'CANCELED' )
-          return [ [ 'CANCELED', 'Canceled' ] ];
-        else
-          return [
-            [ this.status, this.statusChoices[this.status] ],
-            [ 'CANCELED', 'Canceled' ],
-          ];
-      },
-    },
-    {
-      name: 'merchantStatusChoices',
-      getter: function() {
-        if ( this.status === 'CANCELED' )
-          return [ [ 'CANCELED', 'Canceled' ] ];
-        else if ( this.status === 'PENDING' )
-          return [
-            [ 'PENDING', 'Pending' ],
-            [ 'CANCELED', 'Canceled' ],
-            [ 'ACCEPTED', 'Accepted' ],
-            [ 'READY', 'Ready for pick-up' ],
-          ];
-        else if ( this.status === 'ACCEPTED' )
-          return [
-            [ 'ACCEPTED', 'Accepted' ],
-            [ 'CANCELED', 'Canceled' ],
-            [ 'READY', 'Ready for pick-up' ],
-          ];
-        else if ( this.status === 'READY' )
-          return [
-            [ 'READY', 'Ready for pick-up' ],
-            [ 'CANCELED', 'Canceled' ],
-            [ 'DELIVERED', 'Delivered' ],
-          ];
-        else
-          return [ [ this.status, this.statusChoices[this.status] ] ];
-      },
-    },
-    {
       model_: 'BooleanProperty',
       name: 'isEmpty',
       defaultValue: true,
@@ -157,36 +106,6 @@ CLASS({
   ],
 
   methods: [
-    function add(item) {
-      var itemFound = false;
-      this.items_.where(EQ(
-          this.OrderItem.PRODUCT.dot(this.Product.HASH),
-          item.product.hash)).limit(1)
-          .select({
-            put: function(o) {
-              itemFound = true;
-              o.quantity += item.quantity;
-              this.items_.put(o);
-            }.bind(this),
-            eof: function() {
-              if ( ! itemFound ) {
-                this.items_.put(item);
-              }
-            }.bind(this)
-          })(nop);
-    },
-    function toE(X) {
-      return X.lookup('com.google.ow.ui.OrderSummaryView').create({ data: this }, X);
-    },
-    function toSummaryE(X) {
-      return X.lookup('com.google.ow.ui.OrderSummaryView').create({ data: this }, X);
-    },
-    function toDetailE(X) {
-      return X.lookup('com.google.ow.ui.OrderDetailView').create({ data: this }, X);
-    },
-    function toCitationE(X) {
-      return X.lookup('com.google.ow.ui.OrderCitationView').create({ data: this }, X);
-    },
     function toEnvelope(X) {
       var envelope = X.envelope;
       var Envelope = X.lookup('com.google.ow.model.Envelope');
@@ -196,9 +115,6 @@ CLASS({
         source: envelope.owner,
         data: this,
       }, X);
-    },
-    function toStream(X) {
-      return X.lookup('com.google.ow.content.UpdateStream').create(null, X);
     },
   ],
 
