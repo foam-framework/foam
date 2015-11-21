@@ -6,7 +6,7 @@ BASEDIR=$PWD/$(dirname "$0")
 BUILD_DIR="$BASEDIR"/build
 FOAM_DIR=../..
 APP_DEF=com.google.nbuEDU.App
-BASEDIR_FILES=( index.html designer_view.html app_view.html app_bg.js config.js manifest.json fonts builder.css empty.html )
+BASEDIR_FILES=( index.html designer_view.html app_view.html app_bg.js config.js manifest.json fonts fonts.css builder.css empty.html )
 
 pushd "$BASEDIR"
 
