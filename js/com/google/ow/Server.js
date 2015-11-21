@@ -253,7 +253,6 @@ CLASS({
             streamDataFactory: function(data, pid) {
               if ( pid === data.merchant ) return self.MerchantOrder.create(data);
               else                         return self.CustomerOrder.create(data);
-              }
             },
           });
         }
