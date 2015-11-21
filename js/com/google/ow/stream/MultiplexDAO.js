@@ -18,11 +18,6 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
-      name: 'tag',
-      lazyFactory: function() { return createGUID(); },
-    },
-    {
       model_: 'StringArrayProperty',
       name: 'people',
     },
@@ -31,16 +26,7 @@ CLASS({
       name: 'envelopeFactory',
       defaultValue: function(baseEnv, pid) {
         var env = baseEnv.clone();
-
-        // Tag envelope as seen.
-        var tags = baseEnv.tags.slice();
-        tags.push(this.tag);
-        env.tags = tags;
-
-        // Put new envelope only when putting to different owner;
-        // otherwise put same envelope back.
-        env.id = baseEnv.owner !== pid ?
-            baseEnv.id + '-' + pid : env.id;
+        env.id = baseEnv.id + '-' + pid;
         env.timestamp = new Date();
         env.owner = pid;
         env.data = this.dataFactory(baseEnv.data, pid);
@@ -54,14 +40,72 @@ CLASS({
         return data.clone();
       },
     },
+    {
+      model_: 'FunctionProperty',
+      name: 'putTo',
+      defaultValue: function(env, sink, pid) {
+        this.delegate.put(this.envelopeFactory(env, pid), sink);
+      },
+    },
   ],
 
   methods: [
-    function put(env) {
+    function getSharedSink_(env, sink, numOps) {
+      var ownerEnv = null;
+      var self = this;
+      var ops = self.people.length + 1;
+      var count = 0;
+      var err = false;
+      return {
+        put: function(putEnv) {
+          if ( err ) return;
+          if ( putEnv.owner === env.owner ) ownerEnv = putEnv;
+          ++count;
+          if ( count === numOps ) sink && sink.put && sink.put(ownerEnv);
+        },
+        remove: function() {
+          if ( err ) return;
+          ++count;
+        },
+        error: function() {
+          err = true;
+          sink.error.apply(sink, arguments);
+        }
+      };
+    },
+    function put(env, sink) {
+      var sharedSink = sink ?
+          this.getSharedSink_(env, sink, self.people.length + 1) : null;
+      this.delegate.remove(env, sharedSink);
+      for ( var i = 0; i < this.people.length; ++i ) {
+        var pid = this.people[i];
+        this.putTo(env, sharedSink, pid);
+      }
+      // var sinkError = sink && sink.error ? sink.error.bind(sink) : nop;
+      // var putToNext = function(i) {
+      //   if ( i >= self.people.length ) {
+      //     sink && sink.put && sink.put(ownerEnv);
+      //     return;
+      //   }
+      //   var pid = self.people[i];
+      //   var pidEnv = this.envelopeFactory(env, pid);
+      //   if ( pid === env.owner ) ownerEnv = pidEnv;
+      //   this.delegate.put(pidEnv, {
+      //     put: putToNext.bind(this, i + 1),
+      //     error: sinkError,
+      //   });
+      // };
+      // // Remove original envelope for replacement with multipliexed versions.
+      // this.delegate.remove(env, {
+      //   remove: putToNext.bind(this, 0),
+      //   error: putToNext.bind(this, 0)
+      // });
       // Put to everyone.
-      this.people.forEach(function(pid) {
-        this.delegate.put(this.envelopeFactory(env, pid));
-      }.bind(this));
+      // this.people.forEach(function(pid) {
+      //   // Notify sink when we put for the original owner.
+      //   if ( pid === env.owner ) this.putTo(env, pid, sink);
+      //   else                     this.putTo(env, pid);
+      // }.bind(this));
     },
   ],
 });
