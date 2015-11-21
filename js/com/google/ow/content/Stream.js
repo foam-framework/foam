@@ -21,6 +21,8 @@ CLASS({
     'foam.dao.LoggingDAO',
     'com.google.ow.ui.CitationOnlyDAOController',
     'com.google.ow.model.Envelope',
+    'com.google.ow.ui.EnvelopeCitationView',
+    'com.google.ow.ui.EnvelopeDetailView',
   ],
 
   imports: [
@@ -64,16 +66,7 @@ CLASS({
         // Model not always ready in node, but don't need views there anyway
         if ( ! (model && model.getFeature) ) return;
 
-        if ( model.getFeature('toCitationE') ) this.contentRowView = function(args,X) {
-          var env = args.data || (args.data$ && args.data$.value) ||  X.data || (X.data$ && X.data$.value);
-          var d = env.data || env;
-          return d.toCitationE(X.sub({ envelope: env })).style({ margin: '8px 0px' });
-        }
-        if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
-          var env = args.data || (args.data$ && args.data$.value) ||  X.data || (X.data$ && X.data$.value);
-          var d = env.data || env;
-          return d.toDetailE(X.sub({ envelope: env })).style({ 'flex-grow': 1, overflow: 'hidden' });
-        }
+        this.extractViews();
       }
     },
     {
@@ -88,31 +81,36 @@ CLASS({
     },
     {
       model_: 'ViewFactoryProperty',
-      transient: true,
+      //transient: true,
       name: 'contentRowView',
       help: 'The row view for the content item list.',
       defaultValue: 'com.google.ow.ui.EnvelopeCitationView',
     },
     {
       name: 'contentRowE',
-      transient: true,
+      //transient: true,
       help: 'The row element for the content item list.',
     },
     {
       model_: 'ViewFactoryProperty',
       name: 'contentDetailView',
-      transient: true,
+      //transient: true,
       help: 'The row view for the content item list.',
       defaultValue: 'com.google.ow.ui.EnvelopeDetailView',
     },
     {
       name: 'contentDetailE',
-      transient: true,
+      //transient: true,
       help: 'The row element for the content item list.',
     },
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.model = this.model;
+    },
+    
     function put(envelope, sink, yourEnvelope) {
       /* this is a substream target, implement put handler */
       var self = this;
@@ -177,9 +175,31 @@ CLASS({
       });
     },
 
+    function extractViews() {
+      var model = this.model;
+      // if ( model.getFeature('toCitationE') )
+      this.contentRowView = function(args,X) {
+        var env = args.data || (args.data$ && args.data$.value) ||  X.data || (X.data$ && X.data$.value);
+        var d = env.data || env;
+        if (d.toCitationE)
+          return d.toCitationE(X.sub({ envelope: env })).style({ margin: '8px 0px' });
+        else
+          return this.EnvelopeCitationView.create(args,X);
+      }
+      if ( model.getFeature('toDetailE') ) this.contentDetailView = function(args,X) {
+        var env = args.data || (args.data$ && args.data$.value) ||  X.data || (X.data$ && X.data$.value);
+        var d = env.data || env;
+        if (d.toDetailE) 
+          return d.toDetailE(X.sub({ envelope: env })).style({ 'flex-grow': 1, overflow: 'hidden' });
+        else
+          return this.EnvelopeDetailView.create(args,X);
+      }
+    },
+
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
       var Y = (X || this.Y).sub({ data: this });
+      this.extractViews();
       return this.Element.create(null, Y.sub({controllerMode: 'ro'}))
         .style({ display: 'flex', 'flex-grow': 1, 'flex-direction': 'column' })
         .add(this.CitationOnlyDAOController.create({
@@ -191,6 +211,7 @@ CLASS({
     },
     function toCitationE(X) {
       var Y = X || this.Y;
+      this.extractViews();
       return this.Element.create(null, Y)
         .start().style({
             'display': 'flex',

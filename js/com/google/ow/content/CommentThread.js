@@ -110,7 +110,7 @@ CLASS({
     function toCitationE(X) {
       var Y = (X || this.Y).sub({selection$: null});
       return this.Element.create(null, Y.sub({controllerMode: 'ro'}))
-        .style({ display: 'flex', 'flex-direction': 'column', 'min-height':'50px'}).cls('md-card-shell')
+        .style({ display: 'flex', 'flex-direction': 'column', 'min-height':'50px'})
         .add(this.DAOListView.create({
           mode: 'read-only',
           name: this.description,
