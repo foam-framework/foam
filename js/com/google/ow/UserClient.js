@@ -33,8 +33,9 @@ CLASS({
       memorable: true,
       postSet: function(old, nu, prop) {
         if ( old === nu ) return;
-        this.client = this.clientFactory();
-        this.updateHTML();
+        //this.client = this.clientFactory();
+        //this.updateHTML();
+        this.X.window.location = this.X.window.location;
       },
     },
     {
