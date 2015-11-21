@@ -15,6 +15,7 @@ CLASS({
 
   requires: [
     'foam.u2.Element',
+    'com.google.plus.ui.PersonChipView',
   ],
 
   imports: [
@@ -52,7 +53,7 @@ CLASS({
           'border-bottom': '1px solid rgba(1,1,1,0.25)' 
         })
           .start().style({ 'margin': '8px' })
-            .start().add(this.from$).cls('md-subhead').end()
+            .start().add(this.PersonChipView.create({ data: this.from }, Y)).end()
             .start().add(this.content$).cls('md-body md-grey').end()
           .end()
         .end();
