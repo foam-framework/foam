@@ -314,7 +314,8 @@ CLASS({
                   source: incr,
                   data: video,
                   sid: videoStreamEnv.substreams[0] + '/fakeIDVid'+incr,
-                  substreams: [videoStreamEnv.substreams[0] + '/fakeIDVid'+incr],
+                  substreams: [videoStreamEnv.substreams[0] + '/fakeIDVid'+incr,
+                    video.id+'/commentThreads'],
                 }, this.Y));
                 //console.log('vid sid:',videoStreamEnv.substreams[0] + '/fakeIDVid'+incr);
               }.bind(this),

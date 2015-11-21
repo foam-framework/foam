@@ -40,7 +40,7 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      //this.substreams.push(this.id + '/commentThreads');
+      this.substreams.push(this.id + '/commentThreads');
     },
     
     function put(env, sink, yourEnv) {

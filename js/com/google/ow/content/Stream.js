@@ -53,6 +53,7 @@ CLASS({
     },
     {
       model_: 'ModelProperty',
+      transient: true,
       name: 'model',
       help: 'The type of the content items. Should have an id property.',
       defaultValue: 'com.google.ow.model.StreamableTrait',
@@ -94,6 +95,7 @@ CLASS({
     },
     {
       name: 'contentRowE',
+      transient: true,
       help: 'The row element for the content item list.',
     },
     {
@@ -105,6 +107,7 @@ CLASS({
     },
     {
       name: 'contentDetailE',
+      transient: true,
       help: 'The row element for the content item list.',
     },
   ],
@@ -141,12 +144,13 @@ CLASS({
             eof: function() {
               if ( ! found ) {
                 console.log("Stream: not found, copying to:", ownerId, envelope.sid);
-                self.streamDAO.put(self.createStreamItem(
-                  self.substreams[0],
-                  ownerId,
-                  envelope.data,
-                  envelope.sid
-                ));
+                self.streamDAO.put(self.Envelope.create({
+                  source: self.substreams[0],
+                  owner: ownerId,
+                  data: envelope.data,
+                  sid: envelope.sid,
+                  substreams: envelope.substreams,
+                }));
               }
             }
           });

@@ -44,6 +44,7 @@ CLASS({
           source: this.id,
           substreams: [nid],
           data: this.CommentThread.create({ 
+            description: 'Ask a Question',
             id: nid,
             sid: this.substreams[0],
             border: true,
@@ -63,8 +64,8 @@ CLASS({
     function toDetailE(X) {
       var Y = (X || this.Y).sub({ data: this });
       Y.registerModel(this.QuickActionButton, 'foam.u2.ActionButton');
-      this.contentRowE = this.contentDetailE;
-      this.contentRowView = this.contentDetailView;
+      //this.contentRowE = this.contentDetailE;
+      //this.contentRowView = this.contentDetailView;
       var e = this.Element.create(null, Y);
       e.start().cls('md-flex-col').style({'position':'relative', 'min-height':'50px'})
         .add(this.SUPER(Y))
