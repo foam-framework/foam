@@ -63,6 +63,7 @@ CLASS({
       preSet: function(old, nu) { return ''; },
       defaultValue: '',
     },
+    [ 'border', false],
     {
       model_: 'StringProperty',
       label: 'Reply',
@@ -73,7 +74,7 @@ CLASS({
       postSet: function(old,nu) {
         if (nu) {
           // create message+envelope
-          this.streamDAO.put( 
+          var env = 
             this.Envelope.create({
               owner: this.currentUser.id,
               source: this.currentUser.id,
@@ -83,17 +84,20 @@ CLASS({
                 content: nu,
                 sid: this.substreams[0],
               })
-            })
-          );
+            });
           // reset editor 
           this.newMessage = '';
+          // record new message
+          this.streamDAO.put(env);
+          // scroll ui (hacky)
           this.setTimeout(function() { 
-            this.scrollEl && this.scrollEl.id$el.scrollIntoView(false);
+            this.scrollEl && this.scrollEl.id$el && this.scrollEl.id$el.scrollIntoView(false);
            }.bind(this), 300);
         }
       }
     },
     {
+      model_: 'ImportedProperty',
       name: 'scrollEl',
     }
   ],
@@ -118,7 +122,8 @@ CLASS({
       var Y = (X || this.Y).sub({selection$: null, data: this });
       this.envelope = Y.envelope;
       var e = this.Element.create(null, Y.sub({controllerMode: 'rw'}));
-      e.style({ display: 'flex', 'flex-direction': 'column'})
+      e.style({ display: 'flex', 'flex-direction': 'column'}).cls2(
+        function() { return (this.border) ? 'md-card-shell' : ''; }.bind(this))
 //        .start().add(this.titleText$).cls('md-subhead').end()
       .start().add(this.DAOListView.create({
           mode: 'read-only',

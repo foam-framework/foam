@@ -13,13 +13,14 @@ CLASS({
   package: 'com.google.ow.content',
   name: 'VotableVideo',
   extends: 'com.google.ow.content.Video',
-  traits: ['com.google.ow.content.VotableTrait'],
-
-  // substreams and sid inherited from Vote
+  traits: [
+    'com.google.ow.content.VotableTrait',
+    'com.google.ow.content.CommentThreadTrait',
+  ],
 
   methods: [
     function toDetailE(X) {
-      return this.SUPER(X).add(this.toVoteE(X));
+      return this.SUPER(X).add(this.toVoteE(X)).add(this.toCommentsE(X));
     },
     function toCitationE(X) {
       return this.SUPER(X);

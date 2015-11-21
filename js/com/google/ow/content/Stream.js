@@ -81,12 +81,13 @@ CLASS({
       hidden: true,
       transient: true,
       lazyFactory: function() {
-        console.log("Stream where:", this.Envelope.SID, this.substreams[0])
+        console.log(this.name_, "Stream where:", this.Envelope.SID, this.substreams[0])
         return this.streamDAO.where(CONTAINS(this.Envelope.SID, this.substreams[0])); // TODO: slightly hacky, path split alternative
       }
     },
     {
       model_: 'ViewFactoryProperty',
+      transient: true,
       name: 'contentRowView',
       help: 'The row view for the content item list.',
       defaultValue: 'com.google.ow.ui.EnvelopeCitationView',
@@ -98,6 +99,7 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'contentDetailView',
+      transient: true,
       help: 'The row view for the content item list.',
       defaultValue: 'com.google.ow.ui.EnvelopeDetailView',
     },
@@ -173,7 +175,7 @@ CLASS({
 
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
-      var Y = X || this.Y;
+      var Y = (X || this.Y).sub({ data: this });
       return this.Element.create(null, Y.sub({controllerMode: 'ro'}))
         .style({ display: 'flex', 'flex-grow': 1, 'flex-direction': 'column' })
         .add(this.CitationOnlyDAOController.create({
