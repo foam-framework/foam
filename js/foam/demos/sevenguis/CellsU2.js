@@ -295,7 +295,7 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
     function cellE(j, i) {
       var c = this.E('td');
 
-      c.add('_');
+      c.add(this.E('input'));
 
       return c;
     }
