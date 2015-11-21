@@ -22,6 +22,7 @@ CLASS({
     'com.google.ow.content.CommentThread',
     'foam.ui.DAOListView',
     'com.google.ow.model.Envelope',
+    'foam.u2.md.QuickActionButton',
   ],
 
   imports: [
@@ -33,7 +34,7 @@ CLASS({
     {
       name: 'addCommentThread',
       label: 'New Comment',
-      ligature: 'add',
+      ligature: 'comment',
       code: function() {
         var nid = createGUID();
         console.log("Going to add stream with sid ", this.substreams[0])
@@ -61,6 +62,7 @@ CLASS({
     
     function toDetailE(X) {
       var Y = (X || this.Y).sub({ data: this });
+      Y.registerModel(this.QuickActionButton, 'foam.u2.ActionButton');
       this.contentRowE = this.contentDetailE;
       this.contentRowView = this.contentDetailView;
       var e = this.Element.create(null, Y);

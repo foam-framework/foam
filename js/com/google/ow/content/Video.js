@@ -17,6 +17,7 @@ CLASS({
     'XHR',
     'foam.u2.Element',
     'foam.ui.ImageView',
+    'foam.u2.md.QuickActionButton',
   ],
 
   imports: [
@@ -67,7 +68,8 @@ CLASS({
   actions: [
     {
       name: 'download',
-      label: 'Download',
+      label: 'Offline',
+      ligature: 'cloud_download',
       isAvailable: function() {
         return this.cachedState_ === 'none';
       },
@@ -81,12 +83,29 @@ CLASS({
         }.bind(this), this.content);
       }
     },
+    {
+      name: 'inProgress',
+      label: 'Downloading...',
+      ligature: 'cached',
+      isEnabled: function() {
+        return false;
+      },
+    },
+    {
+      name: 'saved',
+      label: 'Saved',
+      ligature: 'play_circle_filled',
+      isEnabled: function() {
+        return false;
+      },
+    }
   ],
 
   methods: [
     // TODO(markdittmer): We should use model-for-model or similar here.
     function toDetailE(X) {
       var Y = (X || this.Y).sub({ controllerMode: 'ro' });
+      Y.registerModel(this.QuickActionButton, 'foam.u2.ActionButton');
       this.envelope_ = X.envelope;
       return this.Element.create(null, Y)
         .start().style({
@@ -113,26 +132,30 @@ CLASS({
     },
     function toCitationE(X) {
       var Y = X || this.Y;
+      Y.registerModel(this.QuickActionButton, 'foam.u2.ActionButton');
       this.envelope_ = X.envelope;
       var self = this;
       return this.Element.create(null, Y)
-          .start().style({ 'display': 'flex' })
+          .start().style({ 'display': 'flex', 'margin': '8px' })
           .add(this.ImageView.create({ data: this.preview, displayWidth: 80*16/9, displayHeight: 80 }))
             .start().style({
               'display': 'flex',
               'flex-direction': 'column',
-              margin: '16px',
-              'flex-grow': 1
+              'flex-grow': 1,
+              'padding': '8px',
             })
               .start().add(this.titleText$).cls('md-subhead').end()
               .start().add(this.description$).cls('md-body').end()
             .end()
-            .start('span').attrs({ margin: '8px' })
-              .x({ data: this }).add(this.DOWNLOAD)
-              .start('span').add('Saved').cls2(function(state) {
+            .start('span').attrs({ padding: '8px' }).style({ width: '48px', height: '48px' })
+              .x({ data: this })
+              .start('span').add(this.DOWNLOAD).cls('md-subhead').cls2(function(state) {
+                return state === 'none' ? '' : 'foam-u2-Element-hidden';
+              }.on$(this.X, this.cachedState_$)).end()
+              .start('span').add(this.SAVED).cls('md-subhead').cls2(function(state) {
                 return state === 'cached' ? '' : 'foam-u2-Element-hidden';
               }.on$(this.X, this.cachedState_$)).end()
-              .start('span').add('Downloading...').cls2(function(state) {
+              .start('span').add(this.IN_PROGRESS).cls('md-subhead').cls2(function(state) {
                 return state === 'downloading' ? '' : 'foam-u2-Element-hidden';
               }.on$(this.X, this.cachedState_$)).end()
               .end()
