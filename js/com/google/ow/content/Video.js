@@ -136,29 +136,31 @@ CLASS({
       this.envelope_ = X.envelope;
       var self = this;
       return this.Element.create(null, Y)
-          .start().style({ 'display': 'flex', 'margin': '8px' })
-          .add(this.ImageView.create({ data: this.preview, displayWidth: 80*16/9, displayHeight: 80 }))
-            .start().style({
-              'display': 'flex',
-              'flex-direction': 'column',
-              'flex-grow': 1,
-              'padding': '8px',
+          .start().style({ 'margin': '8px' }).cls('md-flex-col').cls('md-card-shell')
+            .start().cls('md-flex-row').style({
+              'flex-grow': 1, 'justify-content':'space-between'
             })
-              .start().add(this.titleText$).cls('md-subhead').end()
-              .start().add(this.description$).cls('md-body').end()
+              .start().add(this.titleText$).cls('md-subhead').style({ 'padding': '8px' }).end()
+              .add(this.ImageView.create({ data: this.preview, displayWidth: 80*16/9, displayHeight: 80 }))
             .end()
-            .start('span').attrs({ padding: '8px' }).style({ width: '48px', height: '48px' })
-              .x({ data: this })
-              .start('span').add(this.DOWNLOAD).cls('md-subhead').cls2(function(state) {
-                return state === 'none' ? '' : 'foam-u2-Element-hidden';
-              }.on$(this.X, this.cachedState_$)).end()
-              .start('span').add(this.SAVED).cls('md-subhead').cls2(function(state) {
-                return state === 'cached' ? '' : 'foam-u2-Element-hidden';
-              }.on$(this.X, this.cachedState_$)).end()
-              .start('span').add(this.IN_PROGRESS).cls('md-subhead').cls2(function(state) {
-                return state === 'downloading' ? '' : 'foam-u2-Element-hidden';
-              }.on$(this.X, this.cachedState_$)).end()
+            .start().cls('md-flex-row').style({
+              'flex-grow': 1, 'justify-content':'space-between', 'overflow-y':'hidden'
+            })
+              .start().add(this.description$).cls('md-body').style({ 'padding': '8px' }).end()
+              .start('span').attrs({ padding: '8px' })
+              .style({ width: '48px', height: '48px', top: '0', 'right': '0' })
+                .x({ data: this })
+                .start('span').add(this.DOWNLOAD).cls('md-subhead').cls2(function(state) {
+                  return state === 'none' ? '' : 'foam-u2-Element-hidden';
+                }.on$(this.X, this.cachedState_$)).end()
+                .start('span').add(this.SAVED).cls('md-subhead').cls2(function(state) {
+                  return state === 'cached' ? '' : 'foam-u2-Element-hidden';
+                }.on$(this.X, this.cachedState_$)).end()
+                .start('span').add(this.IN_PROGRESS).cls('md-subhead').cls2(function(state) {
+                  return state === 'downloading' ? '' : 'foam-u2-Element-hidden';
+                }.on$(this.X, this.cachedState_$)).end()
               .end()
+            .end()
         .end();
     },
   ],
