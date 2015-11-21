@@ -142,7 +142,9 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( ! this.currentUser || nu !== this.currentUser.id ) {
-          this.personDAO.find(nu, { put: function(user) {
+          // There's a delay on boot that caused the fine() to fail. TODO: This listener is pointless
+          // after boot, once we have the user loaded.
+          this.personDAO.where(EQ(this.Person.ID, nu)).pipe({ put: function(user) {
             this.currentUser = user;
           }.bind(this) });
         }
@@ -172,7 +174,7 @@ CLASS({
           sockets: true,
           syncWithServer: true,
           // logging: true,
-        }, this.Y).orderBy(this.Envelope.TIMESTAMP);
+        }).orderBy(this.Envelope.TIMESTAMP);
         dao.listen({
           put: function(e) {
             console.log('Put', e.toString());
@@ -186,12 +188,15 @@ CLASS({
       lazyFactory: function() {
         // TODO(markdittmer): This should be an authorized collection of peopl
         // the current user may know about.
-        return this.EasyClientDAO.create({
-          serverUri: this.document.location.origin + '/api',
+        return this.EasyDAO.create({
+          daoType: 'MDAO',
           model: this.Person,
+          cloning: true,
+          contextualize: true,
+          dedup: true,
           sockets: true,
-          logging: true,
-        }, this.Y);
+          syncWithServer: true,
+        });
       }
     },
     {
