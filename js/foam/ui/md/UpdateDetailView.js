@@ -50,6 +50,20 @@ CLASS({
       postSet: function(old, nu) {
         if ( old ) old.removeListener(this.rawUpdate);
         if ( nu ) nu.addListener(this.rawUpdate);
+        // HACK(markdittmer): For envelope-based detail views.
+        // TODO(markdittmer): Remove this once foam.browser has U2 views that
+        // can do something like this on a case-by-case basis.
+        if ( nu.data && nu.data.model_ ) {
+          var modelClassName = nu.data.model_.id.replace(/[.]/g, '-');
+          if ( this.$ ) {
+            var className = this.$.className;
+            className = className.replace(new RegExp(modelClassName, 'g'), '');
+            className = className + ' ' + modelClassName;
+            this.$.className = className;
+          } else {
+            this.extraClassName = modelClassName;
+          }
+        }
       }
     },
     {
