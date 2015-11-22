@@ -14,5 +14,28 @@ CLASS({
   name: 'MerchantOrderCitationView',
   extends: 'com.google.ow.ui.OrderCitationView',
 
-  // TODO(markdittmer): Add merchant-specific info.
+  properties: [
+    'merchant',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( nu && nu.merchant !== this.X.envelope.owner )
+          this.getPerson(nu.merchant, this.merchant$);
+      },
+    },
+  ],
+
+  methods: [
+    function initE() {
+      return this.SUPER()
+          .add(function(merchant) {
+            if ( ! merchant ) return '';
+            return this.start('div').cls('md-grey')
+                .add('Merchant: ')
+                .add(merchant.displayName)
+              .end();
+          }.bind(this).on$(this.X, this.merchant$));
+    },
+  ],
 });
