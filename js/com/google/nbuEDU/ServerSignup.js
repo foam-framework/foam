@@ -17,7 +17,7 @@ CLASS({
     'com.google.ow.model.Envelope',
     'foam.u2.Element',
     'com.google.ow.content.PreviewStream',
-    //'com.google.nbuEDU.
+    'com.google.ow.content.CommentThreadStream',
   ],
 
   imports: [
@@ -99,6 +99,24 @@ CLASS({
               "id": "eduVidStream487673295"
             })
           }));
+
+
+          var commentStream = self.CommentThreadStream.create({
+              "name": "GradeChatroom",
+              "titleText": "Grade 7 Quick Chat",
+              "description": "Tap here to talk to others in your grade.",
+              "model": "com.google.ow.content.CommentThread",
+              "id": "eduCommentsForum754788392995",
+            });
+          self.streamDAO.put(self.Envelope.create({
+            "model_": "com.google.ow.model.Envelope",
+            "owner": newUserId,
+            "source": self.substreams[0]+"ServerSignup",
+            "substreams": ["eduCommentsForum754788392995"],
+            data: commentStream,
+          }));
+        
+
         }
       });
     },

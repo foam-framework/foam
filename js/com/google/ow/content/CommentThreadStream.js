@@ -58,8 +58,9 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.model = this.CommentThread;
+      //this.model = this.CommentThread;
     },
+
     
     function toDetailE(X) {
       var Y = (X || this.Y).sub({ data: this });
