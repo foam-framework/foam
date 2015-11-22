@@ -33,7 +33,6 @@ CLASS({
     'com.google.ow.model.ProductAd',
     'com.google.ow.stream.NewConnectionListener',
     'com.google.plus.Person',
-    'com.google.plus.ShareSink',
     'foam.dao.AuthorizedDAO',
     'foam.dao.DebugAuthDAO',
     'foam.dao.EasyDAO',
@@ -117,9 +116,7 @@ CLASS({
     {
       name: 'streamDAO',
       lazyFactory: function() {
-        return this.authorizeFactory(
-            this.Envelope,
-            this.ShareSink.create({ delegate: this.streamDAO_ }, this.Y));
+        return this.authorizeFactory(this.Envelope, this.streamDAO_);
       },
     },
     {
