@@ -22,6 +22,11 @@ CLASS({
       name: 'people',
     },
     {
+      model_: 'BooleanProperty',
+      name: 'repackageOriginal',
+      defaultValue: false,
+    },
+    {
       model_: 'FunctionProperty',
       name: 'envelopeFactory',
       defaultValue: function(baseEnv, pid) {
@@ -76,10 +81,12 @@ CLASS({
     function put(env, sink) {
       var sharedSink = sink ?
           this.getSharedSink_(env, sink, self.people.length + 1) : null;
-      this.delegate.remove(env, sharedSink);
+      if ( this.repackageOriginal )
+        this.delegate.remove(env, sharedSink);
       for ( var i = 0; i < this.people.length; ++i ) {
         var pid = this.people[i];
-        this.putTo(env, sharedSink, pid);
+        if ( this.repackageOriginal || pid !== env.owner )
+          this.putTo(env, sharedSink, pid);
       }
       // var sinkError = sink && sink.error ? sink.error.bind(sink) : nop;
       // var putToNext = function(i) {

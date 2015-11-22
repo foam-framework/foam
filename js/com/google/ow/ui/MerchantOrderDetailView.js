@@ -53,6 +53,7 @@ CLASS({
   actions: [
     {
       name: 'accept',
+      ligature: 'file_download',
       code: function(X) {
         this.status = 'ACCEPTED';
         X.streamDAO.put(this.toEnvelope(X.sub({ sid: X.envelope.sid })));
@@ -63,6 +64,7 @@ CLASS({
     },
     {
       name: 'notify',
+      ligature: 'done',
       code: function(X) {
         this.status = 'READY';
         X.streamDAO.put(this.toEnvelope(X.sub({ sid: X.envelope.sid })));
@@ -73,8 +75,9 @@ CLASS({
     },
     {
       name: 'deliver',
+      ligature: 'done_all',
       code: function(X) {
-        this.status = 'DELIVER';
+        this.status = 'DELIVERED';
         X.streamDAO.put(this.toEnvelope(X.sub({ sid: X.envelope.sid })));
       },
       isAvailable: function() {

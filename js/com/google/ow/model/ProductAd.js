@@ -56,5 +56,6 @@ CLASS({
           .start('div').cls('md-body').add(this.summaryText).end()
         .end();
     },
+    function toString() { return '[rich content]'; },
   ],
 });

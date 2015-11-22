@@ -67,6 +67,7 @@ CLASS({
   actions: [
     {
       name: 'cancel',
+      ligature: 'cancel',
       code: function(X) {
         this.status = 'CANCELED';
         X.streamDAO.put(this.toEnvelope(X.sub({ sid: X.envelope.sid })));

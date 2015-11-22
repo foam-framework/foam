@@ -23,6 +23,7 @@ CLASS({
     'MDAO',
     'com.google.ow.IdGenerator',
     'com.google.ow.content.OrderStream',
+    'com.google.ow.content.PreviewStream',
     'com.google.ow.content.Video',
     'com.google.ow.dao.VideoOffloadDAO',
     'com.google.ow.examples.VideoB',
@@ -38,6 +39,8 @@ CLASS({
     'com.google.ow.ui.MerchantOrderCitationView',
     'com.google.ow.ui.MerchantOrderDetailView',
     'com.google.ow.ui.MerchantOrderSummaryView',
+    'com.google.ow.ui.SingleStreamCitationView',
+    'com.google.ow.ui.SingleStreamDetailView',
     'com.google.ow.ui.UpdateStreamCitationView',
     'com.google.ow.ui.UpdateStreamDetailView',
     'com.google.plus.Circle',
@@ -67,8 +70,7 @@ CLASS({
     'foam.ui.md.CheckboxView',
     'foam.ui.md.PopupView',
     'foam.ui.md.UpdateDetailView',
-    'com.google.ow.content.PreviewStream',
-    
+
     // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
     // 'foam.u2.md.SharedStyles',
   ],
@@ -106,7 +108,16 @@ CLASS({
           dao: this.streamDAO.where(OR(
               NOT(HAS(this.Envelope.SID)),
               EQ(this.Envelope.PROMOTED, true))),
-          listView: 'foam.u2.md.DAOListView',
+          listView: function(args, X) {
+            args.rowView = function(args, X) {
+              var obj = args.data || args.data$.get();
+              return obj.toE ?
+                  obj.toE(this.Y) :
+                  obj.toRowE ? obj.toRowE(this.Y) :
+                  X.lookup('foam.u2.DetailView').create(args, X);
+            };
+            return X.lookup('foam.ui.DAOListView').create(args, X);
+          }.bind(this),
           cannedQueryDAO: [
             this.CannedQuery.create({
               label: 'All',
@@ -247,11 +258,11 @@ CLASS({
       this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
 
       // hack to fix missing updates when the server creates new streamDAO items
-      var pollEnvelope = this.Envelope.create({ owner: this.currentUser.id, id: 'pollEnv1212', data: {id:'fake' }, sid: 'fakeSID34343434434' });
-      this.X.setInterval(function() {
-        pollEnvelope.owner = this.currentUser.id;
-        this.streamDAO.put(pollEnvelope)
-      }.bind(this), 1000);
+      // var pollEnvelope = this.Envelope.create({ owner: this.currentUser.id, id: 'pollEnv1212', data: {id:'fake' }, sid: 'fakeSID34343434434' });
+      // this.X.setInterval(function() {
+      //   pollEnvelope.owner = this.currentUser.id;
+      //   this.streamDAO.put(pollEnvelope)
+      // }.bind(this), 1000);
 
       // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
       // this.SharedStyles.create(null, this.Y);

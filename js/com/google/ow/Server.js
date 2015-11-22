@@ -23,6 +23,7 @@ CLASS({
     'MDAO',
     'com.google.ow.IdGenerator',
     'com.google.ow.SubstreamSink',
+    'com.google.ow.content.SingleStream',
     'com.google.ow.content.Stream',
     'com.google.ow.content.UpdateStream',
     'com.google.ow.content.Video',
@@ -31,6 +32,7 @@ CLASS({
     'com.google.ow.model.Envelope',
     'com.google.ow.model.MerchantOrder',
     'com.google.ow.model.ProductAd',
+    'com.google.ow.model.Text',
     'com.google.ow.stream.NewConnectionListener',
     'com.google.plus.Person',
     'foam.dao.AuthorizedDAO',
@@ -231,8 +233,35 @@ CLASS({
       this.loadData();
     },
     function loadData() {
-      // Bootstrap streams.
       var self = this, videoStreamEnv;
+
+      // Bootstrap streams.
+      var people = [];
+      self.personData.select(people)(function() {
+        people = people.map(function(p) { return p.id; });
+
+        self.NewConnectionListener.create({
+          streamDAO: self.streamDAO_,
+          substreams: [ '/Chat/New' ],
+          createClientForSource: true,
+          getPeople: function(env) {
+            return people;
+          },
+          getConnectionSubstreams: function(env) { return [ '/Chat/All' ]; },
+          streamClientFactory: function(inputEnv, pid) {
+            return self.SingleStream.create({
+              substream: this.getConnectionSubstreams(inputEnv)[0],
+            });
+          },
+        });
+
+        self.streamDAO_.put(self.Envelope.create({
+          source: '0',
+          owner: '0',
+          sid: '/Chat/New',
+          data: self.Text.create({ message: "Hey, let's chat!" }),
+        }));
+      });
       self.adData.select(GROUP_BY(self.Ad.AD_STREAM))(function(data) {
         var sids = data.groupKeys;
         for ( var i = 0; i < sids.length; ++i ) {
