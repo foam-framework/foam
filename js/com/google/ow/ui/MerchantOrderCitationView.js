@@ -14,14 +14,17 @@ CLASS({
   name: 'MerchantOrderCitationView',
   extends: 'com.google.ow.ui.OrderCitationView',
 
+  requires: [
+    'foam.u2.Element',
+  ],
+
   properties: [
-    'merchant',
+    'customer',
     {
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( nu && nu.merchant !== this.X.envelope.owner )
-          this.getPerson(nu.merchant, this.merchant$);
+        this.getPerson(nu.customer, this.customer$);
       },
     },
   ],
@@ -29,13 +32,12 @@ CLASS({
   methods: [
     function initE() {
       return this.SUPER()
-          .add(function(merchant) {
-            if ( ! merchant ) return '';
-            return this.start('div').cls('md-grey')
-                .add('Merchant: ')
-                .add(merchant.displayName)
-              .end();
-          }.bind(this).on$(this.X, this.merchant$));
+          .add(function(customer) {
+            if ( ! customer ) return '';
+            return this.Element.create({ nodeName: 'div' }).cls('md-grey')
+                .add('Customer: ')
+                .add(customer.displayName);
+          }.bind(this).on$(this.X, this.customer$));
     },
   ],
 });

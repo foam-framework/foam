@@ -12,13 +12,10 @@
 CLASS({
   package: 'com.google.ow.ui',
   name: 'OrderCitationView',
-  extends: 'foam.u2.View',
+  extends: 'com.google.ow.ui.OrderView',
 
   requires: [
     'foam.u2.md.Select',
-  ],
-  imports: [
-    'personDAO',
   ],
   exports: [ 'data' ],
 
@@ -54,9 +51,6 @@ CLASS({
           .start('div').cls('md-body').add(this.data.TOTAL).end()
           .start('div').cls('md-body').add(this.data.METHOD_OF_PAYMENT).end()
           .start('div').cls('md-body').add(this.data.STATUS).end();
-    },
-    function getPerson(id, value) {
-      this.personDAO.find(id, { put: function(o) { value.set(o); } });
     },
     function init() {
       // For *EnumProperty.toPropertyE().

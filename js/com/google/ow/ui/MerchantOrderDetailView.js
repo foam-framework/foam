@@ -14,11 +14,72 @@ CLASS({
   name: 'MerchantOrderDetailView',
   extends: 'com.google.ow.ui.OrderDetailView',
 
+  imports: [ 'streamDAO' ],
+
+  properties: [
+    'customer',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.getPerson(nu.customer, this.customer$);
+      },
+    },
+  ],
+
   methods: [
-    function initE() {
-      return this.SUPER()
+    function titleE(prev) {
+      return prev.start('div').cls('heading').cls('md-headline')
+            .add('Order (')
+            .add(function(customer) {
+              return customer ? customer.displayName : '';
+            }.bind(this).on$(this.X, this.customer$))
+            .add(')')
+          .end();
+    },
+    function mainE(prev) {
+      return this.SUPER(prev)
           .start('span').x({ controllerMode: 'view' }).add(this.data.METHOD_OF_PAYMENT).end()
           .start('span').x({ controllerMode: 'view' }).add(this.data.STATUS).end();
     },
+    function actionsE(prev) {
+      return this.SUPER(prev)
+          .add(this.ACCEPT)
+          .add(this.NOTIFY)
+          .add(this.DELIVER);
+    },
   ],
+
+  actions: [
+    {
+      name: 'accept',
+      code: function(X) {
+        this.status = 'ACCEPTED';
+        X.streamDAO.put(this.toEnvelope(X.sub({ sid: X.envelope.sid })));
+      },
+      isAvailable: function() {
+        return this.status === 'PENDING' || this.status === 'SUBMITTED';
+      },
+    },
+    {
+      name: 'notify',
+      code: function(X) {
+        this.status = 'READY';
+        X.streamDAO.put(this.toEnvelope(X.sub({ sid: X.envelope.sid })));
+      },
+      isAvailable: function() {
+        return this.status === 'ACCEPTED';
+      },
+    },
+    {
+      name: 'deliver',
+      code: function(X) {
+        this.status = 'DELIVER';
+        X.streamDAO.put(this.toEnvelope(X.sub({ sid: X.envelope.sid })));
+      },
+      isAvailable: function() {
+        return this.status === 'READY';
+      },
+    },
+  ]
 });

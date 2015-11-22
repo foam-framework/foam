@@ -14,9 +14,29 @@ CLASS({
   name: 'CustomerOrderDetailView',
   extends: 'com.google.ow.ui.OrderDetailView',
 
+  properties: [
+    'merchant',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        this.getPerson(nu.merchant, this.merchant$);
+      },
+    },
+  ],
+
   methods: [
-    function initE() {
-      return this.SUPER()
+    function titleE(prev) {
+      return prev.start('div').cls('heading').cls('md-headline')
+            .add('Order (')
+            .add(function(merchant) {
+              return merchant ? merchant.displayName : '';
+            }.bind(this).on$(this.X, this.merchant$))
+            .add(')')
+          .end();
+    },
+    function mainE(prev) {
+      return this.SUPER(prev)
           .start('span').x({ controllerMode: 'modify' }).add(this.data.METHOD_OF_PAYMENT).end()
           .start('span').x({ controllerMode: 'view' }).add(this.data.STATUS).end();
     },

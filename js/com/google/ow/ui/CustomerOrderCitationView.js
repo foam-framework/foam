@@ -14,16 +14,17 @@ CLASS({
   name: 'CustomerOrderCitationView',
   extends: 'com.google.ow.ui.OrderCitationView',
 
-  imports: [ 'personDAO' ],
+  requires: [
+    'foam.u2.Element',
+  ],
 
   properties: [
-    'customer',
+    'merchant',
     {
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( nu && nu.customer !== this.X.envelope.owner )
-          this.getPerson(nu.customer, this.customer$);
+        this.getPerson(nu.merchant, this.merchant$);
       },
     },
   ],
@@ -31,13 +32,12 @@ CLASS({
   methods: [
     function initE() {
       return this.SUPER()
-          .add(function(customer) {
-            if ( ! customer ) return '';
-            return this.start('div').cls('md-grey')
-                .add('Customer: ')
-                .add(customer.displayName)
-              .end();
-          }.bind(this).on$(this.X, this.customer$));
+          .add(function(merchant) {
+            if ( ! merchant ) return '';
+            return this.Element.create({ nodeName: 'div' }).cls('md-grey')
+                .add('Merchant: ')
+                .add(merchant.displayName);
+          }.bind(this).on$(this.X, this.merchant$));
     },
   ],
 });

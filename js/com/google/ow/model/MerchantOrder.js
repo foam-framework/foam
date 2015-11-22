@@ -22,24 +22,6 @@ CLASS({
   ],
 
   methods: [
-    function add(item) {
-      var itemFound = false;
-      this.items_.where(EQ(
-          this.OrderItem.PRODUCT.dot(this.Product.HASH),
-          item.product.hash)).limit(1)
-          .select({
-            put: function(o) {
-              itemFound = true;
-              o.quantity += item.quantity;
-              this.items_.put(o);
-            }.bind(this),
-            eof: function() {
-              if ( ! itemFound ) {
-                this.items_.put(item);
-              }
-            }.bind(this)
-          })(nop);
-    },
     function toE(X) {
       return X.lookup('com.google.ow.ui.MerchantOrderSummaryView').create({ data: this }, X);
     },
@@ -53,4 +35,5 @@ CLASS({
       return X.lookup('com.google.ow.ui.MerchantOrderCitationView').create({ data: this }, X);
     },
   ],
+
 });
