@@ -57,12 +57,12 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'tally',
-      defaultValue: 0,
+      factory: function() { return Math.floor(Math.random() * 1000) },
     },
     {
       model_: 'IntProperty',
       name: 'count',
-      defaultValue: 0,
+      factory: function() { return Math.floor(Math.random() * 1000) },
     },
   ],
 

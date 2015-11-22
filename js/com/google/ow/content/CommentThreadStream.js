@@ -44,7 +44,7 @@ CLASS({
           source: this.id,
           substreams: [nid],
           data: this.CommentThread.create({ 
-            description: 'Ask a Question',
+            description: 'Question',
             id: nid,
             sid: this.substreams[0],
             border: true,
@@ -67,7 +67,11 @@ CLASS({
       //this.contentRowE = this.contentDetailE;
       //this.contentRowView = this.contentDetailView;
       var e = this.Element.create(null, Y);
-      e.start().cls('md-flex-col').style({'position':'relative', 'min-height':'50px'})
+      e.start().cls('md-flex-col').style({
+          'position':'relative', 
+          'min-height':'50px', 
+          'flex-grow':'1', 
+          'background-color':'#eeffee'})
         .add(this.SUPER(Y))
         .start().add(this.ADD_COMMENT_THREAD).style({ 
           'position': 'absolute',
