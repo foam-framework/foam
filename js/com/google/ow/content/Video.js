@@ -50,10 +50,12 @@ CLASS({
     },
     {
       model_: 'BlobProperty',
+      transient: true,
       name: 'cache_',
     },
     {
       name: 'cachedState_',
+      transient: true,
       documentation: 'One of "none", "downloading", "cached".',
       defaultValue: 'none'
     },
