@@ -124,7 +124,7 @@ CLASS({
   templates: [
     {
       name: "apache2Header",
-      template: "/*\u000a * @license\u000a * Copyright <%= new Date().getFullYear() %> Google Inc. All Rights Reserved.\u000a *\u000a * Licensed under the Apache License, Version 2.0 (the \"License\");\u000a * you may not use this file except in compliance with the License.\u000a * You may obtain a copy of the License at\u000a *\u000a *     http://www.apache.org/licenses/LICENSE-2.0\u000a *\u000a * Unless required by applicable law or agreed to in writing, software\u000a * distributed under the License is distributed on an \"AS IS\" BASIS,\u000a * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\u000a * See the License for the specific language governing permissions and\u000a * limitations under the License.\u000a */\u000a\u000a"
+      template: "/**\u000a * @license\u000a * Copyright <%= new Date().getFullYear() %> Google Inc. All Rights Reserved.\u000a *\u000a * Licensed under the Apache License, Version 2.0 (the \"License\");\u000a * you may not use this file except in compliance with the License.\u000a * You may obtain a copy of the License at\u000a *\u000a *     http://www.apache.org/licenses/LICENSE-2.0\u000a *\u000a * Unless required by applicable law or agreed to in writing, software\u000a * distributed under the License is distributed on an \"AS IS\" BASIS,\u000a * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\u000a * See the License for the specific language governing permissions and\u000a * limitations under the License.\u000a */\u000a\u000a"
     }
   ]
 });
