@@ -14,7 +14,7 @@ if ( typeof vm != "undefined" && vm.runInThisContext ) {
         this.onLoadEndListeners_ = [value];
       },
       set onreadystatechange(value) {
-        this.onReadyStateListener_ = [value];
+        this.onReadyStateListeners_ = [value];
       },
       UNSENT: 0,
       OPENED: 1,
@@ -61,8 +61,8 @@ if ( typeof vm != "undefined" && vm.runInThisContext ) {
         this.readyState_ = state;
         var fire = function(l)  { l(); };
 
-        if ( this.readyStateListeners_ ) {
-          this.readyStateListeners_.forEach(fire);
+        if ( this.onReadyStateListeners_ ) {
+          this.onReadyStateListeners_.forEach(fire);
         }
 
         if ( this.readyState_ == this.DONE &&
@@ -86,7 +86,6 @@ if ( typeof vm != "undefined" && vm.runInThisContext ) {
         var h = http;
         if ( url_.protocol === "https:" ) var h = https;
 
-        console.log("Requesting: ", url_, "\n", payload);
         this.request_ = h.request(url_, function(response) {
           response.setEncoding('utf8');
           var buffer = "";
@@ -94,7 +93,6 @@ if ( typeof vm != "undefined" && vm.runInThisContext ) {
             buffer += data;
           });
           response.on('end', function() {
-            console.log("Response:", buffer);
             this.response_ = buffer;
             this.status_ = response.statusCode;
             this.toReadyState(this.DONE);
