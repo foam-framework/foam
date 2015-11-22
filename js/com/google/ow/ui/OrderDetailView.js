@@ -33,7 +33,7 @@ CLASS({
   methods: [
     function initE() {
       return this.start('div').cls('heading').cls('md-headline')
-            .add('Order')
+            .add(' Order')
           .end()
           .add(this.DAOListView.create({ data: this.data.items_ }, this.Y.sub({
             selection$: undefined,
@@ -41,9 +41,7 @@ CLASS({
           .start('div').cls('total').cls('md-body')
             .start('div').add('TOTAL:').end()
             .add(this.data.TOTAL)
-          .end()
-          .add(this.data.METHOD_OF_PAYMENT)
-          .add(this.CANCEL);
+          .end();
     },
     function init() {
       // For *EnumProperty.toPropertyE(), Action.toE().

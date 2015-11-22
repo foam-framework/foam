@@ -55,6 +55,11 @@ CLASS({
       defaultValue: true,
     },
     {
+      model_: 'BooleanProperty',
+      name: 'createClientForSource',
+      defaultValue: false,
+    },
+    {
       model_: 'FunctionProperty',
       name: 'streamDataFactory',
       defaultValueFn: function() {
@@ -95,6 +100,7 @@ CLASS({
       defaultValue: function(env) {
         var people = this.getPeople(env);
         for ( var i = 0; i < people.length; ++i ) {
+          if ( people[i] === env.source && ! this.createClientForSource ) continue;
           var clientEnv = this.streamClientEnvelopeFactory(env, people[i]);
           if ( clientEnv ) this.streamDAO.put(clientEnv);
         }

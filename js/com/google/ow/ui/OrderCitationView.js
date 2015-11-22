@@ -25,17 +25,6 @@ CLASS({
   properties: [
     [ 'nodeName', 'ORDER-CITATION' ],
     {
-      name: 'data',
-      postSet: function(old, nu) {
-        if ( old === nu ) return;
-        // console.log('Data', nu.customer, nu.merchant);
-        if ( nu && nu.customer !== this.X.envelope.owner )
-          this.getPerson(nu.customer, this.customer$);
-        if ( nu && nu.merchant !== this.X.envelope.owner )
-          this.getPerson(nu.merchant, this.merchant$);
-      },
-    },
-    {
       model_: 'foam.core.types.DAOProperty',
       name: 'items',
       factory: function() {
@@ -52,12 +41,6 @@ CLASS({
       model_: 'StringProperty',
       name: 'itemsText',
     },
-    {
-      name: 'customer',
-    },
-    {
-      name: 'merchant',
-    },
   ],
 
   methods: [
@@ -67,20 +50,6 @@ CLASS({
     },
     function initE() {
       return this
-          .add(function(customer) {
-            if ( ! customer ) return '';
-            return this.start('div').cls('md-grey')
-                .add('Customer: ')
-                .add(this.customer.displayName)
-              .end();
-          }.bind(this).on$(this.X, this.customer$))
-          .add(function(merchant) {
-            if ( ! merchant ) return '';
-            return this.start('div').cls('md-grey')
-                .add('Merchant: ')
-                .add(this.merchant.displayName)
-              .end();
-          }.bind(this).on$(this.X, this.merchant$))
           .start('div').cls('md-grey').cls('items').add(this.itemsText$).end()
           .start('div').cls('md-body').add(this.data.TOTAL).end()
           .start('div').cls('md-body').add(this.data.METHOD_OF_PAYMENT).end()

@@ -14,5 +14,11 @@ CLASS({
   name: 'CustomerOrderDetailView',
   extends: 'com.google.ow.ui.OrderDetailView',
 
-  // TODO(markdittmer): Add customer-specific info.
+  methods: [
+    function initE() {
+      return this.SUPER()
+          .start('span').x({ controllerMode: 'modify' }).add(this.data.METHOD_OF_PAYMENT).end()
+          .start('span').x({ controllerMode: 'view' }).add(this.data.STATUS).end();
+    },
+  ],
 });

@@ -251,6 +251,8 @@ CLASS({
               });
             },
             streamDataFactory: function(data, pid) {
+              // TODO(markdittmer): This special case should be better abstracted.
+              if ( data.status === 'PENDING' ) data.status = 'SUBMITTED';
               if ( pid === data.merchant ) return self.MerchantOrder.create(data);
               else                         return self.CustomerOrder.create(data);
             },

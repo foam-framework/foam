@@ -14,6 +14,7 @@ CLASS({
   name: 'Order',
 
   requires: [
+    'com.google.ow.content.UpdateStream',
     'com.google.ow.model.Envelope',
     'com.google.ow.model.OrderItem',
     'com.google.ow.model.Product',
@@ -68,6 +69,7 @@ CLASS({
       defaultValue: 'PENDING',
       choices: [
         [ 'PENDING', 'Pending' ],
+        [ 'SUBMITTED', 'Submitted' ],
         [ 'CANCELED', 'Canceled' ],
         [ 'ACCEPTED', 'Accepted' ],
         [ 'READY', 'Ready for pick-up' ],
@@ -115,6 +117,11 @@ CLASS({
         source: envelope.owner,
         data: this,
       }, X);
+    },
+    function toStream(X) {
+      return this.UpdateStream.create({
+        substreams: [ '/' + this.id ],
+      });
     },
   ],
 

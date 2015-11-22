@@ -14,5 +14,30 @@ CLASS({
   name: 'CustomerOrderCitationView',
   extends: 'com.google.ow.ui.OrderCitationView',
 
-  // TODO(markdittmer): Add customer-specific info.
+  imports: [ 'personDAO' ],
+
+  properties: [
+    'customer',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( nu && nu.customer !== this.X.envelope.owner )
+          this.getPerson(nu.customer, this.customer$);
+      },
+    },
+  ],
+
+  methods: [
+    function initE() {
+      return this.SUPER()
+          .add(function(customer) {
+            if ( ! customer ) return '';
+            return this.start('div').cls('md-grey')
+                .add('Customer: ')
+                .add(customer.displayName)
+              .end();
+          }.bind(this).on$(this.X, this.customer$));
+    },
+  ],
 });
