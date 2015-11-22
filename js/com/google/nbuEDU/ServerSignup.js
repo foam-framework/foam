@@ -18,6 +18,7 @@ CLASS({
     'foam.u2.Element',
     'com.google.ow.content.PreviewStream',
     'com.google.ow.content.CommentThreadStream',
+    'com.google.ow.content.Notifier',
   ],
 
   imports: [
@@ -67,56 +68,90 @@ CLASS({
       .select(COUNT())(function(count) {
 //          console.log("Count: ", count.count);
         if (count.count <= 0) {
-          // IF not added already, add some streams:
-          // determine the curriculum streams to add
-          // Fake stream
-          self.streamDAO.put(self.Envelope.create({
-            "model_": "com.google.ow.model.Envelope",
-            "owner": newUserId,
-            "source": self.substreams[0]+"ServerSignup",
-            "substreams": ["eduVidStream487673295"],
-            data: self.PreviewStream.create({
-              "name": "MathVideos",
-              "titleText": "Math Videos for grade 7",
-              "description": "Suggested videos for Math:",
-              "model": "com.google.ow.content.VotableVideo",
-              "contentItemView": "foam.ui.md.CitationView",
-              "id": "eduVidStream487673295"
-            })
-          }));
+          
+          if ( signup.age < 20 ) {
+            // IF not added already, add some streams:
+            // determine the curriculum streams to add
+            // Fake stream
+            self.streamDAO.put(self.Envelope.create({
+              "model_": "com.google.ow.model.Envelope",
+              "owner": newUserId,
+              "source": self.substreams[0]+"ServerSignup",
+              "substreams": ["eduVidStream487673295"],
+              data: self.PreviewStream.create({
+                "name": "MathVideos",
+                "titleText": "Math Videos for grade 7",
+                "description": "Suggested videos for Math:",
+                "model": "com.google.ow.content.VotableVideo",
+                "contentItemView": "foam.ui.md.CitationView",
+                "id": "eduVidStream487673295"
+              })
+            }));
 
-          self.streamDAO.put(self.Envelope.create({
-            "model_": "com.google.ow.model.Envelope",
-            "owner": newUserId,
-            "source": self.substreams[0]+"ServerSignup",
-            "substreams": ["eduVidStream487673295"],
-            data: self.PreviewStream.create({
-              "name": "ExamPrepVideos",
-              "titleText": "Exam preparation Videos for grade 7",
-              "description": "Suggested videos to prepare for exams:",
-              "model": "com.google.ow.content.VotableVideo",
-              "contentItemView": "foam.ui.md.CitationView",
-              "id": "eduVidStream487673295"
-            })
-          }));
+            self.streamDAO.put(self.Envelope.create({
+              "model_": "com.google.ow.model.Envelope",
+              "owner": newUserId,
+              "source": self.substreams[0]+"ServerSignup",
+              "substreams": ["eduVidStream487673295"],
+              data: self.PreviewStream.create({
+                "name": "ExamPrepVideos",
+                "titleText": "Exam preparation Videos for grade 7",
+                "description": "Suggested videos to prepare for exams:",
+                "model": "com.google.ow.content.VotableVideo",
+                "contentItemView": "foam.ui.md.CitationView",
+                "id": "eduVidStream487673295"
+              })
+            }));
 
-
-          var commentStream = self.CommentThreadStream.create({
-              "name": "GradeChatroom",
-              "titleText": "Grade 7 Quick Chat",
-              "description": "Tap here to talk to others in your grade.",
-              "model": "com.google.ow.content.CommentThread",
-              "id": "eduCommentsForum754788392995",
-            });
-          self.streamDAO.put(self.Envelope.create({
-            "model_": "com.google.ow.model.Envelope",
-            "owner": newUserId,
-            "source": self.substreams[0]+"ServerSignup",
-            "substreams": ["eduCommentsForum754788392995"],
-            data: commentStream,
-          }));
-        
-
+            var commentStream = self.CommentThreadStream.create({
+                "name": "GradeChatroom",
+                "titleText": "Grade 7 Quick Chat",
+                "description": "Tap here to talk to others in your grade.",
+                "model": "com.google.ow.content.CommentThread",
+                "id": "eduCommentsForum754788392995",
+              });
+            self.streamDAO.put(self.Envelope.create({
+              "model_": "com.google.ow.model.Envelope",
+              "owner": newUserId,
+              "source": self.substreams[0]+"ServerSignup",
+              "substreams": ["eduCommentsForum754788392995"],
+              data: commentStream,
+            }));
+          } else {
+            // TA items
+            self.streamDAO.put(self.Envelope.create({
+              "model_": "com.google.ow.model.Envelope",
+              "owner": newUserId,
+              "source": self.substreams[0]+"ServerSignup",
+              "substreams": ["eduVidStream487673295"],
+              data: self.PreviewStream.create({
+                "name": "MathVideos",
+                "titleText": "Grade 7 Math",
+                "description": "Student 7 recommended content",
+                "model": "com.google.ow.content.VotableVideo",
+                "contentItemView": "foam.ui.md.CitationView",
+                "id": "eduVidStream487673295"
+              })
+            }));
+            
+            // grab the video sid's
+            self.streamDAO.where(
+              CONTAINS(self.Envelope.SID, "eduVidStream487673295")
+            ).select({
+              put: function(vid) {
+                console.log("TA notifier for ", vid.sid, vid.data.id);
+                self.streamDAO.put(self.Envelope.create({
+                  owner: newUserId,
+                  substreams: [vid.data.id+'/commentThreads'],
+                  sid: '',
+                  data: self.Notifier.create({
+                   id: vid.data.id,
+                   content: 'New comments in video ' + vid.data.titleText,
+                  })
+                }));
+              }
+            }); 
+          }
         }
       });
     },
