@@ -182,6 +182,42 @@ CLASS({
         }, url);
       };
     },
+    function parPut(arr, dao) {
+      var future = afuture();
+      arr.select(dao);
+      var l = function() {
+        if ( ! dao.busy ) {
+          debugger;
+          future.set(dao);
+          dao.busy$.removeListener(l);
+        }
+      };
+      dao.busy$.addListener(l);
+      return future.get;
+    //   var self = this;
+    //   var count = 0;
+    //   var err = false;
+    //   var sink = {
+    //     put: function() {
+    //       if ( err ) return;
+    //       ++count;
+    //       if ( count === arr.length ) {
+    //         debugger;
+    //         future.set(dao);
+    //       }
+    //     },
+    //     error: function() {
+    //       err = true;
+    //       debugger;
+    //       future.set(null);
+    //     }
+    //   };
+
+    //   for ( var i = 0; i < arr.length; ++i ) {
+    //     dao.put(arr[i], sink);
+    //   }
+    //   return future.get;
+    },
   ],
 
   tests: [
@@ -209,6 +245,7 @@ CLASS({
           people: [ '0', '1' ],
         });
 
+        // This works (completes all puts and removes) because the DAO is sync.
         data.select(this.streamDAO)(function() {
           var res = [];
           this.streamDAO.select(res)(function() {
@@ -262,6 +299,55 @@ CLASS({
                       res[1].owner === '0'), 'One envelope per owner');
               ret && ret(res);
             });
+          });
+        });
+      },
+    },
+    {
+      model_: 'UnitTest',
+      name: 'Dedup double put',
+      description: '',
+      async: true,
+      code: function(ret, test) {
+        var data1 = [
+          this.Envelope.create({
+            id: '0',
+            source: '0',
+            owner: '0',
+            sid: '/foo',
+            data: this.Order.create({
+              customer: '0',
+              merchant: '1',
+            }),
+          }),
+        ].dao;
+        var data2 = [
+          this.Envelope.create({
+            id: '0',
+            // Contents may be different, but ID is the same.
+            source: '1',
+            owner: '1',
+            sid: '/foo',
+            data: this.Order.create({
+              customer: '1',
+              merchant: '0',
+            }),
+          }),
+        ].dao;
+
+        var count = 0;
+        this.EasyStreamListener.create({
+          streamDAO: this.streamDAO,
+          substreams: ['/foo'],
+          singlePut: true,
+          onPut: function() { ++count; },
+        });
+
+        var self = this;
+        data1.select(self.streamDAO)(function() {
+          data2.select(self.streamDAO)(function() {
+            self.assert(count === 1, 'One put through listener');
+            ret && ret();
           });
         });
       },

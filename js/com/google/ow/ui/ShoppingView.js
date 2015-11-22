@@ -16,8 +16,8 @@ CLASS({
 
   requires: [
     'com.google.ow.model.Envelope',
-    'com.google.ow.model.Order',
-    'com.google.ow.ui.OrderSummaryView',
+    'com.google.ow.model.CustomerOrder',
+    'com.google.ow.ui.CustomerOrderSummaryView',
     'com.google.ow.ui.ShoppingItemView',
     'com.google.plus.ShareList',
     'foam.u2.DAOListView',
@@ -49,16 +49,16 @@ CLASS({
       },
     },
     {
-      type: 'com.google.ow.model.Order',
+      type: 'com.google.ow.model.CustomerOrder',
       name: 'purchaseOrder',
       factory: function() {
-        return this.Order.create({
+        return this.CustomerOrder.create({
           customer: this.X.envelope.owner,
           merchant: this.X.envelope.source,
         }, this.Y);
       },
       toPropertyE: function(X) {
-        return X.lookup('com.google.ow.ui.OrderSummaryView').create({
+        return X.lookup('com.google.ow.ui.CustomerOrderSummaryView').create({
           data: X.purchaseOrder,
         }, X);
       },
@@ -95,24 +95,24 @@ CLASS({
         var envelope = X.envelope;
         var envSid = envelope.sid;
         // X.data.id = ad id.
-        var adSid = envSid + ((X.data && X.data.id) ? '/' + X.data.id : '');
-        var orderSid = envSid + ((X.purchaseOrder && X.purchaseOrder.id) ?
-            '/' + X.purchaseOrder.id : '');
+        // var adSid = X.data.id;
+        // var orderSid = envSid + ((X.purchaseOrder && X.purchaseOrder.id) ?
+        //     '/' + X.purchaseOrder.id : '');
         // Customer's order stream.
-        X.streamDAO.put(X.purchaseOrder.toStream(X).toEnvelope(X.sub({
-          substreams: [orderSid],
-        })));
+        // X.streamDAO.put(X.purchaseOrder.toStream(X).toEnvelope(X.sub({
+        //   substreams: [orderSid],
+        // })));
         // Order processed by order streams.
         X.streamDAO.put(X.purchaseOrder.toEnvelope(X.sub({
-          sid: orderSid,
+          sid: X.data.adStream,
         })));
         // Notification of order for ad stream.
-        X.streamDAO.put(X.lookup('com.google.ow.model.Envelope').create({
-          source: envelope.owner,
-          owner: envelope.owner,
-          sid: adSid,
-          data: orderSid,
-        }));
+        // X.streamDAO.put(X.lookup('com.google.ow.model.Envelope').create({
+        //   source: envelope.owner,
+        //   owner: envelope.owner,
+        //   sid: adSid,
+        //   data: orderSid,
+        // }));
         X.stack.popView();
       },
     },
