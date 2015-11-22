@@ -77,8 +77,8 @@ CLASS({
             "substreams": ["eduVidStream487673295"],
             data: self.PreviewStream.create({
               "name": "MathVideos",
-              "titleText": "Math Videos",
-              "description": "Your grade level, math videos.",
+              "titleText": "Math Videos for grade 7",
+              "description": "Suggested videos for Math:",
               "model": "com.google.ow.content.VotableVideo",
               "contentItemView": "foam.ui.md.CitationView",
               "id": "eduVidStream487673295"
@@ -92,8 +92,8 @@ CLASS({
             "substreams": ["eduVidStream487673295"],
             data: self.PreviewStream.create({
               "name": "ExamPrepVideos",
-              "titleText": "Exam Prep Videos",
-              "description": "Exam prep videos.",
+              "titleText": "Exam preparation Videos for grade 7",
+              "description": "Suggested videos to prepare for exams:",
               "model": "com.google.ow.content.VotableVideo",
               "contentItemView": "foam.ui.md.CitationView",
               "id": "eduVidStream487673295"
