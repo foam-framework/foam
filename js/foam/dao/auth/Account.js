@@ -37,6 +37,14 @@ CLASS({
     {
       name: 'authorizationCode',
       type: 'String'
+    },
+    {
+      name: 'refreshToken',
+      type: 'String'
+    },
+    {
+      name: 'accessToken',
+      type: 'String'
     }
   ]
 });
