@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICNSEE-2.0
  */
 
 CLASS({
@@ -25,7 +25,7 @@ CLASS({
   properties: [
     {
       model_: 'ArrayProperty',
-      name: 'versions',
+      name: 'items',
       lazyFactory: function() { return []; },
     },
   ],
@@ -35,9 +35,9 @@ CLASS({
       var listening = false;
       var sink = {
         put: function(env) {
-          var arr = this.versions.slice();
+          var arr = this.items.slice();
           arr.push(env);
-          this.versions = arr;
+          this.items = arr;
           // HACK(markdittmer): Re-put the same envelope with a newer timestamp.
           // This will will bump the UpdateStream in the user's stream view.
           if ( listening &&
@@ -48,8 +48,8 @@ CLASS({
         }.bind(this),
         eof: function() {
           listening = true;
-          if ( ! this.versions.length ) return;
-          var env = this.versions[this.versions.length - 1];
+          if ( ! this.items.length ) return;
+          var env = this.items[this.items.length - 1];
           // HACK(markdittmer): Re-put the same envelope with a newer timestamp.
           // This will will bump the UpdateStream in the user's stream view.
           if ( env.timestamp.getTime() > this.envelope.timestamp.getTime() ) {
