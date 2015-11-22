@@ -88,6 +88,7 @@ CLASS({
         env.id = createGUID();
         // HACK(markdittmer): Send to /Chat/All.
         env.sid = '/Chat/All';
+        env.timestamp = new Date();
         env.data = env.data.toSharable ? env.data.toSharable(X) : env.data;
         X.streamDAO.put(env);
       },
