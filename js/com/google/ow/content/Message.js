@@ -50,7 +50,11 @@ CLASS({
         .start().style({
           'display': 'flex',
           'flex-direction': 'column',
-          'border-bottom': '1px solid rgba(1,1,1,0.25)' 
+//          'border-bottom': '1px solid rgba(1,1,1,0.25)' 
+          'border-radius': '16px',
+          'padding-left': '4px',
+          'margin': '8px',
+          'background-color': '#ddddff',
         })
           .start().style({ 'margin': '8px' })
             .start().add(this.PersonChipView.create({ data: this.from }, Y)).end()

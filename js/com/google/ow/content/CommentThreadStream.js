@@ -23,11 +23,16 @@ CLASS({
     'foam.ui.DAOListView',
     'com.google.ow.model.Envelope',
     'foam.u2.md.QuickActionButton',
+    'com.google.ow.ui.EnvelopeDetailView',
+    'foam.ui.md.UpdateDetailView',
+    'foam.u2.DetailView',
+    'foam.ui.md.FlatButton',
   ],
 
   imports: [
     'streamDAO',
     'currentUser$',
+    'stack',
   ],
 
   actions: [
@@ -51,6 +56,20 @@ CLASS({
           })
         });
         this.streamDAO.put(env);
+        
+        //TODO: make this a standard thing
+        //TODO: which context we are using is confusing and bad. Creation or toDetailE?
+        var innerDetailView = function(args, X) {
+          var envelope = args.data || args.data$.get();
+          return envelope.toDetailE ? envelope.toDetailE(X) :
+              this.DetailView.create({ data: envelope }, X);
+        }.bind(this);
+        
+        var args = { data: env, innerView: innerDetailView };
+        var v = this.UpdateDetailView.create(args, this.Y.sub({ stack: this.stack }));
+        v.title = env.data.titleText
+        v.liveEdit = true;
+        this.stack.pushView(v);
       }
     },
   ],
@@ -59,12 +78,14 @@ CLASS({
     function init() {
       this.SUPER();
       //this.model = this.CommentThread;
+      this.Y.registerModel(this.FlatButton, 'foam.ui.ActionButton');
     },
 
     
     function toDetailE(X) {
       var Y = (X || this.Y).sub({ data: this });
       Y.registerModel(this.QuickActionButton, 'foam.u2.ActionButton');
+      this.stack = Y.stack;
       //this.contentRowE = this.contentDetailE;
       //this.contentRowView = this.contentDetailView;
       var e = this.Element.create(null, Y);

@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.u2.DAOListView',
+    'com.google.plus.ui.PersonCitationView',
   ],
   imports: [
     'currentUser$'
@@ -35,9 +36,12 @@ CLASS({
 
   methods: [
     function initE() {
+      var pY = this.Y.sub();
+      pY.registerModel(this.PersonCitationView, 'foam.u2.DetailView');
       var users = this.DAOListView.create({
         data: this.data.personDAO
-      }, this.Y);
+      }, pY);
+      
       users.subscribe(users.ROW_CLICK, function() {
         this.publish(this.MENU_CLOSE);
       }.bind(this));
