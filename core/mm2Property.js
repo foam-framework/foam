@@ -378,7 +378,16 @@ GLOBAL.Property = {
         e.attrs({size: this.displayWidth});
 
         return e;
-      }
+      },
+      adapt: function(_, nu) {
+        if (typeof nu === 'string') {
+          return function(X) {
+            return X.lookup(nu).create(null, X);
+          };
+        } else {
+          return nu;
+        }
+      },
     },
     {
 //      model_: 'ViewFactoryProperty',
