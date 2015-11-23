@@ -19,50 +19,63 @@ CLASS({
   name: 'Toggle',
   extends: 'foam.u2.View',
 
+  requires: [
+    'foam.ui.md.HaloView',
+  ],
+
   properties: [
+    'label',
     {
-      name: 'label',
-      defaultValueFn: function() { return this.prop.label; }
-    },
-    {
-      name: 'prop',
+      name: 'halo',
+      factory: function() {
+        return this.HaloView.create({
+          pressedAlpha: 0.2,
+          startAlpha: 0.2,
+          finishAlpha: 0
+        });
+      }
     },
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
+    function initE() {
       var self = this;
-      this.cls('foam-u2-md-Toggle')
+      this.cls(this.myCls())
+          .cls('noselect')
           .on('click', function() { self.data = !self.data; })
-          .start('span').cls('foam-u2-md-Toggle-label').cls('noselect').add(this.label$).end()
-          .start('span').cls('foam-u2-md-Toggle-text').add(function() {
+          .start('span').cls(this.myCls('label')).add(this.label$).end()
+          .start('span').cls(this.myCls('text')).add(function() {
             return self.data ? 'ON' : 'OFF';
           }.on$(this.X, this.data$)).end()
-          .start('div').cls('foam-u2-md-Toggle-switch')
-              .start('span').cls('foam-u2-md-Toggle-background')
-                  .cls2(function() { return self.data ? 'foam-u2-md-Toggle-on' : ''; }.on$(this.X, this.data$))
-                  .start('div').cls('foam-u2-md-Toggle-lever').end()
+          .start('div').cls(this.myCls('switch'))
+              .start('span').cls(this.myCls('background'))
+                  .cls2(function() { return self.data ? self.myCls('on') : ''; }.on$(this.X, this.data$))
+                  .start('div').cls(this.myCls('lever')).end()
               .end()
+              .start().cls(this.myCls('halo')).add(this.halo.toView_()).end()
           .end();
+    },
+    function fromProperty(prop) {
+      this.label = this.label || prop.label;
+      return this.SUPER(prop);
     },
   ],
 
   templates: [
     function CSS() {/*
-      .foam-u2-md-Toggle {
+      $ {
         align-items: center;
         display: flex;
         margin: 8px;
         padding: 8px;
       }
-      .foam-u2-md-Toggle-label {
+      $-label {
         flex-grow: 1;
         margin-bottom: auto;
         margin-top: auto;
         opacity: 0.54;
       }
-      .foam-u2-md-Toggle-text {
+      $-text {
         margin-bottom: auto;
         margin-right: 20px;
         margin-top: auto;
@@ -70,13 +83,13 @@ CLASS({
       }
 
 
-      .foam-u2-md-Toggle-switch {
+      $-switch {
         height: 14px;
         position: relative;
         width: 36px;
       }
 
-      .foam-u2-md-Toggle-background {
+      $-background {
         background-color: #9e9e9e;
         border-radius: 7px;
         display: inline-block;
@@ -86,11 +99,22 @@ CLASS({
         position: absolute;
         width: 36px;
       }
-      .foam-u2-md-Toggle-background.foam-u2-md-Toggle-on {
+      $-background$-on {
         background-color: #7baaf7;
       }
 
-      .foam-u2-md-Toggle-lever {
+      $-halo {
+        border-radius: 50%;
+        cursor: pointer;
+        height: 48px;
+        left: -6px;
+        position: absolute;
+        top: -17px;
+        width: 48px;
+        z-index: 2;
+      }
+
+      $-lever {
         background-color: #f5f5f5;
         border-radius: 50%;
         border: 1px solid #ccc;
@@ -103,13 +127,12 @@ CLASS({
         transition: left .08s;
         width: 20px;
       }
-      .foam-u2-md-Toggle-on .foam-u2-md-Toggle-lever {
+      $-on $-lever {
         background-color: #3367d6;
         border: none;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.26);
         left: 16px;
       }
-
     */},
   ]
 });

@@ -21,31 +21,29 @@ CLASS({
   properties: [
     {
       name: 'label',
-      defaultValueFn: function() { return this.prop.label; }
-    },
-    {
-      name: 'prop',
     },
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
+    function initE() {
       var self = this;
-      this.cls('foam-u2-md-Checkbox')
+      this.cls(this.myCls())
           .cls2(function() {
-            return self.data ? 'foam-u2-md-Checkbox-checked' : '';
+            return self.data ? self.myCls('checked') : '';
           }.on$(this.X, this.data$))
           .on('click', function() { self.data = !self.data; })
           .start('span')
-              .cls('foam-u2-md-Checkbox-label').cls('noselect')
+              .cls(this.myCls('label')).cls('noselect')
               .add(this.label$)
               .end()
-          .start('div').cls('foam-u2-md-Checkbox-box-outer').cls('noselect')
-              .start('div').cls('foam-u2-md-Checkbox-box')
+          .start('div').cls(this.myCls('box-outer')).cls('noselect')
+              .start('div').cls(this.myCls('box'))
                   .add(this.svgElement()).end()
               // TODO(braden): Halo support.
           .end();
+    },
+    function fromProperty(prop) {
+      this.label = this.label || prop.label;
     },
     function svgElement() {
       var self = this;
@@ -59,23 +57,23 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .foam-u2-md-Checkbox {
+      $ {
         align-items: center;
         display: flex;
         margin: 8px;
         padding: 8px;
       }
-      .foam-u2-md-Checkbox-label {
+      $-label {
         flex-grow: 1;
         margin-right: 12px;
         opacity: 0.54;
       }
-      .foam-u2-md-Checkbox-box-outer {
+      $-box-outer {
         height: 18px;
         position: relative;
         width: 18px;
       }
-      .foam-u2-md-Checkbox-box {
+      $-box {
         border-radius: 2px;
         border: solid 2px #5a5a5a;
         box-sizing: border-box;
@@ -88,7 +86,7 @@ CLASS({
         transition: background-color 140ms, border-color 140ms;
         width: 18px;
       }
-      .foam-u2-md-Checkbox-checked .foam-u2-md-Checkbox-box {
+      $-checked $-box {
         background-color: #04a9f4;
         border-color: #04a9f4;
         fill: white;

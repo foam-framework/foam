@@ -246,16 +246,15 @@ CLASS({
         'itemHeight', 'itemWidth', 'hMargin',
       ],
       methods: [
-        function init() {
-          this.SUPER();
-          this.cls('foam-u2-md-PopupMenu');
+        function initE(opt_e) {
+          opt_e.cls('foam-u2-md-PopupMenu');
 
           for (var i = 0; i < this.choices.length; i++) {
-            this.start('li')
+            opt_e.start('li')
                 .cls('foam-u2-md-PopupMenu-choice')
                 .cls2(function(i) {
                   return this.index === i ? 'selected' : '';
-                }.bind(this, i).on$(this.index$))
+                }.bind(this, i).on$(this.X, this.index$))
                 .style({
                   height: this.itemHeight,
                   width: this.itemWidth,
