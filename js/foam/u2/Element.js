@@ -31,9 +31,10 @@ CLASS({
 
   onLoad: function() {
     console.log('Running Element.static().');
+    var self = this;
 
     Function.prototype.toE = function(X) {
-      var dyn = X.E('span');
+      var dyn  = X.E('span');
       var last = null;
 
       X.dynamic(this, function(e) {
@@ -617,11 +618,12 @@ CLASS({
     },
 
     function valueE_(value) {
-      var dyn = this.E('span');
+      var self = this;
+      var dyn  = this.E('span');
       var last = null;
       var X = this.Y;
       var l = function() {
-        var e = X.E('span');
+        var e = self.E('span');
         /*if ( value.get() ) */e.add(value.get() || '');
         if ( last ) dyn.removeChild(last); //last.remove();
         dyn.add(last = e);
@@ -661,10 +663,11 @@ CLASS({
           Array.prototype.splice.apply(arguments, [i, 1].concat(c));
           i--;
           continue;
-        } else if ( c.toE )
+        } else if ( c.toE ) {
           arguments[i] = c.toE(this.Y);
-        else if ( Value.isInstance(c) )
+        } else if ( Value.isInstance(c) ) {
           arguments[i] = this.valueE_(c);
+        }
       }
 
       if ( arguments.length ) {
