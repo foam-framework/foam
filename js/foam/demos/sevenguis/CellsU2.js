@@ -274,7 +274,7 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
       return cell;
     },
     function toE() {
-      var e = this.E('table').add(this.headerE());
+      var e = this.E('table').cls('cells').add(this.headerE());
       for ( var i = 0 ; i < this.rows ; i++ )
         e.add(this.rowE(i));
       return e;
@@ -282,11 +282,11 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
     function headerE() {
       var h = this.E('tr');
        for ( var j = 0 ; j < this.columns ; j++ )
-         h.add(this.E('th').cls('abc').add(String.fromCharCode(65 + j)));
+         h.add(this.E('th').cls('colHeader').add(String.fromCharCode(65 + j)));
       return h;
     },
     function rowE() {
-      var r = this.E('tr').add(this.E('th').add(i));
+      var r = this.E('tr').add(this.E('th').cls('rowHeader').add(i));
       for ( var j = 0 ; j < this.columns ; j++ )
         r.add(this.cellE(j, i));
 
