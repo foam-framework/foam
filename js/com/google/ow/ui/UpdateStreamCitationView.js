@@ -22,14 +22,14 @@ CLASS({
 
   methods: [
     function initE() {
-      // TODO(markdittmer): Add differences between versions.
-      return this.add(function (versions) {
-        if ( ! (versions[versions.length - 1] &&
-            versions[versions.length - 1].data) ) return '';
-        var versionEnv = versions[versions.length - 1];
-        var versionData = versionEnv.data;
-        return versionData.toCitationE(this.Y.sub({ envelope: versionEnv }));
-      }.bind(this).on$(this.X, this.versions$));
+      // TODO(markdittmer): Add differences between items.
+      return this.add(function (items) {
+        if ( ! (items[items.length - 1] &&
+            items[items.length - 1].data) ) return '';
+        var itemEnv = items[items.length - 1];
+        var itemData = itemEnv.data;
+        return itemData.toCitationE(this.Y.sub({ envelope: itemEnv }));
+      }.bind(this).on$(this.X, this.items$));
     },
   ],
 

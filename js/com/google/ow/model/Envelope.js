@@ -44,6 +44,10 @@ CLASS({
       name: 'source',
     },
     {
+      model_: 'StringArrayProperty',
+      name:'tags',
+    },
+    {
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;

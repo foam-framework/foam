@@ -12,7 +12,7 @@
 CLASS({
   package: 'com.google.ow.ui',
   name: 'OrderDetailView',
-  extends: 'foam.u2.View',
+  extends: 'com.google.ow.ui.OrderView',
 
   requires: [
     'com.google.ow.model.Envelope',
@@ -32,18 +32,28 @@ CLASS({
 
   methods: [
     function initE() {
-      return this.start('div').cls('heading').cls('md-headline')
+      return this.actionE(this.mainE(this.titleE(this)));
+    },
+    function titleE(prev) {
+      return prev.start('div').cls('heading').cls('md-headline')
             .add('Order')
-          .end()
+          .end();
+    },
+    function mainE(prev) {
+      return prev
           .add(this.DAOListView.create({ data: this.data.items_ }, this.Y.sub({
             selection$: undefined,
           })))
           .start('div').cls('total').cls('md-body')
             .start('div').add('TOTAL:').end()
             .add(this.data.TOTAL)
-          .end()
-          .add(this.data.METHOD_OF_PAYMENT)
-          .add(this.CANCEL);
+          .end();
+    },
+    function actionE(prev) {
+      return this.actionsE(prev.start('div').cls('actions')).end();
+    },
+    function actionsE(prev) {
+      return prev.add(this.CANCEL);
     },
     function init() {
       // For *EnumProperty.toPropertyE(), Action.toE().
@@ -57,14 +67,15 @@ CLASS({
   actions: [
     {
       name: 'cancel',
+      ligature: 'cancel',
       code: function(X) {
         this.status = 'CANCELED';
         X.streamDAO.put(this.toEnvelope(X.sub({ sid: X.envelope.sid })));
       },
       isAvailable: function() {
-        return this.status !== 'CANCELED';
+        return this.status !== 'CANCELED' && this.status !== 'DELIVERED';
       },
-    }
+    },
   ],
 
   templates: [
@@ -79,6 +90,10 @@ CLASS({
       order-detail .total {
         display: flex;
         justify-content: space-between;
+      }
+      order-detail .actions {
+        display: flex;
+        justify-content: flex-end;
       }
     */},
   ],

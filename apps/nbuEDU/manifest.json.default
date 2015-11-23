@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "manifest_version": 2,
+  "minimum_chrome_version": "43.0.0.0",
+  "name": "App Builder",
+  "offline_enabled": true,
+  "default_locale": "en",
+  "app": {
+    "background": {
+      "scripts": [
+        "foam.js",
+        "config.js",
+        "bg.js"
+      ]
+    }
+  },
+  "permissions": [
+    "https://www.google-analytics.com/",
+    "https://accounts.google.com/*",
+    "webview",
+    "identity",
+    "power",
+    "storage",
+    "videoCapture",
+    "geolocation",
+    "pointerLock",
+    "system.display",
+    { "fileSystem": [
+      "write",
+      "retainEntries",
+      "directory"
+    ] },
+    "accessibilityFeatures.read",
+    "accessibilityFeatures.modify"
+  ],
+  "icons": {
+    "128": "128.png"
+  },
+  "kiosk_enabled": true
+}

@@ -28,7 +28,8 @@ CLASS({
     'foam.dao.File',
     'foam.core.dao.OrDAO',
     'node.dao.ModelFileDAO',
-    'foam.build.WebApplication'
+    'foam.build.WebApplication',
+    'foam.u2.ElementParser'
   ],
   properties: [
     {
@@ -258,6 +259,8 @@ CLASS({
   ],
   methods: {
     execute: function() {
+      this.ElementParser.create();
+      
       for ( var i = 0; i < this.extraClassPaths.length ; i++ ) {
         this.X.ModelDAO = this.OrDAO.create({
           delegate: this.ModelFileDAO.create({

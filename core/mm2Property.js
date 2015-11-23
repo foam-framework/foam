@@ -20,6 +20,7 @@ GLOBAL.Property = {
   instance_: {},
 
   name:  'Property',
+  implements: ['ExprProtocol'],
   plural:'Properties',
   help:  'Describes a properties of a modelled entity.',
 
@@ -835,32 +836,49 @@ GLOBAL.Property = {
     {
       name: 'f',
       code: function(obj) { return obj[this.name] },
-      swiftSource: function() {/*
-    func f(obj: AnyObject?) -> AnyObject? {
-      if obj == nil { return nil }
-      if let fobj = obj as? FObject {
-        return fobj.get(self.name)
-      }
-      return nil
-    }*/},
+      args: [
+        {
+          name: 'obj',
+          swiftType: 'AnyObject?',
+        },
+      ],
+      swiftReturnType: 'AnyObject?',
+      swiftCode: function() {/*
+        if obj == nil { return nil }
+        if let fobj = obj as? FObject {
+          return fobj.get(self.name)
+        }
+        return nil
+      */},
     },
     {
       name: 'compare',
       code: function(o1, o2) {
         return this.compareProperty(this.f(o1), this.f(o2));
       },
-      swiftSource: function() {/*
-    func compare(var o1: AnyObject?, var o2: AnyObject?) -> Int {
-      o1 = self.f(o1)
-      o2 = self.f(o2)
-      if o1 === o2 { return 0 }
-      if o1 == nil && o2 == nil { return 0 }
-      if o1 == nil { return -1 }
-      if o2 == nil { return 1 }
-      if o1!.isEqual(o2) { return 0 }
-      return o1?.hashValue > o2?.hashValue ? 1 : -1
-    }
-*/}
+      args: [
+        {
+          name: 'o1',
+          swiftIsMutable: true,
+          swiftType: 'AnyObject?',
+        },
+        {
+          name: 'o2',
+          swiftIsMutable: true,
+          swiftType: 'AnyObject?',
+        },
+      ],
+      swiftReturnType: 'Int',
+      swiftCode: function() {/*
+        o1 = self.f(o1)
+        o2 = self.f(o2)
+        if o1 === o2 { return 0 }
+        if o1 == nil && o2 == nil { return 0 }
+        if o1 == nil { return -1 }
+        if o2 == nil { return 1 }
+        if o1!.isEqual(o2) { return 0 }
+        return o1?.hashValue > o2?.hashValue ? 1 : -1
+      */}
     },
     function readResolve() {
       return this.modelId ?

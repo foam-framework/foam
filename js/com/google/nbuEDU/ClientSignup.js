@@ -118,15 +118,23 @@ CLASS({
           [13,'13'],
           [14,'14'],
           [15,'15'],
+          [16,'16'],
+          [17,'17'],
+          [18,'18'],
+          [19,'19'],
           [20,'Older. I can volunteer to help'],
         ];
       },
-    }
+    },
   ],
 
   actions: [
     {
       name: 'done',
+      label: 'Sign Up',
+      isAvailable: function() {
+        return this.X.controllerMode !== 'ro';
+      },
       code: function() {
         // save 'this' to the streamDAO for sync to the server.
         // Something on the server should be listening for the sid that

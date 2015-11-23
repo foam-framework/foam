@@ -17,6 +17,7 @@ CLASS({
   requires: [
     'foam.ui.Color',
     'foam.ui.Icon',
+    'foam.ui.LigatureView',
     'foam.ui.md.HaloView',
   ],
   imports: [ 'window' ],
@@ -44,11 +45,17 @@ CLASS({
     {
       name: 'icon',
       lazyFactory: function() {
-        return this.Icon.create({
-          url$: this.iconUrl$,
-          ligature$: this.ligature$,
-          color$: this.color_$
-        }, this.Y);
+        // return this.Icon.create({
+//           url$: this.iconUrl$,
+//           ligature$: this.ligature$,
+//           color$: this.color_$
+//         }, this.Y);
+          return this.LigatureView.create({
+                data$: this.ligature$,
+                color: 'currentColor',
+                fontSize: 24,
+                className: 'material-icons-extended',
+              }, this.Y);
       },
     },
     {

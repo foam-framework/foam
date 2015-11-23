@@ -21,6 +21,7 @@ CLASS({
     'foam.u2.Element',
     'foam.ui.Icon',
     'com.google.ow.model.Envelope',
+    'foam.u2.md.QuickActionButton',
   ],
 
   exports: [
@@ -29,7 +30,6 @@ CLASS({
 
   imports: [
     'envelope', // used client-side
-    'streamDAO_no_loopback',
     'streamDAO',
   ],
 
@@ -57,12 +57,12 @@ CLASS({
     {
       model_: 'IntProperty',
       name: 'tally',
-      defaultValue: 0,
+      factory: function() { return Math.floor(Math.random() * 1000) },
     },
     {
       model_: 'IntProperty',
       name: 'count',
-      defaultValue: 0,
+      factory: function() { return Math.floor(Math.random() * 1000) },
     },
   ],
 
@@ -70,7 +70,7 @@ CLASS({
     {
       name: 'voteUp',
       label: 'Vote Up',
-      ligature: 'thumb up',
+      ligature: 'thumb_up',
       isEnabled: function() { return this.vote < 1; },
       code: function(action) {
         // this is a client action, so X.envelope is available on the context
@@ -85,7 +85,7 @@ CLASS({
     {
       name: 'voteDown',
       label: 'Vote Down',
-      ligature: 'thumb down',
+      ligature: 'thumb_down',
       isEnabled: function() { return this.vote > -1; },
       code: function(action) {
         // this is a client action, so X.envelope is available on the context
@@ -104,7 +104,6 @@ CLASS({
     function put(envelope, sink, yourEnvelope) {
       /* Server: this is a substream target, implement put handler */
       console.log("VotablePut");
-      if ( ! this.streamDAO_no_loopback ) { console.warn("No streamDAO in Votable!"); return; }
       
       var self = this;
       // Since this should be running on the server, grab all the owners
@@ -119,7 +118,7 @@ CLASS({
 
       self.tally = 0;
       self.count = 0;
-      self.streamDAO_no_loopback.where(EQ(self.Envelope.SID, self.sid)).select({
+      self.streamDAO.where(EQ(self.Envelope.SID, self.sid)).select({
         put: function(vote) {
           //console.log("Tally", self.tally, self.count, vote.data.vote);
           self.tally += vote.data.vote;
@@ -130,7 +129,7 @@ CLASS({
 
           console.assert(yourEnvelope.data.id === self.id, "Vote.put yourEnvelope does not contain this!");
           yourEnvelope.data = self;
-          self.streamDAO_no_loopback.put(yourEnvelope); // check that sync is inc'd
+          self.streamDAO.put(yourEnvelope); // check that sync is inc'd
         },
       });
     },
@@ -141,16 +140,16 @@ CLASS({
       if ( X.envelope ) this.envelope = X.envelope; // TODO: propagate envelope better
 
       var Y = (X || this.Y).sub({ data: this });
+      Y.registerModel(this.QuickActionButton, 'foam.u2.ActionButton');
       return this.Element.create(null, Y.sub({controllerMode: 'rw'}))
         .start().style({
           'display': 'flex',
           'flex-direction': 'row',
           'margin': '8px',
-          'border': '1px solid black'
         })
           .add(this.VOTE_UP)
           .add(this.VOTE_DOWN)
-          .add(this.tally$).add("/").add(this.count$)
+          .start().cls('md-style-trait-standard').cls('md-subhead').add(this.tally).add("/").add(this.count).end()
         .end()
     },
   ],

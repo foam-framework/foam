@@ -18,28 +18,22 @@
 CLASS({
   name: 'PersonCitationView',
   package: 'com.google.plus.ui',
-  extends: 'foam.ui.md.DetailView',
+  extends: 'foam.u2.View',
 
   requires: [
     'com.google.plus.Person'
   ],
 
   properties: [
-    ['className', 'plus-person-citation-view'],
+    ['nodeName', 'PLUS-PERSON-CITATION-VIEW'],
 
   ],
-
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %> >
-        $$displayName{ floatingLabel: false, mode: 'read-only' }
-        $$id{ floatingLabel: false, mode: 'read-only' }
-      </div>
-    */},
-    function CSS() {/*
-      .plus-person-citation-view {
-        display: flex;
-      }
-    */},
+  
+  methods: [
+    function initE() {
+      return this.start().add(this.data.displayName$).end();
+    }
+    
   ],
+  
 });
