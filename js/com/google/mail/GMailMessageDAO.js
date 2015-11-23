@@ -560,7 +560,7 @@ CLASS({
         if ( options && options.query ) {
           var query = options && options.query;
 
-          if ( GtExpr.isInstance(query) && query.arg1 == this.model.HISTORY_ID ) {
+          if ( GtExpr.isInstance(query) && query.arg1 == this.model.getPrototype().HISTORY_ID ) {
             if ( query.arg2.f() !== 0 ) {
               return this.selectFromHistory_(sink, query.arg2.f());
             }

@@ -190,7 +190,7 @@ CLASS({
             newoptions.query = EQ(this.FOAMGMailMessage.LABEL_IDS, query.arg2);
           } else if ( GtExpr.isInstance(query) &&
                       query.arg1 == this.EMail.SERVER_VERSION ) {
-            newoptions.query = GT(this.FOAMGMailMessage.HISTORY_ID, query.arg2);
+            newoptions.query = GT(this.FOAMGMailMessage.getPrototype().HISTORY_ID, query.arg2);
           } else if ( MQLExpr.isInstance(query) ) {
             newoptions.query = query;
           }
