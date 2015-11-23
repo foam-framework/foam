@@ -231,7 +231,7 @@ function elementForName(nodeName) {
 
 function elementForFeature(objName, featureName) {
   var x = this.Y || this;
-  if ( objName ) x = X.sub({data: this[objName]});
+  if ( objName ) x = x.sub({data: this[objName]});
   return this[objName || 'data'].model_.getFeature(featureName).toE(x);
 }
 
