@@ -209,7 +209,7 @@ var BootstrapModel = {
     // extra memory in DEBUG mode.
     if ( _DOC_ ) BootstrapModel.saveDefinition(this);
 
-    if ( this.extends && ! this.X.lookup(this.extends) ) throw 'Unknown Model in extends: ' + this.extends;
+    if ( this.extends && ! this.X.lookup(this.extends) ) throw new Error('Unknown Model in extends: ' + this.extends);
 
     var extendsModel = this.extends && this.X.lookup(this.extends);
 

@@ -16,35 +16,11 @@
  */
 
 CLASS({
-  package: 'foam.dao.auth',
-  name: 'Account',
-  properties: [
-    'id',
-    {
-      model_: 'EMailProperty',
-      name: 'email',
-      mode: 'read-only'
-    },
-    {
-      model_: 'foam.core.types.StringEnumProperty',
-      name: 'level',
-      defaultValue: 'user',
-      choices: [
-        'user',
-        'admin'
-      ]
-    },
-    {
-      name: 'authorizationCode',
-      type: 'String'
-    },
-    {
-      name: 'refreshToken',
-      type: 'String'
-    },
-    {
-      name: 'accessToken',
-      type: 'String'
-    }
+  package: 'com.google.mail',
+  name: 'MobileAgent',
+  ids: ['id'],
+  properties: ['id'],
+  methods: [
+    function execute() {}
   ]
 });

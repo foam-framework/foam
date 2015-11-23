@@ -16,12 +16,11 @@
  */
 
 CLASS({
-  "model_": "Model",
-  "id": "com.google.mail.GMailMessageDAO",
-  "package": "com.google.mail",
-  "name": "GMailMessageDAO",
-  "extends": "com.google.mail.GMailRestDAO",
-  "requires": [
+  model_: "Model",
+  package: "com.google.mail",
+  name: "GMailMessageDAO",
+  extends: "com.google.mail.GMailRestDAO",
+  requires: [
     "com.google.mail.FOAMGMailMessage",
     "com.google.mail.GMailRestDAO",
     "com.google.mail.GMailDraft",
@@ -30,82 +29,84 @@ CLASS({
     "foam.dao.NullDAO",
     "com.google.mail.GMailHistory"
   ],
-  "imports": [
+  imports: [
     "ajsonp"
   ],
-  "exports": [],
-  "properties": [
+  properties: [
     {
-      "name": "url",
-      "defaultValue": "https://www.googleapis.com/gmail/v1/users",
-      "transient": true
+      name: "url",
+      transient: true,
+      defaultValue: "https://www.googleapis.com/gmail/v1/users"
     },
     {
-      "name": "modelName",
-      "transient": true,
-      "defaultValueFn": function () { return this.model.plural; }
+      name: "modelName",
+      transient: true,
+      defaultValueFn: function () { return this.model.plural; }
     },
     {
-      "name": "xhr",
-      "transient": true,
-      "factory": function () { return this.X.XHR.create({ responseType: 'json' }, this.Y); }
+      name: "xhr",
+      transient: true,
+      factory: function () { return this.X.XHR.create({ responseType: 'json' }, this.Y); }
     },
     {
-      "name": "model",
-      "hidden": true,
-      "transient": true,
-      "defaultValueFn": function () { return this.FOAMGMailMessage; }
+      name: "model",
+      visibility: "hidden",
+      hidden: true,
+      transient: true,
+      defaultValueFn: function () { return this.FOAMGMailMessage; }
     },
     {
-      "name": "messageUrl",
-      "transient": true,
-      "defaultValueFn": function () { return this.url + '/me/messages'; }
+      name: "messageUrl",
+      transient: true,
+      defaultValueFn: function () { return this.url + '/me/messages'; }
     },
     {
-      "name": "draftUrl",
-      "transient": true,
-      "defaultValueFn": function () { return this.url + '/me/drafts'; }
+      name: "draftUrl",
+      transient: true,
+      defaultValueFn: function () { return this.url + '/me/drafts'; }
     },
     {
-      "name": "draftDao",
-      "hidden": true,
-      "transient": true,
-      "factory": function () { return this.GMailRestDAO.create({ model: this.GMailDraft }); }
+      name: "draftDao",
+      visibility: "hidden",
+      hidden: true,
+      transient: true,
+      factory: function () { return this.GMailRestDAO.create({ model: this.GMailDraft }); }
     },
     {
-      "name": "localDao",
-      "hidden": true,
-      "transient": true,
-      "factory": function () { return this.NullDAO.create({ model: this.GMailMessage }); }
+      name: "localDao",
+      visibility: "hidden",
+      hidden: true,
+      transient: true,
+      factory: function () { return this.NullDAO.create({ model: this.GMailMessage }); }
     },
     {
-      "name": "historyDao",
-      "hidden": true,
-      "transient": true,
-      "factory": function () { return this.GMailRestDAO.create({ model: this.GMailHistory }); }
+      name: "historyDao",
+      visibility: "hidden",
+      hidden: true,
+      transient: true,
+      factory: function () { return this.GMailRestDAO.create({ model: this.GMailHistory }); }
     },
     {
-      "model_": "IntProperty",
-      "name": "pollingPeriod",
-      "units": "ms",
-      "defaultValue": 10000
+      model_: "IntProperty",
+      name: "pollingPeriod",
+      units: "ms",
+      defaultValue: 10000
     },
     {
-      "model_": "BooleanProperty",
-      "name": "syncing",
-      "transient": true,
-      "defaultValue": false
+      model_: "BooleanProperty",
+      name: "syncing",
+      transient: true,
+      defaultValue: false
     },
     {
-      "model_": "IntProperty",
-      "name": "lastClientVersion"
+      model_: "IntProperty",
+      name: "lastClientVersion"
     }
   ],
-  "methods": [
+  methods: [
     {
-      "model_": "Method",
-      "name": "listen",
-      "code": function (l, options) {
+      name: "listen",
+      code: function (l, options) {
         this.SUPER(l, options);
         if ( this.daoListeners_.length === 1 ) {
           this.startSync();
@@ -113,9 +114,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "unlisten",
-      "code": function (l) {
+      name: "unlisten",
+      code: function (l) {
         this.SUPER(l);
         if ( this.daoListeners_.length === 0 ) {
           this.stopSync();
@@ -123,9 +123,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "doSync",
-      "code": function (ret) {
+      name: "doSync",
+      code: function (ret) {
         var self = this;
         this.historyDao
           .where(GT(this.GMailHistory.ID, self.lastHistoryId))
@@ -159,9 +158,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "startSync",
-      "code": function () {
+      name: "startSync",
+      code: function () {
         var self = this;
         if ( this.syncing ) return;
         aseq(
@@ -193,16 +191,14 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "stopSync",
-      "code": function () {
+      name: "stopSync",
+      code: function () {
         this.syncing = false;
       }
     },
     {
-      "model_": "Method",
-      "name": "postProcessObject",
-      "code": function (ret, error, obj) {
+      name: "postProcessObject",
+      code: function (ret, error, obj) {
         var self = this;
         var earlyOut = ret;
 
@@ -251,9 +247,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "onSelectData",
-      "code": function (ret, data, sink, fc) {
+      name: "onSelectData",
+      code: function (ret, data, sink, fc) {
         if ( ! sink || ! sink.put ) { ret(); return; }
 
         var self = this;
@@ -277,9 +272,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "setDraftId_",
-      "code": function (ret, obj) {
+      name: "setDraftId_",
+      code: function (ret, obj) {
         var self = this;
         self.draftDao.where(EQ({partialEval: function() { return this }, f: function(o) { return o.message.id; }}, obj.id)).limit(1).select()(function(drafts) {
           if ( drafts.length === 0 ) {
@@ -296,9 +290,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "sendDraft_",
-      "code": function (ret, draftId, obj, sink) {
+      name: "sendDraft_",
+      code: function (ret, draftId, obj, sink) {
         var self = this;
         if ( obj.deleted ) {
           ret();
@@ -327,9 +320,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "saveDraft_",
-      "code": function (ret, draftId, obj, url, method, sink) {
+      name: "saveDraft_",
+      code: function (ret, draftId, obj, url, method, sink) {
         var self = this;
         aseq(
           function(ret) {
@@ -370,9 +362,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "put",
-      "code": function (obj, sink) {
+      name: "put",
+      code: function (obj, sink) {
         var self = this;
         var jsonToObj;
         var dstUrl;
@@ -438,7 +429,7 @@ CLASS({
                 return;
               }
               obj = obj.deepClone();
-              if ( response.labelIds ) 
+              if ( response.labelIds )
                 obj.labelIds = response.labelIds;
               self.lastClientVersion = Math.max(self.lastClientVersion, obj.clientVersion);
               sink && sink.put && sink.put(obj);
@@ -447,16 +438,14 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "remove",
-      "code": function (obj, sink) {
+      name: "remove",
+      code: function (obj, sink) {
         sink && sink.error && sink.error('Unimplemented.');
       }
     },
     {
-      "model_": "Method",
-      "name": "find",
-      "code": function (key, sink) {
+      name: "find",
+      code: function (key, sink) {
         if ( key.startsWith('draft_') ) {
           this.findDraft_(key, sink);
           return;
@@ -480,9 +469,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "findDraft_",
-      "code": function (key, sink) {
+      name: "findDraft_",
+      code: function (key, sink) {
         var self = this;
         aseq(
           function(ret) {
@@ -501,9 +489,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "selectFromHistory_",
-      "code": function (sink, historyId) {
+      name: "selectFromHistory_",
+      code: function (sink, historyId) {
         sink = sink || [];
         var fc = this.createFlowControl_();
         var self = this;
@@ -562,9 +549,8 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
-      "name": "select",
-      "code": function (sink, options) {
+      name: "select",
+      code: function (sink, options) {
         sink = sink || [].sink;
         if ( MaxExpr.isInstance(sink) && sink.arg1 == this.model.CLIENT_VERSION ) {
           sink.max = this.lastClientVersion;
@@ -574,7 +560,7 @@ CLASS({
         if ( options && options.query ) {
           var query = options && options.query;
 
-          if ( GtExpr.isInstance(query) && query.arg1 == this.model.HISTORY_ID ) {
+          if ( GtExpr.isInstance(query) && query.arg1 == this.model.getPrototype().HISTORY_ID ) {
             if ( query.arg2.f() !== 0 ) {
               return this.selectFromHistory_(sink, query.arg2.f());
             }
