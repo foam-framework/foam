@@ -145,6 +145,7 @@ CLASS({
       });
       this.rawAccountDAO.pipe({
         put: function(account) {
+          this.agentDAO.where(EQ(this.EMailSyncAgent.USER, account.id)).removeAll();
           if ( account.refreshToken ) {
             this.agentDAO.put(
               this.EMailSyncAgent.create({
