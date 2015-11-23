@@ -305,6 +305,8 @@ CLASS({
       transient: true,
       hidden: true,
       factory: function() { return []; },
+      swiftType: 'NSMutableArray',
+      swiftDefaultValue: '[]',
       compareProperty: function() { return 0; },
     }
   ],
@@ -347,8 +349,22 @@ CLASS({
       ],
       swiftCode: '// todo',
     },
-    function remove(query, sink) {
-      /* Template method. Override to remove matching items and put them into sink if supplied. */
+    {
+      name: 'remove',
+      code: function(query, sink) {
+        /* Template method. Override to remove matching items and put them into sink if supplied. */
+      },
+      args: [
+        {
+          name: 'obj',
+          swiftType: 'FObject',
+        },
+        {
+          name: 'sink',
+          swiftType: 'Sink = ArraySink()',
+        },
+      ],
+      swiftCode: '// todo',
     },
 
     function pipe(sink, options) { /* A $$DOC{ref:'.select'} followed by $$DOC{ref:'.listen'}.
@@ -462,8 +478,22 @@ CLASS({
       return (this.Y || X).lookup('OrderedDAO_').create({ comparator: arguments.length == 1 ? arguments[0] : argsToArray(arguments), delegate: this });
     },
 
-    function listen(sink, options) { /* Send future changes to sink. */
-      this.daoListeners_.push(this.decorateSink_(sink, options, true));
+    {
+      name: 'listen',
+      code: function(sink, options) { /* Send future changes to sink. */
+        this.daoListeners_.push(this.decorateSink_(sink, options, true));
+      },
+      args: [
+        {
+          name: 'sink',
+          swiftType: 'Sink',
+        },
+        {
+          name: 'options',
+          swiftType: 'DAOQueryOptions = DAOQueryOptions()',
+        }
+      ],
+      swiftCode: 'self.daoListeners_.addObject(self.decorateSink_(sink, options: options))'
     },
 
     function unlisten(sink) { /* Stop sending updates to the given sink. */
@@ -496,35 +526,66 @@ CLASS({
       return future.get;
     },
 
-    /**
-     * Notify all listeners of update to DAO.
-     * @param fName the name of the method in the listeners to call.
-     *        possible values: 'put', 'remove'
-     **/
-    function notify_(fName, args) {
-      // console.log(this.name_, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
-      for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
-        var l = this.daoListeners_[i];
-        var fn = l[fName];
-        if ( fn ) {
-          // Create flow-control object
-          args[2] = {
-            stop: (function(fn, l) {
-              return function() { fn(l); };
-            })(this.unlisten.bind(this), l),
-            error: function(e) { /* Don't care. */ }
-          };
-          try {
-            fn.apply(l, args);
-          } catch(err) {
-            if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
-              console.error('Error delivering event (removing listener): ', fName, err);
-              if ( DEBUG ) console.error(err.stack); // TODO: make a NO_DEBUGGER flag for mobile debugger mode?
+    {
+      /**
+       * Notify all listeners of update to DAO.
+       * @param fName the name of the method in the listeners to call.
+       *        possible values: 'put', 'remove'
+       **/
+      name: 'notify_',
+      code: function(fName, args) {
+        // console.log(this.name_, ' ***** notify ', fName, ' args: ', args, ' listeners: ', this.daoListeners_);
+        for( var i = 0 ; i < this.daoListeners_.length ; i++ ) {
+          var l = this.daoListeners_[i];
+          var fn = l[fName];
+          if ( fn ) {
+            // Create flow-control object
+            args[2] = {
+              stop: (function(fn, l) {
+                return function() { fn(l); };
+              })(this.unlisten.bind(this), l),
+              error: function(e) { /* Don't care. */ }
+            };
+            try {
+              fn.apply(l, args);
+            } catch(err) {
+              if ( err !== this.UNSUBSCRIBE_EXCEPTION ) {
+                console.error('Error delivering event (removing listener): ', fName, err);
+                if ( DEBUG ) console.error(err.stack); // TODO: make a NO_DEBUGGER flag for mobile debugger mode?
+              }
+              this.unlisten(l);
             }
-            this.unlisten(l);
           }
         }
-      }
+      },
+      args: [
+        {
+          name: 'fName',
+          swiftType: 'String',
+        },
+        {
+          name: 'fObj',
+          swiftType: 'FObject? = nil',
+        },
+      ],
+      swiftCode: function() { /*
+        switch fName {
+          case "put":
+            for l in self.daoListeners_ {
+              let l = l as! Sink
+              l.put(fObj!)
+            }
+            break
+          case "remove":
+            for l in self.daoListeners_ {
+              let l = l as! Sink
+              l.remove(fObj!)
+            }
+            break
+          default:
+            fatalError("DAO notify with unexpected function \(fName)")
+        }
+      */},
     },
 
   ]

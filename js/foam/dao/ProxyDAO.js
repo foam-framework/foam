@@ -65,19 +65,26 @@ CLASS({
   ],
 
   methods: [
-    function relay() { /* Sets up relay for listening to delegate changes. */
-      if ( ! this.relay_ ) {
-        var self = this;
+    {
+      name: 'relay',
+      code: function() { /* Sets up relay for listening to delegate changes. */
+        if ( ! this.relay_ ) {
+          var self = this;
 
-        this.relay_ = {
-          put:    function() { self.notify_('put', arguments);    },
-          remove: function() { self.notify_('remove', arguments); },
-          reset: function() { self.notify_('reset', arguments); },
-          toString: function() { return 'RELAY(' + this.$UID + ', ' + self.model_.name + ', ' + self.delegate + ')'; }
-        };
-      }
+          this.relay_ = {
+            put:    function() { self.notify_('put', arguments);    },
+            remove: function() { self.notify_('remove', arguments); },
+            reset: function() { self.notify_('reset', arguments); },
+            toString: function() { return 'RELAY(' + this.$UID + ', ' + self.model_.name + ', ' + self.delegate + ')'; }
+          };
+        }
 
-      return this.relay_;
+        return this.relay_;
+      },
+      swiftReturnType: 'Sink',
+      swiftCode: function() {/*
+        return RelaySink(relay: self)
+      */}
     },
 
     function put(value, sink) { /* Passthrough to delegate. */
