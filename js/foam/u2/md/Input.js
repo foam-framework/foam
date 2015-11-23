@@ -28,13 +28,9 @@ CLASS({
       attribute: true,
       defaultValue: true
     },
-    'prop',
     {
       name: 'label',
       attribute: true,
-      defaultValueFn: function() {
-        return this.prop ? this.prop.label : '';
-      }
     },
     {
       model_: 'BooleanProperty',
@@ -68,7 +64,7 @@ CLASS({
       input.end();
     },
     function fromProperty(prop) {
-      this.label = prop.label;
+      this.label = this.label || prop.label;
       return this.SUPER(prop);
     },
   ],
