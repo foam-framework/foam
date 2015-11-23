@@ -25,13 +25,19 @@ CLASS({
 
   properties: [
     {
-      name: 'src'
+      name: 'src',
+      swiftType: 'AbstractDAO!',
+      swiftDefaultValue: 'nil',
     },
     {
       name: 'cache',
       help: 'Alias for delegate.',
       getter: function() { return this.delegate },
-      setter: function(dao) { this.delegate = dao; }
+      setter: function(dao) { this.delegate = dao; },
+      swiftType: 'AbstractDAO!',
+      swiftDefaultValue: 'nil',
+      swiftGetter: 'return self.delegate',
+      swiftPostSet: 'self.delegate = newValue',
     },
     {
       name: 'model',
@@ -39,8 +45,8 @@ CLASS({
     }
   ],
 
-  methods: {
-    init: function() {
+  methods: [
+    function init() {
       this.SUPER();
 
       var src   = this.src;
@@ -56,8 +62,33 @@ CLASS({
         this.cache = cache;
       }.bind(this));
     },
-    put: function(obj, sink) { this.src.put(obj, sink); },
-    remove: function(query, sink) { this.src.remove(query, sink); },
-    removeAll: function(sink, options) { return this.src.removeAll(sink, options); }
-  }
+    {
+      name: 'swiftInit',
+      swiftCode: function() {/*
+        let cache = self.cache
+
+        let futureDao = FutureDAO()
+        self.cache = futureDao
+
+        let sink = DAOSink(dao: cache)
+        src.select(sink).get { _ in
+          // Actually means that cache listens to changes in the src.
+          self.src.listen(sink);
+          futureDao.future.set(cache);
+          self.cache = cache;
+        };
+      */},
+    },
+    {
+      name: 'put',
+      code: function(obj, sink) { this.src.put(obj, sink); },
+      swiftCode: 'src.put(obj, sink: sink)',
+    },
+    {
+      name: 'remove',
+      code: function(query, sink) { this.src.remove(query, sink); },
+      swiftCode: 'src.remove(obj, sink: sink)',
+    },
+    function removeAll(sink, options) { return this.src.removeAll(sink, options); }
+  ]
 });

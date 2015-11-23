@@ -31,8 +31,20 @@ CLASS({
     },
     {
       name: 'future',
+      swiftType: 'Future',
+      swiftDefaultValue: 'Future()',
       required: true,
-      documentation: "The future on which to operate before the delegate becomes available."
+      documentation: "The future on which to operate before the delegate becomes available.",
+      swiftPostSet: function() {/*
+        self.future.get({ delegate in
+          let delegate = delegate as! AbstractDAO
+          let listeners = self.daoListeners_
+          self.daoListeners_ = []
+          self.delegate = delegate
+          self.daoListeners_ = listeners
+          self.delegate.listen(self.relay());
+        });
+      */},
     },
     {
       name: 'model',
@@ -43,8 +55,8 @@ CLASS({
     }
   ],
 
-  methods: {
-    init: function() { /* Sets up the future to provide us with the delegate when it becomes available. */
+  methods: [
+    function init() { /* Sets up the future to provide us with the delegate when it becomes available. */
       this.SUPER();
 
       this.future(function(delegate) {
@@ -56,15 +68,24 @@ CLASS({
       }.bind(this));
     },
 
-    put: function(value, sink) { /* Passthrough to delegate or the future, if delegate not set yet. */
-      if ( this.delegate ) {
-        this.delegate.put(value, sink);
-      } else {
-        this.future(this.put.bind(this, value, sink));
-      }
+    {
+      name: 'put',
+      code: function(value, sink) { /* Passthrough to delegate or the future, if delegate not set yet. */
+        if ( this.delegate ) {
+          this.delegate.put(value, sink);
+        } else {
+          this.future(this.put.bind(this, value, sink));
+        }
+      },
+      swiftCode: function() {/*
+        future.get { delegate in
+          let delegate = delegate as! AbstractDAO
+          delegate.put(obj, sink: sink)
+        }
+      */},
     },
 
-    remove: function(query, sink) { /* Passthrough to delegate or the future, if delegate not set yet. */
+    function remove(query, sink) { /* Passthrough to delegate or the future, if delegate not set yet. */
       if ( this.delegate ) {
         this.delegate.remove(query, sink);
       } else {
@@ -72,7 +93,7 @@ CLASS({
       }
     },
 
-    removeAll: function() { /* Passthrough to delegate or the future, if delegate not set yet. */
+    function removeAll() { /* Passthrough to delegate or the future, if delegate not set yet. */
       if ( this.delegate ) {
         return this.delegate.removeAll.apply(this.delegate, arguments);
       }
@@ -86,7 +107,7 @@ CLASS({
       return f.get;
     },
 
-    find: function(key, sink) {/* Passthrough to delegate or the future, if delegate not set yet. */
+    function find(key, sink) {/* Passthrough to delegate or the future, if delegate not set yet. */
       if ( this.delegate ) {
         this.delegate.find(key, sink);
       } else {
@@ -94,18 +115,31 @@ CLASS({
       }
     },
 
-    select: function(sink, options) {/* Passthrough to delegate or the future, if delegate not set yet. */
-      if ( this.delegate ) {
-        return this.delegate.select(sink, options);
-      }
+    {
+      name: 'select',
+      code: function(sink, options) {/* Passthrough to delegate or the future, if delegate not set yet. */
+        if ( this.delegate ) {
+          return this.delegate.select(sink, options);
+        }
 
-      var a = arguments;
-      var f = afuture();
-      this.future(function() {
-        this.select.apply(this, a)(f.set);
-      }.bind(this));
+        var a = arguments;
+        var f = afuture();
+        this.future(function() {
+          this.select.apply(this, a)(f.set);
+        }.bind(this));
 
-      return f.get;
+        return f.get;
+      },
+      swiftCode: function() {/*
+        let selectFuture = Future()
+        future.get { delegate in
+          let delegate = delegate as! AbstractDAO
+          delegate.select(sink, options: options).get { data in
+            selectFuture.set(data)
+          }
+        }
+        return selectFuture
+      */},
     },
-  }
+  ]
 });
