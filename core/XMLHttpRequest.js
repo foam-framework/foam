@@ -45,7 +45,7 @@ if ( typeof vm != "undefined" && vm.runInThisContext ) {
         return this.responseType_;
       },
 
-      responseType: null,
+      responseType_: null,
 
       get status() {
         return this.status_;
