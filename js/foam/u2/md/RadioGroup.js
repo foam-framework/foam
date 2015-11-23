@@ -21,6 +21,7 @@ CLASS({
   traits: ['foam.u2.ChoiceViewTrait'],
 
   requires: [
+    'foam.ui.md.HaloView',
   ],
 
   documentation: function() {/*
@@ -42,49 +43,56 @@ CLASS({
         ['vertical', 'Vertical']
       ],
     },
-    {
-      name: 'halo',
-    },
     ['showLabel', false],
-    ['nodeName', 'div'],
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
+    function initE() {
       var self = this;
-      this.cls('foam-u2-md-RadioGroup')
+      this.cls(this.myCls())
           .cls2(function() {
-            return 'foam-u2-md-RadioGroup-' + self.orientation;
-          }.on$(this.orientation$));
+            return self.myCls(self.orientation);
+          }.on$(this.X, this.orientation$));
 
       for (var i = 0; i < this.choices.length; i++) {
-        //this.add(this.choiceElement(i));
         this.choiceElement(i);
       }
+    },
+
+    function makeHalo(index) {
+      var h = this.HaloView.create({
+        className: 'halo',
+        recentering: false,
+        pressedAlpha: 0.2,
+        startAlpha: 0.2,
+        finishAlpha: 0
+      });
+      Events.map(this.index$, h.color$, function(i) {
+        return index === i ? '#5a5a5a' : '#4285f4';
+      });
+      return h;
     },
 
     // TODO(braden): Switch this for a template version when the parser is
     // working better. It was confused by the empty divs last time I tried it.
     function choiceElement(i) {
       var self = this;
-      this.start('div').cls('foam-u2-md-RadioGroup-choice-outer')
+      this.start('div').cls(this.myCls('choice-outer'))
           .cls2(function() {
-            return self.index === i ? 'foam-u2-md-RadioGroup-choice-selected' : '';
+            return self.index === i ? self.myCls('choice-selected') : '';
           }.on$(this.X, this.data$))
           .on('click', function() { self.index = i; })
-          .start('div').cls('foam-u2-md-RadioGroup-choice-container')
+          .start('div').cls(this.myCls('choice-container'))
               .cls('noselect')
-              .start('div').cls('foam-u2-md-RadioGroup-choice-background')
-                  .start('div').cls('foam-u2-md-RadioGroup-choice-indicator')
-                      .start('div').cls2('foam-u2-md-RadioGroup-choice-indicator-on').end()
-                      .start('div').cls2('foam-u2-md-RadioGroup-choice-indicator-off').end()
-                      .start('div').cls2('foam-u2-md-RadioGroup-choice-indicator-container')
-                          // TODO(braden): Add Halo support (needs CView+U2).
-                          //.add(this.halo)
+              .start('div').cls(this.myCls('choice-background'))
+                  .start('div').cls(this.myCls('choice-indicator'))
+                      .start('div').cls2(this.myCls('choice-indicator-on')).end()
+                      .start('div').cls2(this.myCls('choice-indicator-off')).end()
+                      .start('div').cls2(this.myCls('choice-indicator-container'))
+                          .add(this.makeHalo(i).toView_())
                           .end()
                       .end()
-                  .start('div').cls('foam-u2-md-RadioGroup-choice-label')
+                  .start('div').cls(this.myCls('choice-label'))
                       .add(this.choices[i][1]).end()
               .end()
           .end()
@@ -94,27 +102,27 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .foam-u2-md-RadioGroup {
+      $ {
         align-items: center;
         display: flex;
         margin: 0 0 0 16px;
         padding: 0;
       }
 
-      .foam-u2-md-RadioGroup-vertical {
+      $-vertical {
         align-items: flex-start;
         flex-direction: column;
       }
 
-      .foam-u2-md-RadioGroup-vertical .foam-u2-md-RadioGroup-choice-outer {
+      $-vertical $-choice-outer {
         display: block;
       }
-      .foam-u2-md-RadioGroup-horizontal .foam-u2-md-RadioGroup-choice-outer {
+      $-horizontal $-choice-outer {
         display: inline-block;
         margin-right: 16px;
       }
 
-      .foam-u2-md-RadioGroup-choice-container {
+      $-choice-container {
         display: block;
         margin: 8px;
         padding: 8px;
@@ -122,7 +130,7 @@ CLASS({
         white-space: nowrap;
       }
 
-      .foam-u2-md-RadioGroup-choice-background {
+      $-choice-background {
         align-items: flex-end;
         display: flex;
         flex-direction: row;
@@ -130,14 +138,14 @@ CLASS({
         white-space: nowrap;
       }
 
-      .foam-u2-md-RadioGroup-choice-indicator {
+      $-choice-indicator {
         align-self: center;
         height: 16px;
         position: relative;
         width: 16px;
       }
 
-      .foam-u2-md-RadioGroup-choice-indicator-off {
+      $-choice-indicator-off {
         border-color: #5a5a5a;
         border-radius: 50%;
         border: solid 2px;
@@ -149,11 +157,11 @@ CLASS({
         transition: border-color 0.28s;
         width: 16px;
       }
-      .foam-u2-md-RadioGroup-choice-selected .foam-u2-md-RadioGroup-choice-indicator-off {
+      $-choice-selected $-choice-indicator-off {
         border-color: #4285f4;
       }
 
-      .foam-u2-md-RadioGroup-choice-indicator-on {
+      $-choice-indicator-on {
         background-color: #4285f4;
         border-radius: 50%;
         height: 8px;
@@ -165,11 +173,11 @@ CLASS({
         transition: transform ease 0.28s;
         width: 8px;
       }
-      .foam-u2-md-RadioGroup-choice-selected .foam-u2-md-RadioGroup-choice-indicator-on {
+      $-choice-selected $-choice-indicator-on {
         transform: scale(1);
       }
 
-      .foam-u2-md-RadioGroup-choice-indicator-container {
+      $-choice-indicator-container {
         cursor: pointer;
         display: inline-block;
         height: 48px;
@@ -179,8 +187,11 @@ CLASS({
         vertical-align: middle;
         width: 48px;
       }
+      $-choice-indicator-container .halo {
+        border-radius: 50%;
+      }
 
-      .foam-u2-md-RadioGroup-choice-label {
+      $-choice-label {
         display: block;
         margin-left: 12px;
         pointer-events: none;

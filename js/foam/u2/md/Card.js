@@ -29,37 +29,36 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
+    function initE() {
       var self = this;
-      this.cls('foam-u2-md-Card')
+      this.cls(this.myCls())
           .cls2(function() {
-            return self.padding ? '': 'foam-u2-md-Card-shell';
+            return self.padding ? '': self.myCls('shell');
           }.on$(this.X, this.padding$));
     },
   ],
 
   templates: [
     function CSS() {/*
-      .foam-u2-md-Card {
+      $ {
         background: #fff;
         display: block;
         margin: 10px;
         overflow: hidden;
         padding: 24px 16px;
       }
-      .foam-u2-md-Card-shell {
+      $-shell {
         padding: 0;
       }
 
       @media not print {
-        .foam-u2-md-Card {
+        $ {
           border-radius: 3px;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
         }
       }
       @media print {
-        .foam-u2-md-Card {
+        $ {
           border: 6px double #000;
           margin: 6pt;
           page-break-inside: avoid;
@@ -67,7 +66,7 @@ CLASS({
       }
 
       @media (max-width: 600px) {
-        .foam-u2-md-Card-shell {
+        $-shell {
           margin: 0;
         }
       }

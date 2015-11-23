@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.ui.Color',
+    'foam.ui.Icon',
     'foam.ui.md.HaloView',
   ],
   imports: [ 'window' ],
@@ -25,6 +26,13 @@ CLASS({
     {
       type: 'Action',
       name: 'action',
+    },
+    {
+      name: 'type',
+      choices: ['label', 'icon', 'floating'],
+      defaultValueFn: function() {
+        return this.action.ligature || this.action.iconUrl ? 'icon' : 'label';
+      }
     },
     {
       name: 'halo',
@@ -38,6 +46,16 @@ CLASS({
           finishAlpha: 0
         }, this.Y);
       },
+    },
+    {
+      name: 'icon',
+      lazyFactory: function() {
+        return this.Icon.create({
+          url$: this.action.iconUrl$,
+          ligature$: this.action.ligature$,
+          color$: this.currentColor_$
+        }, this.Y);
+      }
     },
     {
       model_: 'foam.ui.ColorProperty',
@@ -62,26 +80,46 @@ CLASS({
     },
   ],
 
+  constants: {
+    TYPE_CLASSES: {
+      label: 'label-only',
+      icon: 'icon-only',
+      floating: 'floating-action-button'
+    }
+  },
+
   methods: [
     function initE() {
-      return this.cls('md-button')
-        .cls2(function() {
-          return (this.action &&
-              this.action.isAvailable.call(this.data, this.action)) ?
-              'available' : '';
-        }.bind(this)).style({
-          color: this.color_$,
-          opacity: this.alpha$,
-        })
-        .on('click', this.onClick)
+      this.cls(this.myCls())
+          .style({
+            color: this.color_$,
+            opacity: this.alpha$,
+          })
+          .cls2(function() {
+            return this.action &&
+                this.action.isAvailable.call(this.data, this.action) ?
+                this.myCls('available') : '';
+          })
+          .cls(this.myCls(this.TYPE_CLASSES[this.type]))
+          .cls('noselect')
+          .on('click', this.onClick)
           // TODO(markdittmer): We need a better story for adapting CViews into
           // u2.
-          .add(this.halo.toView_())
-          .start('span').cls('md-button-label')
+          .add(this.halo.toView_());
+
+      if (this.type === 'label') {
+        this.start('span').cls(this.myCls('label'))
             .add(function() {
               return this.action ? this.action.label : '';
             }.bind(this).on$(this.X, this.action$))
-          .end();
+            .end();
+      } else {
+        this.start().cls(this.myCls('icon-container'))
+            .start().cls(this.myCls('icon'))
+                .add(this.icon)
+                .end()
+            .end();
+      }
     },
     function setColor(c) {
       if ( ! this.Color.isInstance(c) ) {
@@ -104,31 +142,59 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      action-button {
-        display: none;
+      $ {
         align-items: baseline;
-        justify-content: center;
-        overflow: hidden;
-        position: relative;
         border-radius: 2px;
-        cursor: pointer;
         color: #02A8F3;
+        cursor: pointer;
+        display: none;
+        justify-content: center;
+        margin: 8px;
+        overflow: hidden;
+        padding: 8px;
+        position: relative;
       }
 
-      action-button.available {
+      $-available {
         display: inline-flex;
       }
 
-      action-button .halo {
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 2;
-        border-radius: inherit;
+      $-icon-only {
+        border-radius: 50%;
+        flex-shrink: 0;
+        transform: unset;
+        transition-delay: 249ms, 0ms, 0ms, 0ms;
+        transition: transform 250ms ease, width 249ms ease, margin 249ms ease, padding 249ms ease;
+        width: 40px;
       }
 
-      action-button.md-button .md-button-label {
+      $ .halo {
+        border-radius: inherit;
+        left: 0;
+        position: absolute;
+        top: 0;
+        z-index: 2;
+      }
+
+      $-label-only $-label {
         color: inherit;
+        text-transform: uppercase;
+      }
+
+      $-icon-container {
+        height: 24px;
+        position: relative;
+        width: 24px;
+      }
+      $-icon {
+        position: absolute;
+        left: 0px;
+      }
+
+      $-floating-action-button {
+        height: 44px;
+        padding: 10px;
+        width: 44px;
       }
     */},
   ],
