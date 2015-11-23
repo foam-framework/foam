@@ -1,6 +1,8 @@
 [
   {
     "model_": "com.google.ow.model.ProductAd",
+    "merchant": "0",
+    "adStream": "/FOAM_Apparel_Ad",
     "titleText": "FOAM Apparel",
     "summaryText":
     "Show your FOAM spirit by wearing it on your sleeve!\n" +

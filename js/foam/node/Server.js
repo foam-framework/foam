@@ -28,6 +28,7 @@ CLASS({
     'exportToContext',
     'exportDAO',
     'exportFile',
+    'addHandler',
     'exportDirectory',
   ],
   imports: [
@@ -125,6 +126,11 @@ CLASS({
           this.log_("Loaded ", m.id);
         }.bind(this));
       }
+    },
+    function addHandler(handler) {
+      // TODO(adamvy): Not wild about this design, consider a better model for handling
+      // oauth.
+      this.handlers.push(handler);
     },
     // TODO(markdittmer): We shouldn't be mutating contexts. We should have
     // a robust enough ContextualizingDAO to take care of this.

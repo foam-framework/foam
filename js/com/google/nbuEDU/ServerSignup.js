@@ -17,7 +17,7 @@ CLASS({
     'com.google.ow.model.Envelope',
     'foam.u2.Element',
     'com.google.ow.content.PreviewStream',
-    //'com.google.nbuEDU.
+    'com.google.ow.content.CommentThreadStream',
   ],
 
   imports: [
@@ -77,8 +77,8 @@ CLASS({
             "substreams": ["eduVidStream487673295"],
             data: self.PreviewStream.create({
               "name": "MathVideos",
-              "titleText": "Math Videos",
-              "description": "Your grade level, math videos.",
+              "titleText": "Math Videos for grade 7",
+              "description": "Suggested videos for Math:",
               "model": "com.google.ow.content.VotableVideo",
               "contentItemView": "foam.ui.md.CitationView",
               "id": "eduVidStream487673295"
@@ -92,13 +92,31 @@ CLASS({
             "substreams": ["eduVidStream487673295"],
             data: self.PreviewStream.create({
               "name": "ExamPrepVideos",
-              "titleText": "Exam Prep Videos",
-              "description": "Exam prep videos.",
+              "titleText": "Exam preparation Videos for grade 7",
+              "description": "Suggested videos to prepare for exams:",
               "model": "com.google.ow.content.VotableVideo",
               "contentItemView": "foam.ui.md.CitationView",
               "id": "eduVidStream487673295"
             })
           }));
+
+
+          var commentStream = self.CommentThreadStream.create({
+              "name": "GradeChatroom",
+              "titleText": "Grade 7 Quick Chat",
+              "description": "Tap here to talk to others in your grade.",
+              "model": "com.google.ow.content.CommentThread",
+              "id": "eduCommentsForum754788392995",
+            });
+          self.streamDAO.put(self.Envelope.create({
+            "model_": "com.google.ow.model.Envelope",
+            "owner": newUserId,
+            "source": self.substreams[0]+"ServerSignup",
+            "substreams": ["eduCommentsForum754788392995"],
+            data: commentStream,
+          }));
+        
+
         }
       });
     },

@@ -202,23 +202,6 @@ CLASS({
   label: 'Date and time, including year, month, day, hour, minute and second',
 
   properties: [
-    /*
-    {
-      name: 'type',
-      type: 'String',
-      displayWidth: 25,
-      defaultValue: 'datetime',
-      help: 'The FOAM type of this property.'
-    },
-    */
-    {
-      name: 'adapt',
-      defaultValue: function(_, d) {
-        if ( typeof d === 'number' ) return new Date(d);
-        if ( typeof d === 'string' ) return new Date(d);
-        return d;
-      }
-    },
     [ 'view', 'foam.ui.DateTimeFieldView' ]
   ]
 });

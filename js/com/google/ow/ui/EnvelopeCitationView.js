@@ -17,6 +17,7 @@ CLASS({
   requires: [
     'com.google.plus.ui.ShareListView',
     'foam.u2.ActionButton',
+    'foam.u2.md.QuickActionButton as ActionButton',
     'foam.ui.md.Toolbar',
   ],
 
@@ -46,25 +47,51 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      // For Actions.
+      this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
+
+      this.SUPER();
+    },
     function initE() {
       var d = this.data ? this.data.data : {};
-      return this.cls('md-card-shell').cls('md-body')
-        .start('div').cls('md-subhead').cls('heading')
-          .add(d.titleText)
-          .start('div').cls('envelope-spacer').end()
-          .start().cls2(function() {
-            return this.data.shares && this.data.shares.length > 0 ?
-                'show' : 'hide';
-          }.bind(this).on$(this.X, this.data$))
-            .start().add('Shared With:').cls('md-grey').end()
-            .add(this.data.SHARES)
+      return this.cls('md-card-shell')
+        .start('div').cls('heading')
+          .start('span').cls('md-subhead').add(d.titleText$ ?
+              function(titleText) { return titleText; }.on$(this.X, d.titleText$) :
+              '')
           .end()
+          // .start('div').cls('envelope-spacer').end()
+          // .start().cls2(function() {
+          //   return this.data.shares && this.data.shares.length > 0 ?
+          //       'show' : 'hide';
+          // }.bind(this).on$(this.X, this.data$))
+          .add(this.SHARE)
+            // .start().add('Shared With:').cls('md-grey').end()
+            // .add(this.data.SHARES)
+          // .end()
         .end()
         .start('div').cls('content')
           .add(d.toCitationE(this.Y.sub({
             controllerMode: 'view',
           })))
         .end();
+    },
+  ],
+
+  actions: [
+    {
+      name: 'share',
+      ligature: 'share',
+      code: function(X) {
+        var env = this.clone();
+        env.id = createGUID();
+        // HACK(markdittmer): Send to /Chat/All.
+        env.sid = '/Chat/All';
+        env.timestamp = new Date();
+        env.data = env.data.toSharable ? env.data.toSharable(X) : env.data;
+        X.streamDAO.put(env);
+      },
     },
   ],
 
@@ -76,7 +103,6 @@ CLASS({
         -webkit-user-select: none;
         -ms-user-select': none;
         -moz-user-select': none;
-        white-space: pre-line;
         cursor: pointer;
       }
       envelope-citation .heading {
@@ -85,6 +111,7 @@ CLASS({
         background: #EEEEEE;
         display: flex;
         flex-direction: row;
+        position: relative;
       }
       envelope-citation .content {
         padding: 5px 10px;
@@ -92,12 +119,12 @@ CLASS({
       envelope-citation .envelope-spacer {
         flex-grow: 10;
       }
-      @media (max-width: 600px) {
-        envelope-citation .heading {
-          flex-direction: column;
-        }
-      }
       envelope-citation .hide { display: none; }
+      envelope-citation quick-action-button {
+        position: absolute;
+        right: -8px;
+        top: -8px;
+      }
     */},
   ],
 });

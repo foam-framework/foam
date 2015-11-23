@@ -29,7 +29,10 @@ CLASS({
    ],
    "imports": [],
    "exports": [],
-   "properties": [
+  "properties": [
+    {
+      name: 'emailId'
+    },
       {
          "model_": "StringProperty",
          "name": "historyId",

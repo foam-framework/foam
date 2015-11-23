@@ -18,27 +18,16 @@ CLASS({
   package: 'com.google.ow.ui',
   name: 'CitationOnlyDAOController',
   extends: 'foam.browser.ui.DAOController',
-  documentation: "A DAOController with no drill-down to edit. New items appear to edit in the list.",
+  documentation: "A DAOController with no header.",
   properties: [
     ['mode', 'read-write'],
-      
-  ],
-
-  actions: [
-    {
-      name: 'add',
-      iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAHUlEQVR4AWNAgFHwHwhHNWBVhBtSqgETjMbDKAAA6iwzzdTyG+0AAAAASUVORK5CYII=',
-      code: function() {
-        var newObj = this.data.model.create();
-        
-        
-        
-        // this.stack.pushView(this.newView({
-        //   data: newObj,
-        //   innerView: this.innerNewView
-        // }, this.Y.sub({ dao: this.data })));
-      }
-    },
+    ['editView', function(args, X) {
+      var Y = X || this.Y;
+      var v = this.UpdateDetailView.create(args,Y);
+      v.liveEdit = true;
+      v.title = ((args.data && args.data.data) || args.data || Y.data).titleText;
+      return v;
+    }]
   ],
 
   templates: [
@@ -46,12 +35,6 @@ CLASS({
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-      <% if ( this.mode !== 'read-only' ) { %>
-        <div class="dao-controller-header">
-          $$label{ extraClassName: 'expand' }
-          $$add
-        </div>
-      <% } %>
         <div class="dao-controller-body">
           <%
             var list = this.DAOListView.create({
@@ -59,6 +42,7 @@ CLASS({
               rowView: this.rowView
             }, this.Y);
             out(list);
+            list.subscribe(list.ROW_CLICK, this.onRowClick);
           %>
         </div>
       </div>

@@ -26,6 +26,9 @@ CLASS({
       model_: 'StringArrayProperty',
       name: 'substreams',
       required: true,
+      postSet: function(_, nu) {
+        if ( ! nu ) debugger;
+      },
     },
     {
       name: 'query',
@@ -44,6 +47,10 @@ CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      if ( ! this.substreams ) debugger;
+    },
     function put(env, sink) {
       var i;
       // Do not put envelopes already seen.
@@ -61,6 +68,7 @@ CLASS({
           return;
         }
       }
+      sink && sink.error && sink.error();
     },
   ],
 });
