@@ -134,9 +134,7 @@ CLASS({
   ]
 });
 
-
-var TRUE = (FOAM({
-  model_: 'Model',
+CLASS({
   name: 'TrueExpr',
   extends: 'Expr',
 
@@ -150,17 +148,16 @@ var TRUE = (FOAM({
     function toSQL() { return '( 1 = 1 )'; },
     function toMQL() { return ''; },
     function toBQL() { return ''; },
+    function readResolve() { return TRUE; },
     {
       name: 'f',
       code: function() { return true; },
       swiftCode: 'return true',
     },
   ]
-})).create();
+});
 
-
-var FALSE = (FOAM({
-  model_: 'Model',
+CLASS({
   name: 'FalseExpr',
   extends: 'Expr',
 
@@ -173,17 +170,16 @@ var FALSE = (FOAM({
     function toSQL(out) { return '( 1 <> 1 )'; },
     function toMQL(out) { return '<false>'; },
     function toBQL(out) { return '<false>'; },
+    function readResolve() { return FALSE; },
     {
       name: 'f',
       code: function() { return false; },
       swiftCode: 'return false',
     },
   ]
-})).create();
+});
 
-
-var IDENTITY = (FOAM({
-  model_: 'Model',
+CLASS({
   name: 'IdentityExpr',
   extends: 'Expr',
 
@@ -194,9 +190,14 @@ var IDENTITY = (FOAM({
     deepClone: function() { return this; },
     exprClone: function() { return this; },
     f: function(obj) { return obj; },
-    toString: function() { return 'IDENTITY'; }
+    toString: function() { return 'IDENTITY'; },
+    readResolve: function() { return IDENTITY; }
   }
-})).create();
+});
+
+var TRUE = TrueExpr.create();
+var FALSE = FalseExpr.create();
+var IDENTITY = IdentityExpr.create();
 
 /** An n-ary function. **/
 CLASS({
@@ -269,12 +270,6 @@ CLASS({
     }
   }
 });
-
-
-// Allow Singleton mLang's to be desearialized to properly.
-var TrueExpr     = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return TRUE;  } };
-var FalseExpr    = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return FALSE; } };
-var IdentityExpr = { finished__: true, arequire: function(ret) { return afuture().set(this).get; }, create: function() { return IDENTITY; } };
 
 /** An unary function. **/
 CLASS({
