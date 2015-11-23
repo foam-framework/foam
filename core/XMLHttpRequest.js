@@ -72,7 +72,7 @@ if ( typeof vm != "undefined" && vm.runInThisContext ) {
 
         if  ( this.readyState_ == this.DONE &&
               this.onErrorListeners_ &&
-              this.status >= 400 ) {
+              ( this.status >= 400 || this.status == 0 ) ) {
           this.onErrorListener_.forEach(fire);
         }
       },
@@ -98,6 +98,13 @@ if ( typeof vm != "undefined" && vm.runInThisContext ) {
             this.toReadyState(this.DONE);
           }.bind(this));
         }.bind(this));
+
+        this.request_.on('error', function() {
+          this.status_ = 0;
+          this.response_ = null;
+          this.toReadyState(this.DONE);
+        }.bind(this));
+
 
         if ( payload ) {
           payload = new Buffer(payload);
