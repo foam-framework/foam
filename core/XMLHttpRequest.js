@@ -73,7 +73,7 @@ if ( typeof vm != "undefined" && vm.runInThisContext ) {
         if  ( this.readyState_ == this.DONE &&
               this.onErrorListeners_ &&
               ( this.status >= 400 || this.status == 0 ) ) {
-          this.onErrorListener_.forEach(fire);
+          this.onErrorListeners_.forEach(fire);
         }
       },
 
