@@ -16,10 +16,12 @@
  */
 
 CLASS({
-  model_: "Model",
   package: "foam.lib.email",
   name: "EMail",
   plural: "EMail",
+  traits: [
+    "foam.core.dao.SyncTrait"
+  ],
   tableProperties: [
     "from",
     "subject",
@@ -27,8 +29,13 @@ CLASS({
   ],
   properties: [
     {
-      model_: "StringProperty",
       name: "id",
+      visibility: 'hidden',
+      hidden: true
+    },
+    {
+      model_: "StringProperty",
+      name: "gmailId",
       label: "Message ID",
       mode: "read-write",
       required: true,
@@ -60,33 +67,28 @@ CLASS({
       displayWidth: 30
     },
     {
-      model_: "DateProperty",
+      model_: "DateTimeProperty",
       name: "timestamp",
       label: "Date",
+      visibility: 'ro',
       aliases: [
         "time",
         "modified",
         "t"
       ],
-      mode: "read-write",
-      required: true,
       displayHeight: 1,
       factory: function () { return new Date(); },
-      preSet: function (_, d) {
-        return ( typeof d === 'string' || typeof d === 'number' ) ? new Date(d) : d;
-      },
       tableWidth: "100",
-      displayWidth: 45,
-      view: "foam.ui.TextFieldView"
+      displayWidth: 45
     },
     {
       model_: "StringProperty",
       name: "from",
       shortName: "f",
-      mode: "read-write",
+      visibility: 'final',
       required: true,
       displayWidth: 90,
-      factory: function () { return GLOBAL.user || ""; },
+      factory: function() { return GLOBAL.user || ''; },
       tableFormatter: function (t) {
         var ret;
         if (t.search('<.*>') != -1) {
@@ -105,6 +107,7 @@ CLASS({
       name: "to",
       shortName: "t",
       required: true,
+      visibility: 'final',
       tableFormatter: function (t) { return t.replace(/"/g, '').replace(/<.*/, ''); },
       displayWidth: 90
     },
@@ -112,6 +115,7 @@ CLASS({
       model_: "StringArrayProperty",
       name: "cc",
       required: true,
+      visibility: 'final',
       tableFormatter: function (t) { return t.replace(/"/g, '').replace(/<.*/, ''); },
       displayWidth: 90
     },
@@ -119,26 +123,28 @@ CLASS({
       model_: "StringArrayProperty",
       name: "bcc",
       required: true,
+      visibility: 'final',
       tableFormatter: function (t) { return t.replace(/"/g, '').replace(/<.*/, ''); },
       displayWidth: 90
     },
     {
       model_: "StringArrayProperty",
-      name: "replyTo"
+      name: "replyTo",
+      visibility: 'final'
     },
     {
       name: "subject",
       type: "String",
       shortName: "s",
-      mode: "read-write",
+      visibility: 'final',
       required: true,
       displayWidth: 100,
-      view: "foam.ui.TextFieldView",
       tableWidth: "45%"
     },
     {
       model_: "StringArrayProperty",
       name: "labels",
+      visibility: 'rw',
       postSet: function (_, a) {
         if ( a ) for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();
       },
@@ -160,6 +166,7 @@ CLASS({
       model_: "StringProperty",
       name: "body",
       label: "",
+      visibility: 'final',
       shortName: "b",
       displayWidth: 70,
       summaryFormatter: function (t) {
@@ -168,6 +175,12 @@ CLASS({
       help: "Email message body.",
       displayHeight: 20,
       view: "foam.ui.TextFieldView"
+    },
+    {
+      name: 'plainBody',
+      type: 'String',
+      visibility: 'final',
+      displayHeight: 40
     },
     {
       model_: "foam.lib.email.EMailLabelProperty",
@@ -188,6 +201,7 @@ CLASS({
     {
       model_: "StringProperty",
       name: "snippet",
+      visibility: 'ro',
       mode: "read-only",
       defaultValueFn: function () { return this.body.substr(0, 100); }
     },
