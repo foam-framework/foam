@@ -14,6 +14,10 @@ CLASS({
   name: 'UserClient',
   extends: 'com.google.ow.UserClient',
 
+  requires: [
+    'com.google.nbuEDU.Invite',
+  ],
+
   properties: [
     {
       model_: 'FunctionProperty',

@@ -23,18 +23,24 @@ CLASS({
     'MDAO',
     'com.google.ow.IdGenerator',
     'com.google.ow.SubstreamSink',
+    'com.google.ow.content.SingleStream',
     'com.google.ow.content.Stream',
+    'com.google.ow.content.UpdateStream',
     'com.google.ow.content.Video',
+    'com.google.ow.model.Ad',
+    'com.google.ow.model.CustomerOrder',
     'com.google.ow.model.Envelope',
+    'com.google.ow.model.MerchantOrder',
     'com.google.ow.model.ProductAd',
+    'com.google.ow.model.Text',
+    'com.google.ow.stream.NewConnectionListener',
     'com.google.plus.Person',
-    'com.google.plus.ShareSink',
     'foam.dao.AuthorizedDAO',
     'foam.dao.DebugAuthDAO',
     'foam.dao.EasyDAO',
-    'foam.dao.ProxyDAO',
     'foam.dao.LoggingDAO',
     'foam.dao.PrivateOwnerAuthorizer',
+    'foam.dao.ProxyDAO',
     'foam.mlang.PropertySequence',
   ],
   imports: [
@@ -112,9 +118,7 @@ CLASS({
     {
       name: 'streamDAO',
       lazyFactory: function() {
-        return this.authorizeFactory(
-            this.Envelope,
-            this.ShareSink.create({ delegate: this.streamDAO_ }, this.Y));
+        return this.authorizeFactory(this.Envelope, this.streamDAO_);
       },
     },
     {
@@ -229,28 +233,62 @@ CLASS({
       this.loadData();
     },
     function loadData() {
+      var self = this, videoStreamEnv;
+
       // Bootstrap streams.
-      var self = this, baseAdStreamEnv, videoStreamEnv;
+      var people = [];
+      self.personData.select(people)(function() {
+        people = people.map(function(p) { return p.id; });
+
+        self.NewConnectionListener.create({
+          streamDAO: self.streamDAO_,
+          substreams: [ '/Chat/New' ],
+          createClientForSource: true,
+          getPeople: function(env) {
+            return people;
+          },
+          getConnectionSubstreams: function(env) { return [ '/Chat/All' ]; },
+          streamClientFactory: function(inputEnv, pid) {
+            return self.SingleStream.create({
+              substream: this.getConnectionSubstreams(inputEnv)[0],
+            });
+          },
+        });
+
+        self.streamDAO_.put(self.Envelope.create({
+          source: '0',
+          owner: '0',
+          sid: '/Chat/New',
+          data: self.Text.create({ message: "Hey, let's chat!" }),
+        }));
+      });
+      self.adData.select(GROUP_BY(self.Ad.AD_STREAM))(function(data) {
+        var sids = data.groupKeys;
+        for ( var i = 0; i < sids.length; ++i ) {
+          self.NewConnectionListener.create({
+            streamDAO: self.streamDAO_,
+            substreams: [ sids[i] ],
+            getPeople: function(env) {
+              return [ env.data.merchant, env.data.customer ];
+            },
+            streamClientFactory: function(inputEnv, pid) {
+              return self.UpdateStream.create({
+                substreams: this.getConnectionSubstreams(inputEnv),
+              });
+            },
+            streamDataFactory: function(data, pid) {
+              // TODO(markdittmer): This special case should be better abstracted.
+              if ( data.status === 'PENDING' ) data.status = 'SUBMITTED';
+              if ( pid === data.merchant ) return self.MerchantOrder.create(data);
+              else                         return self.CustomerOrder.create(data);
+            },
+          });
+        }
+      });
       self.streamData.select({
         put: function(o) {
           // HACK(markdittmer): Manual setup tasks for various test streams.
-          if ( o.data.name === 'Test Ad' ) {
-            baseAdStreamEnv = o;
-            self.adData.select({
-              put: function(ad) {
-                var adStream = baseAdStreamEnv.data.clone();
-                adStream.merchant = '0';
-                self.streamDAO_.put(self.Envelope.create({
-                  owner: '0',
-                  source: '0',
-                  sid: 'DO_NOT_SHOW',
-                  substreams: baseAdStreamEnv.substreams.map(
-                    function(sid) { return sid + '/' + ad.id; }),
-                  data: adStream
-                }, self.Y));
-              },
-            });
-          } else if ( o.data.name === 'Test Videos' ) {
+          if ( o.data.name === 'Test Videos' ) {
             videoStreamEnv = o;
             self.personDAO_.pipe({
               put: function(person) {
@@ -282,28 +320,24 @@ CLASS({
           }
         },
       });
-      self.loadData_(baseAdStreamEnv, videoStreamEnv);
+      self.loadData_(videoStreamEnv);
     },
-    function loadData_(baseAdStreamEnv, videoStreamEnv) {
+    function loadData_(videoStreamEnv) {
       // Give everyone the ads and videos.
       this.personDAO_.pipe({
         put: function(person) {
           console.log("Person put!", person.id);
 
           var incr = 0;
-          if ( baseAdStreamEnv ) {
-            this.adData.select({
-              put: function(ad) {
-                this.streamDAO_.put(this.Envelope.create({
-                  owner: person.id,
-                  source: '0',
-                  sid: baseAdStreamEnv.substreams[0],
-                  promoted: true,
-                  data: ad,
-                }, this.Y));
-              }.bind(this),
-            });
-          }
+          this.adData.select({
+            put: function(ad) {
+              this.streamDAO_.put(this.Envelope.create({
+                owner: person.id,
+                source: ad.merchant,
+                data: ad,
+              }));
+            }.bind(this),
+          });
           if ( videoStreamEnv ) {
             this.videoDAO_.select({
               put: function(video) {
@@ -314,7 +348,8 @@ CLASS({
                   source: incr,
                   data: video,
                   sid: videoStreamEnv.substreams[0] + '/fakeIDVid'+incr,
-                  substreams: [videoStreamEnv.substreams[0] + '/fakeIDVid'+incr],
+                  substreams: [videoStreamEnv.substreams[0] + '/fakeIDVid'+incr,
+                    video.id+'/commentThreads'],
                 }, this.Y));
                 //console.log('vid sid:',videoStreamEnv.substreams[0] + '/fakeIDVid'+incr);
               }.bind(this),

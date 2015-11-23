@@ -12,46 +12,26 @@
 CLASS({
   package: 'com.google.ow.content',
   name: 'UpdateStream',
-  extends: 'com.google.ow.content.Stream',
 
+  requires: [
+    'com.google.ow.model.Envelope',
+  ],
   imports: [ 'streamDAO' ],
 
   properties: [
+    'id',
+    {
+      model_: 'StringArrayProperty',
+      name: 'substreams',
+    },
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValueFn: function() {
-        return this.X.envelope ?
-            this.X.envelope.owner === this.X.envelope.source ?
-            'Your order' :
-            'Customer order' :
-            'Order';
-      },
+      defaultValue: 'Order',
     },
   ],
 
   methods: [
-    function put(envelope, sink, selfEnvelope) {
-      // Relay envelopes put by other clients:
-      // (1) Source and owner is the same (i.e., put by client),
-      // (2) Owner is not my owner (i.e., put from other).
-      if ( envelope.source === envelope.owner &&
-          envelope.owner !== selfEnvelope.owner ) {
-        this.streamDAO.put(this.Envelope.create({
-          // Same owner as UpdateStream.
-          owner: selfEnvelope.owner,
-
-          // Other data copied from original.
-          source: envelope.owner,
-          shares: envelope.shares,
-          sid: envelope.sid,
-          substreams: envelope.substreams,
-          data: envelope.data.clone(),
-        }));
-        } else {
-          // console.log('*** Relay passthru envelope', envelope);
-        }
-    },
     function toDetailE(X) {
       return X.lookup('com.google.ow.ui.UpdateStreamDetailView').create({ data: this }, X);
     },
@@ -62,11 +42,28 @@ CLASS({
       var envelope = X.envelope;
       var Envelope = X.lookup('com.google.ow.model.Envelope');
       return Envelope.create({
-        substreams: X.substreams || [],
         owner: envelope.owner,
         source: envelope.owner,
         data: this,
       }, X);
+    },
+    function toString() { return '[rich content]'; },
+    function toSharable() {
+      // HACK(markdittmer):
+      // Best effort for synchronous load of most recent item; otherwise share
+      // updates stream itself, hoping that recipient has access to items.
+      var self = this;
+      var item = this;
+      var substreams = this.substreams;
+      substreams.forEach(function(substream) {
+        self.streamDAO.where(EQ(self.Envelope.SID, substream))
+            .orderBy(DESC(self.Envelope.TIMESTAMP)).limit(1).select({
+              put: function(env) {
+                item = env.data;
+              },
+            });
+      });
+      return item;
     },
   ],
 });

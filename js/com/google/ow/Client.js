@@ -23,18 +23,24 @@ CLASS({
     'MDAO',
     'com.google.ow.IdGenerator',
     'com.google.ow.content.OrderStream',
+    'com.google.ow.content.PreviewStream',
     'com.google.ow.content.Video',
     'com.google.ow.dao.VideoOffloadDAO',
     'com.google.ow.examples.VideoB',
     'com.google.ow.model.ColorableProduct',
     'com.google.ow.model.Envelope',
     'com.google.ow.model.ProductAd',
+    'com.google.ow.ui.CustomerOrderCitationView',
+    'com.google.ow.ui.CustomerOrderDetailView',
+    'com.google.ow.ui.CustomerOrderSummaryView',
     'com.google.ow.ui.EnvelopeCitationView',
     'com.google.ow.ui.EnvelopeDetailView',
     'com.google.ow.ui.MenuView',
-    'com.google.ow.ui.OrderCitationView',
-    'com.google.ow.ui.OrderDetailView',
-    'com.google.ow.ui.OrderSummaryView',
+    'com.google.ow.ui.MerchantOrderCitationView',
+    'com.google.ow.ui.MerchantOrderDetailView',
+    'com.google.ow.ui.MerchantOrderSummaryView',
+    'com.google.ow.ui.SingleStreamCitationView',
+    'com.google.ow.ui.SingleStreamDetailView',
     'com.google.ow.ui.UpdateStreamCitationView',
     'com.google.ow.ui.UpdateStreamDetailView',
     'com.google.plus.Circle',
@@ -54,9 +60,9 @@ CLASS({
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.ui.TodoCitationView',
     'foam.u2.DAOListView',
-    'foam.u2.md.DAOListView',
     'foam.u2.DetailView',
     'foam.u2.md.ActionButton',
+    'foam.u2.md.DAOListView',
     'foam.ui.DAOListView',
     'foam.ui.TextFieldView',
     'foam.ui.Tooltip',
@@ -64,6 +70,7 @@ CLASS({
     'foam.ui.md.CheckboxView',
     'foam.ui.md.PopupView',
     'foam.ui.md.UpdateDetailView',
+
     // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
     // 'foam.u2.md.SharedStyles',
   ],
@@ -101,7 +108,16 @@ CLASS({
           dao: this.streamDAO.where(OR(
               NOT(HAS(this.Envelope.SID)),
               EQ(this.Envelope.PROMOTED, true))),
-          listView: 'foam.u2.md.DAOListView',
+          listView: function(args, X) {
+            args.rowView = function(args, X) {
+              var obj = args.data || args.data$.get();
+              return obj.toE ?
+                  obj.toE(this.Y) :
+                  obj.toRowE ? obj.toRowE(this.Y) :
+                  X.lookup('foam.u2.DetailView').create(args, X);
+            };
+            return X.lookup('foam.ui.DAOListView').create(args, X);
+          }.bind(this),
           cannedQueryDAO: [
             this.CannedQuery.create({
               label: 'All',
@@ -140,7 +156,9 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( ! this.currentUser || nu !== this.currentUser.id ) {
-          this.personDAO.find(nu, { put: function(user) {
+          // There's a delay on boot that caused the fine() to fail. TODO: This listener is pointless
+          // after boot, once we have the user loaded.
+          this.personDAO.where(EQ(this.Person.ID, nu)).pipe({ put: function(user) {
             this.currentUser = user;
           }.bind(this) });
         }
@@ -170,7 +188,7 @@ CLASS({
           sockets: true,
           syncWithServer: true,
           // logging: true,
-        }, this.Y).orderBy(this.Envelope.TIMESTAMP);
+        }).orderBy(this.Envelope.TIMESTAMP);
         dao.listen({
           put: function(e) {
             console.log('Put', e.toString());
@@ -184,12 +202,15 @@ CLASS({
       lazyFactory: function() {
         // TODO(markdittmer): This should be an authorized collection of peopl
         // the current user may know about.
-        return this.EasyClientDAO.create({
-          serverUri: this.document.location.origin + '/api',
+        return this.EasyDAO.create({
+          daoType: 'MDAO',
           model: this.Person,
+          cloning: true,
+          contextualize: true,
+          dedup: true,
           sockets: true,
-          logging: true,
-        }, this.Y);
+          syncWithServer: true,
+        });
       }
     },
     {
@@ -235,6 +256,13 @@ CLASS({
         authToken$: this.currentUserId$,
       });
       this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
+
+      // hack to fix missing updates when the server creates new streamDAO items
+      // var pollEnvelope = this.Envelope.create({ owner: this.currentUser.id, id: 'pollEnv1212', data: {id:'fake' }, sid: 'fakeSID34343434434' });
+      // this.X.setInterval(function() {
+      //   pollEnvelope.owner = this.currentUser.id;
+      //   this.streamDAO.put(pollEnvelope)
+      // }.bind(this), 1000);
 
       // TODO(markdittmer): Bring this back once we fully u2-ify our MD styles.
       // this.SharedStyles.create(null, this.Y);

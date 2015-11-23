@@ -22,11 +22,11 @@ CLASS({
 
   methods: [
     function initE() {
-      // TODO(markdittmer): Add differences between versions.
-      return this.add(function (versions) {
-        var version = versions[versions.length - 1];
-        return version ? version.toDetailE(this.Y) : '';
-      }.bind(this).on$(this.X, this.versions$));
+      // TODO(markdittmer): Add differences between items.
+      return this.add(function (items) {
+        var item = items[items.length - 1];
+        return item ? item.toDetailE(this.Y) : '';
+      }.bind(this).on$(this.X, this.items$));
     },
   ],
 

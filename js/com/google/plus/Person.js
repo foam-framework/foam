@@ -46,10 +46,10 @@ CLASS({
   ],
 
   methods: [
-    function toRowE(X) {
-      return this.Element.create({ nodeName: 'DIV' }, X)
-          .add(this.displayName$);
-    },
+    // function toRowE(X) {
+    //   return this.Element.create({ nodeName: 'DIV' }, X)
+    //       .add(this.displayName$);
+    // },
   ],
 
   properties: [
