@@ -62,7 +62,7 @@ CLASS({
         }.bind(this);
         return this.SUPER(newSink, options);
       }
-      return this.SUPER(newSink, options);
+      return this.SUPER(sink, options);
     },
     function removeAll(sink, options) {
       this.logger('removeAll', options);
