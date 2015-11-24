@@ -130,6 +130,7 @@ CLASS({
         body += '</ul></body></html>';
         res.setHeader('Content-type', 'text/html');
         res.statusCode = 200;
+        res.write(body, 'utf8');
         res.end();
         this.log('200 OK (dir) ' + target);
       } else {
