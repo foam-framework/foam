@@ -547,11 +547,13 @@ MODEL({
       return false;
     },
     // Clone this Array and remove first object where predicate 'p' returns true
-    // TODO: make faster by copying in one pass, without splicing
     function removeF(p) {
-      var a = this.clone();
+      var a = [];
       for ( var i = 0 ; i < a.length ; i++ ) {
-        if ( p.f(a[i]) ) { a.splice(i, 1); break; }
+        if ( p.f(a[i]) ) {
+          // Copy the rest of the array since we only want to remove one match
+          for ( i++ ; i < a.length ; i++ ) a.push(a[i]);
+        }
       }
       return a;
     },
