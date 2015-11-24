@@ -17,23 +17,8 @@
 CLASS({
   package: 'foam.node.handlers',
   name: 'StaticFileHandler',
-  extends: 'foam.node.handlers.Handler',
+  extends: 'foam.node.handlers.FileStreamer',
   properties: [
-    {
-      model_: 'foam.node.NodeRequireProperty',
-      name: 'path',
-      hidden: true,
-    },
-    {
-      model_: 'foam.node.NodeRequireProperty',
-      name: 'fs',
-      hidden: true,
-    },
-    {
-      model_: 'foam.node.NodeRequireProperty',
-      name: 'zlib',
-      hidden: true,
-    },
     {
       name: 'dir',
       documentation: 'Directory under which to serve files.',
@@ -58,13 +43,6 @@ CLASS({
 
   constants: {
     LOG_TITLE: 'static',
-    MIME_TYPES: {
-      '.js': 'text/javascript',
-      '.css': 'text/css',
-      '.html': 'text/html',
-      __default: 'application/octet-stream',
-      '.ft': 'application/x.foam-template'
-    }
   },
 
   methods: {
@@ -134,25 +112,7 @@ CLASS({
         res.end();
         this.log('200 OK (dir) ' + target);
       } else {
-        var ext = this.path.extname(target);
-        var mimetype = this.MIME_TYPES[ext] || this.MIME_TYPES.__default;
-        if ( mimetype === this.MIME_TYPES.__default ) {
-          this.log('Unknown MIME type: ' + ext);
-        }
-        res.statusCode = 200;
-        res.setHeader('Content-type', mimetype);
-
-        // Open the file as a stream.
-        this.log('200 OK ' + target);
-        var stream = this.fs.createReadStream(target);
-
-        if ( req.headers["accept-encoding"] &&
-             req.headers["accept-encoding"].indexOf("gzip") !== -1 ) {
-          res.setHeader('Content-encoding', 'gzip');
-          stream.pipe(this.zlib.createGzip()).pipe(res);
-        } else {
-          stream.pipe(res);
-        }
+        this.sendFile(target, req, res);
       }
       return true;
     }

@@ -18,28 +18,8 @@
 CLASS({
   package: 'foam.node.handlers',
   name: 'FileHandler',
-  extends: 'foam.node.handlers.Handler',
+  extends: 'foam.node.handlers.FileStreamer',
   properties: [
-    {
-      model_: 'foam.node.NodeRequireProperty',
-      name: 'path',
-      hidden: true,
-    },
-    {
-      model_: 'foam.node.NodeRequireProperty',
-      name: 'zlib',
-      hidden: true,
-    },
-    {
-      model_: 'foam.node.NodeRequireProperty',
-      name: 'stream',
-      hidden: true,
-    },
-    {
-      model_: 'foam.node.NodeRequireProperty',
-      name: 'fs',
-      hidden: true,
-    },
     {
       model_: 'foam.node.NodeRequireProperty',
       name: 'url',
@@ -52,48 +32,11 @@ CLASS({
       name: 'file'
     }
   ],
-  constants: {
-    MIME_TYPES: {
-      '.js': 'text/javascript',
-      '.css': 'text/css',
-      '.html': 'text/html',
-      __default: 'application/octet-stream',
-      '.ft': 'application/x.foam-template'
-    }
-  },
 
   methods: [
     function handle(req, res) {
       if ( this.url.parse(req.url).pathname !== this.pathname ) return false;
       return this.sendFile(this.file, req, res);
-    },
-    function sendFile(fileName, req, res) {
-      if ( ! this.fs.existsSync(fileName) ) {
-        this.send(res, 404, 'File not found.');
-        return true;
-      }
-      // find MIME type
-      var ext = this.path.extname(fileName);
-      var mimetype = this.MIME_TYPES[ext] || this.MIME_TYPES.__default;
-      if ( mimetype === this.MIME_TYPES.__default ) {
-        this.log('Unknown MIME type: ' + ext);
-      }
-      res.statusCode = 200;
-      res.setHeader('Content-type', mimetype);
-
-      // Open the file as a stream.
-      this.log('200 OK ' + fileName);
-      var stream = this.fs.createReadStream(fileName);
-      // zip if allowed
-      if ( req.headers["accept-encoding"] &&
-           req.headers["accept-encoding"].indexOf("gzip") !== -1 ) {
-        res.setHeader('Content-encoding', 'gzip');
-        stream.pipe(this.zlib.createGzip()).pipe(res);
-      } else {
-        stream.pipe(res);
-      }
-
-      return true;
     }
   ]
 });
