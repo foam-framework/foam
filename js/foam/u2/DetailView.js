@@ -26,7 +26,7 @@ CLASS({
     'foam.u2.DetailPropertyView'
   ],
 
-  exports: [ 'data$' ],
+  exports: [ 'data$', 'data' ],
 
   properties: [
     {
@@ -43,6 +43,10 @@ CLASS({
           this.properties = model.getRuntimeProperties().filter(function(p) { return ! p.hidden; });
         if ( ( ! oldModel && ! this.hasOwnProperty('title') ) || this.title === oldModel.label ) this.title = model.label;
       }
+    },
+    {
+      type: 'Boolean',
+      name: 'showActions'
     },
     {
       name: 'properties'
@@ -107,11 +111,23 @@ CLASS({
 
       this.Y.registerModel(this.DetailPropertyView, 'foam.u2.PropertyView');
 
-      this.cls('foam-u2-DetailView').add(function(model, properties) {
-        return ! model ?
-          'Set model or data.' :
-          this.E('table').add(this.E('tr').add(this.E('td').cls('foam-u2-DetailView-title').attrs({colspan: 2}).add(this.title$))).add(properties) ;
+      this.add(function(model, properties) {
+        if ( ! model ) return 'Set model or data.';
+
+        return this.actionBorder(
+          this.E('table').cls('foam-u2-DetailView').
+            start('tr').
+              start('td').cls('foam-u2-DetailView-title').attrs({colspan: 2}).
+                add(this.title$).
+              end().
+            end().
+            add(properties));
       }.bind(this).on$(this.Y, this.model$, this.properties$));
+    },
+    function actionBorder(e) {
+      if ( ! this.showActions || ! this.model.actions.length ) return e;
+
+      return this.Y.E().add(e).start('div').add(this.model.actions).end();
     },
     function elementForFeature(fName) {
       var f = this.model_.getFeature(fName) || this.X.data.model_.getFeature(fName);
