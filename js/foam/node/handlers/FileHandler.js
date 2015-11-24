@@ -26,12 +26,14 @@ CLASS({
       hidden: true,
     },
     {
+      model_: 'foam.node.NodeRequireProperty',
       name: 'zlib',
-      factory: function() { return require('zlib'); }
+      hidden: true,
     },
     {
+      model_: 'foam.node.NodeRequireProperty',
       name: 'stream',
-      factory: function() { return require('stream'); }
+      hidden: true,
     },
     {
       model_: 'foam.node.NodeRequireProperty',

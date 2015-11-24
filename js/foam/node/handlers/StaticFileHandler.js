@@ -20,16 +20,19 @@ CLASS({
   extends: 'foam.node.handlers.Handler',
   properties: [
     {
+      model_: 'foam.node.NodeRequireProperty',
       name: 'path',
-      factory: function() { return require('path'); }
+      hidden: true,
     },
     {
+      model_: 'foam.node.NodeRequireProperty',
       name: 'fs',
-      factory: function() { return require('fs'); }
+      hidden: true,
     },
     {
+      model_: 'foam.node.NodeRequireProperty',
       name: 'zlib',
-      factory: function() { return require('zlib'); }
+      hidden: true,
     },
     {
       name: 'dir',
