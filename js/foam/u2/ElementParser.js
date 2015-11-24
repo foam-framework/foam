@@ -254,13 +254,15 @@ CLASS({
               if ( this.as ) out('var ', this.as, '=');
               out('(opt_e || this.X.E(', nn, '))');
             } else {
-              longForm = this.children.length ||
-                this.as ||
+              longForm = this.as ||
+                this.id ||
+                this.children.length ||
                 this.classes.length ||
                 Object.keys(this.attributes).length ||
                 Object.keys(this.xattributes).length ||
                 Object.keys(this.style).length ||
                 Object.keys(this.listeners).length ;
+
               // If this tag is in any way interesting, it needs to use .s()
               if ( longForm ) {
                 out('.s(', nn, ')');
@@ -298,7 +300,6 @@ CLASS({
               }
             }
             if ( outputting ) out(')');
-
             if ( longForm ) out('.e()');
           }
         });
