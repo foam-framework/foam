@@ -451,7 +451,14 @@ MODEL({
 
 MODEL({
   name: 'PersonWithTemplate',
-  properties: ['firstName', 'lastName', 'age', 'brother'],
+  properties: [
+    {
+      name: 'firstName',
+      toPropertyE: function(X) {
+        return X.lookup('foam.u2.md.Input').create(null, X);
+      }
+    },
+    'lastName', 'age', 'brother'],
   actions: [
     {
       name: 'go',
@@ -481,8 +488,8 @@ MODEL({
       <div><b>First Name: </b>{{this.firstName$}}</div>
       <br/>
 
-      Brother: <brother:firstName/> <brother:go/>       <!-- A Property           -->
-      <:firstName/>        <!-- A Property           -->
+      <brother:firstName label="BROTHER"/> <brother:go/>
+      <:firstName label="FIRST NAME"/>        <!-- A Property           -->
       <:go/>               <!-- An Action            -->
       <:toEMethod/>        <!-- A Method             -->
       <:toE2/>             <!-- Another Template     -->
