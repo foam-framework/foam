@@ -26,7 +26,7 @@ CLASS({
     'foam.u2.DetailPropertyView'
   ],
 
-  exports: [ 'data$', 'data' ],
+  exports: [ 'data' ],
 
   properties: [
     {
