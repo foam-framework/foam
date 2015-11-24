@@ -342,7 +342,7 @@ MODEL({
         path = path.substring(0, path.lastIndexOf('/')+1);
         path += t.path ? t.path : self.name + '_' + t.name + '.ft';
 
-        if ( window.XMLHttpRequest ) {
+        if ( typeof vm == "undefined" || ! vm.runInThisContext ) {
           var xhr = new XMLHttpRequest();
           xhr.open("GET", path);
           xhr.asend(function(data) {
