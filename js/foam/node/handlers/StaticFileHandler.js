@@ -28,6 +28,10 @@ CLASS({
       factory: function() { return require('fs'); }
     },
     {
+      name: 'zlib',
+      factory: function() { return require('zlib'); }
+    },
+    {
       name: 'dir',
       documentation: 'Directory under which to serve files.',
       required: true,
@@ -123,7 +127,6 @@ CLASS({
         body += '</ul></body></html>';
         res.setHeader('Content-type', 'text/html');
         res.statusCode = 200;
-        res.write(body, 'utf8');
         res.end();
         this.log('200 OK (dir) ' + target);
       } else {
@@ -138,7 +141,14 @@ CLASS({
         // Open the file as a stream.
         this.log('200 OK ' + target);
         var stream = this.fs.createReadStream(target);
-        stream.pipe(res);
+
+        if ( req.headers["accept-encoding"] &&
+             req.headers["accept-encoding"].indexOf("gzip") !== -1 ) {
+          res.setHeader('Content-encoding', 'gzip');
+          stream.pipe(this.zlib.createGzip()).pipe(res);
+        } else {
+          stream.pipe(res);
+        }
       }
       return true;
     }
