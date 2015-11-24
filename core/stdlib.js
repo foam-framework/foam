@@ -559,7 +559,7 @@ MODEL({
     // Remove first object in this array where predicate 'p' returns true
     function removeI(p) {
       for ( var i = 0 ; i < this.length ; i++ ) {
-        if ( p.f(this[i]) ) { this.splice(i, 1); breeak; }
+        if ( p.f(this[i]) ) { this.splice(i, 1); break; }
       }
       return this;
     },
