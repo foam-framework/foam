@@ -30,11 +30,11 @@ CLASS({
     },
     {
       name: 'label',
-      attribute: true,
+      attribute: true
     },
     {
       model_: 'BooleanProperty',
-      name: 'focused',
+      name: 'focused'
     },
   ],
 
