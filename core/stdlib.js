@@ -456,7 +456,13 @@ MODEL({
       var a = this.clone();
       for ( var i = 0 ; i < a.length ; i++ ) {
         var o = a[i];
-        if ( o && o.deepClone ) a[i] = o.deepClone();
+        if ( o ) {
+          if ( o.deepClone ) {
+            a[i] = o.deepClone();
+          } else if ( o.clone ) {
+            a[i] = o.clone();
+          }
+        }
       }
       return a;
     },
