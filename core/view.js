@@ -248,7 +248,7 @@ function E(opt_nodeName) {
   if (this === X || this === window) {
     console.log('Deprecated global E() call', new Error());
   }
-var e = this.elementForName && this.elementForName(opt_nodeName);
+  var e = this.elementForName && this.elementForName(opt_nodeName);
 
   if ( ! e ) {
     e = this.lookup('foam.u2.Element').create(null, this);

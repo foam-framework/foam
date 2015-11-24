@@ -404,7 +404,7 @@ E().add(
 E().x({data: timer}).add(
   E('br'),
   E('br'),
-  foam.u2.DetailView.create({data: timer}),
+  foam.u2.DetailView.create({data: timer, showActions: true}),
   E('br'),
   timer.STEP,
   ' : ',
