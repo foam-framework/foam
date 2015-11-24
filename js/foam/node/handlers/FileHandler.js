@@ -52,32 +52,48 @@ CLASS({
       name: 'file'
     }
   ],
-  methods: {
-    handle: function(req, res) {
+  constants: {
+    MIME_TYPES: {
+      '.js': 'text/javascript',
+      '.css': 'text/css',
+      '.html': 'text/html',
+      __default: 'application/octet-stream',
+      '.ft': 'application/x.foam-template'
+    }
+  },
+
+  methods: [
+    function handle(req, res) {
       if ( this.url.parse(req.url).pathname !== this.pathname ) return false;
+      return this.sendFile(this.file, req, res);
+    },
+    function sendFile(fileName, req, res) {
+      if ( ! this.fs.existsSync(fileName) ) {
+        this.send(res, 404, 'File not found.');
+        return true;
+      }
+      // find MIME type
+      var ext = this.path.extname(fileName);
+      var mimetype = this.MIME_TYPES[ext] || this.MIME_TYPES.__default;
+      if ( mimetype === this.MIME_TYPES.__default ) {
+        this.log('Unknown MIME type: ' + ext);
+      }
+      res.statusCode = 200;
+      res.setHeader('Content-type', mimetype);
 
-      this.fs.readFile(this.file, function(err, data) {
-        if ( err ) {
-          this.send(res, 404, 'File not found.');
-        } else {
-          res.statusCode = 200;
-
-          if ( req.headers["accept-encoding"] &&
-               req.headers["accept-encoding"].indexOf("gzip") !== -1 ) {
-            res.setHeader('Content-encoding', 'gzip');
-            var src = new this.stream.Readable();
-            src._read = function noop() {}
-            src.push(data.toString());
-            src.push(null);
-            //src.write( 'utf8');
-            src.pipe(this.zlib.createGzip()).pipe(res);
-          } else {
-            this.send(res, 200, data.toString());
-          }
-        }
-      }.bind(this));
+      // Open the file as a stream.
+      this.log('200 OK ' + fileName);
+      var stream = this.fs.createReadStream(fileName);
+      // zip if allowed
+      if ( req.headers["accept-encoding"] &&
+           req.headers["accept-encoding"].indexOf("gzip") !== -1 ) {
+        res.setHeader('Content-encoding', 'gzip');
+        stream.pipe(this.zlib.createGzip()).pipe(res);
+      } else {
+        stream.pipe(res);
+      }
 
       return true;
     }
-  }
+  ]
 });
