@@ -62,6 +62,7 @@ function set(key, value) {
 
 function setValue(key, value) {
   var X = this;
+
   Object.defineProperty(
     this,
     key,
@@ -70,6 +71,8 @@ function setValue(key, value) {
       configurable: true
     }
   );
+
+  this.set(key + '$', value);
 }
 
 
