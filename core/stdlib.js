@@ -539,7 +539,10 @@ MODEL({
     function deleteF(v) {
       var a = this.clone();
       for ( var i = 0 ; i < a.length ; i++ ) {
-        if ( a[i] === v ) { a.splice(i, 1); break; }
+        if ( a[i] === v ) {
+          a.splice(i, 1);
+          break;
+        }
       }
       return a;
     },
@@ -548,10 +551,14 @@ MODEL({
     // return true iff the value was removed
     function deleteI(v) {
       for ( var i = 0 ; i < this.length ; i++ ) {
-        if ( this[i] === v ) { this.splice(i, 1); return true; }
+        if ( this[i] === v ) {
+          this.splice(i, 1);
+          return true;
+        }
       }
       return false;
     },
+
     // Clone this Array and remove first object where predicate 'p' returns true
     function removeF(p) {
       var a = [];
@@ -565,11 +572,15 @@ MODEL({
     },
 
     // Remove first object in this array where predicate 'p' returns true
+    // return true iff the value was removed
     function removeI(p) {
       for ( var i = 0 ; i < this.length ; i++ ) {
-        if ( p.f(this[i]) ) { this.splice(i, 1); break; }
+        if ( p.f(this[i]) ) {
+          this.splice(i, 1);
+          return true;
+        }
       }
-      return this;
+      return false;
     },
 
     function pushF(obj) {
