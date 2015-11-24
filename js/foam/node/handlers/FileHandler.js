@@ -26,6 +26,14 @@ CLASS({
       hidden: true,
     },
     {
+      name: 'zlib',
+      factory: function() { return require('zlib'); }
+    },
+    {
+      name: 'stream',
+      factory: function() { return require('stream'); }
+    },
+    {
       model_: 'foam.node.NodeRequireProperty',
       name: 'fs',
       hidden: true,
@@ -47,10 +55,23 @@ CLASS({
       if ( this.url.parse(req.url).pathname !== this.pathname ) return false;
 
       this.fs.readFile(this.file, function(err, data) {
-	if ( err ) {
-	  this.send(res, 404, 'File not found.');
-	} else {
-	  this.send(res, 200, data.toString());
+        if ( err ) {
+          this.send(res, 404, 'File not found.');
+        } else {
+          res.statusCode = 200;
+
+          if ( req.headers["accept-encoding"] &&
+               req.headers["accept-encoding"].indexOf("gzip") !== -1 ) {
+            res.setHeader('Content-encoding', 'gzip');
+            var src = new this.stream.Readable();
+            src._read = function noop() {}
+            src.push(data.toString());
+            src.push(null);
+            //src.write( 'utf8');
+            src.pipe(this.zlib.createGzip()).pipe(res);
+          } else {
+            this.send(res, 200, data.toString());
+          }
         }
       }.bind(this));
 
