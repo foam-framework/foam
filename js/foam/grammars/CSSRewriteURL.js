@@ -18,48 +18,11 @@ CLASS({
     'foam.grammars.CSSDecl',
     'foam.util.Base64Encoder',
   ],
-  imports: [
-    'assert',
-    'document',
-  ],
 
   documentation: function() {/* A slightly modified
     $$DOC{ref:'foam.grammars.CSSDecl'} prefix-rewrite parser that also knows how
     to expand remote URLs to dataURLs after fetching the data.
   */},
-
-  constants: {
-    PREFIXES: [
-      '-webkit-'
-    ],
-    PREFIXED_KEYS: {
-      'align-content': true,
-      'align-items': true,
-      'align-self': true,
-      'animation': true,
-      'box-shadow': true,
-      'column-count': true,
-      'column-gap': true,
-      'column-rule': true,
-      'display': 'flex',
-      'filter': true,
-      'flex': true,
-      'flex-basis': true,
-      'flex-direction': true,
-      'flex-flow': true,
-      'flex-grow': true,
-      'flex-shrink': true,
-      'flex-wrap': true,
-      'font-feature-settings': true,
-      'hyphens': true,
-      'justify-content': true,
-      'keyframes': true,
-      'order': true,
-      'transform': true,
-      'transform-origin': true,
-      'user-select': true
-    },
-  },
 
   properties: [
     {
