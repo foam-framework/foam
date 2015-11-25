@@ -22,10 +22,9 @@ CLASS({
     'document',
   ],
 
-  documentation: function() {/* A <b>very permissive</b> ASCII CSS parser that
-    rewrites a handful of declarations (decls) to add browser compatability
-    prefixed versions. Non-whitespace characters are assumed to be plain-old
-    ASCII characters.
+  documentation: function() {/* A slightly modified
+    $$DOC{ref:'foam.grammars.CSSDecl'} prefix-rewrite parser that also knows how
+    to expand remote URLs to dataURLs after fetching the data.
   */},
 
   constants: {
