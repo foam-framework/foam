@@ -61,20 +61,17 @@ CLASS({
         sink.remove(this.config.decorateID(model, id));
       }
     },
-    {
-      name: 'relay_'
-    }
   ],
 
   methods: [
     {
-      name: 'relay',
+      name: 'relay_',
       code: function(sink, id) {
-        if ( ! this.relay_ ) {
-          this.relay_ = this.newRelay(sink, id);
+        if ( ! this.relay__ ) {
+          this.relay__ = this.newRelay(sink, id);
         }
 
-        return this.relay_;
+        return this.relay__;
       }
     },
     {
@@ -121,7 +118,7 @@ CLASS({
       name: 'listen',
       code: function(sink, options) {
         if ( ! this.daoListeners_.length && this.delegate ) {
-          this.delegate.listen(this.relay(sink));
+          this.delegate.listen(this.relay_(sink));
         }
         this.SUPER(sink, options);
       }
@@ -131,7 +128,7 @@ CLASS({
       code: function(sink) {
         this.SUPER(sink);
         if ( ! this.daoListeners_.length && this.delegate ) {
-          this.delegate.unlisten(this.relay());
+          this.delegate.unlisten(this.relay_());
         }
       }
     },

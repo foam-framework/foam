@@ -214,7 +214,7 @@ CLASS({
       label: 'Arguments',
       type:  'Expr[]',
       swiftType:  'NSArray',
-      swiftDefaultValue: '[]',
+      swiftFactory: 'return []',
       help:  'Sub-expressions',
       documentation: 'An array of subexpressions which are the arguments to this n-ary expression.',
       factory: function() { return []; }

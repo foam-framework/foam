@@ -31,9 +31,25 @@ CLASS({
 
   properties: [
     {
+      name: 'relay',
+      factory: function() { /* Sets up relay for listening to delegate changes. */
+        var self = this;
+        return {
+          put:    function() { self.notify_('put', arguments);    },
+          remove: function() { self.notify_('remove', arguments); },
+          reset: function() { self.notify_('reset', arguments); },
+          toString: function() { return 'RELAY(' + this.$UID + ', ' + self.model_.name + ', ' + self.delegate + ')'; }
+        };
+      },
+      swiftType: 'Sink',
+      swiftFactory: function() {/*
+        return RelaySink(relay: self)
+      */}
+    },
+    {
       name: 'delegate',
       swiftType: 'AbstractDAO',
-      swiftDefaultValue: 'AbstractDAO()',
+      swiftFactory: 'return AbstractDAO()',
       mode: "read-only",
       hidden: true,
       required: true,
@@ -42,12 +58,22 @@ CLASS({
       factory: function() { return this.NullDAO.create(); }, // TODO: use singleton
       postSet: function(oldDAO, newDAO) {
         if ( this.daoListeners_.length ) {
-          if ( oldDAO ) oldDAO.unlisten(this.relay());
-          newDAO.listen(this.relay());
+          if ( oldDAO ) oldDAO.unlisten(this.relay);
+          newDAO.listen(this.relay);
           // FutureDAOs will put via the future. In that case, don't put here.
           this.notify_('reset', []);
         }
-      }
+      },
+      swiftPostSet: function() {/*
+        if self.daoListeners_.count > 0 {
+          if let oldValue = oldValue as? AbstractDAO {
+            oldValue.unlisten(self.relay);
+          }
+          newValue.listen(self.relay);
+          // FutureDAOs will put via the future. In that case, don't put here.
+          self.notify_("reset");
+        }
+      */}
     },
     {
       model_: 'ModelProperty',
@@ -65,34 +91,21 @@ CLASS({
   ],
 
   methods: [
+
     {
-      name: 'relay',
-      code: function() { /* Sets up relay for listening to delegate changes. */
-        if ( ! this.relay_ ) {
-          var self = this;
-
-          this.relay_ = {
-            put:    function() { self.notify_('put', arguments);    },
-            remove: function() { self.notify_('remove', arguments); },
-            reset: function() { self.notify_('reset', arguments); },
-            toString: function() { return 'RELAY(' + this.$UID + ', ' + self.model_.name + ', ' + self.delegate + ')'; }
-          };
-        }
-
-        return this.relay_;
+      name: 'put',
+      code: function (value, sink) { /* Passthrough to delegate. */
+        this.delegate.put(value, sink);
       },
-      swiftReturnType: 'Sink',
-      swiftCode: function() {/*
-        return RelaySink(relay: self)
-      */}
+      swiftCode: 'delegate.put(obj, sink: sink)',
     },
 
-    function put(value, sink) { /* Passthrough to delegate. */
-      this.delegate.put(value, sink);
-    },
-
-    function remove(query, sink) { /* Passthrough to delegate. */
-      this.delegate.remove(query, sink);
+    {
+      name: 'remove',
+      code: function (query, sink) { /* Passthrough to delegate. */
+        this.delegate.remove(query, sink);
+      },
+      swiftCode: 'delegate.remove(obj, sink: sink)',
     },
 
     function removeAll() { /* Passthrough to delegate. */
@@ -108,18 +121,26 @@ CLASS({
       code: function(sink, options) { /* Passthrough to delegate. */
         return this.delegate.select(sink, options);
       },
-      swiftCode: function() {/*
-        return delegate.select(sink, options: options)
-      */},
+      swiftCode: 'return delegate.select(sink, options: options)'
     },
 
-    function listen(sink, options) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
-      // Adding first listener, so listen to delegate
-      if ( ! this.daoListeners_.length && this.delegate ) {
-        this.delegate.listen(this.relay());
-      }
+    {
+      name: 'listen',
+      code: function(sink, options) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
+        // Adding first listener, so listen to delegate
+        if ( ! this.daoListeners_.length && this.delegate ) {
+          this.delegate.listen(this.relay);
+        }
 
-      this.SUPER(sink, options);
+        this.SUPER(sink, options);
+      },
+      swiftCode: function() {/*
+        // Adding first listener, so listen to delegate
+        if self.daoListeners_.count == 0 {
+          delegate.listen(relay)
+        }
+        super.listen(sink, options: options);
+      */},
     },
 
     function unlisten(sink) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
@@ -127,7 +148,7 @@ CLASS({
 
       // Remove last listener, so unlisten to delegate
       if ( this.daoListeners_.length === 0 && this.delegate ) {
-        this.delegate.unlisten(this.relay());
+        this.delegate.unlisten(this.relay);
       }
     },
 

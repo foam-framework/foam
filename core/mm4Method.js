@@ -926,8 +926,9 @@ var filter = function(m) {
     return true;
   }
 };
+var name = this.name == 'init' ? '_foamInit_' : this.name;
 
-var override = '';
+var override = this.name == 'init' ? 'override' : '';
 var args = this.args;
 var swiftReturnType = this.swiftReturnType;
 while (extendsModel) {
@@ -942,28 +943,28 @@ while (extendsModel) {
 
 
 %><% if ( this.isMerged || this.isFramed ) {
-%>  var <%= this.name %>_fired_: Bool = false
-  <%=override%> func <%= this.name %>() {
-    if <%= this.name %>_fired_ {
+%>  var <%= name %>_fired_: Bool = false
+  <%=override%> func <%= name %>() {
+    if <%= name %>_fired_ {
       return
     }
-    <%= this.name %>_fired_ = true
+    <%= name %>_fired_ = true
     NSTimer.scheduledTimerWithTimeInterval(
       <%= ( this.isFramed ) ? 0.016 : ( this.isMerged / 1000 ) %>,
       target: self,
-      selector: "_<%= this.name %>_wrapper_",
+      selector: "_<%= name %>_wrapper_",
       userInfo: nil,
       repeats: false)
   }
-  <%=override%> func _<%= this.name %>_wrapper_() {
-    <%= this.name %>_fired_ = false
-    <%= this.name %>_code()
+  <%=override%> func _<%= name %>_wrapper_() {
+    <%= name %>_fired_ = false
+    <%= name %>_code()
   }
-  <%=override%> func <%= this.name %>_code() {
+  <%=override%> func <%= name %>_code() {
 <%= this.swiftCode %>
   }
 <% } else if ( this.swiftCode ) { %>
-  <%=override%> func `<%= this.name %>`(<%
+  <%=override%> func `<%= name %>`(<%
 for ( var i = 0 ; i < args.length ; i++ ) {
 %><%= args[i].swiftIsMutable ? ' var ' : '' %><%= args[i].name %>: <%= args[i].swiftType %><%
 if ( i != args.length - 1 ) { %>, <% }
