@@ -99,6 +99,7 @@ CLASS({
         [0],
         [500, function() {
           cls.x += 150;
+          cls.alpha = 0;
         }],
         function() {
           v.width += 200;
