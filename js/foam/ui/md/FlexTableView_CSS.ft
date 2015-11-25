@@ -105,16 +105,19 @@ body.flex-table-view-col-resize .mdTable flex-col-resize-handle {
   color: rgba(0, 0, 0, 0.87);
 }
 
-.mdTable .sort .material-icons {
+.mdTable .sort .material-icons,
+.mdTable .sort .material-icons-extended {
   font-size: 16px;
   color: rgba(0, 0, 0, 0.26);
 }
 
-i.material-icons.actionLabel.available {
+i.material-icons.actionLabel.available,
+i.material-icons-extended.actionLabel.available {
   display: inline-block;
 }
 
-i.material-icons.actionLabel {
+i.material-icons.actionLabel,
+i.material-icons-extended.actionLabel {
   display: none;
 }
 

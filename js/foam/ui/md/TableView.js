@@ -100,8 +100,8 @@ CLASS({
         return this.TableView.create({
           scrollEnabled: this.scrollEnabled,
           className: 'mdTable',
-          ascIcon: '<i class="material-icons">keyboard_arrow_up</i>',
-          descIcon: '<i class="material-icons">keyboard_arrow_down</i>',
+          ascIcon: '<i class="material-icons-extended">keyboard_arrow_up</i>',
+          descIcon: '<i class="material-icons-extended">keyboard_arrow_down</i>',
           model$: this.model$,
           data$: this.data$,
           properties$: this.properties$,
