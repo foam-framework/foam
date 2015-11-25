@@ -58,7 +58,7 @@ CLASS({
         x: X,
         y: Y,
         r: 15,
-        alpha: 0.4,
+        alpha: 1,
         color: null,
         borderWidth: 2,
         border: this.colorList[Math.floor(Math.random() * this.colorList.length)]}) || '#000000';

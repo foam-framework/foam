@@ -123,9 +123,11 @@ CLASS({
         z-index: 2;
       }
       slides > controls input {
-        font-size: 20px;
+        font-size: 17px;
         margin: 0 10px 0 0;
+        padding: 0 0 0 6px;
         width: 50px;
+        height: 28px;
       }
       slides > controls .of {
         margin-top: 2px;
