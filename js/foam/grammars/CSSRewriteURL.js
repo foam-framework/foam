@@ -11,10 +11,11 @@
 
 CLASS({
   package: 'foam.grammars',
-  name: 'CSSFont',
+  name: 'CSSRewriteURL',
 
   requires: [
     'XHR',
+    'foam.grammars.CSSDecl',
     'foam.util.Base64Encoder',
   ],
   imports: [
@@ -66,132 +67,37 @@ CLASS({
       lazyFactory: function() { return {}; },
     },
     {
+      name: 'declParser',
+      lazyFactory: function() { return this.CSSDecl.create(); },
+    },
+    {
       name: 'parser',
       lazyFactory: function() {
+        return SkipGrammar.create(this.parser_, seq('/*', repeat(not('*/', anyChar)), '*/'));
+      },
+    },
+    {
+      name: 'parser_',
+      lazyFactory: function() {
         var css = this;
-        var s = function() { return str(seq.apply(this, arguments)); };
         var r = function() { return str(repeat.apply(this, arguments)); };
         var p = function() { return str(plus.apply(this, arguments)); };
-        return SkipGrammar.create({
-          __proto__: grammar,
-
-          START: sym('stylesheet'),
-
-          ws: alt(' ', '\t', '\n', '\r', '\f'),
-          ws_: repeat0(sym('ws')),
-          wsp_: plus0(sym('ws')),
-
-          alphaNum: alt(
-              '-',
-              range('a', 'z'),
-              range('A', 'Z'),
-              range('0', '9')),
-          // Excludes: ":", ";", "{", "}", "(", ")".
-          punct: alt(
-              range('!', "'"),
-              range('*', '/'),
-              range('<', '@'),
-              range('[', '`'),
-              '|',
-              '~'),
-          // Alpha-num-punct (excludes: ":", ";", "{", "}", "(", ")").
-          anp: alt(sym('alphaNum'), sym('punct')),
-
-          stylesheet: s(
-              sym('ws_'),
-              r(alt(
-                  sym('stmtRule'),
-                  sym('blockRule')),
-                sym('ws_'))),
-
-          rulePrefix: plus(
-              // Alpha-num-punct, but not ";" "{", or "}".
-              p(alt(sym('anp'), '(', ')', ':')),
-              sym('wsp_')),
-          stmtRule: s(sym('rulePrefix'), ';'),
-          blockRule: s(sym('rulePrefix'), sym('block')),
-          blockList: p(sym('blockRule'), sym('ws_')),
-
-          // Alpha-num-punct, but not "{", "}" or ":".
-          declLHS: p(alt(sym('anp'), '(', ')', ';')),
+        return {
+          __proto__: this.declParser.parser_,
           declRHS: plus(
               alt(sym('url'),
               // Alpha-num-punct, but not "{", "}" or ";".
               p(alt(sym('anp'), '(', ')', ':'))),
               sym('wsp_')),
-          decl: seq(
-              sym('declLHS'),
-              sym('ws_'),
-              ':',
-              sym('ws_'),
-              sym('declRHS')),
-          declList: plus(sym('decl'), seq(';', sym('ws_'))),
-
           url: seq('url(', r(alt(sym('anp'), ':', ';', '{', '}', '(')), ')'),
-
-          block: seq(
-              '{',
-              sym('ws_'),
-              optional(alt(
-                  sym('blockList'),
-                  sym('declList'))),
-              '}'),
         }.addActions({
-          rulePrefix: function(parts) {
-            // Look for $ signs, and turn them into the model name.
-            parts = parts.map(function(p) {
-              return p.indexOf('$') >= 0 ? p.replace(/\$/g, css.modelName_) : p;
-            });
-            return parts.join(' ');
-          },
-          block: function(parts) {
-            return '{' + (parts[2] ? parts[2] : '') + '}';
-          },
-          declList: function(parts) {
-            return parts.join(';');
-          },
-          declRHS: function(parts) {
-            return parts.join(' ');
-          },
-          decl: function(parts) {
-            var key = parts[0];
-            var value = parts[4];
-            var data = css.PREFIXED_KEYS[key];
-            if ( ! data || css.PREFIXES.length === 0 ) return key + ':' + value;
-
-            var rtn = '';
-            if ( data === true || data === value ) {
-              for ( var i = 0; i < css.PREFIXES.length; ++i ) {
-                var prefix = css.PREFIXES[i];
-                if ( data === true ) rtn += prefix + key + ':' + value + ';';
-                else                 rtn += key + ':' + prefix + value + ';';
-              }
-            }
-            rtn += key + ':' + value;
-            return rtn;
-          },
           url: function(parts) {
+            // TODO(markdittmer): Skip over URLs that are already data URLs.
             css.urls[parts[1]] = parts[1];
             return parts.join('');
           },
-        }), seq('/*', repeat(not('*/', anyChar)), '*/'));
+        });
       },
-    },
-    {
-      name: 'model',
-      documentation: 'Optional model which contains this CSS template. Used ' +
-          'to expand $ signs in CSS selectors to the model name.',
-      postSet: function(old, nu) {
-        if (nu) this.modelName_ = nu.CSS_CLASS || cssClassize(nu.id);
-      },
-    },
-    {
-      name: 'modelName_',
-      documentation: 'The converted model name itself.',
-      adapt: function(old, nu) {
-        // Turns 'foo-bar quux' into '.foo-bar.quux'
-        return '.' + nu.split(/ +/).join('.');
-      }
     },
   ],
 

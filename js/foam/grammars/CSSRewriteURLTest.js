@@ -11,17 +11,17 @@
 
 CLASS({
   package: 'foam.grammars',
-  name: 'CSSFontTest',
+  name: 'CSSRewriteURLTest',
 
   requires: [
     'XHR',
-    'foam.grammars.CSSFont',
+    'foam.grammars.CSSRewriteURL',
   ],
   imports: [ 'assert' ],
 
   properties: [
     {
-      type: 'foam.grammars.CSSFont',
+      type: 'foam.grammars.CSSRewriteURL',
       name: 'css',
       defaultValue: ''
     }
@@ -29,7 +29,7 @@ CLASS({
 
   methods: [
     function testSetUp() {
-      this.css = this.CSSFont.create();
+      this.css = this.CSSRewriteURL.create();
     },
     function testTearDown() {
       this.css = '';
@@ -77,7 +77,7 @@ CLASS({
       description: 'Test url',
       code: function() {
         var posEgs = [
-          'url(http://localhost:8000/index.html?model=foam.testing.WebRunner&targets=foam.grammars.CSSFontTest)',
+          'url(http://localhost:8000/index.html?model=foam.testing.WebRunner&targets=foam.grammars.CSSRewriteURLTest)',
         ];
         var negEgs = [];
 
