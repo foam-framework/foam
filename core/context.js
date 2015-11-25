@@ -46,8 +46,8 @@ function lookup(key) {
 
 /** Update a Context binding. **/
 function set(key, value) {
-  // It looks like the chrome debug console is overwriting sub.window
-  // but this prevents it.
+  // It looks like the chrome debug console is overwriting
+  // sub.window, but this prevents it.
   Object.defineProperty(
     this,
     key,
@@ -55,8 +55,10 @@ function set(key, value) {
       value: value,
       writable: key !== 'window',
       configurable: true
-    }
-  );
+    });
+
+  if ( GLOBAL.SimpleReadOnlyValue && key !== '$' && key !== '$$' )
+    this[key + '$'] = SimpleReadOnlyValue.create({value: value});
 }
 
 
@@ -72,7 +74,7 @@ function setValue(key, value) {
     }
   );
 
-  this.set(key + '$', value);
+  if ( key !== '$' && key !== '$$' ) this[key + '$'] = value;
 }
 
 
@@ -82,7 +84,12 @@ function sub(opt_args, opt_name) {
 
   if ( opt_args ) for ( var key in opt_args ) {
     if ( opt_args.hasOwnProperty(key) ) {
-      sub.set(key, opt_args[key]);
+      var asValue = key !== '$' && key != '$$' && key.charAt(key.length-1) == '$';
+      if ( asValue ) {
+        sub.setValue(key, opt_args[key]);
+      } else {
+        sub.set(key, opt_args[key]);
+      }
     }
   }
 
