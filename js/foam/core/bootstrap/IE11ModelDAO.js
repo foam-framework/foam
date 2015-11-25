@@ -17,7 +17,7 @@
 
 MODEL({
   package: 'foam.core.bootstrap',
-  name: 'BrowserFileDAO',
+  name: 'IE11ModelDAO',
 
   imports: [
     'document',

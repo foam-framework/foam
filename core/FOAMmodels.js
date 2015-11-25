@@ -87,7 +87,8 @@ var files = [
   'index',
   'models',
   'oauth',
-  [ 'ModelDAO', IN_BROWSER_NOT_APP ],
+  [ 'ModelDAO', AND(NOT(IN_IE11), IN_BROWSER_NOT_APP) ],
+  [ 'IE11ModelDAO', IN_IE11 ],
   [ '../js/foam/core/bootstrap/ChromeAppFileDAO', IN_CHROME_APP ],
   [ 'ChromeAppModelDAO', IN_CHROME_APP ],
   [ 'NodeModelDAO', IN_NODEJS ]
