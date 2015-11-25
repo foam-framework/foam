@@ -32,12 +32,9 @@ CLASS({
     {
       name: 'cache',
       help: 'Alias for delegate.',
+      labels: ['javascript'],
       getter: function() { return this.delegate },
       setter: function(dao) { this.delegate = dao; },
-      swiftType: 'AbstractDAO!',
-      swiftDefaultValue: 'nil',
-      swiftGetter: 'return self.delegate',
-      swiftPostSet: 'self.delegate = newValue',
     },
     {
       name: 'model',
@@ -46,36 +43,38 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-
-      var src   = this.src;
-      var cache = this.cache;
-
-      var futureDelegate = afuture();
-      this.cache = this.FutureDAO.create({future: futureDelegate.get});
-
-      src.select(cache)(function() {
-        // Actually means that cache listens to changes in the src.
-        src.listen(cache);
-        futureDelegate.set(cache);
-        this.cache = cache;
-      }.bind(this));
-    },
     {
-      name: 'swiftInit',
+      name: 'init',
+      code: function() {
+        this.SUPER();
+
+        var src   = this.src;
+        var cache = this.cache;
+
+        var futureDelegate = afuture();
+        this.cache = this.FutureDAO.create({future: futureDelegate.get});
+
+        src.select(cache)(function() {
+          // Actually means that cache listens to changes in the src.
+          src.listen(cache);
+          futureDelegate.set(cache);
+          this.cache = cache;
+        }.bind(this));
+      },
       swiftCode: function() {/*
-        let cache = self.cache
+        super._foamInit_()
+
+        let cache = self.delegate
 
         let futureDao = FutureDAO()
-        self.cache = futureDao
+        self.delegate = futureDao
 
         let sink = DAOSink(dao: cache)
         src.select(sink).get { _ in
           // Actually means that cache listens to changes in the src.
           self.src.listen(sink);
           futureDao.future.set(cache);
-          self.cache = cache;
+          self.delegate = cache;
         };
       */},
     },
