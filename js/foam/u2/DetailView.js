@@ -68,7 +68,7 @@ CLASS({
         border: solid 1px #dddddd;
         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
         display: inline-block;
-        margin: 3px;
+        margin: 5px;
         padding: 3px;
       }
       $ table {
@@ -81,6 +81,9 @@ CLASS({
         font-weight: bold;
         margin-bottom: 8px;
         padding: 2px;
+      }
+      $-toolbar {
+        margin-left: 5px;
       }
       $ input {
         border: solid 1px #aacfe4;
@@ -128,7 +131,7 @@ CLASS({
     function actionBorder(e) {
       if ( ! this.showActions || ! this.model.actions.length ) return e;
 
-      return this.Y.E().add(e).start('div').add(this.model.actions).end();
+      return this.Y.E().add(e).start('div').cls(this.myCls('toolbar')).add(this.model.actions).end();
     },
     function elementForFeature(fName) {
       var f = this.model_.getFeature(fName) || this.X.data.model_.getFeature(fName);
