@@ -22,6 +22,8 @@ function IN_BROWSER_NOT_APP() { return IN_BROWSER() && ! IN_CHROME_APP(); }
 function IN_IE11() { return window.navigator &&
                      window.navigator.appName == 'Netscape' &&
                      window.navigator.userAgent.indexOf('Trident/') != -1; }
+function AND(a, b) { return function() { return a() && b(); }; }
+function NOT(a) { return function() { return ! a(); }; }
 
 var __EXTRA_PROPERTIES__;
 
@@ -63,7 +65,7 @@ var files = [
   'mm6Misc',
   '../js/foam/core/bootstrap/OrDAO',
   [ '../js/foam/core/bootstrap/IE11ModelDAO', IN_IE11 ],
-  [ '../js/foam/core/bootstrap/BrowserFileDAO', IN_BROWSER_NOT_APP ],
+  [ '../js/foam/core/bootstrap/BrowserFileDAO', AND(NOT(IN_IE11), IN_BROWSER_NOT_APP) ],
   [ '../js/node/dao/ModelFileDAO', IN_NODEJS ],
   '../js/foam/ui/Window',
   'value',
