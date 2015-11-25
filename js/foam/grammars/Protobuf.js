@@ -18,8 +18,21 @@
 CLASS({
   name: 'Protobuf',
   package: 'foam.grammars',
+  requires: [
+    'node.dao.JSModelFileDAO',
+  ],
 
   properties: [
+    {
+      model_: 'foam.node.NodeRequireProperty',
+      name: 'fs',
+    },
+    {
+      name: 'inputFile',
+    },
+    {
+      name: 'outputDir',
+    },
     {
       name: 'grammar',
       factory: function() {
@@ -40,6 +53,7 @@ CLASS({
             sym('enum'),
             sym('import'),
             sym('package'),
+            sym('service'),
             sym('option'),
             sym('syntax'), ';')),
 
@@ -51,7 +65,12 @@ CLASS({
 
           option: seq("option", sym('optionBody'), ";"),
 
-          optionBody: seq(sym('ident'), repeat(seq(".", sym('ident'))), "=", sym('constant')),
+          optionBody: seq(
+            alt(
+              seq1(1, '(', plus(sym('ident'), '.'), ')'),
+              sym('ident')),
+            repeat(seq(".", sym('ident'))),
+            "=", sym('constant')),
 
           message: seq("message", sym('ident'), sym('messageBody')),
 
@@ -61,9 +80,9 @@ CLASS({
 
           enumField: seq(sym('ident'), "=", sym('sintLit'), ";"),
 
-          service: seq("service", sym('ident'), sym("openBrace"), repeat(seq(sym('option'), sym('rpc')), ";"), sym("closeBrace")),
+          service: seq("service", sym('ident'), sym("openBrace"), repeat(alt(sym('option'), sym('rpc'))), sym("closeBrace")),
 
-          rpc: seq("rpc", sym('ident'), "(", sym('userType'), ")", "returns", "(", sym('userType'), ")", ";"),
+          rpc: seq("rpc", sym('ident'), "(", sym('userType'), ")", "returns", "(", sym('userType'), ")", optional(seq1(1, '{', repeat(sym('option')), '}')), ';'),
 
           openBrace: literal("{"),
           closeBrace: literal("}"),
@@ -101,7 +120,7 @@ CLASS({
           // leading dot for identifiers means they're fully qualified
           userType: noskip(plus(seq(optional("."), sym('ident')))),
 
-          constant: alt(sym('ident'), sym('sintLit'), sym('floatLit'), sym('strLit'), sym('boolLit')),
+          constant: alt(sym('ident'), sym('floatLit'), sym('sintLit'), sym('strLit'), sym('boolLit')),
 
           ident: seq(sym('a'), repeat(sym('w'))),
 
@@ -112,7 +131,7 @@ CLASS({
           intLit: alt(sym('decInt'), sym('hexInt'), sym('octInt')),
 
           sintLit: alt(
-            seq(optional(alt('+', '-')), sym('decInt')),
+            seq(alt('+', '-'), sym('decInt')),
             sym('intLit')),
 
           decInt: plus(sym('d')),
@@ -121,16 +140,12 @@ CLASS({
 
           octInt: seq('/0', plus(range('0', '7'))),
 
-          floatLit:
-          seq(
-            seq(
-              sym('decInt'),
-              optional('.', sym('decInt'))),
-            optional(
-              seq(
-                alt('E', 'e'),
-                optional(alt('+', '-')),
-                sym('decInt')))),
+          floatLit: alt(
+            seq('.', sym('decInt'), optional(sym('exponent'))),
+            seq(sym('decInt'), sym('exponent')),
+            seq(sym('decInt'), '.', optional(sym('decInt')), optional(sym('exponent')))),
+
+          exponent: seq(alt('E', 'e'), optional(alt('+', '-')), sym('decInt')),
 
           boolLit: alt("true", "false"),
 
@@ -246,5 +261,24 @@ CLASS({
         });
       }
     }
+  ],
+
+  methods: [
+    function execute() {
+      if (!this.inputFile || !this.outputDir) {
+        console.error('inputFile and outputDir arguments are required.');
+        process.exit(1);
+      }
+      var buffer = this.fs.readFileSync(this.inputFile);
+      var output = this.parser.parseString(buffer.toString());
+      var dao = this.JSModelFileDAO.create({
+        prefix: this.outputDir
+      });
+      for (var i = 0; i < output.length; i++) {
+        if (Model.isInstance(output[i])) {
+          dao.put(output[i]);
+        }
+      }
+    },
   ]
 });
