@@ -291,14 +291,17 @@ CLASS({
     */
     {
       name: 'displayWidth',
+      labels: ['javascript'],
       defaultValue: 12
     },
     {
       name: 'javaType',
+      labels: ['javascript'],
       defaultValue: 'long',
     },
     {
       name: 'swiftType',
+      labels: ['compiletime', 'swift'],
       defaultValue: 'CLong',
     },
   ]
@@ -485,8 +488,8 @@ CLASS({
       defaultValue: '[AnyObject]'
     },
     {
-      name: 'swiftDefaultValue',
-      defaultValue: '[]'
+      name: 'swiftFactory',
+      defaultValue: 'return []'
     },
     {
       name: 'singular',
@@ -697,8 +700,8 @@ CLASS({
       defaultValue: '[String]'
     },
     {
-      name: 'swiftDefaultValue',
-      defaultValue: '[]'
+      name: 'swiftFactory',
+      defaultValue: 'return []'
     },
     {
       name: 'singular',

@@ -306,7 +306,7 @@ CLASS({
       hidden: true,
       factory: function() { return []; },
       swiftType: 'NSMutableArray',
-      swiftDefaultValue: '[]',
+      swiftFactory: 'return NSMutableArray()',
       compareProperty: function() { return 0; },
     }
   ],
@@ -496,16 +496,34 @@ CLASS({
       swiftCode: 'self.daoListeners_.addObject(self.decorateSink_(sink, options: options))'
     },
 
-    function unlisten(sink) { /* Stop sending updates to the given sink. */
-      var ls = this.daoListeners_;
-//      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
-      for ( var i = 0; i < ls.length ; i++ ) {
-        if ( ls[i].$UID === sink.$UID ) {
-          ls.splice(i, 1);
-          return true;
+    {
+      name: 'unlisten',
+      code: function unlisten(sink) { /* Stop sending updates to the given sink. */
+        var ls = this.daoListeners_;
+  //      if ( ! ls.length ) console.warn('Phantom DAO unlisten: ', this, sink);
+        for ( var i = 0; i < ls.length ; i++ ) {
+          if ( ls[i].$UID === sink.$UID ) {
+            ls.splice(i, 1);
+            return true;
+          }
         }
-      }
-      if ( DEBUG ) console.warn('Phantom DAO unlisten: ', this, sink);
+        if ( DEBUG ) console.warn('Phantom DAO unlisten: ', this, sink);
+      },
+      args: [
+        {
+          name: 'sink',
+          swiftType: 'Sink',
+        },
+      ],
+      swiftReturnType: 'Bool',
+      swiftCode: function() {/*
+        let index = daoListeners_.indexOfObject(sink)
+        if index == NSNotFound {
+          return false
+        }
+        daoListeners_.removeObjectAtIndex(index)
+        return true
+      */},
     },
 
     // Default removeAll: calls select() with the same options and
@@ -580,6 +598,12 @@ CLASS({
             for l in self.daoListeners_ {
               let l = l as! Sink
               l.remove(fObj!)
+            }
+            break
+          case "reset":
+            for l in self.daoListeners_ {
+              let l = l as! Sink
+              l.reset()
             }
             break
           default:

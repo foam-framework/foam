@@ -552,7 +552,7 @@ GLOBAL.Property = {
       name: 'swiftAdapt',
       type: 'String',
       labels: ['compiletime', 'swift'],
-      defaultValue: 'return newValue',
+      defaultValue: 'return newValue as! <%= this.swiftType %>',
     },
     {
       name: 'swiftPreSet',
@@ -570,7 +570,11 @@ GLOBAL.Property = {
       name: 'swiftGetter',
       type: 'String',
       labels: ['compiletime', 'swift'],
-      defaultValue: 'return <%= this.name %>_',
+    },
+    {
+      name: 'swiftFactory',
+      type: 'String',
+      labels: ['compiletime', 'swift'],
     },
     {
       name: 'getter',
