@@ -192,7 +192,9 @@ var FObject = {
 
         if ( key ) {
           var asValue = key !== '$' && key != '$$' && key.charAt(key.length-1) == '$';
-          if ( asValue ) console.warn('Deprecated use of value$ export. Just remove the $. ', this.name, key, alias);
+          if ( asValue ) {
+            console.warn('Deprecated use of value$ export. Just remove the $. ', this.name, key, alias);
+          }
           if ( asValue ) key = key.slice(0, key.length-1);
 
           var prop = self.model_.getProperty(key);
