@@ -46,7 +46,7 @@ CLASS({
 
   methods: [
     function init() {
-      var view = this.view || this.prop.toPropertyE();
+      var view = this.view || this.prop.toPropertyE(this.Y);
       var prop = this.prop;
 
       // TODO: remove check once all views extend View
@@ -58,6 +58,28 @@ CLASS({
       this.SUPER();
 
       this.bindData_(null, this.data);
+    },
+    // Set properties on delegate view instead of this
+    function attrs(map) {
+      var model = this.view.model_;
+
+      for ( var key in map ) {
+        var value = map[key];
+        var prop  = model.getProperty(key);
+
+        if ( prop && prop.attribute ) {
+          // Should we support value$ binding?
+          this.view[key] = value;
+        } else {
+          if ( typeof value === 'function' )
+            this.dynamicAttr_(key, value);
+          else if ( Value.isInstance(value) )
+            this.valueAttr_(key, value);
+          else
+            this.setAttribute(key, value);
+        }
+      }
+      return this;
     },
     function initE() {
       this.cls('foam-u2-PropertyView').add(this.child_);

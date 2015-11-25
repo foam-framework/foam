@@ -572,14 +572,24 @@ CLASS({
     },
 
     function attrs(map) {
+      var model = this.model_;
+
       for ( var key in map ) {
         var value = map[key];
-        if ( typeof value === 'function' )
-          this.dynamicAttr_(key, value);
-        else if ( Value.isInstance(value) )
-          this.valueAttr_(key, value);
-        else
-          this.setAttribute(key, value);
+        var prop  = model.getProperty(key);
+
+        if ( key === 'label' ) debugger;
+        if ( prop && prop.attribute ) {
+          // Should we support value$ binding?
+          this[key] = value;
+        } else {
+          if ( typeof value === 'function' )
+            this.dynamicAttr_(key, value);
+          else if ( Value.isInstance(value) )
+            this.valueAttr_(key, value);
+          else
+            this.setAttribute(key, value);
+        }
       }
       return this;
     },
@@ -633,9 +643,10 @@ CLASS({
 
       return dyn;
     },
-
+    // Better name?
     function tag(opt_nodeName) {
       var c = this.E(opt_nodeName || 'br');
+      c.parent_ = this;
       this.add(c);
       return this;
     },

@@ -456,7 +456,13 @@ MODEL({
       var a = this.clone();
       for ( var i = 0 ; i < a.length ; i++ ) {
         var o = a[i];
-        if ( o && o.deepClone ) a[i] = o.deepClone();
+        if ( o ) {
+          if ( o.deepClone ) {
+            a[i] = o.deepClone();
+          } else if ( o.clone ) {
+            a[i] = o.clone();
+          }
+        }
       }
       return a;
     },
@@ -533,7 +539,10 @@ MODEL({
     function deleteF(v) {
       var a = this.clone();
       for ( var i = 0 ; i < a.length ; i++ ) {
-        if ( a[i] === v ) { a.splice(i, 1); break; }
+        if ( a[i] === v ) {
+          a.splice(i, 1);
+          break;
+        }
       }
       return a;
     },
@@ -542,26 +551,36 @@ MODEL({
     // return true iff the value was removed
     function deleteI(v) {
       for ( var i = 0 ; i < this.length ; i++ ) {
-        if ( this[i] === v ) { this.splice(i, 1); return true; }
+        if ( this[i] === v ) {
+          this.splice(i, 1);
+          return true;
+        }
       }
       return false;
     },
+
     // Clone this Array and remove first object where predicate 'p' returns true
-    // TODO: make faster by copying in one pass, without splicing
     function removeF(p) {
-      var a = this.clone();
+      var a = [];
       for ( var i = 0 ; i < a.length ; i++ ) {
-        if ( p.f(a[i]) ) { a.splice(i, 1); break; }
+        if ( p.f(a[i]) ) {
+          // Copy the rest of the array since we only want to remove one match
+          for ( i++ ; i < a.length ; i++ ) a.push(a[i]);
+        }
       }
       return a;
     },
 
     // Remove first object in this array where predicate 'p' returns true
+    // return true iff the value was removed
     function removeI(p) {
       for ( var i = 0 ; i < this.length ; i++ ) {
-        if ( p.f(this[i]) ) { this.splice(i, 1); breeak; }
+        if ( p.f(this[i]) ) {
+          this.splice(i, 1);
+          return true;
+        }
       }
-      return this;
+      return false;
     },
 
     function pushF(obj) {

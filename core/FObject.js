@@ -199,7 +199,7 @@ var FObject = {
             if ( asValue ) {
               self.addInitAgent(1, 'export property value ' + key, function(o, X) { o.Y.set(alias, o[prop.name$_]); });
             } else {
-              self.addInitAgent(1, 'export property ' + key, function(o, X) { o.Y.setValue(alias, o[prop.name$_]); });
+              self.addInitAgent(1, 'export property '       + key, function(o, X) { o.Y.setValue(alias, o[prop.name$_]); });
             }
           } else {
             self.addInitAgent(0, 'export other ' + key, function(o, X) {

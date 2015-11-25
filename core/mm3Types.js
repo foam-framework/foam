@@ -769,13 +769,13 @@ CLASS({
     {
       name: 'toMemento',
       defaultValue: function(o, p) {
-        return o.join(',');
+        return o.map(function(x) { return x.replace(/,/g, '&#44;'); }).join(',');
       }
     },
     {
       name: 'fromMemento',
       defaultValue: function(s, p) {
-        return s ? s.split(',') : undefined;
+        return s ? s.split(',').map(function(x) { return x.replace(/&#44;/g, ','); }) : undefined;
       }
     },
   ]
