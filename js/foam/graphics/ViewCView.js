@@ -36,7 +36,7 @@ CLASS({
       }
       return this.e_;
     },
-    function paintSelf() {
+    function paintSelf(canvas) {
       var e = this.element();
       e.style.opacity = this.alpha;
       // e.style.background = this.background;

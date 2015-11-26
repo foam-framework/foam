@@ -42,18 +42,18 @@ CLASS({
       this.view.paint();
     },
 
-    transform: function() {
+    transform: function(c) {
       if ( this.width && this.image_.width )
         this.scaleX = this.width / this.image_.width;
       if ( this.height && this.image_.height )
         this.scaleY = this.height / this.image_.height;
 
-      this.SUPER();
+      this.SUPER(c);
     },
 
-    paintSelf: function() {
+    paintSelf: function(c) {
       try {
-        this.canvas.drawImage(this.image_, 0, 0);
+        c.drawImage(this.image_, 0, 0);
       } catch(err) {
       }
     }

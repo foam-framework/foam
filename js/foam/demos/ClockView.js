@@ -74,14 +74,14 @@ CLASS({
       this.border = this.color;
       this.borderWidth = 5;
       this.color = 'white';
-      
+
       this.addChild(this.hourHand);
       this.addChild(this.minuteHand);
       this.addChild(this.secondHand);
     },
 
-    paintSelf: function() {
-      this.SUPER();
+    paintSelf: function(c) {
+      this.SUPER(c);
 
       var date = new Date();
 
@@ -89,8 +89,6 @@ CLASS({
       this.minuteHand.a = Math.PI/2 - Math.PI*2 * date.getMinutes() / 60 ;
       this.hourHand.a   = Math.PI/2 - Math.PI*2 * (date.getHours() % 12) / 12 + this.minuteHand.a / 12;
 
-      var c = this.canvas;
-      
       if ( ! this.drawTicks ) return;
 
       for ( var i = 0 ; i < 12 ; i++ ) {
@@ -101,7 +99,7 @@ CLASS({
         c.moveTo((this.r-l)*Math.cos(a),-(this.r-l)*Math.sin(a));
         c.lineTo((this.r)*Math.cos(a),-(this.r)*Math.sin(a));
         c.closePath();
-        
+
         c.lineWidth = w;
         c.strokeStyle = this.BLUE;
         c.stroke();

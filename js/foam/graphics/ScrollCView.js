@@ -154,10 +154,9 @@ CLASS({
       this.$.addEventListener('mousedown',  this.mouseDown,  false);
       this.$.addEventListener('touchstart', this.touchStart, false);
     },
-    paintSelf: function() {
+    paintSelf: function(c) {
       if ( ! this.size ) return;
 
-      var c = this.canvas;
       if ( ! c ) return;
 
       this.erase();

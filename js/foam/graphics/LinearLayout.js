@@ -25,14 +25,14 @@ CLASS({
     'foam.patterns.layout.LayoutItemHorizontalTrait',
     'foam.patterns.layout.LayoutItemVerticalTrait'
   ],
- 
+
   documentation: function() {/* A $$DOC{ref:'foam.graphics.CView'} based
-    linear layout. Use to lay out CView child items that include the 
+    linear layout. Use to lay out CView child items that include the
     $$DOC{ref:'foam.patterns.layout.LayoutItemHorizontalTrait'}
     $$DOC{ref:'foam.patterns.layout.LayoutItemVerticalTrait'} or
     traits depending on layout orientation.
   */},
-  
+
   methods: {
     init: function() {
       this.SUPER();
@@ -69,22 +69,22 @@ CLASS({
 
       this.SUPER(child);
     },
-    
-    paintSelf: function() {
+
+    paintSelf: function(canvas) {
       /* To reduce the number of potential re-layout operations, only calculate
       a dirty layout when painting. A property change will cause a repaint,
       to $$DOC{ref:'foam.patterns.layout.LinearLayoutTrait.layoutDirty'} changing to true will
       cause a repaint. */
-      this.SUPER();
-      
+      this.SUPER(canvas);
+
       // only calculate layout on paint
       if ( this.layoutDirty ) {
 //console.log("calculateLayout ", this.$UID);
         this.calculateLayout();
-        
+
 //console.log("  layout dirty? ", this.layoutDirty);
       }
-      
+
       // Enable to debug layout
 //       var c = this.canvas;
 //       if ( c ) {
@@ -94,4 +94,3 @@ CLASS({
       }
   }
 });
-

@@ -237,9 +237,7 @@ CLASS({
       }
     },
 
-    erase: function() {
-      var c = this.canvas;
-
+    erase: function(c) {
       c.clearRect(0, 0, this.width, this.height);
 
       // TODO(jacksonic): Why is drawing a circle the default behaviour?
@@ -251,8 +249,7 @@ CLASS({
       c.fill();
     },
 
-    paintSelf: function() {
-      var c = this.canvas;
+    paintSelf: function(c) {
 
       if ( this.font ) c.font = this.font;
 

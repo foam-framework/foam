@@ -53,15 +53,13 @@ CLASS({
   ],
 
   methods: [
-    function paintSelf() {
-      var c = this.canvas;
+    function paintSelf(c) {
       if ( ! c ) return;
       if ( ! this.r ) return;
 
-      var c = this.canvas;
       var a = Math.PI*2/this.sides;
       c.lineWidth = this.borderWidth;
-      
+
       c.fillStyle = this.color;
       c.beginPath();
       c.moveTo(this.r, 0);
@@ -69,7 +67,7 @@ CLASS({
         c.lineTo(this.r*Math.cos(i*a), this.r*Math.sin(i*a));
       }
       c.closePath();
-      
+
       if ( this.border ) {
         c.strokeStyle = this.border;
         c.stroke();

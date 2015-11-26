@@ -53,12 +53,11 @@ CLASS({
     {
       name: 'height',
       defaultValueFn: function() { return 2*this.r; }
-    }
+    },
   ],
 
   methods: [
-    function paintSelf() {
-      var c = this.canvas;
+    function paintSelf(c) {
       if ( ! c ) return;
 
       if ( ! this.r ) return;
@@ -73,11 +72,10 @@ CLASS({
         c.fill();
       }
 
-      this.paintBorder();
+      this.paintBorder(c);
     },
-    function paintBorder() {
+    function paintBorder(c) {
       if ( this.border ) {
-        var c = this.canvas;
         c.lineWidth = this.borderWidth;
 
         c.beginPath();

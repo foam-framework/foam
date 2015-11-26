@@ -68,14 +68,14 @@ CLASS({
     },
     {
       name: 'canvas',
-      getter: function() { return this.view && this.view.canvas; },
+      getter: function() { debugger; },
       transient: true,
       hidden: true,
       documentation: function() {/* Safe getter for the canvas view this scene draws into */ }
     },
     {
       name: '$',
-      getter: function() { return this.view && this.view.$; },
+      defaultValueFn: function() { return this.view && this.view.$; },
       transient: true,
       hidden: true,
       documentation: function() {/* Safe getter for the canvas DOM element this scene draws into */ }
@@ -277,28 +277,28 @@ CLASS({
       }
     },
 
-    erase: function() { /* Wipes the canvas area of this $$DOC{ref:'.'}. Primarily used
+    erase: function(canvas) { /* Wipes the canvas area of this $$DOC{ref:'.'}. Primarily used
                           by the root node to clear the entire canvas, but an opaque child
                           may choose to erase its own area, if required. */
 // Why do we do a clearRect()?  It causes problems when opacity isn't 1.
-//      this.canvas.clearRect(0, 0, this.width, this.height);
-      this.canvas.fillStyle = this.background;
-      this.canvas.fillRect(0, 0, this.width, this.height);
+//      canvas.clearRect(0, 0, this.width, this.height);
+      canvas.fillStyle = this.background;
+      canvas.fillRect(0, 0, this.width, this.height);
     },
 
-    paintChildren: function() { /* Paints each child. */
+    paintChildren: function(c) { /* Paints each child. */
       for ( var i = 0 ; i < this.children.length ; i++ ) {
         var child = this.children[i];
-        this.canvas.save();
-        this.canvas.beginPath(); // reset any existing path (canvas.restore() does not affect path)
-        child.paint();
-        this.canvas.restore();
+        c.save();
+        c.beginPath(); // reset any existing path (canvas.restore() does not affect path)
+        child.paint(c);
+        c.restore();
       }
     },
 
-    paintSelf: function() { /* Implement this in sub-models to do your painting. */ },
+    paintSelf: function(canvas) { /* Implement this in sub-models to do your painting. */ },
 
-    paint: function() { /* Translates the canvas to our ($$DOC{ref:'.x'}, $$DOC{ref:'.y'}),
+    paint: function(canvas) { /* Translates the canvas to our ($$DOC{ref:'.x'}, $$DOC{ref:'.y'}),
                           does a $$DOC{ref:'.paintSelf'} then paints all the children. */
       if ( ! this.$ ) return; // no canvas element, so do nothing
       if ( ! this.width || ! this.height ) return;
@@ -308,23 +308,23 @@ CLASS({
       }
       if ( this.suspended ) return; // we allowed initialization, but if suspended don't paint
 
-      var c = this.canvas;
+      var c = canvas || this.view.canvas;
       c.save();
       c.globalAlpha *= this.alpha;
-      this.transform();
+      this.transform(c);
       if ( this.clipped ) {
         c.rect(0,0,this.width,this.height);
         c.clip();
       }
-      this.paintSelf();
-      this.paintChildren();
+      this.paintSelf(c);
+      this.paintChildren(c);
       c.restore();
     },
 
-    transform: function() {
-      this.canvas.translate(this.x, this.y);
-      this.canvas.scale(this.scaleX, this.scaleY);
-      if ( this.a ) this.canvas.rotate(this.a);
+    transform: function(canvas) {
+      canvas.translate(this.x, this.y);
+      canvas.scale(this.scaleX, this.scaleY);
+      if ( this.a ) canvas.rotate(this.a);
     },
 
     scale: function(s) {

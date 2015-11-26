@@ -68,7 +68,6 @@ CLASS({
     function layout() {
       if ( ! this.img ) return;
 
-      var c = this.canvas;
       var z = this.zoom;
 
       this.r = this.topic.r;
@@ -99,9 +98,8 @@ CLASS({
       this.layout();
       this.SUPER();
     },
-    function paintBorder() { },
-    function paintChildren() {
-      var c = this.canvas;
+    function paintBorder(c) { },
+    function paintChildren(c) {
       var needsCrop = this.roundImage || this.img.width != this.img.height;
       if ( needsCrop ) {
         c.save();
@@ -109,9 +107,9 @@ CLASS({
         c.arc(0, 0, this.r, 0, 2 * Math.PI, false);
         c.clip();
       }
-      this.SUPER();
+      this.SUPER(c);
       if ( needsCrop ) c.restore();
-      foam.graphics.Circle.getPrototype().paintBorder.call(this);
+      foam.graphics.Circle.getPrototype().paintBorder.call(this, c);
     }
   ]
 });

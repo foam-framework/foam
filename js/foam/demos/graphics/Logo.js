@@ -50,7 +50,6 @@ CLASS({
     },
     addBubble: function() {
       if ( ! this.view.$ ) this.destroy();
-      var c = this.canvas;
       var Y = this.height+15;
       var X = 10+Math.random()*(this.width-20);
 
@@ -94,9 +93,7 @@ CLASS({
   ],
 
   methods: {
-    paintSelf: function() {
-      var c = this.canvas;
-
+    paintSelf: function(c) {
       c.fillStyle = 'white';
       c.fillRect(0, 0, this.width, this.height);
 

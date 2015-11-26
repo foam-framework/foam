@@ -84,16 +84,15 @@ CLASS({
       this.SUPER();
 
       Events.dynamic(
-        function() { this.text; this.font; this.canvas; this.padding; }.bind(this),
+        function() { this.text; this.font; this.padding; }.bind(this),
         this.updatePreferred );
 
       this.updatePreferred();
     },
 
-    paintSelf: function() {
-      this.SUPER();
+    paintSelf: function(c) {
+      this.SUPER(c);
 
-      var c = this.canvas;
       c.save();
 
       c.textBaseline = 'top';
@@ -116,8 +115,8 @@ CLASS({
       name: 'updatePreferred',
       isFramed: false, // preferred size updates propagate up immediately
       code: function() {
-        var c = this.canvas;
-        if ( ! c ) return;
+        var e = document.createElement('canvas');
+        var c = e.getContext('2d');
 
         // width of text
         c.save();

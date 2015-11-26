@@ -128,7 +128,7 @@ CLASS({
         this.canvas.fillRect(0, 0, this.canvasWidth(), this.canvasHeight());
 
         this.canvas.scale(this.scalingRatio, this.scalingRatio);
-        this.cview.paint();
+        this.cview.paint(this.canvas);
 
         this.canvas.restore();
       },
