@@ -254,7 +254,7 @@ MODEL({
         '(function() { ' +
           'var escapeHTML = XMLUtil.escape, TOC = TemplateOutput.create.bind(TemplateOutput); ' +
           'return function(' + args.join(',') + '){' + code + '};})()' +
-          (model ? '\n\n//# sourceURL=' + model.id.replace(/\./g, '/') + '.' + t.name + '\n' : ''));
+          (model && model.id ? '\n\n//# sourceURL=' + model.id.replace(/\./g, '/') + '.' + t.name + '\n' : ''));
     },
     parseCSS: function(t, model) {
       var parser = this.CSSParser_ || ( this.CSSParser_ = X.foam.grammars.CSSDecl.create());
