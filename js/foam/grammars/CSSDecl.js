@@ -65,9 +65,6 @@ CLASS({
       name: 'parser_',
       lazyFactory: function() {
         var css = this;
-        var s = function() { return str(seq.apply(this, arguments)); };
-        var r = function() { return str(repeat.apply(this, arguments)); };
-        var p = function() { return str(plus.apply(this, arguments)); };
         return {
           __proto__: grammar,
 
@@ -93,26 +90,26 @@ CLASS({
           // Alpha-num-punct (excludes: ":", ";", "{", "}").
           anp: alt(sym('alphaNum'), sym('punct')),
 
-          stylesheet: s(
+          stylesheet: str(seq(
               sym('ws_'),
-              r(alt(
+              str(repeat(alt(
                   sym('stmtRule'),
                   sym('blockRule')),
-                sym('ws_'))),
+                sym('ws_'))))),
 
           rulePrefix: plus(
               // Alpha-num-punct, but not ";" "{", or "}".
-              p(alt(sym('anp'), '(', ')', ':')),
+              str(plus(alt(sym('anp'), '(', ')', ':'))),
               sym('wsp_')),
-          stmtRule: s(sym('rulePrefix'), ';'),
-          blockRule: s(sym('rulePrefix'), sym('block')),
-          blockList: p(sym('blockRule'), sym('ws_')),
+          stmtRule: str(seq(sym('rulePrefix'), ';')),
+          blockRule: str(seq(sym('rulePrefix'), sym('block'))),
+          blockList: str(plus(sym('blockRule'), sym('ws_'))),
 
           // Alpha-num-punct, but not "{", "}" or ":".
-          declLHS: p(alt(sym('anp'), '(', ')', ';')),
+          declLHS: str(plus(alt(sym('anp'), '(', ')', ';'))),
           declRHS: plus(
               // Alpha-num-punct, but not "{", "}" or ";".
-              p(alt(sym('anp'), '(', ')', ':')),
+              str(plus(alt(sym('anp'), '(', ')', ':'))),
               sym('wsp_')),
           decl: seq(
               sym('declLHS'),

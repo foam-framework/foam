@@ -43,16 +43,14 @@ CLASS({
       name: 'parser_',
       lazyFactory: function() {
         var css = this;
-        var r = function() { return str(repeat.apply(this, arguments)); };
-        var p = function() { return str(plus.apply(this, arguments)); };
         return {
           __proto__: this.declParser.parser_,
-          declRHS: plus(
+          declRHS: str(plus(
               alt(sym('url'),
               // Alpha-num-punct, but not "{", "}" or ";".
-              p(alt(sym('anp'), '(', ')', ':'))),
-              sym('wsp_')),
-          url: seq('url(', r(alt(sym('anp'), ':', ';', '{', '}', '(')), ')'),
+              str(plus(alt(sym('anp'), '(', ')', ':')))),
+              sym('wsp_'))),
+          url: seq('url(', str(repeat(alt(sym('anp'), ':', ';', '{', '}', '('))), ')'),
         }.addActions({
           url: function(parts) {
             // TODO(markdittmer): Skip over URLs that are already data URLs.
