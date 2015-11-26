@@ -72,7 +72,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-flex-row md-title">
+        <div class="md-flex-row">
           $$label{
             model_: 'foam.ui.md.TextFieldView',
             inlineStyle: true,
@@ -91,6 +91,9 @@ CLASS({
         align-content: baseline;
         flex-grow: 1;
         background: white;
+      }
+      .md-flex-row toolbar {
+        width: inherit;
       }
     */},
 

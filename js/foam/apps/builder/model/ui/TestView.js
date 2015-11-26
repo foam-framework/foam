@@ -25,6 +25,7 @@ CLASS({
     'foam.apps.builder.model.ui.InlineEditView',
     'StringProperty',
     'foam.ui.md.DAOListView',
+    'foam.ui.md.SharedStyles',
   ],
 
   exports: ['testArray as dao'],
@@ -48,8 +49,11 @@ CLASS({
     },
   ],
 
-  actions: [
-
+  methods: [
+    function init() {
+      this.SUPER();
+      this.SharedStyles.create();
+    }
   ],
 
   templates: [
@@ -60,7 +64,7 @@ CLASS({
       </div>
     */},
     function CSS() {/*
-      .property-validate-view {
+      .test-view {
         display: flex;
         flex-direction: column;
         align-content: baseline;
