@@ -160,7 +160,8 @@ CLASS({
       }
 
       if ( t.model === 'Background' ) {
-        var src = t.image.startsWith('http') ? t.image : '/js/com/google/watlobby/' + t.image;
+        var src = ( t.image.startsWith('data:') || t.image.startWith('http') ) ? t.image :
+            ('/js/com/google/watlobby/' + t.image);
         this.$.style.backgroundRepeat = 'no-repeat';
         this.$.style.backgroundPosition = 'center center';
         this.$.style.backgroundImage = 'url(' + src + ')';
