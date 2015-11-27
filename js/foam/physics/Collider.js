@@ -27,11 +27,11 @@ CLASS({
   listeners: [
     {
       name: 'tick',
-      isAnimated: true,
+      isFramed: true,
       code: function () {
         if ( this.stopped_ ) return;
         this.detectCollisions();
-        this.start();
+        this.tick();
       }
     }
   ],
@@ -39,7 +39,7 @@ CLASS({
   methods: [
     function start() {
       this.stopped_ = false;
-      this.X.requestAnimationFrame(this.tick);
+      this.tick();
     },
     function stop() {
       this.stopped_ = true;
