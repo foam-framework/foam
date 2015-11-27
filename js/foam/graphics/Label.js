@@ -119,6 +119,8 @@ CLASS({
       name: 'updatePreferred',
       isFramed: false, // preferred size updates propagate up immediately
       code: function() {
+        // TODO(jacksonic): Mark dirty and calculate the preferred size on next paint if possible.
+        
         var e = this.document.createElement('canvas');
         var c = e.getContext('2d');
 
