@@ -209,7 +209,7 @@ CLASS({
     },
     toGLView_: function() { /* internal, creates a CViewGLView wrapper for 3d canvases */
       var model = this.X.lookup('foam.graphics.webgl.CViewGLView')
-      if ( model ) return model.create({ sourceView: this });
+      if ( model ) return model.create({ sourceView: this }, this.Y);
       return '';
     },
     toPositionedView_: function() { /* Internal. Creates a PositionedCViewView wrapper. */
