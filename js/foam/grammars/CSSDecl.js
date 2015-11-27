@@ -71,6 +71,7 @@ CLASS({
           START: sym('stylesheet'),
 
           ws: alt(' ', '\t', '\n', '\r', '\f'),
+          wsc: alt(sym('ws'), ','),
           ws_: repeat0(sym('ws')),
           wsp_: plus0(sym('ws')),
 
@@ -79,15 +80,16 @@ CLASS({
               range('a', 'z'),
               range('A', 'Z'),
               range('0', '9')),
-          // Excludes: ":", ";", "{", "}", "(", ")".
+          // Excludes: ":", ";", "{", "}", "(", ")", ",".
           punct: alt(
               range('!', "'"),
-              range('*', '/'),
+              range('*', '+'),
+              range('-', '/'),
               range('<', '@'),
               range('[', '`'),
               '|',
               '~'),
-          // Alpha-num-punct (excludes: ":", ";", "{", "}").
+          // Alpha-num-punct (excludes: ":", ";", "{", "}", "(", ")", ",").
           anp: alt(sym('alphaNum'), sym('punct')),
 
           stylesheet: str(seq(
@@ -99,17 +101,46 @@ CLASS({
 
           rulePrefix: plus(
               // Alpha-num-punct, but not ";" "{", or "}".
-              str(plus(alt(sym('anp'), '(', ')', ':'))),
+              str(plus(alt(sym('anp'), ',', '(', ')', ':'))),
               sym('wsp_')),
           stmtRule: str(seq(sym('rulePrefix'), ';')),
           blockRule: str(seq(sym('rulePrefix'), sym('block'))),
           blockList: str(plus(sym('blockRule'), sym('ws_'))),
 
+          // Alpha-num-punct, but not "(", ")", "{", "}" or ";".
+          fn: seq(str(plus(alt(sym('anp'), ',', ':'))),
+                  '(',
+                  sym('ws_'),
+                  optional(sym('fnArgs')),
+                  ')'),
+          fnArg: seq(alt(str(seq(sym('fn'),
+                                 // Either:
+                                 // (1) A function, possibly followed by sequence acceptable alpha-num-punct.
+                                 // or
+                                 // (2) Sequence of acceptable alpha-num-punct.
+                                 // Alpha-num-punct, but not "(", ")", ",".
+                                 str(repeat(alt(sym('anp'), '{', '}', ';', ':'))))),
+                         // Alpha-num-punct, but not "(", ")", ",".
+                         str(repeat(alt(sym('anp'), '{', '}', ';', ':')))),
+                     repeat(sym('wsc'))),
+          // Cannot use repeat(content, separator) because we need to retain
+          // separator value.
+          fnArgs: repeat(sym('fnArg')),
+
           // Alpha-num-punct, but not "{", "}" or ":".
-          declLHS: str(plus(alt(sym('anp'), '(', ')', ';'))),
+          declLHS: str(plus(alt(sym('anp'), ',', '(', ')', ';'))),
           declRHS: plus(
-              // Alpha-num-punct, but not "{", "}" or ";".
-              str(plus(alt(sym('anp'), '(', ')', ':'))),
+              alt(
+                  // Either:
+                  // (1) A function, possibly followed by sequence acceptable alpha-num-punct.
+                  //   E.g., "url(data:font/woff2;base64,fd09GMgAB),"
+                  // or
+                  // (2) Sequence of acceptable alpha-num-punct.
+                  str(seq(sym('fn'),
+                          // Alpha-num-punct, but not "(", ")", "{", "}" or ";".
+                          str(repeat(alt(sym('anp'), ',', ':'))))),
+                  // Alpha-num-punct, but not "(", ")", "{", "}" or ";".
+                  str(plus(alt(sym('anp'), ',', ':')))),
               sym('wsp_')),
           decl: seq(
               sym('declLHS'),
@@ -159,6 +190,15 @@ CLASS({
             }
             rtn += key + ':' + value;
             return rtn;
+          },
+          fn: function(parts) {
+            return parts[0] + '(' + parts[3] + ')';
+          },
+          fnArg: function(parts) {
+            return parts[0] + (parts[1].indexOf(',') >= 0 ? ', ' : ' ');
+          },
+          fnArgs: function(parts) {
+            return parts.join('').trim();
           },
         });
       },
