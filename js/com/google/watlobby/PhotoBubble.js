@@ -32,8 +32,8 @@ CLASS({
   properties: [
     {
       name: 'image',
-      postSet: function(_, i) {
-        this.img.src = i.startsWith('data:') ? i :
+      preSet: function(_, i) {
+        return i.startsWith('data:') ? i :
           i.startsWith('http') ? i : ('/js/com/google/watlobby/' + i);
       }
     },
@@ -45,7 +45,7 @@ CLASS({
       this.SUPER();
 
       this.r = this.topic.r;
-      this.addChild(this.img = this.ImageCView.create({src: '/js/com/google/watlobby/' + this.image}));
+      this.addChild(this.img = this.ImageCView.create({src: this.image }));
     },
     function setSelected(selected) {
       var self = this;
