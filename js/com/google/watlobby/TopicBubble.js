@@ -139,9 +139,9 @@ CLASS({
         this.img.y      = -this.img.height/2;
       }
     },
-    function paint() {
+    function paint(c) {
       this.layout();
-      this.SUPER();
+      this.SUPER(c);
     },
     function paintBorder() { },
     function paintChildren(c) {
