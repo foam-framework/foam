@@ -21,6 +21,10 @@ CLASS({
 
   extends: 'foam.demos.physics.PhysicalCircle',
 
+  imports: [
+    'document'
+  ],
+
   properties: [
     { name: 'borderWidth', defaultValue: 20 },
     { name: 'color',       defaultValue: 'white' },
@@ -40,7 +44,7 @@ CLASS({
     function paint(c) {
       if ( this.atRest() ) {
         if ( ! this.snapshot ) {
-          var snapshot = document.createElement('canvas');
+          var snapshot = this.document.createElement('canvas');
           snapshot.width = this.width;
           snapshot.height = this.height;
 
