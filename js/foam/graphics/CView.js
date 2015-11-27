@@ -67,13 +67,6 @@ CLASS({
       hidden: true
     },
     {
-      name: 'canvas',
-      getter: function() { debugger; },
-      transient: true,
-      hidden: true,
-      documentation: function() {/* Safe getter for the canvas view this scene draws into */ }
-    },
-    {
       name: '$',
       defaultValueFn: function() { return this.view && this.view.$; },
       transient: true,
