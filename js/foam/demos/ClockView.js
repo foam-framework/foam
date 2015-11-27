@@ -147,21 +147,15 @@ CLASS({
       ],
       methods:
       [
-        {
-          model_: 'Method',
-          name: 'paint',
-          code: function () {
-            var canvas = this.parent.canvas;
+        function paint(canvas) {
+          canvas.beginPath();
+          canvas.moveTo(0,0);
+          canvas.lineTo(this.r*Math.cos(this.a),-this.r*Math.sin(this.a));
+          canvas.closePath();
 
-            canvas.beginPath();
-            canvas.moveTo(0,0);
-            canvas.lineTo(this.r*Math.cos(this.a),-this.r*Math.sin(this.a));
-            canvas.closePath();
-
-            canvas.lineWidth = this.width;
-            canvas.strokeStyle = this.color;
-            canvas.stroke();
-          }
+          canvas.lineWidth = this.width;
+          canvas.strokeStyle = this.color;
+          canvas.stroke();
         }
       ]
     })

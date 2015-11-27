@@ -25,6 +25,10 @@ CLASS({
     'foam.patterns.layout.LayoutItemVerticalTrait'
   ],
 
+  imports: [
+    'document'
+  ],
+
   properties: [
     {
       name:  'textAlign',
@@ -115,7 +119,7 @@ CLASS({
       name: 'updatePreferred',
       isFramed: false, // preferred size updates propagate up immediately
       code: function() {
-        var e = document.createElement('canvas');
+        var e = this.document.createElement('canvas');
         var c = e.getContext('2d');
 
         // width of text

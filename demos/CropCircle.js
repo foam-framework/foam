@@ -25,6 +25,7 @@ CLASS({
       name: 'color',
       defaultValue: 'black'
     },
+    'canvas',
     {
       name: 'f',
       preSet: function(_, f) {
@@ -148,8 +149,8 @@ CLASS({
       };
     },
 
-    paintSelf: function() {
-      var c = this.canvas;
+    paintSelf: function(c) {
+      this.canvas = c;
       c.translate(this.width/2, this.height/2);
       c.save();
       this.f();
