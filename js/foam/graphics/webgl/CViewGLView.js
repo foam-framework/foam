@@ -182,7 +182,7 @@ CLASS({
           -this.sourceView.x + this.sourceView.width,
           -this.sourceView.y + this.sourceView.height);
       this.painting = true;
-      this.sourceView.paint();
+      this.sourceView.paint(this.canvas);
       this.painting = false;
       this.canvas.restore();
 
