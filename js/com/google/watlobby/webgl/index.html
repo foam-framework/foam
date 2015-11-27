@@ -1,0 +1,27 @@
+<html>
+ <head>
+  <script language="javascript" src="../../../../../core/bootFOAM.js"></script>
+  <title>Lobby</title>
+  <style>
+    body {
+      overflow: hidden;
+      margin: 0;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+    .topic-bubble-text {
+      color: #555;
+      font-family: Roboto, Arial;
+      font-size: x-large;
+    }
+  </style>
+ </head>
+ <body>
+   <script>
+    var root = location.search.split('root=')[1];
+    arequire('com.google.watlobby.webgl.Lobby')(function(Lobby) {
+      Lobby.create({root: root || ''}).toView_().write();
+    });
+   </script>
+  </body>
+</html>
