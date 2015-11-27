@@ -31,7 +31,6 @@ CLASS({
 
   methods: [
     function atRest() {
-      return false;
       return this.zoom == 0 &&
         this.alpha == 1 &&
         this.scaleX == 1 &&
