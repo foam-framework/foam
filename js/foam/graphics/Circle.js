@@ -48,11 +48,11 @@ CLASS({
     },
     {
       name: 'width',
-      defaultValueFn: function() { return 2*this.r; }
+      defaultValueFn: function() { return 2*(this.r + (this.border ? this.borderWidth : 0)); }
     },
     {
       name: 'height',
-      defaultValueFn: function() { return 2*this.r; }
+      defaultValueFn: function() { return 2*(this.r + (this.border ? this.borderWidth : 0)); }
     },
   ],
 
