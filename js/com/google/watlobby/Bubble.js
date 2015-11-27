@@ -68,7 +68,7 @@ CLASS({
 
         c.save();
         this.transform(c);
-        var offset = this.r + this.borderWidth;
+        var offset = Math.floor(this.r + this.borderWidth);
         c.drawImage(this.snapshot, -offset, -offset);
         c.restore();
         return;
