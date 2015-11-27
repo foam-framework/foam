@@ -35,7 +35,8 @@ CLASS({
     {
       name: 'image',
       postSet: function(_, i) {
-        this.img.src = i.startsWith('http') ? i : '/js/com/google/watlobby/' + i;
+        this.img.src = i.startsWith('data:') ? i :
+          i.startsWith('http') ? i : ('/js/com/google/watlobby/' + i);
       }
     },
     { name: 'roundImage' },

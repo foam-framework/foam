@@ -30,7 +30,14 @@ CLASS({
   imports: [ 'lobby', 'window' ],
 
   properties: [
-    'topic', 'image', 'roundImage', [ 'zoom', 0 ]
+    {
+      name: 'image',
+      postSet: function(_, i) {
+        this.img.src = i.startsWith('data:') ? i :
+          i.startsWith('http') ? i : ('/js/com/google/watlobby/' + i);
+      }
+    },
+    'topic', 'roundImage', [ 'zoom', 0 ]
   ],
 
   methods: [
