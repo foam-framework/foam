@@ -28,8 +28,6 @@ CLASS({
   ],
 
   properties: [
-    { name: 'x', preSet: function(_, x) { return Math.floor(x); } },
-    { name: 'y', preSet: function(_, y) { return Math.floor(y); } },
     {
       name: 'playIcon',
       factory: function() { return this.ImageCView.create({src: '/js/com/google/watlobby/img/play.png', alpha: 0.35}); }
