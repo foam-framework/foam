@@ -138,7 +138,7 @@ CLASS({
     [ 'text', 'FOAM' ],
     [ 'font', '120px Georgia' ],
     [ 'width', 400 ],
-    [ 'height', 103 ],
+    [ 'height', 128 ],
     {
       name: 'foreground',
       factory: function() {
