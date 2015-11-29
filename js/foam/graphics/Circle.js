@@ -88,9 +88,9 @@ CLASS({
     },
     function intersects(c) {
       var r = this.r + c.r;
-      if ( this.border ) r += this.borderWidth;
-      if ( c.border    ) r += c.borderWidth;
-      return Movement.distance(this.x-c.x, this.y-c.y) < r;
+      if ( this.border ) r += this.borderWidth-2;
+      if ( c.border    ) r += c.borderWidth-2;
+      return Movement.distance(this.x-c.x, this.y-c.y) <= r;
     }
   ]
 });

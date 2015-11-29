@@ -51,7 +51,6 @@ CLASS({
           className: 'topic-bubble-text',
           mode: 'read-only',
           escapeHTML: false
-//          data: 'foobar\nblah\nblah\nblah'
         })});
       }
     },

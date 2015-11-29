@@ -235,13 +235,17 @@ MODEL({
   methods: [
     function init() {
       this.SUPER();
+GLOBAL.cells = this;
 
       // Two sample spreadsheets
       // Spreadsheet taken from Visicalc
-this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</u></b>","D0":"<b><u>Cost</u></b>","A1":"Muck Rake","B1":"43","C1":"12.95","D1":"=mul(B1,C1)","A2":"Buzz Cut","B2":"15","C2":"6.76","D2":"=mul(B2,C2)","A3":"Toe Toner","B3":"250","C3":"49.95","D3":"=mul(B3,C3)","A4":"Eye Snuff","B4":"2","C4":"4.95","D4":"=mul(B4,C4)","C5":"Subtotal","D5":"=sum(D1:D4)","B6":"9.75","C6":"Tax","D6":"=div(mul(B6,D5),100)","C7":"<b>Total</b>","D7":"=add(D5,D6)"});
+//this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</u></b>","D0":"<b><u>Cost</u></b>","A1":"Muck Rake","B1":"43","C1":"12.95","D1":"=mul(B1,C1)","A2":"Buzz Cut","B2":"15","C2":"6.76","D2":"=mul(B2,C2)","A3":"Toe Toner","B3":"250","C3":"49.95","D3":"=mul(B3,C3)","A4":"Eye Snuff","B4":"2","C4":"4.95","D4":"=mul(B4,C4)","C5":"Subtotal","D5":"=sum(D1:D4)","B6":"9.75","C6":"Tax","D6":"=div(mul(B6,D5),100)","C7":"<b>Total</b>","D7":"=add(D5,D6)"});
 
       // Spreadsheet to test all functions
 //      this.load({"A0":"<b>Formulas</b>","B0":"<b>Values</b>","A1":" 1","B1":"1","A2":" 10","B2":"10","A3":" 10.12","B3":"10.12","A4":" -10.1","B4":"-10.1","A5":" foobar","B5":"foobar","A6":" =add(1,2)","B6":"=add(1,2)","A7":" =sub(2,1)","B7":"=sub(2,1)","A8":" =mul(2,3)","B8":"=mul(2,3)","A9":" =div(9,3)","B9":"=div(9,3)","A10":" =mod(8,3)","B10":"=mod(8,3)","A11":" =add(mul(2,3),div(3,2))","B11":"=add(mul(2,3),div(3,2))","A12":" =A1","B12":"=A1","A13":" =add(A1,B1)","B13":"=add(A1,B1)","A14":" =sum(1,2,3,4,5)","B14":"=sum(1,2,3,4,5)","A15":" =sum(B6:B10)","B15":"=sum(B6:B10)","A16":" =prod(B6:B10)","B16":"=prod(B6:B10)"});
+
+this.load({"A0":"<b><u>Desc</u></b>","B0":"<b><u>Count</u></b>","C0":"<b><u>IndexedDB</u></b>","D0":"<b><u>DAO</u></b>","A1":"Create Albums","B1":"1000","C1":"190","D1":"366","A2":"Create Photos","B2":"10000","C2":"2772","D2":"2492","A3":"Select All Albums","B3":"1000","C3":"168","D3":"1.93","A4":"Select All Photos","B4":"10000","C4":"1361","D4":"3.86","C5":"1.43","D5":"0.06","B6":"10","C6":"1.56","D6":"0.63","C7":"10.28","D7":"1.12","E0":"<b><u>Speedup</u></b>","E1":"=div(C1,D1)","E2":"=div(C2,D2)","E3":"=div(C3,D3)","E4":"=div(C4,D4)","A5":"Single Key Query","B5":"1","E5":"=div(C5,D5)","A6":"Multi-Key Query","E6":"=div(C6,D6)","A7":"Multi-Key Query","B7":"100","E7":"=div(C7,D7)","A8":"Multi-Key Query","B8":"1000","C8":"102","D8":"12.24","E8":"=div(C8,D8)","A9":"Multi-Key Query","B9":"5000","C9":"561","D9":"15.24","E9":"=div(C9,D9)","A10":"Indexed Field Query","B10":"1","C10":"4.63","D10":"0.46","E10":"=div(C10,D10)","A11":"Ad-Hoc Query","B11":"1","C11":"658","D11":"9.91","E11":"=div(C11,D11)","A12":"Simple Inner-Join","B12":"1","C12":"721","D12":"9.55","E12":"=div(C12,D12)","A13":"Inner-Join Aggregation","B13":"1","C13":"647","D13":"38.56","E13":"=div(C13,D13)","A14":"Order-By","B14":"1","C14":"59","D14":"0.55","E14":"=div(C14,D14)","A15":"Order and Group By","B15":"1","C15":"1232","D15":"3.63","E15":"=div(C15,D15)","B16":"<b>Average:</b>","C16":"=SUM(C1:C15)","D16":"=SUM(D1:D15)","E16":"=div(C14,D14)"});
+
     },
     function load(map) {
       for ( var key in map ) this.cell(key).formula = String(map[key]);
