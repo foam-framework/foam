@@ -62,17 +62,17 @@ e5.write();
 e5.style({color: 'blue'});
 
 
-var e6 = E('div').add('add class before').cls2('important');
+var e6 = E('div').add('add class before').cls('important');
 e6.write();
 
 var e7 = E('div').add('add class after');
 e7.write();
-e7.cls2('important');
+e7.cls('important');
 
-E('div').add('dynamic class with value').cls2(function(i) { return i%2 ? 'important' : null; }.on$(X, timer.second$)).write();
-E('div').add('dynamic class with fn').cls2(function() { return timer.second%2 ? 'important' : null; }).write();
+E('div').add('dynamic class with value').cls(function(i) { return i%2 ? 'important' : null; }.on$(X, timer.second$)).write();
+E('div').add('dynamic class with fn').cls(function() { return timer.second%2 ? 'important' : null; }).write();
 
-E('div').add('dynamic class with fn (hidden)').style({display:'block'}).cls2(function(i) { return timer.second%3 && 'hidden'; }).write();
+E('div').add('dynamic class with fn (hidden)').style({display:'block'}).cls(function(i) { return timer.second%3 && 'hidden'; }).write();
 
 var e8 = E('input');
 e8.write();

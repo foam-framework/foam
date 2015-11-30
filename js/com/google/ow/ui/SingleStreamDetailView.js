@@ -80,7 +80,7 @@ CLASS({
             .add(this.data.MESSAGE)
             .add(this.SEND)
           .end();
-    },
+    }
   ],
 
   listeners: [
@@ -90,7 +90,7 @@ CLASS({
         owner: X.envelope.owner,
         sid: this.data.substream,
         data: this.Text.create({
-          message: m,
+          message: m
         }),
       });
     },
@@ -129,6 +129,6 @@ CLASS({
       single-stream-detail .message-entry .foam-u2-md-Input {
         flex-grow: 1;
       }
-    */},
-  ],
+    */}
+  ]
 });

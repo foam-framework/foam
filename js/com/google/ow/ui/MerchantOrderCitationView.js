@@ -25,8 +25,8 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu ) return;
         this.getPerson(nu.customer, this.customer$);
-      },
-    },
+      }
+    }
   ],
 
   methods: [
@@ -38,6 +38,6 @@ CLASS({
                 .add('Customer: ')
                 .add(customer.displayName);
           }.bind(this).on$(this.X, this.customer$));
-    },
-  ],
+    }
+  ]
 });

@@ -499,18 +499,18 @@ CLASS({
       base.split(/ +/);
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
-    function cls(cls, opt_enabled, opt_negate) {
+    function toggleCls(cls, opt_enabled, opt_negate) {
       function negate(a, b) { return b ? a : ! a; }
 
       if ( typeof opt_enabled === 'function' ) {
         var fn = opt_enabled;
         this.dynamic(fn, function(value) {
-          this.cls(cls, value, opt_negate);
+          this.toggleCls(cls, value, opt_negate);
         }.bind(this));
       } else if ( Value.isInstance(opt_enabled) ) {
         var value = opt_enabled;
         var l = function() {
-          this.cls(cls, value.get(), opt_negate);
+          this.toggleCls(cls, value.get(), opt_negate);
         }.bind(this);
         value.addListener(l);
         l();
@@ -525,7 +525,7 @@ CLASS({
       return this;
     },
 
-    function cls2(cls) {
+    function cls(cls) {
       if ( typeof cls === 'function' ) {
         var lastValue = null;
         this.dynamic(cls, function(value) {
@@ -547,7 +547,7 @@ CLASS({
       return this;
     },
 
-    function cls2_(oldClass, newClass) {
+    function cls_(oldClass, newClass) {
       if ( oldClass === newClass ) return;
       this.removeCls(oldClass);
       if ( newClass ) {

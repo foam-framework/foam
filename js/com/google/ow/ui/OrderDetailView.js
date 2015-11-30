@@ -61,7 +61,7 @@ CLASS({
       this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
 
       this.SUPER();
-    },
+    }
   ],
 
   actions: [
@@ -74,8 +74,8 @@ CLASS({
       },
       isAvailable: function() {
         return this.status !== 'CANCELED' && this.status !== 'DELIVERED';
-      },
-    },
+      }
+    }
   ],
 
   templates: [
@@ -95,6 +95,6 @@ CLASS({
         display: flex;
         justify-content: flex-end;
       }
-    */},
-  ],
+    */}
+  ]
 });

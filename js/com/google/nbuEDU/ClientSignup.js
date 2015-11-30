@@ -15,29 +15,27 @@ CLASS({
 
   requires: [
     'foam.u2.Element',
-    'foam.u2.md.Select',
+    'foam.u2.md.Select'
   ],
 
   imports: [
     'currentUser$',
     'streamDAO',
     'createStreamItem',
-    'stack',
+    'stack'
   ],
 
   properties: [
-    {
-      name: 'sid',
-    },
+    'sid',
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValue: 'StudyBuddy Sign Up',
+      defaultValue: 'StudyBuddy Sign Up'
     },
     {
       model_: 'StringProperty',
       name: 'description',
-      defaultValue: 'Please choose your location and school board:',
+      defaultValue: 'Please choose your location and school board:'
     },
     {
       name: 'language',
@@ -66,7 +64,6 @@ CLASS({
         return X.data.Select.create({ choices: X.data.schoolBoardDAO }, X);
       }
     },
-
     {
       model_: 'StringArrayProperty',
       name: 'languageDAO',
@@ -76,7 +73,7 @@ CLASS({
           'English',
           'Hindi',
         ];
-      },
+      }
     },
     {
       model_: 'StringArrayProperty',
@@ -86,9 +83,9 @@ CLASS({
         return [
           'Board A',
           'Board B',
-          'Board C',
+          'Board C'
         ];
-      },
+      }
     },
     {
       model_: 'StringArrayProperty',
@@ -98,9 +95,9 @@ CLASS({
         return [
           'District 7',
           'District 8',
-          'District 9',
+          'District 9'
         ];
-      },
+      }
     },
     {
       model_: 'StringArrayProperty',
@@ -122,10 +119,10 @@ CLASS({
           [17,'17'],
           [18,'18'],
           [19,'19'],
-          [20,'Older. I can volunteer to help'],
+          [20,'Older. I can volunteer to help']
         ];
-      },
-    },
+      }
+    }
   ],
 
   actions: [
@@ -146,7 +143,7 @@ CLASS({
 
         this.stack && this.stack.popView();
       }
-    },
+    }
   ],
 
   methods: [
@@ -190,6 +187,6 @@ CLASS({
             .end()
           .end()
         .end();
-    },
-  ],
+    }
+  ]
 });

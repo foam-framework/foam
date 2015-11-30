@@ -15,7 +15,7 @@ CLASS({
   extends: 'com.google.ow.ui.OrderCitationView',
 
   requires: [
-    'foam.u2.Element',
+    'foam.u2.Element'
   ],
 
   properties: [
@@ -25,8 +25,8 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu ) return;
         this.getPerson(nu.merchant, this.merchant$);
-      },
-    },
+      }
+    }
   ],
 
   methods: [
@@ -38,6 +38,6 @@ CLASS({
                 .add('Merchant: ')
                 .add(merchant.displayName);
           }.bind(this).on$(this.X, this.merchant$));
-    },
-  ],
+    }
+  ]
 });

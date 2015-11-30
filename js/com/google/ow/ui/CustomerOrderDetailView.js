@@ -21,8 +21,8 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu ) return;
         this.getPerson(nu.merchant, this.merchant$);
-      },
-    },
+      }
+    }
   ],
 
   methods: [
@@ -39,6 +39,6 @@ CLASS({
       return this.SUPER(prev)
           .start('span').x({ controllerMode: 'modify' }).add(this.data.METHOD_OF_PAYMENT).end()
           .start('span').x({ controllerMode: 'view' }).add(this.data.STATUS).end();
-    },
-  ],
+    }
+  ]
 });

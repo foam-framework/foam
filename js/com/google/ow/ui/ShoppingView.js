@@ -61,8 +61,8 @@ CLASS({
         return X.lookup('com.google.ow.ui.CustomerOrderSummaryView').create({
           data: X.purchaseOrder,
         }, X);
-      },
-    },
+      }
+    }
   ],
 
   methods: [
@@ -75,13 +75,13 @@ CLASS({
     },
     function initE() {
       return this.x({ data: this }).add(this.PRODUCTS)
-          .start('div').cls('order-container').cls2(function() {
+          .start('div').cls('order-container').cls(function() {
             return this.purchaseOrder.isEmpty ? '' : 'visible';
           }.bind(this))
             .add(this.PURCHASE_ORDER)
             .start('div').cls('actions').add(this.CHECKOUT).end()
           .end();
-    },
+    }
   ],
 
   actions: [
@@ -104,8 +104,8 @@ CLASS({
           sid: X.data.adStream,
         })));
         X.stack.popView();
-      },
-    },
+      }
+    }
   ],
 
   templates: [
@@ -124,6 +124,6 @@ CLASS({
         display: flex;
         justify-content: flex-end;
       }
-    */},
-  ],
+    */}
+  ]
 });

@@ -47,7 +47,7 @@ CLASS({
           .add(this.ACCEPT)
           .add(this.NOTIFY)
           .add(this.DELIVER);
-    },
+    }
   ],
 
   actions: [
@@ -60,7 +60,7 @@ CLASS({
       },
       isAvailable: function() {
         return this.status === 'PENDING' || this.status === 'SUBMITTED';
-      },
+      }
     },
     {
       name: 'notify',
@@ -71,7 +71,7 @@ CLASS({
       },
       isAvailable: function() {
         return this.status === 'ACCEPTED';
-      },
+      }
     },
     {
       name: 'deliver',
@@ -82,7 +82,7 @@ CLASS({
       },
       isAvailable: function() {
         return this.status === 'READY';
-      },
-    },
+      }
+    }
   ]
 });

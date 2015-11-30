@@ -13,17 +13,18 @@ CLASS({
   package: 'com.google.plus.ui',
   name: 'ShareListView',
   extends: 'foam.u2.View',
+
   requires: [
     'com.google.plus.ui.ChipListView',
     'foam.ui.ReferenceListResolver',
-    'foam.ui.md.ToolbarAction',
+    'foam.ui.md.ToolbarAction'
   ],
 
   imports: [
-    'data',
     'circleDAO',
-    'personDAO',
+    'data',
     'mdToolbar',
+    'personDAO'
   ],
   exports: [ 'data' ],
 
@@ -76,7 +77,6 @@ CLASS({
     }
   ],
 
-
   templates: [
     function CSS() {/*
       plus-share-list {
@@ -97,6 +97,6 @@ CLASS({
         display: flex;
         flex-direction: row;
       }
-    */},
-  ],
+    */}
+  ]
 });

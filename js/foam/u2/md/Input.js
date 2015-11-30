@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2.md',
   name: 'Input',
   extends: 'foam.u2.View',
+
   requires: [
-    'foam.u2.Input',
+    'foam.u2.Input'
   ],
   properties: [
     ['nodeName', 'div'],
@@ -35,7 +37,7 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'focused'
-    },
+    }
   ],
 
   methods: [
@@ -45,15 +47,15 @@ CLASS({
       this.cls(this.myCls());
       if (this.showLabel) {
         this.start('label')
-            .cls2(this.myCls('label'))
-            .cls2(function() {
+            .cls(this.myCls('label'))
+            .cls(function() {
               return (typeof self.data !== 'undefined' && self.data !== '') ||
                   self.focused ? self.myCls('label-offset') : '';
             }.on$(this.X, this.data$, this.focused$))
             .add(this.label$)
             .end();
       } else {
-        this.cls2(this.myCls('no-label'));
+        this.cls(this.myCls('no-label'));
       }
 
       var input = this.start('input')
@@ -66,7 +68,7 @@ CLASS({
     function fromProperty(prop) {
       this.label = this.label || prop.label;
       return this.SUPER(prop);
-    },
+    }
   ],
 
   templates: [
@@ -112,6 +114,6 @@ CLASS({
         padding: 0 0 6px 0;
         outline: none;
       }
-    */},
+    */}
   ]
 });

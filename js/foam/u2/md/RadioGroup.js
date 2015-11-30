@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2.md',
   name: 'RadioGroup',
   extends: 'foam.u2.View',
+
   traits: ['foam.u2.ChoiceViewTrait'],
 
   requires: [
@@ -50,7 +52,7 @@ CLASS({
     function initE() {
       var self = this;
       this.cls(this.myCls())
-          .cls2(function() {
+          .cls(function() {
             return self.myCls(self.orientation);
           }.on$(this.X, this.orientation$));
 
@@ -78,7 +80,7 @@ CLASS({
     function choiceElement(i) {
       var self = this;
       this.start('div').cls(this.myCls('choice-outer'))
-          .cls2(function() {
+          .cls(function() {
             return self.index === i ? self.myCls('choice-selected') : '';
           }.on$(this.X, this.data$))
           .on('click', function() { self.index = i; })
@@ -86,9 +88,9 @@ CLASS({
               .cls('noselect')
               .start('div').cls(this.myCls('choice-background'))
                   .start('div').cls(this.myCls('choice-indicator'))
-                      .start('div').cls2(this.myCls('choice-indicator-on')).end()
-                      .start('div').cls2(this.myCls('choice-indicator-off')).end()
-                      .start('div').cls2(this.myCls('choice-indicator-container'))
+                      .start('div').cls(this.myCls('choice-indicator-on')).end()
+                      .start('div').cls(this.myCls('choice-indicator-off')).end()
+                      .start('div').cls(this.myCls('choice-indicator-container'))
                           .add(this.makeHalo(i).toView_())
                           .end()
                       .end()

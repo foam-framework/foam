@@ -14,9 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2.md',
   name: 'PopupMenu',
+
   traits: ['foam.u2.ChoiceViewTrait'],
 
   imports: [
@@ -24,7 +26,7 @@ CLASS({
     'clearTimeout',
     'document',
     'setTimeout',
-    'window',
+    'window'
   ],
 
   documentation: 'A floating menu that pops up, positioning itself over the ' +
@@ -38,7 +40,7 @@ CLASS({
     ['itemWidth', 100],
     ['isHidden', true],
     ['removeTimeout', 0],
-    ['isClosing', false],
+    ['isClosing', false]
   ],
 
   methods: [
@@ -236,14 +238,15 @@ CLASS({
     {
       name: 'MenuElement',
       extends: 'foam.u2.View',
+
       traits: ['foam.u2.ChoiceViewTrait'],
       imports: [
         'document',
-        'popup',
+        'popup'
       ],
       properties: [
         ['nodeName', 'ul'],
-        'itemHeight', 'itemWidth', 'hMargin',
+        'itemHeight', 'itemWidth', 'hMargin'
       ],
       methods: [
         function initE(opt_e) {
@@ -252,7 +255,7 @@ CLASS({
           for (var i = 0; i < this.choices.length; i++) {
             opt_e.start('li')
                 .cls('foam-u2-md-PopupMenu-choice')
-                .cls2(function(i) {
+                .cls(function(i) {
                   return this.index === i ? 'selected' : '';
                 }.bind(this, i).on$(this.X, this.index$))
                 .style({
@@ -337,7 +340,7 @@ CLASS({
           .foam-u2-md-PopupMenu-choice.selected {
             font-weight: bold;
           }
-        */},
+        */}
       ]
     }
   ]
