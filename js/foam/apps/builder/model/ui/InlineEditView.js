@@ -91,11 +91,14 @@ CLASS({
           <div class="inline-edit-view-grow">
             $$label{
               model_: 'foam.ui.md.TextFieldView',
-              floatingLabel: false,
             }
           </div>
           <% this.toolbar.toHTML(out); %>
         </div>
+        $$help{
+          model_: 'foam.ui.md.TextFieldView',
+          growable: true,
+        }
         $$data{ model_: 'foam.apps.builder.model.ui.EditView',
                 model: this.data.model_ }
       </div>
@@ -115,6 +118,11 @@ CLASS({
         flex-grow: 0;
         background-color: transparent;
         color: rgba(0,0,0,0.75);
+        margin-top: -8px;
+        margin-right: -8px;
+      }
+      .inline-edit-view .md-flex-row {
+        overflow: hidden;
       }
       .inline-edit-view-grow {
         flex-grow: 1;
