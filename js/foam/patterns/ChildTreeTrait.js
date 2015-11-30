@@ -108,6 +108,7 @@ CLASS({
         Array.prototype.forEach.call(this.children, function(child) {
           child.destroy && child.destroy(true);
         });
+        this.children = [];
       } else {
 //        console.log(this.name_, " SLOW removing ", this.children.length," children--------------------------------------");
         this.removeAllChildren();
