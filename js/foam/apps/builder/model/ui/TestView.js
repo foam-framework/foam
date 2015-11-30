@@ -27,7 +27,7 @@ CLASS({
     'IntProperty',
     'FloatProperty',
     'BooleanProperty',
-    'foam.ui.md.DAOListView',
+    'foam.ui.DAOListView',
     'foam.ui.md.SharedStyles',
   ],
 
@@ -68,7 +68,7 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
           $$testArray{
-            model_: 'foam.ui.md.DAOListView',
+            model_: 'foam.ui.DAOListView',
             rowView: 'foam.apps.builder.model.ui.InlineEditView',
             mode: 'read-write',
           }

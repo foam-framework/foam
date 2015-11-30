@@ -24,6 +24,17 @@ CLASS({
   documentation: function() {/* Dummy view, model-for-model replaced
     with a specific validate view. */},
 
+  properties: [
+    {
+      name: 'className',
+      defaultValue: 'validate-view',
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
+    },
+  ],
+
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>

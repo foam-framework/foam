@@ -88,16 +88,19 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-flex-row">
-          <div class="inline-edit-view-grow">
+          <div class="inline-edit-view-grow md-subhead">
             $$label{
               model_: 'foam.ui.md.TextFieldView',
+              floatingLabel: false,
             }
           </div>
           <% this.toolbar.toHTML(out); %>
         </div>
         $$help{
           model_: 'foam.ui.md.TextFieldView',
-          growable: true,
+          floatingLabel: false,
+          growable: false,
+          displayHeight: 1,
         }
         $$data{ model_: 'foam.apps.builder.model.ui.EditView',
                 model: this.data.model_ }

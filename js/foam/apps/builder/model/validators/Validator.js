@@ -17,36 +17,28 @@
 
 
 CLASS({
-  name: 'PropertyValidateView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.ValidateView',
+  name: 'Validator',
+  package: 'foam.apps.builder.model.validators',
+  extends: 'Method',
 
-  properties: [
-    {
-      type: 'DAO',
-      name: 'cannedValidators',
+
+  methods: [
+    function installOnProperty(prop) {
+      /* Generates a validate function from the current settings and sets
+        the validate property of the given prop. */
+
+
 
     },
-    {
-      name: 'validatorChoice',
-      view: function(args, X) {
-        args.choices = this.cannedValidators;
-        return this.ChoiceListView.create({
-
-        }, X || this.Y);
-      }
-    }
-  ],
-
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-flex-row">
-
-
-        </div>
-      </div>
-    */},
+    function generateFunction(pName) {
+      /* Generates the validate function to export. Override to provide your
+        validation code, or to introduce extra dependencies in the function's
+        parameters. */
+      return Function(
+        'function validate('+pName+') { \n' +
+        '  return '+pName+' && 1; \n' +
+        '}\n');
+    },
   ],
 
 });

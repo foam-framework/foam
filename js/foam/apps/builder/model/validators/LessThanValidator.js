@@ -17,36 +17,26 @@
 
 
 CLASS({
-  name: 'PropertyValidateView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.ValidateView',
+  name: 'LessThanValidator',
+  package: 'foam.apps.builder.model.validators',
+  extends: 'foam.apps.builder.model.validators.Validator',
 
   properties: [
     {
-      type: 'DAO',
-      name: 'cannedValidators',
-
+      type: 'Int',
+      name: 'lessThan',
+      defaultValue: 0,
     },
-    {
-      name: 'validatorChoice',
-      view: function(args, X) {
-        args.choices = this.cannedValidators;
-        return this.ChoiceListView.create({
-
-        }, X || this.Y);
-      }
-    }
   ],
 
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-flex-row">
-
-
-        </div>
-      </div>
-    */},
+  methods: [
+    function generateFunction(pName) {
+      return Function(
+        'function validate('+pName+') { \n' +
+        '  return '+pName+' < ' + this.lessThan + '; \n' +
+        '   \n' +
+        '}\n');
+    },
   ],
 
 });
