@@ -24,4 +24,11 @@ CLASS({
   documentation: function() {/* Dummy view, model-for-model replaced
     with a specific validate view. */},
 
+  templates: [
+    function toHTML() {/*
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        <pre><%= this.data.toString() %></pre>
+      </div>
+    */},
+  ],
 });

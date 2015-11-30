@@ -49,10 +49,13 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div>Property Editor</div>
+        <% this.propertyEditHTML(out) %>
         $$validate{ model_: 'foam.apps.builder.model.ui.ValidateView',
                     model: this.data.model_ }
       </div>
+    */},
+    function propertyEditHTML() {/*
+      <div>Property Editor</div>
     */},
     function CSS() {/*
       .property-edit-view {

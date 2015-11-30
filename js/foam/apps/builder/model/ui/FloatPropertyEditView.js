@@ -17,9 +17,30 @@
 
 
 CLASS({
-  name: 'PropertyValidateView',
+  name: 'FloatPropertyEditView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.ValidateView',
+  extends: 'foam.apps.builder.model.ui.PropertyEditView',
 
+  requires: [
+    'foam.apps.builder.model.ui.FloatPropertyValidateView',
+  ],
+
+  properties: [
+    {
+      name: 'className',
+      defaultValue: 'property-edit-view',
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
+    },
+  ],
+
+  templates: [
+    function propertyEditHTML() {/*
+      <pre>Nothing to edit Float</pre>
+    */},
+
+  ]
 
 });

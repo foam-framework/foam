@@ -17,9 +17,9 @@
 
 
 CLASS({
-  name: 'PropertyValidateView',
+  name: 'StringPropertyValidateView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.ValidateView',
+  extends: 'foam.apps.builder.model.ui.PropertyValidateView',
 
 
 });

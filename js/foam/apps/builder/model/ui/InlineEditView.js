@@ -23,7 +23,10 @@ CLASS({
 
   requires: [
     'foam.ui.md.Toolbar',
+    'foam.ui.md.FlatButton',
     'foam.apps.builder.model.ui.PropertyEditView',
+    'foam.apps.builder.model.ui.IntPropertyEditView',
+    'foam.apps.builder.model.ui.StringPropertyEditView',
   ],
 
   imports: [
@@ -44,9 +47,15 @@ CLASS({
       defaultValue: 'read-write',
     },
     {
-      model_: 'ViewFactoryProperty',
       name: 'toolbar',
-      defaultValue: 'foam.ui.md.Toolbar',
+      lazyFactory: function() {
+        this.Y.registerModel(this.FlatButton.xbind({
+          displayMode: 'ICON_ONLY',
+          height: 24,
+          width: 24,
+        }), 'foam.ui.ActionButton');
+        return this.Toolbar.create({ data: this.data });
+      }
     },
   ],
 
@@ -69,6 +78,12 @@ CLASS({
     }
   ],
 
+  methods: [
+    function init() {
+      this.SUPER();
+    },
+  ],
+
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
@@ -78,7 +93,7 @@ CLASS({
             inlineStyle: true,
             floatingLabel: false,
           }
-          %%toolbar()
+          <% this.toolbar.toHTML(out); %>
         </div>
         $$data{ model_: 'foam.apps.builder.model.ui.EditView',
                 model: this.data.model_ }
@@ -91,10 +106,16 @@ CLASS({
         align-content: baseline;
         flex-grow: 1;
         background: white;
+        padding: 16px;
+        border: 1px solid rgba(0,0,0,0.5);
       }
-      .md-flex-row toolbar {
-        width: inherit;
+      .inline-edit-view toolbar {
+        flex-shrink: 1;
+        flex-grow: 0;
+        background-color: transparent;
+        color: rgba(0,0,0,0.75);
       }
+
     */},
 
   ]

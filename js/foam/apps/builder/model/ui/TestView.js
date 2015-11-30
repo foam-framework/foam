@@ -24,6 +24,9 @@ CLASS({
   requires: [
     'foam.apps.builder.model.ui.InlineEditView',
     'StringProperty',
+    'IntProperty',
+    'FloatProperty',
+    'BooleanProperty',
     'foam.ui.md.DAOListView',
     'foam.ui.md.SharedStyles',
   ],
@@ -36,7 +39,12 @@ CLASS({
       name: 'testArray',
       subType: 'Property',
       factory: function() {
-        return [ this.StringProperty.create() ];
+        return [
+          this.IntProperty.create({ name: 'Inty' }),
+          this.FloatProperty.create({ name: 'Floaty' }),
+          this.StringProperty.create({ name: 'Stringy' }),
+          this.BooleanProperty.create({ name: 'Booly' }),
+        ].dao;
       }
     },
     {
@@ -51,8 +59,8 @@ CLASS({
 
   methods: [
     function init() {
-      this.SUPER();
       this.SharedStyles.create();
+      this.SUPER();
     }
   ],
 
