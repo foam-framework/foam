@@ -67,8 +67,11 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        $$testArray{ model_: 'foam.ui.md.DAOListView',
-          rowView: 'foam.apps.builder.model.ui.InlineEditView' }
+          $$testArray{
+            model_: 'foam.ui.md.DAOListView',
+            rowView: 'foam.apps.builder.model.ui.InlineEditView',
+            mode: 'read-write',
+          }
       </div>
     */},
     function CSS() {/*
@@ -77,7 +80,7 @@ CLASS({
         flex-direction: column;
         align-content: baseline;
         flex-grow: 1;
-        width: 500px;
+        max-width: 600px;
         height: 100%;
       }
     */},
