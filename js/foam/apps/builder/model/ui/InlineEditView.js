@@ -24,11 +24,16 @@ CLASS({
   requires: [
     'foam.ui.md.Toolbar',
     'foam.ui.md.FlatButton',
+    'foam.ui.md.PopupChoiceView',
     'foam.apps.builder.model.ui.PropertyEditView',
     'foam.apps.builder.model.ui.IntPropertyEditView',
     'foam.apps.builder.model.ui.FloatPropertyEditView',
     'foam.apps.builder.model.ui.StringPropertyEditView',
     'foam.apps.builder.model.ui.BooleanPropertyEditView',
+    'IntProperty',
+    'FloatProperty',
+    'BooleanProperty',
+    'StringProperty',
   ],
 
   imports: [
@@ -59,6 +64,59 @@ CLASS({
         return this.Toolbar.create({ data: this.data });
       }
     },
+    {
+      type: 'ViewFactory',
+      name: 'dataTypePicker',
+      defaultValue: function(args, X) {
+        console.log("picker",this.dataType.id);
+        return this.PopupChoiceView.create({
+          data: this.dataType,
+          dao: [
+            this.IntProperty,
+            this.FloatProperty,
+            this.StringProperty,
+            this.BooleanProperty,
+          ].dao,
+          objToChoice: function(obj) {
+            return [obj, obj.label];
+          },
+        }, X || this.Y);
+      }
+    },
+    {
+      name: 'dataType',
+      postSet: function(old, nu) {
+        if ( old && nu && ( nu.id !== this.data.model_.id ) ) {
+          // new property type set, reconstruct:
+          var newProp = nu.create(this.data, this.Y);
+
+          var sourceDAO = this.dao;
+          if ( sourceDAO.length ) {
+            // since we know the dao is actually an array, replace the item
+            for (var i=0; i<sourceDAO.length; ++i) {
+              if ( sourceDAO[i].id == this.data.id ) {
+                sourceDAO[i] = newProp;
+                sourceDAO.notify_('remove', [newProp]); // HACK!
+                break;
+              }
+            }
+          } else {
+            // fallback on actual DAO operations, may affect ordering
+            sourceDAO.remove(this.data);
+            sourceDAO.put(newProp);
+          }
+        }
+      }
+    },
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        if ( nu ) {
+          console.log("edit data",nu.model_.name);
+          this.dataType = nu.model_;
+        }
+      }
+    },
   ],
 
   actions: [
@@ -84,6 +142,7 @@ CLASS({
     function init() {
       this.SUPER();
     },
+    function shouldDestroy(old,nu) { return (! old || ! nu) || old.model_.id !== nu.model_.id; },
   ],
 
   templates: [
@@ -96,6 +155,7 @@ CLASS({
               floatingLabel: false,
             }
           </div>
+          %%dataTypePicker()
           <% this.toolbar.toHTML(out); %>
         </div>
         $$help{

@@ -39,7 +39,6 @@ CLASS({
   templates: [
     function propertyEditHTML() {/*
     */},
-
-  ]
+  ],
 
 });

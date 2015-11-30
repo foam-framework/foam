@@ -169,6 +169,7 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
+        console.log("acv", nu && nu.id);
         for ( var i = 0 ; i < this.choices.length ; i++ ) {
           if ( this.choices[i][0] === nu ) {
             if ( this.index !== i ) {
