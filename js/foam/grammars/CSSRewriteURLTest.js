@@ -73,15 +73,22 @@ CLASS({
   tests: [
     {
       model_: 'UnitTest',
-      name: 'Stylesheet',
-      description: 'Test url',
+      name: 'URL value',
+      description: 'Test url value',
       code: function() {
+        var url = 'http://localhost:8000/index.html?model=foam.testing.WebRunner&targets=foam.grammars.CSSRewriteURLTest';
         var posEgs = [
-          'url(http://localhost:8000/index.html?model=foam.testing.WebRunner&targets=foam.grammars.CSSRewriteURLTest)',
+          '@foo { bar: url(' + url + ') }',
+          '@foo { bar: url("' + url + '") }',
+          "@foo { bar: url('" + url + "') }",
         ];
         var negEgs = [];
 
-        this.testProduction('url', posEgs, negEgs);
+        this.testProduction('stylesheet', posEgs, negEgs);
+        var urls = Object.keys(this.css.urls);
+        this.assert(urls.length === 1, 'Expected 1 URL and got ' + urls.length);
+        this.assert(urls[0] === url, 'Expect URL to be "' + url +
+            '" and got "' + urls[0] + '"');
       }
     },
     {
@@ -107,7 +114,7 @@ CLASS({
     },
     {
       model_: 'UnitTest',
-      name: 'Stylesheet',
+      name: 'Stylesheet (async)',
       description: 'Test stylesheet async',
       async: true,
       code: function(ret) {

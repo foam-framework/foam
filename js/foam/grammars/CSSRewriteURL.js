@@ -45,42 +45,27 @@ CLASS({
         var css = this;
         return {
           __proto__: this.declParser.parser_,
-          declRHS: plus(
-              alt(
-                  // Either:
-                  // (2) A url() function, possibly followed by sequence acceptable alpha-num-punct.
-                  // or
-                  // (2) A function, possibly followed by sequence acceptable alpha-num-punct.
-                  // or
-                  // (3) Sequence of acceptable alpha-num-punct.
-                  str(seq(sym('fn'),
-                          // Alpha-num-punct, but not "(", ")", "{", "}" or ";".
-                          str(repeat(alt(sym('anp'), ',', ':'))))),
-                  str(seq(sym('fn'),
-                          // Alpha-num-punct, but not "(", ")", "{", "}" or ";".
-                          str(repeat(alt(sym('anp'), ',', ':'))))),
-                  // Alpha-num-punct, but not "(", ")", "{", "}" or ";".
-                  str(plus(alt(sym('anp'), ',', ':')))),
-              sym('wsp_')),
-          url: seq('url(', str(repeat(alt(sym('anp'), ':', ';', '{', '}', '('))), ')'),
+          declRHS: plus(plus(alt(sym('fnArgs'),
+                                 sym('declRHSIdent'))),
+                        sym('wsp_')),
         }.addActions({
           declRHS: function(parts) {
-            return parts.join(' ');
-          },
-          url: function(parts) {
-            var url = parts[1];
-            // Strip slashes.
-            if ( (url.charAt(0) === '"' && url.charAt(url.length - 1) === '"') ||
-                 (url.charAt(0) === "'" && url.charAt(url.length - 1) === "'") )
-              url = url.slice(1, -1);
-            // Don't attempt to download data URLs.
-            if ( url.slice(0, 5) === 'data:' ) return parts.join('');
-
-            css.urls[url] = url;
-
-            console.log('URL: "' + parts.join('') + '"');
-
-            return parts.join('');
+            var rtn = [];
+            for ( var i = 0; i < parts.length; ++i ) {
+              var fragment = parts[i];
+              rtn.push(fragment.join(''));
+              for ( var j = 0; j < fragment.length - 1; ++j ) {
+                var name = fragment[j];
+                var args = fragment[j + 1];
+                if ( ! (name === 'url' && args.charAt(0) === '(') ) continue;
+                var url = (args.charAt(1) === '"' || args.charAt(1) === "'") ?
+                    args.slice(2, -2) : // Drop parens and quotes.
+                    args.slice(1, -1);  // Drop parens.
+                if ( url.slice(0, 5) === 'data:' ) continue;
+                css.urls[url] = url;
+              }
+            }
+            return rtn.join(' ');
           },
         });
       },
