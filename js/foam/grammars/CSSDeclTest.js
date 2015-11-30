@@ -139,8 +139,8 @@ CLASS({
     },
     {
       model_: 'UnitTest',
-      name: 'Inline Fonts',
-      description: 'Test inline fonts',
+      name: 'Function-in-function',
+      description: 'Test functions in functions',
       code: function() {
         var posEgs = [
           multiline(function() {/*
@@ -151,7 +151,14 @@ background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #e
         ];
         var negEgs = [];
 
-        this.testProduction('stylesheet', posEgs, negEgs);
+        var results = this.testProduction('stylesheet', posEgs, negEgs);
+
+        var result = results[0].value;
+        var expected = '@font-face{background:-webkit-gradient(linear, left ' +
+            'top, left bottom, color-stop(0.05, #ededed), color-stop(1, ' +
+            '#dfdfdf))}';
+        this.assert(result === expected, 'Expected parse to be "' + expected +
+            '", and got "' + result + '"');
       }
     },
     {

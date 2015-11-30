@@ -109,21 +109,21 @@ CLASS({
 
           fnArgs: seq('(',
                       sym('ws_'),
-                      repeat(sym('fnArg')),
+                      str(repeat(sym('fnArg'))),
                       ')'),
           // Cannot use repeat(content, separator) because we need to retain
           // separator value.
-          fnArg: seq(plus(alt(sym('fnArgs'),
-                              sym('fnArgIdent'))),
+          fnArg: seq(str(plus(alt(sym('fnArgs'),
+                                  sym('fnArgIdent')))),
                      repeat(sym('wsc'))),
-          fnArgIdent: str(repeat(alt(sym('anp'), '{', '}', ';', ':'))),
+          fnArgIdent: str(plus(alt(sym('anp'), '{', '}', ';', ':'))),
 
           // Alpha-num-punct, but not "{", "}" or ":".
           declLHS: str(plus(alt(sym('anp'), ',', '(', ')', ';'))),
-          declRHS: plus(plus(alt(sym('fnArgs'),
-                                 sym('declRHSIdent'))),
+          declRHS: plus(str(plus(alt(sym('fnArgs'),
+                                     sym('declRHSIdent')))),
                         sym('wsp_')),
-          // Alpha-num-punct, but not "{", "}", "(", "(", or ";".
+          // Alpha-num-punct, but not "{", "}", "(", ")", or ";".
           declRHSIdent: str(plus(alt(sym('anp'), ',', ':'))),
           decl: seq(
               sym('declLHS'),
@@ -178,7 +178,7 @@ CLASS({
             return parts[0] + (parts[1].indexOf(',') >= 0 ? ', ' : ' ');
           },
           fnArgs: function(parts) {
-            return '(', parts[2].join(''), ')';
+            return '(' + parts[2].trim() + ')';
           },
         });
       },
