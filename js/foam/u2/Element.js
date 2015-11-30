@@ -499,18 +499,18 @@ CLASS({
       base.split(/ +/);
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
-    function toggleCls(cls, enabled, opt_negate) {
+    function enableCls(cls, enabled, opt_negate) {
       function negate(a, b) { return b ? a : ! a; }
 
       if ( typeof enabled === 'function' ) {
         var fn = enabled;
         this.dynamic(fn, function(value) {
-          this.toggleCls(cls, value, opt_negate);
+          this.enableCls(cls, value, opt_negate);
         }.bind(this));
       } else if ( Value.isInstance(enabled) ) {
         var value = enabled;
         var l = function() {
-          this.toggleCls(cls, value.get(), opt_negate);
+          this.enableCls(cls, value.get(), opt_negate);
         }.bind(this);
         value.addListener(l);
         l();
