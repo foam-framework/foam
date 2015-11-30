@@ -499,23 +499,23 @@ CLASS({
       base.split(/ +/);
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
-    function toggleCls(cls, opt_enabled, opt_negate) {
+    function toggleCls(cls, enabled, opt_negate) {
       function negate(a, b) { return b ? a : ! a; }
 
-      if ( typeof opt_enabled === 'function' ) {
-        var fn = opt_enabled;
+      if ( typeof enabled === 'function' ) {
+        var fn = enabled;
         this.dynamic(fn, function(value) {
           this.toggleCls(cls, value, opt_negate);
         }.bind(this));
-      } else if ( Value.isInstance(opt_enabled) ) {
-        var value = opt_enabled;
+      } else if ( Value.isInstance(enabled) ) {
+        var value = enabled;
         var l = function() {
           this.toggleCls(cls, value.get(), opt_negate);
         }.bind(this);
         value.addListener(l);
         l();
       } else {
-        var enabled = negate(opt_enabled === undefined ? true : opt_enabled, opt_negate);
+        enabled = negate(enabled, opt_negate);
         var parts = cls.split(' ');
         for (var i = 0; i < parts.length; i++) {
           this.classes[parts[i]] = enabled;
