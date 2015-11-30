@@ -26,7 +26,9 @@ CLASS({
     'foam.ui.md.FlatButton',
     'foam.apps.builder.model.ui.PropertyEditView',
     'foam.apps.builder.model.ui.IntPropertyEditView',
+    'foam.apps.builder.model.ui.FloatPropertyEditView',
     'foam.apps.builder.model.ui.StringPropertyEditView',
+    'foam.apps.builder.model.ui.BooleanPropertyEditView',
   ],
 
   imports: [

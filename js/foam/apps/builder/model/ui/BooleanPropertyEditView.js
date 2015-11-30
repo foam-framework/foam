@@ -17,24 +17,29 @@
 
 
 CLASS({
-  name: 'IntPropertyValidateView',
+  name: 'BooleanPropertyEditView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyValidateView',
+  extends: 'foam.apps.builder.model.ui.PropertyEditView',
 
   requires: [
-    'foam.apps.builder.model.validators.LessThanValidator',
+    'foam.apps.builder.model.ui.BooleanPropertyValidateView',
   ],
 
   properties: [
     {
-      type: 'DAO',
-      name: 'cannedValidators',
-      lazyFactory: function() {
-        return [
-          this.LessThanValidator.create(),
-        ].dao;
-      }
+      name: 'className',
+      defaultValue: 'property-edit-view',
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
     },
   ],
+
+  templates: [
+    function propertyEditHTML() {/*
+    */},
+
+  ]
 
 });

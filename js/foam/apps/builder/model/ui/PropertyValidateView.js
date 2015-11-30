@@ -21,6 +21,10 @@ CLASS({
   package: 'foam.apps.builder.model.ui',
   extends: 'foam.apps.builder.model.ui.ValidateView',
 
+  requires: [
+    'foam.ui.md.PopupChoiceView',
+  ],
+
   properties: [
     {
       type: 'DAO',
@@ -28,21 +32,35 @@ CLASS({
 
     },
     {
-      name: 'validatorChoice',
-      view: function(args, X) {
-        args.choices = this.cannedValidators;
-        return this.ChoiceListView.create({
-
+      type: 'ViewFactory',
+      name: 'validator',
+      defaultValue: function(args, X) {
+        return this.PopupChoiceView.create({
+          data$: this.choice$,
+          dao: this.cannedValidators,
+          objToChoice: this.validatorToChoice,
         }, X || this.Y);
       }
-    }
+    },
+    {
+      name: 'choice',
+      postSet: function(old, nu) {
+        nu && nu.installOnProperty && nu.installOnProperty(this.data);
+      }
+    },
+  ],
+
+  methods: [
+    function validatorToChoice(obj) {
+      return [ obj, obj.model_.label ];
+    },
   ],
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <div class="md-flex-row">
-
+          %%validator()
 
         </div>
       </div>

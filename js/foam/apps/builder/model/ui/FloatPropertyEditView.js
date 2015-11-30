@@ -38,7 +38,6 @@ CLASS({
 
   templates: [
     function propertyEditHTML() {/*
-      <pre>Nothing to edit Float</pre>
     */},
 
   ]

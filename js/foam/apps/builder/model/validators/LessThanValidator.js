@@ -21,10 +21,13 @@ CLASS({
   package: 'foam.apps.builder.model.validators',
   extends: 'foam.apps.builder.model.validators.Validator',
 
+  label: 'Less than',
+
   properties: [
     {
       type: 'Int',
       name: 'lessThan',
+      label: 'number',
       defaultValue: 0,
     },
   ],

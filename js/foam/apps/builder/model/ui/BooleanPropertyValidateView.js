@@ -17,7 +17,7 @@
 
 
 CLASS({
-  name: 'IntPropertyValidateView',
+  name: 'BooleanPropertyValidateView',
   package: 'foam.apps.builder.model.ui',
   extends: 'foam.apps.builder.model.ui.PropertyValidateView',
 
@@ -25,16 +25,9 @@ CLASS({
     'foam.apps.builder.model.validators.LessThanValidator',
   ],
 
-  properties: [
-    {
-      type: 'DAO',
-      name: 'cannedValidators',
-      lazyFactory: function() {
-        return [
-          this.LessThanValidator.create(),
-        ].dao;
-      }
-    },
+  templates: [
+    function toHTML() {/*
+      <div id="%%id" <%= this.cssClassAttr() %>></div>
+    */},
   ],
-
 });

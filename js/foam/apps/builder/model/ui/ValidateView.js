@@ -37,9 +37,7 @@ CLASS({
 
   templates: [
     function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-        <pre><%= this.data.toString() %></pre>
-      </div>
+      <div id="%%id" <%= this.cssClassAttr() %>></div>
     */},
   ],
 });
