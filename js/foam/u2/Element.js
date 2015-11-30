@@ -529,20 +529,20 @@ CLASS({
       if ( typeof cls === 'function' ) {
         var lastValue = null;
         this.dynamic(cls, function(value) {
-          this.cls2_(lastValue, value);
+          this.cls_(lastValue, value);
           lastValue = value;
         }.bind(this));
       } else if ( Value.isInstance(cls) ) {
         var lastValue = null;
         var l = function() {
           var v = cls.get();
-          this.cls2_(lastValue, v);
+          this.cls_(lastValue, v);
           lastValue = v;
         }.bind(this);
         cls.addListener(l);
         l();
       } else {
-        this.cls2_(null, cls);
+        this.cls_(null, cls);
       }
       return this;
     },
@@ -887,7 +887,7 @@ CLASS({
     // Template Support (internal)
     //
     function a() { return this.add.apply(this, arguments); },
-    function c() { return this.cls2.apply(this, arguments); },
+    function c() { return this.cls.apply(this, arguments); },
     function e() { return this.end(); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
     function i(id) { return this.setID(id); },
