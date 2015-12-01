@@ -905,9 +905,3 @@ CLASS({
     function y() { return this.style.apply(this, arguments); },
   ]
 });
-
-
-
-/*
-  TODO: focus?, compile, deepClone, pass data, computedStyle, don't clone if literal
-*/
