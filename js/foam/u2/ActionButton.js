@@ -18,8 +18,8 @@
 CLASS({
   package: 'foam.u2',
   name: 'ActionButton',
-
   extends: 'foam.u2.Element',
+
   imports: [ 'data' ],
 
   properties: [

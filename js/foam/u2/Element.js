@@ -25,7 +25,7 @@ CLASS({
   ],
 
   imports: [
-    'dynamic',
+    'dynamicFn',
     'framed'
   ],
 
@@ -37,7 +37,7 @@ CLASS({
       var dyn  = X.E('span');
       var last = null;
 
-      X.dynamic(this, function(e) {
+      X.dynamicFn(this, function(e) {
         e = X.E('span').add(e);
         if ( last ) dyn.removeChild(last); //last.remove();
         dyn.add(last = e);
@@ -499,23 +499,23 @@ CLASS({
       base.split(/ +/);
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
-    function cls(cls, opt_enabled, opt_negate) {
+    function enableCls(cls, enabled, opt_negate) {
       function negate(a, b) { return b ? a : ! a; }
 
-      if ( typeof opt_enabled === 'function' ) {
-        var fn = opt_enabled;
-        this.dynamic(fn, function(value) {
-          this.cls(cls, value, opt_negate);
+      if ( typeof enabled === 'function' ) {
+        var fn = enabled;
+        this.dynamicFn(fn, function(value) {
+          this.enableCls(cls, value, opt_negate);
         }.bind(this));
-      } else if ( Value.isInstance(opt_enabled) ) {
-        var value = opt_enabled;
+      } else if ( Value.isInstance(enabled) ) {
+        var value = enabled;
         var l = function() {
-          this.cls(cls, value.get(), opt_negate);
+          this.enableCls(cls, value.get(), opt_negate);
         }.bind(this);
         value.addListener(l);
         l();
       } else {
-        var enabled = negate(opt_enabled === undefined ? true : opt_enabled, opt_negate);
+        enabled = negate(enabled, opt_negate);
         var parts = cls.split(' ');
         for (var i = 0; i < parts.length; i++) {
           this.classes[parts[i]] = enabled;
@@ -525,29 +525,34 @@ CLASS({
       return this;
     },
 
-    function cls2(cls) {
+    function cls(cls) {
       if ( typeof cls === 'function' ) {
         var lastValue = null;
-        this.dynamic(cls, function(value) {
+<<<<<<< HEAD
+        this.dynamicFn(cls, function(value) {
           this.cls2_(lastValue, value);
+=======
+        this.dynamic(cls, function(value) {
+          this.cls_(lastValue, value);
+>>>>>>> 67779313028b8452e5503a56116c2bc7ab8a0440
           lastValue = value;
         }.bind(this));
       } else if ( Value.isInstance(cls) ) {
         var lastValue = null;
         var l = function() {
           var v = cls.get();
-          this.cls2_(lastValue, v);
+          this.cls_(lastValue, v);
           lastValue = v;
         }.bind(this);
         cls.addListener(l);
         l();
       } else {
-        this.cls2_(null, cls);
+        this.cls_(null, cls);
       }
       return this;
     },
 
-    function cls2_(oldClass, newClass) {
+    function cls_(oldClass, newClass) {
       if ( oldClass === newClass ) return;
       this.removeCls(oldClass);
       if ( newClass ) {
@@ -558,7 +563,7 @@ CLASS({
 
     function dynamicAttr_(key, fn) {
       var self = this;
-      this.dynamic(fn, function(value) {
+      this.dynamicFn(fn, function(value) {
         self.setAttribute(key, value);
       });
     },
@@ -595,7 +600,7 @@ CLASS({
     },
 
     function dynamicStyle_(key, fn) {
-      this.dynamic(fn, function(value) {
+      this.dynamicFn(fn, function(value) {
         this.style_(key, value);
       }.bind(this));
     },
@@ -887,7 +892,7 @@ CLASS({
     // Template Support (internal)
     //
     function a() { return this.add.apply(this, arguments); },
-    function c() { return this.cls2.apply(this, arguments); },
+    function c() { return this.cls.apply(this, arguments); },
     function e() { return this.end(); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
     function i(id) { return this.setID(id); },
@@ -905,9 +910,3 @@ CLASS({
     function y() { return this.style.apply(this, arguments); },
   ]
 });
-
-
-
-/*
-  TODO: focus?, compile, deepClone, pass data, computedStyle, don't clone if literal
-*/

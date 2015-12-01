@@ -46,7 +46,7 @@ CLASS({
       var mouse   = this.mouse;
       mouse.connect(this.$);
 
-      Events.dynamic(function() { mouse.x; mouse.y; }, function() {
+      Events.dynamicFn(function() { mouse.x; mouse.y; }, function() {
         var circle = this.Circle.create({
           x: mouse.x,
           y: mouse.y,

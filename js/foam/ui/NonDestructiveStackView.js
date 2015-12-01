@@ -72,7 +72,7 @@ CLASS({
     init: function() {
       this.SUPER();
       var self = this;
-      this.X.dynamic(function() { self.width; self.height; self.sliderOpen; self.slideAmount }, this.layout);
+      this.X.dynamicFn(function() { self.width; self.height; self.sliderOpen; self.slideAmount }, this.layout);
     },
     setPreview: function(){ console.warn('Preview removed from stack view, do it yourself.'); },
     pushView: function(view, opt_label, opt_back, opt_transition) {

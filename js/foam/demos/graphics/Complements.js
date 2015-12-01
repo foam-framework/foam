@@ -56,7 +56,7 @@ CLASS({
           color: 'hsl(' + 180*a/Math.PI + ', 90%, 60%)'
         });
 
-        Events.dynamic((function (circle, a) {
+        Events.dynamicFn((function (circle, a) {
           return function() {
             circle.r = 10 + 30 * Math.abs(Math.sin(a + timer.time/3000)); };
         })(circle, a));

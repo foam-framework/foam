@@ -99,7 +99,7 @@ CLASS({
         ])();
       }.bind(this)));
 
-      Events.dynamic(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
+      Events.dynamicFn(function() { this.data.op; this.data.history; this.data.a1; this.data.a2; }.bind(this), move);
 
       this.X.window.addEventListener('resize', move);
 

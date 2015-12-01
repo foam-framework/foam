@@ -17,11 +17,28 @@
 
 
 CLASS({
-  name: 'ValidateView',
+  name: 'BooleanPropertyEditView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.ui.md.DetailView',
+  extends: 'foam.apps.builder.model.ui.PropertyEditView',
 
-  documentation: function() {/* Dummy view, model-for-model replaced
-    with a specific validate view. */},
+  requires: [
+  ],
+
+  properties: [
+    {
+      name: 'className',
+      defaultValue: 'property-edit-view',
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
+    },
+  ],
+
+  templates: [
+    function propertyEditHTML() {/*
+    */},
+
+  ]
 
 });

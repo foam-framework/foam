@@ -71,7 +71,7 @@
     sys2.architecture = System.getPrototype().mixed;
 //    sys2.architecture = foam;
 
-    X.dynamic(function () {
+    X.dynamicFn(function () {
         //timer.second;
         timer.time;
       },
@@ -158,7 +158,7 @@
           sys.title = i >= systems.length ? "???" : systems[i];
           space2.addChild(sys);
           dim(sys);
-          X.dynamic(
+          X.dynamicFn(
             function() { timer.time; },
             function() { sys.parent = space2; sys.tick(timer); });
         }})(i), (i+1)*2000);

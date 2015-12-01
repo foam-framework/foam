@@ -17,20 +17,17 @@
 
 
 CLASS({
-  name: 'PropertyValidateView',
+  name: 'StringPropertyEditView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.ui.md.DetailView',
+  extends: 'foam.apps.builder.model.ui.PropertyEditView',
 
-  imports: [
-    'dao', // the property array of our model
-    'stack',
-    'mdToolbar as toolbar',
+  requires: [
   ],
 
   properties: [
     {
       name: 'className',
-      defaultValue: 'property-validate-view',
+      defaultValue: 'property-edit-view',
     },
     {
       name: 'mode',
@@ -38,25 +35,8 @@ CLASS({
     },
   ],
 
-  actions: [
-
-  ],
-
   templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-        <div>Property Validate</div>
-        %%data
-      </div>
-    */},
-    function CSS() {/*
-      .property-validate-view {
-        display: flex;
-        flex-direction: column;
-        align-content: baseline;
-        flex-grow: 1;
-        background: white;
-      }
+    function propertyEditHTML() {/*
     */},
 
   ]

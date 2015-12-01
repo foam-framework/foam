@@ -29,7 +29,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(function() {
+      this.X.dynamicFn(function() {
         this.cview; this.width; this.height;
       }.bind(this), function() {
         if ( ! this.cview ) return;

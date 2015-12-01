@@ -142,7 +142,7 @@ CLASS({
 
       var self = this;
       this.cache.remove(obj.id, {
-        put: function() {
+        remove: function() {
           self.delegate.remove(obj, sink);
         },
         error: function() {

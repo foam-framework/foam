@@ -56,16 +56,16 @@ CLASS({
       this.SUPER();
     },
    function initE() {
-      return this.add(
-          this.data && this.data.toDetailE ?
-              this.data.toDetailE(this.Y) :
-              this.DetailView.create({ data$: this.data$ }, this.Y))
-          .start('div').cls('add-to-cart')
-            .start('div').style({ 'flex-grow': '1' }).add(this.QUANTITY).end()
-            .add(this.ADD_TO_ORDER)
-          .end();
-    },
-         ],
+     return this.add(
+       this.data && this.data.toDetailE ?
+         this.data.toDetailE(this.Y) :
+         this.DetailView.create({ data$: this.data$ }, this.Y))
+       .start('div').cls('add-to-cart')
+         .start('div').style({ 'flex-grow': '1' }).add(this.QUANTITY).end()
+         .add(this.ADD_TO_ORDER)
+       .end();
+    }
+  ]
 
   templates: [
     function CSS() {/*
@@ -77,6 +77,6 @@ CLASS({
         display: flex;
         align-items: baseline;
       }
-    */},
-  ],
+    */}
+  ]
 });

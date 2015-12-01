@@ -74,13 +74,13 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(function() { this.width; this.offset; this.objs; }.bind(this),
+      this.X.dynamicFn(function() { this.width; this.offset; this.objs; }.bind(this),
                      function() {
                        this.view && this.view.paint();
                      }.bind(this));
     },
     initCView: function() {
-      this.X.dynamic(
+      this.X.dynamicFn(
         function() {
           this.scrollTop; this.height;
         }.bind(this), this.onDAOUpdate);

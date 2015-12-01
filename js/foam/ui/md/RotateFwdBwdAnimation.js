@@ -78,13 +78,13 @@ CLASS({
       name: 'init',
       code: function() {
         this.SUPER.apply(this, arguments);
-        this.X.dynamic(function() {
+        this.X.dynamicFn(function() {
           this.easing;
           this.fwdDuration;
           this.fwdDirection;
           this.fwdAnimation = this.getAnimation('fwd');
         }.bind(this));
-        this.X.dynamic(function() {
+        this.X.dynamicFn(function() {
           this.easing;
           this.bwdDuration;
           this.bwdDirection;

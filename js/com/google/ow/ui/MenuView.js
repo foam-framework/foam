@@ -26,12 +26,12 @@ CLASS({
   ],
 
   constants: {
-    MENU_CLOSE: ['menu-close'],
+    MENU_CLOSE: ['menu-close']
   },
 
   properties: [
     [ 'nodeName', 'MENU' ],
-    'currentUser',
+    'currentUser'
   ],
 
   methods: [
@@ -41,13 +41,13 @@ CLASS({
       var users = this.DAOListView.create({
         data: this.data.personDAO
       }, pY);
-      
+
       users.subscribe(users.ROW_CLICK, function() {
         this.publish(this.MENU_CLOSE);
       }.bind(this));
 
       return this.start('div').cls('md-headline').add('Select user').end()
           .start('div').cls('md-body').add(users).end();
-    },
-  ],
+    }
+  ]
 });

@@ -67,7 +67,7 @@ CLASS({
         //
         // TODO(markdittmer): We should be using this.setClass() here, but
         // it's not working right now.
-        Events.dynamic(function() {
+        Events.dynamicFn(function() {
           this.flare && this.flare.flareState;
           this.virtualConsoleView;
           var vc = this.virtualConsoleView;
@@ -80,7 +80,7 @@ CLASS({
         }.bind(this));
 
         this.viewOutputContainer = this.X.$(this.id + '-voc');
-        Events.dynamic(function() {
+        Events.dynamicFn(function() {
           this.viewOutputContainer;
           this.viewOutputView && this.viewOutputView.height;
           this.viewOutputContainer.className = this.viewOutputView.height > 0 ?

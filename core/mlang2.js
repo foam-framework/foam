@@ -852,7 +852,7 @@ CLASS({
       self.addPropertyListener('acc', f);
       f();
       /*
-        Events.dynamic(
+        Events.dynamicFn(
         function() { self.xFunc; self.yFunc; self.acc; },
         function() {
         self.cols = GROUP_BY(self.xFunc, COUNT());

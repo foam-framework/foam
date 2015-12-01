@@ -14,21 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2.md',
   name: 'Checkbox',
   extends: 'foam.u2.View',
+
   properties: [
-    {
-      name: 'label',
-    },
+    'label'
   ],
 
   methods: [
     function initE() {
       var self = this;
       this.cls(this.myCls())
-          .cls2(function() {
+          .cls(function() {
             return self.data ? self.myCls('checked') : '';
           }.on$(this.X, this.data$))
           .on('click', function() { self.data = !self.data; })
@@ -91,6 +91,6 @@ CLASS({
         border-color: #04a9f4;
         fill: white;
       }
-    */},
+    */}
   ]
 });

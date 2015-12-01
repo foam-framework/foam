@@ -17,17 +17,11 @@
 
 
 CLASS({
-  name: 'PropertyEditView',
+  name: 'FloatPropertyEditView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.ui.md.DetailView',
+  extends: 'foam.apps.builder.model.ui.PropertyEditView',
 
   requires: [
-  ],
-
-  imports: [
-    'dao', // the property array of our model
-    'stack',
-    'mdToolbar as toolbar',
   ],
 
   properties: [
@@ -41,29 +35,9 @@ CLASS({
     },
   ],
 
-  actions: [
-
-  ],
-
   templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-        <% this.propertyEditHTML(out) %>
-      </div>
-    */},
     function propertyEditHTML() {/*
-      <div>Property Editor</div>
     */},
-    function CSS() {/*
-      .property-edit-view {
-        display: flex;
-        flex-direction: column;
-        align-content: baseline;
-        flex-grow: 1;
-        background: white;
-      }
-    */},
-
-  ]
+  ],
 
 });

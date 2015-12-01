@@ -154,7 +154,7 @@ CLASS({
 
       this.mouse.connect(this.parent.$);
 
-      Events.dynamic(function() {
+      Events.dynamicFn(function() {
         //           console.log(this.mouse.x, this.mouse.y);
         //           console.log(this.x, this.width, this.features.length);
         this.selectedX = Math.floor((this.mouse.x-this.x)/this.width*(this.features.length+1));

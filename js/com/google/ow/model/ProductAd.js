@@ -16,18 +16,18 @@ CLASS({
 
   requires: [
     'com.google.ow.ui.ShoppingView',
-    'foam.u2.Element',
+    'foam.u2.Element'
   ],
 
   properties: [
     {
       model_: 'foam.core.types.DAOProperty',
-      name: 'products',
+      name: 'products'
     },
     {
       type: 'com.google.ow.model.Order',
-      name: 'order',
-    },
+      name: 'order'
+    }
   ],
 
   methods: [
@@ -56,6 +56,6 @@ CLASS({
           .start('div').cls('md-body').add(this.summaryText).end()
         .end();
     },
-    function toString() { return '[rich content]'; },
-  ],
+    function toString() { return '[rich content]'; }
+  ]
 });

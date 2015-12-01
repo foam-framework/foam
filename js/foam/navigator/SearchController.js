@@ -159,7 +159,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      Events.dynamic(
+      Events.dynamicFn(
         function() { this.dao; this.query; this.modelFilter }.bind(this),
         function() {
           var modelQuery = this.modelFilter === 'All' ? TRUE :

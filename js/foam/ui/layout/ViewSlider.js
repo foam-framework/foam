@@ -65,7 +65,7 @@ CLASS({
       "code": function () {
         this.SUPER();
         var self = this;
-        this.X.dynamic(
+        this.X.dynamicFn(
             function() {
               self.width;
               self.height;

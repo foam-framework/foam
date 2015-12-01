@@ -43,7 +43,7 @@ CLASS({
       this.Y.registerModel(this.Select, 'foam.u2.Select');
 
       this.SUPER();
-    },
+    }
   ],
 
   templates: [
@@ -59,6 +59,6 @@ CLASS({
         display: flex;
         justify-content: space-between;
       }
-    */},
-  ],
+    */}
+  ]
 });

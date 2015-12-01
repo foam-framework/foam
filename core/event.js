@@ -615,7 +615,7 @@ var Events = {
    * @returns a cleanup object. call ret.destroy(); to
    *        destroy the dynamic function and listeners.
    */
-  dynamic: function(fn, opt_fn, opt_X) {
+  dynamicFn: function(fn, opt_fn, opt_X) {
     var fn2 = opt_fn ? function() { opt_fn(fn()); } : fn;
     var listener = EventService.framed(fn2, opt_X);
     var propertyValues = [];
@@ -853,7 +853,7 @@ MODEL({
       Events.onSet.push(function(obj, name, value2) {
       var value1 = obj[name];
 
-      Events.dynamic(function() {
+      Events.dynamicFn(function() {
       var now = timer.time;
 
       obj[name] = value1 + (value2-value1) * (now-startTime)/duration;
@@ -937,7 +937,7 @@ MODEL({
 
     onIntersect: function (o1, o2, fn) {
       if ( o1.model_.R ) {
-        Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
+        Events.dynamicFn(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
           var dx = o1.x - o2.x;
           var dy = o1.y - o2.y;
           var d = dx*dx + dy*dy;
@@ -946,7 +946,7 @@ MODEL({
             fn.call(null, o1, o2);
         });
       } else {
-        Events.dynamic(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
+        Events.dynamicFn(function() { o1.x; o1.y; o2.x; o2.y; }, function() {
           if ( ( o1.x <= o2.x && o1.x + o1.width > o2.x    &&
                  o1.y <= o2.y && o1.y + o1.height > o2.y ) ||
                ( o2.x <= o1.x && o2.x + o2.width > o1.x    &&
@@ -1022,7 +1022,7 @@ MODEL({
     },
 
     strut: function(mouse, c, dx, dy) {
-      Events.dynamic(function() { mouse.x; mouse.y; }, function() {
+      Events.dynamicFn(function() { mouse.x; mouse.y; }, function() {
         c.x = mouse.x + dx;
         c.y = mouse.y + dy;
       });
@@ -1032,14 +1032,14 @@ MODEL({
       // TODO(kgr): implement opt_theta, the ability to control the direction
       var a = opt_a || 1;
       var theta = opt_theta || Math.PI * 1.5;
-      Events.dynamic(function() { c.vx; c.vy; }, function() {
+      Events.dynamicFn(function() { c.vx; c.vy; }, function() {
         c.vy += a;
       });
     },
 
     friction: function(c, opt_coef) {
       var coef = opt_coef || 0.9;
-      Events.dynamic(function() { c.vx; c.vy; }, function() {
+      Events.dynamicFn(function() { c.vx; c.vy; }, function() {
         c.vx = Math.abs(c.vx) < 0.001 ? 0 : c.vx * coef;
         c.vy = Math.abs(c.vy) < 0.001 ? 0 : c.vy * coef;
       });
@@ -1048,7 +1048,7 @@ MODEL({
     inertia: function(c) {
       var last = Date.now();
 
-      Events.dynamic(function() { c.vx; c.vy; c.x; c.y; }, function() {
+      Events.dynamicFn(function() { c.vx; c.vy; c.x; c.y; }, function() {
         // Take into account duration since last run
         // Don't skip more than 4 frames because it can cause
         // collisions to be missed.
@@ -1070,7 +1070,7 @@ MODEL({
     spring: function(mouse, c, dx, dy, opt_strength) {
       var strength = opt_strength || 6;
       var d        = Movement.distance(dx, dy);
-      Events.dynamic(function() { mouse.x; mouse.y; c.x; c.y; c.vx; c.vy; }, function() {
+      Events.dynamicFn(function() { mouse.x; mouse.y; c.x; c.y; c.vx; c.vy; }, function() {
         if ( dx === 0 && dy === 0 ) {
           c.x = mouse.x;
           c.y = mouse.y;
@@ -1090,7 +1090,7 @@ MODEL({
     spring2: function(c1, c2, length, opt_strength) {
       var strength = opt_strength || 4;
 
-      Events.dynamic(function() { c1.x; c1.y; c2.x; c2.y; }, function() {
+      Events.dynamicFn(function() { c1.x; c1.y; c2.x; c2.y; }, function() {
         var d = c1.distanceTo(c2);
         var a = Math.atan2(c2.y-c1.y, c2.x-c1.x);
         if ( d > length ) {

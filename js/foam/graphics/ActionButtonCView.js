@@ -148,7 +148,7 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      this.X.dynamic(function() {
+      this.X.dynamicFn(function() {
           this.iconUrl; this.iconWidth; this.iconHeight;
         }.bind(this),
         function() {
@@ -170,7 +170,7 @@ CLASS({
       if ( ! this.action || ! this.data ) return;
 
       var self = this;
-      this.X.dynamic(
+      this.X.dynamicFn(
           function() {
             self.action.isAvailable.call(self.data, self.action);
             self.action.isEnabled.call(self.data, self.action);

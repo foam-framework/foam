@@ -252,12 +252,12 @@ CLASS({
       }));
 
       /*
-        Events.dynamic(function() {scrollbar.value;}, );
+        Events.dynamicFn(function() {scrollbar.value;}, );
       */
-      Events.dynamic(function() {view.rows;}, function() {
+      Events.dynamicFn(function() {view.rows;}, function() {
         scrollbar.extent = view.rows;
       });
-      Events.dynamic(function() {view.height;}, function() {
+      Events.dynamicFn(function() {view.height;}, function() {
         scrollbar.height = Math.max(view.height - 26, 0);
       });
 

@@ -28,7 +28,7 @@ CLASS({
   ],
 
   imports: [
-    'dynamic'
+    'dynamicFn'
   ],
 
   properties: [
@@ -107,7 +107,7 @@ CLASS({
       this.collider.start();
     },
     bounceOnWalls: function(c, w, h) {
-      this.dynamic(function() { c.x; c.y; }, function() {
+      this.dynamicFn(function() { c.x; c.y; }, function() {
         if ( c.x < c.r ) c.vx = Math.abs(c.vx);
         if ( c.x > w - c.r ) c.vx = -Math.abs(c.vx);
         if ( c.y < c.r ) c.vy = Math.abs(c.vy);

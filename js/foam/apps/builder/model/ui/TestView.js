@@ -24,6 +24,9 @@ CLASS({
   requires: [
     'foam.apps.builder.model.ui.InlineEditView',
     'StringProperty',
+    'IntProperty',
+    'FloatProperty',
+    'BooleanProperty',
     'foam.ui.md.DAOListView',
     'foam.ui.md.SharedStyles',
   ],
@@ -36,7 +39,12 @@ CLASS({
       name: 'testArray',
       subType: 'Property',
       factory: function() {
-        return [ this.StringProperty.create() ];
+        return [
+          this.IntProperty.create({ name: 'Inty' }),
+          this.FloatProperty.create({ name: 'Floaty' }),
+          this.StringProperty.create({ name: 'Stringy' }),
+          this.BooleanProperty.create({ name: 'Booly' }),
+        ].dao;
       }
     },
     {
@@ -51,16 +59,19 @@ CLASS({
 
   methods: [
     function init() {
-      this.SUPER();
       this.SharedStyles.create();
+      this.SUPER();
     }
   ],
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        $$testArray{ model_: 'foam.ui.md.DAOListView',
-          rowView: 'foam.apps.builder.model.ui.InlineEditView' }
+          $$testArray{
+            model_: 'foam.ui.md.DAOListView',
+            rowView: 'foam.apps.builder.model.ui.InlineEditView',
+            mode: 'read-write',
+          }
       </div>
     */},
     function CSS() {/*
@@ -69,7 +80,7 @@ CLASS({
         flex-direction: column;
         align-content: baseline;
         flex-grow: 1;
-        width: 500px;
+        max-width: 600px;
         height: 100%;
       }
     */},

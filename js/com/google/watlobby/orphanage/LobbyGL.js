@@ -571,7 +571,7 @@ CLASS({
 //     },
 
 //     function bounceOnWalls(c, w, h) {
-//       c.cancelBounce_ = Events.dynamic(function() { c.x; c.y; }, function() {
+//       c.cancelBounce_ = Events.dynamicFn(function() { c.x; c.y; }, function() {
 //         var r = c.r;
 //         if ( c.x < r     ) { c.vx += 0.2; c.vy -= 0.19; }
 //         if ( c.x > w - r ) { c.vx -= 0.2; c.vy += 0.19; }

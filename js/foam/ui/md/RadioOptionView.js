@@ -80,7 +80,7 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      Events.dynamic(
+      Events.dynamicFn(
         function() { this.data; this.value; }.bind(this),
         function() {
           this.setHaloColor();

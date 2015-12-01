@@ -21,16 +21,16 @@ CLASS({
     'foam.u2.Element',
     'foam.ui.Icon',
     'com.google.ow.model.Envelope',
-    'foam.u2.md.QuickActionButton',
+    'foam.u2.md.QuickActionButton'
   ],
 
   exports: [
-    'this as data',
+    'this as data'
   ],
 
   imports: [
     'envelope', // used client-side
-    'streamDAO',
+    'streamDAO'
   ],
 
   properties: [
@@ -46,23 +46,23 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValue: 'Vote',
+      defaultValue: 'Vote'
     },
     {
       model_: 'IntProperty',
       name: 'vote',
       help: 'The client plus one/minus one vote',
-      defaultValue: 0,
+      defaultValue: 0
     },
     {
       model_: 'IntProperty',
       name: 'tally',
-      factory: function() { return Math.floor(Math.random() * 1000) },
+      factory: function() { return Math.floor(Math.random() * 1000); }
     },
     {
       model_: 'IntProperty',
       name: 'count',
-      factory: function() { return Math.floor(Math.random() * 1000) },
+      factory: function() { return Math.floor(Math.random() * 1000); }
     },
   ],
 
@@ -95,16 +95,15 @@ CLASS({
         // propagate change to server
         this.vote = -1;
         this.streamDAO.put(this.envelope);
-      },
-    },
-
+      }
+    }
   ],
 
   methods: [
     function put(envelope, sink, yourEnvelope) {
       /* Server: this is a substream target, implement put handler */
       console.log("VotablePut");
-      
+
       var self = this;
       // Since this should be running on the server, grab all the owners
       // of this vote, based on stream id, tally it up, update self.tally.
@@ -130,7 +129,7 @@ CLASS({
           console.assert(yourEnvelope.data.id === self.id, "Vote.put yourEnvelope does not contain this!");
           yourEnvelope.data = self;
           self.streamDAO.put(yourEnvelope); // check that sync is inc'd
-        },
+        }
       });
     },
 
@@ -151,6 +150,6 @@ CLASS({
           .add(this.VOTE_DOWN)
           .start().cls('md-style-trait-standard').cls('md-subhead').add(this.tally).add("/").add(this.count).end()
         .end()
-    },
-  ],
+    }
+  ]
 });

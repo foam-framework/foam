@@ -42,7 +42,7 @@ CLASS({
 
   properties: [
     [ 'width', 1700 ],
-    [ 'height', 2000 ]
+    [ 'height', 1100 ]
   ],
 
   methods: {

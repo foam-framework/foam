@@ -47,7 +47,7 @@ CLASS({
       this.SUPER();
       this.setCurrentLinePosition();
       var self = this;
-      var destructor = Events.dynamic(
+      var destructor = Events.dynamicFn(
           function() { self.data.choice; },
           this.setCurrentLinePosition.bind(this));
       this.addDestructor(destructor.destroy.bind(destructor));

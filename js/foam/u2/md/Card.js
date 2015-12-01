@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2.md',
   name: 'Card',
   extends: 'foam.u2.Element',
+
   properties: [
     {
       name: 'padding',
@@ -25,14 +27,14 @@ CLASS({
           'wants to occupy the whole card, set this to false. (Corresponds ' +
           'to the old md-card-shell class.)',
       defaultValue: true
-    },
+    }
   ],
 
   methods: [
     function initE() {
       var self = this;
       this.cls(this.myCls())
-          .cls2(function() {
+          .cls(function() {
             return self.padding ? '': self.myCls('shell');
           }.on$(this.X, this.padding$));
     },
@@ -70,6 +72,6 @@ CLASS({
           margin: 0;
         }
       }
-    */},
+    */}
   ]
 });

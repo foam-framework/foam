@@ -73,7 +73,7 @@ CLASS({
       var intersects = {f:function(shape) {
         return shape !== dev && dev.x > shape.x && dev.x < shape.x + shape.width && dev.y+dev.r > shape.y;
       }};
-      Events.dynamic(function() { dev.x; }, function() {
+      Events.dynamicFn(function() { dev.x; }, function() {
         dev.y += ++dev.v;
         this.children.find(intersects, {put:function(child) {dev.y = child.y-dev.r-1; dev.v *= -.45; }});
       }.bind(this));

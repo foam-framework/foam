@@ -187,7 +187,7 @@ CLASS({
     initHTML: function() {
       var e = this.$;
 
-      Events.dynamic(function() { this.choices; }.bind(this), this.listToHTML.bind(this));
+      Events.dynamicFn(function() { this.choices; }.bind(this), this.listToHTML.bind(this));
 
       this.updateHTML();
 

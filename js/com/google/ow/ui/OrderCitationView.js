@@ -57,7 +57,7 @@ CLASS({
       this.Y.registerModel(this.Select, 'foam.u2.Select');
 
       this.SUPER();
-    },
+    }
   ],
 
   templates: [
@@ -69,6 +69,6 @@ CLASS({
         overflow: hidden;
         text-overflow: ellipsis;
       }
-    */},
-  ],
+    */}
+  ]
 });

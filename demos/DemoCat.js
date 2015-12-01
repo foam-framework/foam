@@ -91,7 +91,7 @@ return JSONUtil.arrayToObjArray(X, [
   {
     name: 'Fading Circles',
     model: 'foam.demos.graphics.FadingCircles',
-    description: 'An reactive-programming animation which demonstrates the use of Events.dynamic() and Movement.animate().',
+    description: 'An reactive-programming animation which demonstrates the use of Events.dynamicFn() and Movement.animate().',
     keywords: ['animation'],
     image: 'FadingCircles.png'
   },
@@ -201,7 +201,7 @@ return JSONUtil.arrayToObjArray(X, [
   {
     name: 'Complements',
     model: 'foam.demos.graphics.Complements',
-    description: 'An animated colour wheel.  Shows use of Events.dynamic().<br>Ported from the <a href="http://elm-lang.org/edit/examples/Intermediate/Complements.elm">Elm demo</a>.',
+    description: 'An animated colour wheel.  Shows use of Events.dynamicFn().<br>Ported from the <a href="http://elm-lang.org/edit/examples/Intermediate/Complements.elm">Elm demo</a>.',
     keywords: ['animation'],
     image: 'Complements.png'
   },
