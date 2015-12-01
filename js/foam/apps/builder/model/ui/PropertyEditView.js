@@ -22,7 +22,6 @@ CLASS({
   extends: 'foam.ui.md.DetailView',
 
   requires: [
-    'foam.apps.builder.model.ui.PropertyValidateView',
   ],
 
   imports: [
@@ -50,8 +49,6 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
         <% this.propertyEditHTML(out) %>
-        $$validate{ model_: 'foam.apps.builder.model.ui.ValidateView',
-                    model: this.data.model_ }
       </div>
     */},
     function propertyEditHTML() {/*

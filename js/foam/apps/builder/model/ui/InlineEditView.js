@@ -170,7 +170,6 @@ CLASS({
       .inline-edit-view {
         display: flex;
         flex-direction: column;
-        align-content: baseline;
         flex-grow: 1;
         background: white;
         border: 1px solid rgba(0,0,0,0.5);
@@ -186,6 +185,7 @@ CLASS({
       }
       .inline-edit-view .md-flex-row {
         overflow: hidden;
+        align-items: baseline;
       }
       .inline-edit-view-grow {
         flex-grow: 1;
