@@ -33,6 +33,11 @@ CLASS({
     },
     {
       model_: 'IntProperty',
+      name: 'preferredWidth',
+      defaultValue: 400,
+    },
+    {
+      model_: 'IntProperty',
       name: 'maxWidth',
       defaultValue: 400,
       postSet: function(old, nu) {
