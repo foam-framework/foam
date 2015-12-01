@@ -28,10 +28,6 @@ CLASS({
   label: 'No pattern matching',
 
   properties: [
-    {
-      type: 'String',
-      name: 'parameter',
-    },
   ],
 
   methods: [

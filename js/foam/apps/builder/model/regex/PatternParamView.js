@@ -41,7 +41,9 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        $$parameter
+        <% if ( this.data && this.data.model_.getFeature('parameter') ) { %>
+          $$parameter
+        <% } %>
       </div>
     */},
 

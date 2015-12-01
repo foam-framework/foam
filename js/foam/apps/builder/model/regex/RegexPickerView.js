@@ -37,18 +37,6 @@ CLASS({
 
   properties: [
     {
-      name: 'dao',
-      lazyFactory: function() {
-        return [
-          this.EasyRegex,
-          this.ContainsRegex,
-          this.NotContainsRegex,
-          this.MatchesRegex,
-          this.NotMatchesRegex,
-        ].dao;
-      }
-    },
-    {
       name: 'className',
       defaultValue: 'regex-picker-view',
     },
@@ -62,24 +50,33 @@ CLASS({
       defaultValue: function(args, X) {
         return this.PopupChoiceView.create({
           data$: this.patternType$,
-          dao: this.dao,
+          dao: [
+            this.EasyRegex,
+            this.ContainsRegex,
+            this.NotContainsRegex,
+            this.MatchesRegex,
+            this.NotMatchesRegex,
+          ].dao,
           objToChoice: function(obj) {
             return [obj.id, obj.label];
           },
-          useSelection: false,
+          autoSetData: false,
         }, X || this.Y);
       }
     },
     {
       name: 'patternType',
+      adapt: function(old,nu) {
+        if ( ! nu ) return old;
+        return nu;
+      },
       postSet: function(old, nu) {
         if ( old && nu && ( ! this.data.pattern ||
               ( nu !== this.data.pattern.model_.id )) ) {
           // new property type set, reconstruct:
           var newPattern = this.X.lookup(nu).create(this.data.pattern, this.Y);
           this.data.pattern = newPattern;
-          this.patternType = nu;
-          //this.updateHTML();
+          this.updateHTML();
         }
       }
     },
@@ -87,7 +84,6 @@ CLASS({
       name: 'data',
       help: 'The property of which to edit the pattern',
       postSet: function(old, nu) {
-        console.log("pat",nu && nu.pattern);
         if ( nu && nu.pattern )
           this.patternType = nu.pattern.model_.id;
         else
