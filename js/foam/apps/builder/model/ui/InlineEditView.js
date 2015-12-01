@@ -68,9 +68,8 @@ CLASS({
       type: 'ViewFactory',
       name: 'dataTypePicker',
       defaultValue: function(args, X) {
-        console.log("picker",this.dataType.id);
         return this.PopupChoiceView.create({
-          data: this.dataType,
+          data$: this.dataType$,
           dao: [
             this.IntProperty,
             this.FloatProperty,
@@ -78,7 +77,7 @@ CLASS({
             this.BooleanProperty,
           ].dao,
           objToChoice: function(obj) {
-            return [obj, obj.label];
+            return [obj.id, obj.label];
           },
         }, X || this.Y);
       }
@@ -86,9 +85,9 @@ CLASS({
     {
       name: 'dataType',
       postSet: function(old, nu) {
-        if ( old && nu && ( nu.id !== this.data.model_.id ) ) {
+        if ( old && nu && ( nu !== this.data.model_.id ) ) {
           // new property type set, reconstruct:
-          var newProp = nu.create(this.data, this.Y);
+          var newProp = this.X.lookup(nu).create(this.data, this.Y);
 
           var sourceDAO = this.dao;
           if ( sourceDAO.length ) {
@@ -111,10 +110,7 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
-        if ( nu ) {
-          console.log("edit data",nu.model_.name);
-          this.dataType = nu.model_;
-        }
+        if ( nu ) this.dataType = nu.model_.id;
       }
     },
   ],
@@ -142,7 +138,9 @@ CLASS({
     function init() {
       this.SUPER();
     },
-    function shouldDestroy(old,nu) { return (! old || ! nu) || old.model_.id !== nu.model_.id; },
+    function shouldDestroy(old,nu) {
+      return (! old || ! nu) || old.model_.id !== nu.model_.id;
+    },
   ],
 
   templates: [
