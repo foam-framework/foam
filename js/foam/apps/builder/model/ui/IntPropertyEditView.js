@@ -22,7 +22,6 @@ CLASS({
   extends: 'foam.apps.builder.model.ui.PropertyEditView',
 
   requires: [
-    'foam.apps.builder.model.ui.IntPropertyValidateView',
   ],
 
   properties: [
