@@ -36,7 +36,10 @@ CLASS({
   ],
 
   templates: [
-    function propertyEditHTML() {/*
+    function toHTML() {/*
+      <div id="%%id" <%= this.cssClassAttr() %>>
+
+      </div>
     */},
 
   ]

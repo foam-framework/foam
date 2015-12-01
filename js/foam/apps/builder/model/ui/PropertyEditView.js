@@ -48,11 +48,8 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <% this.propertyEditHTML(out) %>
+
       </div>
-    */},
-    function propertyEditHTML() {/*
-      <div>Property Editor</div>
     */},
     function CSS() {/*
       .property-edit-view {
@@ -61,6 +58,10 @@ CLASS({
         align-content: baseline;
         flex-grow: 1;
         background: white;
+      }
+      .property-edit-view .md-flex-row {
+        overflow: none;
+        align-content: baseline;
       }
     */},
 
