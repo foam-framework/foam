@@ -458,7 +458,8 @@ MODEL({
         return X.lookup('foam.u2.md.Input').create(null, X);
       }
     },
-    'lastName', 'age', 'brother'],
+    'lastName', 'age', 'brother'
+  ],
   actions: [
     {
       name: 'go',
