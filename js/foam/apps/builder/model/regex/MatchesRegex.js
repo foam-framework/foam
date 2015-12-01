@@ -17,31 +17,28 @@
 
 
 CLASS({
-  name: 'StringPropertyEditView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyEditView',
+  name: 'MatchesRegex',
+  package: 'foam.apps.builder.model.regex',
+  extends: 'foam.apps.builder.model.regex.EasyRegex',
 
-  requires: [
-    'foam.apps.builder.model.regex.RegexPickerView',
-  ],
+  documentation: function() {/* Use to represent a
+    $$DOC{ref:'StringProperty.pattern'}. Allows a user to easily
+    build a particular type of regular expression for pattern matching.
+    */},
+
+  label: 'Matches pattern',
 
   properties: [
     {
-      name: 'className',
-      defaultValue: 'property-edit-view',
-    },
-    {
-      name: 'mode',
-      defaultValue: 'read-write',
+      type: 'String',
+      label: 'Regular Expression',
+      name: 'parameter',
     },
   ],
 
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-        $$data{ model_: 'foam.apps.builder.model.regex.RegexPickerView' }
-      </div>
-    */},
-  ]
-
+  methods: [
+    function toString() {
+      return this.parameter;
+    }
+  ],
 });

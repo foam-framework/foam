@@ -17,18 +17,20 @@
 
 
 CLASS({
-  name: 'StringPropertyEditView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyEditView',
+  name: 'PatternParamView',
+  package: 'foam.apps.builder.model.regex',
+  extends: 'foam.ui.md.DetailView',
 
   requires: [
-    'foam.apps.builder.model.regex.RegexPickerView',
+    'foam.ui.md.TextFieldView',
   ],
+
+  documentation: function() {/* Extracts the parameter from a regex model. */ },
 
   properties: [
     {
       name: 'className',
-      defaultValue: 'property-edit-view',
+      defaultValue: 'regex-picker-view',
     },
     {
       name: 'mode',
@@ -39,9 +41,10 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        $$data{ model_: 'foam.apps.builder.model.regex.RegexPickerView' }
+        $$parameter
       </div>
     */},
+
   ]
 
 });

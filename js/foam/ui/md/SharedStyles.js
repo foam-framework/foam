@@ -296,12 +296,18 @@ input[name=q]::-webkit-input-placeholder {
 }
 
 .md-flex-row {
-  display: flex;  
+  display: flex;
   flex-direction: row;
   overflow-x: auto;
 }
+.md-flex-row-baseline {
+  display: flex;
+  flex-direction: row;
+  align-content: baseline;
+  overflow: none;
+}
 .md-flex-col {
-  display: flex;  
+  display: flex;
   flex-direction: column;
   overflow-y: auto;
 }
