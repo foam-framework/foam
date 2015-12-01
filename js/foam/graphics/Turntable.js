@@ -116,8 +116,7 @@ CLASS({
       return Math.atan2(y-this.y, x-this.x);
     },
 
-    paintSelf: function() {
-      var c = this.canvas;
+    paintSelf: function(c) {
       c.save();
       c.translate(this.r, this.r);
       c.font = "48pt Arial";

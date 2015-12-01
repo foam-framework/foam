@@ -17,11 +17,11 @@ CLASS({
     'XHR',
     'foam.u2.Element',
     'foam.ui.ImageView',
-    'foam.u2.md.QuickActionButton',
+    'foam.u2.md.QuickActionButton'
   ],
 
   imports: [
-    'streamDAO',
+    'streamDAO'
   ],
 
   properties: [
@@ -30,7 +30,7 @@ CLASS({
     },
     {
       name: 'sid',
-      help: 'TODO: this is just for test data, remove!',
+      help: 'TODO: this is just for test data, remove!'
     },
     {
       model_: 'StringProperty',
@@ -42,15 +42,15 @@ CLASS({
     },
     {
       model_: 'URLProperty',
-      name: 'content',
+      name: 'content'
     },
     {
       model_: 'ImageProperty',
-      name: 'preview',
+      name: 'preview'
     },
     {
       model_: 'BlobProperty',
-      name: 'cache_',
+      name: 'cache_'
     },
     {
       name: 'cachedState_',
@@ -89,7 +89,7 @@ CLASS({
       ligature: 'cached',
       isEnabled: function() {
         return false;
-      },
+      }
     },
     {
       name: 'saved',
@@ -97,7 +97,7 @@ CLASS({
       ligature: 'play_circle_filled',
       isEnabled: function() {
         return false;
-      },
+      }
     }
   ],
 
@@ -150,18 +150,18 @@ CLASS({
               .start('span').attrs({ padding: '8px' })
               .style({ width: '48px', height: '48px', top: '0', 'right': '0' })
                 .x({ data: this })
-                .start('span').add(this.DOWNLOAD).cls('md-subhead').cls2(function(state) {
+                .start('span').add(this.DOWNLOAD).cls('md-subhead').cls(function(state) {
                   return state === 'none' ? '' : 'foam-u2-Element-hidden';
                 }.on$(this.X, this.cachedState_$)).end()
-                .start('span').add(this.SAVED).cls('md-subhead').cls2(function(state) {
+                .start('span').add(this.SAVED).cls('md-subhead').cls(function(state) {
                   return state === 'cached' ? '' : 'foam-u2-Element-hidden';
                 }.on$(this.X, this.cachedState_$)).end()
-                .start('span').add(this.IN_PROGRESS).cls('md-subhead').cls2(function(state) {
+                .start('span').add(this.IN_PROGRESS).cls('md-subhead').cls(function(state) {
                   return state === 'downloading' ? '' : 'foam-u2-Element-hidden';
                 }.on$(this.X, this.cachedState_$)).end()
               .end()
             .end()
         .end();
-    },
-  ],
+    }
+  ]
 });

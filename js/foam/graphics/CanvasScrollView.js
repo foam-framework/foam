@@ -76,14 +76,14 @@ CLASS({
     verticalScrollMove: function(dy) {
       this.scrollTop -= dy;
     },
-    paintSelf: function() {
+    paintSelf: function(canvas) {
       var self = this;
       var offset = this.offset;
       for ( var i = 0; i < this.objs.length; i++ ) {
-        self.canvas.save();
-        self.canvas.translate(0, offset + (i * self.renderer.height));
-        self.renderer.render(self.canvas, self.objs[i]);
-        self.canvas.restore();
+        canvas.save();
+        canvas.translate(0, offset + (i * self.renderer.height));
+        self.renderer.render(canvas, self.objs[i]);
+        canvas.restore();
       }
     }
   },
@@ -91,8 +91,6 @@ CLASS({
     {
       name: 'onDAOUpdate',
       code: function() {
-        if ( ! this.canvas ) return;
-
         var selectNumber = this.selectNumber + 1;
         this.selectNumber = selectNumber;
 

@@ -19,8 +19,7 @@ CLASS({
   package: 'foam.graphics',
   name: 'Shadow',
   methods: {
-    paint: function() {
-      var c = this.canvas;
+    paint: function(c) {
       var oldAlpha = this.alpha;
       var oldColor = this.color;
 
@@ -28,13 +27,13 @@ CLASS({
       c.translate(4, 4);
       this.alpha = 0.2;
       this.color = 'black';
-      this.SUPER();
+      this.SUPER(c);
       c.restore();
 
       this.alpha = oldAlpha;
       this.color = oldColor;
 
-      this.SUPER();
+      this.SUPER(c);
     }
   }
 });

@@ -48,17 +48,16 @@ CLASS({
     },
     {
       name: 'width',
-      defaultValueFn: function() { return 2*this.r; }
+      defaultValueFn: function() { return 2*(this.r + (this.border ? this.borderWidth : 0)); }
     },
     {
       name: 'height',
-      defaultValueFn: function() { return 2*this.r; }
-    }
+      defaultValueFn: function() { return 2*(this.r + (this.border ? this.borderWidth : 0)); }
+    },
   ],
 
   methods: [
-    function paintSelf() {
-      var c = this.canvas;
+    function paintSelf(c) {
       if ( ! c ) return;
 
       if ( ! this.r ) return;
@@ -73,11 +72,10 @@ CLASS({
         c.fill();
       }
 
-      this.paintBorder();
+      this.paintBorder(c);
     },
-    function paintBorder() {
+    function paintBorder(c) {
       if ( this.border ) {
-        var c = this.canvas;
         c.lineWidth = this.borderWidth;
 
         c.beginPath();
@@ -90,9 +88,9 @@ CLASS({
     },
     function intersects(c) {
       var r = this.r + c.r;
-      if ( this.border ) r += this.borderWidth;
-      if ( c.border    ) r += c.borderWidth;
-      return Movement.distance(this.x-c.x, this.y-c.y) < r;
+      if ( this.border ) r += this.borderWidth-2;
+      if ( c.border    ) r += c.borderWidth-2;
+      return Movement.distance(this.x-c.x, this.y-c.y) <= r;
     }
   ]
 });

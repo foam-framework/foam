@@ -26,13 +26,13 @@ CLASS({
     'com.google.ow.ui.EnvelopeDetailView',
     'foam.ui.md.UpdateDetailView',
     'foam.u2.DetailView',
-    'foam.ui.md.FlatButton',
+    'foam.ui.md.FlatButton'
   ],
 
   imports: [
     'streamDAO',
     'currentUser$',
-    'stack',
+    'stack'
   ],
 
   actions: [
@@ -48,7 +48,7 @@ CLASS({
           sid: this.substreams[0],
           source: this.id,
           substreams: [nid],
-          data: this.CommentThread.create({ 
+          data: this.CommentThread.create({
             description: 'Question',
             id: nid,
             sid: this.substreams[0],
@@ -56,7 +56,7 @@ CLASS({
           })
         });
         this.streamDAO.put(env);
-        
+
         //TODO: make this a standard thing
         //TODO: which context we are using is confusing and bad. Creation or toDetailE?
         var innerDetailView = function(args, X) {
@@ -64,14 +64,14 @@ CLASS({
           return envelope.toDetailE ? envelope.toDetailE(X) :
               this.DetailView.create({ data: envelope }, X);
         }.bind(this);
-        
+
         var args = { data: env, innerView: innerDetailView };
         var v = this.UpdateDetailView.create(args, this.Y.sub({ stack: this.stack }));
         v.title = env.data.titleText
         v.liveEdit = true;
         this.stack.pushView(v);
       }
-    },
+    }
   ],
 
   methods: [
@@ -81,7 +81,6 @@ CLASS({
       this.Y.registerModel(this.FlatButton, 'foam.ui.ActionButton');
     },
 
-    
     function toDetailE(X) {
       var Y = (X || this.Y).sub({ data: this });
       Y.registerModel(this.QuickActionButton, 'foam.u2.ActionButton');
@@ -90,12 +89,12 @@ CLASS({
       //this.contentRowView = this.contentDetailView;
       var e = this.Element.create(null, Y);
       e.start().cls('md-flex-col').style({
-          'position':'relative', 
-          'min-height':'50px', 
-          'flex-grow':'1', 
+          'position':'relative',
+          'min-height':'50px',
+          'flex-grow':'1',
           'background-color':'#eeffee'})
         .add(this.SUPER(Y))
-        .start().add(this.ADD_COMMENT_THREAD).style({ 
+        .start().add(this.ADD_COMMENT_THREAD).style({
           'position': 'absolute',
           'top': '0px',
           'right': '0px'
@@ -104,5 +103,4 @@ CLASS({
       return e;
     }
   ]
-
 });

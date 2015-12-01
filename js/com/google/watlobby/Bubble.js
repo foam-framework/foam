@@ -21,8 +21,59 @@ CLASS({
 
   extends: 'foam.demos.physics.PhysicalCircle',
 
+  imports: [
+    'document'
+  ],
+
   properties: [
+    { name: 'x', preSet: function(_, x) { return Math.floor(x); } },
+    { name: 'y', preSet: function(_, y) { return Math.floor(y); } },
     { name: 'borderWidth', defaultValue: 20 },
-    { name: 'color',       defaultValue: 'white' }
+    { name: 'color',       defaultValue: 'white' },
+    { name: 'snapshot' },
+    ['zoom', 0],
+    { name: 'snapshotting', type: 'Boolean', defaultValue: false }
+  ],
+
+  methods: [
+    function atRest() {
+      return this.zoom == 0 &&
+        this.alpha == 1 &&
+        this.scaleX == 1 &&
+        this.scaleY == 1;
+    },
+
+    function paint(c) {
+      if ( this.atRest() ) {
+        if ( ! this.snapshot ) {
+          var snapshot = this.document.createElement('canvas');
+          snapshot.width = this.width;
+          snapshot.height = this.height;
+
+          var tmp = snapshot.getContext('2d');
+
+          var oldX = this.x;
+          var oldY = this.y;
+
+          this.x = this.r + this.borderWidth;
+          this.y = this.r + this.borderWidth;
+
+          this.SUPER(tmp);
+
+          this.x = oldX;
+          this.y = oldY;
+
+          this.snapshot = snapshot;
+        }
+
+        c.save();
+        this.transform(c);
+        var offset = Math.floor(this.r + this.borderWidth);
+        c.drawImage(this.snapshot, -offset, -offset);
+        c.restore();
+        return;
+      }
+      this.SUPER(c);
+    }
   ]
 });

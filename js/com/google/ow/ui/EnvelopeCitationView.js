@@ -62,7 +62,7 @@ CLASS({
               '')
           .end()
           // .start('div').cls('envelope-spacer').end()
-          // .start().cls2(function() {
+          // .start().cls(function() {
           //   return this.data.shares && this.data.shares.length > 0 ?
           //       'show' : 'hide';
           // }.bind(this).on$(this.X, this.data$))
@@ -76,7 +76,7 @@ CLASS({
             controllerMode: 'view',
           })))
         .end();
-    },
+    }
   ],
 
   actions: [
@@ -91,8 +91,8 @@ CLASS({
         env.timestamp = new Date();
         env.data = env.data.toSharable ? env.data.toSharable(X) : env.data;
         X.streamDAO.put(env);
-      },
-    },
+      }
+    }
   ],
 
   templates: [
@@ -125,6 +125,6 @@ CLASS({
         right: -8px;
         top: -8px;
       }
-    */},
-  ],
+    */}
+  ]
 });

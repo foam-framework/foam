@@ -86,9 +86,7 @@ CLASS({
     toHSLColor: function(i, n) {
       return 'hsl(' + Math.floor(360*i/n) + ', 95%, 75%)';
     },
-    paintSelf: function() {
-      var c = this.canvas;
-
+    paintSelf: function(c) {
       if ( ! c ) return;
 
       var x = this.x;

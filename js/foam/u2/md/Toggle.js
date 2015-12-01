@@ -49,7 +49,7 @@ CLASS({
           }.on$(this.X, this.data$)).end()
           .start('div').cls(this.myCls('switch'))
               .start('span').cls(this.myCls('background'))
-                  .cls2(function() { return self.data ? self.myCls('on') : ''; }.on$(this.X, this.data$))
+                  .cls(function() { return self.data ? self.myCls('on') : ''; }.on$(this.X, this.data$))
                   .start('div').cls(this.myCls('lever')).end()
               .end()
               .start().cls(this.myCls('halo')).add(this.halo.toView_()).end()

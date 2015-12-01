@@ -77,47 +77,42 @@ CLASS({
       }.bind(this));
     },
 
-    dot: function(r) {
-      var c = this.canvas;
+    dot: function(c, r) {
       c.beginPath();
       c.fillStyle = this.COLORS[this.i = (this.i + 1) % this.COLORS.length];//'rgb(245,50,50)';
       c.arc(0,0,r,0,Math.PI*2,true);
       c.fill();
     },
 
-    tail: function(r, a) {
+    tail: function(c, r, a) {
       if ( r < 1 ) return;
 
-      var c = this.canvas;
-      this.dot(r);
+      this.dot(c, r);
       c.rotate(a);
       c.translate(0,r*2.2);
-      this.tail(r*0.975, a);
+      this.tail(c, r*0.975, a);
     },
 
-    wing: function(r, a) {
+    wing: function(c, r, a) {
       if ( r < 1 ) return;
 
-      var c = this.canvas;
-      c.save();c.rotate(Math.PI/2);this.feather(r*0.4);c.restore();
-      this.dot(r);
+      c.save();c.rotate(Math.PI/2);this.feather(c, r*0.4);c.restore();
+      this.dot(c, r);
       c.rotate(a);
       c.translate(r*2.2,0);
-      this.wing(r*0.945, a);
+      this.wing(c, r*0.945, a);
     },
 
-    feather: function(r) {
+    feather: function(c, r) {
       if ( r < 1 ) return;
 
-      var c = this.canvas;
-      this.dot(r);
+      this.dot(c, r);
       c.rotate(0.05 * Math.sin(Math.PI * this.timer.time/2000));
       c.translate(r*2.2,0);
-      this.feather(r*0.92);
+      this.feather(c, r*0.92);
     },
 
-    paintSelf: function() {
-      var c = this.canvas;
+    paintSelf: function(c) {
       this.i = 0;
 
       var time = this.timer.time;
@@ -125,20 +120,20 @@ CLASS({
       c.save();
       try {
         // tail
-        c.save();this.tail(this.r, Math.sin(time/4000*(Math.PI*2))*Math.PI/10);c.restore();
+        c.save();this.tail(c, this.r, Math.sin(time/4000*(Math.PI*2))*Math.PI/10);c.restore();
 
         var a = Math.sin(time/4000*(Math.PI*2))*Math.PI/31.5;
         // right wing
-        c.save();c.rotate(-0.4);this.wing(this.r, a);c.restore();
+        c.save();c.rotate(-0.4);this.wing(c, this.r, a);c.restore();
         // left wing
-        c.save();c.scale(-1,1);c.rotate(-0.4);this.wing(this.r, a);c.restore();
+        c.save();c.scale(-1,1);c.rotate(-0.4);this.wing(c, this.r, a);c.restore();
 
         // neck
         c.save();
         c.translate(0,2*-this.r);
-        this.dot(this.r);
+        this.dot(c, this.r);
         c.translate(0,2*-this.r);
-        this.dot(this.r*.8);
+        this.dot(c, this.r*.8);
         c.restore();
       } catch(x) {
         console.log(x);

@@ -15,7 +15,7 @@ CLASS({
 
   requires: [
     'foam.u2.Element',
-    'com.google.nbuEDU.ClientSignup',
+    'com.google.nbuEDU.ClientSignup'
   ],
 
   properties: [
@@ -26,12 +26,12 @@ CLASS({
     {
       name: 'signupSid',
       help: 'Add an envelope with this sid to complete signup.',
-      defaultValue: 'nbuEDUSignup',
+      defaultValue: 'nbuEDUSignup'
     },
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValue: 'StudyBuddy: Help with School',
+      defaultValue: 'StudyBuddy: Help with School'
     },
     {
       model_: 'StringProperty',
@@ -40,7 +40,7 @@ CLASS({
     },
     ['resetInviteTitle', 'StudyBuddy'],
     ['resetInviteText', '<p>Welcome! You have already enrolled.</p> <p>Tap this card to see your profile.</p>'],
-    ['complete', false],
+    ['complete', false]
   ],
 
   methods: [
@@ -68,6 +68,6 @@ CLASS({
         .start().style({ 'display': 'flex', 'flex-direction': 'column', margin: '16px' })
             .start().add(this.description$).cls('md-subhead').end()
         .end()
-    },
-  ],
+    }
+  ]
 });

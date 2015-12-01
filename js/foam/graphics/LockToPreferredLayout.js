@@ -24,7 +24,7 @@ CLASS({
       A simple layout for items not already in a layout. It will take the preferred
       size of its child and set the width and height of itself to match.
     */},
-  
+
   properties: [
     {
       name: 'layoutDirty',
@@ -33,7 +33,7 @@ CLASS({
       hidden: true
     }
   ],
-    
+
   methods: {
     addChild: function(child) { /* Adds a child $$DOC{ref:'foam.graphics.CView'} to the scene
                                    under this. Add our listener for child constraint
@@ -61,23 +61,23 @@ CLASS({
       this.SUPER(child);
     },
 
-    paintSelf: function() {
+    paintSelf: function(canvas) {
       /* To reduce the number of potential re-layout operations, only calculate
       a dirty layout when painting. A property change will cause a repaint,
       to $$DOC{ref:'foam.patterns.layout.LinearLayoutTrait.layoutDirty'} changing to true will
       cause a repaint. */
-      this.SUPER();
-      
+      this.SUPER(canvas);
+
       // only calculate layout on paint
       if ( this.layoutDirty ) {
         this.calculateLayout();
       }
     },
-    
+
     calculateLayout: function() {
       /* Locks our size to the child's preferred size. */
       this.layoutDirty = false;
-      
+
       if (this.children[0]) {
         if (this.children[0].horizontalConstraints) {
           this.width =  this.children[0].horizontalConstraints.preferred;
@@ -102,4 +102,3 @@ CLASS({
   ]
 
 });
-

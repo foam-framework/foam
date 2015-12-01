@@ -64,8 +64,7 @@ CLASS({
     },
     */
 
-    rotateToValue: function(x, y, value) {
-      var c = this.canvas;
+    rotateToValue: function(c, x, y, value) {
       var a = value / this.maxValue * (3.0*Math.PI/5.0)-1.5*Math.PI/5.0;
 
       c.save();
@@ -75,9 +74,7 @@ CLASS({
       c.translate(-x,-y);
     },
 
-    paintSelf: function() {
-      var c = this.canvas;
-
+    paintSelf: function(c) {
       var width  = this.width - 4;
       var height = this.height - 4;
       var r = height-30;
@@ -104,7 +101,7 @@ CLASS({
       c.font = '16pt sans-serif';
       c.fillText(this.label, x, y-30,60);
 
-      this.rotateToValue(x,y,this.data);
+      this.rotateToValue(c, x,y,this.data);
 
       c.lineWidth = 1;
       c.shadowOffsetX = 2;
@@ -129,7 +126,7 @@ CLASS({
       c.restore();
 
       for ( var i = 0 ; i <= this.maxValue ; i++ ) {
-        this.rotateToValue(x,y,i);
+        this.rotateToValue(c, x,y,i);
 
         c.fillStyle = 'black';
         c.textAlign = 'center';
@@ -145,7 +142,7 @@ CLASS({
       }
 
       for ( var i = 0 ; i < this.maxValue ; i++ ) {
-        this.rotateToValue(x,y,i+0.5);
+        this.rotateToValue(c, x,y,i+0.5);
 
         c.lineWidth = 1;
         c.beginPath();

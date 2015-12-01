@@ -19,6 +19,7 @@ CLASS({
   package: 'foam.u2',
   name: 'DAOListView',
   extends: 'foam.u2.View',
+
   requires: [
     'foam.u2.DetailView'
   ],

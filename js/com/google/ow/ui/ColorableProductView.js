@@ -15,7 +15,7 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.u2.md.Select',
+    'foam.u2.md.Select'
   ],
   exports: [ 'data' ],
 
@@ -43,7 +43,7 @@ CLASS({
           .add('$').add(this.data.price.toFixed(2))
         .end()
         .add(this.data.COLOR);
-    },
+    }
   ],
 
   templates: [
@@ -71,6 +71,6 @@ CLASS({
         font-style: italic;
         padding: 5px 10px;
       }
-    */},
-  ],
+    */}
+  ]
 });

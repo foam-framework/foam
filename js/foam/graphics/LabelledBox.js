@@ -37,9 +37,7 @@ CLASS({
   ],
 
   methods: {
-    paintSelf: function() {
-      var c = this.canvas;
-
+    paintSelf: function(c) {
       /*
       if ( this.a ) {
         c.translate(this.x+this.width/2, this.y+this.height/2);
@@ -48,7 +46,7 @@ CLASS({
       }
       */
 
-      this.SUPER();
+      this.SUPER(c);
 
       var grad = c.createLinearGradient(0, 0, this.width, this.height);
       grad.addColorStop(  0, 'rgba(0,0,0,0.35)');

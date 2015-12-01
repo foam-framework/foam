@@ -216,8 +216,7 @@ CLASS({
       }
     },
 
-    paint: function() {
-      var canvas = this.canvas;
+    paint: function(canvas) {
       var x  = this.x;
       var y  = this.y;
       var xs = this.axisSize;

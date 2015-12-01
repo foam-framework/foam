@@ -52,8 +52,7 @@ CLASS({
   ],
 
   methods: [
-    function paintSelf() {
-      var c = this.canvas;
+    function paintSelf(c) {
       if ( ! c ) return;
 
       c.globalAlpha = this.alpha;

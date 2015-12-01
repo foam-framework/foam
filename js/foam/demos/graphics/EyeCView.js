@@ -80,7 +80,7 @@ CLASS({
       this.addChild(this.pupil);
     },
     watch: function(target) { this.target_ = target; },
-    paintSelf: function() {
+    paintSelf: function(canvas) {
       this.pupil.color = this.pupilColor;
       this.lid.color = this.color;
 
@@ -100,7 +100,7 @@ CLASS({
         }
       }
 
-      this.canvas.scale(1.0, 1.3);
+      canvas.scale(1.0, 1.3);
     }
   }
 });

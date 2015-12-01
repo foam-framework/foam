@@ -29,7 +29,7 @@ CLASS({
   methods: [
     function initE() {
       this.cls('foam-u2-md-DAOListView');
-    },
+    }
   ],
   listeners: [
     {

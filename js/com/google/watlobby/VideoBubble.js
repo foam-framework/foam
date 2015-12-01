@@ -24,12 +24,11 @@ CLASS({
   requires: [
     'foam.graphics.ImageCView',
     'foam.graphics.SimpleRectangle',
-    'foam.graphics.ViewCView'
+    'foam.graphics.ViewCView',
+    'com.google.watlobby.VideoView'
   ],
 
   properties: [
-    { name: 'x', preSet: function(_, x) { return Math.floor(x); } },
-    { name: 'y', preSet: function(_, y) { return Math.floor(y); } },
     {
       name: 'playIcon',
       factory: function() { return this.ImageCView.create({src: '/js/com/google/watlobby/img/play.png', alpha: 0.35}); }
@@ -71,10 +70,19 @@ CLASS({
         var vw = Math.floor(Math.min(w, h * 1.77) * 0.7);
         var vh = Math.floor(vw / 1.77);
 
-        var v = this.ViewCView.create({innerView: {
+/*        var v = this.ViewCView.create({innerView: {
           toHTML: function() { return '<iframe width="' + vw + '" height="' + vh + '" src="https://www.youtube.com/embed/' + video + '?autoplay=1" frameborder="0" allowfullscreen></iframe>'; },
           initHTML: function() {}
         }, x: this.x, y: this.y, width: 0, height: 0});
+*/
+        var v = this.ViewCView.create({
+          innerView: this.VideoView.create({
+            width: vw,
+            height: vh,
+            src: video
+          }),
+          x: this.x, y: this.y, width: 0, height: 0
+        });
 
         lobby.collider.stop();
         Movement.compile([
@@ -87,7 +95,7 @@ CLASS({
             v.x = (w-vw)/2;
             v.y = (h-vh)/2;
           }],
-          function() { this.animating = false; if ( ! this.selected ) this.setSelected(false); }.bind(this)
+          function() { v.innerView.start(); this.animating = false; if ( ! this.selected ) this.setSelected(false); }.bind(this)
         ])();
         lobby.addChild(v);
         this.children_.push(v);

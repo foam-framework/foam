@@ -30,9 +30,14 @@ CLASS({
   imports: [ 'lobby', 'window' ],
 
   properties: [
-    { name: 'x', preSet: function(_, x) { return Math.floor(x); } },
-    { name: 'y', preSet: function(_, y) { return Math.floor(y); } },
-    'topic', 'image', 'roundImage', [ 'zoom', 0 ]
+    {
+      name: 'image',
+      preSet: function(_, i) {
+        return i.startsWith('data:') ? i :
+          i.startsWith('http') ? i : ('/js/com/google/watlobby/' + i);
+      }
+    },
+    'topic', 'roundImage', [ 'zoom', 0 ]
   ],
 
   methods: [
@@ -40,7 +45,7 @@ CLASS({
       this.SUPER();
 
       this.r = this.topic.r;
-      this.addChild(this.img = this.ImageCView.create({src: '/js/com/google/watlobby/' + this.image}));
+      this.addChild(this.img = this.ImageCView.create({src: this.image }));
     },
     function setSelected(selected) {
       var self = this;
@@ -68,7 +73,6 @@ CLASS({
     function layout() {
       if ( ! this.img ) return;
 
-      var c = this.canvas;
       var z = this.zoom;
 
       this.r = this.topic.r;
@@ -95,13 +99,12 @@ CLASS({
         this.img.y      = -this.img.height/2;
       }
     },
-    function paint() {
+    function paint(c) {
       this.layout();
-      this.SUPER();
+      this.SUPER(c);
     },
-    function paintBorder() { },
-    function paintChildren() {
-      var c = this.canvas;
+    function paintBorder(c) { },
+    function paintChildren(c) {
       var needsCrop = this.roundImage || this.img.width != this.img.height;
       if ( needsCrop ) {
         c.save();
@@ -109,9 +112,9 @@ CLASS({
         c.arc(0, 0, this.r, 0, 2 * Math.PI, false);
         c.clip();
       }
-      this.SUPER();
+      this.SUPER(c);
       if ( needsCrop ) c.restore();
-      foam.graphics.Circle.getPrototype().paintBorder.call(this);
+      foam.graphics.Circle.getPrototype().paintBorder.call(this, c);
     }
   ]
 });

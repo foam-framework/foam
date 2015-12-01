@@ -75,7 +75,8 @@ CLASS({
             c1.applyMomentum((0.5+0.4*c1.$UID%11/10) * c1.mass/8*self.speedWarp, a+(c1.out_ ? 0.9 : 1.1)*Math.PI/2);
 
           // Make collision detection 5X faster by only checking every fifth time.
-          if ( ( self.timer.i + i ) % 15 == 0 ) for ( var j = i+1 ; j < cs.length ; j++ ) {
+          if ( ( self.timer.i + i ) % 4 == 0 )
+          for ( var j = i+1 ; j < cs.length ; j++ ) {
             var c2 = cs[j];
             if ( c1.intersects(c2) ) this.collide(c1, c2);
           }

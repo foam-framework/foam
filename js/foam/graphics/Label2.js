@@ -53,12 +53,11 @@ CLASS({
   ],
 
   methods: {
-    paintSelf: function() {
-      var c = this.canvas;
+    paintSelf: function(c) {
       if ( ! c ) return;
 
       c.globalAlpha = this.alpha;
-      this.erase();
+      this.erase(c);
 
       if ( this.font ) c.font = this.font;
       c.textAlign = this.align;

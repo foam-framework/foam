@@ -13,6 +13,7 @@ CLASS({
   package: 'com.google.plus.ui',
   name: 'PersonChipView',
   extends: 'foam.u2.View',
+
   requires: [
     'com.google.plus.ui.ChipListView',
     'foam.ui.ReferenceListResolver',
@@ -37,12 +38,6 @@ CLASS({
             data: [this.data],
           }).resolvedData
         })));
-    },
-  ],
-
-
-  templates: [
-    function CSS() {/*
-    */},
-  ],
+    }
+  ]
 });

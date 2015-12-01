@@ -296,7 +296,7 @@ CLASS({
 
 
 CLASS({
-  package: 'com.google.watlobby',
+  package: 'com.google.watlobby.orphanage',
   name: 'LobbyGL',
   extends: 'foam.graphics.webgl.flat.Scene',
 
@@ -315,6 +315,7 @@ CLASS({
     'foam.graphics.Circle',
     'foam.graphics.webgl.PerformanceScaler',
     'foam.graphics.CView',
+    'foam.graphics.webgl.CViewGLView',
   ],
 
   imports: [ 'timer' ],

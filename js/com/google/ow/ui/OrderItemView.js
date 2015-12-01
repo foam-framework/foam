@@ -34,7 +34,7 @@ CLASS({
           .start('div').cls('total').cls('md-body')
               .add(this.data.TOTAL)
           .end();
-    },
+    }
   ],
 
   templates: [
@@ -62,6 +62,6 @@ CLASS({
         flex-grow: 0;
         display: flex;
       }
-    */},
-  ],
+    */}
+  ]
 });

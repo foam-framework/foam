@@ -15,30 +15,20 @@ CLASS({
 
   requires: [
     'foam.u2.Element',
-    'com.google.plus.ui.PersonChipView',
+    'com.google.plus.ui.PersonChipView'
   ],
 
   imports: [
-    'streamDAO',
+    'streamDAO'
   ],
 
   properties: [
-    {
-      name: 'id'
-    },
-    {
-      name: 'sid',
-    },
-    {
-      name: 'from',
-    },
+    'id', 'sid', 'from',
     {
       model_: 'StringProperty',
       name: 'content',
     },
-    {
-      name: 'name',
-    }
+    'name'
   ],
 
   methods: [
@@ -50,7 +40,7 @@ CLASS({
         .start().style({
           'display': 'flex',
           'flex-direction': 'column',
-//          'border-bottom': '1px solid rgba(1,1,1,0.25)' 
+//          'border-bottom': '1px solid rgba(1,1,1,0.25)'
           'border-radius': '16px',
           'padding-left': '4px',
           'margin': '8px',
@@ -64,6 +54,6 @@ CLASS({
     },
     function toCitationE(X) {
       return this.toDetailE(X);
-    },
-  ],
+    }
+  ]
 });

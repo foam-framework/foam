@@ -329,18 +329,19 @@ CLASS({
 
             //console.log("Position", r.view.id, r.ordering, r.offset);
           }
-          // TODO(jacksonic): the size we cache here could change in the DOM, and we have no way of knowing
-          if ( ! r.size ) {
-            //var rect = v.getBoundingClientRect();
-            r.size = ( this.orientation == 'vertical' ) ? v.offsetHeight : v.offsetWidth;
+
+          if ( ! r.placed ) {
             if ( this.orientation == 'vertical' ) {
               v.style.width = "100%";
             } else {
               v.style.height = "100%";
             }
-
-            //console.log(i, "Set row size:", r.size);
           }
+          // always calc row height (TODO: intelligently cache this with expiry?)
+          r.size = ( this.orientation == 'vertical' ) ? v.offsetHeight : v.offsetWidth;
+
+          //console.log(i, "Set row size:", r.size);
+
           pos += r.size;
 
         }

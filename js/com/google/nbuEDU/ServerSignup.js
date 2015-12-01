@@ -17,11 +17,11 @@ CLASS({
     'com.google.ow.model.Envelope',
     'foam.u2.Element',
     'com.google.ow.content.PreviewStream',
-    'com.google.ow.content.CommentThreadStream',
+    'com.google.ow.content.CommentThreadStream'
   ],
 
   imports: [
-    'streamDAO',
+    'streamDAO'
   ],
 
   properties: [
@@ -29,23 +29,21 @@ CLASS({
       name: 'substreams',
       defaultValueFn: function() { return ['nbuEDUSignup']; }
     },
-    {
-      name: 'sid',
-    },
+    'sid',
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValue: 'StudyBuddy Signup Server',
+      defaultValue: 'StudyBuddy Signup Server'
     },
     {
       model_: 'StringProperty',
       name: 'description',
-      defaultValue: 'Responds to StudyBuddy signup requests.',
+      defaultValue: 'Responds to StudyBuddy signup requests.'
     },
     {
       name: 'curriculumData_',
       hidden: true,
-      defaultValue: '',
+      defaultValue: ''
     },
   ],
 
@@ -115,7 +113,7 @@ CLASS({
             "substreams": ["eduCommentsForum754788392995"],
             data: commentStream,
           }));
-        
+
 
         }
       });
@@ -134,6 +132,6 @@ CLASS({
             .start().add(this.description$).cls('md-subhead').end()
           .end()
         .end();
-    },
-  ],
+    }
+  ]
 });

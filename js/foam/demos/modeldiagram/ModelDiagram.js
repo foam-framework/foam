@@ -42,7 +42,7 @@ CLASS({
 
   properties: [
     [ 'width', 1700 ],
-    [ 'height', 1000 ]
+    [ 'height', 1100 ]
   ],
 
   methods: {
@@ -285,7 +285,7 @@ var p = this.Person.create({
       }
 
       anim.push([0]);
-      anim.push(function() { robot.timer.stop(); robot.timer.i = 0;});
+      anim.push(function() { robot.timer.stop(); robot.timer.i = 45; robot.timer.time = 0; });
       anim.push(function() {
         var cs = self.children.clone();
         for ( var i = 1 ; i < 15 ; i++ ) {
@@ -316,7 +316,7 @@ var p = this.Person.create({
       anim.push(function() { self.removeChild(robot); self.addChildren(robot); });
       anim.push([1000, function() { robot.x = v.x-25; robot.y += 35; }]);
       anim.push([0]);
-      anim.push([800, function() { robot.scaleX = robot.scaleY = 18; }]);
+      anim.push([800, function() { robot.scaleX = robot.scaleY = 25; }]);
       anim.push([0]);
       anim.push([800, function() { robot.scaleX = robot.scaleY = 3; }]);
 

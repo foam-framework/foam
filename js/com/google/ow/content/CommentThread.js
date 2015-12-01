@@ -24,25 +24,25 @@ CLASS({
     'com.google.ow.content.Message',
     'com.google.ow.ui.CitationOnlyDAOController',
     'foam.ui.DAOListView',
-    'com.google.ow.model.Envelope',
+    'com.google.ow.model.Envelope'
   ],
 
   exports: [
-    'this as data',
+    'this as data'
   ],
 
   imports: [
     'envelope', // used client-side
     'streamDAO',
     'currentUser$',
-    'setTimeout',
+    'setTimeout'
   ],
 
   properties: [
     {
       model_: 'StringProperty',
       name: 'titleText',
-      defaultValue: 'Ask a Question',
+      defaultValue: 'Ask a Question'
     },
     {
       model_: 'StringProperty',
@@ -51,19 +51,19 @@ CLASS({
     },
     {
       name: 'model',
-      defaultValue: 'com.google.ow.content.Message',
+      defaultValue: 'com.google.ow.content.Message'
     },
     {
       name: 'contentDetailE',
       preSet: function(old, nu) { return ''; },
-      defaultValue: '',
+      defaultValue: ''
     },
     {
       name: 'contentDetailView',
       preSet: function(old, nu) { return ''; },
-      defaultValue: '',
+      defaultValue: ''
     },
-    [ 'border', false],
+    [ 'border', false ],
     {
       model_: 'StringProperty',
       label: 'Reply',
@@ -72,9 +72,9 @@ CLASS({
         return X.lookup('foam.u2.md.Input').create({  },X);
       },
       postSet: function(old,nu) {
-        if (nu) {
+        if ( nu ) {
           // create message+envelope
-          var env = 
+          var env =
             this.Envelope.create({
               owner: this.currentUser.id,
               source: this.currentUser.id,
@@ -85,12 +85,12 @@ CLASS({
                 sid: this.substreams[0],
               })
             });
-          // reset editor 
+          // reset editor
           this.newMessage = '';
           // record new message
           this.streamDAO.put(env);
           // scroll ui (hacky)
-          this.setTimeout(function() { 
+          this.setTimeout(function() {
             this.scrollEl && this.scrollEl.id$el && this.scrollEl.id$el.scrollIntoView(false);
            }.bind(this), 300);
         }
@@ -98,11 +98,11 @@ CLASS({
     },
     {
       model_: 'ImportedProperty',
-      name: 'scrollEl',
+      name: 'scrollEl'
     }
   ],
 
-  methods: [  
+  methods: [
     function init() {
       this.SUPER();
       this.model = this.model;
@@ -123,7 +123,7 @@ CLASS({
       var Y = (X || this.Y).sub({selection$: null, data: this });
       this.envelope = Y.envelope;
       var e = this.Element.create(null, Y.sub({controllerMode: 'rw'}));
-      e.style({ display: 'flex', 'flex-direction': 'column' }).cls2(
+      e.style({ display: 'flex', 'flex-direction': 'column' }).cls(
         function() { return (this.border) ? 'md-card-shell' : ''; }.bind(this))
         //.start().add(this.description$).cls('md-subhead').end()
       .start().add(this.DAOListView.create({
@@ -137,8 +137,6 @@ CLASS({
       .add(this.NEW_MESSAGE);
       this.scrollEl = e;
       return e;
-    },
-    
+    }
   ]
-
 });

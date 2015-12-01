@@ -95,7 +95,7 @@ CLASS({
             color: this.color_$,
             opacity: this.alpha$,
           })
-          .cls2(function() {
+          .cls(function() {
             return this.action &&
                 this.action.isAvailable.call(this.data, this.action) ?
                 this.myCls('available') : '';
@@ -129,7 +129,7 @@ CLASS({
       this.alpha = c.alpha;
       c.alpha = 1;
       return c;
-    },
+    }
   ],
 
   listeners: [
@@ -137,7 +137,7 @@ CLASS({
       e.preventDefault();
       e.stopPropagation();
       this.action.maybeCall(this.X, this.data);
-    },
+    }
   ],
 
   templates: [
@@ -196,6 +196,6 @@ CLASS({
         padding: 10px;
         width: 44px;
       }
-    */},
-  ],
+    */}
+  ]
 });

@@ -27,20 +27,11 @@ CLASS({
   ],
 
   imports: [
-    'data',
-    'data$',
+    'data'
   ],
 
   properties: [
-    {
-      name: 'prop'
-    },
-    {
-      name: 'view'
-    },
-    {
-      name: 'child_',
-    },
+    'prop', 'view', 'child_',
     [ 'nodeName', 'tr' ]
   ],
 
@@ -88,11 +79,9 @@ CLASS({
 
   listeners: [
     function bindData_(old, nu) {
-      if (!this.child_) return;
-      if (old)
-        Events.unlink(old.propertyValue(this.prop.name), this.child_.data$);
-      if (nu)
-        Events.link(nu.propertyValue(this.prop.name), this.child_.data$);
-    },
+      if ( ! this.child_ ) return;
+      if ( old ) Events.unlink(old.propertyValue(this.prop.name), this.child_.data$);
+      if ( nu  ) Events.link(nu.propertyValue(this.prop.name), this.child_.data$);
+    }
   ]
 });
