@@ -528,13 +528,8 @@ CLASS({
     function cls(cls) {
       if ( typeof cls === 'function' ) {
         var lastValue = null;
-<<<<<<< HEAD
         this.dynamicFn(cls, function(value) {
-          this.cls2_(lastValue, value);
-=======
-        this.dynamic(cls, function(value) {
           this.cls_(lastValue, value);
->>>>>>> 67779313028b8452e5503a56116c2bc7ab8a0440
           lastValue = value;
         }.bind(this));
       } else if ( Value.isInstance(cls) ) {
