@@ -178,7 +178,12 @@ CLASS({
     {
       name: 'adapt',
       defaultValue: function (_, d) {
-        return (typeof d === 'string' || typeof d === 'number') ? new Date(d) : d;
+        if (typeof d === 'number') return new Date(d);
+        if (typeof d === 'string') {
+          var ret = new Date(d);
+          return ret.toUTCString() === 'Invalid Date' ? new Date(+d) : ret;
+        }
+        return d;
       }
     },
     [ 'tableFormatter', function(d) { return d ? d.toRelativeDateString() : ''; } ],
