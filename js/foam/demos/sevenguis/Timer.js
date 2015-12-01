@@ -48,7 +48,7 @@ MODEL({
   methods: [
     function init() {
       this.SUPER();
-      this.X.dynamic(function() {
+      this.X.dynamicFn(function() {
         this.progress = this.duration ? 100 * Math.min(1, 1000 * this.elapsedTime / this.duration) : 100;
       }.bind(this));
       this.duration$.addListener(this.tick);

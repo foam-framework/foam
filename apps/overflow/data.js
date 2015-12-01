@@ -47,7 +47,7 @@ var questions = JSONUtil.arrayToObjArray(X, [
   {
     id: 2,
     title: 'My dynamic function which depends on multiple values isn\'t updating properly.',
-    labels: [ 'action', 'dynamic', 'reactive' ],
+    labels: [ 'action', 'dynamicFn', 'reactive' ],
     question: function() {/*
     */},
     answer: function() {/*

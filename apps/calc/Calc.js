@@ -89,7 +89,7 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      Events.dynamic(function() { this.op; this.a2; }.bind(this), function() {
+      Events.dynamicFn(function() { this.op; this.a2; }.bind(this), function() {
         this.row1 = this.op + ( this.a2 ? '&nbsp;' + this.a2 : '' );
       }.bind(this));
     }

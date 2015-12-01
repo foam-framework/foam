@@ -217,7 +217,7 @@ CLASS({
       }), 'foam.ui.ActionButton');
 
       var self = this;
-      Events.dynamic(
+      Events.dynamicFn(
         function() { self.sortOrder; self.q; },
         function() {
           var query = (self.queryParser.parseString(self.q) || TRUE).partialEval();

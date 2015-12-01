@@ -111,7 +111,7 @@ var foam = function(system, dev)
 
 sys.architecture = foam;
 
-Events.dynamic(function () {
+Events.dynamicFn(function () {
     //timer.second;
     timer.time;
   },
@@ -131,7 +131,7 @@ function protoToString(proto) {
   return buf.join('');
 }
 
-Events.dynamic(function() { console.log(sys.selectedX, sys.selectedY); },
+Events.dynamicFn(function() { console.log(sys.selectedX, sys.selectedY); },
   function() {
     var MODELS = [Model, Property, Action, Method, Method, Template, UnitTest, Issue,
                   Timer, Mouse, EyeCView, EyesCView, ClockView, Graph, System, Developer, Canvas, Circle, Rectangle, Box, Label, Power, Screen, DAOController, StackView, NeedleMeter, BatteryMeter, BatteryGraph ];

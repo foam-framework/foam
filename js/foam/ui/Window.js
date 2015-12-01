@@ -31,7 +31,7 @@ CLASS({
     'console',
     'document',
     'framed',
-    'dynamic',
+    'dynamicFn',
     'dynamic2',
     'dynamic3',
     'error',
@@ -122,8 +122,8 @@ CLASS({
     framed: function(listener) {
       return EventService.framed(listener, this);
     },
-    dynamic: function(fn, opt_fn) {
-      return Events.dynamic(fn, opt_fn, this.Y);
+    dynamicFn: function(fn, opt_fn) {
+      return Events.dynamicFn(fn, opt_fn, this.Y);
     },
     // TODO(kgr): experimental, remove if never used
     // avoids capturing nested accessess

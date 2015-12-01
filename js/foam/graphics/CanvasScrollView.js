@@ -50,7 +50,7 @@ CLASS({
   methods: {
     init: function() {
       this.SUPER();
-      this.X.dynamic(
+      this.X.dynamicFn(
         function() { this.width; this.renderer; this.offset; this.objs; }.bind(this),
         function() {
           this.renderer.width = this.width;
@@ -58,7 +58,7 @@ CLASS({
         }.bind(this));
     },
     initCView: function() {
-      this.X.dynamic(
+      this.X.dynamicFn(
         function() {
           this.scrollTop; this.height; this.renderer;
         }.bind(this), this.onDAOUpdate);

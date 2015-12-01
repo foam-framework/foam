@@ -161,7 +161,7 @@ withFOAM(function() {
             byLabel.filter = AND(searchSubject.predicate, byTo.predicate,   byFrom.predicate).partialEval();
         }
 
-        Events.dynamic(function() {
+        Events.dynamicFn(function() {
             searchSubject.predicate;
             byFrom.predicate;
             byTo.predicate;

@@ -39,7 +39,7 @@ CLASS({
 
       var self = this;
       // if we change size, redo internal layout
-       this.X.dynamic(
+       this.X.dynamicFn(
          function() { self.width; self.height; },
          this.performLayout); // TODO: don't react to orientation-independent one
     },

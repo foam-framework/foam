@@ -83,7 +83,7 @@ CLASS({
     init: function() {
       this.SUPER();
 
-      Events.dynamic(
+      Events.dynamicFn(
         function() { this.text; this.font; this.canvas; this.padding; }.bind(this),
         this.updatePreferred );
 

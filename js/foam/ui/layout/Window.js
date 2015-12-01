@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.ui.layout',
   extends: 'foam.ui.SimpleView',
   imports: [
-    'dynamic',
+    'dynamicFn',
     'window'
   ],
   properties: [
@@ -46,7 +46,7 @@ CLASS({
         v.x = 0;
         v.y = 0;
 
-        this.dynamic(
+        this.dynamicFn(
           function() { self.width; self.height; },
           function() {
             v.width  = self.width;
@@ -65,7 +65,7 @@ CLASS({
     init: function(args) {
       this.SUPER(args);
       var self = this;
-      this.dynamic(function() { self.height; },
+      this.dynamicFn(function() { self.height; },
                    function() {
                      self.window.document.body.style.height = self.height + 'px';
                    });

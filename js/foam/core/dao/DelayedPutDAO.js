@@ -46,7 +46,7 @@ CLASS({
 
   methods: [
     function init() {
-      this.X.dynamic(
+      this.X.dynamicFn(
           function() { this.rowDelay; }.bind(this),
           function() {
             this.onPut = EventService.merged(

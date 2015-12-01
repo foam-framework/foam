@@ -41,7 +41,7 @@
     sys[0].architecture = System.getPrototype().mixed;
 //    sys[0].architecture = System.getPrototype().foam;
 
-    Events.dynamic(function () {
+    Events.dynamicFn(function () {
         //timer.second;
         timer.time;
       },
@@ -108,7 +108,7 @@
     l = Label.create({x:g.x+50, y: g.y+180, font: '22pt Arial'});
     space.addChildren(g,l);
 
-    Events.dynamic(function() { timer.second; }, function() {
+    Events.dynamicFn(function() { timer.second; }, function() {
       var d = (sys[0].totalUtility() / sys[0].totalCode);
       g.addData(d, 6000);
       l.text = d;
@@ -136,8 +136,8 @@
      var M = Movement;
      var s = sys[0];
 
-//    Events.dynamic(function() { timer.second; s.numDev = s.features.length * s.entities.length + 1; });
-    Events.dynamic(function() { timer.second; for ( var i = 0 ; i < sys.length ; i++ ) sys[i].numDev = s.features.length * s.entities.length *2; });
+//    Events.dynamicFn(function() { timer.second; s.numDev = s.features.length * s.entities.length + 1; });
+    Events.dynamicFn(function() { timer.second; for ( var i = 0 ; i < sys.length ; i++ ) sys[i].numDev = s.features.length * s.entities.length *2; });
     M.compile([
        [8000],
        function() { s.features.push('Ads'); },

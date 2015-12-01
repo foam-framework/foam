@@ -176,7 +176,7 @@ function() {
   var mouse = X.foam.input.Mouse.create();
   mouse.connect(canv.$);
 
-  Events.dynamic(function() { mouse.x; mouse.y; }, function() {
+  Events.dynamicFn(function() { mouse.x; mouse.y; }, function() {
     //outerLayout.width = mouse.x;
     //outerLayout.height = mouse.y;
     block2Margin.x = mouse.x;

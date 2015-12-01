@@ -118,7 +118,7 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Cells',
   extends: 'foam.ui.View',
-  imports:  [ 'dynamic' ],
+  imports:  [ 'dynamicFn' ],
   exports:  [ 'as cells' ],
 
   models: [
@@ -266,7 +266,7 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
         cell.formula$.addListener(function(_, __, ___, formula) {
           var f = self.parser.parseString(formula);
           cancel && cancel.destroy();
-          cancel = self.dynamic(f.bind(null, self), function(v) {
+          cancel = self.dynamicFn(f.bind(null, self), function(v) {
             cell.value = v;
           });
         });

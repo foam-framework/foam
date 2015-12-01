@@ -68,7 +68,7 @@ CLASS({
         this.dynamicListeners_.destroy();
       }
       if ( this.parent ) {
-        this.dynamicListeners_ = Events.dynamic(function() { 
+        this.dynamicListeners_ = Events.dynamicFn(function() { 
           this.globalX = this.parent.globalX + this.x;
           this.globalY = this.parent.globalY + this.y;
         }.bind(this));

@@ -261,7 +261,7 @@ CLASS({
               var mouse = foam.input.Mouse.create();
               eyes.watch(mouse);
               this.addInitializer(function() { mouse.connect(eyes.view.$); });
-              Events.dynamic(function() { mouse.x; mouse.y; }, function() { if ( eyes.view ) eyes.view.paint(); });
+              Events.dynamicFn(function() { mouse.x; mouse.y; }, function() { if ( eyes.view ) eyes.view.paint(); });
               out(eyes);
             %>
           </p:view>
@@ -302,13 +302,13 @@ CLASS({
                       clock1.y$ = mouse.y$;
 
                       // Part 2
-                      Events.dynamic(function() {
+                      Events.dynamicFn(function() {
                       //   clock2.x = clock1.x + 200;
                       //   clock2.y = clock1.y + 200;
                       });
 
                       // Part 3
-                      Events.dynamic(function() {
+                      Events.dynamicFn(function() {
                       //   clock2.x = clock1.x + 200*Math.cos(timer.time*Math.PI/1000);
                       //   clock2.y = clock1.y + 200*Math.sin(timer.time*Math.PI/1000);
                       });

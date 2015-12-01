@@ -194,7 +194,7 @@ CLASS({
     init: function() {
       this.SUPER();
       var self = this;
-      Events.dynamic(function() {
+      Events.dynamicFn(function() {
         self.headerHeight;
         self.footerHeight;
         self.searchWidth;

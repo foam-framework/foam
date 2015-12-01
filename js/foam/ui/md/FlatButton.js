@@ -212,7 +212,7 @@ CLASS({
 
       var self = this;
 
-      if ( this.action.labelFn ) this.X.dynamic(
+      if ( this.action.labelFn ) this.X.dynamicFn(
         function() {
           self.action.label = self.action.labelFn.call(self.data, self.action);
         },
@@ -221,7 +221,7 @@ CLASS({
         });
 
       // available enabled etc.
-      this.X.dynamic(
+      this.X.dynamicFn(
         function() { self.action.isEnabled.call(self.data, self.action); },
         function() {
           if ( self.action.isEnabled.call(self.data, self.action) ) {
@@ -232,7 +232,7 @@ CLASS({
         }
       );
 
-      this.X.dynamic(
+      this.X.dynamicFn(
         function() { self.action.isAvailable.call(self.data, self.action); },
         function() {
           self.isHidden = ! self.action.isAvailable.call(self.data, self.action);

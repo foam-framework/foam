@@ -37,7 +37,7 @@ CLASS({
       lazyFactory: function() {
         var m = this.Mouse.create();
         m.connect(this.$);
-        Events.dynamic(function() { m.x; m.y; }, function() { this.view.paint(); }.bind(this));
+        Events.dynamicFn(function() { m.x; m.y; }, function() { this.view.paint(); }.bind(this));
         return m;
       }
     }

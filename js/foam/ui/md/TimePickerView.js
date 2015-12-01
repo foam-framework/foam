@@ -19,7 +19,7 @@ CLASS({
   name: 'TimePickerView',
   extends: 'foam.ui.SimpleView',
   imports: [
-    'dynamic',
+    'dynamicFn',
     'gestureManager',
     'popup',
   ],
@@ -107,7 +107,7 @@ CLASS({
     function init() {
       this.SUPER();
 
-      this.dynamic(function() {
+      this.dynamicFn(function() {
         this.hours; this.minutes; this.showHours;
       }.bind(this), function() {
         this.rotation = this.showHours ? this.hours * 30 : this.minutes * 6;
@@ -147,7 +147,7 @@ CLASS({
     {
       name: 'dragStart',
       code: function(p) {
-        this.dragListener_ = this.dynamic(function() { p.x; p.y; },
+        this.dragListener_ = this.dynamicFn(function() { p.x; p.y; },
             this.dragMove.bind(this, p));
       }
     },

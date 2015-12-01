@@ -41,10 +41,10 @@ CLASS({
      function initHTML() {
        this.SUPER();
        var self = this;
-       this.X.dynamic(
+       this.X.dynamicFn(
          function() { self.x; self.y; self.z; },
          this.position);
-       this.X.dynamic(
+       this.X.dynamicFn(
          function() { self.width; self.height; },
          this.resize);
        this.$.style.position = 'absolute';

@@ -161,7 +161,7 @@ CLASS({
       this.persistentContext.bindObject(
           'ctx', this.TaskManagerContext, undefined, 1);
 
-      Events.dynamic(
+      Events.dynamicFn(
         function() { this.search; this.tasks; }.bind(this),
         function() {
           this.filteredTasks = this.tasks.where(

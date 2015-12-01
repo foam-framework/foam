@@ -82,7 +82,7 @@ CLASS({
       if (!this.owner || !this.positioningFunctionX || !this.positioningFunctionY) 
         return;
       
-      this.dynamicListeners_ = Events.dynamic(
+      this.dynamicListeners_ = Events.dynamicFn(
         function() { 
           this.owner.width; this.owner.height; this.owner.globalX; this.owner.globalY;
           this.side;

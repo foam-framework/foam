@@ -55,7 +55,7 @@ CLASS({
     initHTML: function() {
       this.SUPER();
 
-      Events.dynamic(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
+      Events.dynamicFn(function() { this.choices; }.bind(this), this.updateHTML.bind(this));
     }
   }
 });

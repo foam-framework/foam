@@ -388,7 +388,7 @@ CLASS({
       opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
-        self.X.dynamic(valueFn, function() {
+        self.X.dynamicFn(valueFn, function() {
           var e = self.X.$(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           var newValue = valueFn(e.getAttribute(attributeName));
@@ -406,7 +406,7 @@ CLASS({
       opt_id = opt_id || this.nextID();
       valueFn = valueFn.bind(this);
       this.addInitializer(function() {
-        self.X.dynamic(valueFn, function(value) {
+        self.X.dynamicFn(valueFn, function(value) {
           var e = self.X.$(opt_id);
           if ( ! e ) throw EventService.UNSUBSCRIBE_EXCEPTION;
           e.style[styleName] = value;
@@ -424,7 +424,7 @@ CLASS({
 
       this.addInitializer(function() {
         self.addDestructor(
-          self.X.dynamic(
+          self.X.dynamicFn(
             predicate,
             function() {
               var e = self.X.$(opt_id);
@@ -788,7 +788,7 @@ CLASS({
       var id  = this.nextID();
       var self = this;
       this.addInitializer(function() {
-        self.X.dynamic(function() {
+        self.X.dynamicFn(function() {
           var html = f();
           var e = self.X.$(id);
           if ( e ) e.innerHTML = html;

@@ -32,7 +32,7 @@ CLASS({
       name: 'cview',
       postSet: function(_, cview) {
         cview.view = this;
-        this.X.dynamic(function() {
+        this.X.dynamicFn(function() {
           // ActionButtonCView's hide buttons by sizing to 0, so we honour that,
           // but otherwise, we only increase the size of the canvas as needed, not shrink.
           var w = cview.x + cview.width;

@@ -605,7 +605,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
   methods: [
     function init() {
       // Dynamically update string combos based on strings: s1, s2, s3.
-      Events.dynamic(function() {
+      Events.dynamicFn(function() {
         // Ensure that dependencies are referenced.
         this.s1;
         this.s2;

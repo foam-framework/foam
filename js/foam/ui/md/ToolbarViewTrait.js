@@ -102,10 +102,10 @@ CLASS({
         data: data,
         action: action,
       }, this.Y);
-      this.X.dynamic(function() {
+      this.X.dynamicFn(function() {
         toolbarAction.available = isAvailable.apply(data, action);
       });
-      this.X.dynamic(function() {
+      this.X.dynamicFn(function() {
         toolbarAction.enabled = isEnabled.apply(data, action);
       });
       return toolbarAction;

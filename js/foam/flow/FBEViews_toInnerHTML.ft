@@ -528,7 +528,7 @@
       // templates so you can use it in your functions instead of .bind(this).
 
       // Your predicate function will be dynamically evaluated using
-      // Events.dynamic(), so changes in properties referenced by the function
+      // Events.dynamicFn(), so changes in properties referenced by the function
       // will cause the function to be re-evaluated and the CSS class updated.
       name: 'toHTML',
       template: function() {/*

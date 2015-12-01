@@ -52,7 +52,7 @@ CLASS({
     init: function(args) {
         this.SUPER(args);
         var self = this;
-        this.X.dynamic(function() { self.width; self.height; }, this.layout);
+        this.X.dynamicFn(function() { self.width; self.height; }, this.layout);
     },
     open: function(view) {
       if ( ! view.model_.Z ) view = this.FloatingView.create({ view: view });

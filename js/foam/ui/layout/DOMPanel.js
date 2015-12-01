@@ -34,7 +34,7 @@ CLASS({
     init: function() {
       this.SUPER();
       var self = this;
-      this.X.dynamic(function() { self.width; self.height; },
+      this.X.dynamicFn(function() { self.width; self.height; },
                      this.layout);
     },
     initHTML: function() {
