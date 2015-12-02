@@ -28,6 +28,10 @@ CLASS({
 
   label: 'Contains',
 
+  messages: {
+    errorMessage: 'The value must contain $parameter$',
+  },
+
   properties: [
     {
       type: 'String',
@@ -39,6 +43,6 @@ CLASS({
   methods: [
     function toString() {
       return '.*'+this.parameter+'.*';
-    }
+    },
   ],
 });

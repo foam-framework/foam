@@ -28,12 +28,16 @@ CLASS({
 
   label:  'Does not match pattern',
 
+  messages: {
+    errorMessage: 'The value must not match pattern.',
+  },
+
   properties: [
     {
       type: 'String',
       label: 'Regular Expression',
       name: 'parameter',
-    },
+    }
   ],
 
   methods: [

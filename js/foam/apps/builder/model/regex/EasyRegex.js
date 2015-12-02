@@ -27,12 +27,26 @@ CLASS({
 
   label: 'No pattern matching',
 
+  messages: {
+    errorMessage: 'The value does not match the pattern.',
+  },
+
   properties: [
+    {
+      type: 'String',
+      name: 'error',
+      label: 'Error Message',
+    }
   ],
 
   methods: [
     function toString() {
       return '';
+    },
+    function errorMessage() {
+      if ( this.error ) return this.error;
+      return this.errorMessage.replaceValues(this.parameter || '');
     }
+
   ],
 });

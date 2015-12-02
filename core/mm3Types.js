@@ -22,6 +22,10 @@ CLASS({
   help: 'Describes a properties of type String.',
   label: 'Text, including letters, numbers, or symbols',
 
+  messages: {
+    invalid_PatternMismatch: 'The value does not match the pattern.'
+  },
+
   properties: [
     {
       name: 'displayHeight',
@@ -69,6 +73,25 @@ CLASS({
       label: 'Protobuf tag',
       required: false,
       help: 'The protobuf tag number for this field.'
+    },
+    {
+      name: 'validate',
+      lazyFactory: function() {
+        var prop = this; // this == the property
+        return function() {
+          // this == the property's owner
+          var pattern = prop.pattern;
+          if ( pattern ) {
+            var exp = new RegExp(pattern.toString(), 'i'); // pattern is string or Regex model
+            if ( ! exp.test(this[prop.name]) ) {
+              if ( pattern.errorMessage )
+                return pattern.errorMessage();
+              else
+                return prop.invalid_PatternMismatch.value;
+            }
+          }
+        }
+      }
     }
   ]
 });
@@ -217,7 +240,12 @@ CLASS({
   extends: 'Property',
 
   help:  'Describes a properties of type Int.',
-  label: 'Round numbers such as 1, 0, or -245',
+  label: 'Round numbers such as 3, 0, or -245',
+
+  messages: {
+    invalid_belowMinimum: 'The value is too small.',
+    invalid_aboveMaximum: 'The value is too large.',
+  },
 
   properties: [
     /*
@@ -276,6 +304,23 @@ CLASS({
       labels: ['javascript'],
       defaultValue: function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; },
     },
+    {
+      name: 'validate',
+      lazyFactory: function() {
+        var prop = this; // this == the property
+        return function() {
+          // this == the property's owner
+          var pAdapt = prop.adapt.bind(this, null);
+          var min = typeof prop.minValue === 'number' ? prop.minValue :
+                      prop.minValue ? pAdapt(prop.minValue) : -Infinity;
+          var max = typeof prop.maxValue === 'number' ? prop.maxValue :
+                      prop.maxValue ? pAdapt(prop.maxValue) : Infinity;
+
+          if ( min > this[prop.name] ) return prop.invalid_belowMinimum.value;
+          if ( max < this[prop.name] ) return prop.invalid_aboveMaximum.value;
+        }
+      }
+    }
   ]
 });
 
@@ -375,6 +420,23 @@ CLASS({
       label: 'Protobuf tag',
       required: false,
       help: 'The protobuf tag number for this field.'
+    },
+    {
+      name: 'validate',
+      lazyFactory: function() {
+        var prop = this; // this == the property
+        return function() {
+          // this == the property's owner
+          var pAdapt = prop.adapt.bind(this, null);
+          var min = typeof prop.minValue === 'number' ? prop.minValue :
+                      prop.minValue ? pAdapt(prop.minValue) : -Infinity;
+          var max = typeof prop.maxValue === 'number' ? prop.maxValue :
+                      prop.maxValue ? pAdapt(prop.maxValue) : Infinity;
+
+          if ( min > this[prop.name] ) return this.invalid_belowMinimum.value;
+          if ( max < this[prop.name] ) return this.invalid_aboveMaximum.value;
+        }
+      }
     }
   ]
 });
