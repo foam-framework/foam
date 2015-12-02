@@ -111,6 +111,7 @@
         document.body.insertAdjacentHTML('beforeend', obj.outerHTML);
         obj.load();
         return;
+      // TODO(braden): Should be a case for anything-with-toE here.
       } else if ( obj.toView_ ) {
         view = obj.toView_();
       } else {
