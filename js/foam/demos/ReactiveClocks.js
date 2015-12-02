@@ -17,8 +17,7 @@
 
 CLASS({
   package: 'foam.demos',
-
-  name: 'ReactiveClocks',
+  name: 'ReactiveClocks2',
   extends: 'foam.ui.View',
 
   requires: [
@@ -28,6 +27,8 @@ CLASS({
     'foam.ui.DetailView',
     'foam.util.Timer'
   ],
+
+  imports: [ 'dynamic' ],
 
   properties: [
     {
@@ -50,18 +51,18 @@ CLASS({
       this.SUPER();
 
       this.mouse.connect(this.space.$);
-      Events.dynamicFn(function () {
+      this.dynamic(function () {
         this.clock1.x = this.mouse.x;
         this.clock1.y = this.mouse.y;
       }.bind(this));
 
       if ( this.stage == 1 ) {
-        Events.dynamicFn(function () {
+        this.dynamic(function () {
           this.clock2.x = this.clock1.x + 200;
           this.clock2.y = this.clock1.y + 200;
         }.bind(this));
       } else if ( this.stage == 2 ) {
-        Events.dynamicFn(function () {
+        this.dynamic(function () {
           this.clock2.x = this.clock1.x + 200*Math.cos(this.timer.time*Math.PI/1000);
           this.clock2.y = this.clock1.y + 200*Math.sin(this.timer.time*Math.PI/1000);
         }.bind(this));
