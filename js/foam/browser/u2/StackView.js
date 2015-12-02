@@ -70,6 +70,21 @@ CLASS({
       defaultValue: 'slide',
       choices: ['slide', 'fade']
     },
+    {
+      name: 'defaultMinWidth',
+      documentation: 'If an item in the stack does not define a minWidth property, this value is used instead.',
+      defaultValue: 300
+    },
+    {
+      name: 'defaultPreferredWidth',
+      documentation: 'If an item in the stack does not define a preferredWidth property, this value is used instead.',
+      defaultValue: 400
+    },
+    {
+      name: 'defaultMaxWidth',
+      documentation: 'If an item in the stack does not define a maxWidth property, this value is used instead.',
+      defaultValue: 10000
+    },
   ],
 
   methods: [
@@ -170,8 +185,8 @@ CLASS({
     function resize() {
       var width = this.id$el.offsetWidth;
       var index = this.views_.length - 1;
-      while (index >= 0 && width >= this.views_[index].content.minWidth) {
-        width -= this.views_[index].content.minWidth;
+      while (index >= 0 && width >= (this.views_[index].content.minWidth || this.defaultMinWidth)) {
+        width -= (this.views_[index].content.minWidth || this.defaultMinWidth);
         index--;
       }
 
@@ -194,19 +209,19 @@ CLASS({
       width = this.id$el.offsetWidth;
       var sizes = [];
       for (var i = this.visibleStart_; i <= this.visibleEnd_; i++) {
-        var min = this.views_[i].content.minWidth;
+        var min = this.views_[i].content.minWidth || this.defaultMinWidth;
         sizes[i] = min; // This leaves blanks for hidden views. Oh well.
         width -= min;
       }
 
       for (i = this.visibleEnd_; width > 0 && i >= this.visibleStart_; i--) {
-        var newSize = Math.min(sizes[i] + width, this.views_[i].content.preferredWidth);
+        var newSize = Math.min(sizes[i] + width, this.views_[i].content.preferredWidth || this.defaultMinWidth);
         width -= newSize - sizes[i];
         sizes[i] = newSize;
       }
 
       for (i = this.visibleEnd_; width > 0 && i >= this.visibleStart_; i--) {
-        var newSize = Math.min(sizes[i] + width, this.views_[i].content.maxWidth);
+        var newSize = Math.min(sizes[i] + width, this.views_[i].content.maxWidth || this.defaultMaxWidth);
         width -= newSize - sizes[i];
         sizes[i] = newSize;
       }
