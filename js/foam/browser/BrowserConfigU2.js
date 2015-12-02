@@ -26,7 +26,6 @@ CLASS({
     'foam.mlang.CannedQuery',
     'foam.persistence.ObjectReplicator',
     'foam.u2.DAOListView',
-    'foam.u2.UpdateView',
     'foam.u2.md.CannedQueryCitationView',
     'foam.u2.md.CitationView',
     'foam.u2.md.WithToolbar',
@@ -133,18 +132,10 @@ CLASS({
     {
       model_: 'StringProperty',
       name: 'search',
-      view: {
-        factory_: 'foam.ui.md.TextFieldView',
-        label: 'Search',
-        floatingLabel: false,
-        placeholder: 'Search',
-        onKeyMode: true,
-      },
       toPropertyE: function(X) {
         return X.lookup('foam.u2.md.Input').create({
           data$: X.data$,
           inline: true,
-          placeholder: 'Search',
         });
       }
     },

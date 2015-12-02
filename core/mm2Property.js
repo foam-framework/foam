@@ -380,13 +380,8 @@ GLOBAL.Property = {
         return e;
       },
       adapt: function(_, nu) {
-        if (typeof nu === 'string') {
-          return function(X) {
-            return X.lookup(nu).create(null, X);
-          };
-        } else {
-          return nu;
-        }
+        return typeof nu === 'string' ?
+            function(X) { return X.lookup(nu).create(null, X); } : nu;
       },
     },
     {

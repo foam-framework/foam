@@ -47,6 +47,7 @@ CLASS({
       attribute: true,
       documentation: 'Ignored when $$DOC{ref:".showLabel"} is true, but used ' +
           'as an inline placeholder when it\'s false.',
+      defaultValueFn: function() { return this.label; }
     },
     {
       model_: 'BooleanProperty',

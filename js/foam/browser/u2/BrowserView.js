@@ -31,6 +31,10 @@ CLASS({
     'foam.u2.md.SharedStyles',
   ],
 
+  imports: [
+    'gestureManager',
+    'touchManager',
+  ],
   exports: [
     'gestureManager',
     'stack',
@@ -397,13 +401,13 @@ CLASS({
     {
       name: 'touchManager',
       factory: function() {
-        return this.X.touchManager || this.TouchManager.create();
+        return this.TouchManager.create();
       }
     },
     {
       name: 'gestureManager',
       factory: function() {
-        return this.X.gestureManager || this.GestureManager.create();
+        return this.GestureManager.create();
       }
     },
     {

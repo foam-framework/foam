@@ -21,6 +21,7 @@ CLASS({
 
   imports: [
     'dynamic',
+    'requestAnimationFrame',
     'setTimeout',
     'window'
   ],
@@ -120,7 +121,7 @@ CLASS({
       if (this.transition === 'slide') {
         e.style({
           width: '0px',
-          left: this.id$el.offsetWidth,
+          left: '100%',
           transition: 'left 300ms ease'
         });
       } else if (this.transition === 'fade') {
@@ -128,13 +129,12 @@ CLASS({
           opacity: 0,
           transition: 'opacity 300ms ease'
         });
-        // TODO(braden): Probably replace this with requestAnimationFrame?
-        this.setTimeout(function() { e.style({ opacity: 1 }); }, 50);
+        this.requestAnimationFrame(function() { e.style({ opacity: 1 }); });
       }
     },
     function elementAnimationRemove_(e) {
       if (this.transition === 'slide') {
-        e.style({ left: this.id$el.offsetWidth });
+        e.style({ left: '100%' });
       } else if (this.transition === 'fade') {
         e.style({ opacity: 0 });
       }
@@ -151,8 +151,8 @@ CLASS({
     function finishDestroy(e) {
       this.setTimeout(function() {
         // Clean up after the animation.
-        // TODO(braden): Not sure if this is done?
-        //obj.view.remove();
+        // TODO(braden): Calling destroy() should cause an unload if needed.
+        // Once that is true, the unload() call here can be removed.
         e.unload();
         e.destroy();
       }, 1000);
@@ -304,15 +304,12 @@ CLASS({
   ],
 
   listeners: [
-    {
-      name: 'onLoad',
-      code: function() {
-        // Render and configure each child view that has already been loaded.
-        for (var i = 0; i < this.views_.length; i++) {
-          this.renderChild(i);
-        }
-        this.resize();
+    function onLoad() {
+      // Render and configure each child view that has already been loaded.
+      for (var i = 0; i < this.views_.length; i++) {
+        this.renderChild(i);
       }
+      this.resize();
     },
     {
       name: 'onResize',

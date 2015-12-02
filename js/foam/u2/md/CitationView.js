@@ -21,10 +21,22 @@ CLASS({
 
   properties: [
     {
+      name: 'data',
+      postSet: function(old, nu) {
+        if (old !== nu && nu)
+          this.model = nu.model_;
+      },
+    },
+    {
       name: 'model',
-      defaultValueFn: function() {
-        return this.data.model_;
-      }
+      postSet: function(old, nu) {
+        if (this.prop && old === nu) return;
+        this.prop = this.pickNameProperty();
+      },
+    },
+    {
+      name: 'prop',
+      documentation: 'The name of the selected property.',
     },
   ],
 
@@ -50,8 +62,7 @@ CLASS({
         }
         if (!prop && stringProps.length) prop = stringProps[0];
       }
-      if (!prop) prop = this.model.getFeature('id');
-      return prop;
+      return prop ? prop.name : 'id';
     }
   ],
 
@@ -62,11 +73,12 @@ CLASS({
         border-bottom: 1px solid #eee;
         display: flex;
         min-height: 48px;
+        padding: 16px;
       }
     */},
-    function initE() {/*
+    function initE() {/*#U2
       <div class="$">
-        {{this.pickNameProperty().propertyValue(this.data)}}
+        {{this.data.propertyValue(this.prop)}}
       </div>
     */},
   ]
