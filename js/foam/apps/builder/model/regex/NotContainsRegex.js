@@ -43,6 +43,9 @@ CLASS({
   methods: [
     function toString() {
       return '^((?!'+this.parameter+').)*$';
+    },
+    function test(val) {
+      return val.indexOf(this.parameter) === -1;
     }
   ],
 });

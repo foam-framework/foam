@@ -23,7 +23,7 @@ CLASS({
   label: 'Text, including letters, numbers, or symbols',
 
   messages: {
-    invalid_PatternMismatch: 'The value does not match the pattern.'
+    errorPatternMismatch: 'The value does not match the pattern.'
   },
 
   properties: [
@@ -82,12 +82,15 @@ CLASS({
           // this == the property's owner
           var pattern = prop.pattern;
           if ( pattern ) {
-            var exp = new RegExp(pattern.toString(), 'i'); // pattern is string or Regex model
-            if ( ! exp.test(this[prop.name]) ) {
+            if (
+              ( pattern.test && ! pattern.test(this[prop.name]) ) ||
+              ( ! pattern.test &&
+                (new RegExp(pattern.toString(), 'i').test(this[prop.name])) )
+            ) {
               if ( pattern.errorMessage )
                 return pattern.errorMessage();
               else
-                return prop.invalid_PatternMismatch.value;
+                return prop.errorPatternMismatch.value;
             }
           }
         }
@@ -235,17 +238,72 @@ CLASS({
 });
 
 
+
+
+CLASS({
+  name:  'NumericProperty_',
+  extends: 'Property',
+
+  help:  'Base model for a property of any numeric type.',
+
+  messages: {
+    errorBelowMinimum: 'The value is too small.',
+    errorAboveMaximum: 'The value is too large.',
+  },
+
+  properties: [
+    {
+      name: 'minValue',
+      label: 'Minimum Value',
+      required: false,
+      help: 'The minimum value this property accepts.',
+      defaultValue: -Infinity
+    },
+    {
+      name: 'maxValue',
+      label: 'Maximum Value',
+      required: false,
+      help: 'The maximum value this property accepts.',
+      defaultValue: Infinity
+    },
+    {
+      name: 'compareProperty',
+      labels: ['javascript'],
+      defaultValue: function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; },
+    },
+    {
+      name: 'validate',
+      lazyFactory: function() {
+        var prop = this; // this == the property
+        var min = prop.adapt.call(prop, null, prop.minValue);
+        var max = prop.adapt.call(prop, null, prop.maxValue);
+
+        var ret = constantFn('');
+        if ( min !== -Infinity ) {
+          ret = function(result) {
+            return result ||
+              ( this[prop.name] < min ? this.errorBelowMinimum.replaceValues(min) : '');
+          }.o(ret);
+        }
+        if ( max !== Infinity ) {
+          ret = function(result) {
+            return result ||
+              ( this[prop.name] > max ? this.errorAboveMaximum.replaceValues(max) : '');
+          }.o(ret);
+        }
+        return ret;
+      }
+    }
+  ]
+});
+
+
 CLASS({
   name:  'IntProperty',
-  extends: 'Property',
+  extends: 'NumericProperty_',
 
   help:  'Describes a properties of type Int.',
   label: 'Round numbers such as 3, 0, or -245',
-
-  messages: {
-    invalid_belowMinimum: 'The value is too small.',
-    invalid_aboveMaximum: 'The value is too large.',
-  },
 
   properties: [
     /*
@@ -287,40 +345,6 @@ CLASS({
       required: false,
       help: 'The protobuf tag number for this field.'
     },
-    {
-      name: 'minValue',
-      label: 'Minimum Value',
-      required: false,
-      help: 'The minimum value this property accepts.'
-    },
-    {
-      name: 'maxValue',
-      label: 'Maximum Value',
-      required: false,
-      help: 'The maximum value this property accepts.'
-    },
-    {
-      name: 'compareProperty',
-      labels: ['javascript'],
-      defaultValue: function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; },
-    },
-    {
-      name: 'validate',
-      lazyFactory: function() {
-        var prop = this; // this == the property
-        return function() {
-          // this == the property's owner
-          var pAdapt = prop.adapt.bind(this, null);
-          var min = typeof prop.minValue === 'number' ? prop.minValue :
-                      prop.minValue ? pAdapt(prop.minValue) : -Infinity;
-          var max = typeof prop.maxValue === 'number' ? prop.maxValue :
-                      prop.maxValue ? pAdapt(prop.maxValue) : Infinity;
-
-          if ( min > this[prop.name] ) return prop.invalid_belowMinimum.value;
-          if ( max < this[prop.name] ) return prop.invalid_aboveMaximum.value;
-        }
-      }
-    }
   ]
 });
 
@@ -360,7 +384,7 @@ CLASS({
 
 CLASS({
   name:  'FloatProperty',
-  extends: 'Property',
+  extends: 'NumericProperty_',
 
   help:  'Describes a properties of type Float.',
   label: 'Decimal numbers such as 1.34 or -0.00345',
@@ -404,40 +428,11 @@ CLASS({
       }
     },
     {
-      name: 'minValue',
-      label: 'Minimum Value',
-      required: false,
-      help: 'The minimum value this property accepts.'
-    },
-    {
-      name: 'maxValue',
-      label: 'Maximum Value',
-      required: false,
-      help: 'The maximum value this property accepts.'
-    },
-    {
       name: 'prototag',
       label: 'Protobuf tag',
       required: false,
       help: 'The protobuf tag number for this field.'
     },
-    {
-      name: 'validate',
-      lazyFactory: function() {
-        var prop = this; // this == the property
-        return function() {
-          // this == the property's owner
-          var pAdapt = prop.adapt.bind(this, null);
-          var min = typeof prop.minValue === 'number' ? prop.minValue :
-                      prop.minValue ? pAdapt(prop.minValue) : -Infinity;
-          var max = typeof prop.maxValue === 'number' ? prop.maxValue :
-                      prop.maxValue ? pAdapt(prop.maxValue) : Infinity;
-
-          if ( min > this[prop.name] ) return this.invalid_belowMinimum.value;
-          if ( max < this[prop.name] ) return this.invalid_aboveMaximum.value;
-        }
-      }
-    }
   ]
 });
 

@@ -36,7 +36,7 @@ CLASS({
     {
       type: 'String',
       label: 'String',
-      name: 'parameter',
+      name: 'parameter', // todo: sanitize
     },
   ],
 
@@ -44,5 +44,8 @@ CLASS({
     function toString() {
       return '.*'+this.parameter+'.*';
     },
+    function test(val) {
+      return val.indexOf(this.parameter) !== -1;
+    }
   ],
 });
