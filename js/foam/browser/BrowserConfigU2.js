@@ -26,6 +26,7 @@ CLASS({
     'foam.mlang.CannedQuery',
     'foam.u2.DAOListView',
     'foam.u2.UpdateView',
+    'foam.u2.md.CannedQueryCitationView',
     'foam.u2.md.CitationView',
     'foam.u2.md.WithToolbar',
   ],
@@ -228,7 +229,8 @@ CLASS({
               this.CannedQuery.SECTION,
               this.CannedQuery.ORDER,
               this.CannedQuery.LABEL
-          )
+          ),
+          rowView: 'foam.u2.md.CannedQueryCitationView',
         }, this.Y.sub({
           selection$: this.cannedQuery$
         }));

@@ -21,7 +21,17 @@ CLASS({
   extends: 'foam.u2.View',
 
   properties: [
-    'label'
+    {
+      type: 'String',
+      name: 'label',
+      attribute: true
+    },
+    {
+      type: 'Boolean',
+      name: 'showLabel',
+      attribute: true,
+      defaultValue: true
+    },
   ],
 
   methods: [
@@ -29,12 +39,14 @@ CLASS({
       var self = this;
       this.cls(this.myCls())
           .enableCls(this.myCls('checked'), this.data$)
-          .on('click', function() { self.data = !self.data; })
-          .start('span')
-              .cls(this.myCls('label')).cls('noselect')
-              .add(this.label$)
-              .end()
-          .start('div').cls(this.myCls('box-outer')).cls('noselect')
+          .on('click', function() { self.data = !self.data; });
+      if (this.showLabel) {
+        this.start('span')
+            .cls(this.myCls('label')).cls('noselect')
+            .add(this.label$)
+            .end();
+      }
+      this.start('div').cls(this.myCls('box-outer')).cls('noselect')
               .start('div').cls(this.myCls('box'))
                   .add(this.svgElement()).end()
               // TODO(braden): Halo support.

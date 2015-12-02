@@ -21,6 +21,7 @@ CLASS({
   properties: [
     {
       name: 'id',
+      defaultValueFn: function() { return this.label; }
     },
     {
       model_: 'StringProperty',
@@ -51,5 +52,5 @@ CLASS({
       defaultValue: 100000,
       hidden: true
     },
-  ]
+  ],
 });

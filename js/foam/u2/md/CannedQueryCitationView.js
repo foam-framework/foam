@@ -15,23 +15,41 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.tutorials.todo.u2',
-  name: 'TodoCitationView',
+  package: 'foam.u2.md',
+  name: 'CannedQueryCitationView',
   extends: 'foam.u2.View',
+  methods: [
+    function initE() {
+      this.cls(this.myCls())
+          .add(this.data.iconUrl && this.data.ICON_URL)
+          .add(this.data.label$);
+    },
+  ],
+
   templates: [
     function CSS() {/*
       $ {
         align-items: center;
-        border-bottom: 1px solid #eee;
         display: flex;
-        min-height: 48px;
+        font-size: 16px;
+        height: 42px;
+        line-height: 42px;
+        padding: 8px 16px;
       }
-    */},
-    function initE() {/*#U2
-      <div class="$">
-        <:isCompleted showLabel="false"/>
-        {{this.data.title$}}
-      </div>
+      $ img {
+        flex-grow: 0;
+        flex-shrink: 0;
+        height: 24px;
+        margin-right: 25px;
+        opacity: 0.6;
+        width: 24px;
+      }
+      $-label {
+        flex-grow: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     */},
   ]
 });

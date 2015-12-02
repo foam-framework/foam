@@ -35,7 +35,7 @@ CLASS({
       name: 'data',
       factory: function() {
         var self = this;
-        return this.BrowserConfig.create({
+        return this.BrowserConfigU2.create({
           model: this.Todo,
           dao: this.EasyDAO.create({
             model: this.Todo,
@@ -43,27 +43,7 @@ CLASS({
             cache: true,
             seqNo: true
           }),
-          listView: function(args, opt_X) {
-            args.rowView = self.data.rowView;
-            return self.DAOListView.create(args, opt_X);
-          },
-          rowView: function(args, opt_X) {
-            return self.TodoCitationView.create(args, opt_X);
-          },
-          innerDetailView: function(args, opt_X) {
-            return self.DetailView.create(args, opt_X);
-          },
-          detailView: function(args, opt_X) {
-            var wt = self.WithToolbar.create({
-              title: (opt_X.controllerMode === 'update' ? 'Edit' : 'New') +
-                  ' ' + args.data.model_.name
-            }, opt_X);
-            var uv = self.UpdateView.create({
-              delegate: self.data.innerDetailView(args, opt_X)
-            }, opt_X);
-            wt.add(uv);
-            return wt;
-          },
+          rowView: 'foam.tutorials.todo.u2.TodoCitationView',
           cannedQueryDAO: [
             this.CannedQuery.create({
               label: 'Todo',

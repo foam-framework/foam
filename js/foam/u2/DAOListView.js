@@ -55,6 +55,7 @@ CLASS({
       }
     },
     {
+      type: 'ViewFactory',
       name: 'rowView',
       defaultValue: function(args, opt_X) {
         return this.DetailView.create(args, opt_X || this.Y);
