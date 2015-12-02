@@ -501,7 +501,7 @@ CLASS({
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
     function enableCls(cls, enabled, opt_negate) {
-      function negate(a, b) { return b ? a : ! a; }
+      function negate(a, b) { return b ? ! a : a; }
 
       if ( typeof enabled === 'function' ) {
         var fn = enabled;
@@ -839,6 +839,7 @@ CLASS({
 
       var first = true;
       for ( var key in this.classes ) {
+        if ( ! this.classes[key] ) continue;
         if ( first ) {
           out(' class="');
           first = false;
