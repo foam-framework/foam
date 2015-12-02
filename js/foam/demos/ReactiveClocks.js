@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.demos',
-  name: 'ReactiveClocks2',
+  name: 'ReactiveClocks',
   extends: 'foam.ui.View',
 
   requires: [
