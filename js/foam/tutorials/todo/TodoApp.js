@@ -19,15 +19,11 @@ CLASS({
   name: 'TodoApp',
   extends: 'foam.browser.u2.BrowserView',
   requires: [
-    'foam.browser.BrowserConfig',
+    'foam.browser.BrowserConfigU2',
     'foam.dao.EasyDAO',
     'foam.mlang.CannedQuery',
     'foam.tutorials.todo.model.Todo',
     'foam.tutorials.todo.u2.TodoCitationView',
-    'foam.u2.DAOListView',
-    'foam.u2.UpdateView',
-    'foam.u2.md.DetailView',
-    'foam.u2.md.WithToolbar',
   ],
 
   properties: [

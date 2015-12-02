@@ -24,6 +24,7 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.NullDAO',
     'foam.mlang.CannedQuery',
+    'foam.persistence.ObjectReplicator',
     'foam.u2.DAOListView',
     'foam.u2.UpdateView',
     'foam.u2.md.CannedQueryCitationView',
@@ -175,13 +176,26 @@ CLASS({
           'this property.',
       defaultValue: function(args, opt_X) {
         var wt = this.WithToolbar.create({
-          title: (opt_X.controllerMode === 'update' ? 'Edit' : 'New') + ' ' +
-              args.data.model_.name
+          title: 'Edit ' + args.data.model_.name,
         }, opt_X);
-        var uv = this.UpdateView.create({
-          delegate: this.innerDetailView(args, opt_X)
-        }, opt_X);
-        wt.add(uv);
+
+        // In update and view modes, we create an ObjectReplicator, which will
+        // perform a find() and pass along the data.
+        // In create mode, we expect args.data to be a freshly created object,
+        // which we pass directly to the createView, and let the
+        var replicator = this.ObjectReplicator.create({
+          dao: this.dao,
+          model: this.model,
+          id: args.data.id
+        });
+        delete args.data;
+        delete args.data$;
+        replicator.future.get(function(obj) {
+          args.data = obj;
+          args.model = this.model;
+          var X = (opt_X || this.Y).sub({ data: obj });
+          wt.add(this.innerDetailView(args, X));
+        }.bind(this));
         return wt;
       }
     },
@@ -195,14 +209,22 @@ CLASS({
       name: 'createView',
       documentation: 'The view for creating a new item. Defaults to creating ' +
           'a new empty instance of $$DOC{ref:".model"} and passing it to ' +
-          '$$DOC{ref:".detailView"}.',
+          '$$DOC{ref:".innerDetailView"}.',
       defaultValue: function(args, X) {
         var newObj = this.model.create(null, X);
-        var Y = X.sub({ controllerMode: 'create' });
-        return this.detailView({
+        var Y = X.sub({
+          controllerMode: 'create',
+        });
+        var wt = this.WithToolbar.create({
+          title: 'New ' + this.model.name,
           data: newObj,
-          innerView: this.innerDetailView
+          saveCancel: true
         }, Y);
+        wt.add(this.innerDetailView({
+          model: this.model,
+          data: newObj
+        }, Y));
+        return wt;
       }
     },
     {

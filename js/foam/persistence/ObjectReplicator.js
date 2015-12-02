@@ -21,7 +21,6 @@ CLASS({
   properties: [
     'id',
     'model',
-    'args',
     'dao',
     {
       model_: 'BooleanProperty',

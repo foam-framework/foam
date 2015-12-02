@@ -92,6 +92,10 @@ CLASS({
         width: 100%;
       }
 
+      $-title {
+        flex-grow: 1;
+      }
+
       .foam-u2-md-Card $ {
         background-color: transparent;
         color: currentColor;

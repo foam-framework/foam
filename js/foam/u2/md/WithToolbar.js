@@ -17,7 +17,7 @@
 CLASS({
   package: 'foam.u2.md',
   name: 'WithToolbar',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
 
   documentation: 'Creates a full-height container with a MD toolbar at the ' +
       'top and a scrolling body below. Calling $$DOC{ref:".add"} on this ' +
@@ -29,12 +29,20 @@ CLASS({
   ],
 
   imports: [
+    'dao',
     'stack',
   ],
 
   properties: [
     {
       name: 'title',
+    },
+    {
+      name: 'saveCancel',
+      documentation: 'Set this to show cancel and save buttons instead of ' +
+          'just a Back button. Cancel is the same as Back, but save calls ' +
+          'put() on the imported DAO.',
+      defaultValue: false
     },
     {
       name: 'body_',
@@ -56,10 +64,27 @@ CLASS({
       }
     },
     {
-      name: 'toolbar_',
+      name: 'cancelAction_',
       factory: function() {
+        return this.ToolbarAction.create({ data: this, action: this.CANCEL });
+      }
+    },
+    {
+      name: 'saveAction_',
+      factory: function() {
+        return this.ToolbarAction.create({ data: this, action: this.SAVE });
+      }
+    },
+    {
+      name: 'toolbar_',
+      lazyFactory: function() {
         var t = this.Toolbar.create({ title$: this.title$ });
-        t.addLeftActions([this.backAction_]);
+        if (this.saveCancel) {
+          t.addLeftActions([this.cancelAction_]);
+          t.addRightActions([this.saveAction_]);
+        } else {
+          t.addLeftActions([this.backAction_]);
+        }
         return t;
       }
     },
@@ -72,6 +97,24 @@ CLASS({
       ligature: 'arrow_back',
       code: function() {
         this.stack.popView();
+      }
+    },
+    {
+      name: 'cancel',
+      ligature: 'clear',
+      code: function() {
+        this.stack.popView();
+      }
+    },
+    {
+      name: 'save',
+      ligature: 'check',
+      code: function() {
+        this.dao.put(this.data, {
+          put: function() {
+            this.stack.popView();
+          }.bind(this)
+        });
       }
     },
   ],
