@@ -268,11 +268,17 @@ CLASS({
       </div>
       <div class="card flex-col flex-grow">
         <foam model="com.google.sweeper.Game"/><br>
-        <div class="flex-row">
+        <center>
+        <div class="flex-row" style="align-items:flex-start;">
           <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Game}) %>
           <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Board}) %>
           <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Cell}) %>
+          <figure style="margin-left:100px;">
+          <img src="./js/foam/demos/empire/SweeperQR.png" width="35%">
+          <figcaption style="font-size:80%;">(1119 bytes)</figcaption>
+          </figure>
         </div>
+        </center>
       </div>
     </div>
   </slide>

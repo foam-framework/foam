@@ -58,16 +58,20 @@ CLASS({
     {
       name: 'parser',
       lazyFactory: function() {
+        return SkipGrammar.create(this.parser_, seq('/*', repeat(not('*/', anyChar)), '*/'));
+      },
+    },
+    {
+      name: 'parser_',
+      lazyFactory: function() {
         var css = this;
-        var s = function() { return str(seq.apply(this, arguments)); };
-        var r = function() { return str(repeat.apply(this, arguments)); };
-        var p = function() { return str(plus.apply(this, arguments)); };
-        return SkipGrammar.create({
+        return {
           __proto__: grammar,
 
           START: sym('stylesheet'),
 
           ws: alt(' ', '\t', '\n', '\r', '\f'),
+          wsc: alt(sym('ws'), ','),
           ws_: repeat0(sym('ws')),
           wsp_: plus0(sym('ws')),
 
@@ -76,37 +80,51 @@ CLASS({
               range('a', 'z'),
               range('A', 'Z'),
               range('0', '9')),
-          // Excludes: ":", ";", "{", "}".
+          // Excludes: ":", ";", "{", "}", "(", ")", ",".
           punct: alt(
-              range('!', '/'),
+              range('!', "'"),
+              range('*', '+'),
+              range('-', '/'),
               range('<', '@'),
               range('[', '`'),
               '|',
               '~'),
-          // Alpha-num-punct (excludes: ":", ";", "{", "}").
+          // Alpha-num-punct (excludes: ":", ";", "{", "}", "(", ")", ",").
           anp: alt(sym('alphaNum'), sym('punct')),
 
-          stylesheet: s(
+          stylesheet: str(seq(
               sym('ws_'),
-              r(alt(
+              str(repeat(alt(
                   sym('stmtRule'),
                   sym('blockRule')),
-                sym('ws_'))),
+                sym('ws_'))))),
 
           rulePrefix: plus(
               // Alpha-num-punct, but not ";" "{", or "}".
-              p(alt(sym('anp'), ':')),
+              str(plus(alt(sym('anp'), ',', '(', ')', ':'))),
               sym('wsp_')),
-          stmtRule: s(sym('rulePrefix'), ';'),
-          blockRule: s(sym('rulePrefix'), sym('block')),
-          blockList: p(sym('blockRule'), sym('ws_')),
+          stmtRule: str(seq(sym('rulePrefix'), ';')),
+          blockRule: str(seq(sym('rulePrefix'), sym('block'))),
+          blockList: str(plus(sym('blockRule'), sym('ws_'))),
+
+          fnArgs: seq('(',
+                      sym('ws_'),
+                      str(repeat(sym('fnArg'))),
+                      ')'),
+          // Cannot use repeat(content, separator) because we need to retain
+          // separator value.
+          fnArg: seq(str(plus(alt(sym('fnArgs'),
+                                  sym('fnArgIdent')))),
+                     repeat(sym('wsc'))),
+          fnArgIdent: str(plus(alt(sym('anp'), '{', '}', ';', ':'))),
 
           // Alpha-num-punct, but not "{", "}" or ":".
-          declLHS: p(alt(sym('anp'), ';')),
-          declRHS: plus(
-              // Alpha-num-punct, but not "{", "}" or ";".
-              p(alt(sym('anp'), ':')),
-              sym('wsp_')),
+          declLHS: str(plus(alt(sym('anp'), ',', '(', ')', ';'))),
+          declRHS: plus(str(plus(alt(sym('fnArgs'),
+                                     sym('declRHSIdent')))),
+                        sym('wsp_')),
+          // Alpha-num-punct, but not "{", "}", "(", ")", or ";".
+          declRHSIdent: str(plus(alt(sym('anp'), ',', ':'))),
           decl: seq(
               sym('declLHS'),
               sym('ws_'),
@@ -156,7 +174,13 @@ CLASS({
             rtn += key + ':' + value;
             return rtn;
           },
-        }), seq('/*', repeat(not('*/', anyChar)), '*/'));
+          fnArg: function(parts) {
+            return parts[0] + (parts[1].indexOf(',') >= 0 ? ', ' : ' ');
+          },
+          fnArgs: function(parts) {
+            return '(' + parts[2].trim() + ')';
+          },
+        });
       },
     },
     {

@@ -15,38 +15,23 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'IntPropertyEditView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyEditView',
-
-  requires: [
-  ],
-
+  package: 'com.chrome.apis',
+  name: 'Origin',
   properties: [
     {
-      name: 'className',
-      defaultValue: 'property-edit-view',
+      name: 'origin'
     },
     {
-      name: 'mode',
-      defaultValue: 'read-write',
-    },
+      name: 'owner',
+      type: 'Reference',
+      subType: 'com.chrome.apis.User'
+    }
   ],
-
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-flex-row-baseline">
-          $$minValue
-          $$maxValue
-          $$defaultValue
-        </div>
-
-      </div>
-    */},
-
+  relationships: [
+    {
+      name: 'activeExperiments',
+      relatedModel: 'com.chrome.apis.ExperimentActivation'
+    }
   ]
-
 });

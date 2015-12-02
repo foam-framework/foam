@@ -39,7 +39,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        $$data{ model_: 'foam.apps.builder.model.regex.RegexPickerView' }
+        $$pattern{ model_: 'foam.apps.builder.model.regex.RegexPickerView' }
       </div>
     */},
   ]
