@@ -47,13 +47,19 @@ CLASS({
 
   methods: [
     function initE() {
+      var view = this.view || this.prop.toPropertyE();
       var prop = this.prop;
+      view.fromProperty && view.fromProperty(prop);
+      this.child_ = view;
+
       this.cls('foam-u2-PropertyView')
           .start('td').cls('foam-u2-PropertyView-label').add(prop.label).end()
           .start('td').cls('foam-u2-PropertyView-view').add(
               this.child_,
               prop.units && this.E('span').cls('foam-u2-PropertyView-units').add(prop.units))
           .end();
+
+      this.bindData_(null, this.data);
     }
   ]
 });

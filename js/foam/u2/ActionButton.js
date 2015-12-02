@@ -89,9 +89,7 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-
+    function initE() {
       var self = this;
       this.
         cls('foam-u2-ActionButton').
