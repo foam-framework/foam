@@ -585,8 +585,11 @@ CLASS({
         var prop  = model.getProperty(key);
 
         if ( prop && prop.attribute ) {
-          // Should we support value$ binding?
-          view[key] = typeof value === 'string' ? prop.fromString(value) : value ;
+          if ( typeof value === 'string' ) {
+            prop.fromString.call(this, value, prop);
+          } else {
+            view[key] = value;
+          }
         } else {
           if ( typeof value === 'function' )
             this.dynamicAttr_(key, value);
