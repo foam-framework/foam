@@ -16,7 +16,7 @@
  */
 CLASS({
   package: 'foam.browser',
-  name: 'BrowserConfig',
+  name: 'BrowserConfigU2',
   documentation: 'Configuration object for FOAM\'s browser. ' +
       'Create an instance of this model and load it in a BrowserView.',
 
@@ -24,9 +24,10 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.NullDAO',
     'foam.mlang.CannedQuery',
-    'foam.ui.DAOListView',
-    'foam.ui.md.CannedQueryCitationView',
-    'foam.ui.md.CitationView',
+    'foam.u2.DAOListView',
+    'foam.u2.UpdateView',
+    'foam.u2.md.CitationView',
+    'foam.u2.md.WithToolbar',
   ],
 
   exports: [
@@ -70,7 +71,7 @@ CLASS({
         if (this.sortOrder) dao = dao.orderBy(this.sortOrder);
         return dao;
       },
-      view: 'foam.ui.DAOListView',
+      view: 'foam.u2.DAOListView',
     },
     {
       name: 'query',
@@ -108,10 +109,7 @@ CLASS({
           nu.limit(1).select([])(function(arr) { this.cannedQuery = arr[0]; }.bind(this));
         }
       },
-      view: {
-        factory_: 'foam.ui.DAOListView',
-        rowView: 'foam.ui.md.CannedQueryCitationView',
-      },
+      view: 'foam.u2.DAOListView',
     },
     {
       name: 'cannedQuery',
@@ -140,17 +138,33 @@ CLASS({
         placeholder: 'Search',
         onKeyMode: true,
       },
+      toPropertyE: function(X) {
+        return X.lookup('foam.u2.md.Input').create({
+          data$: X.data$,
+          inline: true,
+          placeholder: 'Search',
+        });
+      }
     },
     {
       model_: 'ViewFactoryProperty',
       name: 'listView',
-      defaultValue: {
-        factory_: 'foam.ui.DAOListView',
-        rowView: 'foam.ui.md.CitationView',
-        minWidth: 350,
-        preferredWidth: 500,
-        maxWidth: 500,
+      defaultValue: function(args, opt_X) {
+        var args2 = {};
+        Object_forEach(args, function(v, k) {
+          args2[k] = v;
+        });
+        args2.rowView = args2.rowView || this.rowView;
+        args2.minWidth = args2.minWidth || 350;
+        args2.preferredWidth = args2.preferredWidth || 500;
+        args2.maxWidth = args2.maxWidth || 500;
+        return this.DAOListView.create(args2, opt_X);
       }
+    },
+    {
+      model_: 'ViewFactoryProperty',
+      name: 'rowView',
+      defaultValue: 'foam.u2.md.CitationView',
     },
     {
       model_: 'ViewFactoryProperty',
@@ -158,12 +172,22 @@ CLASS({
       documentation: 'A ViewFactory for the main detail view. You usually ' +
           'will want to override $$DOC{ref:".innerDetailView"} rather than ' +
           'this property.',
-      defaultValue: { factory_: 'foam.ui.md.UpdateDetailView', perferredWidth: 1000 },
+      defaultValue: function(args, opt_X) {
+        var wt = this.WithToolbar.create({
+          title: (opt_X.controllerMode === 'update' ? 'Edit' : 'New') + ' ' +
+              args.data.model_.name
+        }, opt_X);
+        var uv = this.UpdateView.create({
+          delegate: this.innerDetailView(args, opt_X)
+        }, opt_X);
+        wt.add(uv);
+        return wt;
+      }
     },
     {
       model_: 'ViewFactoryProperty',
       name: 'innerDetailView',
-      defaultValue: 'foam.ui.md.DetailView'
+      defaultValue: 'foam.u2.md.DetailView'
     },
     {
       model_: 'ViewFactoryProperty',
@@ -172,11 +196,12 @@ CLASS({
           'a new empty instance of $$DOC{ref:".model"} and passing it to ' +
           '$$DOC{ref:".detailView"}.',
       defaultValue: function(args, X) {
-        var newObj = this.model.create();
+        var newObj = this.model.create(null, X);
+        var Y = X.sub({ controllerMode: 'create' });
         return this.detailView({
           data: newObj,
           innerView: this.innerDetailView
-        }, X);
+        }, Y);
       }
     },
     {
@@ -187,11 +212,6 @@ CLASS({
         this.stack.pushView(this.data.createView(null,
             this.Y.sub({ dao: this.data.dao })));
       },
-    },
-    {
-      model_: 'ViewFactoryProperty',
-      name: 'menuRowView',
-      defaultValue: 'foam.ui.md.CannedQueryCitationView'
     },
     {
       model_: 'ViewFactoryProperty',
@@ -208,8 +228,7 @@ CLASS({
               this.CannedQuery.SECTION,
               this.CannedQuery.ORDER,
               this.CannedQuery.LABEL
-          ),
-          rowView: this.menuRowView
+          )
         }, this.Y.sub({
           selection$: this.cannedQuery$
         }));
