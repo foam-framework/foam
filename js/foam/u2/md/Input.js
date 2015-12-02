@@ -55,16 +55,15 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
+    function initE() {
       var self = this;
       this.cls(this.myCls());
       if (this.showLabel) {
         this.start('label')
             .cls(this.myCls('label'))
-            .cls(this.dynamic(function() {
-              return (typeof self.data !== 'undefined' && self.data !== '') ||
-                  self.focused_ ? self.myCls('label-offset') : '';
+            .cls(this.dynamic(function(data, focused_) {
+              return (typeof data !== 'undefined' && data !== '') ||
+                  focused_ ? self.myCls('label-offset') : '';
             }, this.data$, this.focused_$))
             .add(this.label$)
             .end();
