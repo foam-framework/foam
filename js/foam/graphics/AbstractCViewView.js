@@ -142,7 +142,7 @@ CLASS({
   methods: {
     init: function() { /* Connects resize listeners. */
       this.SUPER();
-      this.X.dynamic(
+      this.X.dynamicFn(
         function() { this.scalingRatio; this.width; this.height; }.bind(this),
         this.resize);
     },

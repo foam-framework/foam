@@ -22,7 +22,7 @@ CLASS({
   extends: 'foam.apps.builder.model.ui.PropertyEditView',
 
   requires: [
-    'foam.apps.builder.model.ui.StringPropertyValidateView',
+    'foam.apps.builder.model.regex.RegexPickerView',
   ],
 
   properties: [
@@ -37,9 +37,11 @@ CLASS({
   ],
 
   templates: [
-    function propertyEditHTML() {/*
+    function toHTML() {/*
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        $$pattern{ model_: 'foam.apps.builder.model.regex.RegexPickerView' }
+      </div>
     */},
-
   ]
 
 });

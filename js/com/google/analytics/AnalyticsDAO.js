@@ -129,7 +129,7 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.X.dynamic(
+      this.X.dynamicFn(
           function() { this.debug; this.endpoint; this.debugEndpoint; }.bind(this),
           function() {
             this.metricsFutureDAO.future(function(metricsDAO) {

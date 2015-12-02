@@ -1,6 +1,4 @@
-Add className support
 validate
-configure from property
 async/future view loading
 benchmark (w. Cells?)
 
@@ -9,7 +7,7 @@ cache id$el based on lifecycle?
 
 SlidePanel to test nesting
 
-set properties with attrs()?
+Done: set properties with attrs()?
 
 registerElement
   - Use Context or Element
@@ -22,9 +20,6 @@ How to handle OnKeyInput and OnKeyTextArea
   - set mode
 
 ActionBorder
-
-make template output two-pass
-  - then fix tags with missing close tags
 
 elementForFeature or elementForName needs to come out of the Context.
 Are we going to have leakage?  Does it matter?
@@ -45,15 +40,15 @@ element: true, Property property
 
 Do we need to rename Value?
 
-host: or $CSS shortcut
-
+done: myCls()
 
 <div class="foo bar">{{.cls('foobar', function() { })}}
 <div class="foo {{foobar: function() { }}}">
 <div class="foo foobar{{function() { }}}">
 
 
-OPTIONAL_CLOSE_TAGS
+NO: OPTIONAL_CLOSE_TAGS
+
 <table>
   <tr>
     <td>blah
@@ -72,14 +67,20 @@ OPTIONAL_CLOSE_TAGS
 ))
 
 
-Special value:    
-  $top - top most element in the template
+'as' support
+Special value:
   $e - current element
 
 
+  DONE if
+
 TODO:
-  better name for $top?
   dynamic class syntax
-  if
   repeat
-  var?
+  redesign on$()
+  focus?
+  computedStyle
+  lifecycle
+  validation
+  cleanup
+  keyboard action shortcuts

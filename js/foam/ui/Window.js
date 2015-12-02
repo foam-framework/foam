@@ -32,6 +32,7 @@ CLASS({
     'document',
     'framed',
     'dynamic',
+    'dynamicFn',
     'dynamic2',
     'dynamic3',
     'error',
@@ -122,8 +123,18 @@ CLASS({
     framed: function(listener) {
       return EventService.framed(listener, this);
     },
-    dynamic: function(fn, opt_fn) {
-      return Events.dynamic(fn, opt_fn, this.Y);
+    dynamic: function(fn /*, Values[] */) {
+      return arguments.length == 1 ?
+        DynamicValue.create({
+          valueFactory: fn,
+        }, this) :
+        OrValue.create({
+          valueFactory: fn,
+          values: Array.prototype.splice.call(arguments, 1)
+        }, this) ;
+    },
+    dynamicFn: function(fn, opt_fn) {
+      return Events.dynamicFn(fn, opt_fn, this.Y);
     },
     // TODO(kgr): experimental, remove if never used
     // avoids capturing nested accessess

@@ -32,7 +32,7 @@ CLASS({
   ]
 });
 
-// TODO(kgr): Experimental. Remove in future if not used.
+
 CLASS({
   name: 'OrValue',
   extends: 'SimpleValue',
@@ -42,34 +42,33 @@ CLASS({
     { name: 'valueFactory', defaultValue: function() { return arguments; } }
   ],
 
-  methods: {
-    init: function() {
+  methods: [
+    function init() {
       this.SUPER();
       for ( var i = 0 ; i < this.values.length ; i++ )
         this.values[i].addListener(this.onSubValueChange);
       this.onSubValueChange_();
     },
-    get: function() { return this.value; },
-    set: function(val) { },
-    toString: function() { return 'OrValue(' + this.value + ')'; }
-  },
+    function destroy() {
+      for ( var i = 0 ; i < this.values.length ; i++ )
+        this.values[i].removeListener(this.onSubValueChange);
+    },
+    function get() { return this.value; },
+    function set(val) { },
+    function toString() { return 'OrValue(' + this.value + ')'; }
+  ],
 
   listeners: [
-    {
-      name: 'onSubValueChange_',
-      code: function() {
-        var args = new Array(this.values.length);
-        for ( var i = 0 ; i < this.values.length ; i++ )
-          args[i] = this.values[i].get();
-        this.value = this.valueFactory.apply(this, args);
-      }
+    function onSubValueChange_() {
+      var args = new Array(this.values.length);
+      for ( var i = 0 ; i < this.values.length ; i++ )
+        args[i] = this.values[i].get();
+      this.value = this.valueFactory.apply(this, args);
     },
     {
       name: 'onSubValueChange',
       isFramed: true,
-      code: function() {
-        this.onSubValueChange_();
-      }
+      code: function() { this.onSubValueChange_(); }
     }
   ]
 });

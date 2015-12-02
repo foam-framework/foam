@@ -22,7 +22,6 @@ CLASS({
   extends: 'foam.apps.builder.model.ui.PropertyEditView',
 
   requires: [
-    'foam.apps.builder.model.ui.BooleanPropertyValidateView',
   ],
 
   properties: [
@@ -37,7 +36,10 @@ CLASS({
   ],
 
   templates: [
-    function propertyEditHTML() {/*
+    function toHTML() {/*
+      <div id="%%id" <%= this.cssClassAttr() %>>
+
+      </div>
     */},
 
   ]

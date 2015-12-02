@@ -17,27 +17,28 @@
 
 
 CLASS({
-  name: 'ValidateView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.ui.md.DetailView',
+  name: 'NotContainsRegex',
+  package: 'foam.apps.builder.model.regex',
+  extends: 'foam.apps.builder.model.regex.EasyRegex',
 
-  documentation: function() {/* Dummy view, model-for-model replaced
-    with a specific validate view. */},
+  documentation: function() {/* Use to represent a
+    $$DOC{ref:'StringProperty.pattern'}. Allows a user to easily
+    build a particular type of regular expression for pattern matching.
+    */},
+
+  label: 'Does not contain',
 
   properties: [
     {
-      name: 'className',
-      defaultValue: 'validate-view',
-    },
-    {
-      name: 'mode',
-      defaultValue: 'read-write',
+      type: 'String',
+      label: 'String',
+      name: 'parameter',
     },
   ],
 
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>></div>
-    */},
+  methods: [
+    function toString() {
+      return '^((?!'+this.parameter+').)*$';
+    }
   ],
 });

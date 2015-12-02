@@ -25,7 +25,7 @@ CLASS({
   ],
 
   imports: [
-    'dynamic',
+    'dynamicFn',
     'framed'
   ],
 
@@ -37,7 +37,7 @@ CLASS({
       var dyn  = X.E('span');
       var last = null;
 
-      X.dynamic(this, function(e) {
+      X.dynamicFn(this, function(e) {
         e = X.E('span').add(e);
         if ( last ) dyn.removeChild(last); //last.remove();
         dyn.add(last = e);
@@ -504,7 +504,7 @@ CLASS({
 
       if ( typeof enabled === 'function' ) {
         var fn = enabled;
-        this.dynamic(fn, function(value) {
+        this.dynamicFn(fn, function(value) {
           this.enableCls(cls, value, opt_negate);
         }.bind(this));
       } else if ( Value.isInstance(enabled) ) {
@@ -528,7 +528,7 @@ CLASS({
     function cls(cls) {
       if ( typeof cls === 'function' ) {
         var lastValue = null;
-        this.dynamic(cls, function(value) {
+        this.dynamicFn(cls, function(value) {
           this.cls_(lastValue, value);
           lastValue = value;
         }.bind(this));
@@ -558,7 +558,7 @@ CLASS({
 
     function dynamicAttr_(key, fn) {
       var self = this;
-      this.dynamic(fn, function(value) {
+      this.dynamicFn(fn, function(value) {
         self.setAttribute(key, value);
       });
     },
@@ -594,7 +594,7 @@ CLASS({
     },
 
     function dynamicStyle_(key, fn) {
-      this.dynamic(fn, function(value) {
+      this.dynamicFn(fn, function(value) {
         this.style_(key, value);
       }.bind(this));
     },
@@ -904,9 +904,3 @@ CLASS({
     function y() { return this.style.apply(this, arguments); },
   ]
 });
-
-
-
-/*
-  TODO: focus?, compile, deepClone, pass data, computedStyle, don't clone if literal
-*/

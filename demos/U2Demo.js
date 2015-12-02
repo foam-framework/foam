@@ -28,6 +28,15 @@ var e13 = E('div').add(
   function(i) { return i%10; }.on$(X, timer.i$));
 e13.write();
 
+var e13b = E('div').add(
+  'dynamic function PLAN B * ',
+  function() { return timer.second % 2 ? 'PING' : E('span').add('PONG').style({color: 'orange'}); },
+  ' *    dynamic value: ',
+  timer.i$,
+  '  ',
+  X.dynamic(function(i) { return i%10; }, timer.i$));
+e13b.write();
+
 E('div').add(
   function() {
     return timer.second % 5 ?
@@ -458,7 +467,8 @@ MODEL({
         return X.lookup('foam.u2.md.Input').create(null, X);
       }
     },
-    'lastName', 'age', 'brother'],
+    'lastName', 'age', 'brother'
+  ],
   actions: [
     {
       name: 'go',

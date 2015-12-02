@@ -56,7 +56,7 @@ CLASS({
       carousel.style.display = '';
       this.setCurrentTransform();
       var self = this;
-      var destructor = Events.dynamic(
+      var destructor = Events.dynamicFn(
           function() { self.data.choice; },
           this.setCurrentTransform.bind(this));
       this.addDestructor(destructor.destroy.bind(destructor));

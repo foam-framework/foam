@@ -17,24 +17,28 @@
 
 
 CLASS({
-  name: 'IntPropertyValidateView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyValidateView',
+  name: 'MatchesRegex',
+  package: 'foam.apps.builder.model.regex',
+  extends: 'foam.apps.builder.model.regex.EasyRegex',
 
-  requires: [
-    'foam.apps.builder.model.validators.LessThanValidator',
-  ],
+  documentation: function() {/* Use to represent a
+    $$DOC{ref:'StringProperty.pattern'}. Allows a user to easily
+    build a particular type of regular expression for pattern matching.
+    */},
+
+  label: 'Matches pattern',
 
   properties: [
     {
-      type: 'DAO',
-      name: 'cannedValidators',
-      lazyFactory: function() {
-        return [
-          this.LessThanValidator.create(),
-        ].dao;
-      }
+      type: 'String',
+      label: 'Regular Expression',
+      name: 'parameter',
     },
   ],
 
+  methods: [
+    function toString() {
+      return this.parameter;
+    }
+  ],
 });

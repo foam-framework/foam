@@ -46,7 +46,7 @@ var CompositeService = FOAM({
       name: 'children',
       postSet: function(_, value) {
         var self = this;
-        Events.dynamic(function() {
+        Events.dynamicFn(function() {
           var selected = false;
           var cost = 0;
           for ( var i = 0; i < value.length; i++ ) {
@@ -247,7 +247,7 @@ var CompositeServiceSummaryView = FOAM({
     {
       name: 'valueChange',
       code: function() {
-        Events.dynamic(this.render);
+        Events.dynamicFn(this.render);
       }
     },
     {

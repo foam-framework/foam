@@ -93,7 +93,7 @@ CLASS({
         return self.action.isAvailable.call(self.data, self.action);
       }, this.id);
 
-      this.X.dynamic(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
+      this.X.dynamicFn(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
 
       return superResult;
     },

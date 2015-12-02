@@ -17,29 +17,30 @@
 
 
 CLASS({
-  name: 'LessThanValidator',
-  package: 'foam.apps.builder.model.validators',
-  extends: 'foam.apps.builder.model.validators.Validator',
+  name: 'NotMatchesRegex',
+  package: 'foam.apps.builder.model.regex',
+  extends: 'foam.apps.builder.model.regex.EasyRegex',
 
-  label: 'Less than',
+  documentation: function() {/* Use to represent a
+    $$DOC{ref:'StringProperty.pattern'}. Allows a user to easily
+    build a particular type of regular expression for pattern matching.
+    */},
+
+  label:  'Does not match pattern',
 
   properties: [
     {
-      type: 'Int',
-      name: 'lessThan',
-      label: 'number',
-      defaultValue: 0,
+      type: 'String',
+      label: 'Regular Expression',
+      name: 'parameter',
     },
   ],
 
   methods: [
-    function generateFunction(pName) {
-      return Function(
-        'function validate('+pName+') { \n' +
-        '  return '+pName+' < ' + this.lessThan + '; \n' +
-        '   \n' +
-        '}\n');
-    },
+    function toString() {
+      // add anchoring as match() does, ?! negate the given exp,
+      // consume input with .* when exp doesn't match
+      return '^(?!'+this.parameter+'$).*$';
+    }
   ],
-
 });

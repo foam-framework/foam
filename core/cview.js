@@ -194,7 +194,7 @@ CLASS({
 
       parent.addChild(this);
       parent.initHTML();
-      this.X.dynamic(
+      this.X.dynamicFn(
         function() { self.background; }, function() {
           parent.background = self.background;
         });

@@ -362,7 +362,7 @@ CLASS({
                  var mouse = foam.input.Mouse.create();
                  eyes.watch(mouse);
                  this.addInitializer(function() { mouse.connect(eyes.view.$); });
-                 Events.dynamic(function() { mouse.x; mouse.y; }, function() { if ( eyes.view ) eyes.view.paint(); });
+                 Events.dynamicFn(function() { mouse.x; mouse.y; }, function() { if ( eyes.view ) eyes.view.paint(); });
                  out(eyes);
                  %>
             </p:view>

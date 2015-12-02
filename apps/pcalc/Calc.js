@@ -228,7 +228,7 @@ CLASS({
 
       X.registerModel(this.PolymerActionButton, 'foam.apps.calc.CalcButton');
 
-      Events.dynamic(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
+      Events.dynamicFn(function() { this.op; this.a2; }.bind(this), EventService.framed(function() {
         if ( Number.isNaN(this.a2) ) this.error();
         var a2 = this.numberFormatter.formatNumber(this.a2);
         this.row1 = this.op + ( a2 !== '' ? '&nbsp;' + a2 : '' );

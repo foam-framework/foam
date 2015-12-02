@@ -76,12 +76,12 @@ CLASS({
       code: function() {
         this.SUPER.apply(this, arguments);
 
-        this.X.dynamic(function() {
+        this.X.dynamicFn(function() {
           this.dataView; this.$; this.state;
           if ( ! this.$ || ! this.data || this.state !== 'release' ) return;
           this.updateHTML();
         }.bind(this));
-        this.X.dynamic(function() {
+        this.X.dynamicFn(function() {
           this.height; this.cssClassName;
           if ( ! this.$ ) return;
           this.$.style.height = this.cssHeight;

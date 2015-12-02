@@ -299,7 +299,7 @@ CLASS({
       this.SUPER();
       this.space.canvas.font = "bold 14px Arial";
       this.sys.architecture = this.foam;
-      Events.dynamic(
+      Events.dynamicFn(
         function () {
           this.timer.time;
         }.bind(this),
@@ -309,7 +309,7 @@ CLASS({
         }.bind(this)
       );
 
-      Events.dynamic(
+      Events.dynamicFn(
         function() {
           this.sys.selectedX;
           this.sys.selectedY;

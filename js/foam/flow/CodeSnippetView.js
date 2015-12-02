@@ -79,7 +79,7 @@ CLASS({
         // TODO(markdittmer): Should be able to use foam.ui.ModeProperty here
         // but it doesn't seem to be working. It should eliminate the need for
         // a postSet.
-        Events.dynamic(function() {
+        Events.dynamicFn(function() {
           this.srcView; this.mode; this.scroll;
           if ( ! this.srcView ) return;
           this.srcView.mode = this.mode;

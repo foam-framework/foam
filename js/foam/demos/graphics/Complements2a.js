@@ -59,7 +59,7 @@ CLASS({
           border: 'hsl(' + 180*a/Math.PI + ', 90%, 60%)'
         });
 
-        Events.dynamic((function (circle, a) {
+        Events.dynamicFn((function (circle, a) {
           return function() {
             var a2 = timer.time / 15000 * 2 * Math.PI;
             var r2 = R * Math.cos(2*(a + a2 + Math.PI/2));

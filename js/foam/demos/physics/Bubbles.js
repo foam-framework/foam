@@ -115,7 +115,7 @@ CLASS({
     },
 
     bounceOnWalls: function (c, w, h) {
-      Events.dynamic(function() { c.x; c.y; }, function() {
+      Events.dynamicFn(function() { c.x; c.y; }, function() {
         var r = c.r + c.borderWidth;
         if ( c.x < r ) c.vx = Math.abs(c.vx);
         if ( c.x > w - r ) c.vx = -Math.abs(c.vx);

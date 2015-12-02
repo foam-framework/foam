@@ -252,7 +252,7 @@ layout();
       byName.filter  = AND(searchSubject.predicate, byModel.predicate, byType.predicate).partialEval();
     }
 
-    Events.dynamic(function() {
+    Events.dynamicFn(function() {
       searchSubject.predicate;
       byType.predicate;
       byModel.predicate;

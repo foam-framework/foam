@@ -69,7 +69,7 @@ function setValue(key, value) {
     this,
     key,
     {
-      get: function() { X.set(key, value.get()); return X[key]; },
+      get: function() { return value.get(); },
       configurable: true
     }
   );
@@ -86,7 +86,7 @@ function sub(opt_args, opt_name) {
     if ( opt_args.hasOwnProperty(key) ) {
       var asValue = key !== '$' && key != '$$' && key.charAt(key.length-1) == '$';
       if ( asValue ) {
-        sub.setValue(key, opt_args[key]);
+        sub.setValue(key.substring(0, key.length-1), opt_args[key]);
       } else {
         sub.set(key, opt_args[key]);
       }

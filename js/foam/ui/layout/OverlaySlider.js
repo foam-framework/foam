@@ -45,7 +45,7 @@ CLASS({
          "code": function () {
       this.SUPER();
       var self = this;
-      this.X.dynamic(function() { self.width; self.height; self.slideAmount; }, this.layout);
+      this.X.dynamicFn(function() { self.width; self.height; self.slideAmount; }, this.layout);
     },
          "args": []
       },

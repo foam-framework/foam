@@ -22,7 +22,6 @@ CLASS({
   extends: 'foam.ui.md.DetailView',
 
   requires: [
-    'foam.apps.builder.model.ui.PropertyValidateView',
   ],
 
   imports: [
@@ -49,13 +48,8 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <% this.propertyEditHTML(out) %>
-        $$validate{ model_: 'foam.apps.builder.model.ui.ValidateView',
-                    model: this.data.model_ }
+
       </div>
-    */},
-    function propertyEditHTML() {/*
-      <div>Property Editor</div>
     */},
     function CSS() {/*
       .property-edit-view {
@@ -64,6 +58,10 @@ CLASS({
         align-content: baseline;
         flex-grow: 1;
         background: white;
+      }
+      .property-edit-view .md-flex-row {
+        overflow: none;
+        align-content: baseline;
       }
     */},
 

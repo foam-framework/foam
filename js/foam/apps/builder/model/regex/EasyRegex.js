@@ -17,28 +17,22 @@
 
 
 CLASS({
-  name: 'Validator',
-  package: 'foam.apps.builder.model.validators',
-  extends: 'Method',
+  name: 'EasyRegex',
+  package: 'foam.apps.builder.model.regex',
 
+  documentation: function() {/* Use to represent a
+    $$DOC{ref:'StringProperty.pattern'}. Allows a user to easily
+    build a particular type of regular expression for pattern matching.
+  */},
 
-  methods: [
-    function installOnProperty(prop) {
-      /* Generates a validate function from the current settings and sets
-        the validate property of the given prop. */
+  label: 'No pattern matching',
 
-
-
-    },
-    function generateFunction(pName) {
-      /* Generates the validate function to export. Override to provide your
-        validation code, or to introduce extra dependencies in the function's
-        parameters. */
-      return Function(
-        'function validate('+pName+') { \n' +
-        '  return '+pName+' && 1; \n' +
-        '}\n');
-    },
+  properties: [
   ],
 
+  methods: [
+    function toString() {
+      return '';
+    }
+  ],
 });

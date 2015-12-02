@@ -29,6 +29,7 @@ CLASS({
     'BooleanProperty',
     'foam.ui.md.DAOListView',
     'foam.ui.md.SharedStyles',
+    'foam.apps.builder.model.regex.ContainsRegex',
   ],
 
   exports: ['testArray as dao'],
@@ -42,7 +43,10 @@ CLASS({
         return [
           this.IntProperty.create({ name: 'Inty' }),
           this.FloatProperty.create({ name: 'Floaty' }),
-          this.StringProperty.create({ name: 'Stringy' }),
+          this.StringProperty.create({
+            name: 'Stringy',
+            pattern: this.ContainsRegex.create({ parameter: 'hello' }),
+          }),
           this.BooleanProperty.create({ name: 'Booly' }),
         ].dao;
       }

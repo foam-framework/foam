@@ -175,7 +175,7 @@ CLASS({
       this.window.addEventListener('resize', this.resetColWidths);
     },
     function initGlobalState() {
-      this.X.dynamic(
+      this.X.dynamicFn(
           function() { this.isResizing; }.bind(this),
           function() {
             DOM.setClass(this.document.body, 'flex-table-view-col-resize',

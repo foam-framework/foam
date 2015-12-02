@@ -538,7 +538,7 @@ CLASS({
 
       Events.follow(this.project.issueCount$, this.issueCount$);
 
-      this.X.dynamic(
+      this.X.dynamicFn(
         function() { this.issueCount; this.selectedIssueCount; }.bind(this),
         function() {
           this.countField.data =

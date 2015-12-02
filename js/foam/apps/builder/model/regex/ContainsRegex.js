@@ -17,9 +17,28 @@
 
 
 CLASS({
-  name: 'FloatPropertyValidateView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyValidateView',
+  name: 'ContainsRegex',
+  package: 'foam.apps.builder.model.regex',
+  extends: 'foam.apps.builder.model.regex.EasyRegex',
 
+  documentation: function() {/* Use to represent a
+    $$DOC{ref:'StringProperty.pattern'}. Allows a user to easily
+    build a particular type of regular expression for pattern matching.
+    */},
 
+  label: 'Contains',
+
+  properties: [
+    {
+      type: 'String',
+      label: 'String',
+      name: 'parameter',
+    },
+  ],
+
+  methods: [
+    function toString() {
+      return '.*'+this.parameter+'.*';
+    }
+  ],
 });

@@ -157,7 +157,7 @@ CLASS({
       // rendered.
       var self = this;
       obj.view.addInitializer(function() {
-        obj.hideBinding = self.X.dynamic(
+        obj.hideBinding = self.X.dynamicFn(
             function() { self.visibleStart_; self.visibleEnd_; },
             function() {
               var e = self.X.$(obj.id);

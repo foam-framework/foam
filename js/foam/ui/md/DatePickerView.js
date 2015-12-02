@@ -60,6 +60,16 @@ CLASS({
       },
     },
     {
+      name: 'years',
+      factory: function() {
+        var years = [];
+        for (var i = 1900; i <= 2100; i++) {
+          years.push(i);
+        }
+        return years;
+      }
+    },
+    {
       name: 'year',
       documentation: 'The real, currently selected year.',
     },
@@ -78,7 +88,10 @@ CLASS({
     {
       name: 'viewYear',
       documentation: 'The year currently being viewed.',
-      factory: function() { return this.year; }
+      factory: function() { return this.year; },
+      postSet: function(old, nu) {
+        if (old !== nu) this.reconstructCalendars();
+      },
     },
     {
       name: 'viewMonth',
@@ -149,6 +162,11 @@ CLASS({
       factory: function() {
         return [];
       }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'showYears_',
+      defaultValue: false
     },
     {
       name: 'className',
@@ -249,6 +267,36 @@ CLASS({
         }
       }
     },
+    {
+      name: 'headerClick',
+      isFramed: true,
+      documentatin: 'Called to flip the mode from calendar view to years view.',
+      code: function() {
+        this.showYears_ = !this.showYears_;
+        if (this.showYears_) {
+          this.scrollToYear();
+        }
+      }
+    },
+    {
+      name: 'scrollToYear',
+      isFramed: true,
+      code: function() {
+        // Since scrollIntoView() puts it at the top, we actually want to scroll
+        // three years earlier to the top. Clamp to 1900.
+        var targetYear = Math.max(1900, this.viewYear - 3);
+        var e = this.X.$(this.id + '-year-' + targetYear);
+        if (e) e.scrollIntoView();
+      }
+    },
+    {
+      name: 'pickYear',
+      code: function(year) {
+        this.year = this.viewYear = year;
+        this.softData = new Date(this.year, this.month, this.date, this.softData.getHours(), this.softData.getMinutes());
+        this.showYears_ = false;
+      }
+    },
   ],
 
   methods: [
@@ -330,7 +378,11 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      .hidden {
+        display: none !important;
+      }
       .date-picker {
+        cursor: pointer;
       }
 
       .date-picker-header {
@@ -339,9 +391,14 @@ CLASS({
         font-size: 16px;
         padding: 12px 16px;
       }
+      .date-picker-header div {
+        opacity: 0.8;
+      }
+      .date-picker-header div.selected {
+        opacity: 1;
+      }
       .date-picker-header-year {
         margin: 8px 0;
-        opacity: 0.8;
       }
       .date-picker-header-date {
         font-size: 24px;
@@ -388,16 +445,39 @@ CLASS({
       .date-picker-switcher-right {
         right: 0;
       }
+
+      .date-picker-years {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        height: 310px;
+        overflow-y: scroll;
+        width: 300px;
+      }
+      .date-picker-years-year {
+        flex-shrink: 0;
+        padding: 16px;
+      }
+      .date-picker-years-year.selected {
+        color: #3e50b4;
+        font-size: 24px;
+        font-weight: bold;
+      }
     */},
     function toHTML() {/*
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        <div class="date-picker-header">
-          <div class="date-picker-header-year"><%# this.year %></div>
-          <div class="date-picker-header-date">
+        <div id="<%= this.id %>-header" class="date-picker-header">
+          <div id="<%= this.id %>-header-year" class="date-picker-header-year">
+            <%# this.year %>
+          </div>
+          <div id="<%= this.id %>-header-date" class="date-picker-header-date">
             <%# this.DAY_NAMES[this.day] + ', ' + this.MONTH_NAMES[this.month] +
                 ' ' + this.date %>
           </div>
+          <% this.setClass('selected', function() { return self.showYears_; }, this.id + '-header-year'); %>
+          <% this.setClass('selected', function() { return ! self.showYears_; }, this.id + '-header-date'); %>
         </div>
+        <% this.on('click', this.headerClick, this.id + '-header'); %>
         <div id="<%= this.id %>-body" class="date-picker-body">
           <span class="date-picker-switcher date-picker-switcher-left">
             $$left{ model_: 'foam.ui.md.FlatButton', color: '#000' }
@@ -410,6 +490,17 @@ CLASS({
             </div>
           </div>
         </div>
+        <div id="<%= this.id %>-years" class="date-picker-years">
+          <% for (var i = 1900; i <= 2100; i++) { %>
+            <span id="<%= this.id %>-year-<%= i %>" class="date-picker-years-year"><%= i %></span>
+            <% this.setClass('selected', function(i) { return self.viewYear === i; }.bind(this, i), this.id + '-year-' + i); %>
+            <% this.on('click', this.pickYear.bind(this, i), this.id + '-year-' + i); %>
+          <% } %>
+        </div>
+        <%
+          this.setClass('hidden', function() { return self.showYears_; }, this.id + '-body');
+          this.setClass('hidden', function() { return ! self.showYears_; }, this.id + '-years');
+        %>
         <div class="date-picker-buttons">
           $$cancel{ model_: 'foam.ui.md.FlatButton' }
           $$ok{ model_: 'foam.ui.md.FlatButton' }

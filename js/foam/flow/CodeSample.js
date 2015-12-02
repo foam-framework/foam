@@ -191,7 +191,7 @@ CLASS({
       name: 'init',
       code: function() {
         this.SUPER.apply(this, arguments);
-        Events.dynamic(function() {
+        Events.dynamicFn(function() {
           this.state; this.running;
           if ( this.running && this.state === 'release' ) this.onRun();
         }.bind(this));

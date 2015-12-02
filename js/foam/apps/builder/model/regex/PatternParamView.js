@@ -17,9 +17,36 @@
 
 
 CLASS({
-  name: 'StringPropertyValidateView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyValidateView',
+  name: 'PatternParamView',
+  package: 'foam.apps.builder.model.regex',
+  extends: 'foam.ui.md.DetailView',
 
+  requires: [
+    'foam.ui.md.TextFieldView',
+  ],
+
+  documentation: function() {/* Extracts the parameter from a regex model. */ },
+
+  properties: [
+    {
+      name: 'className',
+      defaultValue: 'regex-picker-view',
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-write',
+    },
+  ],
+
+  templates: [
+    function toHTML() {/*
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        <% if ( this.data && this.data.model_.getFeature('parameter') ) { %>
+          $$parameter
+        <% } %>
+      </div>
+    */},
+
+  ]
 
 });

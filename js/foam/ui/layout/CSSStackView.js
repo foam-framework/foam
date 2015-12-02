@@ -70,23 +70,23 @@ CLASS({
   ],
 
   imports: [
-    'dynamic'
+    'dynamicFn'
   ],
 
   methods: {
     init: function() {
       this.SUPER();
       var self = this;
-      this.dynamic(function() {
+      this.dynamicFn(function() {
         self.width;
         self.height;
         self.sliderOpen;
       }, this.onLayout);
-      this.dynamic(function() {
+      this.dynamicFn(function() {
         self.currentView;
         self.width;
       }, this.onTransform)
-      this.dynamic(function() {
+      this.dynamicFn(function() {
         self.width;
         self.height;
       }, this.resizeContainer);

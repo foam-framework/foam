@@ -107,7 +107,7 @@ CLASS({
       this.horizontalConstraints = this.MarginProxy.create({},this.Y);
       this.verticalConstraints = this.MarginProxy.create({},this.Y);
 
-      Events.dynamic(
+      Events.dynamicFn(
         function(){ this.top; this.left; this.right; this.bottom;
                     this.width; this.height; }.bind(this),
         this.updateMargins);
