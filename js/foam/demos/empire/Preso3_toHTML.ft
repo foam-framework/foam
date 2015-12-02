@@ -274,8 +274,8 @@ CLASS({
           <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Board}) %>
           <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Cell}) %>
           <figure style="margin-left:100px;">
-          <img src="./js/foam/demos/empire/SweeperQR.png" width="35%">
-          <figcaption style="font-size:80%;">(1119 bytes)</figcaption>
+          <img src="./js/foam/demos/empire/SweeperQR.png" width="40%">
+          <figcaption style="font-size:80%;">1119 bytes</figcaption>
           </figure>
         </div>
         </center>
@@ -432,7 +432,7 @@ CLASS({
             <label>Graphical</label>
             <p:view>
               <code>
-    this.dynamicFn(function() {
+    this.dynamic(function() {
         clock1.x = mouse.x;
         clock1.y = mouse.y;
     });
