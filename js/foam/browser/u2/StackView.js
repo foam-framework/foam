@@ -20,6 +20,7 @@ CLASS({
   extends: 'foam.u2.Element',
 
   imports: [
+    'dynamic',
     'setTimeout',
     'window'
   ],
@@ -152,12 +153,12 @@ CLASS({
       var self = this;
       var e = this.E('div')
           .cls(this.myCls('panel'))
-          .cls2(function(start, end) {
+          .cls(this.dynamic(function(start, end) {
             return index < start - 1 || index > end + 1 ? self.myCls('hidden') : '';
-          }.on$(this.X, this.visibleStart_$, this.visibleEnd_$))
-          .cls2(function(start, end) {
+          }, this.visibleStart_$, this.visibleEnd_$))
+          .cls(this.dynamic(function(start, end) {
             return index < start || index > end ? self.myCls('no-input') : '';
-          }.on$(this.X, this.visibleStart_$, this.visibleEnd_$));
+          }, this.visibleStart_$, this.visibleEnd_$));
 
       e.add(obj.content);
       e.start('div')

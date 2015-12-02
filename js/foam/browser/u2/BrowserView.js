@@ -19,7 +19,7 @@ CLASS({
   name: 'BrowserView',
   extends: 'foam.u2.View',
   requires: [
-    'foam.browser.BrowserConfig',
+    'foam.browser.BrowserConfigU2',
     'foam.browser.u2.StackView',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
@@ -328,9 +328,7 @@ CLASS({
               .x({ data: this })
               .cls(this.myCls('header'))
               .cls(this.myCls('header-color'))
-              .cls2(function(sm) {
-                return sm && 'foam-u2-Element-hidden';
-              }.on$(this.X, this.searchMode$));
+              .enableCls('foam-u2-Element-hidden', this.searchMode$);
 
           header.add(this.MENU_BUTTON);
           header.start('span')
@@ -353,9 +351,7 @@ CLASS({
               .cls(this.myCls('header'))
               .cls(this.myCls('search-header'))
               .cls(this.myCls('header-color'))
-              .cls2(function(sm) {
-                return sm || 'foam-u2-Element-hidden';
-              }.on$(this.X, this.searchMode$))
+              .enableCls('foam-u2-Element-hidden', this.searchMode$, true /* negate */)
               .add(this.BACK_BUTTON)
               .add(this.data.SEARCH);
           search.end();
@@ -385,16 +381,13 @@ CLASS({
 
           this.menuView_ = this.start('div')
               .cls(this.myCls('menu-container'))
-              .cls2(function(open) {
-                return open && self.myCls('menu-open');
-              }.on$(this.X, this.menuOpen$))
+              .enableCls(this.myCls('menu-open'), this.menuOpen$)
               .start('div').cls(this.myCls('menu-inner'))
                   .start('div').cls(this.myCls('menu-overlay'))
                       .on('click', this.onMenuTouch)
                       .end()
-                  .start('div').cls(this.myCls('menu-body')).end()
-              .end();
-          this.menuView_.end();
+                  .start('div').cls(this.myCls('menu-body'));
+          this.menuView_.end().end().end();
         },
       ],
     }
