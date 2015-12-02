@@ -211,10 +211,12 @@ CLASS({
         left: 4px;
       }
       task-manager tm-header search-box i,
-      task-manager tm-header search-box i.material-icons {
+      task-manager tm-header search-box i.material-icons,
+      task-manager tm-header search-box i.material-icons-extended {
         color: rgba(0, 0, 0, 0.27);
       }
-      task-manager tm-header search-box i.material-icons {
+      task-manager tm-header search-box i.material-icons,
+      task-manager tm-header search-box i.material-icons-extended {
         font-size: 20px;
       }
       task-manager tm-body {
