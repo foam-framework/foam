@@ -28,9 +28,7 @@ CLASS({
     function initE() {
       var self = this;
       this.cls(this.myCls())
-          .cls(function() {
-            return self.data ? self.myCls('checked') : '';
-          }.on$(this.X, this.data$))
+          .enableCls(this.myCls('checked'), this.data$)
           .on('click', function() { self.data = !self.data; })
           .start('span')
               .cls(this.myCls('label')).cls('noselect')
