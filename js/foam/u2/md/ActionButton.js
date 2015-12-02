@@ -19,7 +19,10 @@ CLASS({
     'foam.ui.Icon',
     'foam.ui.md.HaloView',
   ],
-  imports: [ 'window' ],
+  imports: [
+    'dynamic',
+    'window'
+  ],
 
   properties: [
     [ 'nodeName', 'ACTION-BUTTON' ],
@@ -92,16 +95,17 @@ CLASS({
 
   methods: [
     function initE() {
+      var self = this;
       this.cls(this.myCls())
           .style({
             color: this.color_$,
             opacity: this.alpha$,
           })
-          .cls(function() {
-            return this.action &&
-                this.action.isAvailable.call(this.data, this.action) ?
-                this.myCls('available') : '';
-          }.bind(this))
+          .cls(this.dynamic(function(data, action) {
+            return action &&
+                action.isAvailable.call(data, action) ?
+                    self.myCls('available') : '';
+          }, this.data$, this.action$))
           .cls(this.myCls(this.TYPE_CLASSES[this.type]))
           .cls('noselect')
           .on('click', this.onClick)
@@ -111,9 +115,9 @@ CLASS({
 
       if (this.type === 'label') {
         this.start('span').cls(this.myCls('label'))
-            .add(function() {
-              return this.action ? this.action.label : '';
-            }.bind(this).on$(this.X, this.action$))
+            .add(this.dynamic(function(action) {
+              return action ? action.label : '';
+            }, this.action$))
             .end();
       } else {
         this.start().cls(this.myCls('icon-container'))
