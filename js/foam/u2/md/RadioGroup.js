@@ -25,6 +25,9 @@ CLASS({
   requires: [
     'foam.ui.md.HaloView',
   ],
+  imports: [
+    'dynamic',
+  ],
 
   documentation: function() {/*
     <p>A choice view that selects a single option from a list using Material
@@ -52,9 +55,9 @@ CLASS({
     function initE() {
       var self = this;
       this.cls(this.myCls())
-          .cls(function() {
+          .cls(this.dynamic(function() {
             return self.myCls(self.orientation);
-          }.on$(this.X, this.orientation$));
+          }, this.orientation$));
 
       for (var i = 0; i < this.choices.length; i++) {
         this.choiceElement(i);
@@ -80,9 +83,9 @@ CLASS({
     function choiceElement(i) {
       var self = this;
       this.start('div').cls(this.myCls('choice-outer'))
-          .cls(function() {
+          .cls(this.dynamic(function() {
             return self.index === i ? self.myCls('choice-selected') : '';
-          }.on$(this.X, this.data$))
+          }, this.data$))
           .on('click', function() { self.index = i; })
           .start('div').cls(this.myCls('choice-container'))
               .cls('noselect')
