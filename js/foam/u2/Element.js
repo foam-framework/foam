@@ -578,10 +578,9 @@ CLASS({
         var value = map[key];
         var prop  = model.getProperty(key);
 
-        if ( key === 'label' ) debugger;
         if ( prop && prop.attribute ) {
           // Should we support value$ binding?
-          this[key] = value;
+          this[key] = typeof value === 'string' ? prop.fromString(value) value ;
         } else {
           if ( typeof value === 'function' )
             this.dynamicAttr_(key, value);
