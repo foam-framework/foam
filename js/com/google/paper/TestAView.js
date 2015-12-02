@@ -24,7 +24,7 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %> >
         $$source
-        $$compressed
+        $$label
         $$dataURL{ model_: 'com.google.paper.VideoCaptureView' }
         $$reinflated
         $$qr{ model_: 'com.google.paper.QRView' }

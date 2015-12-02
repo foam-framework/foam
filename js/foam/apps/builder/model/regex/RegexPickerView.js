@@ -19,7 +19,7 @@
 CLASS({
   name: 'RegexPickerView',
   package: 'foam.apps.builder.model.regex',
-  extends: 'foam.ui.md.DetailView',
+  extends: 'foam.apps.builder.model.ui.TypePickerView',
 
   requires: [
     'foam.apps.builder.model.regex.EasyRegex',
@@ -27,7 +27,7 @@ CLASS({
     'foam.apps.builder.model.regex.NotContainsRegex',
     'foam.apps.builder.model.regex.MatchesRegex',
     'foam.apps.builder.model.regex.NotMatchesRegex',
-    'foam.ui.md.PopupChoiceView',
+    'foam.apps.builder.model.regex.PatternParamView',
   ],
 
   documentation: function() {/* Use to edit a
@@ -41,69 +41,26 @@ CLASS({
       defaultValue: 'regex-picker-view',
     },
     {
-      name: 'mode',
-      defaultValue: 'read-write',
-    },
-    {
-      type: 'ViewFactory',
-      name: 'dataTypePicker',
-      defaultValue: function(args, X) {
-        return this.PopupChoiceView.create({
-          data$: this.patternType$,
-          dao: [
-            this.EasyRegex,
-            this.ContainsRegex,
-            this.NotContainsRegex,
-            this.MatchesRegex,
-            this.NotMatchesRegex,
-          ].dao,
-          objToChoice: function(obj) {
-            return [obj.id, obj.label];
-          },
-          autoSetData: false,
-        }, X || this.Y);
-      }
-    },
-    {
-      name: 'patternType',
-      adapt: function(old,nu) {
-        if ( ! nu ) return old;
-        return nu;
+      name: 'typeList',
+      lazyFactory: function() {
+        return [
+          this.EasyRegex,
+          this.ContainsRegex,
+          this.NotContainsRegex,
+          this.MatchesRegex,
+          this.NotMatchesRegex,
+        ].dao;
       },
-      postSet: function(old, nu) {
-        if ( old && nu && ( ! this.data.pattern ||
-              ( nu !== this.data.pattern.model_.id )) ) {
-          // new property type set, reconstruct:
-          var newPattern = this.X.lookup(nu).create(this.data.pattern, this.Y);
-          this.data.pattern = newPattern;
-          this.updateHTML();
+    },
+    {
+      name: 'innerView',
+      lazyFactory: function() {
+        return function(args, X) {
+          var Y = X || this.Y;
+          return this.PatternParamView.create({ data: this.data }, Y);
         }
       }
     },
-    {
-      name: 'data',
-      help: 'The property of which to edit the pattern',
-      postSet: function(old, nu) {
-        if ( nu && nu.pattern )
-          this.patternType = nu.pattern.model_.id;
-        else
-          this.patternType = 'foam.apps.builder.model.regex.EasyRegex';
-      }
-    },
   ],
-
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-flex-row-baseline">
-          %%dataTypePicker()
-          <% if ( this.data && this.data.pattern ) { %>
-            $$pattern{ model_: 'foam.apps.builder.model.regex.PatternParamView' }
-          <% } %>
-        </div>
-      </div>
-    */},
-
-  ]
 
 });

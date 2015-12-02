@@ -38,6 +38,11 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
+        <div class="md-flex-row-baseline">
+          $$minValue
+          $$maxValue
+          $$defaultValue
+        </div>
 
       </div>
     */},

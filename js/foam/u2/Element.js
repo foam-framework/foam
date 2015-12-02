@@ -572,16 +572,24 @@ CLASS({
     },
 
     function attrs(map) {
-      var model = this.model_;
+      return this.attrs_(map, this);
+    },
+
+    function attrs_(map, view) {
+      // Takes view as parameter so that decorator views like PropertyView
+      // can easily set their delgate instead.
+      var model = view.model_;
 
       for ( var key in map ) {
         var value = map[key];
         var prop  = model.getProperty(key);
 
-        if ( key === 'label' ) debugger;
         if ( prop && prop.attribute ) {
-          // Should we support value$ binding?
-          this[key] = value;
+          if ( typeof value === 'string' ) {
+            prop.fromString.call(this, value, prop);
+          } else {
+            view[key] = value;
+          }
         } else {
           if ( typeof value === 'function' )
             this.dynamicAttr_(key, value);

@@ -52,25 +52,7 @@ CLASS({
     },
     // Set properties on delegate view instead of this
     function attrs(map) {
-      var model = this.view.model_;
-
-      for ( var key in map ) {
-        var value = map[key];
-        var prop  = model.getProperty(key);
-
-        if ( prop && prop.attribute ) {
-          // Should we support value$ binding?
-          this.view[key] = value;
-        } else {
-          if ( typeof value === 'function' )
-            this.dynamicAttr_(key, value);
-          else if ( Value.isInstance(value) )
-            this.valueAttr_(key, value);
-          else
-            this.setAttribute(key, value);
-        }
-      }
-      return this;
+      return this.attrs_(map, this.view);
     },
     function initE() {
       this.cls('foam-u2-PropertyView').add(this.child_);
