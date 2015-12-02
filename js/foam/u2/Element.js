@@ -587,7 +587,7 @@ CLASS({
 
         if ( prop && prop.attribute ) {
           if ( typeof value === 'string' ) {
-            prop.fromString.call(this, value, prop);
+            prop.fromString.call(view, value, prop);
           } else {
             view[key] = value;
           }
