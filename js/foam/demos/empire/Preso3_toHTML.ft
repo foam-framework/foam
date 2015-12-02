@@ -104,7 +104,7 @@
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>
-        <div class="flex-grow content small-heading">Full-Stack</div>
+        <div class="flex-grow content small-heading">Full-Stack / Holistic</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
@@ -168,7 +168,7 @@
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block yellow">&nbsp;</div>
-        <div class="flex-grow content small-heading">Benchmark Applications</div>
+        <div class="flex-grow content small-heading">Rosetta Stones</div>
       </div>
     </div>
     <div class="card flex-col center flex-grow" style="overflow: auto">
