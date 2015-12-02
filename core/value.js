@@ -34,6 +34,65 @@ CLASS({
 
 
 CLASS({
+  name: 'FunctionValue',
+  extends: 'SimpleValue',
+
+  properties: [
+    { name: 'values', factory: function() { return []; } },
+    { name: 'valueFactory' }
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      
+      // Call once before capture to pre-latch lazy values
+      this.valueFactory();
+
+      var f = this.valueFactory;
+      this.startRecordingDependencies();
+        this.value = f();
+      this.endRecordingDependencies();
+
+      for ( var i = 0 ; i < this.values.length ; i++ )
+        this.values[i].addListener(this.onSubValueChange);
+      console.log('**** ', this.values.join(','));
+    },
+    function destroy() {
+      for ( var i = 0 ; i < this.values.length ; i++ )
+        this.values[i].removeListener(this.onSubValueChange);
+    },
+    function startRecordingDependencies() {
+      var values = this.values;
+      var onSubValueChange = this.onSubValueChange;
+      Events.onGet.push(function(obj, name, value) {
+        var l = obj.propertyValue(name);
+        if ( values.indexOf(l) == -1 ) {
+          values.push(l);
+          l.addListener(onSubValueChange);
+        }
+      });
+    },
+    function endRecordingDependencies() {
+      Events.onGet.pop();
+    },
+    function get() { return this.value; },
+    function set(val) { },
+    function toString() { return 'FunctionValue(' + this.value + ')'; }
+  ],
+
+  listeners: [
+    function onSubValueChange_() { this.value = this.valueFactory(); },
+    {
+      name: 'onSubValueChange',
+      isFramed: true,
+      code: function() { this.onSubValueChange_(); }
+    }
+  ]
+});
+
+
+CLASS({
   name: 'OrValue',
   extends: 'SimpleValue',
 
