@@ -19,11 +19,15 @@ CLASS({
   name: 'DetailView',
   extends: 'foam.u2.View',
   requires: [
+    'foam.u2.PropertyView',
     'foam.u2.md.Checkbox',
     'foam.u2.md.Input',
     'foam.u2.md.Select',
   ],
 
+  imports: [
+    'dynamic',
+  ],
   exports: [
     'data',
   ],
@@ -57,9 +61,9 @@ CLASS({
     },
     function initE() {
       this.cls(this.myCls());
-      this.add(function(model, properties) {
+      this.add(this.dynamic(function(model, properties) {
         return !model ? 'Set model or data.' : properties;
-      }.bind(this).on$(this.X, this.model$, this.properties$));
+      }, this.model$, this.properties$));
     },
     function elementForFeature(fName) {
       var f = this.model_.getFeature(fName) || this.X.data.model_.getFeature(fName);
