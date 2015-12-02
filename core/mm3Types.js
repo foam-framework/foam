@@ -257,14 +257,14 @@ CLASS({
       label: 'Minimum Value',
       required: false,
       help: 'The minimum value this property accepts.',
-      defaultValue: -Infinity
+      defaultValue: ''
     },
     {
       name: 'maxValue',
       label: 'Maximum Value',
       required: false,
       help: 'The maximum value this property accepts.',
-      defaultValue: Infinity
+      defaultValue: ''
     },
     {
       name: 'compareProperty',
@@ -275,17 +275,20 @@ CLASS({
       name: 'validate',
       lazyFactory: function() {
         var prop = this; // this == the property
-        var min = prop.adapt.call(prop, null, prop.minValue);
-        var max = prop.adapt.call(prop, null, prop.maxValue);
-
         var ret = constantFn('');
-        if ( min !== -Infinity ) {
+
+        var min = prop.minValue;
+        if ( typeof min !== 'string' || min ) { // ignore '' (falsey string)
+          min = prop.adapt.call(prop, null, min);
           ret = function(result) {
             return result ||
               ( this[prop.name] < min ? this.errorBelowMinimum.replaceValues(min) : '');
           }.o(ret);
         }
-        if ( max !== Infinity ) {
+
+        var max = prop.maxValue;
+        if ( typeof max !== 'string' || max ) { // ignore '' (falsey string)
+          max = prop.adapt.call(prop, null, max);
           ret = function(result) {
             return result ||
               ( this[prop.name] > max ? this.errorAboveMaximum.replaceValues(max) : '');
