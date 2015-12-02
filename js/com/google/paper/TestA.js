@@ -40,10 +40,12 @@ CLASS({
         this.label = "bytes: " + nu.length +", compressed: (9)" + this.pako.deflate(nu, { level: 9 }).length + " or (6)" + this.pako.deflate(nu, { level: 6 }).length;
 
         this.qr = this.pako.deflate(nu, { level: 9 });
+        // silly shrink
+        //this.X.setTimeout(function() { this.source = nu.slice(0, -50); }.bind(this), 20);
       }
     },
     {
-      name: 'compressed',
+      name: 'label',
     },
     {
       name: 'qr',
