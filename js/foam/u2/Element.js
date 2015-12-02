@@ -580,7 +580,7 @@ CLASS({
 
         if ( prop && prop.attribute ) {
           // Should we support value$ binding?
-          this[key] = typeof value === 'string' ? prop.fromString(value) value ;
+          this[key] = typeof value === 'string' ? prop.fromString(value) : value ;
         } else {
           if ( typeof value === 'function' )
             this.dynamicAttr_(key, value);
