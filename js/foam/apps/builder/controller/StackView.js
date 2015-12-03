@@ -14,6 +14,87 @@ CLASS({
   name: 'StackView',
   extends: 'foam.ui.SimpleView',
 
+  documentation: function() {/* A stack view that pushes view factories, pops
+    views, and understands several layout and transition strategies. Strategies
+    are selected using <i>External Hints</i> passed to interface methods.
+    Transition-related information required to execute strategies is passed to
+    custom
+    $$DOC{ref:'foam.apps.builder.controller.Transition',usePlural:true} via
+    <i>Internal Hints</i>.
+
+    <h4>External Hints</h4>
+
+      <ul>
+        <li><i>overlay</i>: Set to truthy value to render view in an overlay.
+            Set to "left" or "right" to get an overlay that slides in on the
+            respective edge. Default truthy behaviour renders a horizontally
+            centered panel.</li>
+        <li><i>alwaysShow</i>: Set to truthy value to require that view be laid
+            out, even when not at/near the top of the stack. In practice,
+            <i>alwaysShow</i> views are laid out first bottom-to-top-of-stack
+            (while there's still room), then other non-<i>overlay</i> views are
+            laid out top-to-bottom-of-stack (while there's still room).</li>
+        <li><i></i>: </li>
+      </ul>
+
+    <h4>Internal Hints</h4>
+
+      <ul>
+        <li><i>index</i>:
+            $$DOC{ref:'foam.apps.builder.controller.StackView'} signal to
+            $$DOC{ref:'foam.apps.builder.controller.Transition',usePlural:true}
+            indicating index in the stack of the view being controlled.</li>
+        <li><i>left</i>:
+            $$DOC{ref:'foam.apps.builder.controller.StackView'} signal to
+            $$DOC{ref:'foam.apps.builder.controller.Transition',usePlural:true}
+            indicating left edge coordinate in the stack of the view being
+            controlled.</li>
+        <li><i>width</i>:
+            $$DOC{ref:'foam.apps.builder.controller.StackView'} signal to
+            $$DOC{ref:'foam.apps.builder.controller.Transition',usePlural:true}
+            indicating width of the view being controlled.</li>
+            indicating the full width of the clipping container.</li>
+        <li><i>containerWidth</i>:
+            $$DOC{'foam.apps.builder.controller.StackView'} signal to
+            $$DOC{'foam.apps.builder.controller.Transition',usePlural:true}
+            indicating the full width of the clipping container.</li>
+      </ul>
+
+    <h4>Transition Strategies</h4>
+
+      These are stored in the $$DOC{ref:'.transitions'} map.
+
+      <ul>
+        <li><i>slideFromRight</i>: Slide view into layout position from outside
+            the clipping container, right-to-left.</li>
+        <li><i>slideFromLeft</i>: Slide view into layout position from outside
+            the clipping container, left-to-right.</li>
+        <li><i>slide</i>: Alias for <i>slideFromRight</i>.</li>
+        <li><i>fade</i>: Fade-in view in its laid out position.</li>
+        <li><i>fadeOverlay</i>: Fade-in view ignoring layout hints (used for
+            overlays).</li>
+      </ul>
+
+    <h4>Layout Strategies</h4>
+
+      Layout varies according to the three categories of views described below.
+      <ul>
+        <li><i>Pinned views</i> (default): Lay out views from bottom-of-stack to
+            top-of-stack.</li>
+        <li><i>Stacked views</i> (default): Lay out views from top-of-stack to
+            bottom-of-stack.</li>
+        <li><i>Overlay views</i>: Ignore horizontal layout of other views;
+            overlay views on top of other layouts.</li>
+      </ul>
+
+      <i>Pinned views</i> are laid out first, then <i>stacked views</i>; both
+      in the order they appear on the stack (bottom-to-top = left-to-right).
+      Then <i>overlay views</i> are rendered on top (as overlays). Details about
+      what to do when we run out of space and what to do with slack space in the
+      pinned/stacked case can be found in $$DOC{ref:'.getLayout_'} and
+      $$DOC{ref:'.distributeSlack_'}, respectively.
+  */},
+
   requires: [
     'foam.apps.builder.controller.Overlay',
     'foam.apps.builder.controller.Panel',
@@ -157,23 +238,6 @@ CLASS({
             },
             onResize: onResize.bind(this, true),
           }),
-          overlayFromLeft: this.Transition.create({
-            onAdd: function(ret, view, hints) {
-              if ( ! sanityCheck(view, hints, ['index', 'containerWidth']) ) return;
-              var style = view.$.style;
-              style.zIndex = hints.index + 1;
-              style.width = '0px';
-              style.left = '-' + hints.containerWidth + 'px';
-              ret();
-              style.transition = 'left 300ms ease';
-            },
-            onRemove: function(ret, view, hints) {
-              if ( ! sanityCheck(view, hints, ['containerWidth']) ) return;
-              view.$.style.left = '-' + hints.containerWidth + 'px';
-              notifyCompleted(ret, view.$, 'left');
-            },
-            onResize: onResize.bind(this, true),
-          }),
           fade: this.Transition.create({
             onAdd: function(ret, view, hints) {
               if ( ! sanityCheck(view, hints, ['index']) ) return;
@@ -239,28 +303,53 @@ CLASS({
         level. See $$DOC{ref:'.popView_'} for details. */},
       code: function() { return this.popView_(1); },
     },
-    function pushView_(index, viewFactory, opt_hints) {
-      if ( ! viewFactory ) return this;
-      var X = this.createSubstackCtx_();
-      this.onPushView(index, viewFactory, X, opt_hints);
-      return X.stack;
+    {
+      name: 'pushView_',
+      documentation: function() {/* Construct and decorate a view from
+        $$DOC{ref:'viewFactory'}, push it onto the stack at <i>stack index</i>
+        = $$DOC{ref:'index'}, then execute its "add" transition. */},
+      code: function(index, viewFactory, opt_hints) {
+        if ( ! viewFactory ) return this;
+        var X = this.createSubstackCtx_();
+        this.onPushView(index, viewFactory, X, opt_hints);
+        return X.stack;
+      },
     },
-    function popView_(index) { this.onPopView(index); },
-    function replaceView_(index, viewFactory, opt_hints) {
-      if ( ! viewFactory ) return this;
-      this.popView_(index);
-      return this.pushView_(index - 1, viewFactory, opt_hints);
+    {
+      name: 'popView_',
+      documentation: function() {/* Execute "remove" transition, then destroy
+        and evict from DOM views where <i>stack index</i> &gt;= $$DOC{ref:'index'}.
+      */},
+      code: function(index) { this.onPopView(index); },
     },
-    function createSubstackCtx_() {
-      return this.Y.sub({
-        stack: {
-          __proto__: this,
-          pushView: this.pushView_.bind(this, this.views_.length),
-          popView: this.popView_.bind(this, this.views_.length),
-          popChildViews: this.popView_.bind(this, this.views_.length + 1),
-          replaceView: this.replaceView_.bind(this, this.views_.length)
-        },
-      });
+    {
+      name: 'replaceView_',
+      documentation: function() {/* Replace view at <i>stack index</i> =
+        $$DOC{ref:'index'} with view generated from $$DOC{ref:'viewFactory'}.
+        This entails first popping views with <i>stack index</i> &gt;=
+        $$DOC{ref:'index'} off the stack, then pushing a new view. */},
+      code: function(index, viewFactory, opt_hints) {
+        if ( ! viewFactory ) return this;
+        this.popView_(index);
+        return this.pushView_(index - 1, viewFactory, opt_hints);
+      },
+    },
+    {
+      name: 'createSubstackCtx_',
+      documentation: function() {/* Construct a context where <i>stack</i> is
+        an interface pre-bound to the appropriate internal push/pop/replace for
+        the current top-of-stack location, $$DOC{ref:'.views_.length'}. */},
+      code: function() {
+        return this.Y.sub({
+          stack: {
+            __proto__: this,
+            pushView: this.pushView_.bind(this, this.views_.length),
+            popView: this.popView_.bind(this, this.views_.length),
+            popChildViews: this.popView_.bind(this, this.views_.length + 1),
+            replaceView: this.replaceView_.bind(this, this.views_.length)
+          },
+        });
+      },
     },
     function createChildView_(viewFactory, X, opt_hints) {
       var view = viewFactory(null, X);

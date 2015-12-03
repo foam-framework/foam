@@ -14,11 +14,11 @@ CLASS({
   name: 'Overlay',
   extends: 'foam.ui.SimpleView',
 
+  documentation: 'View decorator that wraps the view in an overlay.',
+
   imports: [ 'stack' ],
 
-  properties: [
-    'view'
-  ],
+  properties: [ 'view' ],
 
   templates: [
     function toHTML() {/*

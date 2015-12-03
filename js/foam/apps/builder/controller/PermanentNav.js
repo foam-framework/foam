@@ -14,6 +14,8 @@ CLASS({
   name: 'PermanentNav',
   extends: 'foam.ui.SimpleView',
 
+  documentation: 'View for "permanent navigation style" apps list.',
+
   requires: [
     'foam.ui.md.SharedStyles',
     'foam.ui.DAOListView',

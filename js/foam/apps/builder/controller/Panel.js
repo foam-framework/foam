@@ -14,6 +14,8 @@ CLASS({
   name: 'Panel',
   extends: 'foam.ui.SimpleView',
 
+  documentation: 'View decorator that wraps the view in a full-height panel.',
+
   properties: [
     {
       name: 'className',
@@ -33,7 +35,6 @@ CLASS({
         background-color: #fff;
         height: 100%;
         position: absolute;
-        height: 100%;
         display: flex;
         flex-direction: column;
         overflow: hidden;
