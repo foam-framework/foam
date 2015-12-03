@@ -20,10 +20,12 @@ CLASS({
   extends: 'Property',
 
   help: 'Describes a properties of type String.',
-  label: 'Text, including letters, numbers, or symbols',
+  label: 'Text',
 
   messages: {
-    errorPatternMismatch: 'The value does not match the pattern.'
+    errorPatternMismatch: 'The text does not match the pattern.',
+    errorBelowMinLength: 'The text is too short.',
+    errorAboveMaxLength: 'The text is too long.'
   },
 
   properties: [
@@ -69,6 +71,14 @@ CLASS({
       help: 'Regex pattern for property.'
     },
     {
+      name: 'minChars',
+      help: 'The minimum number of characters required.'
+    },
+    {
+      name: 'maxChars',
+      help: 'The maximum number of characters allowed.'
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       required: false,
@@ -78,22 +88,35 @@ CLASS({
       name: 'validate',
       lazyFactory: function() {
         var prop = this; // this == the property
-        return function() {
-          // this == the property's owner
-          var pattern = prop.pattern;
-          if ( pattern ) {
-            if (
-              ( pattern.test && ! pattern.test(this[prop.name]) ) ||
-              ( ! pattern.test &&
-                (new RegExp(pattern.toString(), 'i').test(this[prop.name])) )
-            ) {
-              if ( pattern.errorMessage )
-                return pattern.errorMessage();
-              else
-                return prop.errorPatternMismatch.value;
-            }
-          }
+        var ret = constantFn('');
+
+        var min = prop.minChars;
+        if ( typeof min !== 'string' || min ) { // ignore '' (falsey string)
+          min = prop.adapt.call(prop, null, min);
+          ret = function(result) {
+            return result ||
+              ( this[prop.name].length < min ? this.errorBelowMinLength.replaceValues(min) : '');
+          }.o(ret);
         }
+        var max = prop.maxChars;
+        if ( typeof max !== 'string' || max ) { // ignore '' (falsey string)
+          max = prop.adapt.call(prop, null, max);
+          ret = function(result) {
+            return result ||
+              ( this[prop.name].length > max ? this.errorAboveMaxLength.replaceValues(max) : '');
+          }.o(ret);
+        }
+        var pattern = prop.pattern;
+        if ( pattern ) {
+          var testable = pattern.test ? pattern : new RegExp(pattern.toString(), 'i');
+          var errMsg = pattern.errorMessage ?
+            pattern.errorMessage() : prop.errorPatternMismatch.value;
+          ret = function(result) {
+            return result ||
+              ( ! testable.test(this[prop.name]) ? errMsg : '' );
+          }.o(ret);
+        }
+        return ret;
       }
     }
   ]
@@ -105,7 +128,7 @@ CLASS({
   extends: 'Property',
 
   help: 'Describes a properties of type Boolean.',
-  label: 'True/false, yes/no, or on/off',
+  label: 'True or false',
 
   properties: [
     /*
@@ -176,7 +199,7 @@ CLASS({
   extends: 'Property',
 
   help:  'Describes a properties of type Date.',
-  label: 'Date, including year, month, and day',
+  label: 'Date',
 
   properties: [
     /*
@@ -230,7 +253,7 @@ CLASS({
   extends: 'DateProperty',
 
   help: 'Describes a properties of type DateTime.',
-  label: 'Date and time, including year, month, day, hour, minute and second',
+  label: 'Date and time',
 
   properties: [
     [ 'view', 'foam.ui.DateTimeFieldView' ]
@@ -306,7 +329,7 @@ CLASS({
   extends: 'NumericProperty_',
 
   help:  'Describes a properties of type Int.',
-  label: 'Round numbers such as 3, 0, or -245',
+  label: 'Round numbers',
 
   properties: [
     /*
@@ -357,7 +380,7 @@ CLASS({
   extends: 'IntProperty',
 
   help:  'Describes a properties of type Long.',
-  label: 'Round long numbers such as 1, 0, or -245',
+  label: 'Round long numbers',
 
   properties: [
     /*
@@ -390,7 +413,7 @@ CLASS({
   extends: 'NumericProperty_',
 
   help:  'Describes a properties of type Float.',
-  label: 'Decimal numbers such as 1.34 or -0.00345',
+  label: 'Decimal numbers',
 
   properties: [
     /*
