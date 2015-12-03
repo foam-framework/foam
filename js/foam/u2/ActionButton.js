@@ -20,7 +20,7 @@ CLASS({
   name: 'ActionButton',
   extends: 'foam.u2.Element',
 
-  imports: [ 'data' ],
+  imports: [ 'data', 'dynamic' ],
 
   properties: [
     'action',
@@ -103,7 +103,7 @@ CLASS({
           return self.action.isEnabled.call(self.data, self.action) ? undefined : 'disabled';
         }}).
         add(this.iconUrl && this.Image.create({src: this.iconUrl})).
-        add(this.showLabel && function() { return self.label; }.on$(this.data$, this.label$));
+        add(this.showLabel && this.dynamic(function() { return self.label; }, this.data$, this.label$));
     }
   ]
 });

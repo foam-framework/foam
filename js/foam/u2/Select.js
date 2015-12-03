@@ -20,6 +20,8 @@ CLASS({
   name: 'Select',
   extends: 'foam.u2.Element',
 
+  imports: [ 'dynamic' ],
+
   properties: [
     {
       name: 'options',
@@ -43,7 +45,7 @@ CLASS({
     },
     function initE() {
       var self = this;
-      this.setChildren(function(options, placeholder) {
+      this.setChildren(this.dynamic(function(options, placeholder) {
         var cs = [];
         if ( placeholder )
           cs.push(self.E('option').attrs({disabled: 'disabled'}).add(self.placeholder));
@@ -52,7 +54,7 @@ CLASS({
           cs.push(self.E('option').attrs({value: o[0]}).add(o[1]));
         }
         return cs;
-      }.on$(this.X, this.options$, this.placeholder$));
+      }, this.options$, this.placeholder$));
     }
   ]
 });

@@ -20,9 +20,9 @@ CLASS({
   name: 'Input',
   extends: 'foam.u2.View',
 
-  requires: [
-    'foam.u2.Input'
-  ],
+  requires: [ 'foam.u2.Input' ],
+  imports: [ 'dynamic' ],
+
   properties: [
     ['nodeName', 'div'],
     {
@@ -48,10 +48,10 @@ CLASS({
       if (this.showLabel) {
         this.start('label')
             .cls(this.myCls('label'))
-            .cls(function() {
+            .cls(this.dynamic(function() {
               return (typeof self.data !== 'undefined' && self.data !== '') ||
                   self.focused ? self.myCls('label-offset') : '';
-            }.on$(this.X, this.data$, this.focused$))
+            }, this.data$, this.focused$))
             .add(this.label$)
             .end();
       } else {
