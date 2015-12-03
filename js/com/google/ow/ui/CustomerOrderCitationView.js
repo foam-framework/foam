@@ -18,6 +18,8 @@ CLASS({
     'foam.u2.Element'
   ],
 
+  imports: [ 'dynamic' ],
+
   properties: [
     'merchant',
     {
@@ -32,12 +34,12 @@ CLASS({
   methods: [
     function initE() {
       return this.SUPER()
-          .add(function(merchant) {
+          .add(this.dynamic(function(merchant) {
             if ( ! merchant ) return '';
             return this.Element.create({ nodeName: 'div' }).cls('md-grey')
                 .add('Merchant: ')
                 .add(merchant.displayName);
-          }.bind(this).on$(this.X, this.merchant$));
+          }.bind(this), this.merchant$));
     }
   ]
 });

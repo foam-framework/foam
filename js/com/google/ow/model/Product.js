@@ -38,9 +38,9 @@ CLASS({
         // TODO(markdittmer): This should be a "currency E" of some kind.
         return X.lookup('foam.u2.Element').create(null, X)
             .add('$')
-            .add(function(num) {
+            .add(X.dynamic(function(num) {
               return num.toFixed(2);
-            }.bind(this).on$(X, X.data[this.name + '$']));
+            }.bind(this), X.data[this.name + '$']));
       },
     },
     {

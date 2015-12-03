@@ -19,7 +19,7 @@ CLASS({
     'foam.u2.DAOListView',
   ],
   imports: [
-    'streamDAO',
+    'streamDAO'
   ],
 
   properties: [

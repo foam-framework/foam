@@ -151,15 +151,15 @@ CLASS({
               .start('span').attrs({ padding: '8px' })
               .style({ width: '48px', height: '48px', top: '0', 'right': '0' })
                 .x({ data: this })
-                .start('span').add(this.DOWNLOAD).cls('md-subhead').cls(function(state) {
+                .start('span').add(this.DOWNLOAD).cls('md-subhead').cls(this.dynamic(function(state) {
                   return state === 'none' ? '' : 'foam-u2-Element-hidden';
-                }.on$(this.X, this.cachedState_$)).end()
-                .start('span').add(this.SAVED).cls('md-subhead').cls(function(state) {
+                }, this.cachedState_$)).end()
+                .start('span').add(this.SAVED).cls('md-subhead').cls(this.dynamic(function(state) {
                   return state === 'cached' ? '' : 'foam-u2-Element-hidden';
-                }.on$(this.X, this.cachedState_$)).end()
-                .start('span').add(this.IN_PROGRESS).cls('md-subhead').cls(function(state) {
+                }, this.cachedState_$)).end()
+                .start('span').add(this.IN_PROGRESS).cls('md-subhead').cls(this.dynamic(function(state) {
                   return state === 'downloading' ? '' : 'foam-u2-Element-hidden';
-                }.on$(this.X, this.cachedState_$)).end()
+                }, this.cachedState_$)).end()
               .end()
             .end()
         .end();

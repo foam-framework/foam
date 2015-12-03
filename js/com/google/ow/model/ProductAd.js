@@ -49,9 +49,9 @@ CLASS({
             background: '#000',
             'margin-right': '10px',
           })
-            .add(function(X, imgUrl) {
+            .add(X.dynamic(function(X, imgUrl) {
               return imgUrl ? this.IMAGE_URL.toE(X) : '';
-            }.bind(this, X).on$(X, this.imageUrl$))
+            }.bind(this, X), this.imageUrl$))
           .end()
           .start('div').cls('md-body').add(this.summaryText).end()
         .end();

@@ -14,6 +14,8 @@ CLASS({
   name: 'CustomerOrderDetailView',
   extends: 'com.google.ow.ui.OrderDetailView',
 
+  imports: [ 'dynamic' ],
+
   properties: [
     'merchant',
     {
@@ -29,9 +31,9 @@ CLASS({
     function titleE(prev) {
       return prev.start('div').cls('heading').cls('md-headline')
             .add('Order (')
-            .add(function(merchant) {
+            .add(this.dynamic(function(merchant) {
               return merchant ? merchant.displayName : '';
-            }.bind(this).on$(this.X, this.merchant$))
+            }.bind(this), this.merchant$))
             .add(')')
           .end();
     },
