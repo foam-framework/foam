@@ -84,3 +84,5 @@ TODO:
   validation
   cleanup
   keyboard action shortcuts
+
+destroy should work from any state.
