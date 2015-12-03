@@ -2,6 +2,150 @@
 layout: default
 ---
 
+<div class="site-hero">
+  <img src="{{ site.baseurl }}/foam/js/com/google/watlobby/img/foam_red.png" style="opacity: 0.76" />
+  <h3>Fast apps fast</h3>
+</div>
+<div class="site-punch">
+  <div class="site-punch-item">
+    <h3>High-level</h3>
+    <p>You write very high-level, declarative <em>models</em>, and FOAM
+    builds many features from them: default views, storage,
+    serialization, Java and Swift classes, and much more.</p>
+  </div>
+  <div class="site-punch-item">
+    <h3>Compact</h3>
+    <p>Your app and FOAM itself are both modeled, keeping your payload small.</p>
+    <p>Our <a href="{{ site.baseurl}}/apps/gmail/main.html">Gmail</a> app is 150KB unzipped.</p>
+    <p>With so little code to write, FOAM is perfect for rapid app development.</p>
+  </div>
+  <div class="site-punch-item">
+    <h3>Fast</h3>
+    <p>FOAM apps are small and load fast &ndash; even on mobile.</p>
+    <p>FOAM's reactive programming is efficient, and fast enough for
+    animation &ndash; even on mobile.</p>
+  </div>
+</div>
+<div class="site-background">
+  <div class="site-prose">
+    <p>FOAM is an open-source modeling framework developed at Google.</p>
+    <p>With FOAM, you create a <em>model</em>, and FOAM can support many
+    features based on it:</p>
+    <ul>
+      <li>A (Javascript, Java or Swift) class, with <tt>diff()</tt>, <tt>clone()</tt>, etc.</li>
+      <li>Serialization to and from JSON, XML and <a href="https://developers.google.com/protocol-buffers/?hl=en">protocol buffers</a>.</li>
+      <li>Storage in many places, from IndexedDB to MongoDB.</li>
+      <li>Query parsers and a query optimizer.</li>
+      <li>Offline syncing, and many flavours of caching.</li>
+      <li>Customizable detail and summary views for HTML, Android and iOS.</li>
+    </ul>
+    <p>FOAM combines these features with reactive programming and MVC,
+    forming a full-stack framework for building modern, cross-platform apps.</p>
+    <p>FOAM is in beta. It's production-ready but still under
+    heavy development. Expect many new features &ndash; and bugs
+    &ndash; as FOAM continues to evolve.</p>
+  </div>
+  <div class="site-sample">
+    <h3>Try FOAM Live</h3>
+    <p class="site-prose">Below is a FOAM model you can edit, and a list of FOAM features you can see live in your browser.</p>
+    <p class="site-prose">Try uncommenting the <tt>'hometown'</tt> property. Or try changing the <tt>defaultValue</tt> for the <tt>gender</tt> property to <tt>'F'</tt>.</p>
+    <!-- Many of these divs are placeholders the live app will be looking for.  -->
+    <div id="site-editor1" class="site-sample-code"></div>
+    <div class="site-sample-bottom">
+      <div id="site-features1" class="site-sample-features"></div>
+      <div class="site-sample-right">
+        <div class="site-sample-commentary">
+          <div id="site-sample-commentary-DetailView">FOAM can generate default
+            views from a model. They can easily be customized, or replaced
+            altogether.</div>
+          <div id="site-sample-commentary-CitationView">FOAM can make a
+            reasonable guess at a summary for a model - in this case the "name"
+            property is chosen.</div>
+          <div id="site-sample-commentary-Table">Tables in a variety of styles.
+            This one is Material Design and supports column resizing and
+            infinite scrolling.</div>
+          <div id="site-sample-commentary-Diff">diff() shows all the different
+            properties between two objects of the same model. Try changing the
+            Person\'s gender or age!</div>
+          <div id="site-sample-commentary-JSON">Any FOAM object can be
+            serialized to JSON. Note that default values (eg. "gender" = "M")
+            are omitted, saving space.</div>
+          <div id="site-sample-commentary-XML">Any FOAM object can be serialized
+            to XML. Note that default values (eg. "gender" = "M") are omitted,
+            saving space.</div>
+          <div id="site-sample-commentary-Java">FOAM can generate Java source
+            code from a model, and includes a Java library for servers and
+            Android.</div>
+          <div id="site-sample-commentary-Swift">FOAM can generate Swift source
+            code from a model, and inludes a library for iOS development.</div>
+          <div id="site-sample-commentary-Storage">FOAM models data storage with
+            the DAO, or Data Access Object. This single, high-level API works
+            with many different storage backends.</div>
+          <div id="site-sample-commentary-Decoration">Since the DAO API is small
+            and high-level, it is easy to decorate a basic DAO with extra
+            features.</div>
+          <div id="site-sample-commentary-More">Here\'s a list of some of the
+            other features FOAM supports for every model.</div>
+        </div>
+        <div id="site-output-1" class="site-sample-output"></div>
+        <div id="site-output-1-Storage" class="site-sample-output" style="display: none">
+          <pre>
+dao.where(AND(
+    GT(Person.AGE, 30),
+    CONTAINS(Person.NAME, 'John')))
+  .limit(10)
+  .orderBy(Person.NAME)
+  .select();
+dao.put(myPerson);
+dao.find(someID);</pre>
+          <p>See the <a href="http://foamdev.com/guides/dao">DAO Guide</a> for more on the API.</p>
+
+          <p>Here are a few of the supported backends:
+          <ul>
+            <li>Lightning fast in-memory cache</li>
+            <li>LocalStorage and IndexedDB in the browser</li>
+            <li>MongoDB</li>
+            <li>Firebase</li>
+            <li>Postgres, SQLite and other SQL databases</li>
+            <li>JSON and XML files</li>
+          </ul>
+        </div>
+        <div id="site-output-1-More" class="site-sample-output" style="display:none">
+          <ul>
+            <li><tt>clone()</tt></li>
+            <li><tt>copyFrom()</tt></li>
+            <li><tt>hashCode()</tt></li>
+            <li><tt>compareTo()</tt> and <tt>equals()</tt></li>
+            <li>Observer support: Events for changes to a property, or any property</li>
+            <li>Query parsers (eg. <tt>age&gt;=30</tt>, <tt>name:John</tt>)</li>
+          </ul>
+        </div>
+        <div id="site-output-1-Decoration" class="site-sample-output" style="display:none">
+          <p>FOAM includes DAO decorators that add these features to any DAO:
+            <ul style="margin-top: 0">
+              <li>Caching (eager or lazy)</li>
+              <li>Offline sync</li>
+              <li>Client-server bridge</li>
+              <li>Journaling</li>
+              <li>Logging</li>
+              <li>Performance measurement</li>
+            </ul>
+          </p>
+          <p>It's all the same API, so it's a one-line change to switch from fake
+          data in memory to offline-ready syncing from a server into IndexedDB.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="live-example.js"></script>
+<script>
+  var site = X.lookup('foam.apps.mainsite.Site').create();
+  site.injectHTML();
+  site.initHTML();
+</script>
+<!--
 <div class="home">
 
   <p>
@@ -61,3 +205,4 @@ FOAM increases developer productivity by allowing them to express solutions at a
   </blockquote>
 
 </div>
+-->

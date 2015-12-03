@@ -1,0 +1,165 @@
+/* Borrowed from MD SharedStyles. */
+body {
+  font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+  -webkit-font-smoothing: antialiased;
+}
+
+p {
+  margin: 0;
+}
+p + p {
+  margin-top: 1em;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: #4285f4;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Custom to this site. */
+body {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.site-header {
+  align-items: center;
+  background-color: #c53929;
+  display: flex;
+  flex-shrink: 0;
+  height: 48px;
+}
+.site-header a {
+  color: #fff;
+  margin: 0 16px;
+}
+.site-header a.selected {
+  font-weight: bold;
+}
+
+.site-body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.site-hero {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 100px 0;
+}
+.site-hero h1 {
+  font-size: 112px;
+  font-weight: 300;
+}
+.site-hero h3 {
+  font-size: 45px;
+  font-weight: normal;
+  margin: 1em 0 0 16px;
+}
+
+.site-punch {
+  background-color: #db4437;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.site-punch-item {
+  color: #fff;
+  font-size: 16px;
+  margin: 32px 16px;
+  width: 300px;
+}
+
+.site-body h3 {
+  color: #db4437;
+  font-weight: normal;
+  font-size: 24px;
+  margin-top: 2em;
+  margin-left: 16px;
+}
+.site-punch-item h3 {
+  color: #fff;
+  margin-top: 0;
+}
+
+.site-punch-item a {
+  color: #1de9b6;
+}
+
+.site-body p {
+  margin: 16px;
+}
+
+.site-body ul {
+  margin: 8px 0;
+}
+
+.site-background {
+  padding: 8px;
+}
+
+.site-sample-bottom {
+  display: flex;
+  margin: 16px;
+}
+.site-sample-features {
+  background-color: #db4437;
+  color: #fff;
+  flex: 3;
+}
+.site-sample-features .dao-selected {
+  background-color: #c53929;
+}
+
+.site-sample-right {
+  flex: 7;
+}
+
+.site-sample-code {
+  border: 1px solid #e0e0e0;
+  margin: 16px;
+}
+
+.site-sample-commentary {
+  align-items: center;
+  background-color: #db4437;
+  color: #fff;
+  display: flex;
+  height: 70px;
+  padding: 16px;
+  width: 100%;
+}
+
+.site-sample-commentary div {
+  display: none;
+}
+
+.site-sample-output p {
+  margin: 16px;
+}
+.site-sample-output pre {
+  margin: 1em;
+}
