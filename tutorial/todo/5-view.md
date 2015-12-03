@@ -7,10 +7,11 @@ tutorial: 5
 ## FOAM Views
 
 It's very unlikely that the default list row view is going to serve for your
-app. It just guesses at an interesting, string-ish property from your model.
+app. It looks at your model, and guesses at an interesting, string-ish property
+to put in the row.
 
-For our `Todo` model, the `title` property is a good guess, but we'd like to
-have the checkbox visible on the list as well as in the detail view.
+For our `Todo` model, it guessed `title`. That's a good guess, but we'd like to
+have the `isCompleted` checkbox next to each item in the list.
 
 ### Base views
 
@@ -31,12 +32,21 @@ Since we're building a "citation" or "summary" view for a `Todo`, we'll use
 
 ### Creating our view
 
-First, let's make a new package:
+First, let's make a new directory `PROJECT/js/com/todo/ui`, with a new file
+`TodoCitationView.js`:
 
-    mkdir $PROJECT/js/com/todo/ui
-    $EDITOR $PROJECT/js/com/todo/ui/TodoCitationView.js
+    PROJECT
+    |- foam/
+    |- js/
+    |--- com/
+    |----- todo/
+    |------- TodoApp.js
+    |------- model/
+    |--------- Todo.js
+    |------- ui/
+    |--------- TodoCitationView.js
 
-and will the file with the following:
+and fill the file with the following:
 
 {% highlight js %}
 CLASS({
@@ -73,9 +83,15 @@ these quick notes will suffice:
 When the template parser is finished, our model has a `toHTML` method that
 returns a string based on our template.
 
+You can also put templates in separate files, named `MyModel_templateName.ft`.
+For example, `TodoCitationView_toHTML.ft`.
+
+Then in your model's `templates` section, instead of adding an inline template,
+just add it by name: <br/>`{ name: 'toHTML' }`.
+
 ### What the heck is going on?
 
-Even if the raw syntax makes sense, there are some strange things in the
+Even if the syntax itself makes sense, there are some strange things in the
 template above.
 
 - All `View`s have an `id` property, which by default is a generated value like
@@ -93,12 +109,12 @@ of the `title` property.
 ### Wire in our new view
 
 We need to override the default list view with our own. FOAM has a variety of
-views that expect a DAO and render its contents in some fashion. The four main
-ones are:
+views that expect a DAO and render its contents in some fashion. Here are the
+four main ones.
 
-- `foam.ui.DAOListView` is a basic list, used by default.
+- `foam.ui.DAOListView` is a basic list, used by default in the Browser.
 - `foam.ui.ScrollView` is an infinite-scrolling version that uses native browser
-  scrolling and can handle 100,000 rows at 60fps on mobile.
+  scrolling and can handle over 100,000 rows at 60fps on mobile.
 - `foam.ui.(md.)TableView` renders an HTML `<table>`.
 - `foam.ui.(md.)FlexTableView` renders a table with adjustible columns and
   infinite scrolling.
@@ -145,7 +161,7 @@ Then update the `data` `factory`:
 This `factory_` syntax is commonly used in FOAM, for declaratively specifying a
 model and some default values to give to its properties.
 
-We're configuring our browser, by overriding its default `listView` with a new
+We're configuring our Browser, by overriding its default `listView` with a new
 one: a `DAOListView` of `TodoCitationView`s.
 
 If you reload the app, you'll see that our change is working - but the app isn't
@@ -153,8 +169,8 @@ really improved!
 
 ![Editable and labeled]({{ site.url }}/tutorial/todo/assets/edit-and-label.png)
 
-It's now got an editable title, and it will actually save properly if you make
-an edit and blur the view, but that's not really what we were going for.
+The `title` is now editable! It will actually save properly if you make
+an edit and blur the view, but that's not really what we were aiming for.
 
 
 ### Further customizing our template

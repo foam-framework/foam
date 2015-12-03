@@ -6,42 +6,32 @@ tutorial: 1
 
 ## Models and Metaprogramming
 
-"Metaprogramming" might sound awesome, or strange. That's why it's "choose your
-own adventure" time: read whichever of the following sections feels more
-comfortable. You don't need to understand FOAM's metaprogramming principles to
-write an app using it.
+Don't panic!
 
-### "Metaprogramming? Models? Get to the point!"
+FOAM is fundamentally a **modeling framework**. When writing an app using FOAM,
+you write **models**, which FOAM uses to build many **features**. See the live
+coding on the [main page]({{site.baseurl}}/) for some examples of features.
 
-FOAM includes, among other things, a class system for Javascript. That's not
-very exciting; there are dozens of those.
+Models resemble classes in most programming systems: they have a name,
+properties, methods. There are two key differences between FOAM's models and,
+say, a Java class:
 
-What makes FOAM's class system interesting is that it includes many more
-features than most. Java's class system has member variables and methods. There
-are a few interesting keywords like `static` and `synchronized`, but generally
-speaking they have an access level, name, and type.
+1. FOAM's models are richer, with more information attached.
+    - All dependencies are declared, enabling things like the build tool.
+    - Properties have a name and type, but also a UI label, `preSet` and
+      `postSet` handlers, a default `view`, default values, and much more.
+    - Methods can be batched to run per animation frame, or not more than once
+      per second, etc.
+    - Templates are parsed and turned into methods.
+    - And much more.
+2. FOAM's models are **data, not code**.
 
-Properties on FOAM's classes have names and types, but also `preSet` and
-`postSet` handlers, default values, creation-time factories, UI labels, and
-more.
+This last point is really the key: FOAM's models are data. They can be
+stored in a database, serialized over the network, and more. They can be
+processed by tools without the need for parsing. They can contain data and code
+for multiple languages, and be used in a web app or to build an Android app.
 
-### "Metaprogramming? Sounds awesome!"
-
-FOAM is a metaprogramming framework, which means it provides tools for modeling
-data, and generating lots of tedious code from that model. With a model of your
-data, FOAM can build a default detail view, serialize it into JSON, XML and
-more, store it in LocalStorage, IndexedDB, MongoDB, MySQL, and many more places.
-
-It can do all of those things because you've given a detailed description of
-what your data is. This goes well beyond the basics found in most object
-oriented languages: name and type. FOAM models have properties and methods, but
-also listeners, user actions, i18n strings, relationships to other collections
-of data, and more.
-
-Properties in FOAM have `preSet` and `postSet` handlers, UI labels, default
-values, creation-time factory functions. The have flags that declare a property
-to be required, hidden in the UI, or not saved to databases. They can declare a
-foreign key reference, be an array of such references.
+Modeling is the secret spark that makes everything FOAM does possible.
 
 
 ## Models and the model: terminology collision
@@ -50,18 +40,13 @@ A quick point to clear up confusion before we move on. There's an unfortunate
 collision around the word "model". We use it in two very different senses in
 FOAM.
 
-First, the sense used above, on this page. A model is like a class, a detailed spec or
-schema for your data. At the core of your app, you'll likely have a handful of
-these, with names like `Email`, `Contact`, `Label` and `Attachment`.
+The first meaning is as used above.
 
-Second, "model" as the M in "MVC". This is the high-level component of an app
-responsible for feeding data to the app. In FOAM, this MVC Model generally takes
-the form of a DAO for each model in the first sense. (A DAO is a Data Access
-Object, a universal interface for data access, see the
-[DAO User Guide]({{ site.baseurl }}/guides/dao).)
+The second is the "M" in "MVC". This is the part of an app responsible for
+managing data, and supplying data to the other parts of the app.
 
 ## Next
 
-Move on to [Part 2: Your first model]({{ site.baseurl }}/tutorial/todo/2-todo/) to get
-started building our first model.
+In [Part 2: Your first model]({{ site.baseurl }}/tutorial/todo/2-todo/), we'll
+see what FOAM can do with just a simple model.
 

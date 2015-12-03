@@ -17,8 +17,8 @@ Let's fill in the menu.
 
 `foam.mlang.CannedQuery` is a model that combines an mLang query with a name.
 mLangs are FOAM's query language, a companion to the DAO interface that
-specifies queries in a generic way. Since it involves no parsing, most injection
-errors are avoided by construction.
+specifies queries in a generic, extensible way. Since it involves no parsing,
+most injection errors are avoided by construction.
 
 For details, see the [mLang guide]({{ site.baseurl }}/guides/mlang). This page
 explains the basics, however.
@@ -35,9 +35,8 @@ There are many more binary operations like this. You won't be surprised to find
 `NE` (not equal), `LT`, `LTE`, `GT`, `GTE` for basic equality and comparison.
 
 There are a few more interesting ones, like `CONTAINS` and `CONTAINS_IC`
-(case-insensitive). `CONTAINS(a, b)` is essentially `b.indexOf(a) != -1`.  If
-the left-hand argument is itself an array, `CONTAINS([a1, a2], b)` is true if
-*any* of `a1`, `a2`, etc. is in `b`.
+(case-insensitive). `CONTAINS(MyModel.NAME, 'foo')` is essentially `this.name.indexOf('foo') != -1`.  If the right-hand argument is itself an array, `CONTAINS(a, [b1, b2])` is
+true if *any* of `b1`, `b2`, etc. is in `a`.
 
 mLangs support the usual boolean operations as well as comparison: `NOT(query)`,
 `AND(q1, q2, q3, ...)`, `OR(q1, q2, q3, ...)`.
@@ -161,9 +160,13 @@ And the result:
 
 You made it! That's the end of this basic introduction to programming in FOAM.
 
-There are enough places to go next that they have a page to themselves:
-[FOAM tutorial hub]({{ site.baseurl }}/tutorial/0-intro).
+The surprisingly short [Part 7: Servers]({{site.baseurl}}/tutorial/todo/7-server)
+expands this app by adding a server.
+[Part 8: Authentication]({{site.baseurl}}/tutorial/todo/8-auth) adds authentication.
 
-We particularly recommend you take a look at the [DAO User Guide]({{ site.url }}/guides/dao).
+The [FOAM tutorial hub]({{ site.baseurl }}/tutorial/0-intro) has many other
+places to go.
+
+We also recommend you take a look at the [DAO User Guide]({{ site.url }}/guides/dao).
 If you're wondering about reactivity and performance, see [Performance]({{ site.baseurl }}/performance).
 
