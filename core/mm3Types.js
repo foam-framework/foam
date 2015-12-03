@@ -1120,6 +1120,10 @@ CLASS({
   name: 'EMailProperty',
   extends: 'StringProperty',
   label: 'Email address',
+
+  properties: [
+    [ pattern: '^.+\@.+$' ]
+  ]
 });
 
 CLASS({
@@ -1166,6 +1170,11 @@ CLASS({
   name: 'PhoneNumberProperty',
   extends: 'StringProperty',
   label: 'Phone number',
+
+  properties: [
+    [ pattern: '^[0-9\-\+\(\)\*\ ]*$' ]
+  ]
+
 });
 
 
