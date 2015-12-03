@@ -21,6 +21,7 @@ CLASS({
   ],
 
   imports: [
+    'dynamic',
     'streamDAO'
   ],
 
@@ -118,12 +119,12 @@ CLASS({
           .end()
           .start('video')
           .attrs({
-            src: function(cachedState) {
+            src: this.dynamic(function(cachedState) {
               if (cachedState === 'cached')
                 return window.URL.createObjectURL(this.cache_);
               if (cachedState === 'downloading') return '';
               else return this.content;
-            }.bind(this).on$(this.X, this.cachedState_$),
+            }.bind(this), this.cachedState_$),
             controls: 'true',
             preload:'auto'
           })
@@ -150,15 +151,15 @@ CLASS({
               .start('span').attrs({ padding: '8px' })
               .style({ width: '48px', height: '48px', top: '0', 'right': '0' })
                 .x({ data: this })
-                .start('span').add(this.DOWNLOAD).cls('md-subhead').cls(function(state) {
+                .start('span').add(this.DOWNLOAD).cls('md-subhead').cls(this.dynamic(function(state) {
                   return state === 'none' ? '' : 'foam-u2-Element-hidden';
-                }.on$(this.X, this.cachedState_$)).end()
-                .start('span').add(this.SAVED).cls('md-subhead').cls(function(state) {
+                }, this.cachedState_$)).end()
+                .start('span').add(this.SAVED).cls('md-subhead').cls(this.dynamic(function(state) {
                   return state === 'cached' ? '' : 'foam-u2-Element-hidden';
-                }.on$(this.X, this.cachedState_$)).end()
-                .start('span').add(this.IN_PROGRESS).cls('md-subhead').cls(function(state) {
+                }, this.cachedState_$)).end()
+                .start('span').add(this.IN_PROGRESS).cls('md-subhead').cls(this.dynamic(function(state) {
                   return state === 'downloading' ? '' : 'foam-u2-Element-hidden';
-                }.on$(this.X, this.cachedState_$)).end()
+                }, this.cachedState_$)).end()
               .end()
             .end()
         .end();

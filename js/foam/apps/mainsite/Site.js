@@ -45,6 +45,14 @@ CLASS({
     'touchManager',
   ],
 
+  constants: {
+    STATIC_OUTPUT: {
+      'Storage': true,
+      'Decoration': true,
+      'More': true
+    }
+  },
+
   properties: [
     {
       name: 'touchManager',
@@ -142,15 +150,30 @@ CLASS({
       },
     },
     {
+      name: 'outputFeature_',
+      postSet: function(old, nu) {
+        // Hides and shows output divs based on the current feature.
+        if (old === nu) return;
+        // Nothing to do if they're both targeting the live output.
+        if (!this.STATIC_OUTPUT[old] && !this.STATIC_OUTPUT[nu]) return;
+
+        this.X.$('site-output-1' + (this.STATIC_OUTPUT[old] ? '-' + old : '')).style.display = 'none';
+        this.X.$('site-output-1' + (this.STATIC_OUTPUT[nu] ? '-' + nu : '')).style.display = 'block';
+      },
+    },
+    {
       name: '$output1',
       getter: function() {
-        return this.X.$(this.id + '-output-1');
+        return this.X.$('site-output-1');
       }
     },
     {
       name: 'commentary1',
-      documentation: 'Filled in when features1 is set.',
-      mode: 'read-only',
+      documentation: 'Filled in when features1 is set. The ID of the currently-visible commentary div.',
+      postSet: function(old, nu) {
+        if (old) this.X.$(old).style.display = 'none';
+        if (nu) this.X.$(nu).style.display = 'flex';
+      },
     },
     {
       name: 'featureImplementations',
@@ -235,34 +258,6 @@ CLASS({
               maxLines: 20
             });
           },
-          Storage: function(model) {
-            onCall(model);
-            return this.HTMLView.create({ data: this.storageHTML() });
-          },
-          Decoration: function(model) {
-            return this.HTMLView.create({ data: this.decorationHTML() });
-          },
-          More: function(model) {
-            return this.HTMLView.create({ data: this.andMoreHTML() });
-          },
-        };
-      }
-    },
-    {
-      name: 'commentary',
-      factory: function() {
-        return {
-          DetailView: 'FOAM can generate default views from a model. They can easily be customized, or replaced altogether.',
-          CitationView: 'FOAM can make a reasonable guess at a summary for a model - in this case the "name" property is chosen.',
-          Table: 'Tables in a variety of styles. This one is Material Design and supports column resizing and infinite scrolling.',
-          Diff: 'diff() shows all the different properties between two objects of the same model. Try changing the Person\'s gender or age!',
-          JSON: 'Any FOAM object can be serialized to JSON. Note that default values (eg. "gender" = "M") are omitted, saving space.',
-          XML: 'Any FOAM object can be serialized to XML. Note that default values (eg. "gender" = "M") are omitted, saving space.',
-          Java: 'FOAM can generate Java source code from a model, and includes a Java library for servers and Android.',
-          Swift: 'FOAM can generate Swift source code from a model, and inludes a library for iOS development.',
-          Storage: 'FOAM models data storage with the DAO, or Data Access Object. This single, high-level API works with many different storage backends.',
-          Decoration: 'Since the DAO API is small and high-level, it is easy to decorate a basic DAO with extra features.',
-          More: 'Here\'s a list of some of the other features FOAM supports for every model.',
         };
       }
     },
@@ -272,6 +267,16 @@ CLASS({
     function init() {
       this.SharedStyles.create();
       this.SUPER();
+    },
+    // Call this to insert the editor and other live pieces into the existing
+    // DOM. This model is only intended to be loaded from the main Github site.
+    function injectHTML() {
+      this.X.$('site-editor1').innerHTML = this.editor1.toHTML();
+      this.addChild(this.editor1);
+
+      var v = this.createTemplateView('features1');
+      this.X.$('site-features1').innerHTML = v.toHTML();
+      this.addChild(v);
     },
     function initHTML() {
       this.SUPER();
@@ -288,8 +293,14 @@ CLASS({
         var feature = this.selectedFeature1.expression;
         var target = this.featureImplementations[feature];
         if (!target) {
-          this.$output1.innerHTML = 'Select a feature';
-          this.commentary1 = '';
+          if (this.STATIC_OUTPUT[feature]) {
+            this.outputFeature_ = feature;
+            this.commentary1 = 'site-sample-commentary-' + feature;
+          } else {
+            this.outputFeature_ = '';
+            this.$output1.innerHTML = 'Select a feature';
+            this.commentary1 = '';
+          }
         } else {
           var str = this.code1.code;
           var model;
@@ -302,6 +313,7 @@ CLASS({
           }
 
           try {
+            this.outputFeature_ = feature;
             var v = target.call(this, model);
             if (!Array.isArray(v)) v = [v];
 
@@ -310,8 +322,9 @@ CLASS({
             this.$output1.innerHTML = output;
             for (var i = 0; i < v.length; i++) v[i].initHTML();
 
-            this.commentary1 = this.commentary[feature];
+            this.commentary1 = 'site-sample-commentary-' + feature;
           } catch (e) {
+            this.outputFeature_ = '';
             this.$output1.innerHTML = 'Error rendering view: ' + e;
             return;
           }
@@ -319,246 +332,4 @@ CLASS({
       }
     },
   ],
-
-  templates: [
-    function CSS() {/*
-      .site-container {
-        display: flex;
-        flex-direction: column;
-        font-size: 16px;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-      }
-
-      .site-header {
-        align-items: center;
-        background-color: #c53929;
-        display: flex;
-        flex-shrink: 0;
-        height: 48px;
-      }
-      .site-header a {
-        color: #fff;
-        margin: 0 16px;
-      }
-      .site-header a.selected {
-        font-weight: bold;
-      }
-
-      .site-body {
-        overflow-x: hidden;
-        overflow-y: auto;
-      }
-      .site-hero {
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 100px 0;
-      }
-      .site-hero h1 {
-        font-size: 112px;
-        font-weight: 300;
-      }
-      .site-hero h3 {
-        font-size: 45px;
-        font-weight: normal;
-        margin: 1em 0 0;
-      }
-
-      .site-punch {
-        background-color: #db4437;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      .site-punch-item {
-        color: #fff;
-        font-size: 16px;
-        margin: 32px 16px;
-        width: 300px;
-      }
-
-      h3 {
-        color: #db4437;
-        font-weight: normal;
-        font-size: 24px;
-        margin-top: 2em;
-      }
-      .site-punch-item h3 {
-        color: #fff;
-        margin-top: 0;
-      }
-
-      .site-punch-item a {
-        color: #1de9b6;
-      }
-
-      .site-prose {
-        margin: 16px;
-      }
-
-      .site-prose ul {
-        margin: 8px 0;
-      }
-
-      .site-background {
-        padding: 8px;
-      }
-
-      .site-sample-bottom {
-        display: flex;
-        margin: 16px;
-      }
-      .site-sample-features {
-        background-color: #db4437;
-        color: #fff;
-        flex: 3;
-      }
-      .site-sample-features .dao-selected {
-        background-color: #c53929;
-      }
-
-      .site-sample-right {
-        flex: 7;
-      }
-
-      .site-sample-code {
-        border: 1px solid #e0e0e0;
-        margin: 16px;
-      }
-
-      .site-sample-commentary {
-        align-items: center;
-        background-color: #db4437;
-        color: #fff;
-        display: flex;
-        height: 70px;
-        padding: 16px;
-        width: 100%;
-      }
-
-      .site-sample-output p {
-        margin: 16px;
-      }
-      .site-sample-output pre {
-        margin: 1em;
-      }
-    */},
-    function toHTML() {/*
-      <div id="%%id" class="site-container">
-      <div class="site-header">
-        <a class="selected" href="http://foamdev.com/">Home</a>
-        <a href="http://foamdev.com/tutorial/0-intro">Tutorials</a>
-        <a href="https://github.com/foam-framework/foam">Github</a>
-      </div>
-      <div class="site-body">
-        <div class="site-hero">
-          <img src="js/com/google/watlobby/img/foam_red.png" style="opacity: 0.76" />
-          <h3>Fast apps fast</h3>
-        </div>
-        <div class="site-punch">
-          <div class="site-punch-item">
-            <h3>High-level</h3>
-            <p>You write very high-level, declarative <em>models</em>, and FOAM
-            builds many features from them: default views, storage,
-            serialization, Java and Swift classes, and much more.</p>
-          </div>
-          <div class="site-punch-item">
-            <h3>Compact</h3>
-            <p>Your app and FOAM itself are both modeled, keeping your payload small.</p>
-            <p>Our <a href="https://foam-framework.github.io/foam/apps/gmail/main.html">Gmail</a> app is 150KB unzipped.</p>
-            <p>With so little code to write, FOAM is perfect for rapid app development.</p>
-          </div>
-          <div class="site-punch-item">
-            <h3>Fast</h3>
-            <p>FOAM apps are small and load fast &mdash;<br/>even on mobile.</p>
-            <p>FOAM's reactive programming is efficient, and fast enough for
-            animation &mdash;<br/>even on mobile.</p>
-          </div>
-        </div>
-        <div class="site-background">
-          <div class="site-prose">
-            <p>FOAM is an open-source modeling framework developed at Google.</p>
-            <p>With FOAM, you create a <em>model</em>, and FOAM can support many
-            features based on it:</p>
-            <ul>
-              <li>A (Javascript, Java or Swift) class, with <tt>diff()</tt>, <tt>clone()</tt>, etc.</li>
-              <li>Serialization to and from JSON, XML and <a href="https://developers.google.com/protocol-buffers/?hl=en">protocol buffers</a>.</li>
-              <li>Storage in many places, from IndexedDB to MongoDB.</li>
-              <li>Query parsers and a query optimizer.</li>
-              <li>Offline syncing, and many flavours of caching.</li>
-              <li>Customizable detail and summary views for HTML, Android and iOS.</li>
-            </ul>
-            <p>FOAM combines these features with reactive programming and MVC,
-            forming a full-stack framework for building modern, cross-platform apps.</p>
-            <p>FOAM is in beta. It's production-ready but still under
-            heavy development. Expect many new features &mdash; and bugs
-            &mdash; as FOAM continues to evolve.</p>
-          </div>
-          <div class="site-sample">
-            <h3>Try FOAM Live</h3>
-            <p class="site-prose">Below is a FOAM model you can edit, and a list of FOAM features you can see live in your browser.</p>
-            <p class="site-prose">Try uncommenting the <tt>'hometown'</tt> property. Or try changing the <tt>defaultValue</tt> for the <tt>gender</tt> property to <tt>'F'</tt>.</p>
-            <div class="site-sample-code">%%editor1</div>
-            <div class="site-sample-bottom">
-              <div class="site-sample-features">$$features1</div>
-              <div class="site-sample-right">
-                <div class="site-sample-commentary">$$commentary1</div>
-                <div id="<%= this.id %>-output-1" class="site-sample-output"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    */},
-    function storageHTML() {/*
-      <pre>
-dao.where(AND(
-    GT(Person.AGE, 30),
-    CONTAINS(Person.NAME, 'John')))
-  .limit(10)
-  .orderBy(Person.NAME)
-  .select();
-dao.put(myPerson);
-dao.find(someID);</pre>
-      <p>See the <a href="http://foamdev.com/guides/dao">DAO Guide</a> for more on the API.</p>
-
-      <p>Here are a few of the supported backends:
-      <ul>
-        <li>Lightning fast in-memory cache</li>
-        <li>LocalStorage and IndexedDB in the browser</li>
-        <li>MongoDB</li>
-        <li>Firebase</li>
-        <li>Postgres, SQLite and other SQL databases</li>
-        <li>JSON and XML files</li>
-      </ul>
-    */},
-    function andMoreHTML() {/*
-      <ul>
-        <li><tt>clone()</tt></li>
-        <li><tt>copyFrom()</tt></li>
-        <li><tt>hashCode()</tt></li>
-        <li><tt>compareTo()</tt> and <tt>equals()</tt></li>
-        <li>Observer support: Events for changes to a property, or any property</li>
-        <li>Query parsers (eg. <tt>age>=30</tt>, <tt>name:John</tt>)</li>
-      </ul>
-    */},
-    function decorationHTML() {/*
-      <p>FOAM includes DAO decorators that add these features to any DAO:
-        <ul style="margin-top: 0">
-          <li>Caching (eager or lazy)</li>
-          <li>Offline sync</li>
-          <li>Client-server bridge</li>
-          <li>Journaling</li>
-          <li>Logging</li>
-          <li>Performance measurement</li>
-        </ul>
-      </p>
-      <p>It's all the same API, so it's a one-line change to switch from fake
-      data in memory to offline-ready syncing from a server into IndexedDB.</p>
-    */},
-  ]
 });

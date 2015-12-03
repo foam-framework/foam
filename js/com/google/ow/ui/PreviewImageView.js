@@ -14,6 +14,8 @@ CLASS({
   name: 'PreviewImageView',
   extends: 'foam.u2.View',
 
+  imports: [ 'dynamic' ],
+
   properties: [ [ 'nodeName', 'IMG' ] ],
 
   methods: [
@@ -22,9 +24,9 @@ CLASS({
         // TODO(markdittmer): This should be on this.data change and
         // this.data.dataUrl change. Support for nested dependencies in u2 still
         // in the works.
-        src: function() {
+        src: this.dynamic(function() {
           return (this.data && this.data.data && this.data.data.preview) ? this.data.data.preview : '';
-        }.bind(this).on$(this.X, this.data$),
+        }.bind(this), this.data$),
         width: 80,
         height: 50
       }).style({ 'margin': '4px', 'flex-shrink':'0' });

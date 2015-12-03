@@ -273,25 +273,6 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
       }
       return cell;
     },
-    function toE() {
-      var e = this.E('table').cls('cells').add(this.headerE());
-      for ( var i = 0 ; i < this.rows ; i++ )
-        e.add(this.rowE(i));
-      return e;
-    },
-    function headerE() {
-      var h = this.E('tr');
-       for ( var j = 0 ; j < this.columns ; j++ )
-         h.add(this.E('th').cls('colHeader').add(String.fromCharCode(65 + j)));
-      return h;
-    },
-    function rowE() {
-      var r = this.E('tr').add(this.E('th').cls('rowHeader').add(i));
-      for ( var j = 0 ; j < this.columns ; j++ )
-        r.add(this.cellE(j, i));
-
-      return r;
-    },
     function cellE(j, i) {
       var c = this.E('td');
 
@@ -325,22 +306,16 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
         padding: 2px 18px;
       }
     */},
-    function toHTML() {/*
-      <table cellspacing="0" class="cells">
+    function toE() {/*
+      <table cellspacing="0">
         <tr>
           <th></th>
-          <% for ( var j = 0 ; j < this.columns ; j++ ) { %>
-            <th class="colHeader"><%= String.fromCharCode(65 + j) %></th>
-          <% } %>
+          <th class="$-colHeader" repeat="j = 0 .. this.columns-1">{{String.fromCharCode(65 + j)}}</th>
         </tr>
-        <% for ( i = 0 ; i <= this.rows ; i++ ) { %>
-          <tr>
-            <th class="rowHeader"><%= i %></th>
-            <% for ( var j = 0 ; j < this.columns ; j++ ) { %>
-              <td class="cell"><%= this.cell(this.cellName(j, i)) %></td>
-            <% } %>
-          </tr>
-        <% } %>
+        <tr repeat="i = 0 .. this.rows">
+          <th class="$-rowHeader">{{i}}</th>
+          <td class="$-cell" repeat="j = 0 .. this.columns-1">{{this.cellE(j, i)}}</td>
+        </tr>
       </table>
     */}
   ]

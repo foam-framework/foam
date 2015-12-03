@@ -38,9 +38,11 @@ CLASS({
       finishTag: function() {
         var e = this.stack.pop();
         var p = this.peek();
+        if ( e.repeatexpr ) this.addCode(e.repeatexpr);
         if ( e.ifexpr ) this.addCode('if(' + e.ifexpr + '){');
         p.children.push(e);
         if ( e.ifexpr ) this.addCode('}');
+        if ( e.repeatexpr ) this.addCode('}');
       },
 
       addCode: function(c) {
@@ -93,6 +95,7 @@ CLASS({
         sym('style'),
         sym('on'),
         sym('if'),
+        sym('repeat'),
         sym('xattribute'),
         sym('attribute')
       ),
@@ -128,7 +131,23 @@ CLASS({
 
       if: seq1(1, 'if=', sym('ifExpr')),
 
-      ifExpr: alt(sym('braces'), sym('value')),
+        ifExpr: alt(sym('braces'), sym('value')),
+
+      repeat: seq(
+        'repeat="',
+        sym('varName'),
+        ' ',
+        sym('whitespace'),
+        'in',
+        sym('whitespace'),
+        str(repeat(not(alt('"', '..'), anyChar))), // TODO: escape better
+        optional(
+          seq1(2,
+            '..',
+            sym('whitespace'),
+            str(repeat(notChar('"'))))), // TODO: escape better
+        sym('whitespace'),
+        '"'),
 
       attribute: seq(sym('label'), optional(seq1(1, '=', sym('valueOrLiteral')))),
 
@@ -176,7 +195,9 @@ CLASS({
         seq('"', str(repeat(notChar('"'))), '"')
       )),
 
-      whitespace: repeat0(alt(' ', '\t', '\r', '\n'))
+      whitespace: repeat0(sym('space')),
+
+      space: alt(' ', '\t', '\r', '\n')
     }.addActions({
       START: function(xs) {
         var output = [];
@@ -207,6 +228,16 @@ CLASS({
           console.warn('Warning: Duplicate if expression');
         }
         e.ifexpr = v;
+      },
+      repeat: function(v) {
+        var e = this.peek();
+        if ( e.repeatexpr ) {
+          console.warn('Warning: Duplicate repeat expression');
+        }
+        var i = v[1];
+        e.repeatexpr = v[7] ?
+          'for(var ' + i + '=' + v[6] + ';' + i + '<=' + v[7] + ';' + i + '++){' :
+          'var ' + i + '_a=' + v[6] + ';for(var ' + i + '_i in ' + i + '_a){var ' + i + '=' + i + '_a[' + i + '_i];' ;
       },
       attribute: function(xs) { this.peek().attributes[xs[0]] = xs[1]; },
       xattribute: function(xs) { this.peek().xattributes[xs[1]] = xs[2]; },

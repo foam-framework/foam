@@ -12,58 +12,76 @@
 CLASS({
   package: 'com.google.paper',
   name: 'Scanner',
+  extends: 'foam.ui.md.DetailView',
 
   requires: [
-    'foam.dao.IDBDAO',
-    'foam.util.Base64Decoder',
-    'foam.util.encodings.IncrementalUtf8',
-    'foam.sandbox.IsolatedContext',
-    'foam.dao.FindFallbackDAO',
-    'foam.dao.LoggingDAO',
-    'foam.dao.CachingDAO',
-    'MDAO',
     'com.google.paper.VideoCaptureView',
+    'com.nodeca.pako.Pako',
+    'com.lazarsoft.jsqrcode.JSQRCode',
+    'foam.ui.md.FlatButton',
+  ],
+  
+  imports: [
+    'loadedCodeBaseContext',
   ],
 
   properties: [
     {
+      name: 'modelReady',
+      help: 'The listener to call when a scanned model is loaded.',
+      defaultValue: function(model) { console.log("Loaded ", model.id); },
+    },
+    {
+      name: 'pako',
+      hidden: true,
+      factory: function() {
+        var p = this.Pako.create();
+        return p.pako;
+      }
+    },
+    {
+      name: 'QrDecoder',
+      hidden: true,
+      factory: function() {
+        var r = this.JSQRCode.create();
+        this.compressedSource$ = r.data$;
+        return r.qrcode;
+      }
+    },
+    {
+      name: 'dataURL',
+      postSet: function(old,nu) {
+        this.QrDecoder.decode(nu);
+      },
+      view: 'com.google.paper.VideoCaptureView',
+    },
+    {
+      name: 'compressedSource',
+      hidden: true,
+      postSet: function(old,nu) {
+        try {
+          this.data = this.pako.inflate(nu, { to: 'string' });
+        } catch (e) {
+          console.log("Inflate failed",e);
+        }
+      }
+    },
+    {
       name: 'data',
+      hidden: true,
       postSet: function(old, nu) {
         if ( nu ) {
           var X = this.loadedCodeBaseContext;
           try {
             eval('(function(X, CLASS){' + nu + '}).call(null, X, X.CLASS)');
+            this.message = "Success!";
+            if ( this.dataURLView ) this.dataURLView.enabled = false;
           } catch (e) {
             this.message = "Data error: " + e.toString();
           }
         } else {
           this.message = "No Data!";
         }
-      },
-      view: 'com.google.paper.VideoCaptureView',
-    },
-    {
-      name: 'dao',
-      hidden: true,
-      lazyFactory: function() {
-        return this.CachingDAO.create({ src:
-          this.IDBDAO.create({
-            model: Model,
-            name: 'FOAMModels',
-            useSimpleSerialization: false,
-          }),
-          src: this.MDAO.create({ model: Model })
-        });
-      },
-    },
-    {
-      name: 'modelDAO',
-      hidden: true,
-      lazyFactory: function() {
-        return  this.FindFallbackDAO.create({
-          delegate: this.dao,
-          fallback: this.X.ModelDAO,
-        });
       },
     },
     {
@@ -74,36 +92,39 @@ CLASS({
         console.log(nu);
       },
     },
-    {
-      name: 'loadedCodeBaseContext',
-      hidden: true,
-      factory: function() {
-        var loader = this;
-        return this.IsolatedContext.create({
-          classFn: function(modelHash, opt_X) {
-            var Y = opt_X || this; // this == the IsolatedContext instance
-            modelHash.package = modelHash.package || 'foam.sandbox';
-            var model = Y.Model.create(modelHash, Y);
-            Y.registerModel(model);
-            loader.dao && loader.dao.put(model); // save the new model
-            loader.message = "Requiring: " + model.id;
-            model.arequire()(loader.modelReady);
-            return model;
-          }
-        }, GLOBAL.X).Y.sub({
-          ModelDAO: this.modelDAO,
-        });
-      },
-    },
   ],
-
-  listeners: [
-    {
-      name: 'modelReady',
-      code: function(m) {
-        this.message = 'Required ok, '+m.id;
-      },
-    },
+  
+  methods: [
+    function init() {
+      this.SUPER();
+      this.Y.registerModel(this.FlatButton, 'foam.ui.ActionButton');
+    }
   ],
+  
+  templates: [
+    function toHTML() {/*
+      <div id="%%id" <%= this.cssClassAttr() %>>
+        <div class="md-flex-col">
+          $$dataURL
+          $$message
+        </div>
+      </div>
+    */},
+    function CSS() {/*
+      .property-edit-view {
+        display: flex;
+        flex-direction: column;
+        align-content: baseline;
+        flex-grow: 1;
+        background: white;
+      }
+      .property-edit-view .md-flex-row {
+        overflow: none;
+        align-content: baseline;
+      }
+    */},
 
+  ]
+  
+  
 });
