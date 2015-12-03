@@ -92,7 +92,7 @@ CLASS({
 
         var min = prop.minChars;
         if ( typeof min !== 'string' || min ) { // ignore '' (falsey string)
-          min = prop.adapt.call(prop, null, min);
+          min = parseInt(min);
           ret = function(result) {
             return result ||
               ( this[prop.name].length < min ? this.errorBelowMinLength.replaceValues(min) : '');
@@ -100,7 +100,7 @@ CLASS({
         }
         var max = prop.maxChars;
         if ( typeof max !== 'string' || max ) { // ignore '' (falsey string)
-          max = prop.adapt.call(prop, null, max);
+          max = parseInt(max);
           ret = function(result) {
             return result ||
               ( this[prop.name].length > max ? this.errorAboveMaxLength.replaceValues(max) : '');
