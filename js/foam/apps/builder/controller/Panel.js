@@ -14,14 +14,30 @@ CLASS({
   name: 'Panel',
   extends: 'foam.ui.SimpleView',
 
-  properties: [ 'view' ],
+  properties: [
+    {
+      name: 'className',
+      defaultValue: 'stackview-panel',
+    },
+    'view'
+  ],
 
   templates: [
     function toHTML() {/*
-      <div id="%%id" class="stackview-panel stackview-hidden stackview-no-input">
+      <stackview-panel id="%%id" %%cssClassAttr()>
         %%view
-        <div id="%%id-edge" class="stackview-edge"></div>
-      </div>
+      </stackview-panel>
+    */},
+    function CSS() {/*
+      stackview-panel {
+        background-color: #fff;
+        height: 100%;
+        position: absolute;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
     */},
   ],
 });

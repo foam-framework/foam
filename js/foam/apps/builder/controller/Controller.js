@@ -18,14 +18,32 @@ CLASS({
     'foam.apps.builder.AppConfigCitationView',
     'foam.apps.builder.controller.PermanentNav',
     'foam.apps.builder.controller.StackView',
+    'foam.input.touch.GestureManager',
+    'foam.input.touch.TouchManager',
     'foam.ui.DAOListView',
     'foam.ui.md.PopupView',
   ],
+  imports: [
+    // TODO(markdittmer): Just for testing purposes.
+    'setTimeout',
+  ],
   exports: [
     'stack',
+    'touchManager',
+    'gestureManager',
   ],
 
   properties: [
+    {
+      type: 'foam.input.touch.TouchManager',
+      name: 'touchManager',
+      factory: function() { return this.TouchManager.create(); },
+    },
+    {
+      type: 'foam.input.touch.GestureManager',
+      name: 'gestureManager',
+      factory: function() { return this.GestureManager.create(); },
+    },
     {
       model_: 'ViewFactoryProperty',
       name: 'menuView',
@@ -66,9 +84,17 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.stack.pushView(this.nav(), {
+      var stack = this.stack;
+      stack = stack.pushView(this.nav.bind(this), {
         transition: 'slideFromLeft',
       });
+
+      this.setTimeout(function() {
+        stack = stack.pushView(this.nav.bind(this), {
+          transition: 'slideFromRight',
+          overlay: 'right',
+        });
+      }.bind(this), 2000);
     },
   ],
 });

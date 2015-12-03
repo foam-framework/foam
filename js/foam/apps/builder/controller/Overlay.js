@@ -14,24 +14,36 @@ CLASS({
   name: 'Overlay',
   extends: 'foam.ui.SimpleView',
 
-  properties: [ 'view' ],
+  imports: [ 'stack' ],
+
+  properties: [
+    'view'
+  ],
 
   templates: [
     function toHTML() {/*
-      <div id="%%id" class="stackview-overlay-container">
-        <div id="%%id-overlay" class="stackview-overlay"></div>
+      <stackview-overlay-container id="%%id" %%cssClassAttr()>
+        <stackview-overlay id="%%id-overlay"></stackview-overlay>
         %%view
       </div>
+      <% this.on('click', function() {
+           this.stack.popView();
+         }.bind(this), this.id + '-overlay'); %>
     */},
     function CSS() {/*
-      .stackview-overlay-container, .stackview-overlay {
+      stackview-overlay-container, stackview-overlay {
+        display: block;
         position: absolute;
         top: 0;
         right: 0;
         bottom: 0;
         left: 0;
       }
-      .stackview-overlay {
+      stackview-overlay-container {
+        z-index: 1000;
+        overflow: hidden;
+      }
+      stackview-overlay {
         background: #000;
         opacity: 0.7;
       }

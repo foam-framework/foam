@@ -12,15 +12,64 @@
 CLASS({
   package: 'foam.apps.builder.controller',
   name: 'StackView',
-  extends: 'foam.browser.ui.StackView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [
     'foam.apps.builder.controller.Overlay',
     'foam.apps.builder.controller.Panel',
     'foam.apps.builder.controller.Transition',
   ],
+  imports: [
+    'document',
+    'setTimeout',
+    'window',
+  ],
+
+  models: [
+    {
+      name: 'ChildView',
+
+      properties: [
+        {
+          name: 'id',
+          documentation: function() {/* ID used to identify this particular.
+            stack item.
+          */},
+        },
+        {
+          name: 'viewFactory',
+          documentation: function() {/* View factory passed to
+            $$DOC{ref:'foam.apps.builder.controller.StackView.pushView'} or
+            similar. Actual view constructed may be wrapped in one or more
+            decorators for layout panels, overlays, etc. */},
+        },
+        {
+          name: 'view',
+          documentation: function() {/* Undecorated view produced by
+            $$DOC{ref:'.viewFactory'}. */},
+        },
+        {
+          name: 'decoratedView',
+          documentation: function() {/* Decorated view to be added as a child
+            of a $$DOC{ref:'foam.apps.builder.controller.StackView'}. */},
+        },
+        {
+          name: 'hints',
+          defaultValue: null,
+          documentation: 'Layout hints passed at creation time.',
+        },
+      ],
+    },
+  ],
 
   properties: [
+    {
+      model_: 'ArrayProperty',
+      subType: 'ChildView',
+      name: 'views_',
+      documentation: 'Internal array of view data.',
+      factory: function() { return []; },
+    },
     {
       name: 'transitions',
       lazyFactory: function() {
@@ -50,93 +99,114 @@ CLASS({
           return ok;
         };
 
+        var notifyCompleted = function(ret, e, propName) {
+          var listener = function(evt) {
+            if ( evt.propertyName === propName ) {
+              ret();
+              e.removeEventListener('transitionend', listener);
+            }
+          };
+          e.addEventListener('transitionend', listener);
+          return listener;
+        };
+
+        var onResize = function(transitionLeft, ret, view, hints) {
+          if ( ! sanityCheck(view, hints, ['left', 'width']) ) return;
+          var style = view.$.style;
+          style.width = hints.width + 'px';
+          if ( transitionLeft && view.$.style.left !== hints.left + 'px' ) {
+            style.left = hints.left + 'px';
+            notifyCompleted(ret, view.$, 'left');
+          } else { ret(); }
+        };
+
         var slideFromRight = this.Transition.create({
-          onPush: function(view, hints) {
-            debugger;
+          onAdd: function(ret, view, hints) {
             if ( ! sanityCheck(view, hints, ['index', 'containerWidth']) ) return;
             var style = view.$.style;
-            style.zIndex = hints.index;
+            style.zIndex = hints.index + 1;
             style.width = '0px';
             style.left = hints.containerWidth + 'px';
+            ret();
             style.transition = 'left 300ms ease';
           },
-          onPop: function(view, hints) {
+          onRemove: function(ret, view, hints) {
             if ( ! sanityCheck(view, hints, ['containerWidth']) ) return;
             view.$.style.left = hints.containerWidth;
+            notifyCompleted(ret, view.$, 'left');
           },
-          onResize: function(view, hints) {
-            debugger;
-            if ( ! sanityCheck(view, hints, ['left', 'width']) ) return;
-            var style = view.$.style;
-            style.left = hints.left + 'px';
-            style.width = hints.width + 'px';
-            style.top = '0px';
-          },
+          onResize: onResize.bind(this, true),
         });
         return {
           slide: slideFromRight,
           slideFromRight: slideFromRight,
           slideFromLeft: this.Transition.create({
-            onPush: function(view, hints) {
+            onAdd: function(ret, view, hints) {
               if ( ! sanityCheck(view, hints, ['index', 'containerWidth']) ) return;
               var style = view.$.style;
-              style.zIndex = hints.index;
+              style.zIndex = hints.index + 1;
               style.width = '0px';
               style.left = '-' + hints.containerWidth + 'px';
+              ret();
               style.transition = 'left 300ms ease';
             },
-            onPop: function(view, hints) {
+            onRemove: function(ret, view, hints) {
               if ( ! sanityCheck(view, hints, ['containerWidth']) ) return;
               view.$.style.left = '-' + hints.containerWidth + 'px';
+              notifyCompleted(ret, view.$, 'left');
             },
-            onResize: function(view, hints) {
-              if ( ! sanityCheck(view, hints, ['left', 'width']) ) return;
-              var style = view.$.style;
-              style.left = hints.left + 'px';
-              style.width = hints.width + 'px';
-              style.top = '0px';
-            },
+            onResize: onResize.bind(this, true),
           }),
           overlayFromLeft: this.Transition.create({
-            onPush: function(view, hints) {
+            onAdd: function(ret, view, hints) {
               if ( ! sanityCheck(view, hints, ['index', 'containerWidth']) ) return;
               var style = view.$.style;
-              style.zIndex = hints.index;
+              style.zIndex = hints.index + 1;
               style.width = '0px';
               style.left = '-' + hints.containerWidth + 'px';
+              ret();
               style.transition = 'left 300ms ease';
             },
-            onPop: function(view, hints) {
+            onRemove: function(ret, view, hints) {
               if ( ! sanityCheck(view, hints, ['containerWidth']) ) return;
               view.$.style.left = '-' + hints.containerWidth + 'px';
+              notifyCompleted(ret, view.$, 'left');
             },
-            onResize: function(view, hints) {
-              if ( ! sanityCheck(view, hints, ['left', 'width']) ) return;
-              var style = view.$.style;
-              style.left = hints.left + 'px';
-              style.width = hints.width + 'px';
-              style.top = '0px';
-            },
+            onResize: onResize.bind(this, true),
           }),
           fade: this.Transition.create({
-            onPush: function(view, hints) {
+            onAdd: function(ret, view, hints) {
               if ( ! sanityCheck(view, hints, ['index']) ) return;
               var style = view.$.style;
-              style.zIndex = hints.index;
+              style.zIndex = hints.index + 1;
               style.opacity = 0;
               style.transition = 'opacity 300ms ease';
-              this.X.setTimeout(function() { style.opacity = 1; }, 50);
+              view.$.offsetLeft = view.$.offsetLeft;
+              style.opacity = 1;
+              notifyCompleted(ret, view.$, 'opacity');
             },
-            onPop: function(view, hints) {
+            onRemove: function(ret, view, hints) {
               if ( ! sanityCheck(view) ) return;
               view.$.style.opacity = 0;
+              notifyCompleted(ret, view.$, 'opacity');
             },
-            onResize: function(view, hints) {
-              if ( ! sanityCheck(view, hints, ['left', 'width']) ) return;
+            onResize: onResize.bind(this, false),
+          }),
+          fadeOverlay: this.Transition.create({
+            onAdd: function(ret, view, hints) {
+              if ( ! sanityCheck(view, hints, ['index']) ) return;
               var style = view.$.style;
-              style.left = hints.left + 'px';
-              style.width = hints.width + 'px';
-              style.top = '0px';
+              style.zIndex = hints.index + 1;
+              style.opacity = 0;
+              style.transition = 'opacity 300ms ease';
+              view.$.offsetLeft = view.$.offsetLeft;
+              style.opacity = 1;
+              notifyCompleted(ret, view.$, 'opacity');
+            },
+            onRemove: function(ret, view, hints) {
+              if ( ! sanityCheck(view) ) return;
+              view.$.style.opacity = 0;
+              notifyCompleted(ret, view.$, 'opacity');
             },
           }),
         };
@@ -145,59 +215,274 @@ CLASS({
   ],
 
   methods: [
-    function createInternalView_(view, opt_hints) {
-      var childView = this.Panel.create({ view: view });
+    function init(args) {
+      this.SUPER(args);
+      this.window.addEventListener('resize', this.onResize);
+    },
+    {
+      name: 'pushView',
+      documentation: function () {/* Default pushView that works on the top
+        level. See $$DOC{ref:'.pushView_'} for details. */},
+      code: function(viewFactory, opt_hints) {
+        return this.pushView_(-1, viewFactory, opt_hints);
+      },
+    },
+    {
+      name: 'popView',
+      documentation: function() {/* Default popView that works on the top
+        level. See $$DOC({ref:'.popView_' for details. */},
+      code: function() { return this.popView_(0); },
+    },
+    {
+      name: 'popChildViews',
+      documentation: function() {/* Default popChildViews that works on the top
+        level. See $$DOC{ref:'.popView_'} for details. */},
+      code: function() { return this.popView_(1); },
+    },
+    function pushView_(index, viewFactory, opt_hints) {
+      if ( ! viewFactory ) return this;
+      var X = this.createSubstackCtx_();
+      this.onPushView(index, viewFactory, X, opt_hints);
+      return X.stack;
+    },
+    function popView_(index) { this.onPopView(index); },
+    function replaceView_(index, viewFactory, opt_hints) {
+      if ( ! viewFactory ) return this;
+      this.popView_(index);
+      return this.pushView_(index - 1, viewFactory, opt_hints);
+    },
+    function createSubstackCtx_() {
+      return this.Y.sub({
+        stack: {
+          __proto__: this,
+          pushView: this.pushView_.bind(this, this.views_.length),
+          popView: this.popView_.bind(this, this.views_.length),
+          popChildViews: this.popView_.bind(this, this.views_.length + 1),
+          replaceView: this.replaceView_.bind(this, this.views_.length)
+        },
+      });
+    },
+    function createChildView_(viewFactory, X, opt_hints) {
+      var view = viewFactory(null, X);
+      var decoratedView = this.Panel.create({ view: view }, X);
+      var childViewId = this.nextID();
+      var removedFutures = [];
 
       // Attach hinted transition to panel.
-      if ( opt_hints && opt_hints.transition &&
-          this.transitions[opt_hints.transition] )
-        this.transitions[opt_hints.transition].attach(childView, this, view.id);
-      else
-        this.transitions.slide.attach(childView, this, view.id);
+      var panelTransition = (opt_hints && opt_hints.transition &&
+          this.transitions[opt_hints.transition]) ?
+          this.transitions[opt_hints.transition] :
+          this.transitions.slide;
+      panelTransition.attach(decoratedView, this, childViewId);
+      // Capture transition removed event.
+      var pFuture = afuture();
+      this.subscribeToTransition_(
+          panelTransition, decoratedView, childViewId, pFuture);
+      removedFutures.push(pFuture.get);
 
-      // Wrap panel in overlay; attach appropriate transition to overlay.
+      // Wrap panel in overlay, attach appropriate transition to overlay.
       if ( opt_hints && opt_hints.overlay ) {
-        childView = this.Overlay.create({ view: childView });
-        this.transitions.fade.attach(childView, this, view.id);
+        var overlayTransition = this.transitions.fadeOverlay;
+        decoratedView = this.Overlay.create({ view: decoratedView }, X);
+        overlayTransition.attach(decoratedView, this, childViewId);
+        // Capture transition removed event.
+        var oFuture = afuture();
+        this.subscribeToTransition_(
+            overlayTransition, decoratedView, childViewId, oFuture);
+        removedFutures.push(oFuture.get);
       }
 
-      return {
-        // Used in foam.ui.StackView to destroy child views.
-        id: childView.id,
-        // Construct StackView controller children views using "childView".
-        childView: childView,
-        // Layout views in terms of "view" preferences.
+      // Trigger child view cleanup when all decorators have finished onRemove
+      // animation.
+      apar.apply(null, removedFutures)(
+          this.cleanupChildView_.bind(this, decoratedView));
+
+      return this.ChildView.create({
+        id: childViewId,
+        viewFactory: viewFactory,
         view: view,
-        overlay: opt_hints ? opt_hints.overlay : false,
-      };
+        decoratedView: decoratedView,
+        hints: opt_hints,
+      }, X);
     },
-    function distributeSlack_(sizes, slack) { return sizes; },
-    function elementAnimationAdd_(style, index, opt_hints) {
-      var internalView = this.views_[index];
-      this.publish([ 'push', internalView.view.id,
-                     { index: index, containerWidth: this.$.offsetWidth } ]);
+    function subscribeToTransition_(transition, view, id, future) {
+      // When transition completes onRemove animation:
+      // - Unsubscribe from transition events,
+      // - Detach transition from view,
+      // - Resolve remove-transition-complete future.
+      transition.subscribe(['removed', id], function() {
+        transition.unsubscribe(['removed', id]);
+        transition.detach(view, this);
+        future.set();
+      }.bind(this));
     },
-    function elementAnimationRemove_(style, index, opt_hints) {
-      var internalView = this.views_[index];
-      this.publish([ 'pop', internalView.view.id,
-                     { containerWidth: this.$.offsetWidth } ]);
+    function destroyChildViews_(index, opt_hints) {
+      // Initiate view removal animations and remove from views_.
+      // Subscription to transition : ['removed', id] manages view cleanup.
+      while ( this.views_.length > index ) {
+        var viewData = this.views_[this.views_.length - 1];
+        this.publish(['remove', viewData.id,
+                      { containerWidth: this.$.offsetWidth }]);
+        this.views_.pop();
+      }
     },
-    function childHTML(index, view) {
-      return this.views_[index].childView.toHTML();
+    function cleanupChildView_(decoratedView) {
+      // End view lifecycle, remove from DOM.
+      decoratedView.destroy();
+      var e = this.X.$(decoratedView.id);
+      if ( e ) e.outerHTML = '';
+    },
+    function renderChild(index, opt_hints) {
+      var viewData = this.views_[index];
+      var parent = (viewData.hints && viewData.hints.overlay) ?
+          this.document.body : this.$;
+      var decoratedView = viewData.decoratedView;
+      parent.insertAdjacentHTML('beforeend', decoratedView.toHTML());
+      decoratedView.initHTML();
+      this.publish(['add', viewData.id,
+                    { index: index, containerWidth: this.$.offsetWidth }]);
     },
     function resize() {
       if ( ! this.$ ) return;
-      this.setLayoutVisibleBoundaries_();
-      if (this.visibleStart_ < 0) return;
-      var sizes = this.getLayoutSizes_();
-
+      var layout = this.getLayout_();
+      var sizes = layout.sizes, slack = layout.slack;
       var pos = 0;
-      for ( var i = 0; i <= this.visibleEnd_; ++i ) {
-        var size = sizes[i] || 0; // size zero for buried items to the left.
-        this.publish([ 'resize', this.views_[i].view.id,
-                       { left: pos, width: size } ]);
-        pos += size;
+      var viewData, hints, size;
+      for ( var i = 0; i < this.views_.length; ++i ) {
+        viewData = this.views_[i];
+        hints = viewData.hints;
+        size = sizes[i] || 0;
+        if ( ! (hints && hints.overlay) ) {
+          // Default layout: Fill out stack space left-to-right.
+          this.publish(['resize', viewData.id,
+                        { left: pos, width: size }]);
+          pos += size;
+        } else if ( hints.overlay === 'left' ) {
+          this.publish(['resize', viewData.id,
+                        { left: 0, width: size }]);
+        } else if ( hints.overlay === 'right' ) {
+          this.publish(['resize', viewData.id,
+                        { left: this.$.offsetWidth - size, width: size }]);
+        } else {
+          // Default overlay: horizontally centered.
+          this.publish([ 'resize', viewData.id,
+                         { left: (this.$.offsetWidth - size) / 2, width: size } ]);
+        }
       }
     },
+    function getLayout_() {
+      var width = this.$.offsetWidth;
+      var sizes = [];
+      var viewData, hints, size;
+
+      // First pass: Allocate space for overlay and alwaysShow views according
+      // to minWidth.
+      for ( var i = 0; i < this.views_.length; ++i ) {
+        viewData = this.views_[i];
+        hints = viewData.hints;
+        size = hints && (hints.overlay || hints.alwaysShow) ?
+            (viewData.view.minWidth || 0) : 0;
+        sizes[i] = size;
+        // Overlay views do not occupy stack space.
+        if ( (!viewData.hints) || (!viewData.hints.overlay) ) width -= size;
+      }
+
+      // Second pass: Allocate minimum space to remaining views.
+      for ( i = this.views_.length - 1; i >= 0; --i ) {
+        // Skip already laid out viwes.
+        if ( sizes[i] > 0 ) continue;
+        size = this.views_[i].view.minWidth;
+        // Stop when there isn't enough room for the next view.
+        if ( width < size ) break;
+        sizes[i] = size;
+        width -= size;
+      }
+
+      // Manipulates sizes in place and returns remaining slack.
+      width = this.distributeSlack_(sizes, width);
+
+      return { sizes: sizes, slack: width };
+    },
+    function distributeSlack_(sizes, slack) {
+      // Manipulate sizes in place and return remaining slack.
+
+      // First pass: Expand to preferredWidth.
+      slack = this.distributeSlack__(sizes, slack, 'preferredWidth');
+      if ( slack === 0 ) return slack;
+
+      // Second pass: Expand to maxWidth.
+      slack = this.distributeSlack__(sizes, slack, 'maxWidth');
+      return slack;
+    },
+    function distributeSlack__(sizes, slack, widthPropName) {
+      // Manipulate sizes in place and return remaining slack.
+      for ( var i = this.views_.length - 1; i >= 0; --i ) {
+        var viewData = this.views_[i];
+        var hints = viewData.hints;
+             // Treat overlay and always show views as fixed width.
+        if ( (hints && (hints.overlay || hints.alwaysShow)) ||
+             // Do not increase slack.
+             (viewData.view[widthPropName] < sizes[i]) ) continue;
+        var shift = Math.min(viewData.view[widthPropName] - sizes[i], slack);
+        sizes[i] += shift;
+        slack -= shift;
+        if ( slack === 0 ) return slack;
+      }
+      return slack;
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'onLoad',
+      code: function() {
+        // Render and configure each child view that has already been loaded.
+        for (var i = 0; i < this.views_.length; i++) {
+          this.renderChild(i);
+        }
+        this.resize();
+      },
+    },
+    {
+      name: 'onResize',
+      isFramed: true,
+      code: function() { this.resize(); },
+    },
+    {
+      name: 'onPushView',
+      isFramed: true,
+      code: function(index, viewFactory, X, opt_hints) {
+        // Push(i) ==> Pop(j) for all j > i.
+        this.destroyChildViews_(index + 1, opt_hints);
+
+        this.views_.push(this.createChildView_(viewFactory, X, opt_hints));
+        if ( this.$ ) this.renderChild(index + 1, opt_hints);
+        this.onResize();
+      },
+    },
+    {
+      name: 'onPopView',
+      isFramed: true,
+      code: function (index) {
+        this.destroyChildViews_(index);
+        this.onResize();
+      },
+    },
+  ],
+
+  templates: [
+    function CSS() {/*
+      stackview-container {
+        display: block;
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+        position: relative;
+      }
+    */},
+    function toHTML() {/*
+      <stackview-container id="%%id" %%cssClassAttr()></stackview-container>
+      <% this.addInitializer(this.onLoad); %>
+    */},
   ],
 });

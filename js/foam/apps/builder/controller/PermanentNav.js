@@ -33,6 +33,11 @@ CLASS({
     },
     {
       model_: 'IntProperty',
+      name: 'minWidth',
+      defaultValue: 400,
+    },
+    {
+      model_: 'IntProperty',
       name: 'preferredWidth',
       defaultValue: 400,
     },
@@ -67,7 +72,10 @@ CLASS({
     },
   ],
 
-  methods: [ function init() { this.SUPER(); this.SharedStyles.create(); } ],
+  methods: [
+    // TODO(markdittmer): Temporary while in an incomplete controller.
+    function init() { this.SUPER(); this.SharedStyles.create(); },
+  ],
 
   actions: [
     {
@@ -83,15 +91,16 @@ CLASS({
   templates: [
     function toHTML() {/*
       <permanent-nav id="%%id" %%cssClassAttr() style="max-width: {{this.maxWidth}}px">
-      <div id="%%id-title" class="nav-title-bar" style="height: {{this.titleHeight}}px">
-        <div id="%%id-menu-button" class="nav-menu-button">
-          <% if ( this.menuView ) { %>$$menuAction<% } %>
+        <div id="%%id-title" class="nav-title-bar" style="height: {{this.titleHeight}}px">
+          <div id="%%id-menu-button" class="nav-menu-button">
+            <% if ( this.menuView ) { %>$$menuAction<% } %>
+          </div>
+          <span class="nav-title md-headline"><%# this.title %></span>
         </div>
-        <span class="nav-title md-headline"><%# this.title %></span>
-      </div>
-      <div id="%%id-list" class="nav-list">
-        <%= this.listView ? this.listView({ dao$: this.dao$ }) : '' %>
-      </div>
+        <div id="%%id-list" class="nav-list">
+          <%= this.listView ? this.listView({ dao$: this.dao$ }) : '' %>
+        </div>
+      </permanent-nav>
     */},
     function CSS() {/*
       permanent-nav {
