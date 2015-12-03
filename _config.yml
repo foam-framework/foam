@@ -1,8 +1,8 @@
 # Site settings
 title: FOAM Framework
 description: "FOAM is a deeply MVC Javascript framework"
-baseurl: "http://foam-framework.github.io/foam"
-url: "http://foam-framework.github.io/foam"
+baseurl: "//foam-framework.github.io/foam"
+url: "//foam-framework.github.io/foam"
 
 # Build settings
 markdown: kramdown
