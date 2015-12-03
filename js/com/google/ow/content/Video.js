@@ -21,6 +21,7 @@ CLASS({
   ],
 
   imports: [
+    'dynamic',
     'streamDAO'
   ],
 
@@ -118,12 +119,12 @@ CLASS({
           .end()
           .start('video')
           .attrs({
-            src: function(cachedState) {
+            src: this.dynamic(function(cachedState) {
               if (cachedState === 'cached')
                 return window.URL.createObjectURL(this.cache_);
               if (cachedState === 'downloading') return '';
               else return this.content;
-            }.bind(this).on$(this.X, this.cachedState_$),
+            }.bind(this), this.cachedState_$),
             controls: 'true',
             preload:'auto'
           })

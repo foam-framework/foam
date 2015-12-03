@@ -783,14 +783,6 @@ MODEL({
       return function() {
         return f1.call(this, f2.apply(this, argsToArray(arguments)));
       };
-    },
-
-    function on$(X /*, Values[] */) {
-      /* Convert a function into a Value whenever any of the dependent Values update. */
-      return OrValue.create({
-        values: Array.prototype.splice.call(arguments, 1),
-        valueFactory: this
-      }, X);
     }
   ]
 });
