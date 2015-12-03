@@ -72,10 +72,12 @@ CLASS({
     },
     {
       name: 'minChars',
+      label: 'Minimum characters',
       help: 'The minimum number of characters required.'
     },
     {
       name: 'maxChars',
+      label: 'Maximum characters',
       help: 'The maximum number of characters allowed.'
     },
     {
