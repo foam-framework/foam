@@ -15,24 +15,62 @@ CLASS({
 
   requires: [
     'foam.dao.IDBDAO',
-    'foam.util.Base64Decoder',
-    'foam.util.encodings.IncrementalUtf8',
     'foam.sandbox.IsolatedContext',
     'foam.dao.FindFallbackDAO',
     'foam.dao.LoggingDAO',
     'foam.dao.CachingDAO',
     'MDAO',
     'com.google.paper.VideoCaptureView',
+    'com.nodeca.pako.Pako',
+    'com.lazarsoft.jsqrcode.JSQRCode',
   ],
 
   properties: [
     {
+      name: 'pako',
+      hidden: true,
+      factory: function() {
+        var p = this.Pako.create();
+        return p.pako;
+      }
+    },
+    {
+      name: 'QrDecoder',
+      hidden: true,
+      factory: function() {
+        var r = this.JSQRCode.create();
+        this.compressedSource$ = r.data$;
+        return r.qrcode;
+      }
+    },
+    {
+      name: 'dataURL',
+      postSet: function(old,nu) {
+        this.QrDecoder.decode(nu);
+      },
+      view: 'com.google.paper.VideoCaptureView',
+    },
+    {
+      name: 'compressedSource',
+      hidden: true,
+      postSet: function(old,nu) {
+        try {
+          this.data = this.pako.inflate(nu, { to: 'string' });
+        } catch (e) {
+          console.log("Inflate failed",e);
+        }
+      }
+    },
+    {
       name: 'data',
+      hidden: true,
       postSet: function(old, nu) {
         if ( nu ) {
           var X = this.loadedCodeBaseContext;
           try {
             eval('(function(X, CLASS){' + nu + '}).call(null, X, X.CLASS)');
+            this.message = "Success!";
+            if ( this.dataURLView ) this.dataURLView.enabled = false;
           } catch (e) {
             this.message = "Data error: " + e.toString();
           }
@@ -40,7 +78,6 @@ CLASS({
           this.message = "No Data!";
         }
       },
-      view: 'com.google.paper.VideoCaptureView',
     },
     {
       name: 'dao',
@@ -86,7 +123,7 @@ CLASS({
             var model = Y.Model.create(modelHash, Y);
             Y.registerModel(model);
             loader.dao && loader.dao.put(model); // save the new model
-            loader.message = "Requiring: " + model.id;
+            loader.message = "Requiring for: " + model.id;
             model.arequire()(loader.modelReady);
             return model;
           }
