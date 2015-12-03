@@ -52,7 +52,8 @@ CLASS({
       name: 'start',
       ligature: 'center_focus_strong',
       label: 'Begin Scanning',
-      isAvailble: function() { return !this.enabled; },
+      isAvailable: function() { return !this.enabled; },
+      isEnabled: function() { return !this.enabled; },
       code: function() {
         this.enabled = true;
       }
@@ -61,7 +62,8 @@ CLASS({
       name: 'stop',
       ligature: 'pause_circle_filled',
       label: 'Stop Scanning',
-      isAvailble: function() { return this.enabled; },
+      isAvailable: function() { return this.enabled; },
+      isEnabled: function() { return this.enabled; },
       code: function() {
         this.enabled = false;
       }
@@ -83,6 +85,7 @@ CLASS({
       }
     },
     function capture() {
+      if ( ! this.$canvas || ! this.$video ) return;
       var context = this.$canvas.getContext('2d');
       var w = this.$video.clientWidth;
       var h = this.$video.clientHeight;
@@ -99,7 +102,7 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %> >
         <canvas id="<%= this.id + '-canvas' %>" style="display:none"></canvas>
         <video id="<%= this.id + '-video' %>"></video>
-        $$start $$stop
+        <div class="md-flex-row">$$start $$stop</div>
       </div>
     */}
   ],
