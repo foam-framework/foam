@@ -26,14 +26,8 @@ CLASS({
   ],
 
   properties: [
-    {
-      name: 'className',
-      defaultValue: 'property-edit-view',
-    },
-    {
-      name: 'mode',
-      defaultValue: 'read-write',
-    },
+    [ 'className', 'property-edit-view' ],
+    [ 'mode', 'read-write' ],
   ],
 
   templates: [
