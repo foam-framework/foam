@@ -26,12 +26,15 @@ CLASS({
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
   ],
-  
   exports: [
     'gestureManager',
     'touchManager',
     'loadedCodeBaseContext',
-  ],  
+  ],
+
+  documentation: function() {/* Scans all models from a QR code and stores them
+    in an IDB modelDAO. The last model contained in the scanned data is
+    instantiated displayed. */},
 
   properties: [
     {
@@ -122,15 +125,15 @@ CLASS({
       console.log("created", this.modelInstance);
       //this.updateHTML();
     }
-    
+
   ],
-  
+
   methods: [
     function init() {
       this.SharedStyles.create();
     }
   ],
-  
+
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
@@ -153,6 +156,6 @@ CLASS({
     */},
 
   ]
-  
+
 
 });
