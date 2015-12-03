@@ -32,15 +32,16 @@ layout: default
     <p>With FOAM, you create a <em>model</em>, and FOAM can support many
     features based on it:</p>
     <ul>
-      <li>A (Javascript, Java or Swift) class, with <tt>diff()</tt>, <tt>clone()</tt>, etc.</li>
+      <li>A (Javascript, Java or Swift) class, with <tt>diff()</tt>, <tt>clone()</tt>, and more.</li>
       <li>Serialization to and from JSON, XML and <a href="https://developers.google.com/protocol-buffers/?hl=en">protocol buffers</a>.</li>
       <li>Storage in many places, from IndexedDB to MongoDB.</li>
       <li>Query parsers and a query optimizer.</li>
-      <li>Offline syncing, and many flavours of caching.</li>
+      <li>Offline-friendly syncing, and many flavours of caching.</li>
       <li>Customizable detail and summary views for HTML, Android and iOS.</li>
     </ul>
-    <p>FOAM combines these features with reactive programming and MVC,
-    forming a full-stack framework for building modern, cross-platform apps.</p>
+    <p>FOAM combines these features with reactive programming, an MVC library,
+    and a suite of view components for each platform. The result is a full-stack
+    framework for building modern, cross-platform apps.</p>
     <p>FOAM is in beta. It's production-ready but still under
     heavy development. Expect many new features &ndash; and bugs
     &ndash; as FOAM continues to evolve.</p>
@@ -137,6 +138,42 @@ dao.find(someID);</pre>
       </div>
     </div>
   </div>
+  <div class="site-prose">
+    <h3>Links</h3>
+    <p>
+      <ul>
+        <li><a href="tutorial/0-intro/">Tutorials</a>
+        <li><a href="foam/index.html?model=foam.flow.FOAMByExample">FOAM by Example</a>
+        <li><a href="foam/apps/docs/docbrowser.html">API Docs</a>
+        <li><a href="https://github.com/foam-framework/foam/wiki">Wiki</a>
+        <li><a href="https://github.com/foam-framework/foam">Github repository</a>
+        <li>Cheat Sheets: <a href="https://docs.google.com/document/u/1/d/1HIL69h9kuzwgsrzRSBhvNYzihISX4wdE8bfdToNAZ34/pub">long form</a>, <a href="https://docs.google.com/document/d/1P4fsQgacCoXOyzZMMujSriXPBvFFSBW4GjQSfvD6mJs/pub">short form</a>
+        <li><a href="http://issues.foamdev.com">Issues</a>
+        <li><a href="foam/demos/DemoCat.html">Democat (demo of demos)</a>
+        <li><a href="https://groups.google.com/forum/#!forum/foam-framework-discuss">Discussion Group</a>
+        <li>Empire.js <a href="foam/index.html?model=foam.demos.empire.Preso">Slides</a> and <a href="https://www.youtube.com/watch?v=n699DWb2TUs">Video</a>
+        <li>Torontojs <a href="foam/index.html?model=foam.demos.empire.Preso2">Slides</a> and <a href="https://www.youtube.com/watch?v=FYFEP4lQwCE">Video</a>
+        <li>Full-Stack Toronto <a href="foam/index.html?model=foam.demos.empire.Preso3">Slides</a>
+      </ul>
+    </p>
+  </div>
+  <div class="site-prose">
+    <h3>Sample Apps</h3>
+    <p>
+      <ul>
+        <li><a href="foam/apps/todo/index.html">TodoMVC</a> <a href="https://github.com/foam-framework/foam/tree/master/apps/todo/">(source)</a></li>
+        <li><a href="foam/apps/acalc/Calc.html">Calculator (pure FOAM)</a> <a href="https://github.com/foam-framework/foam/tree/master/apps/acalc">(source)</a></li>
+        <li><a href="pcalc/AppCalc.html">Calculator (FOAM + Polymer)</a> <a href="https://github.com/foam-framework/foam/tree/master/apps/pcalc">(source)</a></li>
+        <li><a href="foam/index.html?model=foam.tutorials.phonecat.Controller">Phonecat (AngularJS tutorial
+            app)</a> <a
+                href="https://github.com/foam-framework/foam/tree/master/js/foam/tutorials/phonecat">(source)</a></li>
+        <li><a href="https://github.com/foam-framework/foam/wiki/QuickBug">QuickBug</a> <a href="https://github.com/foam-framework/foam/tree/master/js/foam/apps/quickbug">(source)</a></li>
+        <li><a href="https://github.com/foam-framework/foam/wiki/MBug">Mobile QuickBug (MBug)</a> <a href="https://github.com/foam-framework/foam/tree/master/apps/mbug/">(source)</a></li>
+        <li><a href="apps/gmail/main.html">GMail Demo</a> <a href="https://github.com/foam-framework/foam/tree/master/apps/gmail/">(source)</a></li>
+        <li><a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome App Builder</a></li>
+      </ul>
+    </p>
+  </div>
 </div>
 
 <script src="live-example.js"></script>
@@ -145,64 +182,3 @@ dao.find(someID);</pre>
   site.injectHTML();
   site.initHTML();
 </script>
-<!--
-<div class="home">
-
-  <p>
-FOAM is an open-source modeling framework written in Javascript. With FOAM, you can create Domain Specific Languages (DSLs), which are high-level models that can be interpreted or compiled to different languages or environments. Currently, it supports DSLs for entities/classes, parsers, animations, database queries, interactive documents, and, most importantly, new DSLs.
-  </p>
-  <br/>
-  <p>
-FOAM supports building text, HTML, and graphical views for DSLs using a small Model View Controller (MVC) library, which is itself modeled with FOAM. This library can also be used by modeled Javascript applications.
-  </p>
-  <br/>
-  <p>
-The MVC library features simplified dynamic value binding with Functional Reactive Programming, strong support of animations, a unified canvas/DOM view model, and composable Data Access Objects.
-  </p>
-<br>
-  <p>
-FOAM increases developer productivity by allowing them to express solutions at a higher, more succinct level. The MVC library also increases application performance through its efficient data-binding, caching, and query-optimization mechanisms. In short, FOAM makes both developers and their applications more efficient!
-  </p>
-  <br/>
-  <p>See the <a href="about">About page</a> for more details.</p>
-
-  <br/>
-
-  <h3>Resources</h3>
-  <blockquote style="margin-left: 40px">
-  <ul>
-    <li><a href="tutorial/0-intro/">Tutorials</a>
-    <li><a href="foam/index.html?model=foam.flow.FOAMByExample">FOAM by Example</a>
-    <li><a href="foam/apps/docs/docbrowser.html">API Docs</a>
-    <li><a href="https://github.com/foam-framework/foam/wiki">Wiki</a>
-    <li><a href="https://github.com/foam-framework/foam">Github repository</a>
-    <li>Cheat Sheets: <a href="https://docs.google.com/document/u/1/d/1HIL69h9kuzwgsrzRSBhvNYzihISX4wdE8bfdToNAZ34/pub">long form</a>, <a href="https://docs.google.com/document/d/1P4fsQgacCoXOyzZMMujSriXPBvFFSBW4GjQSfvD6mJs/pub">short form</a>
-    <li><a href="http://issues.foamdev.com">Issues</a>
-    <li><a href="foam/demos/DemoCat.html">Democat (demo of demos)</a>
-    <li><a href="https://groups.google.com/forum/#!forum/foam-framework-discuss">Discussion Group</a>
-    <li>Empire.js <a href="foam/index.html?model=foam.demos.empire.Preso">Slides</a> and <a href="https://www.youtube.com/watch?v=n699DWb2TUs">Video</a>
-    <li>Torontojs <a href="foam/index.html?model=foam.demos.empire.Preso2">Slides</a> and <a href="https://www.youtube.com/watch?v=FYFEP4lQwCE">Video</a>
-    <li>Full-Stack Toronto <a href="foam/index.html?model=foam.demos.empire.Preso3">Slides</a>
-  </ul>
-  </blockquote>
-
-  <br />
-
-  <h3>Sample Apps</h3>
-  <blockquote style="margin-left: 40px">
-  <ul>
-    <li><a href="foam/apps/todo/index.html">TodoMVC</a> <a href="https://github.com/foam-framework/foam/tree/master/apps/todo/">(source)</a></li>
-    <li><a href="foam/apps/acalc/Calc.html">Calculator (pure FOAM)</a> <a href="https://github.com/foam-framework/foam/tree/master/apps/acalc">(source)</a></li>
-    <li><a href="pcalc/AppCalc.html">Calculator (FOAM + Polymer)</a> <a href="https://github.com/foam-framework/foam/tree/master/apps/pcalc">(source)</a></li>
-    <li><a href="foam/index.html?model=foam.tutorials.phonecat.Controller">Phonecat (AngularJS tutorial
-        app)</a> <a
-            href="https://github.com/foam-framework/foam/tree/master/js/foam/tutorials/phonecat">(source)</a></li>
-    <li><a href="https://github.com/foam-framework/foam/wiki/QuickBug">QuickBug</a> <a href="https://github.com/foam-framework/foam/tree/master/js/foam/apps/quickbug">(source)</a></li>
-    <li><a href="https://github.com/foam-framework/foam/wiki/MBug">Mobile QuickBug (MBug)</a> <a href="https://github.com/foam-framework/foam/tree/master/apps/mbug/">(source)</a></li>
-    <li><a href="apps/gmail/main.html">GMail Demo</a> <a href="https://github.com/foam-framework/foam/tree/master/apps/gmail/">(source)</a></li>
-    <li><a href="https://chrome.google.com/webstore/detail/chrome-app-builder/ighkikkfkalojiibipjigpccggljgdff">Chrome App Builder</a></li>
-  </ul>
-  </blockquote>
-
-</div>
--->

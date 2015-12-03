@@ -5,18 +5,17 @@ layout: default
 <div class="post">
 
   <header class="post-header">
-    <h2>{{ page.title }} part {{ page.tutorial }}</h2>
-    <h1>{{ page.tutorials[page.tutorial].title }}</h1>
-    <ul class="toc">
+    <div class="combined-heading">
+      <h2 class="mini-header">{{ page.title }} part {{ page.tutorial }}</h2>
+      <h1>{{ page.tutorials[page.tutorial].title }}</h1>
+    </div>
+    <div class="toc">
       {% for tut in page.tutorials %}
-        <li class="toc-item">
-          {% if page.tutorial != forloop.index0 %}
-            <a href="{{ tut.url | prepend: site.baseurl }}">{{ tut.title }}</a>
-          {% else %}
-            <span class="toc-item-selected">{{ tut.title }}</span>
-          {% endif %}
-        </li>
+        <a href="{{ tut.url | prepend: site.baseurl }}" class="toc-item {% if page.tutorial == forloop.index0 %}toc-item-selected{% endif %}">
+          {{ tut.title }}
+        </a>
       {% endfor %}
+    </div>
   </header>
 
   <article class="post-content">

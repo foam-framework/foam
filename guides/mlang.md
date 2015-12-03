@@ -1,7 +1,7 @@
 ---
 layout: page
 title: mLang Guide
-permalink: /guides/templates/
+permalink: /guides/mlang/
 ---
 
 Not yet written. Sorry.
