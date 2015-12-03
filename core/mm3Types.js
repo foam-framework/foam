@@ -1122,7 +1122,7 @@ CLASS({
   label: 'Email address',
 
   properties: [
-    [ pattern: '^.+\@.+$' ]
+    [ 'pattern', '^.+\@.+$' ]
   ]
 });
 
@@ -1172,7 +1172,7 @@ CLASS({
   label: 'Phone number',
 
   properties: [
-    [ pattern: '^[0-9\-\+\(\)\*\ ]*$' ]
+    [ 'pattern', '^[0-9\-\+\(\)\*\ ]*$' ]
   ]
 
 });
