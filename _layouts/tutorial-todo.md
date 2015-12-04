@@ -23,5 +23,11 @@ tutorials:
   -
     title: Canned Queries
     url: /tutorial/todo/6-canned-query
+  -
+    title: Server
+    url: /tutorial/todo/7-server
+  -
+    title: Auth
+    url: /tutorial/todo/8-auth
 ---
 {{ content }}
