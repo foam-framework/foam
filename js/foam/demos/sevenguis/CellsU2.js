@@ -118,6 +118,8 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CellsU2',
   extends: 'foam.u2.Element',
+
+  requires: [ 'foam.u2.Input', 'foam.u2.ElementParser' ],
   imports:  [ 'dynamicFn' ],
   exports:  [ 'as cells' ],
 
@@ -221,8 +223,10 @@ MODEL({
     }
   ],
   properties: [
-    [ 'rows',    99 ],
-    [ 'columns', 26 ],
+//    [ 'rows',    99 ],
+//    [ 'columns', 26 ],
+    [ 'rows',    5 ],
+    [ 'columns', 5 ],
     {
       name: 'cells',
       factory: function() { return {}; }
@@ -235,6 +239,8 @@ MODEL({
   methods: [
     function init() {
       this.SUPER();
+
+      this.ElementParser.getPrototype();
 
       // Two sample spreadsheets
       // Spreadsheet taken from Visicalc
@@ -275,48 +281,48 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
     },
     function cellE(j, i) {
       var c = this.E('td');
-
       c.add(this.E('input'));
-
       return c;
     }
   ],
   templates: [
     function CSS() {/*
-      .cells tr, .cells td, .cells th, .cells input {
+      $ tr, $ td, $ th, $ input {
         color: #333;
         font: 13px roboto, arial, sans-serif;
       }
-      .cells tr { height: 26px; }
-      .cells { overflow: auto; }
-      .cell { min-width: 102px; }
-      table.cells, .cells th, .cells td { border: 1px solid #ccc; }
-      .cells td { height: 100%; }
-      .cells th, .cells td {
+      $ tr { height: 26px; }
+      $ { overflow: auto; }
+      $-cell { min-width: 102px; }
+      table.$, $ th, $ td { border: 1px solid #ccc; }
+      $ td { height: 100%; }
+      $ th, .cells td {
         border-right: none;
         border-bottom: none;
       }
-      table.cells {
+      table.$ {
         border-left: none;
         border-top: none;
       }
-      .cells th {
+      $ th {
         background: #eee;
         color: #333;
         padding: 2px 18px;
       }
     */},
-    function toE() {/*
+    function initE() {/*#U2
+      <div> <!-- TODO: This div shouldn't be required. Fix. -->
       <table cellspacing="0">
         <tr>
           <th></th>
-          <th class="$-colHeader" repeat="j = 0 .. this.columns-1">{{String.fromCharCode(65 + j)}}</th>
+          <th class="$-colHeader" repeat="j in 0 .. this.columns-1">{{String.fromCharCode(65 + j)}}</th>
         </tr>
-        <tr repeat="i = 0 .. this.rows">
+        <tr repeat="i in 0 .. this.rows">
           <th class="$-rowHeader">{{i}}</th>
-          <td class="$-cell" repeat="j = 0 .. this.columns-1">{{this.cellE(j, i)}}</td>
+          <td class="$-cell" repeat="j in 0 .. this.columns-1">{{this.cellE(j, i)}}</td>
         </tr>
       </table>
+      </div>
     */}
   ]
 });
