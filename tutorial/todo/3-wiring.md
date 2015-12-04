@@ -28,16 +28,16 @@ Open this new file in your editor, and put the following into it:
 CLASS({
   package: 'com.todo',
   name: 'TodoApp',
-  extends: 'foam.browser.ui.BrowserView',
+  extends: 'foam.browser.u2.BrowserView',
   requires: [
     'com.todo.model.Todo',
-    'foam.browser.BrowserConfig',
+    'foam.browser.BrowserConfigU2',
   ],
   properties: [
     {
       name: 'data',
       factory: function() {
-        return this.BrowserConfig.create({ model: this.Todo });
+        return this.BrowserConfigU2.create({ model: this.Todo });
       }
     }
   ]
@@ -48,13 +48,13 @@ You can check that this new rendition of our app is working by going to [http://
 
 So what's going on with this new model?
 
-- It extends `foam.browser.ui.BrowserView`, which you may recognize from the
-  query parameters we passed to `index.html`. This is the central view that
-  defines the default look of the browser. We're only extending it slightly,
+- It extends `foam.browser.u2.BrowserView`, which you may recognize from the
+  query parameters we passed to `index.html` earlier. This is the central view
+  that defines the default look of the browser. We're only extending it slightly,
   overriding its `data` property.
 - We specify `requires`. FOAM models can depend on other models. Here we require
-  our `Todo` model, as well as `foam.browser.BrowserConfig`, which is how we
-  configure the Browser. `BrowserConfig` has many properties, but they have sane
+  our `Todo` model, as well as `foam.browser.BrowserConfigU2`, which is how we
+  configure the Browser. `BrowserConfigU2` has many properties, but they have sane
   defaults; we need only set the `model` to get the browser working.
 - We define a property called `data`. All FOAM views, including our submodel of
   `BrowserView`, have a `data` property, which contains the object they're
@@ -67,7 +67,7 @@ So what's going on with this new model?
   lot of extra legwork going on behind the scenes in `create` &ndash; like
   calling `factory` functions.
 - This also shows how our "required" models are accessed: they are
-  available as `this.ModelName`. Therefore we have `this.BrowserConfig` and
+  available as `this.ModelName`. Therefore we have `this.BrowserConfigU2` and
   `this.Todo`.
 
 That's a lot of details in a small snippet of code! But we haven't actually
@@ -77,7 +77,7 @@ this `TodoApp` model.
 ## A few quick improvements
 
 There's some low-hanging fruit that would improve our app experience quite a
-bit.
+bit, so let's make some changes.
 
 ### Hidden properties
 
@@ -98,33 +98,11 @@ Reload the app, and the `id` field is gone:
 
 ![Details without ID field]({{ site.url }}/tutorial/todo/assets/id-hidden.png)
 
-### Specifying a view
-
-Our `isCompleted` property has `type: 'Boolean'`. The default view for a boolean
-property is a switch-like toggle. That makes sense for turning an option on or
-off, but not for completing a checklist item. Let's switch it to `CheckboxView`
-instead.
-
-Still with the `Todo.js` file open, edit the `isCompleted` property to look like
-this:
-
-{% highlight js %}
-{
-  type: 'Boolean',
-  name: 'isCompleted',
-  view: 'foam.ui.md.CheckboxView'
-}
-{% endhighlight %}
-
-You can set the `view` for any property, and the generic views will use it:
-
-![Details with Checkbox for completed]({{ site.url }}/tutorial/todo/assets/checkbox.png)
-
 ### UI labels
 
-This checkbox view is better, but it's also labeled awkwardly as "Is Completed".
-Let's fix that too, by setting the `label` for our property. All properties have
-a `label`, but it defaults to `name` converted from `camelCase` to "Camel Case".
+The "Is Completed" checkbox view is labeled awkwardly. Let's fix that, by
+setting the `label` for our property. All properties have a `label`, which
+defaults to `name` converted from `camelCase` to "Camel Case".
 
 We can override it here, like so:
 
@@ -132,8 +110,7 @@ We can override it here, like so:
 {
   type: 'Boolean',
   name: 'isCompleted',
-  label: 'Completed',
-  view: 'foam.ui.md.CheckboxView'
+  label: 'Completed'
 }
 {% endhighlight %}
 

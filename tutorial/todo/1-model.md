@@ -45,6 +45,8 @@ The first meaning is as used above.
 The second is the "M" in "MVC". This is the part of an app responsible for
 managing data, and supplying data to the other parts of the app.
 
+Fortunately, it's usually clear from context.
+
 ## Next
 
 In [Part 2: Your first model]({{ site.baseurl }}/tutorial/todo/2-todo/), we'll

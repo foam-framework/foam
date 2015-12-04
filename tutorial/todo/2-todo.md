@@ -65,7 +65,7 @@ app. In fact, let's load our app using one of FOAM's reusable controllers.
 
 ### Almost done?
 
-Our app is now [remarkably complete](http://localhost:8000/foam/index.html?model\_=foam.browser.BrowserConfig&model=com.todo.model.Todo&view=foam.browser.ui.BrowserView&classpath=../js/).
+Our app is now [remarkably complete](http://localhost:8000/foam/index.html?model_=foam.browser.BrowserConfigU2&model=com.todo.model.Todo&view=foam.browser.u2.BrowserView&classpath=../js/).
 
 ![List view screenshot]({{ site.url }}/tutorial/todo/assets/model-only-list.png)
 ![Detail view screenshot]({{ site.url }}/tutorial/todo/assets/model-only-details.png)
@@ -84,25 +84,40 @@ called the Browser.
 The Browser captures a common pattern for apps, especially on mobile: a list of
 items, which you can tap to see and edit their details.
 
-The Browser is very customizable, but we only really need to provide one
-parameter: the `model` we're viewing.
+The Browser is very customizable, but there's only one required parameter: the
+`model` we're viewing.
 
 Let's examine the parameters we passed to FOAM's
-[index.html]({{site.baseurl}}/guides/index_html).
+[index.html]({{site.baseurl}}/guides/index_html) in order to load our app.
 
-- `model_=foam.browser.BrowserConfig` This is the model we want `index.html` to
-  create for us. The `BrowserConfig` has many configuration options that
+- `model_=foam.browser.BrowserConfigU2` This is the model we want `index.html` to
+  instantiate for us. The `BrowserConfigU2` has many configuration options that
   determine how exactly our Browser should behave. They all have default values,
-  though, so we don't need to set any except `model` (see below).
-- `view=foam.browser.ui.BrowserView` We want to display our `BrowserConfig`
+  though, so we don't need to set any except `model`, which we do below.
+- `view=foam.browser.u2.BrowserView` We want to display our `BrowserConfigU2`
   using a `BrowserView`, the heart of the Browser component.
 - `model=com.todo.model.Todo` here we set the `model` property of the
-  `BrowserConfig` to the todo item model we defined above.
+  `BrowserConfig` to the todo item model we defined above. The Browser looks at
+  the `model` to see what the objects we want to browse look like.
 
 This is the essence of FOAM. Instead of writing code to implement all these
 features for your app, we write them in a generic way that can be reused by many
 apps.
 
+
+### Views are Evolving
+
+FOAM currently has two view libraries.
+
+- We call the original "U1". Its models live in `foam.ui.*` and similar.
+- The replacement, still under development, is called "U2". Its models live in
+  `foam.u2.*` and similar.
+
+The two have different template syntax. Each can embed views from the other if
+needed, but apps fit together more neatly if they stick to one or the other.
+
+U2 is sufficiently stable and complete to serve for this tutorial, so we use it
+here.
 
 ### You're still steering
 

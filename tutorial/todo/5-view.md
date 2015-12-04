@@ -13,26 +13,19 @@ to put in the row.
 For our `Todo` model, it guessed `title`. That's a good guess, but we'd like to
 have the `isCompleted` checkbox next to each item in the list.
 
-### Base views
+### View basics
 
-FOAM has three main models you might want to extend to build your own custom
-view:
+FOAM's U2 view library is based on `foam.u2.Element`. `Element` has several
+methods for building DOM elements and wiring up reactive values. There is also a
+template syntax, which we will use here.
 
-- `foam.ui.View` completely re-renders itself every time its `data` changes.
-- `foam.ui.SimpleView` doesn't react at all when its `data` changes.
-- `foam.ui.md.DetailView` doesn't repaint itself - it expects its child views to
-  update themselves if their portion of the `data` changed.
-
-The choice between them isn't always clear. Generally, `SimpleView` is for views
-of a single value, like a string or boolean, while `DetailView` is for modeled
-objects.
-
-Since we're building a "citation" or "summary" view for a `Todo`, we'll use
-`foam.ui.md.DetailView` as our base class.
+`foam.u2.View` is an important subclass of `Element`. It adds a `data`,
+property, representing the object currently being viewed. `data` might be a
+modeled object, or a string or other Javascript value.
 
 ### Creating our view
 
-First, let's make a new directory `PROJECT/js/com/todo/ui`, with a new file
+First, let's make a new directory `PROJECT/js/com/todo/u2`, with a new file
 `TodoCitationView.js`:
 
     PROJECT
@@ -43,93 +36,78 @@ First, let's make a new directory `PROJECT/js/com/todo/ui`, with a new file
     |------- TodoApp.js
     |------- model/
     |--------- Todo.js
-    |------- ui/
+    |------- u2/
     |--------- TodoCitationView.js
 
 and fill the file with the following:
 
 {% highlight js %}
+{% raw %}
 CLASS({
-  package: 'com.todo.ui',
+  package: 'com.todo.u2',
   name: 'TodoCitationView',
-  extends: 'foam.ui.md.DetailView',
+  extends: 'foam.u2.View',
   templates: [
-    function toHTML() {/*
-      <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        $$title
+    function initE() {/*#U2
+      <div class="$">
+        {{this.data.title}}
       </div>
     */},
   ]
 });
+{% endraw %}
 {% endhighlight %}
 
 If you reload the app, you'll see that nothing changed. That's because we're not
-yet using our new view. We'll get to that in a moment, but first, let's look
-into what's going on in that template.
+yet using our new view.
 
-### Template syntax
+We'll fix that in a moment, but first, let's look into what's going on in that template.
 
-A model can have `templates`, which are run through a parser. The default parser
-is the HTML template parser. A full description of the syntax can be found in
-the [template guide]({{ site.baseurl }}/guides/templates). For now,
-these quick notes will suffice:
+### Template Syntax
+
+Any model can have `templates`, which are run through a parser. The default parser
+is the old U1 HTML template parser, but we override that here to use the U2
+parser.
+
+A full description of the syntax can be found in the
+[template guide]({{ site.baseurl }}/guides/templates), but here's a brief
+summary:
 
 - Javascript doesn't support multiline strings, so we hack them in with
   `function`s whose entire body is a `/* block comment */`.
-- `<% real JS code %>` runs the literal code.
-- `<%= expression %>` inserts the result of the expression at that spot.
-- `$$property` puts the default `view` for that property here.
+- Adding `#U2` right at the start of a template enables the U2 parser.
+    - It will become the default soon.
+- In CSS classes, `$` is expanded to the model name with dashes instead of
+  periods.
+    - In this case, `$` becomes `com-todo-u2-TodoCitationView`.
+- `{% raw %}{{ expression }}{% endraw %}` inserts the result of the expression at that spot.
+    - Here we're putting in `this.data.title`.
+- `(( real JS code ))` runs the literal Javascript code.
+- `<obj:property ... />` puts the default `view` for `obj.property` here.
 
-When the template parser is finished, our model has a `toHTML` method that
-returns a string based on our template.
+When the template parser is finished, our model has an `initE` method that
+returns an `Element` constructed from our template.
+
+### External Templates
 
 You can also put templates in separate files, named `MyModel_templateName.ft`.
-For example, `TodoCitationView_toHTML.ft`.
+For example, `TodoCitationView_initE.ft`.
 
 Then in your model's `templates` section, instead of adding an inline template,
 just add it by name: <br/>`{ name: 'toHTML' }`.
 
-### What the heck is going on?
+## Wire in our new view
 
-Even if the syntax itself makes sense, there are some strange things in the
-template above.
-
-- All `View`s have an `id` property, which by default is a generated value like
-  `view23`. They're automatically generated to be unique when the view is
-  created. The outermost DOM element should usually have its `id` property set
-  to `this.id`, like we do here.
-- Views also have `className` and `extraClassName` properties. The convenience
-  method `cssClassAttr()` combines these properties, if set, into a
-  `class="..."` string and returns it.
-
-Once we understand those two general principles for constructing a view, we can
-see what's going on here. We make a fairly default view, and then insert a view
-of the `title` property.
-
-### Wire in our new view
-
-We need to override the default list view with our own. FOAM has a variety of
-views that expect a DAO and render its contents in some fashion. Here are the
-four main ones.
-
-- `foam.ui.DAOListView` is a basic list, used by default in the Browser.
-- `foam.ui.ScrollView` is an infinite-scrolling version that uses native browser
-  scrolling and can handle over 100,000 rows at 60fps on mobile.
-- `foam.ui.(md.)TableView` renders an HTML `<table>`.
-- `foam.ui.(md.)FlexTableView` renders a table with adjustible columns and
-  infinite scrolling.
-
-By default, the browser uses a `DAOListView` with `rowView` set to
-`foam.ui.md.CitationView`. We're going to override that to use our new
-`TodoCitationView` instead.
+By default, the Browser uses `foam.u2.md.CitationView` for the list rows. We're
+going to configure it to use our new `com.todo.u2.TodoCitationView`.
 
 Edit `TodoApp.js`.
 
-First, add `'com.todo.ui.TodoCitationView'` to the `requires`:
+First, add `'com.todo.u2.TodoCitationView'` to the `requires`:
 {% highlight js %}
 requires: [
   'com.todo.model.Todo',
-  'com.todo.ui.TodoCitationView',
+  'com.todo.u2.TodoCitationView',
   'foam.browser.BrowserConfig',
   'foam.dao.EasyDAO',
 ],
@@ -149,122 +127,145 @@ Then update the `data` `factory`:
         cache: true,
         seqNo: true
       }),
-      listView: {
-        factory_: 'foam.ui.DAOListView',
-        rowView: 'com.todo.ui.TodoCitationView'
-      }
+      rowView: 'com.todo.u2.TodoCitationView'
     });
   }
 }
 {% endhighlight %}
 
-This `factory_` syntax is commonly used in FOAM, for declaratively specifying a
-model and some default values to give to its properties.
-
-We're configuring our Browser, by overriding its default `listView` with a new
-one: a `DAOListView` of `TodoCitationView`s.
-
 If you reload the app, you'll see that our change is working - but the app isn't
 really improved!
 
-![Editable and labeled]({{ site.url }}/tutorial/todo/assets/edit-and-label.png)
+![unstyled title]({{ site.url }}/tutorial/todo/assets/citation-title-only.png)
 
-The `title` is now editable! It will actually save properly if you make
-an edit and blur the view, but that's not really what we were aiming for.
+Our `title` is rendering properly, but it's not nicely styled, and we don't have
+the checkbox yet.
 
 
-### Further customizing our template
+## Values and Reactivity
 
-Most views in FOAM understand the `mode` property, which can be set to
-`'read-write'` (the default), `'read-only'`, or `'final'`. Many views render
-differently when their `mode` is `'read-only'`. We can specify extra values by
-changing the `TodoCitationView`'s template to read
+The template parser turns `{% raw %}{{expressions}}{% endraw %}` into a call to
+`Element.add()`. `add()` accepts a variety of things:
 
-    $$title{ mode: 'read-only' }
+- `Element`s
+- Strings
+- Anything with a `toE()` method that returns an `Element`
+- `Value`s.
 
-This syntax allows setting properties on the view being created for `title` (in
-this case, a `foam.ui.md.TextFieldView`.
+In FOAM, a `Value` is a kind of object-oriented pointer. It has `get()` and
+`set()` methods, as well as `addListener()`.
 
-![Read-only and labeled]({{ site.url }}/tutorial/todo/assets/just-label.png)
+For every property `foo` on a model, instances have both `foo` and `foo$`.
+`foo$` is a `Value` for `foo`.
 
-That makes it non-editable, but the label is still distracting. Update it again,
-to:
+If you add `this.foo` to an `Element`, the *current* value is copied. If you add
+`this.foo$` instead, the `Element` listens for changes and updates the DOM.
 
-    $$title{ mode: 'read-only', floatingLabel: false }
+Two-way binding is achieved by adding an editable view for a property, like
+we're about to do for `isCompleted`.
 
-and now we're back where we started:
 
-![Just the title]({{ site.url }}/tutorial/todo/assets/just-title.png)
+## Adding the Checkbox
 
-Let's add the main reason why we've set out to build a custom citation view: the
-checkbox.
+Let's add the checkbox for `isCompleted` to our `TodoCitationView`. We'll also
+switch to `title$`, so the title will react properly.
 
-Update the template again, this time to read:
-
-    $$isCompleted
-    $$title{ mode: 'read-only', floatingLabel: false }
-
-![With checkbox, part 1]({{ site.url }}/tutorial/todo/assets/with-checkbox-1.png)
-
-and now we've got the checkbox -- but the layout is screwed up and the label for
-the checkbox is unnecessary. Let's remove that too, by overriding the view's
-`label` property.
-
-    $$isCompleted{ label: '' }
-    $$title{ mode: 'read-only', floatingLabel: false }
-
-![With checkbox, part 2]({{ site.url }}/tutorial/todo/assets/with-checkbox-2.png)
-
-Better, but the layout is still busted.
-
-### Custom CSS for our views
-
-If you define a `template` for your model called `CSS`, the CSS contained inside
-will be installed into the document once, the first time an instance of the view
-is created. Let's create one now:
+Edit the template to read:
 
 {% highlight js %}
+{% raw %}
+function initE() {/*#U2
+  <div class="$">
+    <:isCompleted />
+    {{this.data.title$}}
+  </div>
+*/},
+{% endraw %}
+{% endhighlight %}
+
+Here we're using the `<:someProperty />` syntax to insert a two-way `View` for a
+property.
+
+![checkbox with label in its own row]({{ site.url }}/tutorial/todo/assets/citation-checkbox-1.png)
+
+It worked, but it still doesn't look right.
+
+<!-- TODO: Turn this into a differently-styled under-the-hood section. -->
+(Under the hood, properties are themselves modeled objects with properties,
+methods, etc. The above looks up the Property object for `isCompleted` and
+checks its `view` property. For `Boolean` properties, that defaults to
+`foam.u2.Checkbox`, which is what appears.)
+
+
+### Attributes on Views
+
+`View`s can tag their properties with `attribute: true`. If a property is tagged
+as an attribute, the template parser will look for that attribute to be set on
+the XML tag.
+
+Many views, including `Checkbox`, support a `showLabel` property &ndash; let's
+set it to false in our template:
+
+{% highlight js %}
+{% raw %}
+function initE() {/*#U2
+  <div class="$">
+    <:isCompleted showLabel="false" />
+    {{this.data.title$}}
+  </div>
+*/},
+{% endraw %}
+{% endhighlight %}
+
+And now we're getting closer:
+
+![checkbox without label in its own row]({{ site.url }}/tutorial/todo/assets/citation-checkbox-2.png)
+
+We'll have to add some CSS to finish customizing our citation view.
+
+## CSS Templates
+
+In both U1 and U2, models can include a template called `CSS`. That template's
+output will be installed on the document exactly once.
+
+We mentioned the `$` CSS class shorthand earlier. In a `CSS` template, it
+expands like it does in an `initE` template, to eg. `.com-todo-u2-TodoCitationView`.
+
+The [CSS guide]({{ site.url }}/guides/css) explains more about the various
+features of the `CSS` templates.
+
+### CSS for TodoCitationView
+
+Expand `TodoCitationView.js` to look like this:
+
+{% highlight js %}
+{% raw %}
 CLASS({
-  package: 'com.todo.ui',
+  package: 'com.todo.u2',
   name: 'TodoCitationView',
-  extends: 'foam.ui.md.DetailView',
-
-  properties: [
-    {
-      name: 'className',
-      defaultValue: 'todo-citation'
-    }
-  ],
-
+  extends: 'foam.u2.View',
   templates: [
     function CSS() {/*
-      .todo-citation {
+      $ {
         align-items: center;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid #e0e0e0;
         display: flex;
-        min-height: 48px;
       }
     */},
-    function toHTML() {/*
-      <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
-        $$isCompleted{ label: '' }
-        $$title{ mode: 'read-only', floatingLabel: false }
+    function initE() {/*#U2
+      <div class="$">
+        <:isCompleted showLabel="false" />
+        {{this.data.title$}}
       </div>
     */},
   ]
 });
+{% endraw %}
 {% endhighlight %}
 
-Note that we're adding the `className` property and giving it a `defaultValue`.
-When you set a `defaultValue` on a property, any instance that doesn't have its
-own value for that property doesn't bother to store the default. That saves
-memory and network bandwidth, and makes it cheap to add properties that are only
-rarely set.
+Now it renders nicely:
 
-Now we've got a nicely laid out row for each `Todo`, and the checkboxes work
-properly:
-
-![With checkbox, part 3]({{ site.url }}/tutorial/todo/assets/with-checkbox-3.png)
+![checkbox rendering nicely in the row]({{ site.url }}/tutorial/todo/assets/citation-finished.png)
 
 ## Next
 

@@ -68,8 +68,8 @@ First, add `foam.mlang.CannedQuery` to `requires`:
 {% highlight js %}
 requires: [
   'com.todo.model.Todo',
-  'com.todo.ui.TodoCitationView',
-  'foam.browser.BrowserConfig',
+  'com.todo.u2.TodoCitationView',
+  'foam.browser.BrowserConfigU2',
   'foam.dao.EasyDAO',
   'foam.mlang.CannedQuery',
 ],
@@ -81,7 +81,7 @@ Then expand the `factory` for `data`:
 {
   name: 'data',
   factory: function() {
-    return this.BrowserConfig.create({
+    return this.BrowserConfigU2.create({
       model: this.Todo,
       dao: this.EasyDAO.create({
         model: this.Todo,
@@ -89,21 +89,21 @@ Then expand the `factory` for `data`:
         cache: true,
         seqNo: true
       }),
-      listView: {
-        factory_: 'foam.ui.DAOListView',
-        rowView: 'com.todo.ui.TodoCitationView'
-      },
+      rowView: 'com.todo.u2.TodoCitationView'
       cannedQueryDAO: [
         this.CannedQuery.create({
           label: 'Todo',
+          order: 1,
           expression: EQ(this.Todo.IS_COMPLETED, false)
         }),
         this.CannedQuery.create({
           label: 'Done',
+          order: 2,
           expression: EQ(this.Todo.IS_COMPLETED, true)
         }),
         this.CannedQuery.create({
           label: 'Everything',
+          order: 3,
           expression: TRUE
         }),
       ]

@@ -93,10 +93,7 @@ codebase your app actually uses.
 For this tutorial, we'll use the development mode. A guide to using the
 build tool is coming soon. In the meantime, there are [several](https://github.com/foam-framework/foam/blob/master/apps/mbug/build.sh) [scripts](https://github.com/foam-framework/foam/blob/master/apps/todo/build.sh) that give an idea of how to use it.
 
-### Loading FOAM for the first time
-
-The final version of the tutorial app we're about to build lives in the FOAM
-repository as a demo. Let's load it up now, and see where we'll be going.
+### Serving FOAM and loading apps
 
 FOAM includes a generic `index.html` page that will load any model you specify
 in its `model_` parameter. See [here]({{ site.baseurl }}/guides/index_html) for
@@ -111,6 +108,11 @@ Just leave that server running throughout the tutorial.
 
 Now your `PROJECT` directory is served from `http://localhost:8000/`.
 
+## Load the Completed App
+
+The final version of the tutorial app we're about to build lives in the FOAM
+repository as a demo. Let's load it up now, and see where we'll be going.
+
 The app is a fairly basic Todo list. You can create new Todo items with the red
 + button. Tap a Todo to edit it. It supports search-as-you-type and more.
 
@@ -120,7 +122,7 @@ The app is a fairly basic Todo list. You can create new Todo items with the red
 On a desktop-sized browser, it splits into multiple columns. On mobile (or a
 narrow desktop window) it has a single column.
 
-Go to [http://localhost:8000/foam/index.html?model\_=foam.tutorials.todo.TodoApp](http://localhost:8000/foam/index.html?model\_=foam.tutorials.todo.TodoApp) to see it in action.
+Go to [http://localhost:8000/foam/index.html?model\_=foam.tutorials.todo.TodoApp](http://localhost:8000/foam/index.html?model_=foam.tutorials.todo.TodoApp) to see it in action.
 
 
 ## Next

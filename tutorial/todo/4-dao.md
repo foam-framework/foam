@@ -22,20 +22,20 @@ A universal interface is good for hiding the details of different storage
 platforms, but the real trick is that we can write decorators that add extra
 behavior to any underlying DAO.
 
-FOAM comes with many of these DAO decorators: they add various caching
+FOAM comes with many of these DAO decorators. They add various caching
 strategies, logging and performance measurement, perform schema migrations
 transparently, and much more.
 
 This design separates concerns: the underlying DAOs talking to real databases
 don't need to worry about caching, logging, or anything else. They can stay
-focused on their real job &ndash; storing the data in some backend.
+focused on their real job &ndash; storing data in a backend.
 
 
 ## Saving our data
 
 Our app has so far been defaulting to an MDAO for storing our `Todo`s. Since
 MDAO only stores data in memory, the data has disappeared on each refresh. Let's
-make it persistent.
+make it persistent, by storing it in LocalStorage.
 
 Edit `PROJECT/js/com/todo/TodoApp.js`.
 
