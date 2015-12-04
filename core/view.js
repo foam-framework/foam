@@ -219,7 +219,11 @@ var __element_map__ = {
 function elementForName(nodeName) {
   nodeName = nodeName ? nodeName : 'div' ;
   var modelName = this.__element_map__[nodeName.toUpperCase()];
-  if ( modelName ) return this.X.lookup(modelName).create(null, this.Y || X);
+  if ( modelName ) {
+    var model = this.X.lookup(modelName);
+    console.assert(model, 'Missing Model, Add "' + modelName + '" to your requires: block.');
+    return model.create(null, this.Y || X);
+  }
 
   var i = nodeName.indexOf(':');
   if ( i != -1 ) {
