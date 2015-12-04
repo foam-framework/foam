@@ -261,6 +261,11 @@ MODEL({
       return parser.parser.parseString(t).toString();
     },
     parseU2: function(t, model) {
+      // TODO: temporary hack until onLoad() gets called sooner
+      X.foam.u2.ElementParser.getPrototype();
+      if ( ! X.foam.u2.ElementParser.parser__ )
+        X.foam.u2.ElementParser.onLoad();
+
       var parser = this.U2Parser_ || ( this.U2Parser_ = X.foam.u2.ElementParser.parser__.create() );
       parser.modelName_ = cssClassize(model.id);
       return parser.parseString(t.trim()).toString();
