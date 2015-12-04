@@ -32,7 +32,7 @@ CLASS({
       name:  'filename',
       label: 'File Name',
       defaultValueFn: function() {
-        return this.name + '.json';
+        return this.model.name + '.json';
       }
     },
     {
