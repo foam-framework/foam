@@ -90,3 +90,5 @@ destroy should work from any state.
 onclick={{something}} should not parse to an attribute.
 
 Can't set boolean properties from index.html parameters.
+
+style="margin-left:24px;"  doesn't work
