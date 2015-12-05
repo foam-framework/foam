@@ -12,7 +12,6 @@
 CLASS({
   package: 'com.google.sweeper',
   name: 'Game',
-//  extends: 'foam.u2.Element',
 
   requires: [
     'com.google.sweeper.Board',
@@ -45,7 +44,6 @@ CLASS({
   templates: [
     function CSS() {/*
       body { -webkit-user-select: none; }
-      span[name="time"] { margin-left: 24px; }
     */},
     function toE() {/*#U2
       <div>
