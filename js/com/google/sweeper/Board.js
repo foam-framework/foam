@@ -38,22 +38,6 @@ CLASS({
   ],
 
   methods: {
-    /*
-    toInnerHTML: function() {
-      var out = '';
-      for ( var row = 0 ; row < this.height ; row++ ) {
-        out += '<div class="board-row">';
-        for ( var col = 0 ; col < this.width ; col++ ) {
-          var cell = this.cells[row][col];
-          out += cell.toHTML();
-          this.addChild(cell);
-        }
-        out += '</div>';
-      }
-      return out;
-    },
-    */
-
     getMineCount: function(cell) {
       var c = 0;
       for ( var row = Math.max(0, cell.y-1) ; row < Math.min(this.height, cell.y+2) ; row++ ) {

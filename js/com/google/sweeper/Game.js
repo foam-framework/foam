@@ -48,16 +48,11 @@ CLASS({
       span[name="time"] { margin-left: 24px; }
     */},
     function toE() {/*#U2
-      <div x:data={{this}}>
+      <div>
         {{this.time$}}
         <br>
         {{this.board}}
       </div>
     */}
-    /*      <!--
-      <:board/>
-      {{this.board}}
-      -->
-    */
   ]
 });
