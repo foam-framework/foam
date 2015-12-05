@@ -46,11 +46,7 @@ CLASS({
       body { -webkit-user-select: none; }
     */},
     function toE() {/*#U2
-      <div>
-        {{this.time$}}
-        <br>
-        {{this.board}}
-      </div>
+      <div>{{this.time$}}<br>{{this.board}}</div>
     */}
   ]
 });

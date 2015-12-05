@@ -27,8 +27,7 @@ CLASS({
         for ( var row = 0 ; row < this.height ; row++ ) {
           cells[row] = [];
           for ( var col = 0 ; col < this.width ; col++ ) {
-            var cell = this.Cell.create({x: col, y: row});
-            cells[row][col] = cell;
+            var cell = cells[row][col] = this.Cell.create({x: col, y: row});
             cell.covered$.addListener(this.cellUncovered);
           }
         }
