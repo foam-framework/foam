@@ -21,7 +21,8 @@ CLASS({
   },
 
   properties: [
-    'x', 'y',
+    'x',
+    'y',
     {
       type: 'Int',
       name: 'mineCount',
@@ -85,19 +86,14 @@ CLASS({
     function initE() {/*#U2
       <span onclick="sweep" oncontextmenu="mark" class="$" class={{this.coveredClass()}} class={{this.markedClass()}}>
         <span class="$-flag">&#x2691</span>
-        <font if={{this.mined}} color="#E04D2B">&#x2699</font>
+        <font if={{this.mined}}>&#x2699</font>
         <font if={{this.mineCount && ! this.mined}} color={{this.COUNT_COLOURS[this.mineCount]}}>{{this.mineCount}}</font>
       </span>
     */}
   ],
 
   listeners: [
-    function mark(e) {
-      this.marked = ! this.marked;
-      e.preventDefault();
-    },
-    function sweep(e) {
-      this.covered = false;
-    }
+    function mark(e) { this.marked = ! this.marked; e.preventDefault(); },
+    function sweep(e) { this.covered = false; }
   ]
 });
