@@ -67,6 +67,8 @@
 
   models.push(X.arequire('foam.ui.View'));
   models.push(X.arequire('foam.u2.Element'));
+  models.push(X.arequire('foam.u2.ElementParser'));
+
   Object_forEach(params, function(value, key) {
     var match = /^[a-z]+[.]([a-z]+[.])*[A-Z][a-zA-Z]*$/.exec(value);
     if ( match  ) models.push(X.arequire(value));
@@ -99,6 +101,9 @@
       }
       var obj = m.create(params, X);
       var view;
+
+      GLOBAL.indexObj = obj; // for debugging
+
       if ( viewName ) {
         viewParams.data = obj;
         view = X.lookup(viewName).create(viewParams, obj.Y);
@@ -111,7 +116,11 @@
         document.body.insertAdjacentHTML('beforeend', obj.outerHTML);
         obj.load();
         return;
-      // TODO(braden): Should be a case for anything-with-toE here.
+      } else if ( obj.toE ) {
+        var e = obj.toE();
+        document.body.insertAdjacentHTML('beforeend', e.outerHTML);
+        e.load();
+        return;
       } else if ( obj.toView_ ) {
         view = obj.toView_();
       } else {

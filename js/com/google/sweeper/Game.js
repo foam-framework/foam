@@ -12,9 +12,12 @@
 CLASS({
   package: 'com.google.sweeper',
   name: 'Game',
-  extends: 'foam.ui.View',
+//  extends: 'foam.u2.Element',
 
-  requires: [ 'com.google.sweeper.Board' ],
+  requires: [
+    'com.google.sweeper.Board',
+    'foam.u2.PropertyView'
+  ],
 
   properties: [
     {
@@ -44,10 +47,17 @@ CLASS({
       body { -webkit-user-select: none; }
       span[name="time"] { margin-left: 24px; }
     */},
-    function toHTML() {/*
-      $$time{mode: 'read-only'}
-      <br>
-      %%board
+    function toE() {/*#U2
+      <div x:data={{this}}>
+        {{this.time$}}
+        <br>
+        {{this.board}}
+      </div>
     */}
+    /*      <!--
+      <:board/>
+      {{this.board}}
+      -->
+    */
   ]
 });

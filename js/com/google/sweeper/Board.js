@@ -12,7 +12,7 @@
 CLASS({
   package: 'com.google.sweeper',
   name: 'Board',
-  extends: 'foam.ui.View',
+  extends: 'foam.u2.Element',
 
   requires: [ 'com.google.sweeper.Cell' ],
   exports: [ 'as board' ],
@@ -34,11 +34,11 @@ CLASS({
         }
         return cells;
       }
-    },
-    [ 'className', 'sweeper-board' ]
+    }
   ],
 
   methods: {
+    /*
     toInnerHTML: function() {
       var out = '';
       for ( var row = 0 ; row < this.height ; row++ ) {
@@ -52,6 +52,7 @@ CLASS({
       }
       return out;
     },
+    */
 
     getMineCount: function(cell) {
       var c = 0;
@@ -66,12 +67,21 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .sweeper-board {
+      $ {
         border: 1px solid gray;
         display: inline-block;
         margin: 24px;
       }
-   */}
+    */},
+    function initE() {/*#U2
+      <div>
+      <div class="$-row" repeat="row in 0..this.height-1">
+        (( for ( var col = 0 ; col < this.width ; col++ ) { ))
+          {{this.cells[row][col]}}
+        (( } ))
+      </div>
+      </div>
+    */}
   ],
 
   listeners: [
