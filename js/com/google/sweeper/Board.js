@@ -37,17 +37,18 @@ CLASS({
     }
   ],
 
-  methods: {
-    getMineCount: function(cell) {
-      var c = 0;
-      for ( var row = Math.max(0, cell.y-1) ; row < Math.min(this.height, cell.y+2) ; row++ ) {
-        for ( var col = Math.max(0, cell.x-1) ; col < Math.min(this.width, cell.x+2) ; col++ ) {
-          if ( this.cells[row][col].mined ) c++;
-        }
-      }
-      return c;
+  methods: [
+    function forEachNeighbour(cell, f) {
+      for ( var row = Math.max(0, cell.y-1) ; row < Math.min(this.height, cell.y+2) ; row++ )
+        for ( var col = Math.max(0, cell.x-1) ; col < Math.min(this.width, cell.x+2) ; col++ )
+          f(this.cells[row][col]);
+    },
+    function getMineCount(cell) {
+      var count = 0;
+      this.forEachNeighbour(cell, function(c) { if ( c.mined ) count++; });
+      return count;
     }
-  },
+  ],
 
   templates: [
     function CSS() {/*
@@ -71,15 +72,7 @@ CLASS({
   listeners: [
     function cellUncovered(cell) {
       if ( cell.mineCount ) return;
-      this.X.setTimeout(function() {
-        for ( var x = -1 ; x <= 1 ; x++ ) {
-          for ( var y = -1 ; y <= 1 ; y++ ) {
-            try {
-              var c = this.cells[cell.y+y][cell.x+x];
-              if ( ! c.mined ) c.covered = false;
-            } catch(x) {}
-          }
-        }}.bind(this), 32);
+      this.X.setTimeout(this.forEachNeighbour.bind(this, cell, function(c) { if ( ! c.mined ) c.covered = false; }), 32);
     }
   ]
 });
