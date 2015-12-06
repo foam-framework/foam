@@ -82,7 +82,7 @@ CLASS({
       <span class="$" class={{this.stateClass()}} onclick="sweep" oncontextmenu="mark">
         <span class="$-flag">&#x2691</span>
         <font if={{this.mined}}>&#x2699</font>
-        <font if={{this.mineCount && ! this.mined}} color={{this.COLOURS[this.mineCount]}}>{{this.mineCount}}</font>
+        <font if={{!this.mined && this.mineCount}} color={{this.COLOURS[this.mineCount]}}>{{this.mineCount}}</font>
       </span>
     */}
   ],
