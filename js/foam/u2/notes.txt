@@ -104,3 +104,11 @@ Should .c() take vargs?
 Is (( and )) for code going to cause a problem with code escaping?  Should something else be used instead?
 {{{   }}}
 {* *}
+
+
+This should work in Cells.
+    {
+      // TODO: doesn't work, but should
+      name: 'state',
+      dynamicValue: function(covered, marked) { return marked ? 'marked' : covered ? 'covered' : ''; }
+    }
