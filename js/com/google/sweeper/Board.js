@@ -54,16 +54,15 @@ CLASS({
       $ {
         border: 1px solid gray;
         display: inline-block;
-        margin: 24px;
       }
     */},
     function initE() {/*#U2
-      <div>
-      <div class="$-row" repeat="row in 0..this.height-1">
-        (( for ( var col = 0 ; col < this.width ; col++ ) { ))
-          {{this.cells[row][col]}}
-        (( } ))
-      </div>
+      <div class="$">
+        <div class="$-row" repeat="row in 0..this.height-1">
+          (( for ( var col = 0 ; col < this.width ; col++ ) { ))
+            {{this.cells[row][col]}}
+          (( } ))
+        </div>
       </div>
     */}
   ],
