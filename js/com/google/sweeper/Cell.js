@@ -86,7 +86,6 @@ CLASS({
     */},
     function initE() {/*#U2
       <span class="$" class={{this.coveredClass()}} class={{this.markedClass()}} onclick="sweep" oncontextmenu="mark">
-      (( debugger; ))
         <span class="$-flag">&#x2691</span>
         <font if={{this.mined}}>&#x2699</font>
         <font if={{this.mineCount && ! this.mined}} color={{this.COLOURS[this.mineCount]}}>{{this.mineCount}}</font>

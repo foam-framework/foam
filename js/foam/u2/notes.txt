@@ -100,3 +100,7 @@ This would be a better template for Board.js:
 If an element has an as="" block then no need to push onto stack.  Maybe just assign a name if not defined and get rid of stack.
 
 Should .c() take vargs?
+
+Is (( and )) for code going to cause a problem with code escaping?  Should something else be used instead?
+{{{   }}}
+{* *}
