@@ -45,16 +45,10 @@ CLASS({
   ],
   
   methods: [
-    function markedClass() {
+    function stateClass() {
       return this.dynamic(
-        function(marked) { return marked ? 'marked' : ''; },
-        this.marked$);
-    },
-    function coveredClass() {
-      return this.dynamic(
-        function(covered, marked) { return covered && ! marked ? 'covered' : ''; },
-        this.covered$,
-        this.marked$);
+        function(covered, marked) { return marked ? 'marked' : covered ? 'covered' : ''; },
+        this.covered$, this.marked$);
     }
   ],
 
@@ -85,7 +79,7 @@ CLASS({
       $.marked { background-color: #ccc; }
     */},
     function initE() {/*#U2
-      <span class="$" class={{this.coveredClass()}} class={{this.markedClass()}} onclick="sweep" oncontextmenu="mark">
+      <span class="$" class={{this.stateClass()}} onclick="sweep" oncontextmenu="mark">
         <span class="$-flag">&#x2691</span>
         <font if={{this.mined}}>&#x2699</font>
         <font if={{this.mineCount && ! this.mined}} color={{this.COLOURS[this.mineCount]}}>{{this.mineCount}}</font>
