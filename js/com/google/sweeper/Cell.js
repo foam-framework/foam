@@ -60,6 +60,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
+      body { -webkit-user-select: none; }
       $ {
         border: 1px solid gray;
         display: table-cell;
