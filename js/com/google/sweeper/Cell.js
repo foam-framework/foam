@@ -69,13 +69,13 @@ CLASS({
         background: #ccc;
         box-shadow: -2px -2px 10px rgba(0,0,0,.25) inset, 2px 2px 10px white inset;        
       }
-      $.covered font { visibility: hidden; }
-      $.marked font { display: none; }
-      $-flag { display: none; }
       $.marked $-flag {
         display: block;
         color: #BD1616;
       }
+      $.covered font { visibility: hidden; }
+      $.marked font { display: none; }
+      $-flag { display: none; }
       $.marked { background-color: #ccc; }
     */},
     function initE() {/*#U2
