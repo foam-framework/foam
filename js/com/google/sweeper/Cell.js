@@ -17,7 +17,7 @@ CLASS({
   imports: [ 'board', 'dynamic' ],
 
   constants: {
-    COUNT_COLOURS: [ '', 'green', 'blue', 'orange', 'red', 'red', 'red', 'red' ],
+    COLOURS: [ '', 'green', 'blue', 'orange', 'red', 'red', 'red', 'red' ],
   },
 
   properties: [
@@ -85,10 +85,11 @@ CLASS({
       $.marked { background-color: #ccc; }
     */},
     function initE() {/*#U2
-      <span onclick="sweep" oncontextmenu="mark" class="$" class={{this.coveredClass()}} class={{this.markedClass()}}>
+      <span class="$" class={{this.coveredClass()}} class={{this.markedClass()}} onclick="sweep" oncontextmenu="mark">
+      (( debugger; ))
         <span class="$-flag">&#x2691</span>
         <font if={{this.mined}}>&#x2699</font>
-        <font if={{this.mineCount && ! this.mined}} color={{this.COUNT_COLOURS[this.mineCount]}}>{{this.mineCount}}</font>
+        <font if={{this.mineCount && ! this.mined}} color={{this.COLOURS[this.mineCount]}}>{{this.mineCount}}</font>
       </span>
     */}
   ],
