@@ -91,8 +91,6 @@ onclick={{something}} should not parse to an attribute.
 
 Can't set boolean properties from index.html parameters.
 
-style="margin-left:24px;"  doesn't work
-
 This would be a better template for Board.js:
 
       <div class="$-row" repeat="row in 0..this.height-1">
@@ -100,3 +98,5 @@ This would be a better template for Board.js:
       </div>
 
 If an element has an as="" block then no need to push onto stack.  Maybe just assign a name if not defined and get rid of stack.
+
+Should .c() take vargs?
