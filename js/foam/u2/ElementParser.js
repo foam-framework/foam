@@ -274,7 +274,7 @@ CLASS({
               } else {
                 out(',');
               }
-              out(key, ':', m[key]);
+              out(JSONUtil.prettyModel.keyify(key), ':', m[key]);
             }
             if ( ! first ) out('})');
           },
