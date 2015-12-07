@@ -21,9 +21,11 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %> >
-      <% if ( this.data && this.data.toHTML ) { console.log("toHTMLd", this.data.name_);
-           this.data.toHTML(out);
-         } else if ( this.data ){ console.log("rendered", data.name_); %>
+      <% if ( this.data && this.data.toHTML ) { console.log("toHTMLd", this.data.name_); %>
+          <%= this.data %>
+      <% } else if ( this.data && this.data.toE ) { console.log("toEd", this.data.name_); %>
+          <%= this.data.toE(this.Y) %>
+      <% } else if ( this.data ){ console.log("rendered", data.name_); %>
            $$data
       <% } %>
       </div>

@@ -14,6 +14,7 @@ CLASS({
   name: 'UpdateStreamDetailView',
   extends: 'com.google.ow.ui.UpdateStreamView',
 
+  imports: [ 'dynamic' ],
   exports: [ 'data' ],
 
   properties: [
@@ -23,10 +24,10 @@ CLASS({
   methods: [
     function initE() {
       // TODO(markdittmer): Add differences between items.
-      return this.add(function (items) {
+      return this.add(this.dynamic(function (items) {
         var item = items[items.length - 1];
         return item ? item.toDetailE(this.Y) : '';
-      }.bind(this).on$(this.X, this.items$));
+      }.bind(this), this.items$));
     },
   ],
 

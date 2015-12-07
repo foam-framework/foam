@@ -14,7 +14,7 @@ CLASS({
   name: 'MerchantOrderDetailView',
   extends: 'com.google.ow.ui.OrderDetailView',
 
-  imports: [ 'streamDAO' ],
+  imports: [ 'dynamic', 'streamDAO' ],
 
   properties: [
     'customer',
@@ -31,9 +31,9 @@ CLASS({
     function titleE(prev) {
       return prev.start('div').cls('heading').cls('md-headline')
             .add('Order (')
-            .add(function(customer) {
+            .add(this.dynamic(function(customer) {
               return customer ? customer.displayName : '';
-            }.bind(this).on$(this.X, this.customer$))
+            }.bind(this), this.customer$))
             .add(')')
           .end();
     },

@@ -531,6 +531,8 @@ MODEL({
       <b class="important">static class</b>
       <br>
       <b class={{dynamic(function(i) { return i%2 && 'important'; }, timer.second$)}}>dynamic class</b>
+      <div repeat="i in 1..10">Loop 1: {{i}}</div>
+      <div repeat="i in ['a','b','c']">Loop 2: {{i}}</div>
     </div>
     */},
     function toE2() {/*#U2

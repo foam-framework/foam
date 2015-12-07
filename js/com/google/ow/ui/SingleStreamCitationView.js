@@ -15,8 +15,9 @@ CLASS({
   extends: 'com.google.ow.ui.SingleStreamView',
 
   imports: [
-    'streamDAO',
+    'dynamic',
     'envelope',
+    'streamDAO'
   ],
   exports: [ 'data' ],
 
@@ -55,11 +56,11 @@ CLASS({
     },
     function initE() {
       return this
-          .add(function(message) {
+          .add(this.dynamic(function(message) {
             return this.message ?
                 (this.message.toE ? this.message.toE(this.Y) : this.message) :
             '';
-          }.bind(this).on$(this.X, this.message$));
+          }.bind(this), this.message$));
     },
   ],
 

@@ -66,10 +66,10 @@ CLASS({
     },
     {
       name: 'revokeAllKeys',
-      help: 'Revokes all existing API keys for this experiment.'
+      help: 'Revokes all existing API keys for this experiment.',
       code: function() {
         this.ApiKeyDAO
-          .where(EQ(this.ID, this.nApiKey.EXPERIMENT))
+          .where(EQ(this.ID, this.ApiKey.EXPERIMENT))
           .update(SET(this.ApiKey.REVOKED, true));
       }
     },

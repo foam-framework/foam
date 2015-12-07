@@ -17,20 +17,21 @@
 CLASS({
   package: 'foam.tutorials.todo',
   name: 'TodoApp',
-  extends: 'foam.browser.ui.BrowserView',
+  extends: 'foam.browser.u2.BrowserView',
   requires: [
-    'foam.browser.BrowserConfig',
+    'foam.browser.BrowserConfigU2',
     'foam.dao.EasyDAO',
     'foam.mlang.CannedQuery',
     'foam.tutorials.todo.model.Todo',
-    'foam.tutorials.todo.ui.TodoCitationView',
+    'foam.tutorials.todo.u2.TodoCitationView',
   ],
 
   properties: [
     {
       name: 'data',
       factory: function() {
-        return this.BrowserConfig.create({
+        var self = this;
+        return this.BrowserConfigU2.create({
           model: this.Todo,
           dao: this.EasyDAO.create({
             model: this.Todo,
@@ -38,10 +39,7 @@ CLASS({
             cache: true,
             seqNo: true
           }),
-          listView: {
-            factory_: 'foam.ui.DAOListView',
-            rowView: 'foam.tutorials.todo.ui.TodoCitationView',
-          },
+          rowView: 'foam.tutorials.todo.u2.TodoCitationView',
           cannedQueryDAO: [
             this.CannedQuery.create({
               label: 'Todo',

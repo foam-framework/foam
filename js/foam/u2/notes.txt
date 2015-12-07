@@ -86,3 +86,29 @@ TODO:
   keyboard action shortcuts
 
 destroy should work from any state.
+
+onclick={{something}} should not parse to an attribute.
+
+Can't set boolean properties from index.html parameters.
+
+This would be a better template for Board.js:
+
+      <div class="$-row" repeat="row in 0..this.height-1">
+        <:Cell x={{row}} y={{col}} repeat="col in 0..this.width-1"/>
+      </div>
+
+If an element has an as="" block then no need to push onto stack.  Maybe just assign a name if not defined and get rid of stack.
+
+Should .c() take vargs?
+
+Is (( and )) for code going to cause a problem with code escaping?  Should something else be used instead?
+{{{   }}}
+{* *}
+
+
+This should work in Cells.
+    {
+      // TODO: doesn't work, but should
+      name: 'state',
+      dynamicValue: function(covered, marked) { return marked ? 'marked' : covered ? 'covered' : ''; }
+    }

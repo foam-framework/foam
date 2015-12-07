@@ -14,20 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 CLASS({
-  package: 'com.chrome.apis',
-  name: 'AccessGroup',
-  properties: [
-    {
-      name: 'id'
-    }
-  ],
-  relationships: [
-    {
-      name: 'users',
-      relatedModel: 'com.chrome.apis.User',
-      relatedProperty: 'ID'
-    }
+  package: 'foam.tutorials.todo.u2',
+  name: 'TodoCitationView',
+  extends: 'foam.u2.View',
+  templates: [
+    function CSS() {/*
+      $ {
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        min-height: 48px;
+      }
+    */},
+    function initE() {/*#U2
+      <div class="$">
+        <:isCompleted showLabel="false"/>
+        {{this.data.title$}}
+      </div>
+    */},
   ]
 });

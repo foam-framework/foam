@@ -118,6 +118,8 @@ MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CellsU2',
   extends: 'foam.u2.Element',
+
+  requires: [ 'foam.u2.Input', 'foam.u2.ElementParser' ],
   imports:  [ 'dynamicFn' ],
   exports:  [ 'as cells' ],
 
@@ -221,8 +223,10 @@ MODEL({
     }
   ],
   properties: [
-    [ 'rows',    99 ],
-    [ 'columns', 26 ],
+//    [ 'rows',    99 ],
+//    [ 'columns', 26 ],
+    [ 'rows',    5 ],
+    [ 'columns', 5 ],
     {
       name: 'cells',
       factory: function() { return {}; }
@@ -235,6 +239,8 @@ MODEL({
   methods: [
     function init() {
       this.SUPER();
+
+      this.ElementParser.getPrototype();
 
       // Two sample spreadsheets
       // Spreadsheet taken from Visicalc
@@ -273,75 +279,50 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
       }
       return cell;
     },
-    function toE() {
-      var e = this.E('table').cls('cells').add(this.headerE());
-      for ( var i = 0 ; i < this.rows ; i++ )
-        e.add(this.rowE(i));
-      return e;
-    },
-    function headerE() {
-      var h = this.E('tr');
-       for ( var j = 0 ; j < this.columns ; j++ )
-         h.add(this.E('th').cls('colHeader').add(String.fromCharCode(65 + j)));
-      return h;
-    },
-    function rowE() {
-      var r = this.E('tr').add(this.E('th').cls('rowHeader').add(i));
-      for ( var j = 0 ; j < this.columns ; j++ )
-        r.add(this.cellE(j, i));
-
-      return r;
-    },
     function cellE(j, i) {
       var c = this.E('td');
-
       c.add(this.E('input'));
-
       return c;
     }
   ],
   templates: [
     function CSS() {/*
-      .cells tr, .cells td, .cells th, .cells input {
+      $ tr, $ td, $ th, $ input {
         color: #333;
         font: 13px roboto, arial, sans-serif;
       }
-      .cells tr { height: 26px; }
-      .cells { overflow: auto; }
-      .cell { min-width: 102px; }
-      table.cells, .cells th, .cells td { border: 1px solid #ccc; }
-      .cells td { height: 100%; }
-      .cells th, .cells td {
+      $ tr { height: 26px; }
+      $ { overflow: auto; }
+      $-cell { min-width: 102px; }
+      table.$, $ th, $ td { border: 1px solid #ccc; }
+      $ td { height: 100%; }
+      $ th, .cells td {
         border-right: none;
         border-bottom: none;
       }
-      table.cells {
+      table.$ {
         border-left: none;
         border-top: none;
       }
-      .cells th {
+      $ th {
         background: #eee;
         color: #333;
         padding: 2px 18px;
       }
     */},
-    function toHTML() {/*
-      <table cellspacing="0" class="cells">
+    function initE() {/*#U2
+      <div> <!-- TODO: This div shouldn't be required. Fix. -->
+      <table cellspacing="0">
         <tr>
           <th></th>
-          <% for ( var j = 0 ; j < this.columns ; j++ ) { %>
-            <th class="colHeader"><%= String.fromCharCode(65 + j) %></th>
-          <% } %>
+          <th class="$-colHeader" repeat="j in 0 .. this.columns-1">{{String.fromCharCode(65 + j)}}</th>
         </tr>
-        <% for ( i = 0 ; i <= this.rows ; i++ ) { %>
-          <tr>
-            <th class="rowHeader"><%= i %></th>
-            <% for ( var j = 0 ; j < this.columns ; j++ ) { %>
-              <td class="cell"><%= this.cell(this.cellName(j, i)) %></td>
-            <% } %>
-          </tr>
-        <% } %>
+        <tr repeat="i in 0 .. this.rows">
+          <th class="$-rowHeader">{{i}}</th>
+          <td class="$-cell" repeat="j in 0 .. this.columns-1">{{this.cellE(j, i)}}</td>
+        </tr>
       </table>
+      </div>
     */}
   ]
 });

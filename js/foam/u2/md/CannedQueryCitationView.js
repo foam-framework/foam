@@ -14,29 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// TODO: Add datalist support.
-
 CLASS({
-  package: 'foam.u2',
-  name: 'Checkbox',
+  package: 'foam.u2.md',
+  name: 'CannedQueryCitationView',
   extends: 'foam.u2.View',
-
-  properties: [
-    [ 'nodeName', 'input' ],
-    {
-      model_: 'BooleanProperty',
-      name: 'data'
-    }
-  ],
-
   methods: [
     function initE() {
-      this.attrs({type: 'checkbox'});
-      Events.link(this.data$, this.attrValue('checked', 'change'));
+      this.cls(this.myCls())
+          .add(this.data.iconUrl && this.data.ICON_URL)
+          .add(this.data.label$);
     },
-    function updateMode_(mode) {
-      this.setAttribute('disabled', mode === 'disabled' || mode === 'ro');
-    }
+  ],
+
+  templates: [
+    function CSS() {/*
+      $ {
+        align-items: center;
+        display: flex;
+        font-size: 16px;
+        height: 42px;
+        line-height: 42px;
+        padding: 8px 16px;
+      }
+      $ img {
+        flex-grow: 0;
+        flex-shrink: 0;
+        height: 24px;
+        margin-right: 25px;
+        opacity: 0.6;
+        width: 24px;
+      }
+      $-label {
+        flex-grow: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    */},
   ]
 });

@@ -27,10 +27,6 @@ CLASS({
       defaultValue: true
     },
     {
-      name: 'prop',
-      hidden: true
-    },
-    {
       name: 'label',
       documentation: 'The user-visible label for this View. Not to be ' +
           'confused with $$DOC{ref:".text"}, the name of the currently ' +
@@ -131,6 +127,12 @@ CLASS({
       },
     },
     {
+      type: 'String',
+      name: 'placeholder',
+      defaultValue: '',
+      documentation: 'Default entry that is "selected" when $$DOC{ref:".data"} is empty.',
+    },
+    {
       model_: 'FunctionProperty',
       name: 'objToChoice',
       documentation: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
@@ -194,6 +196,11 @@ CLASS({
       if (this.useSelection && this.choices[this.index]) {
         this.choice = this.choices[this.index];
       }
+    },
+    function fromProperty(prop) {
+      this.SUPER(prop);
+      this.label = this.label || prop.label;
+      this.choices = this.choices.length ? this.choices : prop.choices;
     },
   ]
 });

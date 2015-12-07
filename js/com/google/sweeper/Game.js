@@ -12,9 +12,12 @@
 CLASS({
   package: 'com.google.sweeper',
   name: 'Game',
-  extends: 'foam.ui.View',
+  extends: 'foam.u2.Element',
 
-  requires: [ 'com.google.sweeper.Board' ],
+  requires: [
+    'com.google.sweeper.Board',
+    'foam.u2.PropertyView'
+  ],
 
   properties: [
     {
@@ -28,7 +31,11 @@ CLASS({
   ],
 
   methods: {
-    init: function() { this.SUPER(); this.tick(); }
+    init: function() {
+      this.SUPER();
+      this.add(this.time$).tag('br').add(this.board);
+      this.tick();
+    }
   },
 
   listeners: [
@@ -37,17 +44,5 @@ CLASS({
       isMerged: 1000,
       code: function() { this.time++; this.tick(); }
     }
-  ],
-
-  templates: [
-    function CSS() {/*
-      body { -webkit-user-select: none; }
-      span[name="time"] { margin-left: 24px; }
-    */},
-    function toHTML() {/*
-      $$time{mode: 'read-only'}
-      <br>
-      %%board
-    */}
   ]
 });

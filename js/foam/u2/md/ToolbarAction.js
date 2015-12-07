@@ -14,20 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 CLASS({
-  package: 'com.chrome.apis',
-  name: 'AccessGroup',
+  package: 'foam.u2.md',
+  name: 'ToolbarAction',
   properties: [
+    'data',
     {
-      name: 'id'
-    }
+      type: 'Action',
+      name: 'action',
+    },
   ],
-  relationships: [
-    {
-      name: 'users',
-      relatedModel: 'com.chrome.apis.User',
-      relatedProperty: 'ID'
-    }
-  ]
 });
