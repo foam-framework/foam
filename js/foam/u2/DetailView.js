@@ -26,6 +26,7 @@ CLASS({
     'foam.u2.DetailPropertyView'
   ],
 
+  imports: [ 'dynamic' ],
   exports: [ 'data' ],
 
   properties: [
@@ -114,8 +115,9 @@ CLASS({
       this.SUPER();
 
       this.Y.registerModel(this.DetailPropertyView, 'foam.u2.PropertyView');
-
-      this.add(function(model, properties) {
+    },
+    function initE() {
+      this.add(this.dynamic(function(model, properties) {
         if ( ! model ) return 'Set model or data.';
 
         return this.actionBorder(
@@ -126,7 +128,7 @@ CLASS({
               end().
             end().
             add(properties));
-      }.bind(this).on$(this.Y, this.model$, this.properties$));
+      }.bind(this), this.model$, this.properties$));
     },
     function actionBorder(e) {
       if ( ! this.showActions || ! this.model.actions.length ) return e;

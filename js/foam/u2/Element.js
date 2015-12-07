@@ -50,6 +50,7 @@ CLASS({
   constants: {
     INITIAL: {
       output: function(out) {
+        this.initE(this);
         this.output_(out);
 
         this.state = this.OUTPUT;
@@ -333,17 +334,17 @@ CLASS({
         }
         m = m.extends && X.lookup(m.extends);
       }
-
-      return this.initE(this);
     },
 
     function initE() {},
 
     function E(opt_nodeName) {
-      var e = this.X.elementForName(opt_nodeName);
+      var Y = this.Y;
+      if (this.data && (this.Y.data !== this.data)) Y = Y.sub({ data: this.data });
+      var e = Y.elementForName(opt_nodeName);
 
       if ( ! e ) {
-        e = foam.u2.Element.create(null, this.Y);
+        e = foam.u2.Element.create(null, Y);
         if ( opt_nodeName ) e.nodeName = opt_nodeName;
       }
 
@@ -500,7 +501,7 @@ CLASS({
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
     function enableCls(cls, enabled, opt_negate) {
-      function negate(a, b) { return b ? a : ! a; }
+      function negate(a, b) { return b ? ! a : a; }
 
       if ( typeof enabled === 'function' ) {
         var fn = enabled;
@@ -586,7 +587,7 @@ CLASS({
 
         if ( prop && prop.attribute ) {
           if ( typeof value === 'string' ) {
-            prop.fromString.call(this, value, prop);
+            prop.fromString.call(view, value, prop);
           } else {
             view[key] = value;
           }
@@ -838,6 +839,7 @@ CLASS({
 
       var first = true;
       for ( var key in this.classes ) {
+        if ( ! this.classes[key] ) continue;
         if ( first ) {
           out(' class="');
           first = false;

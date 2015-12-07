@@ -19,7 +19,10 @@ CLASS({
     'foam.ui.Icon',
     'foam.ui.md.HaloView',
   ],
-  imports: [ 'window' ],
+  imports: [
+    'dynamic',
+    'window'
+  ],
 
   properties: [
     [ 'nodeName', 'ACTION-BUTTON' ],
@@ -53,14 +56,16 @@ CLASS({
         return this.Icon.create({
           url$: this.action.iconUrl$,
           ligature$: this.action.ligature$,
-          color$: this.currentColor_$
+          color$: this.color_$
         }, this.Y);
       }
     },
     {
       model_: 'foam.ui.ColorProperty',
       name: 'color',
-      defaultValue: '#02A8F3',
+      defaultValueFn: function() {
+        return this.type === 'label' ? '#02A8F3' : 'currentColor';
+      }
     },
     {
       model_: 'FloatProperty',
@@ -90,16 +95,17 @@ CLASS({
 
   methods: [
     function initE() {
+      var self = this;
       this.cls(this.myCls())
           .style({
             color: this.color_$,
             opacity: this.alpha$,
           })
-          .cls(function() {
-            return this.action &&
-                this.action.isAvailable.call(this.data, this.action) ?
-                this.myCls('available') : '';
-          })
+          .cls(this.dynamic(function(data, action) {
+            return action &&
+                action.isAvailable.call(data, action) ?
+                    self.myCls('available') : '';
+          }, this.data$, this.action$))
           .cls(this.myCls(this.TYPE_CLASSES[this.type]))
           .cls('noselect')
           .on('click', this.onClick)
@@ -109,9 +115,9 @@ CLASS({
 
       if (this.type === 'label') {
         this.start('span').cls(this.myCls('label'))
-            .add(function() {
-              return this.action ? this.action.label : '';
-            }.bind(this).on$(this.X, this.action$))
+            .add(this.dynamic(function(action) {
+              return action ? action.label : '';
+            }, this.action$))
             .end();
       } else {
         this.start().cls(this.myCls('icon-container'))
@@ -192,9 +198,19 @@ CLASS({
       }
 
       $-floating-action-button {
+        background-color: #e51c23;
+        border-radius: 50%;
+        bottom: 10px;
+        box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.33);
+        flex-shrink: 0;
         height: 44px;
+        margin: 0;
+        opacity: 1;
         padding: 10px;
+        position: absolute;
+        right: 20px;
         width: 44px;
+        z-index: 10;
       }
     */}
   ]

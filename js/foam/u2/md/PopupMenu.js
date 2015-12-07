@@ -242,6 +242,7 @@ CLASS({
       traits: ['foam.u2.ChoiceViewTrait'],
       imports: [
         'document',
+        'dynamic',
         'popup'
       ],
       properties: [
@@ -255,9 +256,9 @@ CLASS({
           for (var i = 0; i < this.choices.length; i++) {
             opt_e.start('li')
                 .cls('foam-u2-md-PopupMenu-choice')
-                .cls(function(i) {
+                .cls(this.dynamic(function(i) {
                   return this.index === i ? 'selected' : '';
-                }.bind(this, i).on$(this.X, this.index$))
+                }.bind(this, i), this.index$))
                 .style({
                   height: this.itemHeight,
                   width: this.itemWidth,

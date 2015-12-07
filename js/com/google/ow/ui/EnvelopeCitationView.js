@@ -18,13 +18,14 @@ CLASS({
     'com.google.plus.ui.ShareListView',
     'foam.u2.ActionButton',
     'foam.u2.md.QuickActionButton as ActionButton',
-    'foam.ui.md.Toolbar',
+    'foam.ui.md.Toolbar'
   ],
 
+  imports: [ 'dynamic' ],
   exports: [
     'data as envelope',
     'data',
-    'toolbar as mdToolbar',
+    'toolbar as mdToolbar'
   ],
 
   properties: [
@@ -58,7 +59,7 @@ CLASS({
       return this.cls('md-card-shell')
         .start('div').cls('heading')
           .start('span').cls('md-subhead').add(d.titleText$ ?
-              function(titleText) { return titleText; }.on$(this.X, d.titleText$) :
+              this.dynamic(function(titleText) { return titleText; }, d.titleText$) :
               '')
           .end()
           // .start('div').cls('envelope-spacer').end()

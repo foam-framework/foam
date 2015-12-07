@@ -242,7 +242,6 @@ CLASS({
         }
         if (size > 0) {
           s.width = size + 'px'; // only set size for non-zero, buried panels will be overlapped
-          bottomMostVisibleStyle = s;
         }
         s.zIndex = i; // z ordering ensures overlap
         s.left = pos + 'px';

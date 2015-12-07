@@ -79,6 +79,7 @@ CLASS({
           objToChoice: function(obj) {
             return [obj.id, obj.label];
           },
+          autoSetData: false,
         }, X || this.Y);
       }
     },

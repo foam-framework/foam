@@ -29,7 +29,6 @@ CLASS({
       model_: 'BooleanProperty',
       name: 'isCompleted',
       label: 'Completed',
-      view: 'foam.ui.md.CheckboxView',
     },
   ],
 });

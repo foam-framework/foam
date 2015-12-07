@@ -1,6 +1,7 @@
 var timer = foam.util.Timer.create();
  timer.start();
 var E = X.E.bind(X.sub());
+var dynamic = X.dynamic;
 
 E('b').add('bold', E('br')).write();
 
@@ -20,34 +21,25 @@ e.on('click', function() { console.log('clicked'); });
 
 
 var e13 = E('div').add(
-  'dynamic function * ',
-  function() { return timer.second % 2 ? 'PING' : E('span').add('PONG').style({color: 'orange'}); },
-  ' *    dynamic value: ',
-  timer.i$,
-  '  ',
-  function(i) { return i%10; }.on$(X, timer.i$));
-e13.write();
-
-var e13b = E('div').add(
   'dynamic function PLAN B * ',
   function() { return timer.second % 2 ? 'PING' : E('span').add('PONG').style({color: 'orange'}); },
   ' *    dynamic value: ',
   timer.i$,
   '  ',
-  X.dynamic(function(i) { return i%10; }, timer.i$));
-e13b.write();
+  dynamic(function(i) { return i%10; }, timer.i$));
+e13.write();
 
 E('div').add(
   function() {
     return timer.second % 5 ?
       'TICK' :
       E('span').add('TOCK').style({
-        'font-size': function(i) { return i%2 ? '12px' : '24px'; }.on$(X, timer.second$)
+        'font-size': dynamic(function(i) { return i%2 ? '12px' : '24px'; }, timer.second$)
       });
   }
 ).write();
       E('span').add('TOCK').style({
-        'font-size': function(i) { return i%2 ? '12px' : '24px'; }.on$(X, timer.second$)
+        'font-size': dynamic(function(i) { return i%2 ? '12px' : '24px'; }, timer.second$)
       }).write();
 
 var e2 = E('font').add('on click, before', E('br')).on('click', function() { console.log('clicked, before'); });
@@ -78,7 +70,7 @@ var e7 = E('div').add('add class after');
 e7.write();
 e7.cls('important');
 
-E('div').add('dynamic class with value').cls(function(i) { return i%2 ? 'important' : null; }.on$(X, timer.second$)).write();
+E('div').add('dynamic class with value').cls(dynamic(function(i) { return i%2 ? 'important' : null; }, timer.second$)).write();
 E('div').add('dynamic class with fn').cls(function() { return timer.second%2 ? 'important' : null; }).write();
 
 E('div').add('dynamic class with fn (hidden)').style({display:'block'}).cls(function(i) { return timer.second%3 && 'hidden'; }).write();
@@ -538,7 +530,9 @@ MODEL({
       <br>
       <b class="important">static class</b>
       <br>
-      <b class={{function(i) { return i%2 && 'important'; }.on$(X, timer.second$)}}>dynamic class</b>
+      <b class={{dynamic(function(i) { return i%2 && 'important'; }, timer.second$)}}>dynamic class</b>
+      <div repeat="i in 1..10">Loop 1: {{i}}</div>
+      <div repeat="i in ['a','b','c']">Loop 2: {{i}}</div>
     </div>
     */},
     function toE2() {/*#U2

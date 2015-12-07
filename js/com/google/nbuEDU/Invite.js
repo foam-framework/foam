@@ -18,6 +18,8 @@ CLASS({
     'com.google.nbuEDU.ClientSignup'
   ],
 
+  imports: [ 'dynamic' ],
+
   properties: [
     {
       name: 'id'
@@ -55,11 +57,11 @@ CLASS({
       var self = this;
       var Y = (X || self.Y);
       return self.Element.create(null, Y).add(
-        function() { //return ( self.complete ) ?
+        self.dynamic(function() { //return ( self.complete ) ?
           var nY = ( self.complete ) ? Y.sub({controllerMode: 'ro'}) : Y
           //self.toCitationE(Y).add("TODO: show control panel stuff here") :
           return self.ClientSignup.create({ sid: self.signupSid }, nY).toDetailE(nY);
-        }.on$(self.complete)
+        }, self.complete$)
       );
     },
     function toCitationE(X) {

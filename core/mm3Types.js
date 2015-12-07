@@ -113,8 +113,8 @@ CLASS({
       name: 'toPropertyE',
       labels: ['javascript'],
       defaultValue: function(X) {
-        return X.foam.u2.Checkbox.create(null, X);
-      },
+        return X.lookup('foam.u2.Checkbox').create(null, X);
+      }
     },
     [ 'defaultValue', false ],
     {

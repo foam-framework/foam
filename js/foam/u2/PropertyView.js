@@ -31,31 +31,50 @@ CLASS({
   ],
 
   properties: [
-    'prop', 'view', 'child_',
+    {
+      name: 'data',
+      postSet: function(old, nu) {
+        this.bindData_(old, nu);
+      },
+    },
+    {
+      name: 'prop'
+    },
+    {
+      name: 'view',
+      attribute: true,
+      adapt: function(old, nu) {
+        if (typeof nu === 'string') {
+          var m = this.X.lookup(nu);
+          if (m) return m.create();
+        } else if (typeof nu === 'function') {
+          return nu(this.Y);
+        } else {
+          return nu;
+        }
+      },
+    },
+    {
+      name: 'child_',
+    },
     [ 'nodeName', 'tr' ]
   ],
 
   methods: [
-    function init() {
-      var view = this.view || this.prop.toPropertyE(this.Y);
+    function initE() {
+      var view = this.view || this.prop.toPropertyE();
       var prop = this.prop;
 
       // TODO: remove check once all views extend View
       view.fromProperty && view.fromProperty(prop);
 
       this.child_ = view;
-
-      // Will call initE.
-      this.SUPER();
-
+      this.cls(this.myCls()).add(this.child_);
       this.bindData_(null, this.data);
     },
     // Set properties on delegate view instead of this
     function attrs(map) {
       return this.attrs_(map, this.view);
-    },
-    function initE() {
-      this.cls('foam-u2-PropertyView').add(this.child_);
     }
   ],
 

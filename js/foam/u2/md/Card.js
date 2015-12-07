@@ -22,6 +22,7 @@ CLASS({
 
   properties: [
     {
+      type: 'Boolean',
       name: 'padding',
       documentation: 'Controls the padding inside the card. If your delegate ' +
           'wants to occupy the whole card, set this to false. (Corresponds ' +
@@ -34,9 +35,7 @@ CLASS({
     function initE() {
       var self = this;
       this.cls(this.myCls())
-          .cls(function() {
-            return self.padding ? '': self.myCls('shell');
-          }.on$(this.X, this.padding$));
+          .enableCls(this.myCls('shell'), this.padding$, true /* negate */);
     },
   ],
 

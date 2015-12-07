@@ -22,6 +22,9 @@ CLASS({
   requires: [
     'foam.ui.md.HaloView',
   ],
+  imports: [
+    'dynamic',
+  ],
 
   properties: [
     'label',
@@ -44,12 +47,12 @@ CLASS({
           .cls('noselect')
           .on('click', function() { self.data = !self.data; })
           .start('span').cls(this.myCls('label')).add(this.label$).end()
-          .start('span').cls(this.myCls('text')).add(function() {
-            return self.data ? 'ON' : 'OFF';
-          }.on$(this.X, this.data$)).end()
+          .start('span').cls(this.myCls('text')).add(this.dynamic(function(data) {
+            return data ? 'ON' : 'OFF';
+          }, this.data$)).end()
           .start('div').cls(this.myCls('switch'))
               .start('span').cls(this.myCls('background'))
-                  .cls(function() { return self.data ? self.myCls('on') : ''; }.on$(this.X, this.data$))
+                  .enableCls(this.myCls('on'), this.data$)
                   .start('div').cls(this.myCls('lever')).end()
               .end()
               .start().cls(this.myCls('halo')).add(this.halo.toView_()).end()

@@ -15,6 +15,11 @@ CLASS({
 
   extends: 'foam.ui.SimpleView',
 
+  imports: [
+    'setInterval',
+    'clearInterval',
+  ],
+
   properties: [
     {
       name: '$canvas',
@@ -23,26 +28,64 @@ CLASS({
     {
       name: '$video',
       getter: function() { return this.X.$(this.id + '-video'); },
+    },
+    {
+      type: 'Boolean',
+      name: 'enabled',
+      defaultValue: false,
+      postSet: function(old,nu) {
+        if ( old !== nu ) {
+          if ( nu ) {
+            this.poller_ = this.setInterval(this.pollCapture, 500);
+          } else {
+            this.clearInterval(this.poller_);
+            this.poller_ = '';
+          }
+        }
+      }
+    },
+    [ 'poller_', '' ],
+  ],
+
+  actions: [
+    {
+      name: 'start',
+      ligature: 'center_focus_strong',
+      label: 'Begin Scanning',
+      isAvailable: function() { return !this.enabled; },
+      isEnabled: function() { return !this.enabled; },
+      code: function() {
+        this.enabled = true;
+      }
+    },
+    {
+      name: 'stop',
+      ligature: 'pause_circle_filled',
+      label: 'Stop Scanning',
+      isAvailable: function() { return this.enabled; },
+      isEnabled: function() { return this.enabled; },
+      code: function() {
+        this.enabled = false;
+      }
     }
-    
-    
   ],
 
   methods: [
     function initHTML() {
       var nav = this.X.navigator;
-      var umFn = nav.getUserMedia || nav.webkitGetUserMedia || nav.mozGetUserMedia;      
+      var umFn = nav.getUserMedia || nav.webkitGetUserMedia || nav.mozGetUserMedia;
       if ( ! umFn ) {
         this.onVideoError();
       } else {
-        umFn.call(nav, 
-          { audio: false, video: true }, 
-          this.onVideoReady, 
+        umFn.call(nav,
+          { audio: false, video: true },
+          this.onVideoReady,
           this.onVideoError
         );
       }
     },
     function capture() {
+      if ( ! this.$canvas || ! this.$video ) return;
       var context = this.$canvas.getContext('2d');
       var w = this.$video.clientWidth;
       var h = this.$video.clientHeight;
@@ -53,16 +96,17 @@ CLASS({
       this.data = this.$canvas.toDataURL('image/png');
     }
   ],
-  
+
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %> >
         <canvas id="<%= this.id + '-canvas' %>" style="display:none"></canvas>
         <video id="<%= this.id + '-video' %>"></video>
+        <div class="md-flex-row">$$start $$stop</div>
       </div>
     */}
   ],
-  
+
   listeners: [
     {
       name: 'onVideoReady',
@@ -71,8 +115,6 @@ CLASS({
         var vendorURL = window.URL || window.webkitURL;
         this.$video.src = vendorURL.createObjectURL(stream);
         this.$video.play();
-        
-        this.X.setInterval(this.pollCapture, 500);
       }
     },
     {
@@ -80,7 +122,7 @@ CLASS({
       code: function(streamError) {
         console.warn("Media Error: ", streamError);
       }
-    },    
+    },
     {
       name: 'pollCapture',
       code: function() {

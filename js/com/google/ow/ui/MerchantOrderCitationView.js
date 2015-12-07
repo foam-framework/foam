@@ -18,6 +18,8 @@ CLASS({
     'foam.u2.Element',
   ],
 
+  imports: [ 'dynamic' ],
+
   properties: [
     'customer',
     {
@@ -32,12 +34,12 @@ CLASS({
   methods: [
     function initE() {
       return this.SUPER()
-          .add(function(customer) {
+          .add(this.dynamic(function(customer) {
             if ( ! customer ) return '';
             return this.Element.create({ nodeName: 'div' }).cls('md-grey')
                 .add('Customer: ')
                 .add(customer.displayName);
-          }.bind(this).on$(this.X, this.customer$));
+          }.bind(this), this.customer$));
     }
   ]
 });

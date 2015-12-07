@@ -28,9 +28,15 @@ CLASS({
     'foam.messaging.WebSocket',
     'foam.oauth2.GoogleSignIn'
   ],
+  imports: [
+    'document',
+  ],
   properties: [
     {
       name: 'serverUri',
+      factory: function() {
+        return this.document.location.origin + '/api';
+      }
     },
     {
       name: 'model'

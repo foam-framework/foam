@@ -31,8 +31,7 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
+    function initE() {
       this.attrs({type: 'checkbox'});
       Events.link(this.data$, this.attrValue('checked', 'change'));
     },

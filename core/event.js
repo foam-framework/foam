@@ -623,8 +623,11 @@ var Events = {
     Events.onGet.push(function(obj, name, value) {
       // Uncomment next line to debug.
       // obj.propertyValue(name).addListener(function() { console.log('name: ', name, ' listener: ', listener); });
-      obj.propertyValue(name).addListener(listener);
-      propertyValues.push(obj.propertyValue(name));
+      var l = obj.propertyValue(name);
+      if ( propertyValues.indexOf(l) == -1 ) {
+        obj.propertyValue(name).addListener(listener);
+        propertyValues.push(l);
+      }
     });
     var ret = fn();
     Events.onGet.pop();

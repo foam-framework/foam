@@ -125,8 +125,8 @@ CLASS({
     },
     dynamic: function(fn /*, Values[] */) {
       return arguments.length == 1 ?
-        DynamicValue.create({
-          valueFactory: fn,
+        FunctionValue.create({
+          valueFactory: fn
         }, this) :
         OrValue.create({
           valueFactory: fn,

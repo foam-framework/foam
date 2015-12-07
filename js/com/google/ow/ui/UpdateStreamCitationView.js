@@ -14,6 +14,7 @@ CLASS({
   name: 'UpdateStreamCitationView',
   extends: 'com.google.ow.ui.UpdateStreamView',
 
+  imports: [ 'dynamic' ],
   exports: [ 'data' ],
 
   properties: [
@@ -23,13 +24,13 @@ CLASS({
   methods: [
     function initE() {
       // TODO(markdittmer): Add differences between items.
-      return this.add(function (items) {
+      return this.add(this.dynamic(function (items) {
         if ( ! (items[items.length - 1] &&
             items[items.length - 1].data) ) return '';
         var itemEnv = items[items.length - 1];
         var itemData = itemEnv.data;
         return itemData.toCitationE(this.Y.sub({ envelope: itemEnv }));
-      }.bind(this).on$(this.X, this.items$));
+      }.bind(this), this.items$));
     },
   ],
 

@@ -66,6 +66,9 @@
   });
 
   models.push(X.arequire('foam.ui.View'));
+  models.push(X.arequire('foam.u2.Element'));
+  models.push(X.arequire('foam.u2.ElementParser'));
+
   Object_forEach(params, function(value, key) {
     var match = /^[a-z]+[.]([a-z]+[.])*[A-Z][a-zA-Z]*$/.exec(value);
     if ( match  ) models.push(X.arequire(value));
@@ -96,8 +99,11 @@
         document.body.innerHTML = 'Unable to load model: ' + model;
         return;
       }
-      var obj = m.create(params);
+      var obj = m.create(params, X);
       var view;
+
+      GLOBAL.indexObj = obj; // for debugging
+
       if ( viewName ) {
         viewParams.data = obj;
         view = X.lookup(viewName).create(viewParams, obj.Y);
@@ -106,6 +112,15 @@
       } else if (  ( X.lookup('foam.ui.View').isInstance(obj) )
                    || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
         view = obj;
+      } else if ( X.lookup('foam.u2.Element').isInstance(obj) ) {
+        document.body.insertAdjacentHTML('beforeend', obj.outerHTML);
+        obj.load();
+        return;
+      } else if ( obj.toE ) {
+        var e = obj.toE();
+        document.body.insertAdjacentHTML('beforeend', e.outerHTML);
+        e.load();
+        return;
       } else if ( obj.toView_ ) {
         view = obj.toView_();
       } else {
