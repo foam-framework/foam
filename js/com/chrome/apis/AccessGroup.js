@@ -25,7 +25,7 @@ CLASS({
   ],
   relationships: [
     {
-      name: 'users'
+      name: 'users',
       relatedModel: 'com.chrome.apis.User',
       relatedProperty: 'ID'
     }
