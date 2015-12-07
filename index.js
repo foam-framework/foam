@@ -117,7 +117,7 @@
         obj.load();
         return;
       } else if ( obj.toE ) {
-        var e = obj.toE();
+        var e = obj.toE(X);
         document.body.insertAdjacentHTML('beforeend', e.outerHTML);
         e.load();
         return;
