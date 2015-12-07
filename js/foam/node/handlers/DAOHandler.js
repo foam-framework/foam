@@ -45,6 +45,9 @@ CLASS({
     'error'
   ],
   methods: [
+    function getDAO(subject) {
+      return this.daoMap[subject];
+    },
     function upgrade(req, socket, data) {
       if ( req.url != this.path ) return false;
 
@@ -84,7 +87,7 @@ CLASS({
           subX = subX.sub({ authHeader: envelope['x-foam-auth'] });
 
         if ( msg.method == 'listen' ) {
-          var dao = this.daoMap[msg.subject];
+          var dao = this.getDAO(msg.subject);
 
           if ( ! dao ) {
             ws.send(JSON.stringify({ msgid: msgid, msg: { error: 'No dao found.' } }));
@@ -142,7 +145,7 @@ CLASS({
       return true;
     },
     function handleDAORequest(msg, resp, X) {
-      var dao = this.daoMap[msg.subject];
+      var dao = this.getDAO(msg.subject);
       if ( ! dao ) {
         resp.error && resp.error('no such dao');
         return;
