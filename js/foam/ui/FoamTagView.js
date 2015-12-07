@@ -72,10 +72,12 @@ CLASS({
         if ( viewName ) {
           var viewModel = this.X.lookup(viewName);
           view = viewModel.create({ model: model, data: obj }, obj.Y);
-        } else if ( this.X.lookup('foam.ui.BaseView').isInstance(obj) ) {
+        } else if ( obj.toHTML ) {
           view = obj;
         } else if ( obj.toView_ ) {
           view = obj.toView_();
+        } else if ( obj.toE ) {
+          view = obj.toE(obj.Y);
         } else {
           var a = this.element.getAttribute('showActions');
           var showActions = ! a || (
