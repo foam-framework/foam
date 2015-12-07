@@ -72,14 +72,19 @@ CLASS({
         this.cls(this.myCls('no-label'));
       }
 
-      var input = this.start('input')
-          .attrs({ type: 'text' })
-          .on('focus', function() { self.focused_ = true; })
-          .on('blur', function() { self.focused_ = false; });
+      var input = this.inputE();
+
       if (!this.showLabel && this.placeholder)
         input.attrs({ placeholder: this.placeholder });
       input.data$ = this.data$;
       input.end();
+    },
+    function inputE() {
+      var self = this;
+      return this.start('input')
+          .attrs({ type: 'text' })
+          .on('focus', function() { self.focused_ = true; })
+          .on('blur', function() { self.focused_ = false; });
     },
     function fromProperty(prop) {
       this.label = this.label || prop.label;
