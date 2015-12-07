@@ -35,12 +35,12 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.input.touch.TouchManager',
+      subType: 'foam.input.touch.TouchManager',
       name: 'touchManager',
       factory: function() { return this.TouchManager.create(); },
     },
     {
-      type: 'foam.input.touch.GestureManager',
+      subType: 'foam.input.touch.GestureManager',
       name: 'gestureManager',
       factory: function() { return this.GestureManager.create(); },
     },
