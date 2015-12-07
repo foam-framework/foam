@@ -29,7 +29,7 @@ CLASS({
   label: 'Does not contain',
 
   messages: {
-    errorMessage: 'The value must not contain $parameter$',
+    errorNoMatch: 'The value must not contain $parameter$',
   },
 
   properties: [

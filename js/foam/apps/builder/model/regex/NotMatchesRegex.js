@@ -29,7 +29,7 @@ CLASS({
   label:  'Does not match pattern',
 
   messages: {
-    errorMessage: 'The value must not match pattern.',
+    errorNoMatch: 'The value must not match pattern.',
   },
 
   properties: [

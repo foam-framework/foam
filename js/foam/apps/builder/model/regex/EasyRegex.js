@@ -28,7 +28,7 @@ CLASS({
   label: 'No pattern matching',
 
   messages: {
-    errorMessage: 'The value does not match the pattern.',
+    errorNoMatch: 'The value does not match the pattern.',
   },
 
   properties: [
@@ -45,7 +45,7 @@ CLASS({
     },
     function errorMessage() {
       if ( this.error ) return this.error;
-      return this.errorMessage.replaceValues(this.parameter || '');
+      return this.ERROR_NO_MATCH.replaceValues(this.parameter || '');
     },
     function test(val) {
       return (new RegExp(this.toString())).test(val);

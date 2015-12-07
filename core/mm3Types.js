@@ -97,7 +97,7 @@ CLASS({
           min = parseInt(min);
           ret = function(result) {
             return result ||
-              ( this[prop.name].length < min ? this.errorBelowMinLength.replaceValues(min) : '');
+              ( this[prop.name].length < min ? this.ERROR_BELOW_MIN_LENGTH.replaceValues(min) : '');
           }.o(ret);
         }
         var max = prop.maxChars;
@@ -105,14 +105,14 @@ CLASS({
           max = parseInt(max);
           ret = function(result) {
             return result ||
-              ( this[prop.name].length > max ? this.errorAboveMaxLength.replaceValues(max) : '');
+              ( this[prop.name].length > max ? this.ERROR_ABOVE_MAX_LENGTH.replaceValues(max) : '');
           }.o(ret);
         }
         var pattern = prop.pattern;
         if ( pattern ) {
           var testable = pattern.test ? pattern : new RegExp(pattern.toString(), 'i');
           var errMsg = pattern.errorMessage ?
-            pattern.errorMessage() : prop.errorPatternMismatch.value;
+            pattern.errorMessage() : prop.errorPatternMismatch;
           ret = function(result) {
             return result ||
               ( ! testable.test(this[prop.name]) ? errMsg : '' );
@@ -307,7 +307,7 @@ CLASS({
           min = prop.adapt.call(prop, null, min);
           ret = function(result) {
             return result ||
-              ( this[prop.name] < min ? this.errorBelowMinimum.replaceValues(min) : '');
+              ( this[prop.name] < min ? this.ERROR_BELOW_MINIMUM.replaceValues(min) : '');
           }.o(ret);
         }
 
@@ -316,7 +316,7 @@ CLASS({
           max = prop.adapt.call(prop, null, max);
           ret = function(result) {
             return result ||
-              ( this[prop.name] > max ? this.errorAboveMaximum.replaceValues(max) : '');
+              ( this[prop.name] > max ? this.ERROR_ABOVE_MAXIMUM.replaceValues(max) : '');
           }.o(ret);
         }
         return ret;
