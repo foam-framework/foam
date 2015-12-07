@@ -119,9 +119,7 @@ CLASS({
   listeners: [
     function modelReady(model) {
       console.log('Model fready!', model.id);
-      if ( model.name == 'Game') {
-        this.modelInstance = model.create({}, this.loadedCodeBaseContext);
-      }
+      this.modelInstance = model.create({}, this.loadedCodeBaseContext);
       console.log("created", this.modelInstance);
       //this.updateHTML();
     }
