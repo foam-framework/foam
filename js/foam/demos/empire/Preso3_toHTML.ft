@@ -274,7 +274,7 @@ CLASS({
           <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Board}) %>
           <%= foam.documentation.diagram.DocModelDiagramView.create({data: com.google.sweeper.Cell}) %>
           <figure style="margin-left:100px;">
-          <img src="./js/foam/demos/empire/SweeperQR.png" width="40%">
+          <img src="./js/foam/demos/empire/SweeperQR.png" width="300px">
           <figcaption style="font-size:80%;">1212 bytes</figcaption>
           </figure>
         </div>
