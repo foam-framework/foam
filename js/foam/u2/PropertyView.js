@@ -57,7 +57,7 @@ CLASS({
     {
       name: 'child_',
     },
-    [ 'nodeName', 'tr' ]
+    [ 'nodeName', 'span' ]
   ],
 
   methods: [
@@ -69,7 +69,8 @@ CLASS({
       view.fromProperty && view.fromProperty(prop);
 
       this.child_ = view;
-      this.cls(this.myCls()).add(this.child_);
+      this.cls(this.myCls());
+      this.add(this.child_);
       this.bindData_(null, this.data);
     },
     // Set properties on delegate view instead of this
