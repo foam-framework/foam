@@ -20,7 +20,6 @@ CLASS({
   name: 'Element',
 
   requires: [
-    'foam.input.touch.GestureTarget',
     'foam.u2.ElementValue'
   ],
 
@@ -316,7 +315,10 @@ CLASS({
       name: 'innerHTML',
       transient: true,
       getter: function() { return this.outputInnerHTML(this.createOutputStream()).toString(); }
-    }
+    },
+    {
+      name: 'clickTarget_',
+    },
   ],
 
   templates: [
@@ -785,7 +787,7 @@ CLASS({
       if ( topic === 'click' && this.X.gestureManager ) {
         var manager = this.X.gestureManager;
         var self = this;
-        var target = this.GestureTarget.create({
+        var target = this.X.lookup('foam.input.touch.GestureTarget').create({
           containerID: this.id$el.id,
           enforceContainment: true,
           gesture: 'tap',
@@ -801,36 +803,16 @@ CLASS({
           }
         });
         manager.install(target);
-        // TODO: Uninstall when the element is unloaded.
+        this.clickTarget_ = target;
       } else {
         this.id$el.addEventListener(topic, listener);
       }
     },
 
     function removeEventListener_(topic, listener) {
-      if ( topic === 'click' && this.X.gestureManager ) {
-        /*
-          TODO: Braden, remove listener
-        var manager = this.X.gestureManager;
-        var self = this;
-        var target = this.GestureTarget.create({
-          containerID: this.id$el.id,
-          enforceContainment: true,
-          gesture: 'tap',
-          handler: {
-            tapClick: function(pointMap) {
-              return listener({
-                preventDefault: function() { },
-                stopPropagation: function() { },
-                pointMap: pointMap,
-                target: self.id$el
-              });
-            }
-          }
-        });
-        manager.install(target);
-        // TODO: Uninstall when the element is unloaded.
-        */
+      if ( topic === 'click' && this.X.gestureManager && this.clickTarget_ ) {
+        this.X.gestureManager.uninstall(this.clickTarget_);
+        this.clickTarget = '';
       } else {
         this.id$el.removeEventListener(topic, listener);
       }

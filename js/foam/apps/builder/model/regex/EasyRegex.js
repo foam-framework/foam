@@ -27,12 +27,28 @@ CLASS({
 
   label: 'No pattern matching',
 
+  messages: {
+    errorNoMatch: 'The value does not match the pattern.',
+  },
+
   properties: [
+    {
+      type: 'String',
+      name: 'error',
+      label: 'Error Message',
+    }
   ],
 
   methods: [
     function toString() {
       return '';
-    }
+    },
+    function errorMessage() {
+      if ( this.error ) return this.error;
+      return this.ERROR_NO_MATCH.replaceValues(this.parameter || '');
+    },
+    function test(val) {
+      return (new RegExp(this.toString())).test(val);
+    },
   ],
 });

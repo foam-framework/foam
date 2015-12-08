@@ -154,7 +154,9 @@ CLASS({
               floatingLabel: false,
             }
           </div>
-          %%dataTypePicker()
+          <div class="md-edit-view-dropdown">
+            %%dataTypePicker()
+          </div>
           <% this.toolbar.toHTML(out); %>
         </div>
         $$help{
@@ -191,7 +193,9 @@ CLASS({
       .inline-edit-view-grow {
         flex-grow: 1;
       }
-
+      .md-edit-view-dropdown {
+        min-width: 200px;
+      }
     */},
 
   ]
