@@ -766,9 +766,10 @@ MODEL({
       };
 
       return function bind(arg) {
-        return arguments.length == 1 ?
-          simpleBind(this, arg) :
-          oldBind.apply(this, argsToArray(arguments));
+        if ( arguments.length == 1 ) return simpleBind(this, arg);
+        var args = new Array(arguments.length);
+        for ( var i = 0 ; i < arguments.length ; i++ ) args[i] = arguments[i];
+        return oldBind.apply(this, args);
       };
     })(),
 
