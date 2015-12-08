@@ -16,39 +16,49 @@
  */
 CLASS({
   package: 'foam.u2',
-  name: 'DualView',
+  name: 'DualView', // TODO: Rename AbstractDualView
   extends: 'foam.u2.Element',
 
+  requires: [ 'foam.u2.Input' ], // TODO: Remove
+
   properties: [
-    'data',
-    {
-      name: 'readViewFactory'
-    },
-    {
-      name: 'writeViewFactory'
-    }
-  }
+    'data'
+  ],
 
   methods: [
     function init() {
       this.SUPER();
-      if ( this.data ) {
+      if ( this.isLoaded() ) {
         this.initReadView();
       } else {
-        this.data$.addListener(onDataChange);
+        this.listenForLoad();
       }
     },
     function initReadView() {
-      this.add(this.E('input').style({background:'pink'});
+      this.add(this.toReadE());
     },
-    function initReadView() {
-      this.add(this.E('input'));
+    function initWriteView() {
+      this.add(this.toWriteE());
     },
+
+    // Template Methods
+    function isLoaded() {
+      return this.data;
+    },
+    function listenForLoad() {
+      this.data$.addListener(this.onDataLoad);
+    },
+    function toReadE() {
+      return this.data$;
+    },
+    function toWriteE() {
+      return this.E('input').attrs({data$: this.data$}).style({background:'pink'});
+    }
   ],
 
   listeners: [
-    function onDataChange() {
-      this.data$.removeListener(this.onDataChange);
+    function onDataLoad() {
+      this.data$.removeListener(this.onDataLoad);
       this.initReadView();
     }
   ]
