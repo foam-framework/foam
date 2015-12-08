@@ -244,13 +244,38 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
     return <%= prop.name %>DAO_;
   }
 <% } %>
+
+<% var propName = prop.name.capitalize() %>
+  private <%= rawType %> _<%= propName %>_adapt_(<%= rawType %> oldValue, <%= rawType %> newValue) {
+<% if ( prop.javaAdapt ) { %><%= prop.javaAdapt %><% } else { %>    return newValue; <% } %>
+  }
+  private <%= rawType %> _<%= propName %>_preSet_(<%= rawType %> oldValue, <%= rawType %> newValue) {
+<% if ( prop.javaPreSet ) { %><%= prop.javaPreSet %><% } else { %>    return newValue; <% } %>
+  }
+  private void _<%= propName %>_postSet_(<%= rawType %> oldValue, <%= rawType %> newValue) {
+<%= prop.javaPostSet %>
+  }
+  protected <%= rawType %> <%= propName %>_adapt(<%= rawType %> oldValue, <%= rawType %> newValue) {
+    return <% if ( this.extends ) { %>super.<%= propName %>_adapt(oldValue, <% }
+%>_<%= propName %>_adapt_(oldValue, newValue)<% if ( this.extends ) { %>)<% } %>;
+  }
+  protected <%= rawType %> <%= propName %>_preSet(<%= rawType %> oldValue, <%= rawType %> newValue) {
+    return <% if ( this.extends ) { %>super.<%= propName %>_preSet(oldValue, <% }
+%>_<%= propName %>_preSet_(oldValue, newValue)<% if ( this.extends ) { %>)<% } %>;
+  }
+  protected void <%= propName %>_postSet(<%= rawType %> oldValue, <%= rawType %> newValue) {
+<% if ( this.extends ) { %>    super.<%= propName %>_postSet(oldValue, newValue);
+<% } %>    _<%= propName %>_postSet_(oldValue, newValue);
+  }
+
   public void set<%= prop.name.capitalize() %>(<%= rawType, ' ', prop.name %>) {
     if (isFrozen()) throw new FrozenObjectModificationException();
     <%= rawType %> oldValue = <%= prop.name %>_;
-    <%= prop.name %>_ = <%= prop.name %>;
+    <%= prop.name %>_ = <%= propName %>_adapt(oldValue, <%= propName %>_preSet(oldValue, <%= prop.name %>));
     if (<%= constantize(prop.name) %>.compareValues(oldValue, <%= prop.name %>) != 0) {
       firePropertyChange(<%= constantize(prop.name) %>, oldValue, <%= prop.name %>);
     }
+    <%= propName %>_postSet(oldValue, <%= prop.name %>_);
   }
 */},
 
