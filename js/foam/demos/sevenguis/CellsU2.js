@@ -221,10 +221,10 @@ MODEL({
     }
   ],
   properties: [
-    [ 'rows',    99 ],
-    [ 'columns', 26 ],
-//    [ 'rows',    15 ],
-//    [ 'columns', 4 ],
+//    [ 'rows',    99 ],
+//    [ 'columns', 26 ],
+    [ 'rows',    8 ],
+    [ 'columns', 5 ],
     {
       name: 'cells',
       factory: function() { return {}; }
@@ -240,6 +240,7 @@ MODEL({
 
 
 foam.demos.sevenguis.CellsU2.getPrototype().initE = OAM.time('initE', foam.demos.sevenguis.CellsU2.getPrototype().initE);
+foam.demos.sevenguis.CellsU2.getPrototype().load = OAM.time('load', foam.demos.sevenguis.CellsU2.getPrototype().load);
 
       this.ElementParser.getPrototype();
 
@@ -290,9 +291,9 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
       $ tr { height: 26px; }
       $ { overflow: auto; }
       $-cell { min-width: 102px; }
-      table.$, $ th, $ td { border: 1px solid #ccc; }
+      $, $ th, $ td { border: 1px solid #ccc; }
       $ td { height: 100%; }
-      $ th, .cells td {
+      $ th, $ td {
         border-right: none;
         border-bottom: none;
       }
