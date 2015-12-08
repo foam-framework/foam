@@ -36,6 +36,7 @@ CLASS({
       name: 'mode',
       defaultValue: 'read-write',
     },
+    [ 'extraClassName', 'md-flex-row-baseline' ],
   ],
 
   templates: [
@@ -43,6 +44,7 @@ CLASS({
       <div id="%%id" <%= this.cssClassAttr() %>>
         <% if ( this.data && this.data.model_.getFeature('parameter') ) { %>
           $$parameter
+          $$error
         <% } %>
       </div>
     */},

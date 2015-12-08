@@ -36,7 +36,6 @@ CLASS({
       postSet: function(old,nu) {
         if ( old !== nu ) {
           if ( nu ) {
-            this.$video && this.$video.play();
             this.poller_ = this.setInterval(this.pollCapture, 500);
           } else {
             this.clearInterval(this.poller_);
@@ -102,7 +101,7 @@ CLASS({
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %> >
         <canvas id="<%= this.id + '-canvas' %>" style="display:none"></canvas>
-        <video id="<%= this.id + '-video' %>" style="max-width: 100%"></video>
+        <video id="<%= this.id + '-video' %>"></video>
         <div class="md-flex-row">$$start $$stop</div>
       </div>
     */}

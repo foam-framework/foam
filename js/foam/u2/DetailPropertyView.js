@@ -24,6 +24,10 @@ CLASS({
     'foam.u2.Select',
   ],
 
+  properties: [
+    [ 'nodeName', 'tr' ]
+  ],
+
   templates: [
     function CSS() {/*
       .foam-u2-PropertyView-label {

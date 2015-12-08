@@ -127,7 +127,7 @@ CLASS({
         alt(range('a','z'), range('A','Z'), '$', '_'),
         str(repeat(alt(range('a','z'), range('A', 'Z'), '$', '_', range('0', '9')))))),
 
-      text: str(plus(not(alt('<', '{{'), anyChar))),
+      text: str(plus(not(alt('<', '{{', '(('), anyChar))),
 
       if: seq1(1, 'if=', sym('ifExpr')),
 

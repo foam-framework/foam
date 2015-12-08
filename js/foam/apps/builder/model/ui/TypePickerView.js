@@ -93,11 +93,18 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-flex-row-baseline">
-          %%dataTypePicker()
+        <div class="md-flex-row">
+          <div class="md-picker-view-dropdown">
+            %%dataTypePicker()
+          </div>
           %%innerView()
         </div>
       </div>
+    */},
+    function CSS() {/*
+      .md-picker-view-dropdown {
+        min-width: 220px;
+      }
     */},
   ]
 

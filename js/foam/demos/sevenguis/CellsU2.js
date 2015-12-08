@@ -119,15 +119,15 @@ MODEL({
   name: 'CellsU2',
   extends: 'foam.u2.Element',
 
-  requires: [ 'foam.u2.Input', 'foam.u2.ElementParser' ],
+  requires: [ 'foam.u2.Input', 'foam.u2.ElementParser', 'foam.u2.PropertyView' ],
   imports:  [ 'dynamicFn' ],
   exports:  [ 'as cells' ],
 
   models: [
     {
       name: 'Cell',
-      extends: 'foam.ui.View',
-      requires: [ 'foam.ui.TextFieldView' ],
+      extends: 'foam.u2.Element',
+      requires: [ 'foam.u2.Input' ],
       imports: [ 'cells' ],
       documentation: function() {/*
         Doesn't build inner views until value is set or user clicks on view.
@@ -152,46 +152,45 @@ MODEL({
         }
       ],
       methods: [
-        function initHTML() {
+        function init() {
           this.SUPER();
 
           if ( this.hasOwnProperty('value') ) {
-            this.initValueHTML();
+         //   this.initValueHTML();
           } else {
-            this.value$.addListener(this.initValueHTML.bind(this));
-            this.$.addEventListener('click', this.onClickWhenEmpty);
+//            this.value$.addListener(this.initValueHTML.bind(this));
           }
-        },
+        }
+        /*
         function initValueHTML() {
-          this.$.removeEventListener('click', this.onClickWhenEmpty);
-          this.$.innerHTML = this.toValueHTML();
-
-          this.valueView.initHTML();
-          this.formulaView.initHTML();
+          this.removeEventListener('click', this.onClickWhenEmpty);
+          this.add(this.toValueE());
 
           this.valueView.$.addEventListener('click',  this.onClick);
           this.formulaView.$.addEventListener('blur', this.onBlur);
           this.formula$.addListener(this.onBlur);
+
         }
+      */
       ],
       listeners: [
         {
           name: 'onClickWhenEmpty',
           code: function() {
-            this.initValueHTML();
-            this.onClick();
+           //  this.initValueHTML();
+            // this.onClick();
           }
         },
         {
           name: 'onClick',
           code: function() {
-            DOM.setClass(this.$, 'formula', true);
-            this.formulaView.$.focus();
+            // DOM.setClass(this.$, 'formula', true);
+          //  this.formulaView.$.focus();
           }
         },
         {
           name: 'onBlur',
-          code: function() { DOM.setClass(this.$, 'formula', false); }
+          code: function() { /*DOM.setClass(this.$, 'formula', false);*/ }
         }
       ],
       templates: [
@@ -199,8 +198,7 @@ MODEL({
           .cellView > span {
             display: block;
             height: 15px;
-            padding: 2px;
-            width: 100%;
+            padding: 2px;            width: 100%;
           }
           .cellView > input {
             border:  none;
@@ -213,11 +211,11 @@ MODEL({
           .cellView.formula > input { display: inherit; }
           .cellView.formula > span  { display: none; }
         */},
-        function toHTML() {/*
-          <div id="%%id" class="cellView"> &nbsp; </div>
+        function initE() {/*#U2
+          <div x:data={{this}} class="cellView" onclick="onClickWhenEmpty"><:formula/> {{this.value$}}&nbsp; </div>
         */},
-        function toValueHTML() {/*
-          $$formula $$value{mode: 'read-only', escapeHTML: false}
+        function toValueE() {/*#U2
+          TEST: <:formula/> <:value mode="read-only" escapeHTML="false"/>
         */}
       ]
     }
@@ -225,8 +223,8 @@ MODEL({
   properties: [
 //    [ 'rows',    99 ],
 //    [ 'columns', 26 ],
-    [ 'rows',    5 ],
-    [ 'columns', 5 ],
+    [ 'rows',    15 ],
+    [ 'columns', 4 ],
     {
       name: 'cells',
       factory: function() { return {}; }
@@ -278,11 +276,6 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
         });
       }
       return cell;
-    },
-    function cellE(j, i) {
-      var c = this.E('td');
-      c.add(this.E('input'));
-      return c;
     }
   ],
   templates: [
@@ -311,18 +304,16 @@ this.load({"A0":"<b><u>Item</u></b>","B0":"<b><u>No.</u></b>","C0":"<b><u>Unit</
       }
     */},
     function initE() {/*#U2
-      <div> <!-- TODO: This div shouldn't be required. Fix. -->
-      <table cellspacing="0">
+      <table class="$" cellspacing="0">
         <tr>
           <th></th>
           <th class="$-colHeader" repeat="j in 0 .. this.columns-1">{{String.fromCharCode(65 + j)}}</th>
         </tr>
-        <tr repeat="i in 0 .. this.rows">
+        <tr repeat="i in 0 .. this.rows-1">
           <th class="$-rowHeader">{{i}}</th>
-          <td class="$-cell" repeat="j in 0 .. this.columns-1">{{this.cellE(j, i)}}</td>
+          <td class="$-cell" repeat="j in 0 .. this.columns-1">{{this.cell(this.cellName(j, i))}}</td>
         </tr>
       </table>
-      </div>
     */}
   ]
 });

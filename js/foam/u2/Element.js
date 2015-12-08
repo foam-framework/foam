@@ -20,7 +20,6 @@ CLASS({
   name: 'Element',
 
   requires: [
-    'foam.input.touch.GestureTarget',
     'foam.u2.ElementValue'
   ],
 
@@ -63,6 +62,7 @@ CLASS({
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
+      onRemoveListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
       onAddChildren: function() { },
@@ -94,6 +94,9 @@ CLASS({
         throw "Mutations not allowed in OUTPUT state.";
       },
       onAddListener: function(topic, listener) {
+        throw "Mutations not allowed in OUTPUT state.";
+      },
+      onRemoveListener: function(topic, listener) {
         throw "Mutations not allowed in OUTPUT state.";
       },
       onSetStyle:    function(key, value) {
@@ -135,6 +138,9 @@ CLASS({
       onAddListener: function(topic, listener) {
         this.addEventListener_(topic, listener);
       },
+      onRemoveListener: function(topic, listener) {
+        this.addRemoveListener_(topic, listener);
+      },
       onSetStyle:    function(key, value) {
         this.id$el.style[key] = value;
       },
@@ -142,6 +148,7 @@ CLASS({
         this.id$el[key] = value;
       },
       onAddChildren: function() {
+        console.log('onAddChildren: ', arguments);
         var e = this.id$el;
         if ( ! e ) {
           console.warn('Missing Element: ', this.id);
@@ -185,6 +192,7 @@ CLASS({
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
+      onRemoveListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
       onAddChildren: function() { },
@@ -199,6 +207,7 @@ CLASS({
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
+      onRemoveListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
       onAddChildren: function() { },
@@ -306,7 +315,10 @@ CLASS({
       name: 'innerHTML',
       transient: true,
       getter: function() { return this.outputInnerHTML(this.createOutputStream()).toString(); }
-    }
+    },
+    {
+      name: 'clickTarget_',
+    },
   ],
 
   templates: [
@@ -373,6 +385,10 @@ CLASS({
 
     function onAddListener(topic, listener) {
       this.state.onAddListener.call(this, topic, listener);
+    },
+
+    function onRemoveListener(topic, listener) {
+      this.state.onRemoveListener.call(this, topic, listener);
     },
 
     function onSetStyle(key, value) {
@@ -468,6 +484,22 @@ CLASS({
       this.state.remove.call(this);
     },
 
+    function addEventListener(topic, listener) {
+      this.elListeners.push([topic, listener]);
+      this.onAddListener(topic, listener);
+    },
+
+    function removeEventListener(topic, listener) {
+      for ( var i = 0 ; i < this.elListeners.length ; i++ ) {
+        var l = this.elListeners[i];
+        if ( l[0] == topic && l[1] === listener ) {
+          this.elListeners.splice(i, 1);
+          this.onRemoveListener(topic, listener);
+          return;
+        }
+      }
+    },
+
     //
     // DOM-like
     //
@@ -486,8 +518,7 @@ CLASS({
       return this;
     },
     function on(topic, listener) {
-      this.elListeners.push([topic, listener]);
-      this.onAddListener(topic, listener);
+      this.addEventListener(topic, listener);
       return this;
     },
 
@@ -750,10 +781,10 @@ CLASS({
     },
 
     function addEventListener_(topic, listener) {
-      if (this.X.gestureManager && topic === 'click') {
+      if ( topic === 'click' && this.X.gestureManager ) {
         var manager = this.X.gestureManager;
         var self = this;
-        var target = this.GestureTarget.create({
+        var target = this.X.lookup('foam.input.touch.GestureTarget').create({
           containerID: this.id$el.id,
           enforceContainment: true,
           gesture: 'tap',
@@ -769,9 +800,18 @@ CLASS({
           }
         });
         manager.install(target);
-        // TODO: Uninstall when the element is unloaded.
+        this.clickTarget_ = target;
       } else {
         this.id$el.addEventListener(topic, listener);
+      }
+    },
+
+    function removeEventListener_(topic, listener) {
+      if ( topic === 'click' && this.X.gestureManager && this.clickTarget_ ) {
+        this.X.gestureManager.uninstall(this.clickTarget_);
+        this.clickTarget = '';
+      } else {
+        this.id$el.removeEventListener(topic, listener);
       }
     },
 

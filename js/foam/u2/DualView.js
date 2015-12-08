@@ -18,4 +18,38 @@ CLASS({
   package: 'foam.u2',
   name: 'DualView',
   extends: 'foam.u2.Element',
+
+  properties: [
+    'data',
+    {
+      name: 'readViewFactory'
+    },
+    {
+      name: 'writeViewFactory'
+    }
+  }
+
+  methods: [
+    function init() {
+      this.SUPER();
+      if ( this.data ) {
+        this.initReadView();
+      } else {
+        this.data$.addListener(onDataChange);
+      }
+    },
+    function initReadView() {
+      this.add(this.E('input').style({background:'pink'});
+    },
+    function initReadView() {
+      this.add(this.E('input'));
+    },
+  ],
+
+  listeners: [
+    function onDataChange() {
+      this.data$.removeListener(this.onDataChange);
+      this.initReadView();
+    }
+  ]
 });
