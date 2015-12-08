@@ -49,6 +49,22 @@ CLASS({
             parameter: '[def]',
           },
         },
+        {
+          type: 'String',
+          name: 'regexPatternMatch',
+          pattern: {
+            model_: 'foam.apps.builder.model.regex.MatchesRegex',
+            parameter: '^[abc][def].*$',
+          },
+        },
+        {
+          type: 'String',
+          name: 'regexPatternNotMatch',
+          pattern: {
+            model_: 'foam.apps.builder.model.regex.NotMatchesRegex',
+            parameter: '^[abc][def].*$',
+          },
+        },
       ],
     },
   ],
@@ -101,7 +117,7 @@ CLASS({
     {
       model_: 'UnitTest',
       name: 'RegexContainsDirty',
-      description: 'ContainsRegex validator test with a pattern that needs to be sanitized',
+      description: 'ContainsRegex validator test with a parameter that needs to be sanitized',
       code: function() {
         var m = this.StringModel.create();
 
@@ -122,6 +138,38 @@ CLASS({
         notMatchesPattern.forEach(function(val) {
           m.regexContainsDirty = val;
           this.assert( m.REGEX_CONTAINS_DIRTY.validate.call(m), "Does not contain matches to the unsanitized regex "+val );
+        }.bind(this));
+
+      }
+    },
+    {
+      model_: 'UnitTest',
+      name: 'RegexMatchVsNotMatch',
+      description: 'MatchesRegex validator should be the exact opposite of a NotMatchesRegex',
+      code: function() {
+        var m = this.StringModel.create();
+
+        var matchesPattern = [
+          "ae:LK#J:LKKJG:LKJFDD",
+          "bf 34985 43 9834 4 jh",
+        ];
+        var notMatchesPattern = [
+          "34edfgfd",
+          "dfskadgr54",
+          "da",
+        ];
+
+        matchesPattern.forEach(function(val) {
+          m.regexPatternMatch = val;
+          m.regexPatternNotMatch = val;
+          this.assert( ! m.REGEX_PATTERN_MATCH.validate.call(m), "Match valid "+val );
+          this.assert( m.REGEX_PATTERN_NOT_MATCH.validate.call(m), "and NotMatch fails "+val );
+        }.bind(this));
+        notMatchesPattern.forEach(function(val) {
+          m.regexPatternMatch = val;
+          m.regexPatternNotMatch = val;
+          this.assert( m.REGEX_PATTERN_MATCH.validate.call(m), "Match invalid "+val );
+          this.assert( ! m.REGEX_PATTERN_NOT_MATCH.validate.call(m), "and NotMatch succeeds "+val );
         }.bind(this));
 
       }
