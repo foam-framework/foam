@@ -46,8 +46,8 @@ CLASS({
       getter: function() {
         var value = this.data;
         for (var i = 0; i < this.choices.length; i++) {
-          var choices = this.choices[i];
-          if (value === choices[0]) return choice;
+          var choice = this.choices[i];
+          if (value === choice[0]) return choice;
         }
         return undefined;
       },

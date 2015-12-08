@@ -553,6 +553,21 @@ GLOBAL.Property = {
       */}
     },
     {
+      name: 'javaAdapt',
+      type: 'String',
+      labels: ['compiletime', 'java']
+    },
+    {
+      name: 'javaPreSet',
+      type: 'String',
+      labels: ['compiletime', 'java']
+    },
+    {
+      name: 'javaPostSet',
+      type: 'String',
+      labels: ['compiletime', 'java']
+    },
+    {
       name: 'swiftAdapt',
       type: 'String',
       labels: ['compiletime', 'swift'],

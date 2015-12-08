@@ -29,6 +29,7 @@ CLASS({
     'foam.u2.md.Input',
     'foam.u2.md.Select',
     'foam.u2.md.SharedStyles',
+    'foam.u2.md.TextArea'
   ],
 
   imports: [
@@ -425,6 +426,7 @@ CLASS({
       this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
       this.Y.registerModel(this.Checkbox, 'foam.u2.Checkbox');
       this.Y.registerModel(this.Input, 'foam.u2.Input');
+      this.Y.registerModel(this.TextArea, 'foam.u2.TextArea');
       this.Y.registerModel(this.Select, 'foam.u2.Select');
       this.SUPER();
     },
