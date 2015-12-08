@@ -19,28 +19,15 @@
 CLASS({
   name: 'FloatPropertyEditView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyEditView',
+  extends: 'foam.apps.builder.model.ui.IntPropertyEditView',
 
   requires: [
   ],
 
   properties: [
-    {
-      name: 'className',
-      defaultValue: 'property-edit-view',
-    },
-    {
-      name: 'mode',
-      defaultValue: 'read-write',
-    },
+    [ 'className', 'property-edit-view' ],
+    [ 'mode', 'read-write' ],
   ],
 
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-
-      </div>
-    */},
-  ],
 
 });

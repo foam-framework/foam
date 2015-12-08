@@ -28,17 +28,24 @@ CLASS({
 
   label: 'Contains',
 
+  messages: {
+    errorNoMatch: 'The value must contain $parameter$',
+  },
+
   properties: [
     {
       type: 'String',
       label: 'String',
-      name: 'parameter',
+      name: 'parameter', // todo: sanitize
     },
   ],
 
   methods: [
     function toString() {
       return '.*'+this.parameter+'.*';
+    },
+    function test(val) {
+      return val.indexOf(this.parameter) !== -1;
     }
   ],
 });

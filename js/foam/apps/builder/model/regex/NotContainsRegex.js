@@ -28,6 +28,10 @@ CLASS({
 
   label: 'Does not contain',
 
+  messages: {
+    errorNoMatch: 'The value must not contain $parameter$',
+  },
+
   properties: [
     {
       type: 'String',
@@ -39,6 +43,9 @@ CLASS({
   methods: [
     function toString() {
       return '^((?!'+this.parameter+').)*$';
+    },
+    function test(val) {
+      return val.indexOf(this.parameter) === -1;
     }
   ],
 });
