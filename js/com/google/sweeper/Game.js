@@ -14,10 +14,7 @@ CLASS({
   name: 'Game',
   extends: 'foam.u2.Element',
 
-  requires: [
-    'com.google.sweeper.Board',
-    'foam.u2.PropertyView'
-  ],
+  requires: [ 'com.google.sweeper.Board' ],
 
   properties: [
     {

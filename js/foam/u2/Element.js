@@ -50,7 +50,7 @@ CLASS({
   constants: {
     INITIAL: {
       output: function(out) {
-        this.initE(this);
+        this.initE(this.Y, this);
         this.output_(out);
 
         this.state = this.OUTPUT;
@@ -901,6 +901,7 @@ CLASS({
     function e() { return this.end(); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
     function i(id) { return this.setID(id); },
+    function n(nodeName) { this.nodeName = nodeName; return this; },
     function o(m) {
       for ( var k in m ) this.on(k, m[k]);
       return this;

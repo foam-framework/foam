@@ -206,7 +206,7 @@ CLASS({
         e.as = e.as || '$e';
         e.output(out, true);
         this.reset();
-        return 'function(opt_e){var s=[];' + output.join('') + ';return ' + e.as + ';}';
+        return 'function(X, opt_e){X=X||this.X;var s=[];' + output.join('') + ';return ' + e.as + ';}';
       },
       id: function(id) { this.peek().id = id; },
       as: function(as) { this.peek().as = as; },
@@ -283,7 +283,8 @@ CLASS({
             var longForm = false;
             if ( firstE ) {
               if ( this.as ) out('var ', this.as, '=');
-              out('(opt_e || this.X.E(', nn, '))');
+              out('(opt_e||X.E())');
+              if ( nn ) out('.n(', nn, ')');
             } else {
               longForm = this.as ||
                 this.id ||
