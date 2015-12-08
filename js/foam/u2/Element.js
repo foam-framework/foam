@@ -700,28 +700,31 @@ CLASS({
       return p;
     },
     function add(/* vargs */) {
-      for ( var i = 0 ; i < arguments.length ; i++ ) {
-        var c = arguments[i];
+      var args = new Array(arguments.length);
+      for ( var i = 0 ; i < arguments.length ; i++ ) args[i] = arguments[i];
+
+      for ( var i = 0 ; i < args.length ; i++ ) {
+        var c = args[i];
 
         // Remove null values
         if ( c === undefined || c === null ) {
-          Array.prototype.splice.call(arguments, i, 1);
+          Array.prototype.splice.call(args, i, 1);
           i--;
           continue;
         } else if ( Array.isArray(c) ) {
-          Array.prototype.splice.apply(arguments, [i, 1].concat(c));
+          Array.prototype.splice.apply(args, [i, 1].concat(c));
           i--;
           continue;
         } else if ( c.toE ) {
-          arguments[i] = c.toE(this.Y);
+          args[i] = c.toE(this.Y);
         } else if ( Value.isInstance(c) ) {
-          arguments[i] = this.valueE_(c);
+          args[i] = this.valueE_(c);
         }
       }
 
-      if ( arguments.length ) {
-        this.childNodes.push.apply(this.childNodes, arguments);
-        this.onAddChildren.apply(this, arguments);
+      if ( args.length ) {
+        this.childNodes.push.apply(this.childNodes, args);
+        this.onAddChildren.apply(this, args);
       }
 
       return this;
