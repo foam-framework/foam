@@ -255,6 +255,41 @@ CLASS({
 
 
 CLASS({
+  name: 'HasExpr',
+  extendsModel: 'UNARY',
+
+  documentation: 'Unary expression that checks if its argument has a ' +
+      'meaningful, non-empty value (nonempty strings, nonempty arrays, etc.)',
+
+  methods: [
+    function toSQL() {
+      return this.arg1.toSQL() + ' IS NOT NULL';
+    },
+    function toMQL() {
+      return 'has:' + this.arg1.toMQL();
+    },
+    function toBQL() {
+      return this.toMQL();
+    },
+    function collectInputs(terms) {
+      this.arg1.collectInputs(terms);
+    },
+    function partialEval() {
+      if (this.arg1 && this.arg1.partialEval)
+        this.arg1 = this.arg1.partialEval();
+      return this;
+    },
+    function f(obj) {
+      var value = this.arg1.f(obj);
+      var notHas = value === undefined || value === null || value === '' ||
+          (Array.isArray(value) && value.length === 0);
+      return !notHas;
+    },
+  ]
+});
+
+
+CLASS({
   name: 'ContainedInICExpr',
 
   extendsModel: 'BINARY',
@@ -1097,6 +1132,10 @@ function NOT(arg) {
   return NotExpr.create({arg1: compile_(arg)});
 }
 
+function HAS(arg) {
+  return HasExpr.create({arg1: compile_(arg)});
+}
+
 // TODO: add EQ_ic
 
 function STARTS_WITH(arg1, arg2) {
@@ -1184,7 +1223,7 @@ CLASS({
 
   methods: {
     toSQL: function() {
-      return this.arg1.toMQL() + 'DESC';
+      return this.arg1.toSQL() + 'DESC';
     },
     toMQL: function() {
       return '-' + this.arg1.toMQL();

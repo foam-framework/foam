@@ -113,15 +113,15 @@ var TRUE = (FOAM({
 
   documentation: 'Model for the primitive true value.',
 
-  methods: {
-    clone:     function() { return this; },
-    deepClone: function() { return this; },
-    toString:  function() { return '<true>'; },
-    toSQL:     function() { return '( 1 = 1 )'; },
-    toMQL:     function() { return ''; },
-    toBQL:     function() { return ''; },
-    f:         function() { return true; }
-  }
+  methods: [
+    function clone() { return this; },
+    function deepClone() { return this; },
+    function toString() { return '<true>'; },
+    function toSQL() { return '( 1 = 1 )'; },
+    function toMQL() { return ''; },
+    function toBQL() { return ''; },
+    function f() { return true; }
+  ]
 })).create();
 
 
@@ -132,14 +132,14 @@ var FALSE = (FOAM({
 
   documentation: 'Model for the primitive false value.',
 
-  methods: {
-    clone:     function() { return this; },
-    deepClone: function() { return this; },
-    toSQL: function(out) { return '( 1 <> 1 )'; },
-    toMQL: function(out) { return '<false>'; },
-    toBQL: function(out) { return '<false>'; },
-    f:     function() { return false; }
-  }
+  methods: [
+    function clone() { return this; },
+    function deepClone() { return this; },
+    function toSQL(out) { return '( 1 <> 1 )'; },
+    function toMQL(out) { return '<false>'; },
+    function toBQL(out) { return '<false>'; },
+    function f() { return false; }
+  ]
 })).create();
 
 

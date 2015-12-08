@@ -66,6 +66,8 @@ CLASS({
           var l = this.elListeners[i];
           this.id$el.addEventListener(l[0], l[1]);
         }
+
+        this.visitChildren('load');
       },
       unload:        function() { console.error('Must load before unloading.'); },
       destroy:       function() { },
@@ -95,6 +97,7 @@ CLASS({
       load:          function() { console.error('Duplicate load.'); },
       unload:        function() {
         this.state = this.UNLOADED;
+        this.visitChildren('unload');
       },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
@@ -132,6 +135,7 @@ CLASS({
       output:        function() { },
       load:          function() {
         this.state = this.LOADED;
+        this.visitChildren('load');
       },
       unload:        function() { },
       destroy:       function() { },
@@ -243,12 +247,12 @@ CLASS({
     {
       name: 'outerHTML',
       transient: true,
-      getter: function() { return this.output(this.createOutputStream()); }
+      getter: function() { return this.output(this.createOutputStream()).toString(); }
     },
     {
       name: 'innerHTML',
       transient: true,
-      getter: function() { return this.outputInnerHTML(this.createOutputStream()); }
+      getter: function() { return this.outputInnerHTML(this.createOutputStream()).toString(); }
     }
   ],
 
@@ -275,6 +279,13 @@ CLASS({
 
     function onSetCls(cls, add) {
       this.state.onSetCls.call(this, cls, add);
+    },
+
+    function visitChildren(methodName) {
+      for (var i = 0; i < this.childNodes.length; i++) {
+        var c = this.childNodes[i];
+        c[methodName] && c[methodName].call(c);
+      }
     },
 
     //
@@ -392,7 +403,8 @@ CLASS({
               } else {
                 buf.push(o);
               }
-              if ( o.initHTML && self && obj.addChild ) self.addChild(o);
+              // TODO(kgr): Figure out what this line was supposed to do.
+              //if ( o.initHTML && self && obj.addChild ) self.addChild(o);
             }
           }
         }
