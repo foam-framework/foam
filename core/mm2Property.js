@@ -533,11 +533,11 @@ GLOBAL.Property = {
       preSet: function(_, f) {
         var str = f.toString();
         var deps = str.match(/^function[ _$\w]*\(([ ,\w]*)/)[1];
-        if ( deps ) {
+        if ( deps )
           deps = deps.split(',').map(function(name) { return name.trim(); });
-        } else {
+        else
           deps = [];
-        }
+
         var f2 = function() {
           var args = [];
           for ( var i = 0 ; i < deps.length ; i++ )

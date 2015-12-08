@@ -46,6 +46,27 @@ CLASS({
       ],
     },
     {
+      name: 'FloatModel',
+      properties: [
+        {
+          type: 'Float',
+          name: 'defaulty',
+        },
+        {
+          type: 'Float',
+          name: 'bounded',
+          minValue: -1.4,
+          maxValue: 12.999,
+        },
+        {
+          type: 'Float',
+          name: 'invertedBounds',
+          minValue: 300.4,
+          maxValue: 1.0001,
+        },
+      ],
+    },
+    {
       name: 'StringModel',
       properties: [
         {
@@ -107,6 +128,13 @@ CLASS({
       code: function() {
         var m = this.IntModel.create();
 
+        m.defaulty = 0;
+        this.assert( ! m.DEFAULTY.validate.call(m), "Unbounded int sets (zero)" );
+        m.defaulty = -2000;
+        this.assert( ! m.DEFAULTY.validate.call(m), "Unbounded int sets (negative)" );
+        m.defaulty = Infinity;
+        this.assert( ! m.DEFAULTY.validate.call(m), "Unbounded int sets (infinity)" );
+
         m.bounded = 4;
         this.assert( ! m.BOUNDED.validate.call(m), "Bounded int allows valid" );
 
@@ -122,10 +150,43 @@ CLASS({
         m.invertedBounds = 10;
         this.assert( m.INVERTED_BOUNDS.validate.call(m), "Inverted bounds rejects all values (small)" );
 
-        m.invalidLowerBound = 40;
+        m.invertedBounds = 40;
         this.assert( m.INVERTED_BOUNDS.validate.call(m), "Inverted bounds rejects all values (middle)" );
 
-        m.infiniteBounds = 250;
+        m.invertedBounds = 250;
+        this.assert( m.INVERTED_BOUNDS.validate.call(m), "Inverted bounds rejects all values (large)" );
+      }
+    },
+    {
+      model_: 'UnitTest',
+      name: 'FloatBounds',
+      description: 'FloatProperty min/max validation',
+      code: function() {
+        var m = this.FloatModel.create();
+
+        m.bounded = -1.4;
+        this.assert( ! m.BOUNDED.validate.call(m), "Bounded float allows valid (lower bound)" );
+        m.bounded = 12.999;
+        this.assert( ! m.BOUNDED.validate.call(m), "Bounded float allows valid (upper bound)" );
+        m.bounded = 0;
+        this.assert( ! m.BOUNDED.validate.call(m), "Bounded float allows valid (zero)" );
+
+        m.bounded = 12.9999;
+        this.assert( m.BOUNDED.validate.call(m), "Bounded float rejects invalid (close to lower bound)" );
+
+        m.bounded = -1.4001;
+        this.assert( m.BOUNDED.validate.call(m), "Bounded float rejects invalid (close to upper bound)" );
+
+        m.bounded = 0;
+        this.assert( ! m.BOUNDED.validate.call(m), "Bounded float allows reset back to valid" );
+
+        m.invertedBounds = -10;
+        this.assert( m.INVERTED_BOUNDS.validate.call(m), "Inverted bounds rejects all values (small)" );
+
+        m.invertedBounds = 40;
+        this.assert( m.INVERTED_BOUNDS.validate.call(m), "Inverted bounds rejects all values (middle)" );
+
+        m.invertedBounds = 250;
         this.assert( m.INVERTED_BOUNDS.validate.call(m), "Inverted bounds rejects all values (large)" );
       }
     },
