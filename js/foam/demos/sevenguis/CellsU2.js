@@ -221,10 +221,10 @@ MODEL({
     }
   ],
   properties: [
-//    [ 'rows',    99 ],
-//    [ 'columns', 26 ],
-    [ 'rows',    15 ],
-    [ 'columns', 4 ],
+    [ 'rows',    99 ],
+    [ 'columns', 26 ],
+//    [ 'rows',    15 ],
+//    [ 'columns', 4 ],
     {
       name: 'cells',
       factory: function() { return {}; }
@@ -237,6 +237,9 @@ MODEL({
   methods: [
     function init() {
       this.SUPER();
+
+
+foam.demos.sevenguis.CellsU2.getPrototype().initE = OAM.time('initE', foam.demos.sevenguis.CellsU2.getPrototype().initE);
 
       this.ElementParser.getPrototype();
 
