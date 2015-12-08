@@ -16,17 +16,101 @@
  */
 
 CLASS({
+  name: 'Message',
+  plural: 'messages',
+
+  tableProperties: [
+    'name',
+    'value',
+    'translationHint'
+  ],
+
+  documentation: function() {/*
+  */},
+
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The coding identifier for the message.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+         */}
+    },
+    {
+      name: 'value',
+      type: 'String',
+      help: 'The message itself.'
+    },
+    {
+      name: 'meaning',
+      type: 'String',
+      help: 'Linguistic clarification to resolve ambiguity.',
+      documentation: function() {/* A human readable discussion of the
+        $$DOC{ref:'.'} to resolve linguistic ambiguities.
+      */}
+    },
+    {
+      model_: 'ArrayProperty',
+      name: 'placeholders',
+      help: 'Placeholders to inject into the message.',
+      documentation: function() {/* Array of plain Javascript objects
+        describing in-message placeholders. The data can be expanded into
+        $$DOC{ref:'foam.i18n.Placeholder'}, for example.
+      */},
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'replaceValues',
+      documentation: function() {/* Function that binds values to message
+        contents.
+      */},
+      defaultValue: function(unused_selectors, args) {
+        var phs = this.placeholders || [];
+        var value = this.value;
+        // Bind known placeholders to message string.
+        for ( var i = 0; i < phs.length; ++i ) {
+          var name = phs[i].name;
+          var replacement = args.hasOwnProperty(name) ? args[name] :
+              phs[i].example;
+          value = value.replace((new RegExp('[$]' + name + '[$]', 'g')),
+                                replacement);
+        }
+        return value;
+      }
+    },
+    {
+      name: 'translationHint',
+      type: 'String',
+      displayWidth: 70,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'A brief description of this message and the context in which it used.',
+      documentation: function() {/* A human readable description of the
+        $$DOC{ref:'.'} and its context for the purpose of translation.
+      */}
+    }
+  ]
+});
+
+
+CLASS({
   name: 'StringProperty',
   extends: 'Property',
 
   help: 'Describes a properties of type String.',
   label: 'Text',
 
-  messages: {
-    errorPatternMismatch: 'The text does not match the pattern.',
-    errorBelowMinLength: 'The text is too short.',
-    errorAboveMaxLength: 'The text is too long.'
-  },
+  messages: [
+    { name: 'errorPatternMismatch', value: 'The text does not match the pattern.' },
+    { name: 'errorBelowMinLength', value: 'The text is too short.' },
+    { name: 'errorAboveMaxLength', value: 'The text is too long.' }
+  ],
 
   properties: [
     {
@@ -97,7 +181,7 @@ CLASS({
           min = parseInt(min);
           ret = function(result) {
             return result ||
-              ( this[prop.name].length < min ? this.ERROR_BELOW_MIN_LENGTH.replaceValues(min) : '');
+              ( this[prop.name].length < min ? prop.ERROR_BELOW_MIN_LENGTH.replaceValues(min) : '');
           }.o(ret);
         }
         var max = prop.maxChars;
@@ -105,7 +189,7 @@ CLASS({
           max = parseInt(max);
           ret = function(result) {
             return result ||
-              ( this[prop.name].length > max ? this.ERROR_ABOVE_MAX_LENGTH.replaceValues(max) : '');
+              ( this[prop.name].length > max ? prop.ERROR_ABOVE_MAX_LENGTH.replaceValues(max) : '');
           }.o(ret);
         }
         var pattern = prop.pattern;
@@ -271,10 +355,10 @@ CLASS({
 
   help:  'Base model for a property of any numeric type.',
 
-  messages: {
-    errorBelowMinimum: 'The value is too small.',
-    errorAboveMaximum: 'The value is too large.',
-  },
+  messages: [
+    { name: 'errorBelowMinimum', value: 'The value is too small.' },
+    { name: 'errorAboveMaximum', value:  'The value is too large.' }
+  ],
 
   properties: [
     {
@@ -307,7 +391,7 @@ CLASS({
           min = prop.adapt.call(prop, null, min);
           ret = function(result) {
             return result ||
-              ( this[prop.name] < min ? this.ERROR_BELOW_MINIMUM.replaceValues(min) : '');
+              ( this[prop.name] < min ? prop.ERROR_BELOW_MINIMUM.replaceValues(min) : '');
           }.o(ret);
         }
 
@@ -316,7 +400,7 @@ CLASS({
           max = prop.adapt.call(prop, null, max);
           ret = function(result) {
             return result ||
-              ( this[prop.name] > max ? this.ERROR_ABOVE_MAXIMUM.replaceValues(max) : '');
+              ( this[prop.name] > max ? prop.ERROR_ABOVE_MAXIMUM.replaceValues(max) : '');
           }.o(ret);
         }
         return ret;
