@@ -23,10 +23,12 @@ CLASS({
 
   properties: [
     {
+      model_: 'foam.node.NodeRequireProperty',
       name: 'fs',
-      factory: function() {
-        return require('fs');
-      }
+    },
+    {
+      model_: 'foam.node.NodeRequireProperty',
+      name: 'path'
     },
     {
       name:  'filename',
@@ -72,6 +74,18 @@ CLASS({
       });
     },
     loadFile: function(filename) {
+      var path = this.path.normalize(filename).split(this.path.sep);
+      var s = '';
+      for ( var i = 1 ; i < path.length - 1 ; i++ ) {
+        try {
+          s += this.path.sep + path[i];
+          var stat = this.fs.statSync(s);
+          if ( ! stat.isDirectory() ) return undefined;
+        } catch( e ) {
+          this.fs.mkdirSync(s);
+        }
+      }
+
       if ( ! this.fs.existsSync(filename) ) return undefined;
       var content = this.fs.readFileSync(filename, { encoding: 'utf-8' });
       var data = JSONUtil.parse(this.X, content);
