@@ -20,8 +20,27 @@ CLASS({
   name: 'OnDemandDAOHandler',
   extends: 'foam.node.handlers.DAOHandler',
   requires: [
+    'foam.node.dao.JSONFileDAO',
     'foam.dao.EasyDAO',
     'foam.dao.FutureDAO',
+  ],
+  properties: [
+    {
+      model_: 'foam.node.NodeRequireProperty',
+      name: 'crypto'
+    },
+    {
+      model_: 'foam.node.NodeRequireProperty',
+      name: 'nodePath',
+      moduleName: 'path'
+    },
+    {
+      name: 'dataDir',
+      type: 'String',
+      defaultValueFn: function() {
+        return global.FOAM_BOOT_DIR + this.nodePath.sep + '../dao_data';
+      }
+    }
   ],
   methods: [
     function getDAO(subject) {
@@ -36,7 +55,13 @@ CLASS({
         this.X.arequire(subject.substring(0, subject.length - 3))(function(m) {
           future.set(this.EasyDAO.create({
             model: m,
-            daoType: 'MDAO',
+            daoType: this.JSONFileDAO.xbind({
+              model: m,
+              filename: this.dataDir +
+                this.nodePath.sep +
+                this.crypto.createHash('sha256').update(m.id).digest('hex') +
+                '.json'
+            }),
             isServer: true,
             guid: true,
             cloning: true,
