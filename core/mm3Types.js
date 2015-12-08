@@ -108,8 +108,16 @@ CLASS({
 
   messages: [
     { name: 'errorPatternMismatch', value: 'The text does not match the pattern.' },
-    { name: 'errorBelowMinLength', value: 'The text is too short.' },
-    { name: 'errorAboveMaxLength', value: 'The text is too long.' }
+    {
+      name: 'errorBelowMinLength',
+      value: 'The text is too short. Minimum: $min$',
+      placeholders: [ { name: 'min' } ]
+    },
+    {
+      name: 'errorAboveMaxLength',
+      value: 'The text is too long. Maximum: $max$',
+      placeholders: [ { name: 'max' } ]
+    }
   ],
 
   properties: [
@@ -181,7 +189,10 @@ CLASS({
           min = parseInt(min);
           ret = function(result) {
             return result ||
-              ( this[prop.name].length < min ? prop.ERROR_BELOW_MIN_LENGTH.replaceValues(min) : '');
+              ( this[prop.name].length < min ?
+                  prop.ERROR_BELOW_MIN_LENGTH.replaceValues(null, { min: min }) :
+                  ''
+              );
           }.o(ret);
         }
         var max = prop.maxChars;
@@ -189,7 +200,10 @@ CLASS({
           max = parseInt(max);
           ret = function(result) {
             return result ||
-              ( this[prop.name].length > max ? prop.ERROR_ABOVE_MAX_LENGTH.replaceValues(max) : '');
+              ( this[prop.name].length > max ?
+                  prop.ERROR_ABOVE_MAX_LENGTH.replaceValues(null, { max: max }) :
+                  ''
+              );
           }.o(ret);
         }
         var pattern = prop.pattern;
@@ -356,8 +370,16 @@ CLASS({
   help:  'Base model for a property of any numeric type.',
 
   messages: [
-    { name: 'errorBelowMinimum', value: 'The value is too small.' },
-    { name: 'errorAboveMaximum', value:  'The value is too large.' }
+    {
+      name: 'errorBelowMinimum',
+      value: 'The value must be at least $min$.',
+      placeholders: [ { name: 'min' } ]
+    },
+    {
+      name: 'errorAboveMaximum',
+      value: 'The value can be at most $max$.',
+      placeholders: [ { name: 'max' } ]
+    }
   ],
 
   properties: [
@@ -391,7 +413,7 @@ CLASS({
           min = prop.adapt.call(prop, null, min);
           ret = function(result) {
             return result ||
-              ( this[prop.name] < min ? prop.ERROR_BELOW_MINIMUM.replaceValues(min) : '');
+              ( this[prop.name] < min ? prop.ERROR_BELOW_MINIMUM.replaceValues(null, { min: min }) : '');
           }.o(ret);
         }
 
@@ -400,7 +422,7 @@ CLASS({
           max = prop.adapt.call(prop, null, max);
           ret = function(result) {
             return result ||
-              ( this[prop.name] > max ? prop.ERROR_ABOVE_MAXIMUM.replaceValues(max) : '');
+              ( this[prop.name] > max ? prop.ERROR_ABOVE_MAXIMUM.replaceValues(null, { max: max }) : '');
           }.o(ret);
         }
         return ret;
