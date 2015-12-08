@@ -160,9 +160,9 @@ CLASS({
         this.assert( ! m.INVERTED_BOUNDS.validate.call(m), "Inverted bounds rejects (large)" );
 
         m.invalidLowerBound = this.loremIpsum(0);
-        this.assert( ! m.INVALID_LOWER_BOUND.validate.call(m), "Invalid lower bound string accepts empty (as if lower bound of zero)" );
+        this.assert( ! m.INVALID_LOWER_BOUND.validate.call(m), "Invalid lower bound string accepts empty (as if lower bound was zero)" );
         m.invalidLowerBound = this.loremIpsum(10);
-        this.assert( ! m.INVALID_LOWER_BOUND.validate.call(m), "Invalid lower bound string accepts small (as if lower bound of zero)" );
+        this.assert( ! m.INVALID_LOWER_BOUND.validate.call(m), "Invalid lower bound string accepts small (as if lower bound was zero)" );
 
         m.infiniteBounds = this.loremIpsum(100);
         this.assert( ! m.INFINITE_BOUNDS.validate.call(m), "Infinite upper bound string accepts medium" );
@@ -187,6 +187,15 @@ CLASS({
           "x43534oinkj dlfaaz",
           "daakjj89nnhu98nhz7", // there's a substring that would match, but we want the whole string to match
         ];
+
+        matchesBasicPattern.forEach(function(val) {
+          m.defaulty = val;
+          this.assert( ! m.DEFAULTY.validate.call(m), "No pattern, anything ok "+val );
+        }.bind(this));
+        notMatchesBasicPattern.forEach(function(val) {
+          m.defaulty = val;
+          this.assert( ! m.DEFAULTY.validate.call(m), "No pattern, anything ok "+val );
+        }.bind(this));
 
         matchesBasicPattern.forEach(function(val) {
           m.regexPatternBasic = val;
