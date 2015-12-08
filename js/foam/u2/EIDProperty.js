@@ -22,8 +22,9 @@ CLASS({
   help: 'Describes a property used to store a DOM element id.',
 
   constants: {
+    __ID__: [0],
     NEXT_ID: function() {
-      return 'u2v' + (arguments.callee._nextId = (arguments.callee._nextId || 0) + 1);
+      return 'u2v' + this.__ID__++;
     }
   },
 
