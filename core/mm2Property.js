@@ -555,17 +555,29 @@ GLOBAL.Property = {
     {
       name: 'javaAdapt',
       type: 'String',
-      labels: ['compiletime', 'java']
+      labels: ['compiletime', 'java'],
+      adapt: function(_, n) {
+        if ( typeof n == "function" ) return multiline(n);
+        return n;
+      }
     },
     {
       name: 'javaPreSet',
       type: 'String',
-      labels: ['compiletime', 'java']
+      labels: ['compiletime', 'java'],
+      adapt: function(_, n) {
+        if ( typeof n == "function" ) return multiline(n);
+        return n;
+      }
     },
     {
       name: 'javaPostSet',
       type: 'String',
-      labels: ['compiletime', 'java']
+      labels: ['compiletime', 'java'],
+      adapt: function(_, n) {
+        if ( typeof n == "function" ) return multiline(n);
+        return n;
+      }
     },
     {
       name: 'swiftAdapt',
