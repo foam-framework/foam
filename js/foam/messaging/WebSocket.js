@@ -34,7 +34,7 @@ CLASS({
     {
       name: 'socket',
       postSet: function(old, s) {
-        old && old.removeEventListener(this.onMessage);
+        old && old.removeEventListener("onMessage", this.onMessage);
       }
     }
   ],
