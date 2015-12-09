@@ -19,21 +19,65 @@ CLASS({
   name: 'Controller',
   extends: 'foam.browser.u2.BrowserController',
   requires: [
+    'com.chrome.apis.AccessGroup',
+    'com.chrome.apis.ApiKey',
     'com.chrome.apis.Experiment',
     'com.chrome.apis.ExperimentActivation',
     'com.chrome.apis.Origin',
     'com.chrome.apis.User',
-    'foam.dao.EasyDAO',
+    'foam.dao.EasyDAO'
   ],
 
   exports: [
+    'accessGroupDAO',
+    'apiKeyDAO',
     'experimentActivationDAO',
     'experimentDAO',
     'menuFactory',
     'originDAO',
+    'userDAO'
   ],
 
   properties: [
+    {
+      name: 'apiKeyDAO',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.ApiKey,
+          daoType: 'LOCAL',
+          cache: true,
+          guid: true,
+          cloning: true,
+          contextualize: true
+        });
+      }
+    },
+    {
+      name: 'userDAO',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.User,
+          daoType: 'LOCAL',
+          cache: true,
+          guid: true,
+          cloning: true,
+          contextualize: true
+        });
+      }
+    },
+    {
+      name: 'AccessGroupDAO',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.AccessGroup,
+          daoType: 'LOCAL',
+          cache: true,
+          guid: true,
+          cloning: true,
+          contextualize: true
+        });
+      }
+    },
     {
       name: 'experimentDAO',
       factory: function() {
