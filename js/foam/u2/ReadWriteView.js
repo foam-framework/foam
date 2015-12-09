@@ -35,16 +35,6 @@ CLASS({
         this.listenForLoad();
       }
     },
-    function initReadView() {
-      this.removeAllChildren();
-      this.add(this.toReadE().on('click', this.toWriteMode));
-    },
-    function initWriteView() {
-      this.removeAllChildren();
-      var e = this.toWriteE();
-      this.add(e);
-      e.focus();
-    },
 
     // Template Methods
     function isLoaded() {
@@ -58,7 +48,7 @@ CLASS({
     },
     function toWriteE() {
       this.data$.addListener(this.onDataLoad);
-      var e = this.E('input').on('blur', this.toReadMode);
+      var e = this.E('input');
       e.data$ = this.data$;
       return e;
     }
@@ -69,12 +59,11 @@ CLASS({
       this.data$.removeListener(this.onDataLoad);
       this.initReadView();
     },
-    function toReadMode() {
-      console.log('*** BLUR ***');
-      this.initReadView();
+    function initReadView() {
+      this.removeAllChildren().add(this.toReadE().on('click', this.initWriteView));
     },
-    function toWriteMode() {
-      this.initWriteView();
+    function initWriteView() {
+      this.removeAllChildren().add(this.toWriteE().on('blur', this.initReadView).focus());
     }
   ]
 });
