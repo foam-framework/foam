@@ -17,6 +17,9 @@
 CLASS({
   package: 'foam.tutorials.todo.model',
   name: 'Todo',
+  // TODO(braden): Remove once non-Views get their CSS installed.
+  traits: ['foam.ui.CSSLoaderTrait'],
+
   properties: [
     {
       name: 'id',
@@ -31,4 +34,21 @@ CLASS({
       label: 'Completed',
     },
   ],
+
+  templates: [
+    function CSS() {/*
+      $ {
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        min-height: 48px;
+      }
+    */},
+    function toRowE() {/*#U2
+      <div class="$">
+        <:isCompleted showLabel="false"/>
+        {{this.title$}}
+      </div>
+    */},
+  ]
 });

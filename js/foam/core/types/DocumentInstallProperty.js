@@ -37,7 +37,8 @@ CLASS({
       model_: 'FunctionProperty',
       documentation: function() {/* The function to call on the host's
         prototype, given context X as a parameter. */},
-    }
+    },
+    ['hidden', true]
   ],
 
   methods: [
