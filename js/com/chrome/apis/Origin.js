@@ -20,6 +20,10 @@ CLASS({
   name: 'Origin',
   properties: [
     {
+      name: 'id',
+      hidden: true
+    },
+    {
       name: 'origin'
     },
     {
