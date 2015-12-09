@@ -89,9 +89,11 @@ CLASS({
         display: flex;
       }
       $-title {
-        flex-grow: 1;
-        font-size: 20px;
+        color: #999;
+        font-size: 14px;
+        font-weight: 500;
         margin-left: 16px;
+        flex-grow: 1;
       }
     */},
   ]
