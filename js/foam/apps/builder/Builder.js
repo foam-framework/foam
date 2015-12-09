@@ -260,6 +260,12 @@ CLASS({
       }
     },
     function createFirstIdentity() {
+      if ( DEBUG ) {
+        this.identity$ = this.ctx.identity$;
+        this.identityManager.identity$ = this.ctx.identity$;
+        return;
+      }
+
       var flow = this.ImportExportFlow.create({
         title: 'App Builder Login',
         actionName: 'createIdentity',
