@@ -25,6 +25,7 @@ CLASS({
       '$$DOC{ref:".data"} to be a DAO.',
 
   requires: [
+    'MDAO',
     'foam.browser.u2.BrowserView',
     'foam.browser.u2.StackView',
     'foam.input.touch.GestureManager',
@@ -50,6 +51,29 @@ CLASS({
   ],
 
   properties: [
+    {
+      name: 'model',
+      adapt: function(_, nu) {
+        return typeof nu === 'string' ? this.X.lookup(nu) : nu;
+      }
+    },
+    {
+      name: 'data',
+      factory: function() {
+        // Defaults to an MDAO for our model, if not specified.
+        var name = daoize(this.model.name);
+        if (this.Y[name]) return this.Y[name];
+
+        var dao = this.MDAO.create({ model: this.model });
+        // Export it as fooBarDAO.
+        this.Y.set(name, dao);
+        return dao;
+      }
+      // TODO(braden): Maybe we should always export your DAO with the right
+      // name, so you don't have to? That might accidentally capture something
+      // we didn't intend. It can check if it exists in this.Y before
+      // overwriting.
+    },
     {
       name: 'touchManager',
       factory: function() {
@@ -85,6 +109,7 @@ CLASS({
       this.cls(this.myCls('outer-container')).add(this.stack);
       this.stack.pushView(this.BrowserView.create({
         parent: this,
+        model: this.model,
         data$: this.data$
       }, this.Y));
     },
