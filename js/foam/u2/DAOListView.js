@@ -21,7 +21,8 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.u2.DetailView'
+    'foam.u2.DetailView',
+    'foam.u2.md.CitationView',
   ],
   imports: [
     'selection$',
@@ -57,9 +58,6 @@ CLASS({
     {
       type: 'ViewFactory',
       name: 'rowView',
-      defaultValue: function(args, opt_X) {
-        return this.DetailView.create(args, opt_X || this.Y);
-      }
     },
     {
       name: 'rows',
@@ -90,10 +88,13 @@ CLASS({
           return;
         }
 
-        var child = obj.toE ?
-            obj.toE(this.Y) :
-            obj.toRowE ? obj.toRowE(this.Y) :
-            this.rowView({ data: obj });
+        var Y = this.Y.sub({ data: obj });
+
+        var child = this.rowView ?
+            this.rowView({ data: obj }, Y) :
+            obj.toRowE ? obj.toRowE(Y) :
+            obj.toE ? obj.toE(Y) :
+            this.DetailView.create({ data: obj }, Y);
 
         child.on('click', function() {
           this.publish(this.ROW_CLICK);

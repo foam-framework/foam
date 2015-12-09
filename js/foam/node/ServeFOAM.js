@@ -26,6 +26,7 @@ CLASS({
     function execute() {
       this.exportFile('/index.html', global.FOAM_BOOT_DIR + '/../index.html');
       this.exportFile('/index.js', global.FOAM_BOOT_DIR + '/../index.js');
+      this.exportFile('/fonts.css', global.FOAM_BOOT_DIR + '/../fonts.css');
       [
         'apps',
         'core',

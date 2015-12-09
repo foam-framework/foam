@@ -20,6 +20,7 @@ CLASS({
   extends: 'foam.u2.View',
   requires: [
     'foam.u2.PropertyView',
+    'foam.u2.RelationshipView',
     'foam.u2.md.Checkbox',
     'foam.u2.md.Input',
     'foam.u2.md.Select',
@@ -43,12 +44,21 @@ CLASS({
       name: 'model',
       postSet: function(oldModel, model) {
         console.assert(Model.isInstance(model), 'Invalid model specified for ' + this.name_);
-        if ( oldModel !== model )
+        if ( oldModel !== model ) {
           this.properties = model.getRuntimeProperties().filter(function(p) { return ! p.hidden; });
+          this.relationships = model.relationships;
+        }
       }
     },
     {
       name: 'properties',
+    },
+    {
+      name: 'relationships',
+    },
+    {
+      name: 'showRelationships',
+      defaultValue: true
     },
   ],
 
@@ -64,6 +74,9 @@ CLASS({
       this.add(this.dynamic(function(model, properties) {
         return !model ? 'Set model or data.' : properties;
       }, this.model$, this.properties$));
+      this.add(this.dynamic(function(model, showRelationships, relationships) {
+        return model && showRelationships ? relationships : undefined;
+      }, this.model$, this.showRelationships$, this.relationships$));
     },
     function elementForFeature(fName) {
       var f = this.model_.getFeature(fName) || this.X.data.model_.getFeature(fName);
