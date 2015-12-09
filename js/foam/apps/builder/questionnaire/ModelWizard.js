@@ -17,21 +17,15 @@ CLASS({
   properties: [
     {
       name: 'title',
-      defaultValue: 'Edit your Questions',
+      defaultValue: 'Edit your Questionnaire',
     },
+    [ 'newPropText', 'Enter the question' ],
   ],
 
   templates: [
 
     function instructionHTML() {/*
         <div>
-          <p>Add new questions with the red
-          '+' button, click the sandwich to re-order a question, or
-          click the pencil to edit the details.
-          </p>
-          <p>You can't change the name of a
-          question, but you can change the label that users see.
-          </p>
         </div>
         <div class="md-card-heading-content-spacer"></div>
     */},

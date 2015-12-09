@@ -23,14 +23,17 @@ CLASS({
   extends: 'foam.apps.builder.datamodels.meta.types.ModelEditView',
 
   requires: [
-    'foam.apps.builder.model.ui.EditView',
     'StringProperty',
     'foam.apps.builder.model.ui.InlineEditView',
+    'foam.apps.builder.model.regex.EasyRegex',
   ],
 
+  imports: [
+    'newPropText',
+  ],
   exports: [
-    'properties$',
-    'selectionGuard$ as selection$',
+    'properties as dao',
+    'selectionGuard as selection',
   ],
 
   properties: [
@@ -51,6 +54,11 @@ CLASS({
       name: 'selectionGuard',
       defaultValue: '',
     },
+    {
+      type: 'String',
+      name: 'newPropText',
+      defaultValue: 'Enter Text'
+    }
   ],
 
   actions: [
@@ -59,7 +67,11 @@ CLASS({
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAUw8B8IRjXgUoQLUEfDaDyQqmF4AwADqmeZrHJtnQAAAABJRU5ErkJggg==',
       isAvailable: function() { return this.mode == 'read-write'; },
       code: function() {
-        this.data.properties.put(this.StringProperty.create({ name: createGUID() }));
+        this.data.properties.put(this.StringProperty.create({
+          name: "property_"+this.nextID(),
+          label: this.newPropText,
+          pattern: this.EasyRegex.create()
+        }));
       }
     },
   ],
@@ -73,7 +85,7 @@ CLASS({
               $$properties{
                 model_: 'foam.ui.md.DAOListView',
                 mode: 'read-only',
-                rowView: 'foam.apps.builder.model.ui.EditView',
+                rowView: 'foam.apps.builder.model.ui.InlineEditView',
                }
           </div>
           <div class="floating-action">
