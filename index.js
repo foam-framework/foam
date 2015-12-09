@@ -113,8 +113,10 @@
                    || ( 'CView' in GLOBAL && CView.isInstance(obj) ) ) {
         view = obj;
       } else if ( X.lookup('foam.u2.Element').isInstance(obj) ) {
+        console.time('load');
         document.body.insertAdjacentHTML('beforeend', obj.outerHTML);
         obj.load();
+        console.timeEnd('load');
         return;
       } else if ( obj.toE ) {
         var e = obj.toE(X);
@@ -134,7 +136,9 @@
         });
         return;
       }
+      console.time('load');
       document.body.insertAdjacentHTML('beforeend', view.toHTML());
       view.initHTML();
+      console.timeEnd('load');
     })();
 })();
