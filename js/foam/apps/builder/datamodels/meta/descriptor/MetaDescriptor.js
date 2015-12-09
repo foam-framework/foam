@@ -24,8 +24,11 @@ CLASS({
       name: 'model',
       documentation: function() {/* The model id of the new item. */},
     },
+    {
+      name: 'name',
+    }
   ],
-  
+
   methods: [
     function createModel(opt_X) {
       var X = opt_X || this.Y;
