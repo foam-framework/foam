@@ -532,10 +532,11 @@ GLOBAL.Property = {
       help: 'Function for validating property value.',
       preSet: function(_, f) {
         var str = f.toString();
-        var deps = str.
-          match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-          split(',').
-          map(function(name) { return name.trim(); });
+        var deps = str.match(/^function[ _$\w]*\(([ ,\w]*)/)[1];
+        if ( deps )
+          deps = deps.split(',').map(function(name) { return name.trim(); });
+        else
+          deps = [];
 
         var f2 = function() {
           var args = [];
@@ -550,6 +551,9 @@ GLOBAL.Property = {
         return f2;
       },
       documentation: function() { /*
+        Arguments to the validate function should be named after the properties
+        of this object. They will be passed in when the validate() function is
+        run. Return an error string if validation fails.
       */}
     },
     {
