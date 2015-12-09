@@ -170,7 +170,7 @@ MODEL({
       ],
 
       templates: [
-        function XXXCSS() {/*
+        function CSS() {/*
           $ { outline: 1px solid white; }
           $ > span {
             display: block;
@@ -182,9 +182,10 @@ MODEL({
             border:  none;
             margin-left: 2px;
             outline: 1px solid blue;
-            background: pink;
+            width: 100%;
           }
-        */}
+        */},
+        function initE(){/*#U2<span class="$"></span>*/}
       ]
     }
   ],
