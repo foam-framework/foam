@@ -254,7 +254,6 @@ this.loadCells({"A0":"<div style=\"width:200px;\"><b><u>Benchmark</u></b></div>"
         font: 13px roboto, arial, sans-serif;
       }
       $ tr { height: 26px; }
-      $ { overflow: auto; }
       $-cell { min-width: 102px; }
       $, $ th, $ td { border: 1px solid #ccc; }
       $ td { height: 100%; }
@@ -262,14 +261,15 @@ this.loadCells({"A0":"<div style=\"width:200px;\"><b><u>Benchmark</u></b></div>"
         border-right: none;
         border-bottom: none;
       }
-      table.$ {
-        border-left: none;
-        border-top: none;
-      }
       $ th {
         background: #eee;
         color: #333;
         padding: 2px 18px;
+      }
+      $ {
+        border-left: none;
+        border-top: none;
+        overflow: auto; 
       }
     */},
     function initE() {/*#U2
