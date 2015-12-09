@@ -416,10 +416,12 @@ CLASS({
     function focus() {
       this.focused = true;
       if ( this.state == this.LOADED ) this.id$el.focus(); 
+      return this;
     },
 
     function blur() {
       this.focused = false;
+      return this;
     },
 
     //
@@ -775,6 +777,7 @@ CLASS({
 
     function removeAllChildren() {
       while ( this.childNodes.length ) this.removeChild(this.childNodes[0]);
+      return this;
     },
 
     function setChildren(value) {
