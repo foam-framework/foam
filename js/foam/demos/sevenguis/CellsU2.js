@@ -180,8 +180,9 @@ MODEL({
           }
           $ > input {
             border:  none;
-            margin-left: 2px;
+            padding-left: 2px;
             outline: 1px solid blue;
+            outline-offset: 0;
             width: 100%;
           }
         */},
