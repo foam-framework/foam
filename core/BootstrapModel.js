@@ -362,12 +362,11 @@ var BootstrapModel = {
       if ( ! self[name] ) self[name] = r;
       defineLazyProperty(cls, r.name, function() {
         var m = this.X.lookup(r.relatedModel);
-        var lcName = m.name[0].toLowerCase() + m.name.substring(1);
-        var dao = this.X[lcName + 'DAO'] || this.X[m.name + 'DAO'] ||
-            this.X[m.plural];
+        var name = daoize(m.name);
+        var dao = this.X[name];
         if ( ! dao ) {
-          console.error('Relationship ' + r.name + ' needs ' + (m.name + 'DAO') + ' or ' +
-              m.plural + ' in the context, and neither was found.');
+          console.error('Relationship ' + r.name + ' needs ' + name +
+              ' in the context, and it was not found.');
         }
 
         dao = RelationshipDAO.create({
