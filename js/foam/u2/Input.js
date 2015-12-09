@@ -23,7 +23,7 @@ CLASS({
   extends: 'foam.u2.View',
 
   properties: [
-    [ 'nodeName', 'input' ],
+    [ 'nodeName', 'input' ]
   ],
 
   templates: [
