@@ -351,6 +351,10 @@ var BootstrapModel = {
 
     var self = this;
     // add relationships
+    this.instance_.relationships_ = this.relationships;
+
+    if ( extendsModel ) this.instance_.relationships_ = this.instance_.relationships_.concat(extendsModel.instance_.relationships_);
+
     this.relationships && this.relationships.forEach(function(r) {
       // console.log('************** rel: ', r, r.name, r.label, r.relatedModel, r.relatedProperty);
 
@@ -570,6 +574,11 @@ var BootstrapModel = {
   getRuntimeActions: function() {
     if ( ! this.instance_.actions_ ) this.getPrototype();
     return this.instance_.actions_;
+  },
+
+  getRuntimeRelationships: function() {
+    if ( ! this.instance_.relationships_ ) this.getPrototype();
+    return this.instance_.relationships_;
   },
 
   getProperty: function(name) { /* Returns the requested $$DOC{ref:'Property'} of this instance. */
