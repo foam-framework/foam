@@ -171,7 +171,6 @@ MODEL({
 
       templates: [
         function CSS() {/*
-          $ { outline: 1px solid white; }
           $ > span {
             display: block;
             height: 15px;
@@ -179,10 +178,10 @@ MODEL({
             width: 100%;
           }
           $ > input {
-            border:  none;
-            padding-left: 2px;
+            border: none;
             outline: 1px solid blue;
             outline-offset: 0;
+            padding-left: 2px;
             width: 100%;
           }
         */},
