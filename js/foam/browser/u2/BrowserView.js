@@ -31,12 +31,10 @@ CLASS({
     'document',
     'headerColor',
     'menuFactory',
-    'selection$',
     'stack',
   ],
   exports: [
     'headerColor',
-    'selection',
   ],
 
   properties: [
@@ -131,15 +129,6 @@ CLASS({
         return this.daoController.maxWidth;
       }
     },
-    {
-      name: 'stack',
-      postSet: function(old, nu) {
-        // TODO(braden): Fix this functionality - clear the selection when the
-        // child view is closed.
-        //old && old.unsubscribe(old.VIEW_DESTROYED, this.onViewDestroyed);
-        //nu && nu.unsubscribe(nu.VIEW_DESTROYED, this.onViewDestroyed);
-      },
-    },
   ],
 
   actions: [
@@ -181,15 +170,6 @@ CLASS({
       documentation: 'Called when a menu item is selected.',
       code: function() {
         this.menuOpen = false;
-      }
-    },
-    {
-      name: 'onViewDestroyed',
-      documentation: 'Called when the child view (detail view) is closed.',
-      code: function(sender, topic, view) {
-        if (view.data && this.selection && view.data.id === this.selection.id) {
-          this.selection = null;
-        }
       }
     },
   ],

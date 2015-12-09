@@ -75,6 +75,25 @@ CLASS({
       name: 'rowView',
       defaultValue: 'foam.u2.md.CitationView',
     },
+    {
+      name: 'stack',
+      postSet: function(old, nu) {
+        old && old.unsubscribe(old.VIEW_DESTROYED, this.onViewDestroyed);
+        nu && nu.subscribe(nu.VIEW_DESTROYED, this.onViewDestroyed);
+      },
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'onViewDestroyed',
+      documentation: 'Called when the child view (detail view) is closed.',
+      code: function(sender, topic, view) {
+        if (view.data && this.selection && view.data.id === this.selection.id) {
+          this.selection = null;
+        }
+      }
+    },
   ],
 
   methods: [
