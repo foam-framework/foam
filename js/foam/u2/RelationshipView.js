@@ -51,15 +51,27 @@ CLASS({
     {
       name: 'model',
     },
+    {
+      name: 'relatedDAO',
+      lazyFactory: function() {
+        return this.data[this.relationship.name];
+      }
+    }
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.Y.set(
+        daoize(this.X.lookup(this.relationship.relatedModel).name),
+        this.relatedDAO);
+    },
     function initE() {
       var view = this.view;
       var rel = this.relationship;
 
       view.model = this.model = this.Y.lookup(rel.relatedModel);
-      view.data = this.data[rel.name];
+      view.data = this.relatedDAO;
 
       this.start('div').cls(this.myCls('header'))
           .start('span').cls(this.myCls('title')).add(rel.label).end()
@@ -77,7 +89,9 @@ CLASS({
       name: 'addItem',
       ligature: 'add',
       code: function() {
-        this.stack.pushView(this.DAOCreateController.create({ model: this.model }));
+        this.stack.pushView(this.DAOCreateController.create({
+          model: this.model
+        }));
       }
     },
   ],
