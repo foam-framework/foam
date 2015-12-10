@@ -23,7 +23,15 @@ CLASS({
   extends: 'foam.u2.View',
 
   properties: [
-    [ 'nodeName', 'input' ]
+    [ 'nodeName', 'input' ],
+    {
+      type: 'Boolean',
+      name: 'onKey',
+      attribute: true,
+      defaultValue: false,
+      documentation: 'When true, $$DOC{ref:".data"} is updated on every ' +
+          'keystroke, rather than on blur.',
+    },
   ],
 
   templates: [
@@ -33,10 +41,9 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      this.cls('foam-u2-Input');
-      Events.link(this.data$, this.attrValue());
+    function initE() {
+      this.cls(this.myCls());
+      Events.link(this.data$, this.attrValue(null, this.onKey ? 'input' : null));
     },
     function updateMode_(mode) {
       // TODO: make sure that DOM is updated if values don't change
