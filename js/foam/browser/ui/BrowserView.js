@@ -54,7 +54,7 @@ CLASS({
         'selection$',
       ],
       exports: [
-        'selection$',
+        'selection',
       ],
       properties: [
         {

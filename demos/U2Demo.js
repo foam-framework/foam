@@ -139,12 +139,12 @@ E('div').style({height: '30px'}).write();
 
 foam.u2.Input.create().write().data$ = foam.u2.Input.create().write().data$;
 
-foam.u2.OnKeyInput.create().write().data$ = foam.u2.OnKeyInput.create().write().data$;
+foam.u2.Input.create({ onKey: true }).write().data$ = foam.u2.Input.create({ onKey: true }).write().data$;
 
 E('div').style({height: '30px'}).write();
 
 foam.u2.TextArea.create().write().data$ = foam.u2.TextArea.create().write().data$;
-foam.u2.OnKeyTextArea.create().write().data$ = foam.u2.OnKeyTextArea.create().write().data$;
+foam.u2.TextArea.create({ onKey: true }).write().data$ = foam.u2.TextArea.create({ onKey: true }).write().data$;
 
 E('div').style({height: '30px'}).write();
 var e16 = foam.u2.Select.create({placeholder: 'Pick a Colour:', options: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();

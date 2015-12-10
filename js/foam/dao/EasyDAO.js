@@ -250,14 +250,6 @@ CLASS({
         dao = this.GUIDDAO.create(args, this.Y);
       }
 
-      if ( this.contextualize ) dao = this.ContextualizingDAO.create({
-        delegate: dao
-      }, this.Y);
-
-      if ( this.cloning ) dao = this.CloningDAO.create({
-        delegate: dao
-      }, this.Y);
-
       var model = this.model;
 
       if ( this.syncWithServer && this.isServer ) throw "isServer and syncWithServer are mutually exclusive.";
@@ -304,6 +296,15 @@ CLASS({
           version: 2
         }, this.Y);
       }
+
+      if ( this.contextualize ) dao = this.ContextualizingDAO.create({
+        delegate: dao
+      }, this.Y);
+
+      if ( this.cloning ) dao = this.CloningDAO.create({
+        delegate: dao
+      }, this.Y);
+
 
       if ( this.timing  ) dao = this.TimingDAO.create({ name: this.model.plural + 'DAO', delegate: dao }, this.Y);
       if ( this.logging ) dao = this.LoggingDAO.create({ delegate: dao }, this.Y);

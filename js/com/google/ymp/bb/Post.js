@@ -10,27 +10,14 @@
  */
 
 CLASS({
-  package: 'foam.apps.builder.questionnaire',
-  name: 'ModelWizard',
-  extends: 'foam.apps.builder.wizard.ModelWizard',
+  package: 'com.google.ymp.bb',
+  name: 'Post',
 
   properties: [
     {
+      model_: 'StringProperty',
       name: 'title',
-      defaultValue: 'Edit your Questionnaire',
+      defaultValue: '',
     },
-    [ 'newPropText', 'Enter the question' ],
   ],
-
-  templates: [
-
-    function instructionHTML() {/*
-        <div>
-        </div>
-        <div class="md-card-heading-content-spacer"></div>
-    */},
-
-  ],
-
-
 });

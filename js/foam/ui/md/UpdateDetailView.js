@@ -235,6 +235,7 @@ CLASS({
     },
     {
       name: 'delete',
+      ligature: 'delete',
       iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAOklEQVQ4y2NgGPzgv8L/B/9h4MF/BXxK8QDqaCDH/aSaP6phVAMuDa+wqn+BW4P//5eYyv/7DvI8DwBDJ5LB6mdU8gAAAABJRU5ErkJggg==',
       priority: 0,
       order: 0,

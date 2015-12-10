@@ -333,7 +333,7 @@ var BootstrapModel = {
     }
 
     // add messages
-    if ( this.messages && this.messages.length > 0 && Message ) {
+    if ( this.messages && this.messages.length > 0 && GLOBAL.Message ) {
       Object_forEach(this.messages, function(m, key) {
         if ( ! Message.isInstance(m) ) {
           m = this.messages[key] = Message.create(m);

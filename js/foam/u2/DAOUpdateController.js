@@ -29,7 +29,12 @@ CLASS({
   ],
 
   imports: [
+    'document',
     'stack',
+  ],
+
+  exports: [
+    'myControllerMode as controllerMode'
   ],
 
   properties: [
@@ -71,11 +76,15 @@ CLASS({
       factory: function() {
         var t = this.Toolbar.create({ title$: this.title$ });
         t.addLeftActions([
-          this.ToolbarAction.create({ data: this, action: this.BACK })
+          this.ToolbarAction.create({ data: this, action: this.BACK }),
+        ]);
+        t.addRightActions([
+          this.ToolbarAction.create({ data: this, action: this.DELETE })
         ]);
         return t;
       }
     },
+    ['myControllerMode', 'update']
   ],
 
   actions: [
@@ -83,9 +92,37 @@ CLASS({
       name: 'back',
       ligature: 'arrow_back',
       code: function() {
+        var active = this.document.activeElement;
+        active && active.blur();
+        // The blur above might have triggered data to update, so we call
+        // doBack(), which is framed. That gives the data time to settle.
+        this.doBack();
+      }
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'doBack',
+      framed: true,
+      code: function() {
         this.stack.popView();
       }
     },
+    {
+      name: 'delete',
+      ligature: 'delete',
+      code: function() {
+        this.dao.remove(this.data.id, {
+          remove: function() {
+            this.stack.popView();
+          }.bind(this),
+          error: function() {
+            // TODO:
+          }
+        });
+      }
+    }
   ],
 
   methods: [

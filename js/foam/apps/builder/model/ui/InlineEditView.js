@@ -41,7 +41,7 @@ CLASS({
     'stack',
   ],
   exports: [
-    'toolbar as mdToolbar',
+    'newToolbar as mdToolbar',
   ],
 
   properties: [
@@ -54,7 +54,7 @@ CLASS({
       defaultValue: 'read-write',
     },
     {
-      name: 'toolbar',
+      name: 'newToolbar',
       lazyFactory: function() {
         this.Y.registerModel(this.FlatButton.xbind({
           displayMode: 'ICON_ONLY',
@@ -62,6 +62,9 @@ CLASS({
           width: 24,
         }), 'foam.ui.ActionButton');
         return this.Toolbar.create({ data: this.data });
+      },
+      postSet: function(old,nu) {
+        console.log("Toolbar set: ",nu);
       }
     },
     {
@@ -116,25 +119,6 @@ CLASS({
     },
   ],
 
-  actions: [
-    {
-      name: 'delete',
-      help: 'Delete this item.',
-      ligature: 'delete',
-      isAvailable: function() {
-        return (this.mode == 'read-write') &&
-          (this.dao && this.dao.remove);
-      },
-      code: function() {
-        if (this.dao && this.dao.remove) {
-          this.dao.remove(this.data);
-          // our parent view should now destroy this view
-          this.stack && this.stack.popView();
-        }
-      }
-    }
-  ],
-
   methods: [
     function init() {
       this.SUPER();
@@ -147,7 +131,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-flex-row">
+        <div class="md-flex-row-baseline">
           <div class="inline-edit-view-grow md-subhead">
             $$label{
               model_: 'foam.ui.md.TextFieldView',
@@ -157,14 +141,8 @@ CLASS({
           <div class="md-edit-view-dropdown">
             %%dataTypePicker()
           </div>
-          <% this.toolbar.toHTML(out); %>
+          <% this.newToolbar.toHTML(out); %>
         </div>
-        $$help{
-          model_: 'foam.ui.md.TextFieldView',
-          floatingLabel: false,
-          growable: false,
-          displayHeight: 1,
-        }
         $$data{ model_: 'foam.apps.builder.model.ui.EditView',
                 model: this.data.model_ }
       </div>
@@ -185,10 +163,6 @@ CLASS({
         color: rgba(0,0,0,0.75);
         margin-top: -8px;
         margin-right: -8px;
-      }
-      .inline-edit-view .md-flex-row {
-        overflow: hidden;
-        align-items: baseline;
       }
       .inline-edit-view-grow {
         flex-grow: 1;

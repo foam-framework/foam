@@ -22,7 +22,7 @@ CLASS({
     'com.chrome.apis.ApiKey'
   ],
   imports: [
-    'ApiKeyDAO',
+    'apiKeyDAO',
   ],
   properties: [
     {
@@ -68,7 +68,7 @@ CLASS({
       name: 'revokeAllKeys',
       help: 'Revokes all existing API keys for this experiment.',
       code: function() {
-        this.ApiKeyDAO
+        this.apiKeyDAO
           .where(EQ(this.ID, this.ApiKey.EXPERIMENT))
           .update(SET(this.ApiKey.REVOKED, true));
       }

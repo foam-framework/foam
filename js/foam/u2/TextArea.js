@@ -20,12 +20,23 @@ CLASS({
   name: 'TextArea',
   extends: 'foam.u2.Element',
 
-  properties: [ [ 'nodeName', 'textarea' ], 'data' ],
+  properties: [
+    [ 'nodeName', 'textarea' ],
+    'data',
+    {
+      type: 'Boolean',
+      name: 'onKey',
+      attribute: true,
+      defaultValue: false,
+      documentation: 'When true, $$DOC{ref:".data"} is updated on every ' +
+          'keystroke, rather than on blur.',
+    },
+  ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      this.data$ = this.attrValue();
+    function initE() {
+      this.cls(this.myCls());
+      Events.link(this.data$, this.attrValue(null, this.onKey ? 'input' : null));
     }
   ]
 });

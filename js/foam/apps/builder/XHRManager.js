@@ -22,8 +22,8 @@ CLASS({
     'xhrHeaderBindings$ as inHeaderBindings$',
   ],
   exports: [
-    'authBindings$ as xhrAuthBindings$',
-    'headerBindings$ as xhrHeaderBindings$',
+    'authBindings as xhrAuthBindings',
+    'headerBindings as xhrHeaderBindings',
   ],
 
   constants: {

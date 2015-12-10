@@ -437,7 +437,8 @@ CLASS({
     },
 
     function hide(opt_hidden) {
-      return this.show(! (opt_hidden || true));
+      return this.show(
+        opt_hidden === undefined ? false : ! opt_hidden);
     },
 
     //

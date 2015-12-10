@@ -26,8 +26,8 @@ CLASS({
     }
   ],
   extends: 'foam.dao.ProxyDAO',
-  methods: {
-    select: function(sink, options) {
+  methods: [
+    function select(sink, options) {
       if ( ! this.onSelect ) return this.SUPER(sink, options);
 
       sink = sink || [].sink;
@@ -47,7 +47,7 @@ CLASS({
       }, options);
       return future.get;
     },
-    find: function(key, sink) {
+    function find(key, sink) {
       return this.SUPER(key, {
         put: function(o) {
           var clone = o.deepClone();
@@ -55,6 +55,10 @@ CLASS({
         },
         error: sink && sink.error && sink.error.bind(sink)
       });
+    },
+    function put(obj, sink) {
+      obj = obj.deepClone();
+      this.SUPER(obj, sink);
     }
-  }
+  ]
 });

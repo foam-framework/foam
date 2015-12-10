@@ -105,9 +105,14 @@ CLASS({
       }
     },
     {
+      name: 'modelName',
+      type: 'String',
+      defaultValue: 'origin'
+    },
+    {
       name: 'data',
       factory: function() {
-        return this.originDAO;
+        return this[this.modelName + 'DAO']
       }
     },
     {
@@ -136,7 +141,6 @@ CLASS({
           model: this.ExperimentActivation,
           daoType: 'LOCAL',
           cache: true,
-          guid: true,
           cloning: true,
           contextualize: true
         });

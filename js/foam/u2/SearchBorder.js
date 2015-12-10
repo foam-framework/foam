@@ -51,7 +51,7 @@ CLASS({
       toPropertyE: function(X) {
         return X.lookup('foam.u2.Input').create({
           inline: true,
-          onKeyMode: true
+          onKey: true
         }, X);
       },
       postSet: function(old, nu) {

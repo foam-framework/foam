@@ -31,12 +31,10 @@ CLASS({
     'document',
     'headerColor',
     'menuFactory',
-    'selection$',
     'stack',
   ],
   exports: [
     'headerColor',
-    'selection',
   ],
 
   properties: [
@@ -131,15 +129,6 @@ CLASS({
         return this.daoController.maxWidth;
       }
     },
-    {
-      name: 'stack',
-      postSet: function(old, nu) {
-        // TODO(braden): Fix this functionality - clear the selection when the
-        // child view is closed.
-        //old && old.unsubscribe(old.VIEW_DESTROYED, this.onViewDestroyed);
-        //nu && nu.unsubscribe(nu.VIEW_DESTROYED, this.onViewDestroyed);
-      },
-    },
   ],
 
   actions: [
@@ -183,15 +172,6 @@ CLASS({
         this.menuOpen = false;
       }
     },
-    {
-      name: 'onViewDestroyed',
-      documentation: 'Called when the child view (detail view) is closed.',
-      code: function(sender, topic, view) {
-        if (view.data && this.selection && view.data.id === this.selection.id) {
-          this.selection = null;
-        }
-      }
-    },
   ],
 
   templates: [
@@ -219,7 +199,7 @@ CLASS({
         margin-left: 12px;
       }
 
-      $-search-header .foam-u2-md-Input {
+      $-search-header span {
         flex-grow: 1;
       }
       $-search-header input {
@@ -334,7 +314,7 @@ CLASS({
           .style({ 'background-color': this.headerColor })
           .enableCls('foam-u2-Element-hidden', this.searchMode$, true /* negate */)
           .add(this.BACK_BUTTON)
-          .add(this.searchBorder_.SEARCH);
+          .add(this.searchBorder_.SEARCH.toE(this.Y.sub({ data: this.searchBorder_ })));
       search.end();
 
       // This is needed to make sure the input box gets focused in the same

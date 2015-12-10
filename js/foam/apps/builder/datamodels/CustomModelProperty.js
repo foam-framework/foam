@@ -46,10 +46,4 @@ CLASS({
     },
   ],
 
-  methods: [
-    function deepCloneProperty(model) {
-      // TODO(jacksonic): this.X will be from when the CustomModelProperty instance was created...
-      return Model.create(model, this.X);
-    }
-  ]
 });

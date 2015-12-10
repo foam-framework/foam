@@ -25,6 +25,7 @@ CLASS({
   imports: [
     'data',
     'stack',
+    'controllerMode'
   ],
 
   properties: [
@@ -51,15 +52,36 @@ CLASS({
     {
       name: 'model',
     },
+    {
+      name: 'mode',
+      defaultValueFn: function() {
+        return 'create' == this.controllerMode ? 'hidden': 'rw';
+      }
+    },
+    {
+      name: 'relatedDAO',
+      lazyFactory: function() {
+        return this.data[this.relationship.name];
+      }
+    }
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.Y.set(
+        daoize(this.X.lookup(this.relationship.relatedModel).name),
+        this.relatedDAO);
+    },
+    function updateMode_(m) {
+      this.hide(m == 'hidden');
+    },
     function initE() {
       var view = this.view;
       var rel = this.relationship;
 
       view.model = this.model = this.Y.lookup(rel.relatedModel);
-      view.data = this.data[rel.name];
+      view.data = this.relatedDAO;
 
       this.start('div').cls(this.myCls('header'))
           .start('span').cls(this.myCls('title')).add(rel.label).end()
@@ -77,7 +99,9 @@ CLASS({
       name: 'addItem',
       ligature: 'add',
       code: function() {
-        this.stack.pushView(this.DAOCreateController.create({ model: this.model }));
+        this.stack.pushView(this.DAOCreateController.create({
+          model: this.model
+        }));
       }
     },
   ],
@@ -89,9 +113,11 @@ CLASS({
         display: flex;
       }
       $-title {
-        flex-grow: 1;
-        font-size: 20px;
+        color: #999;
+        font-size: 14px;
+        font-weight: 500;
         margin-left: 16px;
+        flex-grow: 1;
       }
     */},
   ]
