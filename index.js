@@ -99,6 +99,13 @@
         document.body.innerHTML = 'Unable to load model: ' + model;
         return;
       }
+
+      for ( var key in params ) {
+        var p = m.getProperty(key);
+        if ( p ) params[key] = p.fromString(params[key]);
+        console.log(key, params[key]);
+      }
+
       var obj = m.create(params, X);
       var view;
 
