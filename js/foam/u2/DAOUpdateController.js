@@ -75,7 +75,10 @@ CLASS({
       factory: function() {
         var t = this.Toolbar.create({ title$: this.title$ });
         t.addLeftActions([
-          this.ToolbarAction.create({ data: this, action: this.BACK })
+          this.ToolbarAction.create({ data: this, action: this.BACK }),
+        ]);
+        t.addRightActions([
+          this.ToolbarAction.create({ data: this, action: this.DELETE })
         ]);
         return t;
       }
@@ -91,6 +94,20 @@ CLASS({
         this.stack.popView();
       }
     },
+    {
+      name: 'delete',
+      ligature: 'delete',
+      code: function() {
+        this.dao.remove(this.data.id, {
+          remove: function() {
+            this.stack.popView();
+          }.bind(this),
+          error: function() {
+            // TODO:
+          }
+        });
+      }
+    }
   ],
 
   methods: [
