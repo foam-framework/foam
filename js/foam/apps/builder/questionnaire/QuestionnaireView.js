@@ -22,7 +22,7 @@ CLASS({
     'foam.apps.builder.Timeout',
     'foam.apps.builder.questionnaire.AppConfig',
     'foam.apps.builder.questionnaire.QuestionnaireController',
-    'foam.graphics.ActionButtonCView',
+    'foam.ui.md.FlatButton',
     'foam.ui.md.PopupView',
   ],
   exports: [
@@ -124,10 +124,11 @@ CLASS({
 
   methods: [
     function init() {
-      this.Y.registerModel(this.ActionButtonCView.xbind({
+      this.Y.registerModel(this.FlatButton.xbind({
+        displayMode: 'ICON_ONLY',
         height: 24,
         width: 24,
-        haloColor: 'black'
+        color: 'black'
       }), 'foam.ui.ActionButton');
     },
     function initHTML() {

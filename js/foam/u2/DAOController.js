@@ -66,7 +66,7 @@ CLASS({
         args2.minWidth = args2.minWidth || 350;
         args2.preferredWidth = args2.preferredWidth || 500;
         args2.maxWidth = args2.maxWidth || 500;
-        args2.data = this.data;
+        args2.data$ = this.data$;
         return this.DAOListView.create(args2, opt_X);
       }
     },
@@ -74,6 +74,25 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'rowView',
       defaultValue: 'foam.u2.md.CitationView',
+    },
+    {
+      name: 'stack',
+      postSet: function(old, nu) {
+        old && old.unsubscribe(old.VIEW_DESTROYED, this.onViewDestroyed);
+        nu && nu.subscribe(nu.VIEW_DESTROYED, this.onViewDestroyed);
+      },
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'onViewDestroyed',
+      documentation: 'Called when the child view (detail view) is closed.',
+      code: function(sender, topic, view) {
+        if (view.data && this.selection && view.data.id === this.selection.id) {
+          this.selection = null;
+        }
+      }
     },
   ],
 

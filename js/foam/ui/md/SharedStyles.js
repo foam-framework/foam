@@ -303,8 +303,14 @@ input[name=q]::-webkit-input-placeholder {
 .md-flex-row-baseline {
   display: flex;
   flex-direction: row;
-  align-content: baseline;
-  overflow: none;
+  align-items: baseline;
+  overflow: hidden;
+}
+.md-flex-row-end {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  overflow: hidden;
 }
 .md-flex-col {
   display: flex;

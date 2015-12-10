@@ -46,7 +46,7 @@ CLASS({
           <content>
             <icons>
               <wrench><i class="material-icons-extended" style="font-size: 90px;color:#fff;">build</i></wrench>
-              <display><i class="material-icons-extended" style="font-size: 225px;color:#000">campaign_display</i></display>
+              <display><i class="material-icons-extended" style="font-size: 225px;color:#000">campaign_show</i></display>
               <dot></dot>
             </icons>
           </content>
@@ -124,8 +124,8 @@ CLASS({
 
       logo display {
         display: block;
-        padding-top: 4px;
-        padding-left: 25px;
+        padding-top: 8px;
+        padding-left: 32px;
       }
 
       .flush-right {

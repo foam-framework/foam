@@ -19,6 +19,10 @@ CLASS({
   name: 'CitationView',
   extends: 'foam.u2.md.DetailView',
 
+  imports: [
+    'dynamic',
+  ],
+
   properties: [
     {
       name: 'data',
@@ -78,7 +82,9 @@ CLASS({
     */},
     function initE() {/*#U2
       <div class="$">
-        {{this.data.propertyValue(this.prop)}}
+        {{this.dynamic(function(data, prop) {
+          return data.propertyValue(prop);
+        }, this.data$, this.prop$)}}
       </div>
     */},
   ]

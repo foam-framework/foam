@@ -26,7 +26,7 @@ CLASS({
   ],
 
   exports: [
-    'selection$',
+    'selection',
   ],
 
   extends: 'foam.apps.builder.datamodels.meta.types.EditView',

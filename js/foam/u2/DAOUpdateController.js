@@ -29,6 +29,7 @@ CLASS({
   ],
 
   imports: [
+    'document',
     'stack',
   ],
 
@@ -90,6 +91,20 @@ CLASS({
     {
       name: 'back',
       ligature: 'arrow_back',
+      code: function() {
+        var active = this.document.activeElement;
+        active && active.blur();
+        // The blur above might have triggered data to update, so we call
+        // doBack(), which is framed. That gives the data time to settle.
+        this.doBack();
+      }
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'doBack',
+      framed: true,
       code: function() {
         this.stack.popView();
       }
