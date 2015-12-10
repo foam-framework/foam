@@ -32,6 +32,10 @@ CLASS({
     'stack',
   ],
 
+  exports: [
+    'controllerMode'
+  ],
+
   properties: [
     'model',
     {
@@ -76,6 +80,7 @@ CLASS({
         return t;
       }
     },
+    ['controllerMode', 'update']
   ],
 
   actions: [

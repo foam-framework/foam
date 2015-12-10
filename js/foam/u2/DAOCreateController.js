@@ -31,6 +31,10 @@ CLASS({
     'stack',
   ],
 
+  exports: [
+    'controllerMode'
+  ],
+
   properties: [
     'model',
     {
@@ -72,6 +76,7 @@ CLASS({
         return this.X[daoize(this.model.name)];
       }
     },
+    ['controllerMode', 'create']
   ],
 
   actions: [
