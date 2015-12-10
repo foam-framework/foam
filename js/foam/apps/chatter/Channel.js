@@ -24,10 +24,12 @@ CLASS({
   properties: [
     {
       name: 'id',
+      hidden: true,
+      visibility: 'hidden'
     },
     {
-      model_: 'StringProperty',
-      name: 'name'
+      name: 'name',
+      type: 'String'
     },
   ],
   relationships: [
