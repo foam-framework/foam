@@ -24,7 +24,7 @@ CLASS({
     'masterAppDAO',
   ],
   exports: [
-    'selection$'
+    'selection'
   ],
 
   properties: [

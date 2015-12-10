@@ -12,7 +12,7 @@
 CLASS({
   package: 'foam.apps.builder',
   name: 'InfoOptionView',
-  extendsModel: 'foam.ui.SimpleView',
+  extends: 'foam.ui.SimpleView',
 
   requires: [
     'foam.ui.md.ExpandableView',
@@ -22,7 +22,7 @@ CLASS({
   models: [
     {
       name: 'TwoView',
-      extendsModel: 'foam.ui.SimpleView',
+      extends: 'foam.ui.SimpleView',
 
       properties: [
         { model_: 'ViewFactoryProperty', name: 'first', defaultValue: null },

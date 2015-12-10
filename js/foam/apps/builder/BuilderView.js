@@ -22,8 +22,8 @@ CLASS({
     'setTimeout'
   ],
   exports: [
-    'appSelection$ as selection$',
-    'appSelection$',
+    'appSelection as selection',
+    'appSelection',
   ],
 
   properties: [
