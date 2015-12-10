@@ -416,6 +416,10 @@ CLASS({
       help: 'The Java type of this property.'
     },
     {
+      name: 'swiftType',
+      defaultValue: 'FoamFunction',
+    },
+    {
       name: 'displayWidth',
       defaultValue: 15
     },
