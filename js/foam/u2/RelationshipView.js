@@ -21,6 +21,8 @@ CLASS({
 
   requires: [
     'foam.u2.DAOCreateController',
+    'foam.u2.md.Toolbar',
+    'foam.u2.md.ToolbarAction'
   ],
   imports: [
     'data',
@@ -99,9 +101,46 @@ CLASS({
       name: 'addItem',
       ligature: 'add',
       code: function() {
-        this.stack.pushView(this.DAOCreateController.create({
-          model: this.model
-        }));
+        if ( this.relationship.destinationModel ) {
+          var dest = this.X.lookup(this.relationship.destinationModel);
+
+          var Y = this.Y.sub({ selection$: undefined });
+
+          var view = this.X.lookup('foam.u2.DAOListView').create({
+            data: this.X[daoize(dest.name)]
+          }, Y);
+
+          view.subscribe(view.ROW_CLICK, this.oneTime(function(_, _, obj) {
+            var r = this.model.create();
+            r[this.relationship.destinationProperty] = obj.id;
+            this.relatedDAO.put(r);
+            view.X.stack.popView();
+          }.bind(this)));
+
+          var toolbar = this.Toolbar.create(undefined, Y);
+          toolbar.addLeftActions([
+            this.ToolbarAction.create({
+              action: Action.create({
+                name: 'back',
+                ligature: 'arrow_back',
+                code: function() {
+                  view.X.stack.popView();
+                }
+              }),
+              data: view
+            })
+          ]);
+
+          view = Y.E()
+            .add(toolbar)
+            .add(view);
+
+          this.stack.pushView(view);
+        } else {
+          this.stack.pushView(this.DAOCreateController.create({
+            model: this.model
+          }));
+        }
       }
     },
   ],
