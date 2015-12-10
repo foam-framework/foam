@@ -59,8 +59,7 @@ CLASS({
 
         child.on('click', function() {
           if ( this.rows[obj.id] ) { // don't respond when animating out
-            this.publish(this.ROW_CLICK);
-            if ( this.X.selection$ ) this.selection = obj;
+            this.publish(this.ROW_CLICK, obj);
           }
         }.bind(this));
 

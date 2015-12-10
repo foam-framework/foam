@@ -104,11 +104,9 @@ CLASS({
         if ( this.relationship.destinationModel ) {
           var dest = this.X.lookup(this.relationship.destinationModel);
 
-          var Y = this.Y.sub({ selection$: undefined });
-
           var view = this.X.lookup('foam.u2.DAOListView').create({
             data: this.X[daoize(dest.name)]
-          }, Y);
+          }, this.Y);
 
           view.subscribe(view.ROW_CLICK, this.oneTime(function(_, _, obj) {
             var r = this.model.create();
@@ -117,7 +115,7 @@ CLASS({
             view.X.stack.popView();
           }.bind(this)));
 
-          var toolbar = this.Toolbar.create(undefined, Y);
+          var toolbar = this.Toolbar.create();
           toolbar.addLeftActions([
             this.ToolbarAction.create({
               action: Action.create({
@@ -131,7 +129,7 @@ CLASS({
             })
           ]);
 
-          view = Y.E()
+          view = this.Y.E()
             .add(toolbar)
             .add(view);
 

@@ -46,15 +46,6 @@ CLASS({
           '$$DOC{ref:".model"} is required instead.',
     },
     {
-      name: 'selection',
-      postSet: function(old, nu) {
-        if (nu) {
-          var Y = this.Y.sub({ data: nu });
-          this.stack.pushView(this.DAOUpdateController.create({ model: this.model, data: nu }, Y));
-        }
-      },
-    },
-    {
       model_: 'ViewFactoryProperty',
       name: 'listView',
       defaultValue: function(args, opt_X) {
@@ -73,32 +64,30 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'rowView',
-    },
-    {
-      name: 'stack',
-      postSet: function(old, nu) {
-        old && old.unsubscribe(old.VIEW_DESTROYED, this.onViewDestroyed);
-        nu && nu.subscribe(nu.VIEW_DESTROYED, this.onViewDestroyed);
-      },
-    },
+    }
   ],
 
   listeners: [
     {
-      name: 'onViewDestroyed',
-      documentation: 'Called when the child view (detail view) is closed.',
-      code: function(sender, topic, view) {
-        if (view.data && this.selection && view.data.id === this.selection.id) {
-          this.selection = null;
-        }
+      name: 'rowClick',
+      code: function(_, _, obj) {
+        var Y = this.Y.sub({ data: obj });
+        this.stack.pushView(
+          this.DAOUpdateController.create({
+            model: this.model,
+            data: obj
+          }, Y));
       }
-    },
+    }
   ],
 
   methods: [
     function initE() {
-      var Y = this.Y.sub({ selection$: this.selection$ });
-      this.cls(this.myCls()).add(this.listView(null, Y));
+      var list = this.listView(null, this.Y);
+      // TODO(adamvy): Do we need to remove the listener ourselves?
+      // or can the listView clean it up automatically when removed.
+      list.subscribe(list.ROW_CLICK, this.rowClick);
+      this.cls(this.myCls()).add(list);
     },
   ]
 });
