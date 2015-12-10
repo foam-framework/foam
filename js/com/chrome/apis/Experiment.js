@@ -26,7 +26,8 @@ CLASS({
   ],
   properties: [
     {
-      name: 'id'
+      name: 'id',
+      visibility: 'hidden'
     },
     {
       name: 'name'
@@ -39,11 +40,13 @@ CLASS({
     {
       name: 'frozen',
       type: 'Boolean',
+      visibility: 'rw',
       defaultValue: false
     },
     {
       name: 'ended',
       type: 'Boolean',
+      visibility: 'hidden',
       defaultValue: false
     }
   ],
@@ -52,16 +55,9 @@ CLASS({
       name: 'cancel',
       help: 'Cancel the experiment.  Revokes all keys and disables creation of new keys',
       code: function() {
-        this.freeze();
+        this.frozen = true;
         this.revokeAllKeys();
         this.ended = true;
-      }
-    },
-    {
-      name: 'freeze',
-      help: 'Disables creation of new API keys for this experiment',
-      code: function() {
-        this.frozen = true;
       }
     },
     {
