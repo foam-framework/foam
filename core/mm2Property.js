@@ -531,24 +531,28 @@ GLOBAL.Property = {
       view: 'foam.ui.FunctionView',
       help: 'Function for validating property value.',
       preSet: function(_, f) {
-        var str = f.toString();
-        var deps = str.match(/^function[ _$\w]*\(([ ,\w]*)/)[1];
-        if ( deps )
-          deps = deps.split(',').map(function(name) { return name.trim(); });
-        else
-          deps = [];
+        if ( ! f.dependencies ) {
+          var str = f.toString();
+          var deps = str.match(/^function[ _$\w]*\(([ ,\w]*)/)[1];
+          if ( deps )
+            deps = deps.split(',').map(function(name) { return name.trim(); });
+          else
+            deps = [];
 
-        var f2 = function() {
-          var args = [];
-          for ( var i = 0 ; i < deps.length ; i++ )
-            args.push(this[deps[i]]);
-          return f.apply(this, args);
-        };
+          var f2 = function() {
+            var args = [];
+            for ( var i = 0 ; i < deps.length ; i++ )
+              args.push(this[deps[i]]);
+            return f.apply(this, args);
+          };
 
-        f2.dependencies = deps;
-        f2.toString = function() { return f.toString(); };
+          f2.dependencies = deps;
+          f2.toString = function() { return f.toString(); };
 
-        return f2;
+          return f2;
+        } else {
+          return f;
+        }
       },
       documentation: function() { /*
         Arguments to the validate function should be named after the properties

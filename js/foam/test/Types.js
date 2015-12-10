@@ -269,5 +269,17 @@ CLASS({
         }.bind(this));
       }
     },
+    {
+      model_: 'UnitTest',
+      name: 'DynamicDependencies',
+      description: 'IntProperty check that the validate() generated has proper .dependencies listed',
+      code: function() {
+        var m = this.IntModel.create();
+
+        this.assert( ! m.DEFAULTY.validate.dependencies.length, "No deps on unbounded int" );
+        this.assert( m.BOUNDED.validate.dependencies[0] == 'bounded', "Bounded int has 'bounded' dep" );
+
+      }
+    },
   ],
 });

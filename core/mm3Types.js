@@ -199,6 +199,7 @@ CLASS({
                   ''
               );
           }.o(ret);
+          ret.dependencies = [prop.name];
         }
         var max = prop.maxChars;
         if ( max !== "" ) {
@@ -209,6 +210,7 @@ CLASS({
                   ''
               );
           }.o(ret);
+          ret.dependencies = [prop.name];
         }
         var pattern = prop.pattern;
         if ( pattern ) {
@@ -219,6 +221,7 @@ CLASS({
             return result ||
               ( ! testable.test(this[prop.name]) ? errMsg : '' );
           }.o(ret);
+          ret.dependencies = [prop.name];
         }
         return ret;
       }
@@ -424,6 +427,7 @@ CLASS({
             return result ||
               ( this[prop.name] < min ? prop.ERROR_BELOW_MINIMUM.replaceValues(null, { min: min }) : '');
           }.o(ret);
+          ret.dependencies = [prop.name];
         }
 
         var max = prop.maxValue;
@@ -432,6 +436,7 @@ CLASS({
             return result ||
               ( this[prop.name] > max ? prop.ERROR_ABOVE_MAXIMUM.replaceValues(null, { max: max }) : '');
           }.o(ret);
+          ret.dependencies = [prop.name];
         }
         return ret;
       }
