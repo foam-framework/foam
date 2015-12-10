@@ -36,8 +36,22 @@ CLASS({
   ],
 
   actions: [
-
+    {
+      name: 'delete',
+      help: 'Delete this item.',
+      ligature: 'delete',
+      isAvailable: function() {
+        return (this.mode == 'read-write') &&
+          (this.dao && this.dao.remove);
+      },
+      code: function() {
+        if (this.dao && this.dao.remove) {
+          this.dao.remove(this.data);
+        }
+      }
+    }
   ],
+
 
   templates: [
     function toHTML() {/*
@@ -52,10 +66,6 @@ CLASS({
         align-content: baseline;
         flex-grow: 1;
         background: white;
-      }
-      .property-edit-view .md-flex-row {
-        overflow: none;
-        align-content: baseline;
       }
     */},
 

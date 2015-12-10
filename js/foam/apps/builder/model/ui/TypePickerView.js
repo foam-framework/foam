@@ -93,7 +93,7 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-flex-row">
+        <div class="md-flex-row-end">
           <div class="md-picker-view-dropdown">
             %%dataTypePicker()
           </div>

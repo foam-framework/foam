@@ -45,6 +45,7 @@ CLASS({
     'foam.metrics.Metric',
     'foam.ui.md.FlatButton',
     'foam.ui.md.PopupView',
+    'foam.apps.builder.model.regex.EasyRegex',
   ],
   exports: [
     'appBuilderAnalyticsEnabled$',
