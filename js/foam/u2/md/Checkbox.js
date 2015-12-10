@@ -20,6 +20,10 @@ CLASS({
   name: 'Checkbox',
   extends: 'foam.u2.View',
 
+  imports: [
+    'dynamic',
+  ],
+
   properties: [
     {
       type: 'String',
@@ -39,7 +43,10 @@ CLASS({
       var self = this;
       this.cls(this.myCls())
           .enableCls(this.myCls('checked'), this.data$)
-          .on('click', function() { self.data = !self.data; });
+          .cls(this.dynamic(function(mode) {
+            return mode === 'rw' ? undefined : self.myCls('read-only');
+          }, this.mode$))
+          .on('click', function() { if (self.mode === 'rw') self.data = !self.data; });
       if (this.showLabel) {
         this.start('span')
             .cls(this.myCls('label')).cls('noselect')
@@ -53,6 +60,7 @@ CLASS({
           .end();
     },
     function fromProperty(prop) {
+      this.SUPER(prop);
       this.label = this.label || prop.label;
     },
     function svgElement() {
@@ -74,8 +82,11 @@ CLASS({
         padding: 8px;
       }
       $-label {
+        color: #444;
         flex-grow: 1;
         margin-right: 12px;
+      }
+      $-read-only {
         opacity: 0.54;
       }
       $-box-outer {
@@ -100,6 +111,10 @@ CLASS({
         background-color: #04a9f4;
         border-color: #04a9f4;
         fill: white;
+      }
+      $-read-only$-checked $-box {
+        background-color: #5a5a5a;
+        border-color: #5a5a5a;
       }
     */}
   ]
