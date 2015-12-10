@@ -185,7 +185,7 @@ CLASS({
         var ret = constantFn('');
 
         var min = prop.minChars;
-        if ( typeof min !== 'string' || min ) { // ignore '' (falsey string)
+        if ( min !== "" ) {
           min = parseInt(min);
           ret = function(result) {
             return result ||
@@ -196,7 +196,7 @@ CLASS({
           }.o(ret);
         }
         var max = prop.maxChars;
-        if ( typeof max !== 'string' || max ) { // ignore '' (falsey string)
+        if ( max !== "" ) {
           max = parseInt(max);
           ret = function(result) {
             return result ||
@@ -409,7 +409,7 @@ CLASS({
         var ret = constantFn('');
 
         var min = prop.minValue;
-        if ( typeof min !== 'string' || min ) { // ignore '' (falsey string)
+        if ( min !== "" ) {
           min = prop.adapt.call(prop, null, min);
           ret = function(result) {
             return result ||
@@ -418,7 +418,7 @@ CLASS({
         }
 
         var max = prop.maxValue;
-        if ( typeof max !== 'string' || max ) { // ignore '' (falsey string)
+        if ( max !== "" ) {
           max = prop.adapt.call(prop, null, max);
           ret = function(result) {
             return result ||
