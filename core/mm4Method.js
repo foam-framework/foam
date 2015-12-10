@@ -654,6 +654,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'Message',
   plural: 'messages',
@@ -679,7 +680,7 @@ CLASS({
       documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
         $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
         $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
-      */}
+        */}
     },
     {
       name: 'value',
@@ -701,7 +702,7 @@ CLASS({
       documentation: function() {/* Array of plain Javascript objects
         describing in-message placeholders. The data can be expanded into
         $$DOC{ref:'foam.i18n.Placeholder'}, for example.
-      */},
+      */}
     },
     {
       model_: 'FunctionProperty',
@@ -736,6 +737,7 @@ CLASS({
     }
   ]
 });
+
 
 CLASS({
   name: 'Method',
