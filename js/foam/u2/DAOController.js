@@ -66,7 +66,7 @@ CLASS({
         args2.minWidth = args2.minWidth || 350;
         args2.preferredWidth = args2.preferredWidth || 500;
         args2.maxWidth = args2.maxWidth || 500;
-        args2.data = this.data;
+        args2.data$ = this.data$;
         return this.DAOListView.create(args2, opt_X);
       }
     },
