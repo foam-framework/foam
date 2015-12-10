@@ -105,9 +105,14 @@ CLASS({
       }
     },
     {
+      name: 'modelName',
+      type: 'String',
+      defaultValue: 'origin'
+    },
+    {
       name: 'data',
       factory: function() {
-        return this.originDAO;
+        return this[this.modelName + 'DAO']
       }
     },
     {
