@@ -1,6 +1,8 @@
+* Can't set boolean properties from index.html parameters.
+  - Problem: fromString() sets the property directly which means that it can only be called after object created.
+
 validate
 async/future view loading
-benchmark (w. Cells?)
 
 cache id$el based on lifecycle?
   - better to move element out of id and into Element
@@ -67,29 +69,23 @@ NO: OPTIONAL_CLOSE_TAGS
 ))
 
 
-'as' support
-Special value:
-  $e - current element
-
-
-  DONE if
+Done: 'as' support
+Done: if
+Done: repeat (add map support)
 
 TODO:
   dynamic class syntax
-  repeat
-  redesign on$()
   focus?
+    - works, but when to add listeners?
   computedStyle
   lifecycle
-  validation
   cleanup
+  validation
   keyboard action shortcuts
 
 destroy should work from any state.
 
 onclick={{something}} should not parse to an attribute.
-
-Can't set boolean properties from index.html parameters.
 
 This would be a better template for Board.js:
 

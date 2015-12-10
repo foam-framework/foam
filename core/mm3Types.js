@@ -291,9 +291,10 @@ CLASS({
     {
       name: 'fromString',
       labels: ['javascript'],
-      defaultValue: function(s, p) {
+      defaultValue: function(s) {
         var txt = s.trim();
-        this[p.name] =
+        debugger;
+        return
           txt.equalsIC('y')    ||
           txt.equalsIC('yes')  ||
           txt.equalsIC('true') ||
@@ -973,8 +974,8 @@ CLASS({
     },
     {
       name: 'fromString',
-      defaultValue: function(s, p) {
-        this[p.name] = s.split(',');
+      defaultValue: function(s) {
+        return s.split(',');
       }
     },
     {

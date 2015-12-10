@@ -29,6 +29,7 @@ CLASS({
   ],
   imports: [
     'document',
+    'dynamic',
     'headerColor',
     'menuFactory',
     'stack',
@@ -37,6 +38,10 @@ CLASS({
     'headerColor',
   ],
 
+  constants: {
+    MENU_CLOSE: ['menu-close'],
+  },
+
   properties: [
     {
       name: 'data',
@@ -44,7 +49,11 @@ CLASS({
     },
     {
       name: 'title',
-      defaultValueFn: function() { return this.data.model.name + ' Browser'; }
+      factory: function() {
+        return this.dynamic(function(data) {
+          return data.model.name + ' Browser';
+        }, this.data$);
+      }
     },
     {
       type: 'Boolean',
@@ -98,7 +107,9 @@ CLASS({
       defaultValue: false,
       postSet: function(old, nu) {
         if (nu && !this.menuRendered_) {
-          this.menuView_.add(this.menuFactory());
+          var menu = this.menuFactory();
+          this.menuView_.add(menu);
+          menu.subscribe(this.MENU_CLOSE, this.onMenuTouch);
           this.menuRendered_ = true;
         }
       },
@@ -294,7 +305,7 @@ CLASS({
       header.add(this.MENU_BUTTON);
       header.start('span')
           .cls(this.myCls('header-title'))
-          .add(this.title$)
+          .add(this.title)
           .end();
 
       if (this.spinner) header.add(this.spinner);

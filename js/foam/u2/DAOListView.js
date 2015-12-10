@@ -21,7 +21,6 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.u2.DetailView',
     'foam.u2.md.CitationView',
   ],
   imports: [
