@@ -46,7 +46,7 @@ CLASS({
           <content>
             <icons>
               <wrench><i class="material-icons-extended" style="font-size: 90px;color:#fff;">build</i></wrench>
-              <display><i class="material-icons-extended" style="font-size: 225px;color:#000">chrome_reader_mode</i></display>
+              <display><i class="material-icons-extended" style="font-size: 225px;color:#000">campaign_show</i></display>
               <dot></dot>
             </icons>
           </content>
