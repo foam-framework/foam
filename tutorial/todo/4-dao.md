@@ -44,28 +44,37 @@ First, add `foam.dao.EasyDAO` to the `requires`:
 {% highlight js %}
 requires: [
   'com.todo.model.Todo',
-  'foam.browser.BrowserConfig',
   'foam.dao.EasyDAO',
 ],
 {% endhighlight %}
 
 
-Then edit `data`'s `factory` to be:
+Then remove the `model` property, and instead add `data` property with a
+`factory`, like so:
 {% highlight js %}
-{
-  name: 'data',
-  factory: function() {
-    return this.BrowserConfig.create({
-      model: this.Todo,
-      dao: this.EasyDAO.create({
-        model: this.Todo,
-        daoType: 'LOCAL',
-        cache: true,
-        seqNo: true
-      })
-    });
-  }
-}
+CLASS({
+  package: 'com.todo',
+  name: 'TodoApp',
+  extends: 'foam.browser.u2.BrowserController',
+  requires: [
+    'com.todo.model.Todo',
+    'foam.dao.EasyDAO',
+  ],
+
+  properties: [
+    {
+      name: 'data',
+      factory: function() {
+        return this.EasyDAO.create({
+          model: this.Todo,
+          daoType: 'LOCAL',
+          cache: true,
+          seqNo: true
+        });
+      }
+    },
+  ]
+});
 {% endhighlight %}
 
 Try it out, and you'll see that we're now saving the data between reloads.
@@ -81,6 +90,10 @@ again), `daoType: 'LOCAL'` (meaning `LocalStorage`), `cache: true` and `seqNo: t
 The result is a DAO which ultimately uses `LocalStorage`, but is fully cached in
 memory, and automatically sets `id` on any newly inserted objects to the next
 unused value.
+
+Instead of specifying the `model` for our `BrowserController` and letting it
+make up a DAO, we're instead supplying the DAO directly as
+`BrowserController.data`.
 
 
 ## Next

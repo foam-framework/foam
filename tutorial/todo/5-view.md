@@ -85,8 +85,8 @@ summary:
 - `(( real JS code ))` runs the literal Javascript code.
 - `<obj:property ... />` puts the default `view` for `obj.property` here.
 
-When the template parser is finished, our model has an `initE` method that
-returns an `Element` constructed from our template.
+When the template parser is finished, our `TodoCitationView` model has an
+`initE` method that returns an `Element` constructed from our template.
 
 ### External Templates
 
@@ -94,7 +94,7 @@ You can also put templates in separate files, named `MyModel_templateName.ft`.
 For example, `TodoCitationView_initE.ft`.
 
 Then in your model's `templates` section, instead of adding an inline template,
-just add it by name: <br/>`{ name: 'toHTML' }`.
+just add it by name: <br/>`{ name: 'initE' }`.
 
 ## Wire in our new view
 
@@ -103,7 +103,7 @@ going to configure it to use our new `com.todo.u2.TodoCitationView`.
 
 Edit `TodoApp.js`.
 
-First, add `'com.todo.u2.TodoCitationView'` to the `requires`:
+Add `'com.todo.u2.TodoCitationView'` to the `requires`:
 {% highlight js %}
 requires: [
   'com.todo.model.Todo',
@@ -113,25 +113,44 @@ requires: [
 ],
 {% endhighlight %}
 
-Then update the `data` `factory`:
+Whenever the list view in the Browser wants to create a row for some object,
+it checks if that object has a `toRowE` or `toE` method. These methods are
+optional, but if defined they should return an `Element`.
 
+Edit `Todo.js` and let's define `toRowE` for it.
 {% highlight js %}
-{
-  name: 'data',
-  factory: function() {
-    return this.BrowserConfig.create({
-      model: this.Todo,
-      dao: this.EasyDAO.create({
-        model: this.Todo,
-        daoType: 'LOCAL',
-        cache: true,
-        seqNo: true
-      }),
-      rowView: 'com.todo.u2.TodoCitationView'
-    });
-  }
-}
+CLASS({
+  package: 'com.todo.model',
+  name: 'Todo',
+  properties: [
+    {
+      name: 'id',
+      hidden: true
+    },
+    {
+      name: 'title',
+    },
+    {
+      type: 'Boolean',
+      name: 'isCompleted',
+      label: 'Completed'
+    },
+  ],
+
+  methods: [
+    function toRowE(X) {
+      return X.lookup('com.todo.u2.TodoCitationView').create({ data: this }, X);
+    }
+  ]
+});
 {% endhighlight %}
+
+(Don't worry about what that X parameter is doing there. We're hoping to clean
+up this flow in the future.)
+
+<!--
+TODO: Improve the developer experience here. toFooE as a property that adapts from strings?
+-->
 
 If you reload the app, you'll see that our change is working - but the app isn't
 really improved!

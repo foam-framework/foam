@@ -28,16 +28,15 @@ Open this new file in your editor, and put the following into it:
 CLASS({
   package: 'com.todo',
   name: 'TodoApp',
-  extends: 'foam.browser.u2.BrowserView',
+  extends: 'foam.browser.u2.BrowserController',
   requires: [
     'com.todo.model.Todo',
-    'foam.browser.BrowserConfigU2',
   ],
   properties: [
     {
-      name: 'data',
+      name: 'model',
       factory: function() {
-        return this.BrowserConfigU2.create({ model: this.Todo });
+        return this.Todo;
       }
     }
   ]
@@ -48,31 +47,23 @@ You can check that this new rendition of our app is working by going to [http://
 
 So what's going on with this new model?
 
-- It extends `foam.browser.u2.BrowserView`, which you may recognize from the
+- It extends `foam.browser.u2.BrowserController`, which you may recognize from the
   query parameters we passed to `index.html` earlier. This is the central view
-  that defines the default look of the browser. We're only extending it slightly,
-  overriding its `data` property.
+  that sets up the Browser. We're only extending it slightly, overriding its
+  `model` property.
 - We specify `requires`. FOAM models can depend on other models. Here we require
-  our `Todo` model, as well as `foam.browser.BrowserConfigU2`, which is how we
-  configure the Browser. `BrowserConfigU2` has many properties, but they have sane
-  defaults; we need only set the `model` to get the browser working.
-- We define a property called `data`. All FOAM views, including our submodel of
-  `BrowserView`, have a `data` property, which contains the object they're
-  showing to the user.
-- This `data` property has a `factory` function. Factories are run when a new
-  instance is created and no value for that property was passed in. Whatever
-  value the `factory()` returns becomes the value of the property.
-- Our `factory` shows how to actually make instances of models:
-  <br/>`SomeModel.create({ key: value, ... })`. We don't use `new` because there's a
-  lot of extra legwork going on behind the scenes in `create` &ndash; like
-  calling `factory` functions.
-- This also shows how our "required" models are accessed: they are
-  available as `this.ModelName`. Therefore we have `this.BrowserConfigU2` and
-  `this.Todo`.
+  our `Todo` model.
+- `BrowserController` has a property called `model`, which we previously set
+  using a URL parameter. Here we're overriding that property to customize it.
+    - Our `model` property has a `factory` function. Factories are run when a
+      new instance (of `TodoApp`) is created and no value for that property was
+      passed in. Whatever value the `factory()` returns becomes the value of the
+      `model` property.
+    - Our `factory` returns `this.Todo`. When we "require" a model with
+      `requires`, it gets attached to `this` as `this.Todo`.
 
-That's a lot of details in a small snippet of code! But we haven't actually
-improved the app at all. We've just moved our wiring from the URL parameters to
-this `TodoApp` model.
+We haven't actually improved the app at all. We just moved our wiring from the
+`model=com.todo.model.Todo` URL parameter to this `TodoApp` model.
 
 ## A few quick improvements
 

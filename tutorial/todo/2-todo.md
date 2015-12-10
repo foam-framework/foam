@@ -65,7 +65,7 @@ app. In fact, let's load our app using one of FOAM's reusable controllers.
 
 ### Almost done?
 
-Our app is now [remarkably complete](http://localhost:8000/foam/index.html?model_=foam.browser.BrowserConfigU2&model=com.todo.model.Todo&view=foam.browser.u2.BrowserView&classpath=../js/).
+Our app is now [remarkably complete](http://localhost:8000/foam/index.html?model_=foam.browser.u2.BrowserController&model=com.todo.model.Todo&classpath=../js/).
 
 ![List view screenshot]({{ site.url }}/tutorial/todo/assets/model-only-list.png)
 ![Detail view screenshot]({{ site.url }}/tutorial/todo/assets/model-only-details.png)
@@ -90,20 +90,20 @@ The Browser is very customizable, but there's only one required parameter: the
 Let's examine the parameters we passed to FOAM's
 [index.html]({{site.baseurl}}/guides/index_html) in order to load our app.
 
-- `model_=foam.browser.BrowserConfigU2` This is the model we want `index.html` to
-  instantiate for us. The `BrowserConfigU2` has many configuration options that
-  determine how exactly our Browser should behave. They all have default values,
-  though, so we don't need to set any except `model`, which we do below.
-- `view=foam.browser.u2.BrowserView` We want to display our `BrowserConfigU2`
-  using a `BrowserView`, the heart of the Browser component.
+- `model_=foam.browser.u2.BrowserController` This is the main model we want `index.html`
+  to instantiate and display for us. `BrowserController` is the top-level model
+  for the Browser.
 - `model=com.todo.model.Todo` here we set the `model` property of the
-  `BrowserConfig` to the todo item model we defined above. The Browser looks at
-  the `model` to see what the objects we want to browse look like.
+  `BrowserController` to the todo item model we defined above. The Browser looks
+  at the `model` to see what the objects we want to browse look like.
 
-This is the essence of FOAM. Instead of writing code to implement all these
-features for your app, we write them in a generic way that can be reused by many
-apps.
+This is the essence of FOAM. Instead of writing code to implement all the
+Browser's features for your app, we write them in a generic way that can be
+reused by many apps.
 
+With just a model and the Browser, our nascent app can create new todos, edit
+existing ones, and search-as-you-type. Soon we'll have it persisting in
+LocalStorage, and then on a server.
 
 ### Views are Evolving
 
