@@ -33,7 +33,7 @@ CLASS({
   ],
 
   exports: [
-    'controllerMode'
+    'myControllerMode as controllerMode'
   ],
 
   properties: [
@@ -83,7 +83,7 @@ CLASS({
         return t;
       }
     },
-    ['controllerMode', 'update']
+    ['myControllerMode', 'update']
   ],
 
   actions: [

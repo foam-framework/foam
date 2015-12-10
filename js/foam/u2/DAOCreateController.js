@@ -32,7 +32,7 @@ CLASS({
   ],
 
   exports: [
-    'controllerMode'
+    'myControllerMode as controllerMode'
   ],
 
   properties: [
@@ -76,7 +76,7 @@ CLASS({
         return this.X[daoize(this.model.name)];
       }
     },
-    ['controllerMode', 'create']
+    ['myControllerMode', 'create']
   ],
 
   actions: [
