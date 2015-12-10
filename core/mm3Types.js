@@ -165,12 +165,18 @@ CLASS({
     {
       name: 'minChars',
       label: 'Minimum characters',
-      help: 'The minimum number of characters required.'
+      help: 'The minimum number of characters required.',
+      adapt: function(old,nu) {
+        return nu === "" ? "" : parseInt(nu);
+      }
     },
     {
       name: 'maxChars',
       label: 'Maximum characters',
-      help: 'The maximum number of characters allowed.'
+      help: 'The maximum number of characters allowed.',
+      adapt: function(old,nu) {
+        return nu === "" ? "" : parseInt(nu);
+      }
     },
     {
       name: 'prototag',
@@ -186,7 +192,6 @@ CLASS({
 
         var min = prop.minChars;
         if ( min !== "" ) {
-          min = parseInt(min);
           ret = function(result) {
             return result ||
               ( this[prop.name].length < min ?
@@ -197,7 +202,6 @@ CLASS({
         }
         var max = prop.maxChars;
         if ( max !== "" ) {
-          max = parseInt(max);
           ret = function(result) {
             return result ||
               ( this[prop.name].length > max ?
@@ -388,14 +392,20 @@ CLASS({
       label: 'Minimum Value',
       required: false,
       help: 'The minimum value this property accepts.',
-      defaultValue: ''
+      defaultValue: '',
+      adapt: function(old,nu) {
+        return nu === "" ? "" : this.adapt(null, nu);
+      }
     },
     {
       name: 'maxValue',
       label: 'Maximum Value',
       required: false,
       help: 'The maximum value this property accepts.',
-      defaultValue: ''
+      defaultValue: '',
+      adapt: function(old,nu) {
+        return nu === "" ? "" : this.adapt(null, nu);
+      }
     },
     {
       name: 'compareProperty',
@@ -410,7 +420,6 @@ CLASS({
 
         var min = prop.minValue;
         if ( min !== "" ) {
-          min = prop.adapt.call(prop, null, min);
           ret = function(result) {
             return result ||
               ( this[prop.name] < min ? prop.ERROR_BELOW_MINIMUM.replaceValues(null, { min: min }) : '');
@@ -419,7 +428,6 @@ CLASS({
 
         var max = prop.maxValue;
         if ( max !== "" ) {
-          max = prop.adapt.call(prop, null, max);
           ret = function(result) {
             return result ||
               ( this[prop.name] > max ? prop.ERROR_ABOVE_MAXIMUM.replaceValues(null, { max: max }) : '');
