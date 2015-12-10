@@ -25,6 +25,7 @@ CLASS({
   imports: [
     'data',
     'stack',
+    'controllerMode'
   ],
 
   properties: [
@@ -52,6 +53,12 @@ CLASS({
       name: 'model',
     },
     {
+      name: 'mode',
+      defaultValueFn: function() {
+        return 'create' == this.controllerMode ? 'hidden': 'rw';
+      }
+    },
+    {
       name: 'relatedDAO',
       lazyFactory: function() {
         return this.data[this.relationship.name];
@@ -65,6 +72,9 @@ CLASS({
       this.Y.set(
         daoize(this.X.lookup(this.relationship.relatedModel).name),
         this.relatedDAO);
+    },
+    function updateMode_(m) {
+      this.hide(m == 'hidden');
     },
     function initE() {
       var view = this.view;
