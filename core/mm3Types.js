@@ -15,12 +15,106 @@
  * limitations under the License.
  */
 
+
+CLASS({
+  name: 'Message',
+  plural: 'messages',
+
+  tableProperties: [
+    'name',
+    'value',
+    'translationHint'
+  ],
+
+  documentation: function() {/*
+  */},
+
+  properties: [
+    {
+      name:  'name',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The coding identifier for the message.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+        */}
+    },
+    {
+      name: 'value',
+      help: 'The message itself.'
+    },
+    {
+      name: 'meaning',
+      help: 'Linguistic clarification to resolve ambiguity.',
+      documentation: function() {/* A human readable discussion of the
+        $$DOC{ref:'.'} to resolve linguistic ambiguities.
+      */}
+    },
+    {
+      name: 'placeholders',
+      help: 'Placeholders to inject into the message.',
+      documentation: function() {/* Array of plain Javascript objects
+        describing in-message placeholders. The data can be expanded into
+        $$DOC{ref:'foam.i18n.Placeholder'}, for example.
+      */},
+      factory: function() { return []; }
+    },
+    {
+      name: 'replaceValues',
+      documentation: function() {/* Function that binds values to message
+        contents.
+      */},
+      defaultValue: function(unused_selectors, args) {
+        var phs = this.placeholders || [];
+        var value = this.value;
+        // Bind known placeholders to message string.
+        for ( var i = 0; i < phs.length; ++i ) {
+          var name = phs[i].name;
+          var replacement = args.hasOwnProperty(name) ? args[name] :
+              phs[i].example;
+          value = value.replace((new RegExp('[$]' + name + '[$]', 'g')),
+                                replacement);
+        }
+        return value;
+      }
+    },
+    {
+      name: 'translationHint',
+      displayWidth: 70,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'A brief description of this message and the context in which it used.',
+      documentation: function() {/* A human readable description of the
+        $$DOC{ref:'.'} and its context for the purpose of translation.
+      */}
+    }
+  ]
+});
+
+
 CLASS({
   name: 'StringProperty',
   extends: 'Property',
 
   help: 'Describes a properties of type String.',
-  label: 'Text, including letters, numbers, or symbols',
+  label: 'Text',
+
+  messages: [
+    { name: 'errorPatternMismatch', value: 'The text does not match the pattern.' },
+    {
+      name: 'errorBelowMinLength',
+      value: 'The text is too short. Minimum: $min$',
+      placeholders: [ { name: 'min' } ]
+    },
+    {
+      name: 'errorAboveMaxLength',
+      value: 'The text is too long. Maximum: $max$',
+      placeholders: [ { name: 'max' } ]
+    }
+  ],
 
   properties: [
     {
@@ -69,10 +163,68 @@ CLASS({
       help: 'Regex pattern for property.'
     },
     {
+      name: 'minChars',
+      label: 'Minimum characters',
+      help: 'The minimum number of characters required.',
+      adapt: function(old,nu) {
+        return nu === "" ? "" : parseInt(nu);
+      }
+    },
+    {
+      name: 'maxChars',
+      label: 'Maximum characters',
+      help: 'The maximum number of characters allowed.',
+      adapt: function(old,nu) {
+        return nu === "" ? "" : parseInt(nu);
+      }
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       required: false,
       help: 'The protobuf tag number for this field.'
+    },
+    {
+      name: 'validate',
+      lazyFactory: function() {
+        var prop = this; // this == the property
+        var ret = constantFn('');
+
+        var min = prop.minChars;
+        if ( min !== "" ) {
+          ret = function(result) {
+            return result ||
+              ( this[prop.name].length < min ?
+                  prop.ERROR_BELOW_MIN_LENGTH.replaceValues(null, { min: min }) :
+                  ''
+              );
+          }.o(ret);
+          ret.dependencies = [prop.name];
+        }
+        var max = prop.maxChars;
+        if ( max !== "" ) {
+          ret = function(result) {
+            return result ||
+              ( this[prop.name].length > max ?
+                  prop.ERROR_ABOVE_MAX_LENGTH.replaceValues(null, { max: max }) :
+                  ''
+              );
+          }.o(ret);
+          ret.dependencies = [prop.name];
+        }
+        var pattern = prop.pattern;
+        if ( pattern ) {
+          var testable = pattern.test ? pattern : new RegExp(pattern.toString(), 'i');
+          var errMsg = pattern.errorMessage ?
+            pattern.errorMessage() : prop.errorPatternMismatch;
+          ret = function(result) {
+            return result ||
+              ( ! testable.test(this[prop.name]) ? errMsg : '' );
+          }.o(ret);
+          ret.dependencies = [prop.name];
+        }
+        return ret;
+      }
     }
   ]
 });
@@ -83,7 +235,7 @@ CLASS({
   extends: 'Property',
 
   help: 'Describes a properties of type Boolean.',
-  label: 'True/false, yes/no, or on/off',
+  label: 'True or false',
 
   properties: [
     /*
@@ -158,7 +310,7 @@ CLASS({
   extends: 'Property',
 
   help:  'Describes a properties of type Date.',
-  label: 'Date, including year, month, and day',
+  label: 'Date',
 
   properties: [
     /*
@@ -212,7 +364,7 @@ CLASS({
   extends: 'DateProperty',
 
   help: 'Describes a properties of type DateTime.',
-  label: 'Date and time, including year, month, day, hour, minute and second',
+  label: 'Date and time',
 
   properties: [
     [ 'view', 'foam.ui.DateTimeFieldView' ]
@@ -220,12 +372,89 @@ CLASS({
 });
 
 
+
+
 CLASS({
-  name:  'IntProperty',
+  name:  'NumericProperty_',
   extends: 'Property',
 
+  help:  'Base model for a property of any numeric type.',
+
+  messages: [
+    {
+      name: 'errorBelowMinimum',
+      value: 'The value must be at least $min$.',
+      placeholders: [ { name: 'min' } ]
+    },
+    {
+      name: 'errorAboveMaximum',
+      value: 'The value can be at most $max$.',
+      placeholders: [ { name: 'max' } ]
+    }
+  ],
+
+  properties: [
+    {
+      name: 'minValue',
+      label: 'Minimum Value',
+      required: false,
+      help: 'The minimum value this property accepts.',
+      defaultValue: '',
+      adapt: function(old,nu) {
+        return nu === "" ? "" : this.adapt(null, nu);
+      }
+    },
+    {
+      name: 'maxValue',
+      label: 'Maximum Value',
+      required: false,
+      help: 'The maximum value this property accepts.',
+      defaultValue: '',
+      adapt: function(old,nu) {
+        return nu === "" ? "" : this.adapt(null, nu);
+      }
+    },
+    {
+      name: 'compareProperty',
+      labels: ['javascript'],
+      defaultValue: function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; },
+    },
+    {
+      name: 'validate',
+      lazyFactory: function() {
+        var prop = this; // this == the property
+        var ret = constantFn('');
+
+        var min = prop.minValue;
+        if ( min !== "" ) {
+          ret = function(result) {
+            return result ||
+              ( this[prop.name] < min ? prop.ERROR_BELOW_MINIMUM.replaceValues(null, { min: min }) : '');
+          }.o(ret);
+          ret.dependencies = [prop.name];
+        }
+
+        var max = prop.maxValue;
+        if ( max !== "" ) {
+          ret = function(result) {
+            return result ||
+              ( this[prop.name] > max ? prop.ERROR_ABOVE_MAXIMUM.replaceValues(null, { max: max }) : '');
+          }.o(ret);
+          ret.dependencies = [prop.name];
+        }
+        return ret;
+      }
+    }
+  ]
+});
+
+
+CLASS({
+  name:  'IntProperty',
+  extends: 'NumericProperty_',
+
   help:  'Describes a properties of type Int.',
-  label: 'Round numbers such as 1, 0, or -245',
+  label: 'Round numbers',
 
   properties: [
     /*
@@ -271,23 +500,6 @@ CLASS({
       required: false,
       help: 'The protobuf tag number for this field.'
     },
-    {
-      name: 'minValue',
-      label: 'Minimum Value',
-      required: false,
-      help: 'The minimum value this property accepts.'
-    },
-    {
-      name: 'maxValue',
-      label: 'Maximum Value',
-      required: false,
-      help: 'The maximum value this property accepts.'
-    },
-    {
-      name: 'compareProperty',
-      labels: ['javascript'],
-      defaultValue: function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; },
-    },
   ]
 });
 
@@ -297,7 +509,7 @@ CLASS({
   extends: 'IntProperty',
 
   help:  'Describes a properties of type Long.',
-  label: 'Round long numbers such as 1, 0, or -245',
+  label: 'Round long numbers',
 
   properties: [
     /*
@@ -327,10 +539,10 @@ CLASS({
 
 CLASS({
   name:  'FloatProperty',
-  extends: 'Property',
+  extends: 'NumericProperty_',
 
   help:  'Describes a properties of type Float.',
-  label: 'Decimal numbers such as 1.34 or -0.00345',
+  label: 'Decimal numbers',
 
   properties: [
     /*
@@ -371,23 +583,11 @@ CLASS({
       }
     },
     {
-      name: 'minValue',
-      label: 'Minimum Value',
-      required: false,
-      help: 'The minimum value this property accepts.'
-    },
-    {
-      name: 'maxValue',
-      label: 'Maximum Value',
-      required: false,
-      help: 'The maximum value this property accepts.'
-    },
-    {
       name: 'prototag',
       label: 'Protobuf tag',
       required: false,
       help: 'The protobuf tag number for this field.'
-    }
+    },
   ]
 });
 
@@ -1076,6 +1276,10 @@ CLASS({
   name: 'EMailProperty',
   extends: 'StringProperty',
   label: 'Email address',
+
+  properties: [
+    [ 'pattern', '^.+\@.+$' ]
+  ]
 });
 
 CLASS({
@@ -1122,6 +1326,11 @@ CLASS({
   name: 'PhoneNumberProperty',
   extends: 'StringProperty',
   label: 'Phone number',
+
+  properties: [
+    [ 'pattern', '^[0-9\-\+\(\)\*\ ]*$' ]
+  ]
+
 });
 
 
