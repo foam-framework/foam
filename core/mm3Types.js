@@ -56,6 +56,10 @@ CLASS({
       defaultValue: 'String',
     },
     {
+      name: 'swiftDefaultValue',
+      defaultValue: '""',
+    },
+    {
       name: 'view',
       labels: ['javascript'],
       defaultValue: 'foam.ui.TextFieldView',
@@ -96,6 +100,10 @@ CLASS({
       type: 'String',
       displayWidth: 70,
       defaultValue: 'Bool'
+    },
+    {
+      name: 'swiftDefaultValue',
+      defaultValue: 'false',
     },
     {
       name: 'javaType',
@@ -239,6 +247,10 @@ CLASS({
     {
       name: 'swiftType',
       defaultValue: 'Int',
+    },
+    {
+      name: 'swiftDefaultValue',
+      defaultValue: '0',
     },
     {
       name: 'view',
