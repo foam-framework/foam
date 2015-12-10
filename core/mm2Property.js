@@ -781,7 +781,7 @@ GLOBAL.Property = {
     {
       name: 'fromString',
       labels: ['javascript'],
-      defaultValue: function(s, p) { this[p.name] = s; },
+      defaultValue: function(s) { return s; },
       help: 'Function to extract value from a String.'
     },
     {
@@ -789,17 +789,17 @@ GLOBAL.Property = {
       labels: ['javascript'],
       defaultValue: function propertyFromElement(e, p) {
         if ( ! p.type || ! this.X.lookup || p.type === 'String' ) {
-          p.fromString.call(this, e.innerHTML, p);
+          this[p.name] = p.fromString(e.innerHTML);
           return;
         }
         var model = this.X.lookup(p.type);
         if ( ! model ) {
-          p.fromString.call(this, e.innerHTML, p);
+          this[p.name] = p.fromString(e.innerHTML);
           return;
         }
         var o = model.create();
         if ( ! o.fromElement ){
-          p.fromString.call(this, e.innerHTML, p);
+          this[p.name] = p.fromString(e.innerHTML);
           return;
         }
         this[p.name] = o.fromElement(e);
