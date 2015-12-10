@@ -48,7 +48,15 @@ CLASS({
       documentation: 'Ignored when $$DOC{ref:".showLabel"} is true, but used ' +
           'as an inline placeholder when it\'s false.',
       defaultValueFn: function() { return this.label; }
-    }
+    },
+    {
+      type: 'Boolean',
+      name: 'onKey',
+      attribute: true,
+      defaultValue: false,
+      documentation: 'Set true to update $$DOC{ref:".data"} on every ' +
+          'keystroke, rather than on blur.',
+    },
   ],
 
   methods: [
@@ -72,13 +80,13 @@ CLASS({
 
       if (!this.showLabel && this.placeholder)
         input.attrs({ placeholder: this.placeholder });
-      input.data$ = this.data$;
+      Events.link(this.data$, input.data$);
       input.end();
     },
     function inputE() {
       var self = this;
       return this.start('input')
-          .attrs({ type: 'text' })
+          .attrs({ type: 'text', onKey: this.onKey })
           .on('focus', function() { self.focused = true; })
           .on('blur',  function() { self.focused = false; });
     },

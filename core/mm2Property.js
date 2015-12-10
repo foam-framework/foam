@@ -533,6 +533,9 @@ GLOBAL.Property = {
 
         return f2;
       },
+      compareProperty: function(o1, o2) {
+        return o1.toString() !== o2.toString();
+      },
       documentation: function() { /*
         Arguments to the validate function should be named after the properties
         of this object. They will be passed in when the validate() function is

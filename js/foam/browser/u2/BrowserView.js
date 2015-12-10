@@ -199,7 +199,7 @@ CLASS({
         margin-left: 12px;
       }
 
-      $-search-header .foam-u2-md-Input {
+      $-search-header span {
         flex-grow: 1;
       }
       $-search-header input {
@@ -314,7 +314,7 @@ CLASS({
           .style({ 'background-color': this.headerColor })
           .enableCls('foam-u2-Element-hidden', this.searchMode$, true /* negate */)
           .add(this.BACK_BUTTON)
-          .add(this.searchBorder_.SEARCH);
+          .add(this.searchBorder_.SEARCH.toE(this.Y.sub({ data: this.searchBorder_ })));
       search.end();
 
       // This is needed to make sure the input box gets focused in the same
