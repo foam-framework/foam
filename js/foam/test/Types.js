@@ -275,9 +275,12 @@ CLASS({
       description: 'IntProperty check that the validate() generated has proper .dependencies listed',
       code: function() {
         var m = this.IntModel.create();
-
         this.assert( ! m.DEFAULTY.validate.dependencies.length, "No deps on unbounded int" );
         this.assert( m.BOUNDED.validate.dependencies[0] == 'bounded', "Bounded int has 'bounded' dep" );
+
+        var m = this.StringModel.create();
+        this.assert( ! m.DEFAULTY.validate.dependencies.length, "No deps on unbounded string" );
+        this.assert( m.BOUNDED.validate.dependencies[0] == 'bounded', "Bounded string has 'bounded' dep" );
 
       }
     },
