@@ -28,6 +28,7 @@ CLASS({
   ],
 
   imports: [
+    'document',
     'stack',
   ],
 
@@ -91,6 +92,21 @@ CLASS({
       name: 'save',
       ligature: 'check',
       code: function() {
+        var active = this.document.activeElement;
+        active && active.blur();
+        // Framed to allow any last-second data updates to propagate.
+        // They might be caused by the blur above, and we want to wait for the
+        // data to propagate.
+        this.doBack();
+      }
+    },
+  ],
+
+  listeners: [
+    {
+      name: 'doBack',
+      framed: true,
+      code: function() {
         this.dao.put(this.data, {
           put: function() {
             this.stack.popView();
@@ -99,6 +115,7 @@ CLASS({
       }
     },
   ],
+
 
   methods: [
     function initE() {
