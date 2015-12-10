@@ -46,7 +46,7 @@ GLOBAL.Property = {
   properties: [
     {
       name: 'name',
-      type: 'String',
+      swiftType: 'String',
       required: true,
       displayWidth: 30,
       displayHeight: 1,
@@ -66,7 +66,7 @@ GLOBAL.Property = {
     },
     {
       name: 'label',
-      type: 'String',
+      swiftType: 'String',
       required: false,
       displayWidth: 70,
       displayHeight: 1,
@@ -156,16 +156,7 @@ GLOBAL.Property = {
     },
     {
       name: 'swiftDefaultValue',
-      labels: ['swift'],
-      defaultValueFn: function() {
-        if (this.defaultValue == undefined) return 'nil';
-        switch(typeof this.defaultValue) {
-        case "string":
-          return '"' + this.defaultValue + '"';
-        default:
-          return this.defaultValue;
-        }
-      }
+      labels: ['swift', 'compiletime'],
     },
     {
       name: 'protobufType',
@@ -198,15 +189,7 @@ GLOBAL.Property = {
       type: 'String',
       required: false,
       labels: ['swift'],
-      defaultValueFn: function() {
-        var type = this.type;
-        if (this.type == 'Boolean') {
-          type = 'Bool';
-        } else if (this.type == 'int') {
-          type = 'Int';
-        }
-        return type + (!this.required ? '?' : '');
-      },
+      defaultValue: 'AnyObject?',
       help: 'The Swift type that represents this type of property.',
     },
     {
