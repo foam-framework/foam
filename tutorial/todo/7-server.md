@@ -156,10 +156,8 @@ Open up `TodoApp.js` again. First, add `foam.dao.EasyClientDAO` to the `requires
 requires: [
   'com.todo.model.Todo',
   'com.todo.u2.TodoCitationView',
-  'foam.browser.BrowserConfigU2',
   'foam.dao.EasyClientDAO',
   'foam.dao.EasyDAO',
-  'foam.mlang.CannedQuery',
 ],
 {% endhighlight %}
 
@@ -171,17 +169,10 @@ properties: [
   {
     name: 'data',
     factory: function() {
-      return this.BrowserConfigU2.create({
+      return this.EasyDAO.create({
         model: this.Todo,
-        dao: this.EasyDAO.create({
-          model: this.Todo,
-          daoType: this.EasyClientDAO,
-          cache: true
-        }),
-        rowView: 'com.todo.u2.TodoCitationView',
-        cannedQueryDAO: [
-          // ...
-        ]
+        daoType: this.EasyClientDAO,
+        cache: true
       });
     }
   },
@@ -194,8 +185,8 @@ We only changed two things here:
 - Removed `seqNo: true` &ndash; the server is taking care of that now.
 
 And that's all it takes! Refresh the page (did you restart the server earlier?)
-and you should be talking to the server. Your saved data will disappear, so
-create some new entries.
+and you should be talking to the server. The old data, which was saved in your
+web browser's LocalStorage, is lost, so create some new entries.
 
 Once you've created some new `Todo` entries, there will be a new file at
 `PROJECT/Todo.json`. Take a look in there, and you'll see your `Todo`s.

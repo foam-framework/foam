@@ -21,8 +21,8 @@ tutorials:
     title: Views
     url: /tutorial/todo/5-view
   -
-    title: Canned Queries
-    url: /tutorial/todo/6-canned-query
+    title: Menus
+    url: /tutorial/todo/6-menu
   -
     title: Server
     url: /tutorial/todo/7-server

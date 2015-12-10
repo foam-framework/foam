@@ -1,6 +1,6 @@
 ---
 layout: tutorial-todo
-permalink: /tutorial/todo/6-canned-query/
+permalink: /tutorial/todo/6-menu/
 tutorial: 6
 ---
 
@@ -11,6 +11,14 @@ corner. If you touch it, it animates a slide-out menu... with nothing in it.
 
 ![Empty menu overlay]({{ site.url }}/tutorial/todo/assets/empty-menu.png)
 
+### Under Construction
+
+Sorry, this part of the tutorial needs some love to update it.
+
+You can continue on to [Part 7: Servers]({{ site.baseurl }}/tutorial/todo/7-server)
+without this section.
+
+<!--
 Let's fill in the menu.
 
 ### Canned Queries
@@ -169,4 +177,4 @@ places to go.
 
 We also recommend you take a look at the [DAO User Guide]({{ site.url }}/guides/dao).
 If you're wondering about reactivity and performance, see [Performance]({{ site.baseurl }}/performance).
-
+-->
