@@ -141,7 +141,6 @@ CLASS({
           model: this.ExperimentActivation,
           daoType: 'LOCAL',
           cache: true,
-          guid: true,
           cloning: true,
           contextualize: true
         });
