@@ -371,8 +371,8 @@ CLASS({
         // view is talking to the right stack, then we should change this.
         if (view.stack)
           view.stack = substack;
-        view.X.stack = substack;
-        view.Y.stack = substack;
+        view.X.set('stack', substack);
+        view.Y.set('stack', substack);
 
         this.views_.push({
           content: view

@@ -22,6 +22,7 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.apps.chatter.Message',
     'foam.apps.chatter.Channel',
+    'foam.browser.u2.BrowserController'
   ],
   exports: [
     'messageDAO',
@@ -30,8 +31,8 @@ CLASS({
   ],
   properties: [
     {
-      model_: 'StringProperty',
       name: 'nickname',
+      type: 'String',
       defaultValue: 'Anonymous'
     },
     {
@@ -54,7 +55,6 @@ CLASS({
     {
       name: 'channelDAO',
       label: 'Channels',
-      view: 'foam.ui.DAOListView',
       factory: function() {
         return this.EasyDAO.create({
           daoType: 'MDAO',
@@ -66,6 +66,13 @@ CLASS({
           syncWithServer: true
         });
       }
+    }
+  ],
+  methods: [
+    function toE(X) {
+      return this.BrowserController.create({
+        data: this.channelDAO
+      });
     }
   ]
 });

@@ -81,7 +81,9 @@ CLASS({
         var clone = this.obj.deepClone();
         this.dao.put(clone, {
           put: function(obj2) {
+            this.feedback = true;
             this.obj.copyFrom(obj2);
+            this.feedback = false;
           }.bind(this)
         });
       }

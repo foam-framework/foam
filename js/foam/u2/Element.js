@@ -83,6 +83,7 @@ CLASS({
         }
 
         this.visitChildren('load');
+        if ( this.focused ) this.id$el.focus();
       },
       unload: function() {
         this.state = this.UNLOADED;
@@ -148,7 +149,6 @@ CLASS({
         this.id$el[key] = value;
       },
       onAddChildren: function() {
-        console.log('onAddChildren: ', arguments);
         var e = this.id$el;
         if ( ! e ) {
           console.warn('Missing Element: ', this.id);
@@ -307,6 +307,10 @@ CLASS({
       }
     },
     {
+      type: 'Boolean',
+      name: 'focused'
+    },
+    {
       name: 'outerHTML',
       transient: true,
       getter: function() { return this.output(this.createOutputStream()).toString(); }
@@ -410,9 +414,14 @@ CLASS({
     // Focus
     //
     function focus() {
+      this.focused = true;
+      if ( this.state == this.LOADED ) this.id$el.focus(); 
+      return this;
     },
 
     function blur() {
+      this.focused = false;
+      return this;
     },
 
     //
@@ -428,7 +437,8 @@ CLASS({
     },
 
     function hide(opt_hidden) {
-      return this.show(! (opt_hidden || true));
+      return this.show(
+        opt_hidden === undefined ? false : ! opt_hidden);
     },
 
     //
@@ -768,6 +778,7 @@ CLASS({
 
     function removeAllChildren() {
       while ( this.childNodes.length ) this.removeChild(this.childNodes[0]);
+      return this;
     },
 
     function setChildren(value) {

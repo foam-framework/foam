@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2',
-  name: 'DualView', // TODO: Rename AbstractDualView
+  name: 'ReadWriteView',
   extends: 'foam.u2.Element',
 
-  requires: [ 'foam.u2.Input' ], // TODO: Remove
+  requires: [ 'foam.u2.Input' ],
 
   properties: [
     'data'
@@ -34,12 +35,6 @@ CLASS({
         this.listenForLoad();
       }
     },
-    function initReadView() {
-      this.add(this.toReadE());
-    },
-    function initWriteView() {
-      this.add(this.toWriteE());
-    },
 
     // Template Methods
     function isLoaded() {
@@ -49,10 +44,13 @@ CLASS({
       this.data$.addListener(this.onDataLoad);
     },
     function toReadE() {
-      return this.data$;
+      return this.E('span').add(this.data$);
     },
     function toWriteE() {
-      return this.E('input').attrs({data$: this.data$}).style({background:'pink'});
+      this.data$.addListener(this.onDataLoad);
+      var e = this.E('input');
+      e.data$ = this.data$;
+      return e;
     }
   ],
 
@@ -60,6 +58,12 @@ CLASS({
     function onDataLoad() {
       this.data$.removeListener(this.onDataLoad);
       this.initReadView();
+    },
+    function initReadView() {
+      this.removeAllChildren().add(this.toReadE().on('click', this.initWriteView));
+    },
+    function initWriteView() {
+      this.removeAllChildren().add(this.toWriteE().on('blur', this.initReadView).focus());
     }
   ]
 });

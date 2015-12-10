@@ -398,6 +398,10 @@ var camelize = memoize1(function (str) {
   return ret[0].toLowerCase() + ret.substring(1);
 });
 
+var daoize = memoize1(function(str) {
+  // Changes ModelName to modelNameDAO for relationships, reference properties, etc.
+  return str[0].toLowerCase() + str.substring(1) + 'DAO';
+});
 
 // Replaces . with -, for eg. foam.u2.md.Input -> foam-u2-md-Input
 var cssClassize = memoize1(function (str) {

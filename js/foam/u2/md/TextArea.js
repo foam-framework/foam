@@ -43,8 +43,8 @@ CLASS({
       return this.start('textarea')
         .cls(this.myCls('textarea'))
         .attrs({ rows: this.displayHeight })
-        .on('focus', function() { self.focused_ = true; })
-        .on('blur', function() { self.focused_ = false; });
+        .on('focus', function() { self.focused = true; })
+        .on('blur', function() { self.focused = false; });
     }
   ],
   templates: [

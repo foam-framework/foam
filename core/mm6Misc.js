@@ -99,8 +99,29 @@ CLASS({
         $$DOC{ref:'Model',usePlural:true}.
       */},
       help: 'The join property of the related Model.'
+    },
+    {
+      name: 'toRelationshipE',
+      labels: ['javascript'],
+      defaultValue: function toRelationshipE(X) {
+        return X.lookup('foam.u2.DAOController').create(null, X);
+      },
+      adapt: function(_, nu) {
+        return typeof nu === 'string' ?
+            function(X) { return X.lookup(nu).create(null, X); } : nu;
+      }
     }
-  ]/*,
+  ],
+
+  methods: [
+    function toE(X) {
+      return X.lookup('foam.u2.RelationshipView').create({
+        relationship: this,
+        view: this.toRelationshipE(X)
+      }, X);
+    },
+  ]
+  /*,
   methods: {
     dao: function() {
       var m = this.X[this.relatedModel];

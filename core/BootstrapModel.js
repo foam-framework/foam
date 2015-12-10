@@ -351,6 +351,10 @@ var BootstrapModel = {
 
     var self = this;
     // add relationships
+    this.instance_.relationships_ = this.relationships;
+
+    if ( extendsModel ) this.instance_.relationships_ = this.instance_.relationships_.concat(extendsModel.instance_.relationships_);
+
     this.relationships && this.relationships.forEach(function(r) {
       // console.log('************** rel: ', r, r.name, r.label, r.relatedModel, r.relatedProperty);
 
@@ -358,12 +362,11 @@ var BootstrapModel = {
       if ( ! self[name] ) self[name] = r;
       defineLazyProperty(cls, r.name, function() {
         var m = this.X.lookup(r.relatedModel);
-        var lcName = m.name[0].toLowerCase() + m.name.substring(1);
-        var dao = this.X[lcName + 'DAO'] || this.X[m.name + 'DAO'] ||
-            this.X[m.plural];
+        var name = daoize(m.name);
+        var dao = this.X[name];
         if ( ! dao ) {
-          console.error('Relationship ' + r.name + ' needs ' + (m.name + 'DAO') + ' or ' +
-              m.plural + ' in the context, and neither was found.');
+          console.error('Relationship ' + r.name + ' needs ' + name +
+              ' in the context, and it was not found.');
         }
 
         dao = RelationshipDAO.create({
@@ -570,6 +573,11 @@ var BootstrapModel = {
   getRuntimeActions: function() {
     if ( ! this.instance_.actions_ ) this.getPrototype();
     return this.instance_.actions_;
+  },
+
+  getRuntimeRelationships: function() {
+    if ( ! this.instance_.relationships_ ) this.getPrototype();
+    return this.instance_.relationships_;
   },
 
   getProperty: function(name) { /* Returns the requested $$DOC{ref:'Property'} of this instance. */

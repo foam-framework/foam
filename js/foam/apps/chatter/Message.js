@@ -22,19 +22,41 @@ CLASS({
     'foam.core.dao.SyncTrait'
   ],
   properties: [
-    'id',
-    'from',
-    'content',
-    'channelId',
     {
-      model_: 'DateTimeProperty',
+      name: 'id',
+      hidden: true,
+      visibility: 'hidden'
+    },
+    {
+      name: 'from',
+      type: 'String',
+      visiblity: 'final'
+    },
+    {
+      name: 'content',
+      type: 'String',
+      visibility: 'final'
+    },
+    {
+      name: 'channelId',
+      type: 'Reference',
+      visibility: 'hidden',
+      hidden: true
+    },
+    {
       name: 'timestamp',
+      type: 'DateTime',
+      visibility: 'ro',
       factory: function() {
         return Date.now();
       }
     }
   ],
-  templates: [
-    function toDetailHTML() {/*$$timestamp{ model_: 'foam.ui.RelativeDateTimeFieldView', mode: 'read-only'}: $$from{ mode: 'read-only' }&gt; $$content{ mode: 'read-only' }<br/>*/}
+  methods: [
+    function toE(X) {
+      return X.E('span')
+        .x({ data: this })
+        .add(this.TIMESTAMP, this.FROM, this.CONTENT);
+    }
   ]
 });

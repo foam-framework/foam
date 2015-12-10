@@ -48,11 +48,7 @@ CLASS({
       documentation: 'Ignored when $$DOC{ref:".showLabel"} is true, but used ' +
           'as an inline placeholder when it\'s false.',
       defaultValueFn: function() { return this.label; }
-    },
-    {
-      model_: 'BooleanProperty',
-      name: 'focused_'
-    },
+    }
   ],
 
   methods: [
@@ -62,10 +58,10 @@ CLASS({
       if (this.showLabel) {
         this.start('label')
             .cls(this.myCls('label'))
-            .cls(this.dynamic(function(data, focused_) {
+            .cls(this.dynamic(function(data, focused) {
               return (typeof data !== 'undefined' && data !== '') ||
-                  focused_ ? self.myCls('label-offset') : '';
-            }, this.data$, this.focused_$))
+                  focused ? self.myCls('label-offset') : '';
+            }, this.data$, this.focused$))
             .add(this.label$)
             .end();
       } else {
@@ -83,8 +79,8 @@ CLASS({
       var self = this;
       return this.start('input')
           .attrs({ type: 'text' })
-          .on('focus', function() { self.focused_ = true; })
-          .on('blur', function() { self.focused_ = false; });
+          .on('focus', function() { self.focused = true; })
+          .on('blur',  function() { self.focused = false; });
     },
     function fromProperty(prop) {
       this.label = this.label || prop.label;
