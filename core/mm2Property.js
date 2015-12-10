@@ -532,6 +532,9 @@ GLOBAL.Property = {
 
         return f2;
       },
+      compareProperty: function(o1, o2) {
+        return o1.toString() !== o2.toString();
+      },
       documentation: function() { /*
       */}
     },
