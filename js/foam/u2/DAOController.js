@@ -73,7 +73,6 @@ CLASS({
     {
       model_: 'ViewFactoryProperty',
       name: 'rowView',
-      defaultValue: 'foam.u2.md.CitationView',
     },
     {
       name: 'stack',
