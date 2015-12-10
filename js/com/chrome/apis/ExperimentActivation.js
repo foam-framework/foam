@@ -18,6 +18,7 @@
 CLASS({
   package: 'com.chrome.apis',
   name: 'ExperimentActivation',
+  ids: ['origin', 'experiment'],
   properties: [
     {
       name: 'origin',
