@@ -570,6 +570,13 @@ GLOBAL.Property = {
       type: 'String',
       labels: ['compiletime', 'swift'],
       defaultValue: 'return newValue as! <%= this.swiftType %>',
+      defaultValue: function() {/*
+        <% if (this.swiftType == 'AnyObject?') { %>
+          return newValue
+        <% } else { %>
+          return newValue as! <%= this.swiftType %>
+        <% } %>
+      */},
     },
     {
       name: 'swiftPreSet',
