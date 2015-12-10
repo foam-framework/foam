@@ -550,9 +550,8 @@ GLOBAL.Property = {
           f2.toString = function() { return f.toString(); };
 
           return f2;
-        } else {
-          return f;
         }
+        return f;
       },
       documentation: function() { /*
         Arguments to the validate function should be named after the properties
