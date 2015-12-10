@@ -94,10 +94,10 @@ CLASS({
             this.rowView({ data: obj }, Y) :
             obj.toRowE ? obj.toRowE(Y) :
             obj.toE ? obj.toE(Y) :
-            this.DetailView.create({ data: obj }, Y);
+            this.CitationView.create({ data: obj }, Y);
 
         child.on('click', function() {
-          this.publish(this.ROW_CLICK);
+          this.publish(this.ROW_CLICK, obj);
           this.selection = obj;
         }.bind(this));
 
