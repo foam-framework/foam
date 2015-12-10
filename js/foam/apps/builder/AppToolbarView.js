@@ -14,6 +14,10 @@ CLASS({
   name: 'AppToolbarView',
   extends: 'foam.ui.View',
 
+  requires: [
+    'foam.ui.md.FlatButton',
+  ],
+
   properties: [
     {
       name: 'data',
