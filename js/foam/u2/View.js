@@ -21,14 +21,13 @@ CLASS({
   extends: 'foam.u2.Element',
 
   imports: [ 'controllerMode' ],
-  exports: [ 'controllerMode' ],
 
   properties: [
     'data',
     {
       name: 'visibility',
       choices: [ 'rw', 'final', 'disabled', 'ro', 'hidden' ],
-      postSet: function(_, visibility) { this.updateMode_(this.mode); }, 
+      postSet: function(_, visibility) { this.updateMode_(this.mode); },
       defaultValue: 'rw'
     },
     {
