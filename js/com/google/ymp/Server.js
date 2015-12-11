@@ -20,6 +20,8 @@ CLASS({
   ],
   imports: [
     'console',
+    'exportDAO',
+    'setInterval',
   ],
 
   properties: [
@@ -28,9 +30,10 @@ CLASS({
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Post,
-          name: 'streams',
+          name: 'posts',
           daoType: this.MDAO,
           guid: true,
+          sockets: true,
           isServer: true,
         });
       },
@@ -40,6 +43,15 @@ CLASS({
   methods: [
     function execute() {
       this.console.log('Executing instance of', this.model_.id);
+      this.exportDAO(this.bbDAO);
+      var inc = 0;
+      this.setInterval(function() {
+        this.bbDAO.put(this.Post.create({ 
+          syncProperty: 0,
+          guid: createGUID(),
+          title: 'new thing' + inc++,
+        }))
+      }.bind(this), 4000);
     },
   ],
 });

@@ -54,17 +54,6 @@ var ObjectToJSON = {
 var JSONToObject = {
   __proto__: ObjectToJSON.create(),
 
-  visitString: function(o) {
-    try {
-      return o.substr(0, 9) === 'function(' ?
-        eval('(' + o + ')') :
-        o ;
-    } catch (x) {
-      console.log(x, o);
-      return o;
-    }
-  },
-
   visitObject: function(o) {
     var model   = X.lookup(o.model_);
     if ( ! model ) throw new Error('Unknown Model: ' + o.model_);

@@ -204,6 +204,9 @@ CLASS({
         var out = output.push.bind(output);
         var e = this.peek().children[0];
         e.as = e.as || '$e';
+        if ( ! e.output ) {
+          throw 'Template Parse Error: Unclosed tag: ' + this.peek().nodeName;
+        }
         e.output(out, true);
         this.reset();
         return 'function(X, opt_e){X=X||this.X;var s=[];' + output.join('') + ';return ' + e.as + ';}';
