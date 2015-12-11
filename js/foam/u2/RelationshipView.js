@@ -111,8 +111,16 @@ CLASS({
           view.subscribe(view.ROW_CLICK, this.oneTime(function(_, _, obj) {
             var r = this.model.create();
             r[this.relationship.destinationProperty] = obj.id;
-            this.relatedDAO.put(r);
-            view.X.stack.popView();
+            this.relatedDAO.put(r, {
+              put: function(obj) {
+                view.X.stack.replaceView(
+                  this.X.lookup('foam.u2.DAOUpdateController').create({
+                    model: this.model,
+                    data: obj,
+                    dao: this.relatedDAO
+                  }));
+              }.bind(this)
+            });
           }.bind(this)));
 
           var toolbar = this.Toolbar.create();
