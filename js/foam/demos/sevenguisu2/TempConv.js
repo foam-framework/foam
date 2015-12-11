@@ -24,7 +24,7 @@ MODEL({
     { type: 'Float', name: 'f' }
   ],
   templates: [
-    function toE() {/*#U2 <:c onKeyMode="true" precision="4"/> Celsius = <:f onKeyMode="true" precision="4"> Fahrenheit */}
+    function toE() {/*#U2 <:c onKeyMode="true" precision="4"/> Celsius = <:f onKeyMode="true" precision="4"/> Fahrenheit */}
   ],
   methods: [
     function init() { Events.relate(this.c$, this.f$, this.c2f, this.f2c); },
