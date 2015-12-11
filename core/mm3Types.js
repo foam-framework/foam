@@ -637,18 +637,18 @@ CLASS({
       defaultValue: function(e, p) {
         var txt = e.innerHTML.trim();
 
-        this[p.name] = txt.startsWith('function') ?
-          eval('(' + txt + ')') :
-          new Function(txt) ;
+        this[p.name] = txt;
       }
     },
     {
       name: 'adapt',
       defaultValue: function(_, value) {
         if ( typeof value === 'string' ) {
-          return value.startsWith('function') ?
-            eval('(' + value + ')') :
-            new Function(value);
+          var parse = JSONParser.parseString(value, JSONParser['function literal']);
+          if ( parse ) {
+            return new Function(parse[3], parse[6].join(''));
+          }
+          return new Function(value);
         }
         return value;
       }
