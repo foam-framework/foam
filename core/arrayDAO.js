@@ -81,9 +81,6 @@ MODEL0({
     unlisten: AbstractDAO.getPrototype().unlisten,
     notify_:  AbstractDAO.getPrototype().notify_,
 
-    id: function(obj) {
-      return obj.id || obj.$UID;
-    },
     put: function(obj, sink) {
       // TODO: remove() checks obj.id for falsy, and uses obj instead of obj.id. Inconsistent!
       for ( var idx = 0; idx < this.length; idx++ ) {

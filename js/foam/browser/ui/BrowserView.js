@@ -183,13 +183,6 @@ CLASS({
             return this.X.$(this.id + '-menu-body');
           },
         },
-        {
-          name: 'stack',
-          postSet: function(old,nu) {
-            old && old.unsubscribe(old.VIEW_DESTROYED, this.onViewDestroyed);
-            nu && nu.subscribe(nu.VIEW_DESTROYED, this.onViewDestroyed);
-          }
-        },
       ],
 
       methods: [

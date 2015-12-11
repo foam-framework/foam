@@ -87,6 +87,20 @@ CLASS({
       help: 'The name of the related Model.'
     },
     {
+      name: 'destinationModel',
+      type: 'String',
+      required: false,
+      displayWidth: 30,
+      displayHeight: 1
+    },
+    {
+      name: 'destinationProperty',
+      type: 'String',
+      required: false,
+      displayWidth: 30,
+      displayHeight: 1
+    },
+    {
       name:  'relatedProperty',
       type:  'String',
       required: true,

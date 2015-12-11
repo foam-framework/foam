@@ -12,6 +12,8 @@
 CLASS({
   package: 'com.google.ymp.bb',
   name: 'Post',
+  extends: 'com.google.ymp.GuidIDBase',
+  traits: ['foam.core.dao.SyncTrait'],
 
   properties: [
     {

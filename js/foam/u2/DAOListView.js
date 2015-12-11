@@ -23,9 +23,6 @@ CLASS({
   requires: [
     'foam.u2.md.CitationView',
   ],
-  imports: [
-    'selection$',
-  ],
 
   constants: {
     ROW_CLICK: ['row-click'],
@@ -96,8 +93,7 @@ CLASS({
             this.CitationView.create({ data: obj }, Y);
 
         child.on('click', function() {
-          this.publish(this.ROW_CLICK);
-          this.selection = obj;
+          this.publish(this.ROW_CLICK, obj);
         }.bind(this));
 
         this.rows[obj.id] = child;

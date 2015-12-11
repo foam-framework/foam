@@ -30,10 +30,6 @@ CLASS({
     'as stack'
   ],
 
-  constants: {
-    VIEW_DESTROYED: ['view-destroyed']
-  },
-
   properties: [
     {
       name: 'maxVisibleViews',
@@ -142,7 +138,6 @@ CLASS({
     function destroyChildViews_(index) {
       while (this.views_.length > index) {
         var obj = this.views_.pop();
-        this.publish(this.VIEW_DESTROYED, obj.content);
         this.elementAnimationRemove_(obj.panel);
         this.resize();
         this.finishDestroy(obj.panel);
