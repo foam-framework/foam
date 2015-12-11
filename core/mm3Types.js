@@ -532,7 +532,7 @@ CLASS({
     {
       name: 'swiftType',
       labels: ['compiletime', 'swift'],
-      defaultValue: 'CLong',
+      defaultValue: 'NSNumber',
     },
   ]
 });
