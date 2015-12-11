@@ -115,8 +115,8 @@ var CellParser = {
 
 // https://www.artima.com/pins1ed/the-scells-spreadsheet.html
 MODEL({
-  package: 'foam.demos.sevenguis',
-  name: 'CellsU2',
+  package: 'foam.demos.sevenguisu2',
+  name: 'Cells',
   extends: 'foam.u2.Element',
 
   requires: [ 'foam.u2.Input', 'foam.u2.ElementParser', 'foam.u2.PropertyView' ],

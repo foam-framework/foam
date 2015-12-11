@@ -44,11 +44,20 @@
 
   var models = [];
 
+  models.push(X.arequire('foam.u2.Element'));
+  models.push(X.arequire('foam.u2.ElementParser'));
+  models.push(X.arequire('foam.u2.DetailView'));
+  models.push(X.arequire('foam.u2.ActionButton'));
+  models.push(X.arequire('foam.ui.View'));
+
   var model = params.model_ || params.model || 'foam.navigator.Controller';
 
   models.push(X.arequire(model));
-  if (params.model_) delete params.model_;
-  else delete params.model;
+
+  if ( params.model_ )
+    delete params.model_;
+  else
+    delete params.model;
 
   var viewName = params.view;
   if ( viewName ) {
@@ -64,10 +73,6 @@
                  viewPropName.slice(1)] = value;
     }
   });
-
-  models.push(X.arequire('foam.ui.View'));
-  models.push(X.arequire('foam.u2.Element'));
-  models.push(X.arequire('foam.u2.ElementParser'));
 
   Object_forEach(params, function(value, key) {
     var match = /^[a-z]+[.]([a-z]+[.])*[A-Z][a-zA-Z]*$/.exec(value);
@@ -92,7 +97,7 @@
     }
   }
 
-  apar.apply(null, models).aseq(
+  aseq.apply(null, models).aseq(
     function() {
       var m = X.lookup(model);
       if ( ! m ) {
