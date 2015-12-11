@@ -99,16 +99,6 @@ CLASS({
         this.doBack();
       }
     },
-  ],
-
-  listeners: [
-    {
-      name: 'doBack',
-      framed: true,
-      code: function() {
-        this.stack.popView();
-      }
-    },
     {
       name: 'delete',
       ligature: 'delete',
@@ -121,6 +111,16 @@ CLASS({
             // TODO:
           }
         });
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'doBack',
+      framed: true,
+      code: function() {
+        this.stack.popView();
       }
     }
   ],

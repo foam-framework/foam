@@ -188,7 +188,7 @@ CLASS({
         this.visitChildren('load');
       },
       unload:        function() { },
-      remove:        function() { console.error('Remove after unload.'); },
+      remove:        function() { debugger; console.error('Remove after unload.'); },
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },
@@ -203,7 +203,7 @@ CLASS({
       output:        function() { throw 'Attempt to output() destroyed Element.'; },
       load:          function() { throw 'Attempt to load() destroyed Element.'; },
       unload:        function() { throw 'Attempt to unload() destroyed Element.';},
-      remove:        function() { console.error('Remove after destroy.'); },
+      remove:        function() { debugger; console.error('Remove after destroy.'); },
       destroy:       function() { },
       onSetCls:      function() { },
       onAddListener: function() { },

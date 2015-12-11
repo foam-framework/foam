@@ -17,17 +17,11 @@
 
 
 CLASS({
-  name: 'PropertyEditView',
+  name: 'IntPropertyEditView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.ui.md.DetailView',
+  extends: 'foam.apps.builder.model.ui.PropertyEditView',
 
   requires: [
-  ],
-
-  imports: [
-    'dao', // the property array of our model
-    'stack',
-    'mdToolbar as toolbar',
   ],
 
   properties: [
@@ -35,38 +29,16 @@ CLASS({
     [ 'mode', 'read-write' ],
   ],
 
-  actions: [
-    {
-      name: 'delete',
-      help: 'Delete this item.',
-      ligature: 'delete',
-      isAvailable: function() {
-        return (this.mode == 'read-write') &&
-          (this.dao && this.dao.remove);
-      },
-      code: function() {
-        if (this.dao && this.dao.remove) {
-          this.dao.remove(this.data);
-        }
-      }
-    }
-  ],
-
-
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
+        <div class="md-flex-row-baseline">
+          $$minValue
+          $$maxValue
+          $$defaultValue
+        </div>
 
       </div>
-    */},
-    function CSS() {/*
-      .property-edit-view {
-        display: flex;
-        flex-direction: column;
-        align-content: baseline;
-        flex-grow: 1;
-        background: white;
-      }
     */},
 
   ]

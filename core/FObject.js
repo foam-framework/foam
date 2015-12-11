@@ -339,12 +339,12 @@ var FObject = {
           if ( $val ) {
             this[attr.name] = this.X.$(val);
           } else {
-            p.fromString.call(this, val, p);
+            this[p.name] = p.fromString(val);
           }
         } else {
           // Call fromString() for attribute values because they're
           // String values, not Elements.
-          p.fromString.call(this, val, p);
+          this[p.name] = p.fromString(val);
         }
       } else {
         if ( ! RESERVED_ATTRS[attr.name] )

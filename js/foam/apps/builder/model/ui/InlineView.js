@@ -17,53 +17,62 @@
 
 
 CLASS({
-  name: 'PropertyEditView',
+  name: 'InlineView',
   package: 'foam.apps.builder.model.ui',
   extends: 'foam.ui.md.DetailView',
 
   requires: [
+    'foam.ui.md.FlatButton',
+    'foam.apps.builder.model.ui.PropertyView',
+    'foam.apps.builder.model.ui.IntPropertyView',
+    'foam.apps.builder.model.ui.FloatPropertyView',
+    'foam.apps.builder.model.ui.StringPropertyView',
+    'foam.apps.builder.model.ui.BooleanPropertyView',
+    'IntProperty',
+    'FloatProperty',
+    'BooleanProperty',
+    'StringProperty',
   ],
 
   imports: [
-    'dao', // the property array of our model
     'stack',
-    'mdToolbar as toolbar',
   ],
 
   properties: [
-    [ 'className', 'property-edit-view' ],
-    [ 'mode', 'read-write' ],
-  ],
-
-  actions: [
     {
-      name: 'delete',
-      help: 'Delete this item.',
-      ligature: 'delete',
-      isAvailable: function() {
-        return (this.mode == 'read-write') &&
-          (this.dao && this.dao.remove);
-      },
-      code: function() {
-        if (this.dao && this.dao.remove) {
-          this.dao.remove(this.data);
-        }
-      }
-    }
+      name: 'className',
+      defaultValue: 'inline-view',
+    },
+    {
+      name: 'mode',
+      defaultValue: 'read-only',
+    },
+    {
+      name: 'label',
+    },
+    {
+      name: 'prop',
+    },
   ],
-
 
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-
+        <div class="md-subhead">
+          $$label{
+            model_: 'foam.ui.md.TextFieldView',
+            floatingLabel: false,
+            mode: 'read-only',
+          }
+        </div>
+        $$data{ model_: this.prop.view || 'foam.apps.builder.model.ui.View',
+                model: this.prop.model_ }
       </div>
     */},
     function CSS() {/*
-      .property-edit-view {
+      .inline-view {
         display: flex;
         flex-direction: column;
-        align-content: baseline;
         flex-grow: 1;
         background: white;
       }

@@ -105,28 +105,14 @@ CLASS({
       }
     },
     {
-      name: 'data',
-      factory: function() {
-        return this.originDAO;
-      }
+      name: 'modelName',
+      type: 'String',
+      defaultValue: 'origin'
     },
     {
-      name: 'menuFactory',
-      defaultValue: function() {
-        var entries = [
-          ['Experiments', this.experimentDAO],
-          ['Origins', this.originDAO]
-        ];
-        var e = this.X.E();
-        for (var i = 0; i < entries.length; i++) {
-          var dao = entries[i][1];
-          e.start('div')
-              .cls(this.myCls('menu-item'))
-              .add(entries[i][0])
-              .on('click', function() { this.data = dao; }.bind(this))
-              .end();
-        }
-        return e;
+      name: 'data',
+      factory: function() {
+        return this[this.modelName + 'DAO']
       }
     },
     {
@@ -136,11 +122,40 @@ CLASS({
           model: this.ExperimentActivation,
           daoType: 'LOCAL',
           cache: true,
-          guid: true,
           cloning: true,
           contextualize: true
         });
       }
     },
+  ],
+
+  listeners: [
+    function menuFactory() {
+      var entries = [
+        ['Experiments', this.experimentDAO],
+        ['Origins', this.originDAO]
+      ];
+      var e = this.Y.E();
+      for (var i = 0; i < entries.length; i++) {
+        e.start('div')
+            .cls(this.myCls('menu-item'))
+            .add(entries[i][0])
+            .on('click', function(dao) {
+              this.data = dao;
+              e.publish(this.BrowserView.MENU_CLOSE);
+            }.bind(this, entries[i][1]))
+            .end();
+      }
+      return e;
+    },
+  ],
+
+  templates: [
+    function CSS() {/*
+      $-menu-item {
+        margin: 8px;
+        padding: 8px;
+      }
+    */},
   ]
 });

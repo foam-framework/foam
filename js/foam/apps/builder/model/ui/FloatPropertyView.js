@@ -15,26 +15,19 @@
  * limitations under the License.
  */
 
+
 CLASS({
-  package: 'com.chrome.apis',
-  name: 'ExperimentActivation',
-  ids: ['origin', 'experiment'],
-  properties: [
-    {
-      name: 'origin',
-      type: 'Reference',
-      subType: 'com.chrome.apis.Origin'
-    },
-    {
-      name: 'experiment',
-      type: 'Reference',
-      subType: 'com.chrome.apis.Experiment'
-    }
+  name: 'FloatPropertyEditView',
+  package: 'foam.apps.builder.model.ui',
+  extends: 'foam.apps.builder.model.ui.IntPropertyEditView',
+
+  requires: [
   ],
-  relationship: [
-    {
-      name: 'apiKeys',
-      relatedModel: 'com.chrome.apis.ApiKey'
-    }
-  ]
+
+  properties: [
+    [ 'className', 'property-edit-view' ],
+    [ 'mode', 'read-write' ],
+  ],
+
+
 });

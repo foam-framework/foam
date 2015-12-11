@@ -21,11 +21,7 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.u2.DetailView',
     'foam.u2.md.CitationView',
-  ],
-  imports: [
-    'selection$',
   ],
 
   constants: {
@@ -94,11 +90,10 @@ CLASS({
             this.rowView({ data: obj }, Y) :
             obj.toRowE ? obj.toRowE(Y) :
             obj.toE ? obj.toE(Y) :
-            this.DetailView.create({ data: obj }, Y);
+            this.CitationView.create({ data: obj }, Y);
 
         child.on('click', function() {
-          this.publish(this.ROW_CLICK);
-          this.selection = obj;
+          this.publish(this.ROW_CLICK, obj);
         }.bind(this));
 
         this.rows[obj.id] = child;

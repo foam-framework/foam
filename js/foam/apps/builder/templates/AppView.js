@@ -15,7 +15,7 @@ CLASS({
   extends: 'foam.ui.SimpleView',
 
   exports: [
-    'previewSelectionGuard$ as selection$',
+    'previewSelectionGuard as selection',
   ],
 
   properties: [

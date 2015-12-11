@@ -21,6 +21,9 @@ CLASS({
   imports: [
     'modelDAO',
   ],
+  exports: [
+    'newPropText',
+  ],
 
   properties: [
     {
@@ -44,6 +47,9 @@ CLASS({
         if ( nu ) this.model = nu.getDataConfig().model;
       },
     },
+    {
+      name: 'newPropText',
+    }
   ],
 
   actions: [

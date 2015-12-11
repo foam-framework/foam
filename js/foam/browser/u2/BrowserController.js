@@ -28,6 +28,7 @@ CLASS({
     'MDAO',
     'foam.browser.u2.BrowserView',
     'foam.browser.u2.StackView',
+    'foam.dao.EasyDAO',
     'foam.input.touch.GestureManager',
     'foam.input.touch.TouchManager',
     'foam.u2.ElementParser',
@@ -55,24 +56,27 @@ CLASS({
       name: 'model',
       adapt: function(_, nu) {
         return typeof nu === 'string' ? this.X.lookup(nu) : nu;
-      }
+      },
+      defaultValueFn: function() { return this.data.model; }
     },
     {
       name: 'data',
       factory: function() {
         // Defaults to an MDAO for our model, if not specified.
-        var name = daoize(this.model.name);
-        if (this.Y[name]) return this.Y[name];
-
-        var dao = this.MDAO.create({ model: this.model });
-        // Export it as fooBarDAO.
-        this.Y.set(name, dao);
-        return dao;
+        return this.Y[daoize(this.model.name)] || this.EasyDAO.create({
+          model: this.model,
+          daoType: 'MDAO',
+          seqNo: true
+        });
+      },
+      postSet: function(old, nu) {
+        if (nu && old !== nu) {
+          var name = daoize(nu.model.name);
+          if (! this.Y[name] || this.Y[name] === old) {
+            this.Y.set(name, nu);
+          }
+        }
       }
-      // TODO(braden): Maybe we should always export your DAO with the right
-      // name, so you don't have to? That might accidentally capture something
-      // we didn't intend. It can check if it exists in this.Y before
-      // overwriting.
     },
     {
       name: 'touchManager',

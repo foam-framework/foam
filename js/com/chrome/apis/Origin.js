@@ -35,7 +35,10 @@ CLASS({
   relationships: [
     {
       name: 'activeExperiments',
-      relatedModel: 'com.chrome.apis.ExperimentActivation'
+      relatedModel: 'com.chrome.apis.ExperimentActivation',
+      relatedProperty: 'origin',
+      destinationModel: 'com.chrome.apis.Experiment',
+      destinationProperty: 'experiment'
     }
   ]
 });

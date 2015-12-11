@@ -20,7 +20,7 @@ CLASS({
   ],
 
   exports: [
-    'selection$'
+    'selection'
   ],
 
   properties: [
