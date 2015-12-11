@@ -644,9 +644,10 @@ CLASS({
       name: 'adapt',
       defaultValue: function(_, value) {
         if ( typeof value === 'string' ) {
-          var parse = JSONParser.parseString(value, JSONParser['function literal']);
+          var parse = JSONParser.parseString(value, JSONParser['function prototype']);
           if ( parse ) {
-            return new Function(parse[3], parse[6].join(''));
+            var body = value.substring(value.indexOf('{') + 1, value.lastIndexOf('}'));
+            return new Function(parse[3], body);
           }
           return new Function(value);
         }

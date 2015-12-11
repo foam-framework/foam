@@ -91,12 +91,15 @@ var JSONParser = SkipGrammar.create({
 
   array: seq1(1, '[', repeat(sym('value'), ','), ']'),
 
-  'function literal': seq(
+  'function prototype': seq(
     'function',
     optional(sym('symbol')),
     '(',
     repeat(sym('symbol'), ','),
-    ')',
+    ')'),
+
+  'function literal': seq(
+    sym('function prototype'),
     '{',
     repeat(notChar('}')), // TODO(kgr): this is a very cheap/limited hack, replace with real JS grammar.
 //    repeat(sym('value'), ';'), // TODO(kgr): replace with 'statement'.
