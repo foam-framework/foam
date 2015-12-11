@@ -20,12 +20,6 @@ MODEL({
   name: 'Timer',
   extends: 'foam.u2.Element',
 
-  // TODO: These shouldn't be required
-  xxxrequires: [
-    'foam.u2.ActionButton',
-    'foam.u2.DetailView'
-  ],
-
   properties: [
     {
       name: 'progress',
