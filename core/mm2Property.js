@@ -576,7 +576,6 @@ GLOBAL.Property = {
       name: 'swiftAdapt',
       type: 'String',
       labels: ['compiletime', 'swift'],
-      defaultValue: 'return newValue as! <%= this.swiftType %>',
       defaultValue: function() {/*
         <% if (this.swiftType == 'AnyObject?') { %>
           return newValue
