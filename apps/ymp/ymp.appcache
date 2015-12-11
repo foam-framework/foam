@@ -1,5 +1,5 @@
 CACHE MANIFEST
-#version1.0 increment when any cached file changes
+#version1.1 increment when any cached file changes
 ../../core/firefox.js
 ../../core/funcName.js
 ../../core/safari.js
