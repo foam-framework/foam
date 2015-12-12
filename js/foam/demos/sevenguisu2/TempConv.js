@@ -24,6 +24,8 @@ MODEL({
     { type: 'Float', name: 'f' }
   ],
   templates: [
+    // TODO: Outer <span> shouldn't be required.
+    // TODO: x:data={{this}} shouldn't be required, use this:c instead
     function toE() {/*#U2<span x:data={{this}}><:c onKeyMode="true" precision="4"/> Celsius = <:f onKeyMode="true" precision="4"/> Fahrenheit</span>*/}
   ],
   methods: [
