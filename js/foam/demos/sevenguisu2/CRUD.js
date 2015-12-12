@@ -21,6 +21,7 @@ MODEL({
   tableProperties: [ 'surname', 'name' ],
   properties: [
     { name: 'id', hidden: true },
+                       // TODO: fix views
     { name: 'name',    view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
     { name: 'surname', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } }
   ]
@@ -28,15 +29,17 @@ MODEL({
 
 
 MODEL({
-  package: 'foam.demos.sevenguis',
+  package: 'foam.demos.sevenguisu2',
   name: 'CRUD',
-  extends: 'foam.ui.View',
+  extends: 'foam.u2.Element',
+
   requires: [
     'foam.dao.EasyDAO',
-    'foam.dao.IDBDAO',
-    'foam.demos.sevenguis.Person',
-    'foam.ui.TableView'
+    'foam.dao.IDBDAO', // TODO: This shouldn't be required
+    'foam.demos.sevenguisu2.Person',
+//    'foam.u2.TableView' // TODO: Doesn't exist
   ],
+
   properties: [
     {
       name: 'prefix',
@@ -50,7 +53,7 @@ MODEL({
       name: 'dao',
       factory: function() {
         return foam.dao.EasyDAO.create({
-          model: foam.demos.sevenguis.Person,
+          model: foam.demos.sevenguisu2.Person,
           daoType: 'IDB',
           cache: true,
           seqNo: true
@@ -69,39 +72,35 @@ MODEL({
       factory: function() { return this.dao; }
     },
     {
+      name: 'selection',
+      postSet: function(_, s) { this.data.copyFrom(s); }
+    },
+    {
       name: 'data',
       view: { factory_: 'foam.ui.DetailView', title: '' },
       factory: function() { return this.Person.create(); }
     }
   ],
-  methods: [
-    function initHTML() {
-      this.SUPER();
-      this.filteredDAOView.hardSelection$.addListener(function(_, __, ___, selection) {
-        if ( selection ) this.data.copyFrom(selection);
-      }.bind(this));
-    }
-  ],
   templates: [
     function CSS() {/*
-      .crud { padding: 10px; }
-      .crud .buttons { padding-left: 592px; }
-      .crud .detailView { border: none; background: white; }
-      .crud .content span { overflow: hidden !important; }
-      .crud .content { width: 1000px; }
-      .crud .detailPane { width: 45%; display: inline-block; margin-left: 50px; margin-top: 16px; }
-      .crud .label { color: #039; font-size: 14px; padding-top: 6px; }
-      .crud .prefix { margin-left: 10px; }
-      .crud .summaryPane { width: 49%; display: inline-block; vertical-align: top; }
-      .crud .tableView { height: 184px; outline: none; }
+      $ { padding: 10px; }
+      $ .buttons { padding-left: 592px; }
+      $ .detailView { border: none; background: white; }
+      $ .content span { overflow: hidden !important; }
+      $ .content { width: 1000px; }
+      $ .detailPane { width: 45%; display: inline-block; margin-left: 50px; margin-top: 16px; }
+      $ .label { color: #039; font-size: 14px; padding-top: 6px; }
+      $ .prefix { margin-left: 10px; }
+      $ .summaryPane { width: 49%; display: inline-block; vertical-align: top; }
+      $ .tableView { height: 184px; outline: none; }
     */},
-    function toHTML() {/*
-      <div class="crud">
-        <span class="prefix label">Filter prefix: </span> $$prefix{onKeyMode: true, type: 'search'}
+    function init() {/*#U2
+      <div class="$" x:data={{this}}>
+        <span class="prefix label">Filter prefix: </span> <:prefix onKeyMode="true" type="search"/>
         <div class="content">
-          <span class="summaryPane">$$filteredDAO</span>
-          <span class="detailPane">$$data</span>
-          <div class="buttons">$$createItem $$updateItem $$deleteItem</div>
+          <span class="summaryPane"><:filteredDAO hardSelection$={{this.selection$}}/></span>
+          <span class="detailPane"><:data/></span>
+          <div class="buttons"><:createItem/> <:updateItem/> <:deleteItem/></div>
         </div>
       </div>
     */}
