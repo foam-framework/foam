@@ -16,10 +16,11 @@ CLASS({
   traits: [ 'foam.core.dao.SyncTrait' ],
 
   constants: {
-    LOD_HIGH: 512, // these approximate pixel sizes, but are not intended to be exact. 
-    LOD_MEDIUM: 128,
-    LOD_LOW: 32,
-    LOD_TINY: 0, // tiny vector images only
+    LOD_FULL_SIZE: 512, // these approximate KiB sizes, but are not intended to be exact. 
+    LOD_HIGH: 256, // decent phone display sized
+    LOD_MEDIUM: 128, // tile/preview sized
+    LOD_LOW: 8, // icon sized
+    LOD_TINY: 1, // tiny vector images only
   },
 
   properties: [

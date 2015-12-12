@@ -88,6 +88,7 @@ CLASS({
       this.exportDAO(this.postDAO);
       this.exportDAO(this.replyDAO);
       this.exportDAO(this.dynamicImageDAO);
+      this.exportDAO(this.personDAO);
       var inc = 0;
       this.setInterval(function() {
         this.bbDAO.put(this.Post.create({ 

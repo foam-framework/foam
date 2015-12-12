@@ -34,6 +34,10 @@ CLASS({
       name: 'image',
       subType: 'com.google.ymp.DynamicImage',
       subKey: 'imageID',
+    },
+    {
+      type: 'String',
+      name: 'content',
     }
   ],
 });
