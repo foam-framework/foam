@@ -27,6 +27,7 @@ MODEL({
       type: 'Boolean',
       name: 'oneWay',
       defaultValue: true,
+      // TODO: this
       /*
       view: {
         factory_: 'foam.ui.ChoiceView',
@@ -70,6 +71,7 @@ MODEL({
         <div class="$-title">Book Flight</div>
         <:oneWay/> <br>
         <:departDate/> <br>
+        <!-- TODO: Make this work -->
         <:returnDate disabled={{this.oneWay$}}/> <br>
         <:book/> <br>
       </div>
