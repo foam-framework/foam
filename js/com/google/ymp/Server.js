@@ -19,7 +19,7 @@ CLASS({
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.Reply',
     'com.google.ymp.DynamicImage',
-    'com.google.plus.Person',
+    'com.google.ymp.Person',
   ],
   imports: [
     'console',
@@ -65,6 +65,7 @@ CLASS({
           sockets: true,
           isServer: true,
         });
+        // TODO: filter by user's requested default LOD, which images they require (which will be slow to calculate)
       },
     },
     {

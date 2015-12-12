@@ -21,8 +21,12 @@ CLASS({
       name: 'title',
     },
     {
-      type: 'String',
-      name: 'category',
+      type: 'StringArray',
+      name: 'categories',
+    },
+    {
+      type: 'StringArray',
+      name: 'localities',
     },
     {
       type: 'Reference',
@@ -36,7 +40,6 @@ CLASS({
       subKey: 'imageID',
     },
     {
-      type: 'String',
       name: 'content',
     }
   ],

@@ -18,7 +18,7 @@ CLASS({
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.Reply',
     'com.google.ymp.DynamicImage',
-    'com.google.plus.Person',
+    'com.google.ymp.Person',
     'foam.ui.DAOListView',
   ],
 
@@ -27,9 +27,36 @@ CLASS({
     'replyDAO',
     'dynamicImageDAO',
     'personDAO',
+    'categoriesDAO',
+    'localitiesDAO',
   ],
 
   properties: [
+    {
+      type: 'StringArray',
+      name: 'categoriesDAO',
+      lazyFactory: function() {
+        return [
+          'fresh food',
+          'grocery',
+          'home services',
+          'transport',
+        ];
+      }
+    },
+    {
+      type: 'StringArray',
+      name: 'localitiesDAO',
+      lazyFactory: function() {
+        return [
+          'Kitchener',
+          'Waterloo-uptown',
+          'Waterloo-downtown',
+          'Waterloo-St-Jacobs',
+          'Cambridge',
+        ];
+      }
+    },
     {
       name: 'postDAO',
       view: 'foam.ui.DAOListView',
