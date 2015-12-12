@@ -18,12 +18,16 @@
 MODEL({
   package: 'foam.demos.sevenguisu2',
   name: 'FlightBooker',
-  extends: 'foam.ui.View',
-  requires: [ 'foam.ui.DateFieldView' ],
+  extends: 'foam.u2.Element',
+
+  requires: [ 'foam.u2.Checkbox' ], // TODO: Shouldn't be required
+
   properties: [
     {
+      type: 'Boolean',
       name: 'oneWay',
       defaultValue: true,
+      /*
       view: {
         factory_: 'foam.ui.ChoiceView',
         choices: [
@@ -31,9 +35,10 @@ MODEL({
           [ false, 'return flight'  ]
         ]
       }
+      */
     },
     {
-      model_: 'DateProperty',
+      type: 'Date',
       name: 'departDate',
       factory: function() { return new Date(Date.now()+3600000*24); },
       validate: function(departDate) {
@@ -43,7 +48,7 @@ MODEL({
       }
     },
     {
-      model_: 'DateProperty',
+      type: 'Date',
       name: 'returnDate',
       factory: function() { return new Date(Date.now()+2*3600000*24); },
       validate: function(oneWay, returnDate, departDate) {
@@ -51,43 +56,24 @@ MODEL({
       }
     }
   ],
-  methods: [
-    function initHTML() {
-      this.SUPER();
-      this.oneWay$.addListener(this.onOneWayChange);
-      this.onOneWayChange();
-    }
-  ],
   templates: [
     function CSS() {/*
-      .flight { padding: 10px; }
-      .flight .error { border: 2px solid red; }
-      .flight .title, .flight button, .flight input, .flight select {
+      $ { padding: 10px; }
+      $ .error { border: 2px solid red; }
+      $-title { font-size: 18px; }
+      $-title, $ button, $ input, $ select {
         width: 160px; height: 24px; margin: 5px;
       }
-      .flight .title { font-size: 18px; }
     */},
-    function toHTML() {/*
-      <div class="flight">
-        <div class="title">Book Flight</div>
-        $$oneWay <br>
-        $$departDate <br>
-        $$returnDate <br>
-        $$book <br>
+    function initE() {/*#U2
+      <div class="$" x:data={{this}}>
+        <div class="$-title">Book Flight</div>
+        <:oneWay/> <br>
+        <:departDate/> <br>
+        <:returnDate disabled={{this.oneWay$}}/> <br>
+        <:book/> <br>
       </div>
     */}
-  ],
-  listeners: [
-    {
-      name: 'onOneWayChange',
-      code: function() {
-        // TODO: Views should have an 'enabled' property
-        if ( this.oneWay )
-          this.returnDateView.$.setAttribute('disabled', '');
-        else
-          this.returnDateView.$.removeAttribute('disabled');
-      }
-    }
   ],
   actions: [
     {

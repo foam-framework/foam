@@ -108,3 +108,7 @@ This should work in Cells.
       name: 'state',
       dynamicValue: function(covered, marked) { return marked ? 'marked' : covered ? 'covered' : ''; }
     }
+
+
+Implement Element.removeAttribute();
+Have setAttribute(null) remove the attribute.
