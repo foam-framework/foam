@@ -16,6 +16,7 @@ CLASS({
   properties: [
     {
       name: 'guid',
+      lazyFactory: function() { return createGUID(); },
     },
   ],
 });

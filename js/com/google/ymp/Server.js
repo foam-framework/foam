@@ -24,6 +24,7 @@ CLASS({
   imports: [
     'console',
     'exportDAO',
+    'exportFile',
     'setInterval',
   ],
 
@@ -86,13 +87,24 @@ CLASS({
   methods: [
     function execute() {
       this.console.log('Executing instance of', this.model_.id);
+
+      // Serve "compiled" / "production" YMp (built via apps/ymp/build.sh).
+      var staticDir = global.FOAM_BOOT_DIR + '/../apps/ymp/build';
+      this.exportFile('/main.html', staticDir + '/main.html');
+      this.exportFile('/foam.js', staticDir + '/foam.js');
+      this.exportFile('/app.manifest', staticDir + '/app.manifest');
+      // Already served by ServeFOAM agent.
+      // this.exportFile('/fonts.css', staticDir + '/fonts.css');
+
+      // Serve app data via several DAOs.
       this.exportDAO(this.postDAO);
       this.exportDAO(this.replyDAO);
       this.exportDAO(this.dynamicImageDAO);
       this.exportDAO(this.personDAO);
+
       var inc = 0;
       this.setInterval(function() {
-        this.bbDAO.put(this.Post.create({ 
+        this.postDAO.put(this.Post.create({
           syncProperty: 0,
           guid: createGUID(),
           title: 'new thing' + inc++,

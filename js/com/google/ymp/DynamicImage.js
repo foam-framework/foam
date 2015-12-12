@@ -27,13 +27,13 @@ CLASS({
     {
       type: 'Int',
       name: 'levelOfDetail',
-      defaultValue: 512,
+      defaultValue: 512, // LOD_HIGH
     },
     {
       type: 'String',
       name: 'imageID',
-      help: 'The ID of the image. Multiple DynamicImage instances will share this ID, each representing a different leve of detail.',
-    }
+      help: 'The ID of the image. Multiple DynamicImage instances will share this ID, each representing a different level of detail.',
+    },
     {
       type: 'Image',
       help: 'The image data in data:url format',
