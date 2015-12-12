@@ -11,18 +11,14 @@
 
 CLASS({
   package: 'com.google.ymp.bb',
-  name: 'Post',
+  name: 'Reply',
   extends: 'com.google.ymp.GuidIDBase',
-  traits: ['foam.core.dao.SyncTrait'],
 
   properties: [
     {
       type: 'String',
-      name: 'title',
-    },
-    {
-      type: 'String',
-      name: 'category',
+      name: 'text',
+      defaultValue: '',
     },
     {
       type: 'Reference',
@@ -31,9 +27,8 @@ CLASS({
     },
     {
       type: 'Reference',
-      name: 'image',
-      subType: 'com.google.ymp.DynamicImage',
-      subKey: 'imageID',
-    }
+      name: 'parent',
+      subType: 'com.google.ymp.Post',
+    },
   ],
 });
