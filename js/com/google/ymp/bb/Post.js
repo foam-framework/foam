@@ -21,17 +21,14 @@ CLASS({
       name: 'title',
     },
     {
-      type: 'StringArray',
-      name: 'categories',
-    },
-    {
-      type: 'StringArray',
-      name: 'localities',
+      type: 'Reference',
+      subType: 'com.google.ymp.Market',
+      name: 'market',
     },
     {
       type: 'Reference',
       name: 'author',
-      subType: 'com.google.plus.Person',
+      subType: 'com.google.ymp.Person',
     },
     {
       type: 'Reference',

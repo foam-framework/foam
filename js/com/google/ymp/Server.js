@@ -20,6 +20,7 @@ CLASS({
     'com.google.ymp.bb.Reply',
     'com.google.ymp.DynamicImage',
     'com.google.ymp.Person',
+    'com.google.ymp.Market',
   ],
   imports: [
     'console',
@@ -79,6 +80,21 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
+          syncProperty: 'syncProperty',
+          deletedProperty: 'deletedProperty', 
+        });
+      },
+    },
+    {
+      name: 'marketDAO',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.Market,
+          name: 'markets',
+          daoType: this.MDAO,
+          guid: true,
+          sockets: true,
+          isServer: true,
         });
       },
     },
@@ -101,10 +117,10 @@ CLASS({
       this.exportDAO(this.replyDAO);
       this.exportDAO(this.dynamicImageDAO);
       this.exportDAO(this.personDAO);
-
+      this.exportDAO(this.marketDAO);
       var inc = 0;
       this.setInterval(function() {
-        this.postDAO.put(this.Post.create({
+        this.postDAO.put(this.Post.create({ 
           syncProperty: 0,
           guid: createGUID(),
           title: 'new thing' + inc++,

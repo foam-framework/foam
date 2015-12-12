@@ -27,7 +27,7 @@ CLASS({
     {
       type: 'Int',
       name: 'levelOfDetail',
-      defaultValue: 512, // LOD_HIGH
+      defaultValue: 512, // LOD_FULL_SIZE
     },
     {
       type: 'String',

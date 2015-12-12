@@ -19,6 +19,7 @@ CLASS({
     'com.google.ymp.bb.Reply',
     'com.google.ymp.DynamicImage',
     'com.google.ymp.Person',
+    'com.google.ymp.Market',
     'foam.ui.DAOListView',
   ],
 
@@ -27,36 +28,10 @@ CLASS({
     'replyDAO',
     'dynamicImageDAO',
     'personDAO',
-    'categoriesDAO',
-    'localitiesDAO',
+    'marketDAO',
   ],
 
   properties: [
-    {
-      type: 'StringArray',
-      name: 'categoriesDAO',
-      lazyFactory: function() {
-        return [
-          'fresh food',
-          'grocery',
-          'home services',
-          'transport',
-        ];
-      }
-    },
-    {
-      type: 'StringArray',
-      name: 'localitiesDAO',
-      lazyFactory: function() {
-        return [
-          'Kitchener',
-          'Waterloo-uptown',
-          'Waterloo-downtown',
-          'Waterloo-St-Jacobs',
-          'Cambridge',
-        ];
-      }
-    },
     {
       name: 'postDAO',
       view: 'foam.ui.DAOListView',
@@ -103,6 +78,21 @@ CLASS({
         return this.EasyDAO.create({
           model: this.Person,
           name: 'people',
+          caching: true,
+          syncWithServer: true,
+          sockets: true,
+          syncProperty: 'syncProperty',
+          deletedProperty: 'deletedProperty', 
+        });
+      },
+    },
+    {
+      name: 'marketDAO',
+      view: 'foam.ui.DAOListView',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.Market,
+          name: 'markets',
           caching: true,
           syncWithServer: true,
           sockets: true,

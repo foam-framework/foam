@@ -16,14 +16,10 @@ CLASS({
 
   properties: [
     {
-      type: 'StringArray',
-      name: 'subscribedPostCategories',
-      help: 'The categories of posts that should be synched',
-    },
-    {
-      type: 'StringArray',
-      name: 'subscribedPostLocalities',
-      help: 'The localities from which posts should be synched',
+      type: 'ReferenceArray',
+      name: 'subscribedMarkets',
+      subType: 'com.google.ymp.Market',
+      help: 'The marketplaces full of posts that should be synched',
     },
   ],
 });
