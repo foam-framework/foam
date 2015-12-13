@@ -36,6 +36,7 @@ CLASS({
     },
     {
       type: 'Image',
+      name: 'image',
       help: 'The image data in data:url format',
     },
     { type: 'Int', name: 'width'  },

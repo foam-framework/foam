@@ -22,6 +22,7 @@ CLASS({
     'com.google.ymp.Person',
     'com.google.ymp.Market',
     'foam.ui.DAOListView',
+    'com.google.plus.ui.PersonDetailView',
   ],
 
   exports: [
@@ -74,7 +75,10 @@ CLASS({
     },
     {
       name: 'personDAO',
-      view: 'foam.ui.DAOListView',
+      view: {
+        factory_:  'foam.ui.DAOListView',
+        rowView: 'com.google.plus.ui.PersonDetailView'
+      },
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Person,

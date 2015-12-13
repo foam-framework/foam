@@ -50,7 +50,7 @@ CLASS({
       this.personDAO.find(X.principal, {
         put: function(p) {
           // 
-          if ( EQ(self.Person.SUBSCRIBED_MARKETS, obj.marketID).f(p) ) {
+          if ( EQ(self.Person.SUBSCRIBED_MARKETS, obj.market).f(p) ) {
             ret(obj); // the principal is subscribed to the market this object belongs to
           } else {
             ret(null); // not subscribed, don't sync this object
