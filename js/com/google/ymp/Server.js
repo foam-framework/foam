@@ -48,6 +48,9 @@ CLASS({
           sockets: true,
           isServer: true,
         });
+        // TODO: filter using a variant of PrivateOwnerAuthorizer, to 
+        // only select posts from the principal's 
+        // subscribed markets
       },
     },
     {
@@ -61,6 +64,10 @@ CLASS({
           sockets: true,
           isServer: true,
         });
+        // TODO: filter using a variant of PrivateOwnerAuthorizer, 
+        // to only select replies to posts from the  principal's subscribed
+        // markets. For speed, store the market ID on the reply rather than
+        // looking up by market->post->reply, therefore use same authorizer as postDAO
       },
     },
     {
@@ -90,6 +97,7 @@ CLASS({
           syncProperty: 'syncProperty',
           deletedProperty: 'deletedProperty', 
         });
+        // TODO: how much to sync?
       },
     },
     {
@@ -103,6 +111,7 @@ CLASS({
           sockets: true,
           isServer: true,
         });
+        // TODO: how much to sync?
       },
     },
   ],
