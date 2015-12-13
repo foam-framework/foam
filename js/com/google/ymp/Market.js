@@ -10,25 +10,18 @@
  */
 
 CLASS({
-  package: 'com.google.ymp.bb',
-  name: 'Post',
+  package: 'com.google.ymp',
+  name: 'Market',
   extends: 'com.google.ymp.GuidIDBase',
-  traits: ['foam.core.dao.SyncTrait'],
+  traits: [ 'foam.core.dao.SyncTrait' ],
 
   properties: [
     {
       type: 'String',
-      name: 'title',
+      name: 'name',
     },
     {
-      type: 'Reference',
-      subType: 'com.google.ymp.Market',
-      name: 'market',
-    },
-    {
-      type: 'Reference',
-      name: 'author',
-      subType: 'com.google.ymp.Person',
+      name: 'location',
     },
     {
       type: 'Reference',
@@ -36,8 +29,5 @@ CLASS({
       subType: 'com.google.ymp.DynamicImage',
       subKey: 'imageID',
     },
-    {
-      name: 'content',
-    }
   ],
 });

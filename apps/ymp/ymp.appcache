@@ -24,6 +24,8 @@ CACHE MANIFEST
 ../../core/mm2Property.js
 ../../core/mm3Types.js
 ../../core/mm4Method.js
+../../core/bootFOAMMain.js
+../../core/FOAMmodels.js
 ../../core/mm5Debug.js
 ../../core/mm6Misc.js
 ../../js/foam/core/bootstrap/OrDAO.js

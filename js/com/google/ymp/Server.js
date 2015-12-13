@@ -17,16 +17,28 @@ CLASS({
     'MDAO',
     'foam.dao.EasyDAO',
     'com.google.ymp.bb.Post',
+    'com.google.ymp.bb.Reply',
+    'com.google.ymp.DynamicImage',
+    'com.google.ymp.Person',
+    'com.google.ymp.Market',
+    
+    'foam.dao.AuthorizedDAO',
+    'foam.dao.DebugAuthDAO',
+    'foam.dao.EasyDAO',
+    'foam.dao.LoggingDAO',
+    'foam.dao.PrivateOwnerAuthorizer',
+    'foam.dao.ProxyDAO',
   ],
   imports: [
     'console',
     'exportDAO',
+    'exportFile',
     'setInterval',
   ],
 
   properties: [
     {
-      name: 'bbDAO',
+      name: 'postDAO',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Post,
@@ -36,6 +48,70 @@ CLASS({
           sockets: true,
           isServer: true,
         });
+        // TODO: filter using a variant of PrivateOwnerAuthorizer, to 
+        // only select posts from the principal's 
+        // subscribed markets
+      },
+    },
+    {
+      name: 'replyDAO',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.Reply,
+          name: 'replies',
+          daoType: this.MDAO,
+          guid: true,
+          sockets: true,
+          isServer: true,
+        });
+        // TODO: filter using a variant of PrivateOwnerAuthorizer, 
+        // to only select replies to posts from the  principal's subscribed
+        // markets. For speed, store the market ID on the reply rather than
+        // looking up by market->post->reply, therefore use same authorizer as postDAO
+      },
+    },
+    {
+      name: 'dynamicImageDAO',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.DynamicImage,
+          name: 'dynamicImages',
+          daoType: this.MDAO,
+          guid: true,
+          sockets: true,
+          isServer: true,
+        });
+        // TODO: filter by user's requested default LOD, which images they require (which will be slow to calculate)
+      },
+    },
+    {
+      name: 'personDAO',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.Person,
+          name: 'people',
+          daoType: this.MDAO,
+          guid: true,
+          sockets: true,
+          isServer: true,
+          syncProperty: 'syncProperty',
+          deletedProperty: 'deletedProperty', 
+        });
+        // TODO: how much to sync?
+      },
+    },
+    {
+      name: 'marketDAO',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.Market,
+          name: 'markets',
+          daoType: this.MDAO,
+          guid: true,
+          sockets: true,
+          isServer: true,
+        });
+        // TODO: how much to sync?
       },
     },
   ],
@@ -43,15 +119,41 @@ CLASS({
   methods: [
     function execute() {
       this.console.log('Executing instance of', this.model_.id);
-      this.exportDAO(this.bbDAO);
+
+      // Serve "compiled" / "production" YMp (built via apps/ymp/build.sh).
+      var staticDir = global.FOAM_BOOT_DIR + '/../apps/ymp/build';
+      this.exportFile('/main.html', staticDir + '/main.html');
+      this.exportFile('/foam.js', staticDir + '/foam.js');
+      this.exportFile('/app.manifest', staticDir + '/app.manifest');
+      // Already served by ServeFOAM agent.
+      // this.exportFile('/fonts.css', staticDir + '/fonts.css');
+
+      // Serve app data via several DAOs.
+      this.exportDAO(this.postDAO);
+      this.exportDAO(this.replyDAO);
+      this.exportDAO(this.dynamicImageDAO);
+      this.exportDAO(this.personDAO);
+      this.exportDAO(this.marketDAO);
       var inc = 0;
       this.setInterval(function() {
-        this.bbDAO.put(this.Post.create({ 
+        this.postDAO.put(this.Post.create({ 
           syncProperty: 0,
           guid: createGUID(),
           title: 'new thing' + inc++,
         }))
       }.bind(this), 4000);
     },
+    function authorizeFactory(model, delegate) {
+      return this.DebugAuthDAO.create({
+        delegate: this.AuthorizedDAO.create({
+          model: model,
+          delegate: delegate,
+          authorizer: this.PrivateOwnerAuthorizer.create({ // TODO: snip from OW, change this for YMP use
+            ownerProp: this.Envelope.OWNER,
+          }, this.Y),
+        }, this.Y),
+      }, this.Y);
+    },
+    
   ],
 });
