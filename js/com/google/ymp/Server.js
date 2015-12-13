@@ -21,7 +21,7 @@ CLASS({
     'com.google.ymp.DynamicImage',
     'com.google.ymp.Person',
     'com.google.ymp.Market',
-    'com.google.ymp.MarketSubAuthorizer',
+    'com.google.ymp.dao.MarketSubAuthorizer',
     
     'foam.dao.AuthorizedDAO',
     'foam.dao.DebugAuthDAO',
