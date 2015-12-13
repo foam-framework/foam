@@ -79,16 +79,14 @@ CLASS({
       this.personDAO.find(X.principal, {
         put: function(p) {
           // filter by user's subscribed markets
-          // HACK Post.MARKET used to represent any model with a 'market' reference property
+          // HACK: Post.MARKET used to represent any model with a 'market' reference property
           ret(dao.where(IN(self.Post.MARKET, p.subscribedMarkets)));
         },
         error: function(err) {
           self.console.warn('MarketSubAuthorizer user select error: ' + err, X.principal);
           ret(dao.where(FALSE));
         }
-      });
-
-      
+      });      
     },
   ]
 });

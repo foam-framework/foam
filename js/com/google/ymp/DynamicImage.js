@@ -40,5 +40,10 @@ CLASS({
     },
     { type: 'Int', name: 'width'  },
     { type: 'Int', name: 'height' },
+    {
+      type: 'Reference',
+      subType: 'com.google.ymp.Market',
+      name: 'market',
+    },
   ],
 });

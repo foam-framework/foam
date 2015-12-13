@@ -21,12 +21,12 @@ CLASS({
     'com.google.ymp.DynamicImage',
     'com.google.ymp.Person',
     'com.google.ymp.Market',
+    'com.google.ymp.MarketSubAuthorizer',
     
     'foam.dao.AuthorizedDAO',
     'foam.dao.DebugAuthDAO',
     'foam.dao.EasyDAO',
     'foam.dao.LoggingDAO',
-    'foam.dao.PrivateOwnerAuthorizer',
     'foam.dao.ProxyDAO',
   ],
   imports: [
@@ -35,10 +35,18 @@ CLASS({
     'exportFile',
     'setInterval',
   ],
+  exports: [
+    'postDAO_',
+    'replyDAO_',
+    'personDAO as personDAO_',
+    'dynamicImageDAO_',
+    'marketDAO as marketDAO_',
+    
+  ],
 
   properties: [
     {
-      name: 'postDAO',
+      name: 'postDAO_',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Post,
@@ -54,7 +62,13 @@ CLASS({
       },
     },
     {
-      name: 'replyDAO',
+      name: 'postDAO',
+      lazyFactory: function() {
+        return this.authorizeMarketSubFactory(this.postDAO_);
+      }
+    },
+    {
+      name: 'replyDAO_',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Reply,
@@ -71,7 +85,13 @@ CLASS({
       },
     },
     {
-      name: 'dynamicImageDAO',
+      name: 'replyDAO',
+      lazyFactory: function() {
+        return this.authorizeMarketSubFactory(this.replyDAO_);
+      }
+    },
+    {
+      name: 'dynamicImageDAO_',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.DynamicImage,
@@ -83,6 +103,12 @@ CLASS({
         });
         // TODO: filter by user's requested default LOD, which images they require (which will be slow to calculate)
       },
+    },
+    {
+      name: 'dynamicImageDAO',
+      lazyFactory: function() {
+        return this.authorizeMarketSubFactory(this.dynamicImageDAO_);
+      }
     },
     {
       name: 'personDAO',
@@ -143,14 +169,12 @@ CLASS({
         }))
       }.bind(this), 4000);
     },
-    function authorizeFactory(model, delegate) {
+    function authorizeMarketSubFactory(delegate) {
       return this.DebugAuthDAO.create({
         delegate: this.AuthorizedDAO.create({
-          model: model,
+          model: delegate.model,
           delegate: delegate,
-          authorizer: this.PrivateOwnerAuthorizer.create({ // TODO: snip from OW, change this for YMP use
-            ownerProp: this.Envelope.OWNER,
-          }, this.Y),
+          authorizer: this.MarketSubAuthorizer.create()
         }, this.Y),
       }, this.Y);
     },

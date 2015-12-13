@@ -1,0 +1,36 @@
+[
+  {
+    "model_": "com.google.ymp.Person",
+    "id": "person_1",
+    "displayName": "James Bond 007",
+    "image": "https://lh4.googleusercontent.com/-QghOeQpiavs/AAAAAAAAAAI/AAAAAAAAKTI/fealckPTH_M/photo.jpg?sz=50",
+    "subscribedMarkets": ["market_A"],
+  },
+  {
+    "model_": "com.google.ymp.Person",
+    "id": "person_2",
+    "displayName": "LeBron James",
+    "image": "https://lh6.googleusercontent.com/-24-N4DZIl-o/AAAAAAAAAAI/AAAAAAAAGa4/K4TgYanrKbw/photo.jpg?sz=50"
+    "subscribedMarkets": ["market_B"],
+  },
+  {
+    "model_": "com.google.ymp.Person",
+    "id": "person_3",
+    "displayName": "Brian James Fichtner",
+    "image": "https://lh4.googleusercontent.com/-Cb77Ja2wn3M/AAAAAAAAAAI/AAAAAAAAXM8/2SYMnri7a-Q/photo.jpg?sz=50"
+    "subscribedMarkets": ["market_A", "market_B"],
+  },
+  {
+    "model_": "com.google.ymp.Person",
+    "id": "person_4",
+    "displayName": "James Salsman",
+    "image": "https://lh3.googleusercontent.com/-U5LBuQ5peNc/AAAAAAAAAAI/AAAAAAAACw4/EI-mqenEqZs/photo.jpg?sz=50"
+    "subscribedMarkets": ["market_A"],
+  },
+  {
+    "model_": "com.google.ymp.Person",
+    "id": "person_5",
+    "displayName": "James Bricknell",
+    "image": "https://lh5.googleusercontent.com/-e_rhBfjvAAk/AAAAAAAAAAI/AAAAAAACzrc/2r6SGn-Spio/photo.jpg?sz=50"
+  },
+]

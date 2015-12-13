@@ -30,5 +30,10 @@ CLASS({
       name: 'parent',
       subType: 'com.google.ymp.Post',
     },
+    {
+      type: 'Reference',
+      subType: 'com.google.ymp.Market',
+      name: 'market',
+    },
   ],
 });
