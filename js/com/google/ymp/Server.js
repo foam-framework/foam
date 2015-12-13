@@ -21,6 +21,13 @@ CLASS({
     'com.google.ymp.DynamicImage',
     'com.google.ymp.Person',
     'com.google.ymp.Market',
+    
+    'foam.dao.AuthorizedDAO',
+    'foam.dao.DebugAuthDAO',
+    'foam.dao.EasyDAO',
+    'foam.dao.LoggingDAO',
+    'foam.dao.PrivateOwnerAuthorizer',
+    'foam.dao.ProxyDAO',
   ],
   imports: [
     'console',
@@ -127,5 +134,17 @@ CLASS({
         }))
       }.bind(this), 4000);
     },
+    function authorizeFactory(model, delegate) {
+      return this.DebugAuthDAO.create({
+        delegate: this.AuthorizedDAO.create({
+          model: model,
+          delegate: delegate,
+          authorizer: this.PrivateOwnerAuthorizer.create({ // TODO: snip from OW, change this for YMP use
+            ownerProp: this.Envelope.OWNER,
+          }, this.Y),
+        }, this.Y),
+      }, this.Y);
+    },
+    
   ],
 });

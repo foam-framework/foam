@@ -14,6 +14,7 @@ CLASS({
   name: 'Client',
 
   requires: [
+    'foam.core.dao.AuthenticatedWebSocketDAO',
     'foam.dao.EasyDAO',
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.Reply',
@@ -99,6 +100,39 @@ CLASS({
         });
       },
     },
+    {
+      model_: 'StringProperty',
+      name: 'currentUserId',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( ! this.currentUser || nu !== this.currentUser.id ) {
+          // There's a delay on boot that caused the fine() to fail. TODO: This listener is pointless
+          // after boot, once we have the user loaded.
+          this.personDAO.where(EQ(this.Person.ID, nu)).pipe({ put: function(user) {
+            this.currentUser = user;
+          }.bind(this) });
+        }
+      },
+    },
+    {
+      name: 'currentUser',
+      postSet: function(old, nu) {
+        if ( old === nu ) return;
+        if ( nu ) {
+          if ( nu.id !== this.currentUserId ) this.currentUserId = nu.id;
+        }
+      }
+    },
   ],
 
+  methods: [
+    function init() {
+      this.SUPER();
+      var WebSocket = this.AuthenticatedWebSocketDAO.xbind({
+        authToken$: this.currentUserId$,
+      });
+      this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
+      
+    }
+  ]
 });
