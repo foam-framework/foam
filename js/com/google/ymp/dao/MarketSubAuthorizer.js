@@ -26,7 +26,7 @@ CLASS({
   ],
 
   imports: [
-    'personDAO',
+    'personDAO_ as personDAO',
     'console',
   ],
 

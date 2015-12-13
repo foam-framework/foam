@@ -20,7 +20,6 @@ CLASS({
   package: 'com.google.ymp.test',
 
   requires: [
-    'com.google.ow.IdGenerator',
     'com.google.plus.Person',
   ],
   imports: [
@@ -41,12 +40,6 @@ CLASS({
     {
       name: 'util',
       lazyFactory: function() { return require('util'); },
-    },
-    {
-      name: 'idGenerator',
-      lazyFactory: function() {
-        return this.IdGenerator.create(null, this.Y);
-      },
     },
   ],
 
@@ -75,7 +68,7 @@ CLASS({
             JSONUtil.arrayToObjArray(this.Y, eval('(' + result + ')'), model).select(dao);
             break;
           }
-        } catch (e) {}
+        } catch (e) { console.log(e); }
       }
 
       return dao;

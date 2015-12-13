@@ -28,6 +28,8 @@ CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.LoggingDAO',
     'foam.dao.ProxyDAO',
+    
+    'com.google.ymp.test.DataLoader',
   ],
   imports: [
     'console',
@@ -55,6 +57,7 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
+          logging: true,
         });
         // TODO: filter using a variant of PrivateOwnerAuthorizer, to 
         // only select posts from the principal's 
@@ -77,6 +80,7 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
+          logging: true,
         });
         // TODO: filter using a variant of PrivateOwnerAuthorizer, 
         // to only select replies to posts from the  principal's subscribed
@@ -100,6 +104,7 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
+          logging: true,
         });
         // TODO: filter by user's requested default LOD, which images they require (which will be slow to calculate)
       },
@@ -120,8 +125,9 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
-          syncProperty: 'syncProperty',
-          deletedProperty: 'deletedProperty', 
+          //syncProperty: 'syncProperty',
+          //deletedProperty: 'deletedProperty', 
+          logging: true,
         });
         // TODO: how much to sync?
       },
@@ -136,6 +142,7 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
+          logging: true,
         });
         // TODO: how much to sync?
       },
@@ -145,6 +152,8 @@ CLASS({
   methods: [
     function execute() {
       this.console.log('Executing instance of', this.model_.id);
+
+      this.DataLoader.create();
 
       // Serve "compiled" / "production" YMp (built via apps/ymp/build.sh).
       var staticDir = global.FOAM_BOOT_DIR + '/../apps/ymp/build';
@@ -160,14 +169,14 @@ CLASS({
       this.exportDAO(this.dynamicImageDAO);
       this.exportDAO(this.personDAO);
       this.exportDAO(this.marketDAO);
-      var inc = 0;
-      this.setInterval(function() {
-        this.postDAO.put(this.Post.create({ 
-          syncProperty: 0,
-          guid: createGUID(),
-          title: 'new thing' + inc++,
-        }))
-      }.bind(this), 4000);
+      // var inc = 0;
+      // this.setInterval(function() {
+      //   this.postDAO.put(this.Post.create({
+      //     syncProperty: 0,
+      //     guid: createGUID(),
+      //     title: 'new thing' + inc++,
+      //   }))
+      // }.bind(this), 4000);
     },
     function authorizeMarketSubFactory(delegate) {
       return this.DebugAuthDAO.create({

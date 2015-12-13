@@ -13,6 +13,7 @@ CLASS({
   package: 'com.google.ymp',
   name: 'Person',
   extends: 'com.google.plus.Person',
+  traits: ['foam.core.dao.SyncTrait'],
 
   properties: [
     {
