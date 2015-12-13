@@ -18,7 +18,7 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'CircleDrawer',
-  extends: 'foam.ui.View',
+  extends: 'foam.u2.Element',
 
   traits: [ 'foam.memento.MementoMgr' ],
 
@@ -37,12 +37,14 @@ MODEL({
   models: [
     {
       name: 'DiameterDialog',
-      extends: 'foam.ui.DetailView',
+      extends: 'foam.u2.Element',
 
       templates: [
-        function toHTML() {/*
-          Adjust the diameter of the circle at ($$x{mode: 'read-only'}, $$y{mode: 'read-only'}).<br><br>
-          $$r{model_: 'foam.ui.RangeView', maxValue: 200, onKeyMode: true}
+        function initE() {/*#U2
+          <span x:data={{this}}>
+            Adjust the diameter of the circle at (<:x mode="read-only"/>, <:y mode="read-only"/>).<br><br>
+            <:r model_="foam.ui.RangeView" maxValue="200" onKeyMode="true"/>
+          </span>
         */}
       ]
     }
@@ -80,11 +82,14 @@ MODEL({
     },
   ],
   methods: [
+    /*
+      TODO: Need a canvas Element.
     function initHTML() {
       this.SUPER();
       this.canvas.$.addEventListener('click',       this.onClick);
       this.canvas.$.addEventListener('contextmenu', this.onRightClick);
     },
+    */
     function addCircle(x, y, opt_d) {
       var c = this.Circle.create({
         x: x,
@@ -141,16 +146,16 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
-      .CircleDrawer { width:600px; margin: 20px; }
-      .CircleDrawer canvas { border: 1px solid black; }
-      .CircleDrawer .md-card { font-size: 20px; }
-      .CircleDrawer .actionButton { margin: 10px; }
-      .CircleDrawer input[type='range'] { width: 400px; }
+      $ { width:600px; margin: 20px; }
+      $ canvas { border: 1px solid black; }
+      $ .md-card { font-size: 20px; }
+      $ .actionButton { margin: 10px; }
+      $ input[type='range'] { width: 400px; }
     */},
-    function toHTML() {/*
-      <div id="%%id" class="CircleDrawer">
-        <center class="buttonRow">$$back{label: 'Undo'} $$forth{label: 'Redo'}</center>
-        %%canvas
+    function initE() {/*#U2
+      <div class="$" x:data={{this}}>
+        <center class="$-buttonRow"><:back label="Undo"}/> <:forth label="Redo"}/></center>
+        {{this.canvas}}
       </div>
     */}
   ]

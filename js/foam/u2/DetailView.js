@@ -37,6 +37,7 @@ CLASS({
       }
     },
     {
+//      type: 'Model',
       name: 'model',
       postSet: function(oldModel, model) {
         console.assert(Model.isInstance(model), 'Invalid model specified for ' + this.name_);
