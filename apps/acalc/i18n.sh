@@ -1,4 +1,4 @@
-BASEDIR=$(readlink --canonicalize $(dirname "$0"))
+BASEDIR=$PWD
 cd "$BASEDIR"
 
 pushd .

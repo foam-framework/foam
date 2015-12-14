@@ -11,33 +11,29 @@
 
 CLASS({
   package: 'com.google.ymp.bb',
-  name: 'Post',
+  name: 'Reply',
   extends: 'com.google.ymp.GuidIDBase',
   traits: ['foam.core.dao.SyncTrait'],
 
   properties: [
     {
-      type: 'String',
-      name: 'title',
+      name: 'content',
+      defaultValue: '',
+    },
+    {
+      type: 'Reference',
+      name: 'author',
+      subType: 'com.google.plus.Person',
+    },
+    {
+      type: 'Reference',
+      name: 'parent',
+      subType: 'com.google.ymp.Post',
     },
     {
       type: 'Reference',
       subType: 'com.google.ymp.Market',
       name: 'market',
     },
-    {
-      type: 'Reference',
-      name: 'author',
-      subType: 'com.google.ymp.Person',
-    },
-    {
-      type: 'Reference',
-      name: 'image',
-      subType: 'com.google.ymp.DynamicImage',
-      subKey: 'imageID',
-    },
-    {
-      name: 'content',
-    }
   ],
 });

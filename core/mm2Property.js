@@ -607,6 +607,11 @@ GLOBAL.Property = {
       labels: ['compiletime', 'swift'],
     },
     {
+      name: 'swiftLazyFactory',
+      type: 'String',
+      labels: ['compiletime', 'swift'],
+    },
+    {
       name: 'getter',
       type: 'Function',
       labels: ['javascript'],

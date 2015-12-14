@@ -10,34 +10,27 @@
  */
 
 CLASS({
-  package: 'com.google.ymp.bb',
-  name: 'Post',
+  package: 'com.google.ymp',
+  name: 'Market',
   extends: 'com.google.ymp.GuidIDBase',
-  traits: ['foam.core.dao.SyncTrait'],
+  traits: [ 'foam.core.dao.SyncTrait' ],
 
   properties: [
     {
       type: 'String',
-      name: 'title',
+      name: 'name',
     },
     {
-      type: 'Reference',
-      subType: 'com.google.ymp.Market',
-      name: 'market',
-    },
-    {
-      type: 'Reference',
-      name: 'author',
-      subType: 'com.google.ymp.Person',
+      subType: 'com.google.ymp.geo.Location',
+      name: 'location',
+      lazyFactory: function() { return this.Location.create(); },
     },
     {
       type: 'Reference',
       name: 'image',
       subType: 'com.google.ymp.DynamicImage',
       subKey: 'imageID',
+      defaultValue: '',
     },
-    {
-      name: 'content',
-    }
   ],
 });

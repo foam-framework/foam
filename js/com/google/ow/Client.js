@@ -76,13 +76,14 @@ CLASS({
   ],
   imports: [
     'document',
+    'currentUserId$',
   ],
   exports: [
     'streamDAO',
     'personDAO',
     'circleDAO', // Note: proxy for currentUser.circles
     'contactsDAO', // Note: proxy for currentUser.contacts
-    'currentUser$',
+    'currentUser',
     'createStreamItem',
   ],
 

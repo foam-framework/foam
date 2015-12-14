@@ -1,0 +1,40 @@
+[
+  {
+    "model_": "com.google.ymp.bb.Post",
+    "id": "postA1",
+    "title": "Post A1",
+    "market": "market_A",
+    "author": "person_1",
+    "image": "",
+    "content": "A post, content 1",
+  },
+  {
+    "model_": "com.google.ymp.bb.Post",
+    "id": "postA2",
+    "title": "Post A2",
+    "market": "market_A",
+    "author": "person_2",
+    "image": "",
+    "content": "A post, content 2",
+  },
+  {
+    "model_": "com.google.ymp.bb.Post",
+    "id": "postA3",
+    "title": "Post A3",
+    "market": "market_A",
+    "author": "person_3",
+    "image": "",
+    "content": "A post, content 3",
+  },
+
+  {
+    "model_": "com.google.ymp.bb.Post",
+    "id": "postB1",
+    "title": "Post B1",
+    "market": "market_B",
+    "author": "person_1",
+    "image": "",
+    "content": "B post, content 1",
+  }
+
+]
