@@ -12,6 +12,7 @@
 CLASS({
   package: 'com.google.ymp.generators',
   name: 'MarketGenerator',
+  extends: 'com.google.ymp.generators.LocationBase',
 
   documentation: function() {/*
     Auto-generate four markets (west, north, east, and south) for each location
@@ -94,7 +95,11 @@ CLASS({
         newLocation.latitude += (Math.random() / 1000);
         this.direction = 'E';
       }
-      ret(this.Market.create({ name: name, location: newLocation }));
+
+      ret(this.Market.create({
+        name: name,
+        location: this.sanitizeLocation(newLocation),
+      }));
     },
     function nextLocation(ret) {
       var id = this.location.id;

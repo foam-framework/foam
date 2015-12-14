@@ -46,7 +46,7 @@ CLASS({
     'marketDAO as marketDAO_',
 
     // Used if auto-generating markets from locations.
-    // 'locationDAO as locationDAO_',
+    'locationDAO as locationDAO_',
   ],
 
   properties: [
@@ -140,9 +140,7 @@ CLASS({
           daoType: this.MDAO,
           guid: true,
           sockets: true,
-          isServer: true,
         });
-        // TODO: how much to sync?
       },
     },
 
@@ -189,10 +187,6 @@ CLASS({
       //     title: 'new thing' + inc++,
       //   }))
       // }.bind(this), 4000);
-
-      this.marketDAO.select(COUNT())(function(res) {
-        console.log(res.count, 'marketplaces');
-      });
 
       this.console.log('DAO data loaded');
     },
