@@ -12,7 +12,7 @@
 __DATA({
   model_: 'foam.build.WebApplication',
   id: 'foam.apps.calc.WebApp',
-  controller: 'Calc',
+  controller: 'foam.apps.calc.Calc',
   defaultView: 'foam.apps.calc.CalcView',
   appcacheManifest: true,
   precompileTemplates: true,
