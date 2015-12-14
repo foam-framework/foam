@@ -65,6 +65,7 @@ CLASS({
       onRemoveListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
+      onRemoveAttr:  function() { },
       onAddChildren: function() { },
       onInsertChildren: function() { },
       toString:      function() { return 'INITIAL'; }
@@ -106,6 +107,9 @@ CLASS({
       onSetAttr:     function(key, value) {
         throw "Mutations not allowed in OUTPUT state.";
       },
+      onRemoveAttr:     function(key, value) {
+        throw "Mutations not allowed in OUTPUT state.";
+      },
       onAddChildren: function(c) {
         throw "Mutations not allowed in OUTPUT state.";
       },
@@ -142,11 +146,14 @@ CLASS({
       onRemoveListener: function(topic, listener) {
         this.addRemoveListener_(topic, listener);
       },
-      onSetStyle:    function(key, value) {
+      onSetStyle: function(key, value) {
         this.id$el.style[key] = value;
       },
-      onSetAttr:     function(key, value) {
+      onSetAttr: function(key, value) {
         this.id$el[key] = value;
+      },
+      onRemoveAttr: function(key, value) {
+        this.id$el.removeAttribute(key);
       },
       onAddChildren: function() {
         var e = this.id$el;
@@ -195,6 +202,7 @@ CLASS({
       onRemoveListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
+      onRemoveAttr:  function() { },
       onAddChildren: function() { },
       onInsertChildren: function() { },
       toString:      function() { return 'UNLOADED'; }
@@ -210,6 +218,7 @@ CLASS({
       onRemoveListener: function() { },
       onSetStyle:    function() { },
       onSetAttr:     function() { },
+      onRemoveAttr:  function() { },
       onAddChildren: function() { },
       onInsertChildren: function() { },
       toString:      function() { return 'DESTROYED'; }
@@ -382,6 +391,9 @@ CLASS({
     function onSetAttr(key, value) {
       this.state.onSetAttr.call(this, key, value);
     },
+    function onRemoveAttr(key) {
+      this.state.onRemoveAttr.call(this, key);
+    },
 
     function onAddChildren(/* vargs */) {
       this.state.onAddChildren.apply(this, arguments);
@@ -415,7 +427,7 @@ CLASS({
     //
     function focus() {
       this.focused = true;
-      if ( this.state == this.LOADED ) this.id$el.focus(); 
+      if ( this.state == this.LOADED ) this.id$el.focus();
       return this;
     },
 
@@ -454,6 +466,11 @@ CLASS({
     // DOM Compatibility
     //
     function setAttribute(name, value) {
+      if ( value === undefined || value === null ) {
+        this.removeAttribute(name);
+        return;
+      }
+
       var attr = this.getAttributeNode(name);
 
       if ( attr ) {
@@ -468,7 +485,14 @@ CLASS({
     },
 
     function removeAttribute(name) {
-      // TODO
+      for ( var i = 0 ; i < this.attributes.length ; i++ ) {
+        if ( this.attributes[i].name === name ) {
+          this.attributes.splice(i, 1);
+          delete this.attributeMap[name];
+          this.onRemoveAttr(name);
+          return;
+        }
+      }
     },
 
     function getAttributeNode(name) { return this.attributeMap[name]; },
