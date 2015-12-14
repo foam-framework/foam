@@ -621,6 +621,10 @@ CLASS({
       defaultValue: 'FoamFunction',
     },
     {
+      name: 'swiftDefaultValue',
+      defaultValue: 'FoamFunction(fn: { (_) -> AnyObject? in return nil })',
+    },
+    {
       name: 'displayWidth',
       defaultValue: 15
     },
