@@ -18,17 +18,18 @@ CLASS({
     'foam.dao.EasyDAO',
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.Reply',
+    'com.google.ymp.geo.Location',
     'com.google.ymp.DynamicImage',
     'com.google.ymp.Person',
     'com.google.ymp.Market',
     'com.google.ymp.dao.MarketSubAuthorizer',
-    
+
     'foam.dao.AuthorizedDAO',
     'foam.dao.DebugAuthDAO',
     'foam.dao.EasyDAO',
     'foam.dao.LoggingDAO',
     'foam.dao.ProxyDAO',
-    
+
     'com.google.ymp.test.DataLoader',
   ],
   imports: [
@@ -43,7 +44,9 @@ CLASS({
     'personDAO as personDAO_',
     'dynamicImageDAO_',
     'marketDAO as marketDAO_',
-    
+
+    // Used if auto-generating markets from locations.
+    // 'locationDAO as locationDAO_',
   ],
 
   properties: [
@@ -57,10 +60,9 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
-          logging: true,
         });
-        // TODO: filter using a variant of PrivateOwnerAuthorizer, to 
-        // only select posts from the principal's 
+        // TODO: filter using a variant of PrivateOwnerAuthorizer, to
+        // only select posts from the principal's
         // subscribed markets
       },
     },
@@ -80,9 +82,8 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
-          logging: true,
         });
-        // TODO: filter using a variant of PrivateOwnerAuthorizer, 
+        // TODO: filter using a variant of PrivateOwnerAuthorizer,
         // to only select replies to posts from the  principal's subscribed
         // markets. For speed, store the market ID on the reply rather than
         // looking up by market->post->reply, therefore use same authorizer as postDAO
@@ -104,7 +105,6 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
-          logging: true,
         });
         // TODO: filter by user's requested default LOD, which images they require (which will be slow to calculate)
       },
@@ -126,8 +126,7 @@ CLASS({
           sockets: true,
           isServer: true,
           //syncProperty: 'syncProperty',
-          //deletedProperty: 'deletedProperty', 
-          logging: true,
+          //deletedProperty: 'deletedProperty',
         });
         // TODO: how much to sync?
       },
@@ -142,18 +141,31 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
-          logging: true,
         });
         // TODO: how much to sync?
       },
     },
+
+    // Used if auto-generating markets from locations.
+    // Provides locationDAO_ for generators.MarketGenerator.
+    // {
+    //   name: 'locationDAO',
+    //   lazyFactory: function() {
+    //     return this.EasyDAO.create({
+    //       model: this.Location,
+    //       name: 'locations',
+    //       daoType: this.MDAO,
+    //       guid: true,
+    //     });
+    //   },
+    // },
   ],
 
   methods: [
     function execute() {
       this.console.log('Executing instance of', this.model_.id);
 
-      this.DataLoader.create();
+      this.DataLoader.create().loadServerData();
 
       // Serve "compiled" / "production" YMp (built via apps/ymp/build.sh).
       var staticDir = global.FOAM_BOOT_DIR + '/../apps/ymp/build';
@@ -177,6 +189,12 @@ CLASS({
       //     title: 'new thing' + inc++,
       //   }))
       // }.bind(this), 4000);
+
+      this.marketDAO.select(COUNT())(function(res) {
+        console.log(res.count, 'marketplaces');
+      });
+
+      this.console.log('DAO data loaded');
     },
     function authorizeMarketSubFactory(delegate) {
       return this.DebugAuthDAO.create({
@@ -187,6 +205,6 @@ CLASS({
         }, this.Y),
       }, this.Y);
     },
-    
+
   ],
 });

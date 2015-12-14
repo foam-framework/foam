@@ -10,27 +10,35 @@
  */
 
 CLASS({
-  package: 'com.google.ymp',
-  name: 'Market',
+  package: 'com.google.ymp.geo',
+  name: 'Location',
   extends: 'com.google.ymp.GuidIDBase',
-  traits: [ 'foam.core.dao.SyncTrait' ],
 
   properties: [
     {
+      type: 'Float',
+      name: 'latitude',
+      defaultValue: 43.4541486,
+    },
+    {
+      type: 'Float',
+      name: 'longitude',
+      defaultValue: -80.499342,
+    },
+    {
       type: 'String',
-      name: 'name',
+      name: 'locality',
+      defaultValue: 'Kitchener',
     },
     {
-      subType: 'com.google.ymp.geo.Location',
-      name: 'location',
-      lazyFactory: function() { return this.Location.create(); },
+      type: 'String',
+      name: 'region',
+      defaultValue: 'Ontario',
     },
     {
-      type: 'Reference',
-      name: 'image',
-      subType: 'com.google.ymp.DynamicImage',
-      subKey: 'imageID',
-      defaultValue: '',
+      type: 'String',
+      name: 'country',
+      defaultValue: 'Canada',
     },
   ],
 });

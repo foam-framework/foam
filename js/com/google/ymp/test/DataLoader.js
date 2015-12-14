@@ -21,6 +21,7 @@ CLASS({
 
   requires: [
     'com.google.plus.Person',
+    'com.google.ymp.generators.MarketGenerator',
   ],
   imports: [
     'console',
@@ -28,6 +29,7 @@ CLASS({
 
   constants: {
     DATA_PATHS: [
+      global.FOAM_BOOT_DIR + '/../js/com/google/ymp/local/',
       global.FOAM_BOOT_DIR + '/../js/com/google/ymp/test/',
     ],
   },
@@ -44,22 +46,28 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      
-      this.populateData("market");
-      this.populateData("person");
-      this.populateData("post");
-      this.populateData("reply");
-      this.populateData("dynamicImage");
+    function loadServerData() {
+      this.populateAppData("location");
+
+      // Pick one.
+      // this.generateMarkets();
+      this.populateAppData("market");
+
+      this.populateAppData("person");
+      this.populateAppData("post");
+      this.populateAppData("reply");
+      this.populateAppData("dynamicImage");
     },
-    
-    function populateData(daoName) {
+
+    function populateAppData(daoName) {
       var dao = this.X[daoName+"DAO_"];
       var model = dao.model;
-      
+      this.loadData(daoName, dao, model);
+    },
+
+    function loadData(baseName, dao, model) {
       var dataPaths = this.DATA_PATHS.map(function(p) {
-        return p + daoName + '.json';
+        return p + baseName + '.json';
       });
       for ( var i = 0; i < dataPaths.length; ++i ) {
         try {
@@ -68,10 +76,32 @@ CLASS({
             JSONUtil.arrayToObjArray(this.Y, eval('(' + result + ')'), model).select(dao);
             break;
           }
-        } catch (e) { console.log(e); }
+        } catch (e) { this.console.log(e); }
       }
 
       return dao;
+    },
+
+    function saveData(baseName, data) {
+      var dataPath = this.DATA_PATHS[0] + baseName + '.json';
+      this.fs.writeFileSync(dataPath, data);
+    },
+
+    function generateMarkets() {
+      var count = 0;
+      var dao = [];
+      var generator = this.MarketGenerator.create();
+      var handleMarket = function(market) {
+        if ( ! market ) {
+          this.console.log(count, 'markets generated');
+          this.saveData('market', JSONUtil.stringify(dao));
+          return;
+        }
+        ++count;
+        dao.put(market);
+        generator.generate(handleMarket);
+      }.bind(this);
+      generator.generate(handleMarket);
     },
   ],
 });
