@@ -40,11 +40,17 @@ CLASS({
 
     function inputE() {
       var self = this;
-      return this.start('textarea')
+
+      var input = this.start('textarea')
         .cls(this.myCls('textarea'))
         .attrs({ rows: this.displayHeight })
         .on('focus', function() { self.focused = true; })
         .on('blur', function() { self.focused = false; });
+
+      if (!this.showLabel && this.placeholder)
+        input.attrs({ placeholder: this.placeholder });
+      Events.link(this.data$, input.data$);
+      input.end();
     }
   ],
   templates: [
