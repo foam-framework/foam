@@ -12,6 +12,7 @@
 CLASS({
   package: 'com.google.ymp.bb',
   name: 'PostFilter',
+  extends: 'com.google.ymp.GuidIDBase',
   traits: ['foam.core.dao.SyncTrait'],
 
   documentation: function() {/* A labeled (user, post) binding that can be used
