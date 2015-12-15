@@ -140,6 +140,13 @@ CLASS({
       }
     },
     {
+      name: 'swiftAdapt',
+      defaultValue: function() {/*
+        if let strValue = newValue as? String { return strValue }
+        return ""
+      */},
+    },
+    {
       name: 'javaType',
       displayWidth: 70,
       defaultValue: 'String',
@@ -479,6 +486,18 @@ CLASS({
       defaultValue: 'Int',
     },
     {
+      name: 'swiftAdapt',
+      defaultValue: function() {/*
+        // If it's already an int, use it.
+        if let intVal = newValue as? Int { return intVal }
+        // If it's a string, convert it.
+        if let strVal = newValue as? String, intVal = Int(strVal) as Int! {
+          return intVal
+        }
+        return 0
+      */},
+    },
+    {
       name: 'swiftDefaultValue',
       defaultValue: '0',
     },
@@ -533,6 +552,19 @@ CLASS({
       name: 'swiftType',
       labels: ['compiletime', 'swift'],
       defaultValue: 'NSNumber',
+    },
+    {
+      name: 'swiftAdapt',
+      defaultValue: function() {/*
+        // If it's already an int, use it.
+        if let numVal = newValue as? NSNumber { return numVal }
+        if let intVal = newValue as? Int64 { return NSNumber(longLong: intVal) }
+        // If it's a string, convert it.
+        if let strVal = newValue as? String, intVal = Int64(strVal) as Int64! {
+          return NSNumber(longLong: intVal)
+        }
+        return 0
+      */},
     },
   ]
 });
