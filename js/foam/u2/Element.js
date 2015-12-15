@@ -61,6 +61,7 @@ CLASS({
       remove:        function() { },
       destroy:       function() { },
       onSetCls:      function() { },
+      onFocus:       function() { },
       onAddListener: function() { },
       onRemoveListener: function() { },
       onSetStyle:    function() { },
@@ -93,6 +94,9 @@ CLASS({
       remove:        function() { },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
+        throw "Mutations not allowed in OUTPUT state.";
+      },
+      onFocus:      function(cls, enabled) {
         throw "Mutations not allowed in OUTPUT state.";
       },
       onAddListener: function(topic, listener) {
@@ -139,6 +143,9 @@ CLASS({
         }
 
         e.classList[enabled ? 'add' : 'remove'](cls);
+      },
+      onFocus: function() {
+        this.id$el.focus();
       },
       onAddListener: function(topic, listener) {
         this.addEventListener_(topic, listener);
@@ -198,6 +205,7 @@ CLASS({
       remove:        function() { debugger; console.error('Remove after unload.'); },
       destroy:       function() { },
       onSetCls:      function() { },
+      onFocus:       function() { },
       onAddListener: function() { },
       onRemoveListener: function() { },
       onSetStyle:    function() { },
@@ -214,6 +222,7 @@ CLASS({
       remove:        function() { debugger; console.error('Remove after destroy.'); },
       destroy:       function() { },
       onSetCls:      function() { },
+      onFocus:       function() { },
       onAddListener: function() { },
       onRemoveListener: function() { },
       onSetStyle:    function() { },
@@ -415,6 +424,10 @@ CLASS({
       this.state.onSetCls.call(this, cls, add);
     },
 
+    function onFocus() {
+      this.state.onFocus.call(this);
+    },
+
     function visitChildren(methodName) {
       for (var i = 0; i < this.childNodes.length; i++) {
         var c = this.childNodes[i];
@@ -427,7 +440,7 @@ CLASS({
     //
     function focus() {
       this.focused = true;
-      if ( this.state == this.LOADED ) this.id$el.focus();
+      this.onFocus();
       return this;
     },
 
