@@ -621,6 +621,14 @@ CLASS({
          */}
     },
     {
+      model_: 'StringProperty',
+      name: 'swiftType',
+    },
+    {
+      model_: 'StringProperty',
+      name: 'swiftValue',
+    },
+    {
       name: 'description',
       type: 'String',
       displayWidth: 70,
