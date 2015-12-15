@@ -12,10 +12,27 @@
 CLASS({
   package: 'com.google.ymp',
   name: 'Person',
-  extends: 'com.google.plus.Person',
-  traits: ['foam.core.dao.SyncTrait'],
+  extends: 'com.google.ymp.GuidIDBase',
+  traits: [
+    'foam.core.dao.SyncTrait',
+    'com.google.ymp.CreationTimeTrait',
+  ],
 
   properties: [
+    {
+      type: 'String',
+      name: 'name',
+    },
+    {
+      type: 'Reference',
+      subType: 'com.google.ymp.DynamicImage',
+      name: 'image',
+    },
+    {
+      type: 'Int',
+      name: 'defaultImageLOD',
+      defaultValue: 8,
+    },
     {
       type: 'ReferenceArray',
       name: 'subscribedMarkets',

@@ -17,13 +17,13 @@ CLASS({
   properties: [
     {
       type: 'Float',
-      name: 'latitude',
-      defaultValue: 43.4541486,
+      name: 'longitude',
+      defaultValue: -80.499342,
     },
     {
       type: 'Float',
-      name: 'longitude',
-      defaultValue: -80.499342,
+      name: 'latitude',
+      defaultValue: 43.4541486,
     },
     {
       type: 'String',

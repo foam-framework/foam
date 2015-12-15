@@ -22,6 +22,10 @@ CLASS({
     'com.google.ymp.Client',
     'foam.memento.FragmentMementoMgr',
     'foam.ui.DetailView',
+    'foam.browser.u2.BrowserController',
+    'foam.browser.u2.BrowserView', 
+    'foam.u2.DetailView',   
+    'foam.u2.ActionButton',
   ],
   exports: [
     'currentUserId$',
@@ -50,8 +54,8 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'clientView',
       defaultValue: function() {
-        return this.DetailView.create({
-          data: this.client,
+        return this.BrowserController.create({
+            data: this.client.postDAO
         }, this.client.Y);
       },
     },
