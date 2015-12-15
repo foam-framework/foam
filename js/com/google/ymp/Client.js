@@ -22,6 +22,7 @@ CLASS({
     'com.google.ymp.Person',
     'com.google.ymp.Market',
     'foam.ui.DAOListView',
+    'com.google.ymp.dao.DynamicWhereDAO',
   ],
 
   exports: [
@@ -37,12 +38,17 @@ CLASS({
       name: 'postDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        return this.EasyDAO.create({
-          model: this.Post,
-          name: 'posts',
-          caching: true,
-          syncWithServer: true,
-          sockets: true,
+        return this.DynamicWhereDAO.create({
+          sourceDelegate: this.EasyDAO.create({
+            model: this.Post,
+            name: 'posts',
+            caching: true,
+            syncWithServer: true,
+            sockets: true,
+          }),
+          predicate: IN,
+          property: this.Post.MARKET,
+          parameter$: this.subscribedMarkets$
         });
       },
     },
@@ -50,12 +56,17 @@ CLASS({
       name: 'replyDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        return this.EasyDAO.create({
-          model: this.Reply,
-          name: 'replies',
-          caching: true,
-          syncWithServer: true,
-          sockets: true,
+        return this.DynamicWhereDAO.create({
+          sourceDelegate: this.EasyDAO.create({
+            model: this.Reply,
+            name: 'replies',
+            caching: true,
+            syncWithServer: true,
+            sockets: true,
+          }),
+          predicate: IN,
+          property: this.Reply.MARKET,
+          parameter$: this.subscribedMarkets$
         });
       },
     },
@@ -96,6 +107,7 @@ CLASS({
           model: this.Market,
           name: 'markets',
           caching: true,
+          // make remote
         });
       },
     },
@@ -120,8 +132,13 @@ CLASS({
         if ( nu ) {
           if ( nu.id !== this.currentUserId ) this.currentUserId = nu.id;
         }
+        this.subscribedMarkets = nu.subscribedMarkets;
       }
     },
+    {
+      type: 'Array',
+      name: 'subscribedMarkets',
+    }
   ],
 
   methods: [
