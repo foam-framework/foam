@@ -86,8 +86,6 @@ CLASS({
           caching: true,
           syncWithServer: true,
           sockets: true,
-          //syncProperty: 'syncProperty',
-          //deletedProperty: 'deletedProperty', 
         });
       },
     },

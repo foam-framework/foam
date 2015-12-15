@@ -23,6 +23,8 @@ CLASS({
     'com.google.ymp.Person',
     'com.google.ymp.Market',
     'com.google.ymp.dao.MarketSubAuthorizer',
+    'com.google.ymp.dao.DynamicImageAuthorizer',
+    
 
     'foam.dao.AuthorizedDAO',
     'foam.dao.DebugAuthDAO',
@@ -39,7 +41,7 @@ CLASS({
     'exportFile',
     'setInterval',
   ],
-  exports: [
+  exports: [ // the DAO_ exports are for fake data injects from test/DataLoader
     'postDAO_',
     'replyDAO_',
     'personDAO as personDAO_',
@@ -113,7 +115,7 @@ CLASS({
     {
       name: 'dynamicImageDAO',
       lazyFactory: function() {
-        return this.authorizeMarketSubFactory(this.dynamicImageDAO_);
+        return this.authorizeDynamicImageFactory(this.dynamicImageDAO_);
       }
     },
     {
@@ -210,6 +212,23 @@ CLASS({
         }, this.Y),
       }, this.Y);
     },
-
+    function authorizeDynamicImageFactory(delegate) {
+      // filter by user's subscribed markets
+      var subscriptionAuthDAO = this.DebugAuthDAO.create({
+        delegate: this.AuthorizedDAO.create({
+          model: delegate.model,
+          delegate: delegate,
+          authorizer: this.MarketSubAuthorizer.create()
+        }, this.Y),
+      }, this.Y);
+      // and by user's default image quality
+      return this.DebugAuthDAO.create({
+        delegate: this.AuthorizedDAO.create({
+          model: subscriptionAuthDAO.model,
+          delegate: subscriptionAuthDAO,
+          authorizer: this.DynamicImageAuthorizer.create()
+        }, this.Y),
+      }, this.Y);
+    }
   ],
 });

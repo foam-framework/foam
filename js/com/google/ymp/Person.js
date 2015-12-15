@@ -28,6 +28,11 @@ CLASS({
       name: 'image',
     },
     {
+      type: 'Int',
+      name: 'defaultImageLOD',
+      defaultValue: 8,
+    },
+    {
       type: 'ReferenceArray',
       name: 'subscribedMarkets',
       subType: 'com.google.ymp.Market',
