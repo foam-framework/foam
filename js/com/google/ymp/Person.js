@@ -12,6 +12,7 @@
 CLASS({
   package: 'com.google.ymp',
   name: 'Person',
+  extends: 'com.google.ymp.GuidIDBase',
   traits: [
     'foam.core.dao.SyncTrait',
     'com.google.ymp.CreationTimeTrait',

@@ -128,8 +128,6 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
-          //syncProperty: 'syncProperty',
-          //deletedProperty: 'deletedProperty',
         });
         // TODO: how much to sync?
       },
