@@ -14,6 +14,8 @@ CLASS({
   name: 'Market',
   extends: 'com.google.ymp.GuidIDBase',
   traits: [ 'foam.core.dao.SyncTrait' ],
+  
+  requires: [ 'com.google.ymp.geo.Location' ],
 
   properties: [
     {
