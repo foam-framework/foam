@@ -31,6 +31,7 @@ CLASS({
     'foam.dao.ProxyDAO',
 
     'com.google.ymp.test.DataLoader',
+    'com.google.ymp.test.ServerDebug',
   ],
   imports: [
     'console',
@@ -140,6 +141,7 @@ CLASS({
           daoType: this.MDAO,
           guid: true,
           sockets: true,
+          autoIndex: true,
         });
       },
     },
@@ -163,7 +165,8 @@ CLASS({
     function execute() {
       this.console.log('Executing instance of', this.model_.id);
 
-      this.DataLoader.create().loadServerData();
+      var dataLoader = this.DataLoader.create();
+      dataLoader.loadServerData();
 
       // Serve "compiled" / "production" YMp (built via apps/ymp/build.sh).
       var staticDir = global.FOAM_BOOT_DIR + '/../apps/ymp/build';
@@ -179,16 +182,24 @@ CLASS({
       this.exportDAO(this.dynamicImageDAO);
       this.exportDAO(this.personDAO);
       this.exportDAO(this.marketDAO);
-      // var inc = 0;
-      // this.setInterval(function() {
-      //   this.postDAO.put(this.Post.create({
-      //     syncProperty: 0,
-      //     guid: createGUID(),
-      //     title: 'new thing' + inc++,
-      //   }))
-      // }.bind(this), 4000);
+
+      // HACK(markdittmer): Copies market.location data into market.
+      // var marketData = [];
+      // this.marketDAO.select({
+      //   put: function(market) {
+      //     market.longitude = market.location.longitude;
+      //     market.latitude = market.location.latitude;
+      //     marketData.push(market);
+      //   },
+      // })(function() {
+      //   dataLoader.saveData('market', JSONUtil.stringify(marketData));
+      //   console.log('Re-saved market data');
+      // }.bind(this));
 
       this.console.log('DAO data loaded');
+
+      // Run any custom hard-coded server logic.
+      this.ServerDebug.create().execute();
     },
     function authorizeMarketSubFactory(delegate) {
       return this.DebugAuthDAO.create({

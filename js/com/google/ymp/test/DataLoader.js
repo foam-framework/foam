@@ -47,10 +47,12 @@ CLASS({
 
   methods: [
     function loadServerData() {
-      this.populateAppData("location");
 
       // Pick one.
+      // (a) Generate markets from locations.
+      // this.populateAppData("location");
       // this.generateMarkets();
+      // (b) Load markets from file.
       this.populateAppData("market");
 
       this.populateAppData("person");

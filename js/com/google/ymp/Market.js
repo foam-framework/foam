@@ -13,9 +13,9 @@ CLASS({
   package: 'com.google.ymp',
   name: 'Market',
   extends: 'com.google.ymp.GuidIDBase',
-  traits: [ 'foam.core.dao.SyncTrait' ],
-  
-  requires: [ 'com.google.ymp.geo.Location' ],
+  requires: [
+    'com.google.ymp.geo.Location',
+  ],
 
   properties: [
     {
@@ -26,6 +26,24 @@ CLASS({
       subType: 'com.google.ymp.geo.Location',
       name: 'location',
       lazyFactory: function() { return this.Location.create(); },
+      preSet: function(_, nu) {
+        if ( ! this.Location.isInstance(nu) ) {
+          throw new Error('Invalid location');
+        }
+        return nu;
+      },
+    },
+    // This is redundant, but it allows us to automatically create
+    // indices over longitude and latitude.
+    {
+      type: 'Float',
+      name: 'longitude',
+      defaultValue: -80.499342,
+    },
+    {
+      type: 'Float',
+      name: 'latitude',
+      defaultValue: 43.4541486,
     },
     {
       type: 'Reference',
