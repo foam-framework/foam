@@ -13,7 +13,10 @@ CLASS({
   package: 'com.google.ymp.bb',
   name: 'Reply',
   extends: 'com.google.ymp.GuidIDBase',
-  traits: ['foam.core.dao.SyncTrait'],
+  traits: [
+    'foam.core.dao.SyncTrait',
+    'com.google.ymp.CreationTimeTrait',
+  ],
 
   properties: [
     {

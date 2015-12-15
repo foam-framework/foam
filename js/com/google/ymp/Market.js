@@ -13,6 +13,7 @@ CLASS({
   package: 'com.google.ymp',
   name: 'Market',
   extends: 'com.google.ymp.GuidIDBase',
+  traits: [ 'com.google.ymp.CreationTimeTrait' ],
   requires: [
     'com.google.ymp.geo.Location',
   ],
