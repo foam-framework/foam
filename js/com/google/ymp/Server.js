@@ -16,7 +16,9 @@ CLASS({
   requires: [
     'MDAO',
     'foam.dao.EasyDAO',
+    'foam.dao.PrivateOwnerAuthorizer',
     'com.google.ymp.bb.Post',
+    'com.google.ymp.bb.PostFilter',
     'com.google.ymp.bb.Reply',
     'com.google.ymp.geo.Location',
     'com.google.ymp.DynamicImage',
@@ -44,6 +46,7 @@ CLASS({
   exports: [ // the DAO_ exports are for fake data injects from test/DataLoader
     'postDAO_',
     'replyDAO_',
+    'postFilterDAO_',
     'personDAO as personDAO_',
     'dynamicImageDAO_',
     'marketDAO as marketDAO_',
@@ -64,9 +67,6 @@ CLASS({
           sockets: true,
           isServer: true,
         });
-        // TODO: filter using a variant of PrivateOwnerAuthorizer, to
-        // only select posts from the principal's
-        // subscribed markets
       },
     },
     {
@@ -74,6 +74,25 @@ CLASS({
       lazyFactory: function() {
         return this.authorizeMarketSubFactory(this.postDAO_);
       }
+    },
+    {
+      name: 'postFilterDAO_',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.PostFilter,
+          name: 'posts',
+          daoType: this.MDAO,
+          guid: true,
+          sockets: true,
+          isServer: true,
+        });
+      },
+    },
+    {
+      name: 'postFilterDAO',
+      lazyFactory: function() {
+        return this.authorizePersonFactory(this.postFilterDAO_);
+      },
     },
     {
       name: 'replyDAO_',
@@ -210,6 +229,20 @@ CLASS({
         }, this.Y),
       }, this.Y);
     },
+    function authorizeUserFactory(delegate, opt_ownerProp) {
+      this.console.assert(
+          opt_ownerProp || delegate.model.PERSON,
+          'User authorization factory requires "person" (user) property');
+      return this.DebugAuthDAO.create({
+        delegate: this.AuthorizedDAO.create({
+          model: delegate.model,
+          delegate: delegate,
+          authorizer: this.PrivateOwnerAuthorizer.create({
+            ownerProp: opt_ownerProp || delegate.model.PERSON,
+          }),
+        }),
+      });
+    },
     function authorizeDynamicImageFactory(delegate) {
       // filter by user's subscribed markets
       var subscriptionAuthDAO = this.DebugAuthDAO.create({
@@ -227,6 +260,6 @@ CLASS({
           authorizer: this.DynamicImageAuthorizer.create()
         }, this.Y),
       }, this.Y);
-    }
+    },
   ],
 });
