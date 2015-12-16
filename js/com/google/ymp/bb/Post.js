@@ -22,6 +22,7 @@ CLASS({
     'com.google.ymp.ui.PostView',
     'com.google.ymp.ui.PersonChipView',
     'foam.u2.md.DetailView',
+    'com.google.ymp.ui.DynamicImageView',
   ],
 
   properties: [
@@ -47,6 +48,9 @@ CLASS({
       name: 'image',
       subType: 'com.google.ymp.DynamicImage',
       subKey: 'imageID',
+      toPropertyE: function(X) {
+        return X.lookup('com.google.ymp.ui.DynamicImageView').create({ data: X.data.image }, X);
+      }
     },
     {
       name: 'content',

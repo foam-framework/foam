@@ -15,11 +15,14 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'com.google.ymp.'
+    'com.google.ymp.DynamicImage',
   ],
   imports: [
     'data',
     'dynamicImageDAO',
+  ],
+  exports: [
+    'as data',
   ],
 
   properties: [ 
@@ -47,14 +50,10 @@ CLASS({
     }
   ],
 
-  templates: [
-    function initE() {/*#U2
-      <div class="$"><:imageData /></div>
-    */},
-    function CSS() {/*
-      $ {
-        
-      }
-    */}
+  methods: [
+    function initE() {
+      this.start('img').attrs({ src: this.imageData$ }).end();
+    },
+    
   ]
 });
