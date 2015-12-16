@@ -15,8 +15,7 @@ CLASS({
 
   requires: [
     'MDAO',
-    'foam.dao.EasyDAO',
-    'foam.dao.PrivateOwnerAuthorizer',
+
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.PostFilter',
     'com.google.ymp.bb.Reply',
@@ -31,8 +30,11 @@ CLASS({
     'foam.dao.AuthorizedDAO',
     'foam.dao.DebugAuthDAO',
     'foam.dao.EasyDAO',
+    'foam.dao.EasyDAO',
     'foam.dao.LoggingDAO',
+    'foam.dao.PrivateOwnerAuthorizer',
     'foam.dao.ProxyDAO',
+    'foam.mlang.PropertySequence',
 
     'com.google.ymp.test.DataLoader',
     'com.google.ymp.test.ServerDebug',
@@ -47,6 +49,7 @@ CLASS({
     'postDAO_',
     'replyDAO_',
     'postFilterDAO_',
+    'postRelationDAO_',
     'personDAO as personDAO_',
     'dynamicImageDAO_',
     'marketDAO as marketDAO_',
@@ -92,6 +95,30 @@ CLASS({
       name: 'postFilterDAO',
       lazyFactory: function() {
         return this.authorizePersonFactory(this.postFilterDAO_);
+      },
+    },
+    {
+      name: 'postRelationDAO_',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.PostRelation,
+          name: 'posts',
+          daoType: this.MDAO,
+          guid: true,
+          sockets: true,
+          isServer: true,
+        });
+      },
+    },
+    {
+      name: 'postRelationDAO',
+      lazyFactory: function() {
+        return this.authorizeMarketSubFactory(
+            this.postRelationDAO_,
+            [
+              this.PostRelation.POST.dot(this.Post.MARKET),
+              this.PostRelation.RELATED.dot(this.Post.MARKET),
+            ]);
       },
     },
     {
@@ -220,12 +247,16 @@ CLASS({
       // Run any custom hard-coded server logic.
       this.ServerDebug.create().execute();
     },
-    function authorizeMarketSubFactory(delegate) {
+    function authorizeMarketSubFactory(delegate, opt_marketProps) {
+      this.console.assert(
+          opt_marketProps || delegate.model.MARKET,
+          'Market subscription authorization factory requires one or more "market" properties');
+      var marketProps = opt_marketProps || [delegate.model.MARKET];
       return this.DebugAuthDAO.create({
         delegate: this.AuthorizedDAO.create({
           model: delegate.model,
           delegate: delegate,
-          authorizer: this.MarketSubAuthorizer.create()
+          authorizer: this.MarketSubAuthorizer.create({ marketProps: marketProps }),
         }, this.Y),
       }, this.Y);
     },

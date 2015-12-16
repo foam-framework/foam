@@ -35,6 +35,24 @@ CLASS({
     checks for subscription to the given MarketID/p>
   */},
 
+  properties: [
+    {
+      type: 'Array',
+      subType: 'Property',
+      name: 'marketProps',
+      lazyFactory: function() {
+        return this.Post.MARKET;
+      },
+    },
+    {
+      name: 'junctionMLang',
+      documentation: 'The MLang operation for joining market property checks',
+      lazyFactory: function() {
+        return AND;
+      },
+    },
+  ],
+
   methods: [
     function massageForPut(ret, X, old, nu) {
       ret(nu);
@@ -49,8 +67,20 @@ CLASS({
       var self = this;
       this.personDAO.find(X.principal, {
         put: function(p) {
-          // 
-          if ( EQ(self.Person.SUBSCRIBED_MARKETS, obj.market).f(p) ) {
+          // Construct query:
+          // Join together from i = 0 to n - 1:
+          //   Elem of person's subscribedMarkets = obj's marketProps[i] value.
+          // Join for AND starts with TRUE.
+          // Join for OR, IN, etc. starts with FALSE.
+          var expr = this.junctionMLange === AND ? TRUE : FALSE;
+          for ( var i = 0; i < this.marketProps.length; ++i ) {
+            expr = this.junctionMLang(
+                EQ(
+                    self.Person.SUBSCRIBED_MARKETS,
+                    this.marketProps[i].f(obj)),
+                expr);
+          }
+          if ( expr.f(p) ) {
             ret(obj); // the principal is subscribed to the market this object belongs to
           } else {
             ret(null); // not subscribed, don't sync this object
@@ -86,7 +116,7 @@ CLASS({
           self.console.warn('MarketSubAuthorizer user select error: ' + err, X.principal);
           ret(dao.where(FALSE));
         }
-      });      
+      });
     },
   ]
 });
