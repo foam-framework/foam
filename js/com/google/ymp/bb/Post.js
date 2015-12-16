@@ -17,6 +17,9 @@ CLASS({
     'foam.core.dao.SyncTrait',
     'com.google.ymp.CreationTimeTrait',
   ],
+  requires: [
+    'com.google.ymp.ui.PostView',
+  ],
 
   properties: [
     {
@@ -41,6 +44,12 @@ CLASS({
     },
     {
       name: 'content',
+    }
+  ],
+
+  methods: [
+    function toRowE(X) {
+      return X.lookup('com.google.ymp.ui.PostView').create({ data: this }, X);
     }
   ],
 });
