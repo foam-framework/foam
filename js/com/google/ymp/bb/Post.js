@@ -37,7 +37,7 @@ CLASS({
       name: 'author',
       subType: 'com.google.ymp.Person',
       toPropertyE: function(X) {
-        return X.lookup('com.google.ymp.ui.PersonChipView').create({}, X.sub({ data: X.data.author }));
+        return X.lookup('com.google.ymp.ui.PersonChipView').create({ data: X.data.author }, X);
       }
     },
     {
