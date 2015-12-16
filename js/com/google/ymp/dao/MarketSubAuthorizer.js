@@ -41,7 +41,7 @@ CLASS({
       subType: 'Property',
       name: 'marketProps',
       lazyFactory: function() {
-        return this.Post.MARKET;
+        return [this.Post.MARKET];
       },
     },
     {
@@ -65,19 +65,19 @@ CLASS({
 
       // lookup principal Person
       var self = this;
-      this.personDAO.find(X.principal, {
+      self.personDAO.find(X.principal, {
         put: function(p) {
           // Construct query:
           // Join together from i = 0 to n - 1:
           //   Elem of person's subscribedMarkets = obj's marketProps[i] value.
           // Join for AND starts with TRUE.
           // Join for OR, IN, etc. starts with FALSE.
-          var expr = this.junctionMLange === AND ? TRUE : FALSE;
-          for ( var i = 0; i < this.marketProps.length; ++i ) {
-            expr = this.junctionMLang(
+          var expr = self.junctionMLange === AND ? TRUE : FALSE;
+          for ( var i = 0; i < self.marketProps.length; ++i ) {
+            expr = self.junctionMLang(
                 EQ(
                     self.Person.SUBSCRIBED_MARKETS,
-                    this.marketProps[i].f(obj)),
+                    self.marketProps[i].f(obj)),
                 expr);
           }
           if ( expr.f(p) ) {
