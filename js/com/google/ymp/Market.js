@@ -60,5 +60,5 @@ CLASS({
     function toRowE(X) {
       return X.lookup('com.google.ymp.ui.MarketView').create({ data: this }, X);
     }
-  ]
+  ],
 });
