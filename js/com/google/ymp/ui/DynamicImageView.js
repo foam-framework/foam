@@ -37,7 +37,7 @@ CLASS({
           .where(EQ(self.DynamicImage.IMAGE_ID, nu))
           .orderBy(DESC(self.DynamicImage.LEVEL_OF_DETAIL))
           .limit(1)
-          .select({
+          .pipe({
             put: function(img) {
               self.imageData = img.image;
             }
