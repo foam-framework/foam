@@ -35,7 +35,7 @@ CLASS({
       name: 'data',
       postSet: function(old, nu) {
         this.bindData_(old, nu);
-      },
+      }
     },
     {
       name: 'prop'
@@ -43,16 +43,14 @@ CLASS({
     {
       name: 'view',
       attribute: true,
-      adapt: function(old, nu) {
-        if (typeof nu === 'string') {
-          var m = this.X.lookup(nu);
-          if (m) return m.create();
-        } else if (typeof nu === 'function') {
-          return nu(this.Y);
-        } else {
-          return nu;
+      adapt: function(_, v) {
+        if ( typeof v === 'function' ) return v(this.Y);
+        if ( typeof v === 'string' ) {
+          var m = this.X.lookup(v);
+          if ( m ) return m.create();
         }
-      },
+        return v;
+      }
     },
     {
       name: 'child_',
