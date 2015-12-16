@@ -16,6 +16,7 @@ CLASS({
   traits: [ 'com.google.ymp.CreationTimeTrait' ],
   requires: [
     'com.google.ymp.geo.Location',
+    'com.google.ymp.ui.MarketRowView',
     'com.google.ymp.ui.MarketView',
   ],
 
@@ -57,8 +58,11 @@ CLASS({
   ],
 
   methods: [
-    function toRowE(X) {
+    function toE(X) {
       return X.lookup('com.google.ymp.ui.MarketView').create({ data: this }, X);
-    }
+    },
+    function toRowE(X) {
+      return X.lookup('com.google.ymp.ui.MarketRowView').create({ data: this }, X);
+    },
   ],
 });
