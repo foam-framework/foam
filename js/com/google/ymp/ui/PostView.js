@@ -16,13 +16,23 @@ CLASS({
   templates: [
     function initE() {/*#U2
       <div class="$">
-        <table>
-          <tr>
-            <td><h2>{{this.data.title}}</h2></td>
-            <td>{{this.data.author}}</td>
-          </tr>
-        </table>
+        <div class="$-flex-col">
+          <div class="$-md-heading">{{this.data.title}}</div>
+          <:author />
+        </div>
       </div>
+    */},
+    function CSS() {/*
+      $-flex-col {
+        display: flex;
+        flex-direction: column;
+        padding: 16px;
+      }
+      $-md-heading {
+        font-size: 20px;
+        color: argb(0,0,0,0.75);
+        margin-bottom: 8px;
+      }
     */},
   ]
 });

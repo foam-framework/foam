@@ -19,6 +19,7 @@ CLASS({
   ],
   requires: [
     'com.google.ymp.ui.PostView',
+    'com.google.ymp.ui.PersonChipView',
   ],
 
   properties: [
@@ -35,6 +36,9 @@ CLASS({
       type: 'Reference',
       name: 'author',
       subType: 'com.google.ymp.Person',
+      toPropertyE: function(X) {
+        return X.lookup('com.google.ymp.ui.PersonChipView').create({}, X.sub({ data: X.data.author }));
+      }
     },
     {
       type: 'Reference',
