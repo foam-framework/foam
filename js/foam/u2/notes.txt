@@ -111,3 +111,5 @@ This should work in Cells.
 
 
 We need a TableView
+
+dynamic values for attribute properties don't work
