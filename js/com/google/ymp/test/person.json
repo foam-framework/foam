@@ -4,7 +4,7 @@
     "id": "person_1",
     "name": "James Bond 007",
     "subscribedMarkets": ["market_A"],
-    "defaultImageLOD": "512",
+    "defaultImageLOD": "128",
   },
   {
     "model_": "com.google.ymp.Person",

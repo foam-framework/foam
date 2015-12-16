@@ -18,6 +18,7 @@ CLASS({
       <div class="$">
         <div class="$-flex-col">
           <div class="$-md-heading">{{this.data.title}}</div>
+          <:image />
         </div>
       </div>
     */},
