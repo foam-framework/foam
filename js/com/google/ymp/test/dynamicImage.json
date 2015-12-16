@@ -1,7 +1,8 @@
 [
   {
     "model_": "com.google.ymp.DynamicImage",
-    "id": "imageDroid",
+    "id": "fakeImage1",
+    "imageID": "imageDroid",
     "levelOfDetail": "8",
     "market": "market_A",
     "height": "48",
@@ -10,7 +11,8 @@
   },
   {
     "model_": "com.google.ymp.DynamicImage",
-    "id": "imageDroid",
+    "id": "fakeImage2",
+    "imageID": "imageDroid",
     "levelOfDetail": "128",
     "market": "market_A",
     "height": "471",
@@ -19,7 +21,8 @@
   },
   {
     "model_": "com.google.ymp.DynamicImage",
-    "id": "imageDroid",
+    "id": "fakeImage3",
+    "imageID": "imageDroid",
     "levelOfDetail": "256",
     "market": "market_A",
     "height": "1302",

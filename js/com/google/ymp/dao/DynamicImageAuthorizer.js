@@ -85,7 +85,7 @@ CLASS({
       }
       var self = this;
       this.withDefaultQuality(function(quality) {
-        ret(dao.where(LT(self.DynamicImage.LEVEL_OF_DETAIL, quality)));
+        ret(dao.where(LTE(self.DynamicImage.LEVEL_OF_DETAIL, quality)));
       }, X);
     },
   ]

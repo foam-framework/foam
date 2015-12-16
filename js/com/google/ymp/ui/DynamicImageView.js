@@ -35,9 +35,9 @@ CLASS({
         self.dynamicImageDAO = this.X.dynamicImageDAO;
         self.dynamicImageDAO
           .where(EQ(self.DynamicImage.IMAGE_ID, nu))
-          .orderBy(self.DynamicImage.LEVEL_OF_DETAIL)
+          .orderBy(DESC(self.DynamicImage.LEVEL_OF_DETAIL))
           .limit(1)
-          .select({
+          .pipe({
             put: function(img) {
               self.imageData = img.image;
             }
