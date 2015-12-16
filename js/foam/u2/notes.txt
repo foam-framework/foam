@@ -110,6 +110,4 @@ This should work in Cells.
     }
 
 
-Implement Element.removeAttribute();
-Have setAttribute(null) remove the attribute.
 We need a TableView
