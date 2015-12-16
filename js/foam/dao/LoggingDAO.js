@@ -53,7 +53,7 @@ CLASS({
     },
     function select(sink, options) {
       this.logger('select', options || "");
-      if ( this.logRead ) {
+      if ( this.logReads ) {
         var put = sink.put.bind(sink);
         var newSink = { __proto__: sink };
         newSink.put = function(o) {

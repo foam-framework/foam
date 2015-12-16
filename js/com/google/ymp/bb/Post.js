@@ -18,8 +18,11 @@ CLASS({
     'com.google.ymp.CreationTimeTrait',
   ],
   requires: [
+    'com.google.ymp.ui.PostRowView',
     'com.google.ymp.ui.PostView',
     'com.google.ymp.ui.PersonChipView',
+    'foam.u2.md.DetailView',
+    'com.google.ymp.ui.DynamicImageView',
   ],
 
   properties: [
@@ -45,6 +48,9 @@ CLASS({
       name: 'image',
       subType: 'com.google.ymp.DynamicImage',
       subKey: 'imageID',
+      toPropertyE: function(X) {
+        return X.lookup('com.google.ymp.ui.DynamicImageView').create({ data: X.data.image }, X);
+      }
     },
     {
       name: 'content',
@@ -52,8 +58,13 @@ CLASS({
   ],
 
   methods: [
+    function toE(X) {
+      return this.DetailView.create({ data: this });
+      // TODO(bruthig): Replace DetailView with PostView when PostView is implemented.
+      // return X.lookup('com.google.ymp.ui.PostView').create({ data: this }, X);
+    },
     function toRowE(X) {
-      return X.lookup('com.google.ymp.ui.PostView').create({ data: this }, X);
-    }
+      return X.lookup('com.google.ymp.ui.PostRowView').create({ data: this }, X);
+    },
   ],
 });

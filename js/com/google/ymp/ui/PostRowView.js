@@ -11,15 +11,13 @@
 
 CLASS({
   package: 'com.google.ymp.ui',
-  name: 'PostView',
+  name: 'PostRowView',
   extends: 'foam.u2.View',
   templates: [
     function initE() {/*#U2
       <div class="$">
         <div class="$-flex-col">
           <div class="$-md-heading">{{this.data.title}}</div>
-          <:author />
-          <:image />
         </div>
       </div>
     */},
