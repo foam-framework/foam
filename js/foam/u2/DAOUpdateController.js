@@ -49,7 +49,7 @@ CLASS({
           id: nu.id || nu
         });
         replicator.future.get(function(obj) {
-          this.body_.add(this.DetailView.create({ data: obj }));
+          this.body_.add( ( obj && obj.toE ) ? obj.toE(this.Y) : this.DetailView.create({ data: obj }) );
         }.bind(this));
       },
     },
