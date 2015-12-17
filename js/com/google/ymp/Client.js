@@ -16,6 +16,8 @@ CLASS({
   requires: [
     'foam.core.dao.AuthenticatedWebSocketDAO',
     'foam.dao.EasyDAO',
+    'foam.dao.IDBDAO',
+    'foam.core.dao.SyncDAO',
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.Reply',
     'com.google.ymp.DynamicImage',
@@ -31,6 +33,8 @@ CLASS({
     'dynamicImageDAO',
     'personDAO',
     'marketDAO',
+    
+    'clearCache',
   ],
 
   properties: [
@@ -115,6 +119,11 @@ CLASS({
       model_: 'StringProperty',
       name: 'currentUserId',
       postSet: function(old, nu) {
+        
+        if ( ! nu ) {
+          this.clearCache();
+        }
+        
         if ( old === nu ) return;
         if ( ! this.currentUser || nu !== this.currentUser.id ) {
           // There's a delay on boot that caused the fine() to fail. TODO: This listener is pointless
@@ -133,6 +142,10 @@ CLASS({
           if ( nu.id !== this.currentUserId ) this.currentUserId = nu.id;
         }
         this.subscribedMarkets = nu.subscribedMarkets;
+        
+        if ( old ) {
+          this.clearCache();
+        }
       }
     },
     {
@@ -147,8 +160,28 @@ CLASS({
       var WebSocket = this.AuthenticatedWebSocketDAO.xbind({
         authToken$: this.currentUserId$,
       });
-      this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
-      
+      this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO'); 
+
+    },
+    function clearCache() { 
+      // Changing users, clear out old cache
+      console.log("User change: clearing old cached data");
+      this.IDBDAO.create({
+        model: this.Post,
+        name: 'posts',
+      }).removeAll();
+      this.IDBDAO.create({
+        model: this.SyncDAO.SyncRecord,
+        name: 'posts_SyncRecords',
+      }).removeAll();
+      this.IDBDAO.create({
+        model: this.Reply,
+        name: 'replies',
+      }).removeAll();
+      this.IDBDAO.create({
+        model: this.SyncDAO.SyncRecord,
+        name: 'replies_SyncRecords',
+      }).removeAll();
     }
   ]
 });
