@@ -53,6 +53,7 @@ CLASS({
       toPropertyE: 'com.google.ymp.ui.DynamicImageView',
     },
     {
+      type: 'String',
       name: 'content',
     }
   ],
