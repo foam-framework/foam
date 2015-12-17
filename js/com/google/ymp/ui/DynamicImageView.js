@@ -18,7 +18,7 @@ CLASS({
     'com.google.ymp.DynamicImage',
   ],
   imports: [
-    'data',
+//    'data',
     'dynamicImageDAO',
   ],
   exports: [
