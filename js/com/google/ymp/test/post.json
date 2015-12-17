@@ -5,7 +5,7 @@
     "title": "Post A1",
     "market": "market_A",
     "author": "person_1",
-    "image": "",
+    "image": "imageDroid",
     "content": "A post, content 1",
   },
   {
@@ -14,7 +14,7 @@
     "title": "Post A2",
     "market": "market_A",
     "author": "person_2",
-    "image": "",
+    "image": "imageDroid",
     "content": "A post, content 2",
   },
   {
@@ -23,7 +23,7 @@
     "title": "Post A3",
     "market": "market_A",
     "author": "person_3",
-    "image": "",
+    "image": "imageDroid",
     "content": "A post, content 3",
   },
 

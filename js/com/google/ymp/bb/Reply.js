@@ -17,6 +17,10 @@ CLASS({
     'foam.core.dao.SyncTrait',
     'com.google.ymp.CreationTimeTrait',
   ],
+  requires: [
+    'com.google.ymp.ui.ReplyRowView',
+    'com.google.ymp.ui.ReplyView',
+  ],
 
   properties: [
     {
@@ -39,4 +43,13 @@ CLASS({
       name: 'market',
     },
   ],
+
+  methods: [
+    function toE(X) {
+      return X.lookup('com.google.ymp.ui.ReplyView').create({ data: this }, X);
+    },
+    function toRowE(X) {
+      return X.lookup('com.google.ymp.ui.ReplyRowView').create({ data: this }, X);
+    },
+  ]
 });

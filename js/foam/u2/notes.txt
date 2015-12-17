@@ -110,6 +110,6 @@ This should work in Cells.
     }
 
 
-Implement Element.removeAttribute();
-Have setAttribute(null) remove the attribute.
 We need a TableView
+
+dynamic values for attribute properties don't work

@@ -163,6 +163,9 @@ var arequire = function(modelName) {
     return future.get;
   }
 
+  if ( ! model.arequire )
+    throw 'Required non-model "' + modelName + '"';
+
   return model.arequire();
 }
 

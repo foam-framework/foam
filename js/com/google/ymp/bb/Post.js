@@ -17,6 +17,14 @@ CLASS({
     'foam.core.dao.SyncTrait',
     'com.google.ymp.CreationTimeTrait',
   ],
+  requires: [
+    'com.google.ymp.ui.MarketChipView',
+    'com.google.ymp.ui.PostRowView',
+    'com.google.ymp.ui.PostView',
+    'com.google.ymp.ui.PersonChipView',
+    'foam.u2.md.DetailView',
+    'com.google.ymp.ui.DynamicImageView',
+  ],
 
   properties: [
     {
@@ -27,20 +35,36 @@ CLASS({
       type: 'Reference',
       subType: 'com.google.ymp.Market',
       name: 'market',
+      toPropertyE: function(X) {
+        return X.lookup('com.google.ymp.ui.MarketChipView').create({ data: X.data.market }, X);
+      }
     },
     {
       type: 'Reference',
       name: 'author',
       subType: 'com.google.ymp.Person',
+      toPropertyE: 'com.google.ymp.ui.PersonChipView',
     },
     {
       type: 'Reference',
       name: 'image',
       subType: 'com.google.ymp.DynamicImage',
       subKey: 'imageID',
+      toPropertyE: 'com.google.ymp.ui.DynamicImageView',
     },
     {
       name: 'content',
     }
+  ],
+
+  methods: [
+    function toE(X) {
+      // return this.DetailView.create({ data: this });
+      // TODO(bruthig): Replace DetailView with PostView when PostView is implemented.
+      return X.lookup('com.google.ymp.ui.PostView').create({ data: this }, X);
+    },
+    function toRowE(X) {
+      return X.lookup('com.google.ymp.ui.PostRowView').create({ data: this }, X);
+    },
   ],
 });

@@ -61,6 +61,7 @@ CLASS({
       remove:        function() { },
       destroy:       function() { },
       onSetCls:      function() { },
+      onFocus:       function() { },
       onAddListener: function() { },
       onRemoveListener: function() { },
       onSetStyle:    function() { },
@@ -93,6 +94,9 @@ CLASS({
       remove:        function() { },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
+        throw "Mutations not allowed in OUTPUT state.";
+      },
+      onFocus:      function(cls, enabled) {
         throw "Mutations not allowed in OUTPUT state.";
       },
       onAddListener: function(topic, listener) {
@@ -139,6 +143,9 @@ CLASS({
         }
 
         e.classList[enabled ? 'add' : 'remove'](cls);
+      },
+      onFocus: function() {
+        this.id$el.focus();
       },
       onAddListener: function(topic, listener) {
         this.addEventListener_(topic, listener);
@@ -198,6 +205,7 @@ CLASS({
       remove:        function() { debugger; console.error('Remove after unload.'); },
       destroy:       function() { },
       onSetCls:      function() { },
+      onFocus:       function() { },
       onAddListener: function() { },
       onRemoveListener: function() { },
       onSetStyle:    function() { },
@@ -214,6 +222,7 @@ CLASS({
       remove:        function() { debugger; console.error('Remove after destroy.'); },
       destroy:       function() { },
       onSetCls:      function() { },
+      onFocus:       function() { },
       onAddListener: function() { },
       onRemoveListener: function() { },
       onSetStyle:    function() { },
@@ -224,35 +233,35 @@ CLASS({
       toString:      function() { return 'DESTROYED'; }
     },
 
-    // ???: Should we disallow these?
+    // ???: Should we disallow these? Yes
     OPTIONAL_CLOSE_TAGS: {
-      HTML: true,
-      HEAD: true,
       BODY: true,
-      P: true,
-      DT: true,
+      COLGROUP: true,
       DD: true,
+      DT: true,
+      HEAD: true,
+      HTML: true,
       LI: true,
       OPTION: true,
-      THEAD: true,
-      TH: true,
+      P: true,
       TBODY: true,
-      TR: true,
       TD: true,
       TFOOT: true,
-      COLGROUP: true
+      TH: true,
+      THEAD: true,
+      TR: true
     },
 
     ILLEGAL_CLOSE_TAGS: {
-      img: true,
-      input: true,
-      br: true,
-      hr: true,
-      frame: true,
       area: true,
       base: true,
       basefont: true,
+      br: true,
       col: true,
+      frame: true,
+      hr: true,
+      img: true,
+      input: true,
       isindex: true,
       link: true,
       meta: true,
@@ -415,6 +424,10 @@ CLASS({
       this.state.onSetCls.call(this, cls, add);
     },
 
+    function onFocus() {
+      this.state.onFocus.call(this);
+    },
+
     function visitChildren(methodName) {
       for (var i = 0; i < this.childNodes.length; i++) {
         var c = this.childNodes[i];
@@ -427,7 +440,7 @@ CLASS({
     //
     function focus() {
       this.focused = true;
-      if ( this.state == this.LOADED ) this.id$el.focus();
+      this.onFocus();
       return this;
     },
 
@@ -449,8 +462,7 @@ CLASS({
     },
 
     function hide(opt_hidden) {
-      return this.show(
-        opt_hidden === undefined ? false : ! opt_hidden);
+      return this.show(opt_hidden === undefined ? false : ! opt_hidden);
     },
 
     //
@@ -652,7 +664,7 @@ CLASS({
 
         if ( prop && prop.attribute ) {
           if ( typeof value === 'string' ) {
-            prop.fromString.call(view, value, prop);
+            view[key] = prop.fromString(value);
           } else {
             view[key] = value;
           }
