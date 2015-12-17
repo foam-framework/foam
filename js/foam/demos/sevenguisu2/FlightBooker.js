@@ -80,7 +80,6 @@ MODEL({
         <div class="$-title">Book Flight</div>
         <:oneWay/> <br>
         <:departDate/> <br>
-        {{this.returnDateMode}}
         <:returnDate mode={{this.returnDateMode}}/> <br>
         <:book/> <br>
       </div>
