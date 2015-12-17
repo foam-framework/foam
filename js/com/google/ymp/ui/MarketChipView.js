@@ -11,28 +11,28 @@
 
 CLASS({
   package: 'com.google.ymp.ui',
-  name: 'PersonChipView',
+  name: 'MarketChipView',
   extends: 'foam.u2.View',
 
   imports: [
-//    'data',
-    'personDAO',
+    'data',
+    'marketDAO',
   ],
 
   properties: [ 
-    [ 'nodeName', 'PLUS-PERSON-CHIP' ],
+    [ 'nodeName', 'PLUS-MARKET-CHIP' ],
     {
-      name: 'personName',
+      name: 'marketName',
     },
     {
       name: 'data',
       postSet: function(old,nu) {
-        // look up the person id to find their name
+        // look up the market id to find its name
         var self = this;
-        self.personDAO = this.X.personDAO;
-        self.personDAO.find(nu, {
-          put: function(person) {
-            self.personName = person.name;
+        self.marketDAO = this.X.marketDAO;
+        self.marketDAO.find(nu, {
+          put: function(market) {
+            self.marketName = market.name;
           }
         });
       }
@@ -41,7 +41,7 @@ CLASS({
 
   templates: [
     function initE() {/*#U2
-      <div class="$">{{ this.personName$ }}</div>
+      <div class="$">{{ this.marketName$ }}</div>
     */},
     function CSS() {/*
       $ {

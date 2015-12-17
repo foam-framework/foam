@@ -111,12 +111,21 @@ CLASS({
       return f.get;
     },
 
-    function find(key, sink) {/* Passthrough to delegate or the future, if delegate not set yet. */
-      if ( this.delegate ) {
-        this.delegate.find(key, sink);
-      } else {
-        this.future(this.find.bind(this, key, sink));
-      }
+    {
+      name: 'find',
+      code: function(key, sink) {/* Passthrough to delegate or the future, if delegate not set yet. */
+        if ( this.delegate ) {
+          this.delegate.find(key, sink);
+        } else {
+          this.future(this.find.bind(this, key, sink));
+        }
+      },
+      swiftCode: function() {/*
+        future.get { delegate in
+          let delegate = delegate as! AbstractDAO
+          delegate.find(id, sink: sink)
+        }
+      */},
     },
 
     {

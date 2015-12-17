@@ -42,7 +42,7 @@ CLASS({
       var self = this;
       this.personDAO.find(X.principal, {
         put: function(p) {
-          ret(p.defaultImageLOD);
+          ret(p.defaultImageLOD, p.subscribedMarkets);
         },
         error: function(err) {
           self.console.warn('DynamicImageAuthorizer user find error: ' + err, X.principal);
@@ -61,8 +61,8 @@ CLASS({
         return;
       }
       var self = this;
-      this.withDefaultQuality(function(quality) {
-        if ( obj.levelOfDetail <= quality ) {
+      this.withDefaultQuality(function(quality, markets) {
+        if ( obj.levelOfDetail <= quality && IN(self.DynamicImage.MARKET, markets).f(obj) ) {
           ret(obj);
         } else {
           ret(null);
@@ -84,8 +84,11 @@ CLASS({
         return;
       }
       var self = this;
-      this.withDefaultQuality(function(quality) {
-        ret(dao.where(LTE(self.DynamicImage.LEVEL_OF_DETAIL, quality)));
+      this.withDefaultQuality(function(quality, markets) {
+        ret(dao.where(AND(
+          LTE(self.DynamicImage.LEVEL_OF_DETAIL, quality),
+          IN(self.DynamicImage.MARKET, markets)
+        )));
       }, X);
     },
   ]
