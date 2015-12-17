@@ -20,7 +20,11 @@ MODEL({
   name: 'FlightBooker',
   extends: 'foam.u2.Element',
 
-  requires: [ 'foam.u2.Checkbox' ], // TODO: Shouldn't be required
+  requires: [
+    'foam.u2.Checkbox' // TODO: shouldn't be required
+  ],
+
+  imports: [ 'dynamic' ],
 
   properties: [
     {
@@ -55,8 +59,13 @@ MODEL({
       validate: function(oneWay, returnDate, departDate) {
         if ( ! oneWay && returnDate.compareTo(departDate) < 0 ) return 'Must not be before depart date.';
       }
-    }
+    },
+    {
+      name: 'returnDateMode',
+      factory: function() { return this.dynamic(function(oneWay) { return oneWay ? 'disabled' : 'rw'; }, this.oneWay$); }
+    } 
   ],
+                                                
   templates: [
     function CSS() {/*
       $ { padding: 10px; }
@@ -71,8 +80,8 @@ MODEL({
         <div class="$-title">Book Flight</div>
         <:oneWay/> <br>
         <:departDate/> <br>
-        <!-- TODO: Make this work -->
-        <:returnDate disabled={{this.oneWay$}}/> <br>
+        {{this.returnDateMode}}
+        <:returnDate mode={{this.returnDateMode}}/> <br>
         <:book/> <br>
       </div>
     */}
