@@ -18,6 +18,7 @@ CLASS({
     'com.google.ymp.CreationTimeTrait',
   ],
   requires: [
+    'com.google.ymp.ui.MarketChipView',
     'com.google.ymp.ui.PostRowView',
     'com.google.ymp.ui.PostView',
     'com.google.ymp.ui.PersonChipView',
@@ -34,6 +35,9 @@ CLASS({
       type: 'Reference',
       subType: 'com.google.ymp.Market',
       name: 'market',
+      toPropertyE: function(X) {
+        return X.lookup('com.google.ymp.ui.MarketChipView').create({ data: X.data.market }, X);
+      }
     },
     {
       type: 'Reference',
@@ -59,9 +63,9 @@ CLASS({
 
   methods: [
     function toE(X) {
-      return this.DetailView.create({ data: this });
+      // return this.DetailView.create({ data: this });
       // TODO(bruthig): Replace DetailView with PostView when PostView is implemented.
-      // return X.lookup('com.google.ymp.ui.PostView').create({ data: this }, X);
+      return X.lookup('com.google.ymp.ui.PostView').create({ data: this }, X);
     },
     function toRowE(X) {
       return X.lookup('com.google.ymp.ui.PostRowView').create({ data: this }, X);

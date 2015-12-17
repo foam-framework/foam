@@ -19,6 +19,9 @@ CLASS({
         <div class="$-flex-col">
           <div class="$-md-heading">{{this.data.title}}</div>
           <:author />
+          <:market />
+          <:image />
+          <:content />
         </div>
       </div>
     */},
