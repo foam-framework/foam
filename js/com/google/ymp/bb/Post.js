@@ -43,14 +43,18 @@ CLASS({
       type: 'Reference',
       name: 'author',
       subType: 'com.google.ymp.Person',
-      toPropertyE: 'com.google.ymp.ui.PersonChipView',
+      toPropertyE: function(X) {
+        return X.lookup('com.google.ymp.ui.PersonChipView').create({ data: X.data.author }, X);
+      }
     },
     {
       type: 'Reference',
       name: 'image',
       subType: 'com.google.ymp.DynamicImage',
       subKey: 'imageID',
-      toPropertyE: 'com.google.ymp.ui.DynamicImageView',
+      toPropertyE: function(X) {
+        return X.lookup('com.google.ymp.ui.DynamicImageView').create({ data: X.data.image }, X);
+      }
     },
     {
       name: 'content',
