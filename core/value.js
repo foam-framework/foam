@@ -28,7 +28,8 @@ CLASS({
     function init(value) { this.value = value || ''; },
     function get() { return this.value; },
     function set(val) { this.value = val; },
-    function toString() { return 'SimpleValue(' + this.value + ')'; }
+    function toString() { return 'SimpleValue(' + this.value + ')'; },
+    function follow(srcValue) { Events.follow(srcValue, this); }
   ]
 });
 
