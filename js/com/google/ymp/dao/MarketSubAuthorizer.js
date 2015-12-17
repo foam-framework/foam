@@ -72,7 +72,7 @@ CLASS({
           //   Elem of person's subscribedMarkets = obj's marketProps[i] value.
           // Join for AND starts with TRUE.
           // Join for OR, IN, etc. starts with FALSE.
-          var expr = self.junctionMLange === AND ? TRUE : FALSE;
+          var expr = self.junctionMLang === AND ? TRUE : FALSE;
           for ( var i = 0; i < self.marketProps.length; ++i ) {
             expr = self.junctionMLang(
                 EQ(
