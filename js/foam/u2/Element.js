@@ -233,35 +233,35 @@ CLASS({
       toString:      function() { return 'DESTROYED'; }
     },
 
-    // ???: Should we disallow these?
+    // ???: Should we disallow these? Yes
     OPTIONAL_CLOSE_TAGS: {
-      HTML: true,
-      HEAD: true,
       BODY: true,
-      P: true,
-      DT: true,
+      COLGROUP: true,
       DD: true,
+      DT: true,
+      HEAD: true,
+      HTML: true,
       LI: true,
       OPTION: true,
-      THEAD: true,
-      TH: true,
+      P: true,
       TBODY: true,
-      TR: true,
       TD: true,
       TFOOT: true,
-      COLGROUP: true
+      TH: true,
+      THEAD: true,
+      TR: true
     },
 
     ILLEGAL_CLOSE_TAGS: {
-      img: true,
-      input: true,
-      br: true,
-      hr: true,
-      frame: true,
       area: true,
       base: true,
       basefont: true,
+      br: true,
       col: true,
+      frame: true,
+      hr: true,
+      img: true,
+      input: true,
       isindex: true,
       link: true,
       meta: true,
@@ -462,8 +462,7 @@ CLASS({
     },
 
     function hide(opt_hidden) {
-      return this.show(
-        opt_hidden === undefined ? false : ! opt_hidden);
+      return this.show(opt_hidden === undefined ? false : ! opt_hidden);
     },
 
     //
