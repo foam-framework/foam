@@ -112,8 +112,14 @@ CLASS({
       return this.delegate.removeAll.apply(this.delegate, arguments);
     },
 
-    function find(key, sink) { /* Passthrough to delegate. */
-      this.delegate.find(key, sink);
+    {
+      name: 'find',
+      code: function(key, sink) { /* Passthrough to delegate. */
+        this.delegate.find(key, sink);
+      },
+      swiftCode: function() {/*
+        delegate.find(id, sink: sink)
+      */},
     },
 
     {
