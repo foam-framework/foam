@@ -43,7 +43,7 @@ CLASS({
       },
       swiftType: 'Sink',
       swiftFactory: function() {/*
-        return RelaySink(relay: self)
+        return RelaySink(args: ["relay": self])
       */}
     },
     {

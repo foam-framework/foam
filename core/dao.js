@@ -438,7 +438,10 @@ CLASS({
       swiftReturnType: 'Sink',
       swiftCode: function() {/*
         if options.query != nil {
-          sink = PredicatedSink(delegate: sink, expr: options.query!)
+          sink = PredicatedSink(args: [
+            "delegate": sink,
+            "expr": options.query!
+          ])
         }
         return sink
       */},
