@@ -63,9 +63,9 @@ CLASS({
 
   methods: [
     function toE(X) {
-      return this.DetailView.create({ data: this });
+      // return this.DetailView.create({ data: this });
       // TODO(bruthig): Replace DetailView with PostView when PostView is implemented.
-      // return X.lookup('com.google.ymp.ui.PostView').create({ data: this }, X);
+      return X.lookup('com.google.ymp.ui.PostView').create({ data: this }, X);
     },
     function toRowE(X) {
       return X.lookup('com.google.ymp.ui.PostRowView').create({ data: this }, X);
