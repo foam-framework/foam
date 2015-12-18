@@ -493,14 +493,14 @@ CLASS({
           this.removeAttribute(name);
           return;
         }
-        
+
         if ( typeof value === 'function' )
           this.dynamicAttr_(name, value);
         else if ( Value.isInstance(value) )
           this.valueAttr_(name, value);
         else {
           var attr = this.getAttributeNode(name);
-          
+
           if ( attr ) {
             attr.value = value;
           } else {
@@ -508,7 +508,7 @@ CLASS({
             this.attributes.push(attr);
             this.attributeMap[name] = attr;
           }
-      
+
           this.onSetAttr(name, value);
         }
       }
@@ -668,34 +668,6 @@ CLASS({
 
     function attrs(map) {
       for ( var key in map ) this.setAttribute(key, map[key]);
-      return this;
-    },
-
-    function attrs_(map, view) {
-      // Takes view as parameter so that decorator views like PropertyView
-      // can easily set their delgate instead.
-      var model = view.model_;
-
-      for ( var key in map ) {
-        var value = map[key];
-        var prop  = model.getProperty(key);
-
-        if ( prop && prop.attribute ) {
-          if ( typeof value === 'string' ) {
-            view[key] = prop.fromString(value);
-          } else {
-            view[key] = value;
-          }
-        } else {
-          if ( typeof value === 'function' )
-            this.dynamicAttr_(key, value);
-          else if ( Value.isInstance(value) )
-            this.valueAttr_(key, value);
-          else
-            this.setAttribute(key, value);
-        }
-      }
->>>>>>> cd1486eb22d38c80d2eabeeb4f1d5ee71bec3714
       return this;
     },
 
