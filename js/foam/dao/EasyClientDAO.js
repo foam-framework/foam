@@ -91,6 +91,7 @@ CLASS({
           socket.subscribe(socket.ON_CONNECT, EventService.oneTime(function() {
             dao.delegate = this.WebSocketDAO.create({
               uri: this.serverUri,
+              subject: this.subject,
               model: this.model,
               socket: socket
             }, this.Y);

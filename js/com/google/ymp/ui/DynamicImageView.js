@@ -15,11 +15,11 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'com.google.ymp.ui.DynamicImageLoader',
+    'com.google.ymp.DynamicImage',
   ],
   imports: [
-//    'data',
     'dynamicImageDAO',
+    'highResImageDAO'
   ],
   exports: [
     'as data',
@@ -29,11 +29,31 @@ CLASS({
     [ 'nodeName', 'DYNAMIC-IMAGE' ],
     {
       name: 'data',
-      postSet: function(old, nu) {
-        this.DynamicImageLoader.create({ data: nu }).get(function(imageData) {
-          this.imageData = imageData;
-        }.bind(this));
+      postSet: function(old,nu) {
+        // look up the image id to find the best quality available
+        var self = this;
+        self.dynamicImageDAO
+          .where(EQ(self.DynamicImage.IMAGE_ID, nu))
+          .orderBy(DESC(self.DynamicImage.LEVEL_OF_DETAIL))
+          .limit(1)
+          .pipe({
+            put: function(img) {
+              self.currentImage = img;
+            }
+          });
+      }
+    },
+    {
+      name: 'currentImage',
+      preSet: function(old, nu) {
+        if ( ! old || ( nu && nu.levelOfDetail > old.levelOfDetail ) ) {
+          return nu;
+        }
+        return old;
       },
+      postSet: function(old,nu) {
+        this.imageData = nu.image;
+      }
     },
     {
       type: 'Image',
@@ -56,7 +76,22 @@ CLASS({
         width: function() {
           return this.width >= 0 ? this.width + 'px' : 'initial';
         }.bind(this),
-      }).end();
+      }).on('click', this.clickZoom).end();
     },
   ],
+  
+  listeners: [
+    function clickZoom() {
+      var self = this;
+      // select only images that are better quality than our current, select directly into image cache
+      var pred = ( self.currentImage ) ? 
+        GT(self.DynamicImage.LEVEL_OF_DETAIL, self.currentImage.levelOfDetail)
+        : TRUE;
+      self.highResImageDAO
+        .where(AND(EQ(self.DynamicImage.IMAGE_ID, self.data), pred))
+        .orderBy(DESC(self.DynamicImage.LEVEL_OF_DETAIL))
+        .limit(1)
+        .select(self.dynamicImageDAO);
+    }
+  ]
 });
