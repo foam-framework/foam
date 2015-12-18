@@ -23,7 +23,7 @@ CLASS({
     function initE() {/*#U2
       <div class="$">
         <div class="$-flex-col">
-          <:image />
+          <:image width="100%" />
           <:content showLabel="false" />
           <div class="$-author">Posted by&nbsp;<:author /></div>
           <div class="$-separator"></div>

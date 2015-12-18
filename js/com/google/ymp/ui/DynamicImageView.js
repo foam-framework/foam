@@ -60,11 +60,16 @@ CLASS({
       name: 'imageData',
     },
     {
-      type: 'Int',
+      type: 'String',
       name: 'width',
-      defaultValue: -1,
+      defaultValue: "",
       attribute: true,
-      postSet: function(old, nu, prop) { console.log(this.model_.id, this.id, prop.name, old, nu); },
+      adapt: function(old, nu, prop) {
+        if ( typeof nu !== 'string' ) {
+          return nu+"px";
+        }
+        return nu;
+      },
     },
     {
       type: 'Boolean',
@@ -79,9 +84,7 @@ CLASS({
       this.start('img').attrs({
         src: this.imageData$
       }).style({
-        width: function() {
-          return this.width >= 0 ? this.width + 'px' : 'initial';
-        }.bind(this),
+        width: this.width$,
       }).on('click', this.clickZoom).end();
     },
   ],
