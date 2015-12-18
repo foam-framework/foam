@@ -38,6 +38,7 @@ CLASS({
     'marketDAO',
     'highResImageDAO',
     'contactProfileDAO',
+    'currentUser',
 
     'clearCache',
   ],
