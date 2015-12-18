@@ -16,7 +16,7 @@ CLASS({
 
   requires: [
     'com.google.ymp.ui.ColorPicker',
-    'com.google.ymp.ui.DynamicImageLoader',
+    'com.google.ymp.ui.DynamicImagePreView',
   ],
   imports: [
     'personDAO',
@@ -57,7 +57,8 @@ CLASS({
   templates: [
     function initE() {/*#U2
       <div class="$">
-        <div class="$-img" style="background-color:{{this.imgBGColor$}}"><:image isClickable="false" /></div>
+        (( this.Y.registerModel(this.DynamicImagePreView, 'com.google.ymp.ui.DynamicImageView'); ))
+        <div class="$-img" style="background-color:{{this.imgBGColor$}}"><:image maxLOD="8" /></div>
         <div class="$-flex-col">
           <div class="$-title">{{this.data.title}}</div>
           <div class="$-author">Posted by<span>&nbsp;</span>{{this.authorName$}}</div>
@@ -74,6 +75,7 @@ CLASS({
         margin: 10px;
         border-radius: 3px;
         max-height: 96px;
+        overflow: hidden;
       }
       $-flex-col {
         display: flex;
