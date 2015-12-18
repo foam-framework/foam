@@ -2,30 +2,26 @@
   {
     "model_": "com.google.ymp.bb.ContactProfile",
     "id": "contact_1",
-    "name": "James Bond 007",
-    "contactDetails": ["phone_1", "wa_1"],
+    "contactDetails": ["555-123-4567", "jbond@mi6.uk"],
   },
   {
     "model_": "com.google.ymp.bb.ContactProfile",
     "id": "contact_2",
-    "name": "LeBron James",
-    "contactDetails": ["phone_2", "fb_2", "other_2"],
+    "contactDetails": ["555-888-0909", "@KingJames", "Come to the corner of First and Main"],
   },
   {
     "model_": "com.google.ymp.bb.ContactProfile",
     "id": "contact_3",
-    "name": "Brian James Fichtner",
-    "contactDetails": ["email_3", "fb_3"],
+    "contactDetails": ["bri@fichtner.net", "BrianFichtner"],
   },
   {
     "model_": "com.google.ymp.bb.ContactProfile",
     "id": "contact_4",
-    "name": "James Salsman",
-    "subscribedMarkets": ["market_A"],
+    "contactDetails": ["#james"],
   },
   {
     "model_": "com.google.ymp.bb.ContactProfile",
     "id": "contact_5",
-    "name": "James Bricknell",
+    "contactDetails": ["#jamesbricknell"],
   },
 ]
