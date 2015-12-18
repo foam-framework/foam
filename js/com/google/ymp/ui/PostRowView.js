@@ -79,6 +79,7 @@ CLASS({
         display: flex;
         flex-direction: column;
         padding: 16px;
+        overflow: hidden;
       }
       $-title {
         font-size: 20px;
@@ -88,6 +89,11 @@ CLASS({
       $-author {
         margin-bottom: 4px;
         opacity: 0.54;
+      }
+      $-title, $-author, $-desc, $-title *, $-author *, $-desc * {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       $-img {
         flex-grow: 0;
