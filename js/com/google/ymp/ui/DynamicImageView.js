@@ -33,7 +33,7 @@ CLASS({
         // look up the image id to find the best quality available
         var self = this;
         self.dynamicImageDAO
-          .where(EQ(self.DynamicImage.IMAGE_ID, nu))
+          .where(self.predicate())
           .orderBy(DESC(self.DynamicImage.LEVEL_OF_DETAIL))
           .limit(1)
           .pipe({
@@ -87,6 +87,7 @@ CLASS({
         width: this.width$,
       }).on('click', this.clickZoom).end();
     },
+    function predicate() { return EQ(this.DynamicImage.IMAGE_ID, this.data); },
   ],
   
   listeners: [
@@ -103,6 +104,6 @@ CLASS({
         .orderBy(DESC(self.DynamicImage.LEVEL_OF_DETAIL))
         .limit(1)
         .select(self.dynamicImageDAO);
-    }
+    },
   ]
 });

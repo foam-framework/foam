@@ -17,22 +17,6 @@ CLASS({
   properties: [
     [ 'nodeName', 'DYNAMIC-IMAGE-PREVIEW' ],
     {
-      name: 'data',
-      postSet: function(old,nu) {
-        // look up the image id to find the best quality available
-        var self = this;
-        self.dynamicImageDAO
-          .where(AND(EQ(self.DynamicImage.IMAGE_ID, nu), LTE(self.DynamicImage.LEVEL_OF_DETAIL, self.maxLOD)))
-          .orderBy(DESC(self.DynamicImage.LEVEL_OF_DETAIL))
-          .limit(1)
-          .pipe({
-            put: function(img) {
-              self.currentImage = img;
-            }
-          });
-      }
-    },
-    {
       type: 'Int',
       name: 'maxLOD',
       help: 'The highest level of detail required for this preview.',
@@ -51,5 +35,8 @@ CLASS({
         }.bind(this),
       }).end();
     },
+    function predicate() {
+      return AND(this.SUPER(), LTE(this.DynamicImage.LEVEL_OF_DETAIL, this.maxLOD));
+    }
   ],
 });
