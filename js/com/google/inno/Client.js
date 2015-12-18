@@ -21,7 +21,7 @@ CLASS({
   extends: 'foam.u2.View',
   requires: [
     'foam.dao.EasyDAO',
-    'foam.u2.md.Input',
+    'foam.u2.md.TextField',
     'com.google.inno.MessageListView',
     'com.google.inno.Message'
   ],
@@ -58,7 +58,7 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.Y.registerModel(this.Input, 'foam.u2.Input');
+      this.Y.registerModel(this.TextField, 'foam.u2.TextField');
     },
     function initE() {
       this.x({ data: this })

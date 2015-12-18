@@ -17,10 +17,9 @@
 
 CLASS({
   package: 'foam.u2.md',
-  name: 'Input',
+  name: 'TextField',
   extends: 'foam.u2.View',
 
-  requires: [ 'foam.u2.Input' ],
   imports: [ 'dynamic' ],
 
   properties: [

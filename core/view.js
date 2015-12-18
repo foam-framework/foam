@@ -220,9 +220,9 @@ function elementForName(nodeName) {
   nodeName = nodeName ? nodeName : 'div' ;
   var modelName = this.__element_map__[nodeName.toUpperCase()];
   if ( modelName ) {
-    var model = this.X.lookup(modelName);
+    var model = this.lookup(modelName);
     console.assert(model, 'Missing Model, Add "' + modelName + '" to your requires: block.');
-    return model.create(null, this.Y || X);
+    return model.create(null, this);
   }
 
   var i = nodeName.indexOf(':');

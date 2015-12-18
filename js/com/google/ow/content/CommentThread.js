@@ -19,7 +19,7 @@ CLASS({
 
   requires: [
     'foam.u2.Element',
-    'foam.u2.md.Input',
+    'foam.u2.md.TextField',
     'foam.ui.Icon',
     'com.google.ow.content.Message',
     'com.google.ow.ui.CitationOnlyDAOController',
@@ -69,7 +69,7 @@ CLASS({
       label: 'Reply',
       name: 'newMessage',
       toPropertyE: function(X) {
-        return X.lookup('foam.u2.md.Input').create({  },X);
+        return X.lookup('foam.u2.md.TextField').create({  },X);
       },
       postSet: function(old,nu) {
         if ( nu ) {

@@ -356,7 +356,7 @@ GLOBAL.Property = {
       defaultValue: function toPropertyE(X) {
         var e = this.displayHeight > 1 ?
           X.lookup('foam.u2.TextArea').create(null, X) :
-          X.lookup('foam.u2.Input').create(null, X)    ;
+          X.lookup('foam.u2.TextField').create(null, X)    ;
 
         e.attrs({size: this.displayWidth});
 

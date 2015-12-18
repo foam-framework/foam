@@ -24,7 +24,7 @@ CLASS({
     'foam.u2.PropertyView',
     'foam.u2.SearchBorder',
     'foam.u2.md.ActionButton',
-    'foam.u2.md.Input',
+    'foam.u2.md.TextField',
     'foam.u2.md.Select',
   ],
   imports: [
@@ -219,7 +219,7 @@ CLASS({
 
       <% var prefixes = ['::-webkit-input', ':-moz', '::-moz', ':-ms-input'];
         for (var i = 0; i < prefixes.length; i++) { %>
-          $-search-header .foam-u2-md-Input input><%= prefixes[i] %>-placeholder {
+          $-search-header .foam-u2-md-TextField input><%= prefixes[i] %>-placeholder {
             color: #ccc;
           }
       <% } %>
