@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'com.google.ymp.controllers',
   name: 'DAOController',
@@ -28,25 +29,25 @@ CLASS({
   listeners: [
     {
       name: 'rowClick',
-      code: function(_, _, obj) {
+      code: function(_, __, obj) {
         var Y = this.Y.sub({ data: obj });
         var title = obj.title || obj.name;
-        var self = this;
-        this.stack.pushView(
-          this.DAOUpdateController.create({
-            model: this.model,
-            data: obj,
-            myControllerMode: 'view',
-            title: title,
-            /*toolbar_: (function() {
-              var t = self.Toolbar.create({ title: title });
-              t.addLeftActions([
-                self.ToolbarAction.create({ data: obj, action: self.model_.getAction('back') }),
-              ]);
-              return t;
-            })(),*/
-          }, Y));
-      }
-    }
+        var daoUpdateController = this.DAOUpdateController.create({
+          model: this.model,
+          data: obj,
+          myControllerMode: 'view',
+          title: title,
+        }, Y);
+        var toolbar = this.Toolbar.create({ title: title }, Y);
+        toolbar.addLeftActions([
+          this.ToolbarAction.create({
+            data: daoUpdateController,
+            action: daoUpdateController.BACK,
+          }),
+        ]);
+        daoUpdateController.toolbar_ = toolbar;
+        this.stack.pushView(daoUpdateController);
+      },
+    },
   ],
 });
