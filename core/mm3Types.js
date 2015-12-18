@@ -300,7 +300,6 @@ CLASS({
       labels: ['javascript'],
       defaultValue: function(s) {
         var txt = s.trim();
-        debugger;
         return
           txt.equalsIC('y')    ||
           txt.equalsIC('yes')  ||

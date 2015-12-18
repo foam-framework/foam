@@ -66,6 +66,12 @@ CLASS({
       attribute: true,
       postSet: function(old, nu, prop) { console.log(this.model_.id, this.id, prop.name, old, nu); },
     },
+    {
+      type: 'Boolean',
+      name: 'isClickable',
+      attribute: true,
+      defaultValue: true
+    }
   ],
 
   methods: [
@@ -82,6 +88,8 @@ CLASS({
   
   listeners: [
     function clickZoom() {
+      if ( ! this.isClickable ) return false;
+      
       var self = this;
       // select only images that are better quality than our current, select directly into image cache
       var pred = ( self.currentImage ) ? 

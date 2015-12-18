@@ -57,7 +57,7 @@ CLASS({
   templates: [
     function initE() {/*#U2
       <div class="$">
-        <div class="$-img" style="background-color:{{this.imgBGColor$}}"><:image /></div>
+        <div class="$-img" style="background-color:{{this.imgBGColor$}}"><:image isClickable="false" /></div>
         <div class="$-flex-col">
           <div class="$-title">{{this.data.title}}</div>
           <div class="$-author">Posted by<span>&nbsp;</span>{{this.authorName$}}</div>
