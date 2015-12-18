@@ -13,10 +13,13 @@ CLASS({
   package: 'com.google.ymp.ui',
   name: 'ContactProfileView',
   extends: 'foam.u2.View',
+
+
   templates: [
     function initE() {/*#U2
       <div class="$">
-        <p>this will be a list of contact options</p>
+        <p>contact details go here</p>
+        <div>{{this.data.CONTACT_DETAILS}}</div>
       </div>
     */},
   ]

@@ -17,9 +17,9 @@ CLASS({
 
   properties: [
     {
-      type: 'ReferenceArray',
+      type: 'StringArray',
       name: 'contactDetails',
-      subType: 'com.google.ymp.bb.ContactInfo',
+//      subType: 'com.google.ymp.bb.ContactInfo',
     },
   ],
 });

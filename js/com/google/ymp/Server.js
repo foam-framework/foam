@@ -16,6 +16,8 @@ CLASS({
   requires: [
     'MDAO',
 
+    'com.google.ymp.bb.ContactInfo',
+    'com.google.ymp.bb.ContactProfile',
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.PostFilter',
     'com.google.ymp.bb.Reply',
@@ -25,7 +27,7 @@ CLASS({
     'com.google.ymp.Market',
     'com.google.ymp.dao.MarketSubAuthorizer',
     'com.google.ymp.dao.DynamicImageAuthorizer',
-    
+
 
     'foam.dao.AuthorizedDAO',
     'foam.dao.DebugAuthDAO',
@@ -51,6 +53,8 @@ CLASS({
     'postFilterDAO_',
     'postRelationDAO_',
     'personDAO as personDAO_',
+    'contactProfileDAO as contactProfileDAO_',
+    'contactInfoDAO as contactInfoDAO_',
     'dynamicImageDAO_',
     'marketDAO as marketDAO_',
 
@@ -184,6 +188,34 @@ CLASS({
       },
     },
     {
+      name: 'contactProfileDAO',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.ContactProfile,
+          name: 'contactProfiles',
+          daoType: this.MDAO,
+          guid: true,
+          sockets: true,
+          isServer: true,
+        });
+        // TODO: how much to sync?
+      },
+    },
+    {
+      name: 'contactInfoDAO',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.ContactInfo,
+          name: 'contactDetails',
+          daoType: this.MDAO,
+          guid: true,
+          sockets: true,
+          isServer: true,
+        });
+        // TODO: how much to sync?
+      },
+    },
+    {
       name: 'marketDAO',
       lazyFactory: function() {
         return this.EasyDAO.create({
@@ -232,6 +264,8 @@ CLASS({
       this.exportDAO(this.replyDAO);
       this.exportDAO(this.dynamicImageDAO);
       this.exportDAO(this.personDAO);
+      this.exportDAO(this.contactProfileDAO);
+      this.exportDAO(this.contactInfoDAO);
       this.exportDAO(this.marketDAO);
       this.exportDAO(this.highResImageDAO, 'com.google.ymp.highResImageDAO');
 

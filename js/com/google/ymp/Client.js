@@ -20,6 +20,8 @@ CLASS({
     'foam.dao.EasyClientDAO',
     'foam.dao.CachingDAO',
     'foam.core.dao.SyncDAO',
+    'com.google.ymp.bb.ContactInfo',
+    'com.google.ymp.bb.ContactProfile',
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.Reply',
     'com.google.ymp.DynamicImage',
@@ -36,7 +38,9 @@ CLASS({
     'personDAO',
     'marketDAO',
     'highResImageDAO',
-    
+    'contactProfileDAO',
+    'contactInfoDAO',
+
     'clearCache',
   ],
 
@@ -119,6 +123,38 @@ CLASS({
       },
     },
     {
+      name: 'contactProfileDAO',
+      view: {
+        factory_:  'foam.ui.DAOListView',
+        rowView: 'foam.ui.DetailView'
+      },
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.ContactProfile,
+          name: 'contactProfiles',
+          caching: true,
+          syncWithServer: true,
+          sockets: true,
+        });
+      },
+    },
+    {
+      name: 'contactInfoDAO',
+      view: {
+        factory_:  'foam.ui.DAOListView',
+        rowView: 'foam.ui.DetailView'
+      },
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.ContactInfo,
+          name: 'contactDetails',
+          caching: true,
+          syncWithServer: true,
+          sockets: true,
+        });
+      },
+    },
+    {
       name: 'marketDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
@@ -134,11 +170,11 @@ CLASS({
       model_: 'StringProperty',
       name: 'currentUserId',
       postSet: function(old, nu) {
-        
+
         if ( ! nu ) {
           this.clearCache();
         }
-        
+
         if ( old === nu ) return;
         if ( ! this.currentUser || nu !== this.currentUser.id ) {
           // There's a delay on boot that caused the fine() to fail. TODO: This listener is pointless
@@ -157,7 +193,7 @@ CLASS({
           if ( nu.id !== this.currentUserId ) this.currentUserId = nu.id;
         }
         this.subscribedMarkets = nu.subscribedMarkets;
-        
+
         if ( old ) {
           this.clearCache();
         }
@@ -175,10 +211,10 @@ CLASS({
       var WebSocket = this.AuthenticatedWebSocketDAO.xbind({
         authToken$: this.currentUserId$,
       });
-      this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO'); 
+      this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
 
     },
-    function clearCache() { 
+    function clearCache() {
       // Changing users, clear out old cache
       console.log("User change: clearing old cached data");
       this.IDBDAO.create({

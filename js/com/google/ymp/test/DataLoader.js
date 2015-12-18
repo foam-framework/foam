@@ -55,6 +55,7 @@ CLASS({
       // (b) Load markets from file.
       this.populateAppData("market");
 
+      this.populateAppData("contactProfile");
       this.populateAppData("person");
       this.populateAppData("post");
       this.populateAppData("reply");

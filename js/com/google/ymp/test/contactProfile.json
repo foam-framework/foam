@@ -1,0 +1,31 @@
+[
+  {
+    "model_": "com.google.ymp.bb.ContactProfile",
+    "id": "contact_1",
+    "name": "James Bond 007",
+    "contactDetails": ["phone_1", "wa_1"],
+  },
+  {
+    "model_": "com.google.ymp.bb.ContactProfile",
+    "id": "contact_2",
+    "name": "LeBron James",
+    "contactDetails": ["phone_2", "fb_2", "other_2"],
+  },
+  {
+    "model_": "com.google.ymp.bb.ContactProfile",
+    "id": "contact_3",
+    "name": "Brian James Fichtner",
+    "contactDetails": ["email_3", "fb_3"],
+  },
+  {
+    "model_": "com.google.ymp.bb.ContactProfile",
+    "id": "contact_4",
+    "name": "James Salsman",
+    "subscribedMarkets": ["market_A"],
+  },
+  {
+    "model_": "com.google.ymp.bb.ContactProfile",
+    "id": "contact_5",
+    "name": "James Bricknell",
+  },
+]
