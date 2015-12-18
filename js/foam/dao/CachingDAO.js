@@ -69,7 +69,7 @@ CLASS({
         let futureDao = FutureDAO()
         self.delegate = futureDao
 
-        let sink = DAOSink(dao: cache)
+        let sink = DAOSink(args: ["delegate": cache])
         src.select(sink).get { _ in
           // Actually means that cache listens to changes in the src.
           self.src.listen(sink);

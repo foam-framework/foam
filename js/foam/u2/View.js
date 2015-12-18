@@ -27,7 +27,10 @@ CLASS({
     {
       name: 'visibility',
       choices: [ 'rw', 'final', 'disabled', 'ro', 'hidden' ],
-      postSet: function(_, visibility) { this.updateMode_(this.mode); },
+      postSet: function(_, visibility) {
+        this.updateMode_(this.mode);
+      },
+      attribute: true,
       defaultValue: 'rw'
     },
     {
@@ -38,7 +41,8 @@ CLASS({
         if ( this.visibility === 'ro' ) return 'ro';
         if ( this.visibility === 'final' && 'create' !== this.controllerMode ) return 'ro';
         return 'view' === this.controllerMode ? 'ro' : 'rw';
-     }
+      },
+      attribute: true
     }
   ],
 

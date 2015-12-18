@@ -164,6 +164,12 @@ CLASS({
       }
     },
     {
+      name: 'highResImageDAO',
+      lazyFactory: function() {
+        return this.dynamicImageDAO_;
+      }
+    },
+    {
       name: 'personDAO',
       lazyFactory: function() {
         return this.EasyDAO.create({
@@ -227,6 +233,7 @@ CLASS({
       this.exportDAO(this.dynamicImageDAO);
       this.exportDAO(this.personDAO);
       this.exportDAO(this.marketDAO);
+      this.exportDAO(this.highResImageDAO, 'com.google.ymp.highResImageDAO');
 
       // HACK(markdittmer): Copies market.location data into market.
       // var marketData = [];

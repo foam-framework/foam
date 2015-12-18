@@ -17,6 +17,8 @@ CLASS({
     'foam.core.dao.AuthenticatedWebSocketDAO',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
+    'foam.dao.EasyClientDAO',
+    'foam.dao.CachingDAO',
     'foam.core.dao.SyncDAO',
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.Reply',
@@ -33,6 +35,7 @@ CLASS({
     'dynamicImageDAO',
     'personDAO',
     'marketDAO',
+    'highResImageDAO',
     
     'clearCache',
   ],
@@ -85,6 +88,18 @@ CLASS({
           syncWithServer: true,
           sockets: true,
         });
+      },
+    },
+    {
+      name: 'highResImageDAO',
+      view: 'foam.ui.DAOListView',
+      lazyFactory: function() { /* Allow access to unfiltered images, but don't sync */
+        var d = this.EasyClientDAO.create({
+            model: this.DynamicImage,
+            subject: 'com.google.ymp.highResImageDAO',
+            sockets: true,
+        });
+        return d;
       },
     },
     {
@@ -174,6 +189,7 @@ CLASS({
         model: this.SyncDAO.SyncRecord,
         name: 'posts_SyncRecords',
       }).removeAll();
+
       this.IDBDAO.create({
         model: this.Reply,
         name: 'replies',
@@ -181,6 +197,15 @@ CLASS({
       this.IDBDAO.create({
         model: this.SyncDAO.SyncRecord,
         name: 'replies_SyncRecords',
+      }).removeAll();
+
+      this.IDBDAO.create({
+        model: this.DynamicImage,
+        name: 'dynamicImages',
+      }).removeAll();
+      this.IDBDAO.create({
+        model: this.SyncDAO.SyncRecord,
+        name: 'dynamicImages_SyncRecords',
       }).removeAll();
     }
   ]

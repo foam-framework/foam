@@ -336,7 +336,7 @@ CLASS({
           swiftType: 'Sink = ArraySink()',
         },
       ],
-      swiftCode: '// todo',
+      swiftCode: '// Override',
     },
     {
       name: 'remove',
@@ -353,7 +353,24 @@ CLASS({
           swiftType: 'Sink = ArraySink()',
         },
       ],
-      swiftCode: '// todo',
+      swiftCode: '// Override',
+    },
+    {
+      name: 'find',
+      code: function(id, sink) {
+        /* Template method. Override to return an object from the dao with the given id. */
+      },
+      args: [
+        {
+          name: 'id',
+          swiftType: 'String',
+        },
+        {
+          name: 'sink',
+          swiftType: 'Sink',
+        },
+      ],
+      swiftCode: '// Override',
     },
 
     function pipe(sink, options) { /* A $$DOC{ref:'.select'} followed by $$DOC{ref:'.listen'}.
@@ -421,7 +438,10 @@ CLASS({
       swiftReturnType: 'Sink',
       swiftCode: function() {/*
         if options.query != nil {
-          sink = PredicatedSink(delegate: sink, expr: options.query!)
+          sink = PredicatedSink(args: [
+            "delegate": sink,
+            "expr": options.query!
+          ])
         }
         return sink
       */},

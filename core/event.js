@@ -452,7 +452,8 @@ var FunctionStack = {
 
 var Value = {
   __isValue__: true,
-  isInstance: function(o) { return o && o.__isValue__; }
+  isInstance: function(o) { return o && o.__isValue__; },
+  follow: function(srcValue) { Events.follow(srcValue, this); }
 };
 
 var PropertyValue = {

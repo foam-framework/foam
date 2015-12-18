@@ -15,7 +15,7 @@ CLASS({
   extends: 'foam.u2.View',
 
   imports: [
-    'data',
+//    'data',
     'personDAO',
   ],
 
