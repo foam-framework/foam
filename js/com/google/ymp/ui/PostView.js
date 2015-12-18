@@ -24,7 +24,7 @@ CLASS({
       <div class="$">
         <div class="$-flex-col">
           <:image width="100%" />
-          <:content showLabel="false" />
+          <div class="$-content">{{ this.data.content$ }}</div>
           <div class="$-author">Posted by&nbsp;<:author /></div>
           <div class="$-separator"></div>
           <div><:contact /></div>
@@ -45,6 +45,9 @@ CLASS({
       $-separator {
         border-bottom: 1px solid #e0e0e0;
         margin-bottom: 4px;
+      }
+      $-content {
+        padding: 8px 0px;
       }
     */},
   ]
