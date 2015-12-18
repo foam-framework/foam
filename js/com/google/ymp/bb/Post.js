@@ -18,6 +18,7 @@ CLASS({
     'com.google.ymp.CreationTimeTrait',
   ],
   requires: [
+    'com.google.ymp.ui.ContactProfileView',
     'com.google.ymp.ui.MarketChipView',
     'com.google.ymp.ui.PostRowView',
     'com.google.ymp.ui.PostView',
@@ -51,6 +52,12 @@ CLASS({
       subType: 'com.google.ymp.DynamicImage',
       subKey: 'imageID',
       toPropertyE: 'com.google.ymp.ui.DynamicImageView',
+    },
+    {
+      type: 'Reference',
+      name: 'contact',
+      subType: 'com.google.ymp.bb.ContactProfile',
+      toPropertyE: 'com.google.ymp.ui.ContactProfileView',
     },
     {
       type: 'String',
