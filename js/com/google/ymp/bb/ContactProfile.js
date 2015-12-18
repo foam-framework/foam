@@ -19,7 +19,6 @@ CLASS({
     {
       type: 'StringArray',
       name: 'contactDetails',
-//      subType: 'com.google.ymp.bb.ContactInfo',
     },
   ],
 });

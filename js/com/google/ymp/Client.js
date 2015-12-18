@@ -20,7 +20,6 @@ CLASS({
     'foam.dao.EasyClientDAO',
     'foam.dao.CachingDAO',
     'foam.core.dao.SyncDAO',
-    'com.google.ymp.bb.ContactInfo',
     'com.google.ymp.bb.ContactProfile',
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.Reply',
@@ -39,7 +38,6 @@ CLASS({
     'marketDAO',
     'highResImageDAO',
     'contactProfileDAO',
-    'contactInfoDAO',
 
     'clearCache',
   ],
@@ -132,22 +130,6 @@ CLASS({
         return this.EasyDAO.create({
           model: this.ContactProfile,
           name: 'contactProfiles',
-          caching: true,
-          syncWithServer: true,
-          sockets: true,
-        });
-      },
-    },
-    {
-      name: 'contactInfoDAO',
-      view: {
-        factory_:  'foam.ui.DAOListView',
-        rowView: 'foam.ui.DetailView'
-      },
-      lazyFactory: function() {
-        return this.EasyDAO.create({
-          model: this.ContactInfo,
-          name: 'contactDetails',
           caching: true,
           syncWithServer: true,
           sockets: true,
