@@ -30,6 +30,7 @@ CLASS({
   ],
   exports: [
     'currentUserId$',
+    'headerColor',
   ],
 
   properties: [
@@ -69,6 +70,7 @@ CLASS({
         });
       },
     },
+    [ 'headerColor', '#3e50b4' ],
   ],
 
   methods: [
