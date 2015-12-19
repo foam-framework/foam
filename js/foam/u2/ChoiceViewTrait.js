@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2',
   name: 'ChoiceViewTrait',
@@ -32,9 +33,9 @@ CLASS({
           'confused with $$DOC{ref:".text"}, the name of the currently ' +
           'selected choice.',
       postSet: function(old, nu) {
-        for (var i = 0; i < this.choices.length; i++) {
-          if (this.choices[i][1] === nu) {
-            if (this.index !== i) this.index = i;
+        for ( var i = 0 ; i < this.choices.length ; i++ ) {
+          if ( this.choices[i][1] === nu ) {
+            if ( this.index !== i ) this.index = i;
             return;
           }
         }
@@ -45,9 +46,9 @@ CLASS({
       documentation: 'The current choice (ie. [value, text] pair).',
       getter: function() {
         var value = this.data;
-        for (var i = 0; i < this.choices.length; i++) {
+        for ( var i = 0 ; i < this.choices.length ; i++ ) {
           var choice = this.choices[i];
-          if (value === choice[0]) return choice;
+          if ( value === choice[0] ) return choice;
         }
         return undefined;
       },
@@ -66,42 +67,45 @@ CLASS({
           '[key, value] pairs listed in enumeration order.',
       factory: function() { return []; },
       preSet: function(_, a) {
-        if (typeof a === 'object' && !Array.isArray(a)) {
+        if ( typeof a === 'object' && ! Array.isArray(a) ) {
           var out = [];
-          for (var key in a) {
-            if (a.hasOwnProperty(key))
+          for ( var key in a )
+            if ( a.hasOwnProperty(key) )
               out.push([key, a[key]]);
-          }
+
           return out;
         }
 
         a = a.clone();
         // Upgrade single values to [value, value].
-        for (var i = 0; i < a.length; i++) {
-          if (!Array.isArray(a[i])) {
+        for ( var i = 0 ; i < a.length ; i++ )
+          if ( ! Array.isArray(a[i]) )
             a[i] = [a[i], a[i]];
-          }
-        }
+
         return a;
       },
       postSet: function(old, nu) {
         var value = this.data;
 
         // Update current choice when choices update.
-        for (var i = 0; i < nu.length; i++) {
+        for ( var i = 0 ; i < nu.length ; i++ ) {
           var choice = nu[i];
-          if (value === choice[0]) {
-            if (this.useSelection)
+          if ( value === choice[0] ) {
+            if (this.useSelection) {
               this.index = i;
-            else
+            } else {
               this.choice = choice;
+            }
             break;
           }
         }
 
-        if (this.autoSetData && i === nu.length) {
-          if (this.useSelection) this.index = 0;
-          else this.data = nu.length ? nu[0][0] : undefined;
+        if ( this.autoSetData && i === nu.length ) {
+          if (this.useSelection) {
+            this.index = 0;
+          } else {
+            this.data = nu.length ? nu[0][0] : undefined;
+          }
         }
 
         // TODO(braden): Make sure that updating the labels, with or without
@@ -109,7 +113,7 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'index',
       documentation: 'The index of the current choice in $$DOC{ref:".choices"}.',
       transient: true,
@@ -138,7 +142,7 @@ CLASS({
       documentation: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'useSelection',
       documentation: 'When set, data and choice do not update until an entry is firmly selected',
     },
@@ -160,8 +164,11 @@ CLASS({
           }
         }
         if ( ! nu && this.autoSetData ) {
-          if (this.useSelection) this.index = 0;
-          else if ( this.choices.length )this.data = this.choices[0][0];
+          if (this.useSelection) {
+            this.index = 0;
+          } else if ( this.choices.length ) {
+            this.data = this.choices[0][0];
+          }
         }
         if ( nu && this.choices.length )
           console.warn('ChoiceView data set to invalid choice: ', nu);
@@ -188,19 +195,23 @@ CLASS({
   methods: [
     function findChoiceIC(name) {
       name = name.toLowerCase();
-      for (var i = 0; i < this.choices.length; i++) {
-        if (this.choices[i][1].toLowerCase() === name) return this.choices[i];
-      }
+      for ( var i = 0 ; i < this.choices.length ; i++ )
+        if ( this.choices[i][1].toLowerCase() === name )
+          return this.choices[i];
+    },
+    function valueToIndex(value) {
+      for ( var i = 0 ; i < this.choices.length ; i++ )
+        if ( this.choices[i][0] == value )
+          return i;
     },
     function commit() {
-      if (this.useSelection && this.choices[this.index]) {
+      if ( this.useSelection && this.choices[this.index] )
         this.choice = this.choices[this.index];
-      }
     },
     function fromProperty(prop) {
       this.SUPER(prop);
       this.label = this.label || prop.label;
       this.choices = this.choices.length ? this.choices : prop.choices;
-    },
+    }
   ]
 });
