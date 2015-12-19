@@ -947,10 +947,8 @@ CLASS({
         var attr  = this.attributes[i];
         var value = this.attributes[i].value;
 
-        if ( value ) {
-          out(' ', attr.name);
-          if ( value ) out('="', value, '"');
-        }
+        out(' ', attr.name);
+        if ( value !== false ) out('="', value, '"');
       }
 
       if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&
