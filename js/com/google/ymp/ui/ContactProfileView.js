@@ -14,12 +14,39 @@ CLASS({
   name: 'ContactProfileView',
   extends: 'foam.u2.View',
 
+  requires: [
+    'com.google.ymp.bb.ContactProfile',
+  ],
+  imports: [
+    'contactProfileDAO',
+  ],
+
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        var self = this;
+        self.contactProfileDAO
+          .where(EQ(self.ContactProfile.ID, nu))
+          .limit(1)
+          .pipe({
+            put: function(profile) {
+              self.contactProfile = profile;
+            }
+          });
+      }
+    },
+    {
+      type: 'com.google.ymp.bb.ContactProfile',
+      name: 'contactProfile',
+    },
+  ],
 
   templates: [
     function initE() {/*#U2
       <div class="$">
         <p>contact details go here</p>
-        <div>{{this.data.CONTACT_DETAILS}}</div>
+        <div>{{this.contactProfile.CONTACT_DETAILS}}</div>
       </div>
     */},
   ]
