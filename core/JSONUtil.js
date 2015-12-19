@@ -340,16 +340,23 @@ var JSONUtil = {
         if ( ! this.p(prop, obj) ) continue;
 
         if ( prop.name === 'parent' ) continue;
+
         if ( prop.name in obj.instance_ ) {
           var val = obj[prop.name];
+
           if ( Array.isArray(val) && ! val.length ) continue;
+
+          if ( val == prop.defaultValue ) continue;
+
           if ( ! first ) out(',\n');
           out(nestedIndent, this.keyify(prop.name), ': ');
+
           if ( Array.isArray(val) && prop.subType ) {
             this.outputArray_(out, val, prop.subType, nestedIndent);
           } else {
             this.output(out, val, null, nestedIndent);
           }
+
           first = false;
         }
       }
