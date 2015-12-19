@@ -456,7 +456,7 @@ MODEL({
     {
       name: 'firstName',
       toPropertyE: function(X) {
-        return X.lookup('foam.u2.md.Input').create(null, X);
+        return X.lookup('foam.u2.md.TextField').create(null, X);
       }
     },
     'lastName', 'age', 'brother'
