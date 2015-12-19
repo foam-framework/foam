@@ -18,7 +18,8 @@
 CLASS({
   package: 'foam.u2',
   name: 'Select',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
+
   traits: [
     'foam.u2.ChoiceViewTrait',
   ],
@@ -32,7 +33,13 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.data$ = this.attrValue();
+      var self = this;
+      Events.relate(
+        this.data$,
+        this.attrValue(),
+        function(data) { return self.valueToIndex(data); },
+        function(attr) { return self.choices[attr][0]; });
+//      this.data$ = this.attrValue();
     },
     function initE() {
       var self = this;
@@ -42,7 +49,7 @@ CLASS({
           cs.push(self.E('option').attrs({disabled: 'disabled'}).add(self.placeholder));
         for ( var i = 0 ; i < options.length ; i++ ) {
           var o = options[i];
-          cs.push(self.E('option').attrs({value: o[0]}).add(o[1]));
+          cs.push(self.E('option').attrs({value: i}).add(o[1]));
         }
         return cs;
       }, this.choices$, this.placeholder$));
