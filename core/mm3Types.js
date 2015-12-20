@@ -671,6 +671,12 @@ CLASS({
       defaultValue: 'foam.ui.FunctionView'
     },
     {
+      name: 'toPropertyE',
+      defaultValue: function(X) {
+        return X.lookup('foam.u2.FunctionView').create(undefined, X);
+      }
+    },
+    {
       name: 'defaultValue',
       defaultValue: function() {}
     },
@@ -714,6 +720,12 @@ CLASS({
       name: 'defaultValue',
       adapt: function(_, value) {
         return TemplateProperty.ADAPT.defaultValue.call(this, _, value);
+      }
+    },
+    {
+      name: 'toPropertyE',
+      defaultValue: function(X) {
+        return X.lookup('foam.u2.TextArea').create(undefined, X);
       }
     },
     {
