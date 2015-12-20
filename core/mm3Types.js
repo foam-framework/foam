@@ -337,6 +337,13 @@ CLASS({
     },
     [ 'view', 'foam.ui.DateFieldView' ],
     {
+      name: 'toPropertyE',
+      labels: ['javascript'],
+      defaultValue: function(X) {
+        return X.lookup('foam.u2.DateInput').create(null, X);
+      }
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       required: false,
