@@ -20,7 +20,9 @@ MODEL({
   name: 'FlightBooker',
   extends: 'foam.u2.Element',
 
+  // TODO: these shouldn't be required
   requires: [
+    'foam.u2.DateInput',
     'foam.u2.Select'
   ],
 
