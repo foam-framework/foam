@@ -30,8 +30,8 @@ CLASS({
       attribute: true,
       defaultValue: false,
       documentation: 'When true, $$DOC{ref:".data"} is updated on every ' +
-          'keystroke, rather than on blur.',
-    },
+          'keystroke, rather than on blur.'
+    }
   ],
 
   templates: [
@@ -43,6 +43,9 @@ CLASS({
   methods: [
     function initE() {
       this.cls(this.myCls());
+      this.link();
+    },
+    function link() {
       Events.link(this.data$, this.attrValue(null, this.onKey ? 'input' : null));
     },
     function updateMode_(mode) {
