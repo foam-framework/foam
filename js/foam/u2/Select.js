@@ -31,18 +31,16 @@ CLASS({
   ],
 
   methods: [
-    function init() {
+    function initE() {
       this.SUPER();
       var self = this;
+
       Events.relate(
         this.data$,
         this.attrValue(),
         function(data) { return self.valueToIndex(data); },
         function(attr) { return self.choices[attr][0]; });
-//      this.data$ = this.attrValue();
-    },
-    function initE() {
-      var self = this;
+
       this.setChildren(this.dynamic(function(options, placeholder) {
         var cs = [];
         if ( placeholder )
