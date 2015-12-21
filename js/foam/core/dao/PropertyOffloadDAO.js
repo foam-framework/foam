@@ -30,10 +30,29 @@ CLASS({
     {
       model_: 'BooleanProperty',
       name: 'loadOnSelect'
-    }
+    },
+    {
+      model_: 'BooleanProperty',
+      name: 'loadForListeners'
+    },
   ],
 
   methods: {
+    listen: function(sink, options) {
+      this.SUPER( this.loadForListeners ? this.offloadSink(sink) : sink, options);
+    },
+    unlisten: function(sink) {
+      /* Stop sending updates to the given sink. */
+      var ls = this.daoListeners_;
+      for ( var i = 0; i < ls.length ; i++ ) {
+        if ( ls[i].__proto__.$UID === sink.$UID ||
+             ls[i].$UID === sink.$UID ) { // we may decorate, so check proto too
+          ls.splice(i, 1);
+          return true;
+        }
+      }
+      if ( DEBUG ) console.warn('Phantom DAO unlisten: ', this, sink);
+    },
     put: function(obj, sink) {
       if ( obj.hasOwnProperty(this.property.name) ) {
         var offload = this.model.create({ id: obj.id });
@@ -52,18 +71,38 @@ CLASS({
     },
 
     offloadSink: function(sink) {
+      // TODO: this doesn't address potential put()s going out of order. Chain of futures instead?
       var self = this;
       return {
         __proto__: sink,
+        activePuts: 0, // semaphore to ensure the delegate's eof() comes after our async puts
         put: function(obj) {
-          sink.put && sink.put.apply(sink, arguments);
+          var sinkSelf = this;
+          sinkSelf.activePuts++;
           self.offloadDAO.find(obj.id, {
             put: function(offload) {
+              sinkSelf.decrementPuts();
               if ( offload[self.property.name] )
                 obj[self.property.name] = offload[self.property.name];
+              sink.put && sink.put(obj);
+            },
+            error: function(offload) {
+              // fail-through
+              sinkSelf.decrementPuts();
+              sink.put && sink.put(obj);
             }
           });
         },
+        eof: function() {
+          if ( this.activePuts <= 0 ) sink.eof();
+        },
+        decrementPuts: function() {
+          --this.activePuts;
+          if (this.activePuts <= 0) {
+            sink.eof();
+            console.assert(this.activePuts === 0, "PropertyOffloadDAO had a bad activePut count", this.activePuts);
+          }
+        }
       };
     },
 
