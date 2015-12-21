@@ -22,23 +22,29 @@ CLASS({
   imports: [
     'currentUser',
   ],
-  
+  exports: [
+    'market',
+  ],
+
   properties: [
     {
       name: 'data',
       postSet: function(old,nu) {
         nu.id;
-        if ( ! this.data.author ) {
-          this.data.author = this.currentUser.id;
-        }
+        if ( ! this.data.author ) this.data.author = this.currentUser.id;
+        if ( ! this.data.market ) this.data.market = this.currentUser.subscribedMarkets[0];
+        this.market$ = this.data.market$;
       }
     },
+    {
+      name: 'market',
+    }
   ],
 
   templates: [
     function initE() {/*#U2
       <div class="$">
-        (( this.Y.registerModel(this.TextField, 'com.google.ymp.ui.DynamicImageView'); ))
+        (( this.Y.registerModel(this.DynamicImagePicker, 'com.google.ymp.ui.DynamicImageView'); ))
         <div class="$-flex-col">
           <:title />
           <:image width="100%" />

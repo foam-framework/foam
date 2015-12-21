@@ -19,20 +19,74 @@ CLASS({
   package: 'foam.persistence',
   name: 'ObjectReplicator',
   properties: [
-    'id',
-    'model',
-    'dao',
+    {
+      name: 'id',
+      swiftType: 'String',
+      swiftDefaultValue: '""',
+      swiftPostSet: function() {/*
+        // Re-set the dao so it listens for the new id.
+        self.obj = nil
+        self.dao = self.dao
+
+        self.future = Future()
+        self.dao.find(newValue, sink: ClosureSink(args: [
+          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+            self.future.set(args[0])
+            return nil
+          })
+        ]))
+        self.future.get { o in
+          self.obj = o as? FObject
+        }
+      */},
+    },
+    {
+      name: 'model',
+    },
+    {
+      name: 'dao',
+      swiftType: 'AbstractDAO',
+      swiftPostSet: function() {/*
+        if let o = oldValue as? AbstractDAO {
+          o.unlisten(self.daoListener)
+        }
+        newValue.`where`(EQ(self.pk, arg2: self.id)).listen(self.daoListener)
+      */},
+    },
     {
       model_: 'BooleanProperty',
       name: 'feedback',
-      defaultValue: false
+      defaultValue: false,
+      swiftDefaultValue: 'false',
+    },
+    {
+      name: 'objectListener',
+      swiftType: 'PropertyChangeListener',
+      swiftFactory: function() {/*
+        return PropertyChangeListener(callback: {
+            obj, prop, oldValue, newValue in
+          self.objChanged()
+        })
+      */},
+    },
+    {
+      name: 'obj',
+      swiftType: 'FObject?',
+      swiftPostSet: function() {/*
+        if let o = oldValue as? FObject {
+          o.removeListener(self.objectListener)
+        }
+        newValue?.addListener(self.objectListener)
+      */},
     },
     {
       name: 'pk',
       lazyFactory: function() {
         // TODO: Support multi part keys
         return this.model.getProperty(this.model.ids[0]);
-      }
+      },
+      swiftType: 'String',
+      swiftDefaultValue: '"id"',
     },
     {
       name: 'future',
@@ -49,7 +103,8 @@ CLASS({
           self.attach();
         })
         return fut;
-      }
+      },
+      swiftType: 'Future',
     },
     {
       name: 'daoListener',
@@ -58,23 +113,46 @@ CLASS({
           put: this.onPut,
           remove: this.onRemove
         };
-      }
+      },
+      swiftType: 'Sink',
+      swiftFactory: function() {/*
+        return ClosureSink(args: [
+          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+            self.onPut()
+            return nil
+          }),
+          "removeFn": FoamFunction(fn: { (args) -> AnyObject? in
+            self.onRemove()
+            return nil
+          })
+        ])
+      */},
     }
   ],
   methods: [
-    function destroy() {
-      this.obj.removeListener(this.objChanged);
-      this.dao.unlisten(this.daoListener);
+    {
+      name: 'destroy',
+      code: function() {
+        this.obj.removeListener(this.objChanged);
+        this.dao.unlisten(this.daoListener);
+      },
+      swiftCode: function() {/*
+        self.obj?.removeListener(self.objectListener)
+        self.dao.unlisten(self.daoListener)
+      */},
     },
-    function attach() {
-      this.obj.addListener(this.objChanged);
-      this.dao.where(EQ(this.pk, this.obj.id)).listen(this.daoListener)
-    }
+    {
+      name: 'attach',
+      code: function attach() {
+        this.obj.addListener(this.objChanged);
+        this.dao.where(EQ(this.pk, this.obj.id)).listen(this.daoListener)
+      },
+    },
   ],
   listeners: [
     {
       name: 'objChanged',
-      code: function(o) {
+      code: function() {
         if ( this.feedback )
           return;
 
@@ -86,7 +164,20 @@ CLASS({
             this.feedback = false;
           }.bind(this)
         });
-      }
+      },
+      swiftCode: function() {/*
+        if feedback { return }
+        let clone = obj!.deepClone();
+        dao.put(clone, sink: ClosureSink(args: [
+          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+            let obj2 = args[0]
+            self.feedback = true;
+            self.obj!.copyFrom(obj2);
+            self.feedback = false;
+            return nil
+          })
+        ]))
+      */},
     },
     {
       name: 'onPut',
@@ -102,13 +193,29 @@ CLASS({
             }
           }.bind(this)
         });
-      }
+      },
+      swiftCode: function() {/*
+        dao.find(id, sink: ClosureSink(args: [
+          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+            let obj2 = args[0] as! FObject
+            if self.obj == nil {
+              self.future.set(obj2);
+            } else {
+              self.feedback = true;
+              self.obj!.copyFrom(obj2);
+              self.feedback = false;
+            }
+            return nil
+          })
+        ]))
+      */},
     },
     {
       name: 'onRemove',
       code: function() {
         // TODO
-      }
+      },
+      swiftCode: '// TODO',
     }
   ]
 });

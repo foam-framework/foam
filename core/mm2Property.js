@@ -363,8 +363,13 @@ GLOBAL.Property = {
         return e;
       },
       adapt: function(_, nu) {
-        return typeof nu === 'string' ?
-            function(X) { return X.lookup(nu).create(null, X); } : nu;
+        if ( typeof nu === 'string' ) {
+          var f = function(X) { return X.lookup(nu).create(null, X); };
+          f.toString = function() { return "'"+nu+"'"; };
+          return f;
+        } else {
+          return nu;
+        }
       },
     },
     {

@@ -34,6 +34,7 @@ CLASS({
     'postDAO',
     'replyDAO',
     'dynamicImageDAO',
+    'uploadImageDAO',
     'personDAO',
     'marketDAO',
     'highResImageDAO',
@@ -48,45 +49,9 @@ CLASS({
       name: 'postDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        return this.DynamicWhereDAO.create({
-          sourceDelegate: this.EasyDAO.create({
-            model: this.Post,
-            name: 'posts',
-            caching: true,
-            syncWithServer: true,
-            sockets: true,
-          }),
-          predicate: IN,
-          property: this.Post.MARKET,
-          parameter$: this.subscribedMarkets$
-        });
-      },
-    },
-    {
-      name: 'replyDAO',
-      view: 'foam.ui.DAOListView',
-      lazyFactory: function() {
-        return this.DynamicWhereDAO.create({
-          sourceDelegate: this.EasyDAO.create({
-            model: this.Reply,
-            name: 'replies',
-            caching: true,
-            syncWithServer: true,
-            sockets: true,
-          }),
-          predicate: IN,
-          property: this.Reply.MARKET,
-          parameter$: this.subscribedMarkets$
-        });
-      },
-    },
-    {
-      name: 'dynamicImageDAO',
-      view: 'foam.ui.DAOListView',
-      lazyFactory: function() {
         return this.EasyDAO.create({
-          model: this.DynamicImage,
-          name: 'dynamicImages',
+          model: this.Post,
+          name: 'posts',
           caching: true,
           syncWithServer: true,
           sockets: true,
@@ -94,15 +59,55 @@ CLASS({
       },
     },
     {
+      name: 'replyDAO',
+      view: 'foam.ui.DAOListView',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.Reply,
+          name: 'replies',
+          caching: true,
+          syncWithServer: true,
+          sockets: true,
+        });
+      },
+    },
+    {
+      name: 'uploadImageDAO',
+      view: 'foam.ui.DAOListView',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.DynamicImage,
+          name: 'dynamicImageSync',
+          caching: true,
+          syncWithServer: true,
+          sockets: true,
+        });
+      },
+    },
+    {
+      name: 'dynamicImageDAO',
+      view: 'foam.ui.DAOListView',
+      lazyFactory: function() {
+        var d = this.EasyDAO.create({
+          model: this.DynamicImage,
+          name: 'dynamicImages',
+          type: 'MDAO',
+          autoIndex: true,
+          caching: true, // TODO: we're caching uploadImageDAO contents twice. Really need an AndDAO to merge the synched and strictly local DAOs.
+        });
+        this.uploadImageDAO.pipe(d);
+        return d;
+      },
+    },
+    {
       name: 'highResImageDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() { /* Allow access to unfiltered images, but don't sync */
-        var d = this.EasyClientDAO.create({
-            model: this.DynamicImage,
-            subject: 'com.google.ymp.highResImageDAO',
-            sockets: true,
+        return this.EasyClientDAO.create({
+          model: this.DynamicImage,
+          subject: 'com.google.ymp.highResImageDAO',
+          sockets: true,
         });
-        return d;
       },
     },
     {
@@ -141,11 +146,9 @@ CLASS({
       name: 'marketDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        return this.EasyDAO.create({
-          model: this.Market,
-          name: 'markets',
-          caching: true,
-          // make remote
+        return this.EasyClientDAO.create({
+            model: this.Market,
+            sockets: true,
         });
       },
     },
@@ -220,11 +223,15 @@ CLASS({
 
       this.IDBDAO.create({
         model: this.DynamicImage,
-        name: 'dynamicImages',
+        name: 'dynamicImageSync',
       }).removeAll();
       this.IDBDAO.create({
         model: this.SyncDAO.SyncRecord,
-        name: 'dynamicImages_SyncRecords',
+        name: 'dynamicImageSync_SyncRecords',
+      }).removeAll();
+      this.IDBDAO.create({
+        model: this.DynamicImage,
+        name: 'dynamicImages',
       }).removeAll();
     }
   ]

@@ -89,14 +89,14 @@ CLASS({
     },
     function predicate() { return EQ(this.DynamicImage.IMAGE_ID, this.data); },
   ],
-  
+
   listeners: [
     function clickZoom() {
       if ( ! this.isClickable ) return false;
-      
+
       var self = this;
       // select only images that are better quality than our current, select directly into image cache
-      var pred = ( self.currentImage ) ? 
+      var pred = ( self.currentImage ) ?
         GT(self.DynamicImage.LEVEL_OF_DETAIL, self.currentImage.levelOfDetail)
         : TRUE;
       self.highResImageDAO
