@@ -16,11 +16,12 @@ CLASS({
   traits: [ 'foam.core.dao.SyncTrait' ],
 
   constants: {
-    LOD_FULL_SIZE: 512, // these approximate KiB sizes, but are not intended to be exact. 
+    LOD_FULL_SIZE: 512, // these approximate KiB sizes, but are not intended to be exact.
     LOD_HIGH: 256, // decent phone display sized
     LOD_MEDIUM: 128, // tile/preview sized
     LOD_LOW: 8, // icon sized
     LOD_TINY: 1, // tiny vector images only
+    LOD_LIST: [ 512, 256, 128, 8 ],
   },
 
   properties: [

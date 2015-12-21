@@ -22,25 +22,23 @@ CLASS({
   imports: [
     'currentUser',
   ],
+  exports: [
+    'market',
+  ],
 
   properties: [
     {
       name: 'data',
       postSet: function(old,nu) {
         nu.id;
-        if ( ! this.data.author ) {
-          this.data.author = this.currentUser.id;
-        }
+        if ( ! this.data.author ) this.data.author = this.currentUser.id;
+        if ( ! this.data.market ) this.data.market = this.currentUser.subscribedMarkets[0];
+        this.market$ = this.data.market$;
       }
     },
-//     {
-//       type: 'Image',
-//       name: 'image',
-//       toPropertyE: 'com.google.ymp.ui.DynamicImagePicker',
-//       postSet: function(old,nu) {
-//         // set post's image
-//       }
-//     }
+    {
+      name: 'market',
+    }
   ],
 
   templates: [

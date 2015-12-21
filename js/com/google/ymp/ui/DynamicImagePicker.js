@@ -20,6 +20,8 @@ CLASS({
   ],
   imports: [
     'dynamicImageDAO',
+    'document',
+    'market',
   ],
 
   properties: [
@@ -29,26 +31,11 @@ CLASS({
       help: 'The new image ID',
     },
     {
-      name: 'image',
-      lazyFactory: function() {
-        return this.DynamicImage.create({
-          id: createGUID(),
-          imageID: createGUID()+"img",
-          levelOfDetail: 8,
-        });
-      },
-      postSet: function(old, nu) {
-        console.log("image set:", old, "to", nu);
-      }
-    },
-    {
       name: 'imageData',
       postSet: function(old, nu) {
-        if ( nu && this.image.imageData !== nu ) {
-          this.image.image = nu;
-          this.dynamicImageDAO.put(this.image);
-          this.data = this.image.imageID;
-          //console.log("dynamicImageDAO", this.image.imageID, this.data);
+        if ( nu && old !== nu ) {
+          this.data = createGUID(); //this.image.imageID;
+          this.mipMap(nu, this.data);
         }
       }
     },
@@ -64,6 +51,57 @@ CLASS({
         })
       ).end();
     },
+    function mipMap(nu, id) {
+      /* Create multiple resolutions of the source image, put to dynamicImageDAO */
+
+      var imageSpecs = new Image();
+      imageSpecs.src = nu;
+
+      // full res
+      this.dynamicImageDAO.put(this.DynamicImage.create({
+        id: createGUID(),
+        imageID: id,
+        levelOfDetail: 512,
+        image: nu,
+        width: imageSpecs.naturalWidth,
+        height: imageSpecs.naturalHeight,
+        market: this.market,
+      }));
+console.log("MipMapping ", id);
+      var resizeTo = function(mult) {
+        var w = imageSpecs.naturalWidth * mult;
+        var h = imageSpecs.naturalHeight * mult;
+        var canvas = this.document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d').drawImage(imageSpecs, 0, 0, w, h);
+        return canvas.toDataURL("image/jpeg");
+      }.bind(this);
+
+      var sizes = this.DynamicImage.getPrototype().LOD_LIST;
+      var mult = 1.0;
+      for (var i = 1; i < sizes.length; ++i) {
+        for (var esc = 0; esc < 10; ++esc) { // loop until we've found the right size
+          var newImage = resizeTo(mult);
+          if ( newImage.length < (sizes[i] * 1024) ) { // compare actual size to LOD
+            this.dynamicImageDAO.put(this.DynamicImage.create({
+              id: createGUID(),
+              imageID: id,
+              levelOfDetail: sizes[i],
+              image: newImage,
+              width: imageSpecs.naturalWidth * mult,
+              height: imageSpecs.naturalHeight * mult,
+              market: this.market,
+            }));
+console.log("found Image", newImage.length, sizes[i], imageSpecs.naturalWidth * mult, imageSpecs.naturalHeight * mult);
+            break;
+          } else {
+            mult *= 0.75; // shrink to 75% and try again
+console.log("trying again Image", newImage.length, sizes[i], mult);
+          }
+        }
+      }
+    }
   ],
 
 });
