@@ -18,42 +18,92 @@ CLASS({
     'com.google.ymp.DynamicImage',
   ],
   imports: [
-//    'data',
     'dynamicImageDAO',
+    'highResImageDAO'
   ],
   exports: [
     'as data',
   ],
 
-  properties: [ 
+  properties: [
     [ 'nodeName', 'DYNAMIC-IMAGE' ],
     {
       name: 'data',
       postSet: function(old,nu) {
         // look up the image id to find the best quality available
         var self = this;
-        self.dynamicImageDAO = this.X.dynamicImageDAO;
         self.dynamicImageDAO
-          .where(EQ(self.DynamicImage.IMAGE_ID, nu))
+          .where(self.predicate())
           .orderBy(DESC(self.DynamicImage.LEVEL_OF_DETAIL))
           .limit(1)
           .pipe({
             put: function(img) {
-              self.imageData = img.image;
+              self.currentImage = img;
             }
           });
       }
     },
     {
+      name: 'currentImage',
+      preSet: function(old, nu) {
+        if ( ! old || ( nu && nu.levelOfDetail > old.levelOfDetail ) ) {
+          return nu;
+        }
+        return old;
+      },
+      postSet: function(old,nu) {
+        this.imageData = nu.image;
+      }
+    },
+    {
       type: 'Image',
       name: 'imageData',
+    },
+    {
+      type: 'String',
+      name: 'width',
+      defaultValue: "",
+      attribute: true,
+      adapt: function(old, nu, prop) {
+        if ( typeof nu !== 'string' ) {
+          return nu+"px";
+        }
+        return nu;
+      },
+    },
+    {
+      type: 'Boolean',
+      name: 'isClickable',
+      attribute: true,
+      defaultValue: true
     }
   ],
 
   methods: [
     function initE() {
-      this.start('img').attrs({ src: this.imageData$ }).end();
+      this.start('img').attrs({
+        src: this.imageData$
+      }).style({
+        width: this.width$,
+      }).on('click', this.clickZoom).end();
     },
-    
+    function predicate() { return EQ(this.DynamicImage.IMAGE_ID, this.data); },
+  ],
+
+  listeners: [
+    function clickZoom() {
+      if ( ! this.isClickable ) return false;
+
+      var self = this;
+      // select only images that are better quality than our current, select directly into image cache
+      var pred = ( self.currentImage ) ?
+        GT(self.DynamicImage.LEVEL_OF_DETAIL, self.currentImage.levelOfDetail)
+        : TRUE;
+      self.highResImageDAO
+        .where(AND(EQ(self.DynamicImage.IMAGE_ID, self.data), pred))
+        .orderBy(DESC(self.DynamicImage.LEVEL_OF_DETAIL))
+        .limit(1)
+        .select(self.dynamicImageDAO);
+    },
   ]
 });

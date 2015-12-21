@@ -20,15 +20,17 @@ CLASS({
   requires: [
     //'com.google.ymp.Browser',
     'com.google.ymp.Client',
+    'com.google.ymp.controllers.DAOController',
     'foam.memento.FragmentMementoMgr',
     'foam.ui.DetailView',
     'foam.browser.u2.BrowserController',
-    'foam.browser.u2.BrowserView', 
-    'foam.u2.DetailView',   
+    'foam.browser.u2.BrowserView',
+    'foam.u2.DetailView',
     'foam.u2.ActionButton',
   ],
   exports: [
     'currentUserId$',
+    'headerColor',
   ],
 
   properties: [
@@ -68,12 +70,14 @@ CLASS({
         });
       },
     },
+    [ 'headerColor', '#3e50b4' ],
   ],
 
   methods: [
     function init() {
       this.SUPER();
       this.FragmentMementoMgr.create({ mementoValue: this.memento$ });
+      this.Y.registerModel(this.DAOController, 'foam.u2.DAOController');
     },
   ],
 

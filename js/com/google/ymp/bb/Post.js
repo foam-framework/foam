@@ -18,9 +18,11 @@ CLASS({
     'com.google.ymp.CreationTimeTrait',
   ],
   requires: [
+    'com.google.ymp.ui.ContactProfileView',
     'com.google.ymp.ui.MarketChipView',
     'com.google.ymp.ui.PostRowView',
     'com.google.ymp.ui.PostView',
+    'com.google.ymp.ui.PostEditView',
     'com.google.ymp.ui.PersonChipView',
     'foam.u2.md.DetailView',
     'com.google.ymp.ui.DynamicImageView',
@@ -35,9 +37,7 @@ CLASS({
       type: 'Reference',
       subType: 'com.google.ymp.Market',
       name: 'market',
-      toPropertyE: function(X) {
-        return X.lookup('com.google.ymp.ui.MarketChipView').create({ data: X.data.market }, X);
-      }
+      toPropertyE: 'com.google.ymp.ui.MarketChipView',
     },
     {
       type: 'Reference',
@@ -53,6 +53,13 @@ CLASS({
       toPropertyE: 'com.google.ymp.ui.DynamicImageView',
     },
     {
+      type: 'Reference',
+      name: 'contact',
+      subType: 'com.google.ymp.bb.ContactProfile',
+      toPropertyE: 'com.google.ymp.ui.ContactProfileView',
+    },
+    {
+      type: 'String',
       name: 'content',
     }
   ],
@@ -61,7 +68,9 @@ CLASS({
     function toE(X) {
       // return this.DetailView.create({ data: this });
       // TODO(bruthig): Replace DetailView with PostView when PostView is implemented.
-      return X.lookup('com.google.ymp.ui.PostView').create({ data: this }, X);
+      return (X.controllerMode == 'view') ?
+        X.lookup('com.google.ymp.ui.PostView').create({ data: this }, X) :
+        X.lookup('com.google.ymp.ui.PostEditView').create({ data: this }, X);
     },
     function toRowE(X) {
       return X.lookup('com.google.ymp.ui.PostRowView').create({ data: this }, X);

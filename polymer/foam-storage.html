@@ -1,0 +1,59 @@
+<dom-module id="foam-storage">
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'foam-storage',
+        hostAttributes: {
+          hidden: true
+        },
+
+        properties: {
+          model: {
+            type: Object
+          },
+          name: {
+            type: String,
+          },
+          type: {
+            type: String
+          },
+          value: {
+            type: Array,
+            notify: true
+          }
+        },
+
+        observers: [
+          'onValueUpdate(value.*)'
+        ],
+
+        created: function() {
+          apar(
+            arequire('foam.dao.EasyDAO'),
+            arequire('foam.polymer.storage.ArrayAdapter')
+          )(function(EasyDAO, ArrayAdapter) {
+            this.dao = EasyDAO.create({
+              model: this.model,
+              name: this.name || undefined,
+              daoType: this.type,
+              cache: true
+            }, X);
+
+            if (!this.value) this.value = [];
+            this.adapter = ArrayAdapter.create({
+              target: this,
+              dao: this.dao,
+              key: 'value'
+            }, X);
+            this.dao.pipe(this.adapter);
+          }.bind(this));
+        },
+
+        onValueUpdate: function(e) {
+          this.adapter && this.adapter.onChange(e);
+        }
+      });
+    })();
+  </script>
+</dom-module>

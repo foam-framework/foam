@@ -52,10 +52,12 @@ CLASS({
       name: 'body_',
       factory: function() {
         return this.Y.E('div').cls(this.myCls('body'))
-            .add(this.X.lookup('foam.u2.md.DetailView').create({
-              model: this.model,
-              data$: this.data$,
-            }, this.Y));
+            .add( ( this.data && this.data.toE ) ? this.data.toE(this.Y) : 
+              this.X.lookup('foam.u2.md.DetailView').create({
+                model: this.model,
+                data$: this.data$,
+              }, this.Y)
+            );
       }
     },
     {

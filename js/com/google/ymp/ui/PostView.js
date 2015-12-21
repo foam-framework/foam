@@ -13,15 +13,21 @@ CLASS({
   package: 'com.google.ymp.ui',
   name: 'PostView',
   extends: 'foam.u2.View',
+
+  requires: [
+    'com.google.ymp.ui.ColorPicker',
+    'com.google.ymp.ui.DynamicImageLoader',
+  ],
+
   templates: [
     function initE() {/*#U2
       <div class="$">
         <div class="$-flex-col">
-          <div class="$-md-heading">{{this.data.title}}</div>
-          <:author />
-          <:market />
-          <:image />
-          <:content />
+          <:image width="100%" />
+          <div class="$-content">{{ this.data.content$ }}</div>
+          <div class="$-author">Posted by&nbsp;<:author /></div>
+          <div class="$-separator"></div>
+          <div><:contact /></div>
         </div>
       </div>
     */},
@@ -31,10 +37,17 @@ CLASS({
         flex-direction: column;
         padding: 16px;
       }
-      $-md-heading {
-        font-size: 20px;
-        color: argb(0,0,0,0.75);
-        margin-bottom: 8px;
+      $-author {
+        text-align: right;
+        margin-bottom: 4px;
+        opacity: 0.54;
+      }
+      $-separator {
+        border-bottom: 1px solid #e0e0e0;
+        margin-bottom: 4px;
+      }
+      $-content {
+        padding: 8px 0px;
       }
     */},
   ]

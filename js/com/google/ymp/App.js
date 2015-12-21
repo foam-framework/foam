@@ -12,8 +12,8 @@
 __DATA({
   model_: 'foam.build.WebApplication',
   id: 'com.google.ymp.App',
-  controller: 'com.google.ymp.Client',
-  defaultView: 'foam.ui.DetailView',
+  controller: 'com.google.ymp.UserClient',
+  //defaultView: 'foam.ui.DetailView',
   htmlHeaders: [
     '<link rel="stylesheet" href="fonts.css" />',
   ],

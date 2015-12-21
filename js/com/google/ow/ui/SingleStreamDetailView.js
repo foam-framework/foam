@@ -18,7 +18,7 @@ CLASS({
     'com.google.ow.model.Envelope',
     'com.google.ow.model.Text',
     'foam.u2.md.ActionButton',
-    'foam.u2.md.Input',
+    'foam.u2.md.TextField',
   ],
   imports: [
     'personDAO',
@@ -51,7 +51,7 @@ CLASS({
     function init() {
       // For Action.toE(), Property.toPropertyE().
       this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
-      this.Y.registerModel(this.Input, 'foam.u2.Input');
+      this.Y.registerModel(this.TextField, 'foam.u2.TextField');
 
       // HACK(markdittmer): Set titleText on messages.
       var self = this;
@@ -126,7 +126,7 @@ CLASS({
       single-stream-detail .message-entry {
         display: flex;
       }
-      single-stream-detail .message-entry .foam-u2-md-Input {
+      single-stream-detail .message-entry .foam-u2-md-TextField {
         flex-grow: 1;
       }
     */}

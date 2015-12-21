@@ -23,7 +23,7 @@ CLASS({
 
   requires: [
     'Property',
-    'foam.u2.Input'
+    'foam.u2.TextField'
   ],
 
   imports: [
@@ -73,7 +73,8 @@ CLASS({
     },
     // Set properties on delegate view instead of this
     function attrs(map) {
-      return this.attrs_(map, this.view);
+      this.view.attrs(map);
+      return this;
     }
   ],
 

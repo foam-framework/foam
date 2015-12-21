@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.u2.md',
   name: 'TextArea',
-  extends: 'foam.u2.md.Input',
+  extends: 'foam.u2.md.TextField',
 
   properties: [
     {

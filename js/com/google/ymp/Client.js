@@ -17,7 +17,10 @@ CLASS({
     'foam.core.dao.AuthenticatedWebSocketDAO',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
+    'foam.dao.EasyClientDAO',
+    'foam.dao.CachingDAO',
     'foam.core.dao.SyncDAO',
+    'com.google.ymp.bb.ContactProfile',
     'com.google.ymp.bb.Post',
     'com.google.ymp.bb.Reply',
     'com.google.ymp.DynamicImage',
@@ -31,9 +34,13 @@ CLASS({
     'postDAO',
     'replyDAO',
     'dynamicImageDAO',
+    'uploadImageDAO',
     'personDAO',
     'marketDAO',
-    
+    'highResImageDAO',
+    'contactProfileDAO',
+    'currentUser',
+
     'clearCache',
   ],
 
@@ -42,17 +49,12 @@ CLASS({
       name: 'postDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        return this.DynamicWhereDAO.create({
-          sourceDelegate: this.EasyDAO.create({
-            model: this.Post,
-            name: 'posts',
-            caching: true,
-            syncWithServer: true,
-            sockets: true,
-          }),
-          predicate: IN,
-          property: this.Post.MARKET,
-          parameter$: this.subscribedMarkets$
+        return this.EasyDAO.create({
+          model: this.Post,
+          name: 'posts',
+          caching: true,
+          syncWithServer: true,
+          sockets: true,
         });
       },
     },
@@ -60,17 +62,25 @@ CLASS({
       name: 'replyDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        return this.DynamicWhereDAO.create({
-          sourceDelegate: this.EasyDAO.create({
-            model: this.Reply,
-            name: 'replies',
-            caching: true,
-            syncWithServer: true,
-            sockets: true,
-          }),
-          predicate: IN,
-          property: this.Reply.MARKET,
-          parameter$: this.subscribedMarkets$
+        return this.EasyDAO.create({
+          model: this.Reply,
+          name: 'replies',
+          caching: true,
+          syncWithServer: true,
+          sockets: true,
+        });
+      },
+    },
+    {
+      name: 'uploadImageDAO',
+      view: 'foam.ui.DAOListView',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.DynamicImage,
+          name: 'dynamicImageSync',
+          caching: true,
+          syncWithServer: true,
+          sockets: true,
         });
       },
     },
@@ -78,11 +88,24 @@ CLASS({
       name: 'dynamicImageDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        return this.EasyDAO.create({
+        var d = this.EasyDAO.create({
           model: this.DynamicImage,
           name: 'dynamicImages',
-          caching: true,
-          syncWithServer: true,
+          type: 'MDAO',
+          autoIndex: true,
+          caching: true, // TODO: we're caching uploadImageDAO contents twice. Really need an AndDAO to merge the synched and strictly local DAOs.
+        });
+        this.uploadImageDAO.pipe(d);
+        return d;
+      },
+    },
+    {
+      name: 'highResImageDAO',
+      view: 'foam.ui.DAOListView',
+      lazyFactory: function() { /* Allow access to unfiltered images, but don't sync */
+        return this.EasyClientDAO.create({
+          model: this.DynamicImage,
+          subject: 'com.google.ymp.highResImageDAO',
           sockets: true,
         });
       },
@@ -104,14 +127,28 @@ CLASS({
       },
     },
     {
+      name: 'contactProfileDAO',
+      view: {
+        factory_:  'foam.ui.DAOListView',
+        rowView: 'foam.ui.DetailView'
+      },
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.ContactProfile,
+          name: 'contactProfiles',
+          caching: true,
+          syncWithServer: true,
+          sockets: true,
+        });
+      },
+    },
+    {
       name: 'marketDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        return this.EasyDAO.create({
-          model: this.Market,
-          name: 'markets',
-          caching: true,
-          // make remote
+        return this.EasyClientDAO.create({
+            model: this.Market,
+            sockets: true,
         });
       },
     },
@@ -119,11 +156,11 @@ CLASS({
       model_: 'StringProperty',
       name: 'currentUserId',
       postSet: function(old, nu) {
-        
+
         if ( ! nu ) {
           this.clearCache();
         }
-        
+
         if ( old === nu ) return;
         if ( ! this.currentUser || nu !== this.currentUser.id ) {
           // There's a delay on boot that caused the fine() to fail. TODO: This listener is pointless
@@ -142,7 +179,7 @@ CLASS({
           if ( nu.id !== this.currentUserId ) this.currentUserId = nu.id;
         }
         this.subscribedMarkets = nu.subscribedMarkets;
-        
+
         if ( old ) {
           this.clearCache();
         }
@@ -160,10 +197,10 @@ CLASS({
       var WebSocket = this.AuthenticatedWebSocketDAO.xbind({
         authToken$: this.currentUserId$,
       });
-      this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO'); 
+      this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
 
     },
-    function clearCache() { 
+    function clearCache() {
       // Changing users, clear out old cache
       console.log("User change: clearing old cached data");
       this.IDBDAO.create({
@@ -174,6 +211,7 @@ CLASS({
         model: this.SyncDAO.SyncRecord,
         name: 'posts_SyncRecords',
       }).removeAll();
+
       this.IDBDAO.create({
         model: this.Reply,
         name: 'replies',
@@ -181,6 +219,19 @@ CLASS({
       this.IDBDAO.create({
         model: this.SyncDAO.SyncRecord,
         name: 'replies_SyncRecords',
+      }).removeAll();
+
+      this.IDBDAO.create({
+        model: this.DynamicImage,
+        name: 'dynamicImageSync',
+      }).removeAll();
+      this.IDBDAO.create({
+        model: this.SyncDAO.SyncRecord,
+        name: 'dynamicImageSync_SyncRecords',
+      }).removeAll();
+      this.IDBDAO.create({
+        model: this.DynamicImage,
+        name: 'dynamicImages',
       }).removeAll();
     }
   ]

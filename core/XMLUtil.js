@@ -193,7 +193,7 @@ var XMLUtil = {
 
           if ( Array.isArray(val) && val.length == 0 ) continue;
 
-          if ( val == prop.defaultValue ) continue;
+          if ( equals(val, prop.defaultValue) ) continue;
 
           out('<property name="', XMLUtil.escapeAttr(prop.name), '" ' +
               (typeof val === 'function' ? 'type="function"' : '') + '>');

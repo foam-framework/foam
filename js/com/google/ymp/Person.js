@@ -29,6 +29,11 @@ CLASS({
       name: 'image',
     },
     {
+      type: 'Reference',
+      subType: 'com.google.ymp.bb.ContactProfile',
+      name: 'defaultContactProfile',
+    },
+    {
       type: 'Int',
       name: 'defaultImageLOD',
       defaultValue: 8,

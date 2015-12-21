@@ -18,7 +18,7 @@ CLASS({
     'com.google.ow.model.OrderItem',
     'foam.u2.DetailView',
     'foam.u2.md.QuickActionButton as ActionButton',
-    'foam.u2.md.Input',
+    'foam.u2.md.TextField',
   ],
   imports: [ 'purchaseOrder' ],
   // Renders property views of "this": Make their data be "this".
@@ -51,7 +51,7 @@ CLASS({
   methods: [
     function init() {
       // For Action.toE(), Property.toPropertyE().
-      this.Y.registerModel(this.Input, 'foam.u2.Input');
+      this.Y.registerModel(this.TextField, 'foam.u2.TextField');
       this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
       this.SUPER();
     },

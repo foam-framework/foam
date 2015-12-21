@@ -1,3 +1,12 @@
+var d1 = foam.u2.DateInput.create();
+var d2 = foam.u2.DateInput.create();
+d1.data$ = d2.data$;
+d1.write();
+d2.write();
+d1.data$.addListener(function() { console.log("8** ", d1.data); });
+
+d1.date = new Date();
+
 var timer = foam.util.Timer.create();
  timer.start();
 var E = X.E.bind(X.sub());
@@ -147,13 +156,13 @@ foam.u2.TextArea.create().write().data$ = foam.u2.TextArea.create().write().data
 foam.u2.TextArea.create({ onKey: true }).write().data$ = foam.u2.TextArea.create({ onKey: true }).write().data$;
 
 E('div').style({height: '30px'}).write();
-var e16 = foam.u2.Select.create({placeholder: 'Pick a Colour:', options: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
-var e17 = foam.u2.Select.create({options: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
+var e16 = foam.u2.Select.create({placeholder: 'Pick a Colour:', choices: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
+var e17 = foam.u2.Select.create({choices: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
 
 e16.data$ = e17.data$;
 
 setTimeout(function() {
-  e17.options = [['b', 'Bert'], ['e', 'Ernie']];
+  e17.choices = [['b', 'Bert'], ['e', 'Ernie']];
 }, 5000);
 
 //timer.stop();
@@ -456,7 +465,7 @@ MODEL({
     {
       name: 'firstName',
       toPropertyE: function(X) {
-        return X.lookup('foam.u2.md.Input').create(null, X);
+        return X.lookup('foam.u2.md.TextField').create(null, X);
       }
     },
     'lastName', 'age', 'brother'

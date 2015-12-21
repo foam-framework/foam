@@ -157,7 +157,7 @@ CLASS({
         this.id$el.style[key] = value;
       },
       onSetAttr: function(key, value) {
-        this.id$el[key] = value;
+        this.id$el.setAttribute(key, value === true ? '' : value);
       },
       onRemoveAttr: function(key, value) {
         this.id$el.removeAttribute(key);
@@ -340,7 +340,7 @@ CLASS({
     },
     {
       name: 'clickTarget_',
-    },
+    }
   ],
 
   templates: [
@@ -478,22 +478,40 @@ CLASS({
     // DOM Compatibility
     //
     function setAttribute(name, value) {
-      if ( value === undefined || value === null ) {
-        this.removeAttribute(name);
-        return;
-      }
+      var prop = this.model_.getProperty(name);
 
-      var attr = this.getAttributeNode(name);
-
-      if ( attr ) {
-        attr.value = value;
+      if ( prop && prop.attribute ) {
+        if ( typeof value === 'string' ) {
+          this[name] = prop.fromString(value);
+        } else if ( Value.isInstance(value) ) {
+          this.propertyValue(name).follow(value);
+        } else {
+          this[name] = value;
+        }
       } else {
-        attr = {name: name, value: value};
-        this.attributes.push(attr);
-        this.attributeMap[name] = attr;
-      }
+        if ( value === undefined || value === null || value === false ) {
+          this.removeAttribute(name);
+          return;
+        }
 
-      this.onSetAttr(name, value);
+        if ( typeof value === 'function' )
+          this.dynamicAttr_(name, value);
+        else if ( Value.isInstance(value) )
+          this.valueAttr_(name, value);
+        else {
+          var attr = this.getAttributeNode(name);
+
+          if ( attr ) {
+            attr.value = value;
+          } else {
+            attr = {name: name, value: value};
+            this.attributes.push(attr);
+            this.attributeMap[name] = attr;
+          }
+
+          this.onSetAttr(name, value);
+        }
+      }
     },
 
     function removeAttribute(name) {
@@ -635,10 +653,9 @@ CLASS({
     },
 
     function dynamicAttr_(key, fn) {
-      var self = this;
       this.dynamicFn(fn, function(value) {
-        self.setAttribute(key, value);
-      });
+        this.setAttribute(key, value);
+      }.bind(this));
     },
 
     function valueAttr_(key, value) {
@@ -650,33 +667,7 @@ CLASS({
     },
 
     function attrs(map) {
-      return this.attrs_(map, this);
-    },
-
-    function attrs_(map, view) {
-      // Takes view as parameter so that decorator views like PropertyView
-      // can easily set their delgate instead.
-      var model = view.model_;
-
-      for ( var key in map ) {
-        var value = map[key];
-        var prop  = model.getProperty(key);
-
-        if ( prop && prop.attribute ) {
-          if ( typeof value === 'string' ) {
-            view[key] = prop.fromString(value);
-          } else {
-            view[key] = value;
-          }
-        } else {
-          if ( typeof value === 'function' )
-            this.dynamicAttr_(key, value);
-          else if ( Value.isInstance(value) )
-            this.valueAttr_(key, value);
-          else
-            this.setAttribute(key, value);
-        }
-      }
+      for ( var key in map ) this.setAttribute(key, map[key]);
       return this;
     },
 
@@ -956,11 +947,8 @@ CLASS({
         var attr  = this.attributes[i];
         var value = this.attributes[i].value;
 
-        if ( value ) {
-          out(' ', attr.name);
-          if ( value !== undefined )
-            out('="', value, '"');
-        }
+        out(' ', attr.name);
+        if ( value !== false ) out('="', value, '"');
       }
 
       if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] &&

@@ -20,8 +20,10 @@ MODEL({
   name: 'FlightBooker',
   extends: 'foam.u2.Element',
 
+  // TODO: these shouldn't be required
   requires: [
-    'foam.u2.Checkbox' // TODO: shouldn't be required
+    'foam.u2.DateInput',
+    'foam.u2.Select'
   ],
 
   imports: [ 'dynamic' ],
@@ -31,16 +33,15 @@ MODEL({
       type: 'Boolean',
       name: 'oneWay',
       defaultValue: true,
-      // TODO: this
-      /*
-      view: {
-        factory_: 'foam.ui.ChoiceView',
-        choices: [
-          [ true,  'one-way flight' ],
-          [ false, 'return flight'  ]
-        ]
+      toPropertyE: function(X) {
+        // TODO: Why do I need to lookup here?
+        return X.lookup('foam.u2.Select').create({
+          choices: [
+            [ true,  'one-way flight' ],
+            [ false, 'return flight'  ]
+          ]
+        });
       }
-      */
     },
     {
       type: 'Date',
@@ -80,7 +81,6 @@ MODEL({
         <div class="$-title">Book Flight</div>
         <:oneWay/> <br>
         <:departDate/> <br>
-        {{this.returnDateMode}}
         <:returnDate mode={{this.returnDateMode}}/> <br>
         <:book/> <br>
       </div>
