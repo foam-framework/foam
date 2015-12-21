@@ -46,7 +46,7 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      
+
       // Call once before capture to pre-latch lazy values
       this.valueFactory();
 
@@ -57,7 +57,6 @@ CLASS({
 
       for ( var i = 0 ; i < this.values.length ; i++ )
         this.values[i].addListener(this.onSubValueChange);
-      console.log('**** ', this.values.join(','));
     },
     function destroy() {
       for ( var i = 0 ; i < this.values.length ; i++ )
