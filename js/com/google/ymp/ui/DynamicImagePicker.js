@@ -19,7 +19,7 @@ CLASS({
     'foam.ui.md.ImagePickerView',
   ],
   imports: [
-    'dynamicImageDAO',
+    'uploadImageDAO',
     'document',
     'market',
   ],
@@ -58,7 +58,7 @@ CLASS({
       imageSpecs.src = nu;
 
       // full res
-      this.dynamicImageDAO.put(this.DynamicImage.create({
+      this.uploadImageDAO.put(this.DynamicImage.create({
         id: createGUID(),
         imageID: id,
         levelOfDetail: 512,
@@ -84,7 +84,7 @@ console.log("MipMapping ", id);
         for (var esc = 0; esc < 10; ++esc) { // loop until we've found the right size
           var newImage = resizeTo(mult);
           if ( newImage.length < (sizes[i] * 1024) ) { // compare actual size to LOD
-            this.dynamicImageDAO.put(this.DynamicImage.create({
+            this.uploadImageDAO.put(this.DynamicImage.create({
               id: createGUID(),
               imageID: id,
               levelOfDetail: sizes[i],

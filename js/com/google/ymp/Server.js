@@ -71,6 +71,7 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
+          logging: true,
         });
       },
     },
