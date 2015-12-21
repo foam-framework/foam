@@ -36,6 +36,7 @@ CLASS({
     },
     ['hintText', 'Click to select an image or Drag & drop an image file here'],
     ['mode', 'read-write'],
+    ['useCamera', false],
   ],
 
   methods: [
@@ -132,7 +133,8 @@ CLASS({
           <div class="content">
             $$hintText{ mode: 'read-only', floatingLabel: false }
           </div>
-          <input type="file" id="%%inputId" accept="image/*" style="display:none">
+          <input type="file" id="%%inputId" accept="image/*" style="display:none"
+          <% if (this.useCamera) { %>capture="camera" <% } %> >
         </image-picker>
         <%
         this.on('change', this.inputFileChange, this.inputId);

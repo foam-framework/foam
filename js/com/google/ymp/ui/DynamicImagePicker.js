@@ -26,16 +26,44 @@ CLASS({
     [ 'nodeName', 'DYNAMIC-IMAGE' ],
     {
       name: 'data',
+      help: 'The new image ID',
+    },
+    {
+      name: 'image',
       lazyFactory: function() {
-        
+        return this.DynamicImage.create({
+          id: createGUID(),
+          imageID: createGUID()+"img",
+          levelOfDetail: 8,
+        });
+      },
+      postSet: function(old, nu) {
+        console.log("image set:", old, "to", nu);
+      }
+    },
+    {
+      name: 'imageData',
+      postSet: function(old, nu) {
+        if ( nu && this.image.imageData !== nu ) {
+          this.image.image = nu;
+          this.dynamicImageDAO.put(this.image);
+          this.data = this.image.imageID;
+          //console.log("dynamicImageDAO", this.image.imageID, this.data);
+        }
       }
     },
   ],
 
   methods: [
     function initE() {
-      this.add(this.ImagePickerView.create({ data$: this.data.imageData$ })).end();
+      this.add(
+        this.ImagePickerView.create({
+          data$: this.imageData$,
+          useCamera: true,
+          hintText: "Tap to take Photo",
+        })
+      ).end();
     },
   ],
-  
+
 });

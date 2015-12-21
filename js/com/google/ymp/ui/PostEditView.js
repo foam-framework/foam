@@ -22,7 +22,7 @@ CLASS({
   imports: [
     'currentUser',
   ],
-  
+
   properties: [
     {
       name: 'data',
@@ -33,12 +33,20 @@ CLASS({
         }
       }
     },
+//     {
+//       type: 'Image',
+//       name: 'image',
+//       toPropertyE: 'com.google.ymp.ui.DynamicImagePicker',
+//       postSet: function(old,nu) {
+//         // set post's image
+//       }
+//     }
   ],
 
   templates: [
     function initE() {/*#U2
       <div class="$">
-        (( this.Y.registerModel(this.TextField, 'com.google.ymp.ui.DynamicImageView'); ))
+        (( this.Y.registerModel(this.DynamicImagePicker, 'com.google.ymp.ui.DynamicImageView'); ))
         <div class="$-flex-col">
           <:title />
           <:image width="100%" />
