@@ -30,31 +30,30 @@ CLASS({
       name: 'Cell',
       extends: 'foam.graphics.SimpleRectangle',
       imports: [ 'timer', 'dynamic', 'cellSize', 'nx' ],
+      constants: { FILL: 0.64 },
       properties: [
         'row',
         'col',
-        {
-          name: 'lPhase',
-          factory: function() { return Math.random() * Math.PI * 2; }
-        }
+        { name: 'lPhase', factory: function() { return Math.random() * Math.PI * 2; } }
       ],
       methods: [
         function initCView() {
           this.x = this.cellSize * this.col+4;
           this.y = this.cellSize * this.row+4;
-          this.width = this.height = 0.64 * this.cellSize;
-
-          this.timer.time$.addListener(function() {
-            var t   = Math.PI * 2 * this.timer.time/1000.0;
-            var hue = (this.col/this.nx*360 + this.timer.time/3)%360;
-            var l   = 40 - 30*Math.cbrt(Math.sin(this.lPhase + t/2));
-	    this.background = 'hsl(' + hue + ',100%,' + l + '%)';
-          }.bind(this));
+          this.width = this.height = this.FILL * this.cellSize;
+          this.timer.time$.addListener(this.onTick);
         },
         function paintSelf(c) {
           c.shadowColor = this.background;
 	  c.shadowBlur  = 5;
           this.SUPER(c);
+        }
+      ],
+      listeners: [
+        function onTick() {
+          var hue = (this.col/this.nx*360 + this.timer.time/3)%360;
+          var l   = 40 - 30*Math.cbrt(Math.sin(this.lPhase + this.timer.time/360));
+	  this.background = 'hsl(' + hue + ',100%,' + l + '%)';
         }
       ]
     }
