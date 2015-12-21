@@ -365,9 +365,7 @@ GLOBAL.Property = {
       adapt: function(_, nu) {
         if ( typeof nu === 'string' ) {
           var f = function(X) { return X.lookup(nu).create(null, X); };
-          f.toString = function() {
-            return "function(X) { return X.lookup('"+nu+"').create(null, X); }"
-          };
+          f.toString = function() { return "'"+nu+"'"; };
           return f;
         } else {
           return nu;
