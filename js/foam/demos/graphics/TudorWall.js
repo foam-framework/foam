@@ -61,8 +61,8 @@ CLASS({
   ],
 
   properties: [
-    [ 'nx', 40 ],
-    [ 'ny', 30 ],
+    [ 'nx', 36 ],
+    [ 'ny', 24 ],
     [ 'cellSize', 24 ],
     [ 'background', 'black' ],
     {
