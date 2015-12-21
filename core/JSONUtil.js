@@ -346,7 +346,7 @@ var JSONUtil = {
 
           if ( Array.isArray(val) && ! val.length ) continue;
 
-          if ( val == prop.defaultValue ) continue;
+          if ( equals(val, prop.defaultValue) ) continue;
 
           if ( ! first ) out(',\n');
           out(nestedIndent, this.keyify(prop.name), ': ');
