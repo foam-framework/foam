@@ -17,6 +17,29 @@ CLASS({
   requires: [
     'com.google.ymp.ui.ColorPicker',
     'com.google.ymp.ui.DynamicImageLoader',
+    'com.google.ymp.bb.Reply',
+  ],
+  imports: [
+    'replyDAO',
+  ],
+  exports: [
+    'as self',
+  ],
+
+  properties: [
+    {
+      name: 'data',
+      postSet: function(old,nu) {
+        if ( nu ) {
+          this.replies = this.replyDAO.where(EQ(this.Reply.PARENT, nu.id));
+        }
+      }
+    },
+    {
+      type: 'DAO',
+      name: 'replies',
+      toPropertyE: 'foam.u2.DAOController',
+    }
   ],
 
   templates: [
@@ -28,6 +51,7 @@ CLASS({
           <div class="$-author">Posted by&nbsp;<:author /></div>
           <div class="$-separator"></div>
           <div><:contact /></div>
+          <self:replies />
         </div>
       </div>
     */},
