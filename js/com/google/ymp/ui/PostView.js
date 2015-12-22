@@ -18,9 +18,12 @@ CLASS({
     'com.google.ymp.ui.ColorPicker',
     'com.google.ymp.ui.DynamicImageLoader',
     'com.google.ymp.bb.Reply',
+    'foam.u2.DAOCreateController',
   ],
   imports: [
     'replyDAO',
+    'stack',
+    'currentUser',
   ],
   exports: [
     'as self',
@@ -31,7 +34,9 @@ CLASS({
       name: 'data',
       postSet: function(old,nu) {
         if ( nu ) {
-          this.replies = this.replyDAO.where(EQ(this.Reply.PARENT, nu.id));
+          this.replies = this.replyDAO
+            .orderBy(this.Reply.CREATION_TIME)
+            .where(EQ(this.Reply.PARENT_POST, nu.id));
         }
       }
     },
@@ -40,6 +45,26 @@ CLASS({
       name: 'replies',
       toPropertyE: 'foam.u2.DAOController',
     }
+  ],
+
+  actions: [
+    {
+      name: 'createButton',
+      ligature: 'reply',
+      code: function() {
+        this.stack.pushView(
+          this.DAOCreateController.create({
+            model: this.Reply,
+            data: this.Reply.create({
+              id: createGUID(),
+              author: this.currentUser.id,
+              parentPost: this.data.id,
+              market: this.data.market,
+            }),
+            dao: this.replyDAO,
+          }));
+      }
+    },
   ],
 
   templates: [
@@ -52,7 +77,10 @@ CLASS({
           <div class="$-separator"></div>
           <div><:contact /></div>
           <div class="$-separator"></div>
-          <div class="$-reply-title">Replies</div>
+          <div class="$-flex-row">
+            <div class="$-reply-title">Replies</div>
+            <self:createButton />
+          </div>
           <self:replies />
         </div>
       </div>
@@ -79,6 +107,12 @@ CLASS({
         margin: 8px;
         font-size: 20px;
         color: rgba(0,0,0,0.54);
+      }
+      $-flex-row {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        justify-content: space-between;
       }
     */},
   ]

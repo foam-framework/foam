@@ -22,10 +22,12 @@ CLASS({
 
   properties: [
     {
-      name: 'property'
+      name: 'property',
+      help: 'The single property to merge into the delegates objects',
     },
     {
-      name: 'joinToDAO'
+      name: 'joinToDAO',
+      help: 'The secondary DAO to merge into results from the delegate.',
     },
   ],
 

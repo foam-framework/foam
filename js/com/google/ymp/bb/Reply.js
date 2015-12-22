@@ -20,12 +20,14 @@ CLASS({
   requires: [
     'com.google.ymp.ui.ReplyRowView',
     'com.google.ymp.ui.ReplyView',
+    'com.google.ymp.ui.ReplyEditView',
   ],
 
   properties: [
     {
       name: 'content',
       defaultValue: '',
+      displayHeight: 4,
     },
     {
       type: 'Reference',
@@ -35,7 +37,7 @@ CLASS({
     },
     {
       type: 'Reference',
-      name: 'parent',
+      name: 'parentPost',
       subType: 'com.google.ymp.Post',
     },
     {
@@ -47,7 +49,9 @@ CLASS({
 
   methods: [
     function toE(X) {
-      return X.lookup('com.google.ymp.ui.ReplyView').create({ data: this }, X);
+      return (X.controllerMode == 'view') ?
+        X.lookup('com.google.ymp.ui.ReplyView').create({ data: this }, X) :
+        X.lookup('com.google.ymp.ui.ReplyEditView').create({ data: this }, X);
     },
     function toRowE(X) {
       return X.lookup('com.google.ymp.ui.ReplyRowView').create({ data: this }, X);

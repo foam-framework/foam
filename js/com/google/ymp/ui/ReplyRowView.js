@@ -27,12 +27,13 @@ CLASS({
       $ {
         display: flex;
         flex-direction: column;
-        background: #fff;
+        background-color: rgba(240,240,255, 0.25);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
         border-radius: 3px;
         max-height: 96px;
         overflow: hidden;
         padding: 8px;
+        margin-bottom: 8px;
       }
       $-content {
         margin: 8px;
