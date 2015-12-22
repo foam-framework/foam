@@ -52,7 +52,7 @@ CLASS({
       listeners: [
         function onTick() {
           var hue = (this.col/this.nx*360 + this.timer.time/3)%360;
-          var l   = 40 - 30*Math.cbrt(Math.sin(this.lPhase + this.timer.time/360));
+          var l   = 40 - 30*Math.cbrt(Math.sin(this.lPhase + this.timer.time/200));
 	  this.background = 'hsl(' + hue + ',100%,' + l + '%)';
         }
       ]
@@ -60,9 +60,9 @@ CLASS({
   ],
 
   properties: [
-    [ 'nx', 36 ],
-    [ 'ny', 24 ],
-    [ 'cellSize', 24 ],
+    [ 'nx', 25 ],
+    [ 'ny', 13 ],
+    [ 'cellSize', 20 ],
     [ 'background', 'black' ],
     {
       name: 'timer',
@@ -77,8 +77,8 @@ CLASS({
 
   methods: [
     function initCView() {
-      this.width  = this.nx * this.cellSize;
-      this.height = this.ny * this.cellSize;
+      this.width  = 5000; //this.nx * this.cellSize;
+      this.height = 5000; //this.ny * this.cellSize;
 
       for ( var i = 0 ; i < this.nx ; i++ )
 	for ( var j = 0 ; j < this.ny ; j++ )
