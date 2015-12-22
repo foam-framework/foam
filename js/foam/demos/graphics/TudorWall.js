@@ -29,7 +29,7 @@ CLASS({
     {
       name: 'Cell',
       extends: 'foam.graphics.SimpleRectangle',
-      imports: [ 'timer', 'dynamic', 'cellSize', 'nx' ],
+      imports: [ 'timer', 'cellSize', 'nx' ],
       constants: { FILL: 0.64 },
       properties: [
         'row',
@@ -38,8 +38,8 @@ CLASS({
       ],
       methods: [
         function initCView() {
-          this.x = this.cellSize * this.col+4;
-          this.y = this.cellSize * this.row+4;
+          this.x = 4 + this.cellSize * this.col;
+          this.y = 4 + this.cellSize * this.row;
           this.width = this.height = this.FILL * this.cellSize;
           this.timer.time$.addListener(this.onTick);
         },
@@ -51,7 +51,7 @@ CLASS({
       ],
       listeners: [
         function onTick() {
-          var hue = (this.col/this.nx*360 + this.timer.time/3)%360;
+          var hue = ( this.col/this.nx*360 + this.timer.time/3 ) % 360;
           var l   = 40 - 30*Math.cbrt(Math.sin(this.lPhase + this.timer.time/200));
 	  this.background = 'hsl(' + hue + ',100%,' + l + '%)';
         }
@@ -64,15 +64,7 @@ CLASS({
     [ 'ny', 13 ],
     [ 'cellSize', 20 ],
     [ 'background', 'black' ],
-    {
-      name: 'timer',
-      factory: function() { return this.Timer.create(); }
-    },
-    {
-      name:  'r',
-      defaultValue: 300,
-      postSet: function(_, r) { this.width = this.height = 2*r + 100; }
-    }
+    { name: 'timer', factory: function() { return this.Timer.create(); } }
   ],
 
   methods: [
@@ -82,8 +74,7 @@ CLASS({
 
       for ( var i = 0 ; i < this.nx ; i++ )
 	for ( var j = 0 ; j < this.ny ; j++ )
-          // TODO: this.Y shouldn't be required
-	  this.addChild(this.Cell.create({row: j, col: i}, this.Y));
+	  this.addChild(this.Cell.create({row: j, col: i}, this.Y)); // TODO: this.Y shouldn't be required
 
       this.timer.start();
     },
