@@ -20,6 +20,9 @@ CLASS({
   imports: [
     'contactProfileDAO',
   ],
+  exports: [
+    'as self',
+  ],
 
   properties: [
     {
@@ -31,22 +34,22 @@ CLASS({
           .limit(1)
           .pipe({
             put: function(profile) {
-              self.contactProfile = profile;
+              self.contactDetails = profile.contactDetails;
             }
           });
       }
     },
     {
-      type: 'com.google.ymp.bb.ContactProfile',
-      name: 'contactProfile',
+      type: 'StringArray',
+      name: 'contactDetails',
+      //toPropertyE: 'someotherview'
     },
   ],
 
   templates: [
     function initE() {/*#U2
       <div class="$">
-        <p>contact details go here</p>
-        <div>{{this.contactProfile.CONTACT_DETAILS}}</div>
+        <self:contactDetails />
       </div>
     */},
   ]
