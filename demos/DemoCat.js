@@ -380,6 +380,13 @@ return JSONUtil.arrayToObjArray(X, [
     image: 'Snake.png'
   },
   {
+    name: 'Tudor Wall',
+    model: 'foam.demos.graphics.TudorWall',
+    description: 'An animated rainbow coloured wall.',
+    keywords: [ 'animation', 'graphics' ],
+    image: 'TudorWall.png'
+  },
+  {
     name: 'Task Manager',
     model: 'foam.apps.ctm.TaskManager',
     description: 'Prototype Chrome Task Manager that adds Material Design, search, and graphing.',
