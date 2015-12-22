@@ -28,6 +28,7 @@ CLASS({
     'com.google.ymp.Market',
     'foam.ui.DAOListView',
     'com.google.ymp.dao.DynamicWhereDAO',
+    'foam.core.dao.PropertyOffloadDAO',
   ],
 
   exports: [
@@ -78,7 +79,6 @@ CLASS({
         return this.EasyDAO.create({
           model: this.DynamicImage,
           name: 'dynamicImageSync',
-          caching: true,
           syncWithServer: true,
           sockets: true,
         });
@@ -88,12 +88,21 @@ CLASS({
       name: 'dynamicImageDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        var d = this.EasyDAO.create({
-          model: this.DynamicImage,
-          name: 'dynamicImages',
-          type: 'MDAO',
-          autoIndex: true,
-          caching: true, // TODO: we're caching uploadImageDAO contents twice. Really need an AndDAO to merge the synched and strictly local DAOs.
+        var d = this.PropertyOffloadDAO.create({ // offload image data to separate DAO
+          delegate: this.EasyDAO.create({ // the rest of the properties are indexed
+            model: this.DynamicImage,
+            type: 'MDAO',
+            name: 'dynamicImages',
+            autoIndex: true,
+            cache: true,
+          }),
+          property: this.DynamicImage.IMAGE,
+          offloadDAO: this.EasyDAO.create({
+            model: this.DynamicImage,
+            name: 'dynamicImageData'
+          }),
+          loadOnSelect: true,
+          loadForListeners: true,
         });
         this.uploadImageDAO.pipe(d);
         return d;
