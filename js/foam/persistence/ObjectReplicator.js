@@ -26,7 +26,7 @@ CLASS({
       swiftPostSet: function() {/*
         // Re-set the dao so it listens for the new id.
         self.obj = nil
-        self.dao = self.dao
+        self.set("dao", value: self.dao)
 
         self.future = Future()
         self.dao.find(newValue, sink: ClosureSink(args: [
