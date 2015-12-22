@@ -22,7 +22,12 @@ CLASS({
 
   properties: [
     [ 'nodeName', 'textarea' ],
-    'data',
+    {
+      name: 'data',
+      postSet: function(_, d) {
+        if ( this.id$el ) this.id$el.value = d;
+      }
+    },
     {
       type: 'Boolean',
       name: 'onKey',
@@ -36,7 +41,20 @@ CLASS({
   methods: [
     function initE() {
       this.cls(this.myCls());
-      Events.link(this.data$, this.attrValue(null, this.onKey ? 'input' : null));
+      this.on(this.onKey ? 'input' : 'change', this.onInput);
+    },
+    function load() {
+      this.SUPER();
+      this.data = this.data;
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onInput',
+      code: function() {
+        if ( this.id$el ) this.data = this.id$el.value;
+      }
     }
   ]
 });
