@@ -23,6 +23,7 @@ CLASS({
     'foam.u2.RelationshipView',
     'foam.u2.md.Checkbox',
     'foam.u2.md.TextField',
+    'foam.u2.md.MultiLineTextField',
     'foam.u2.md.Select',
   ],
 
@@ -66,6 +67,7 @@ CLASS({
     function init() {
       this.Y.registerModel(this.Checkbox, 'foam.u2.Checkbox');
       this.Y.registerModel(this.TextField, 'foam.u2.TextField');
+      this.Y.registerModel(this.MultiLineTextField, 'foam.u2.MultiLineTextField');
       this.Y.registerModel(this.Select, 'foam.u2.Select');
       this.SUPER();
     },

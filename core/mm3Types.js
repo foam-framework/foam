@@ -725,7 +725,7 @@ CLASS({
     {
       name: 'toPropertyE',
       defaultValue: function(X) {
-        return X.lookup('foam.u2.TextArea').create(undefined, X);
+        return X.lookup('foam.u2.MultiLineTextField').create(undefined, X);
       }
     },
     {
