@@ -30,7 +30,8 @@ CLASS({
     {
       type: 'Reference',
       name: 'author',
-      subType: 'com.google.plus.Person',
+      subType: 'com.google.ymp.Person',
+      toPropertyE: 'com.google.ymp.ui.PersonChipView',
     },
     {
       type: 'Reference',

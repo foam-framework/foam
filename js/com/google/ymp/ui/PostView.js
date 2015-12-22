@@ -51,6 +51,8 @@ CLASS({
           <div class="$-author">Posted by&nbsp;<:author /></div>
           <div class="$-separator"></div>
           <div><:contact /></div>
+          <div class="$-separator"></div>
+          <div class="$-reply-title">Replies</div>
           <self:replies />
         </div>
       </div>
@@ -72,6 +74,11 @@ CLASS({
       }
       $-content {
         padding: 8px 0px;
+      }
+      $-reply-title {
+        margin: 8px;
+        font-size: 20px;
+        color: rgba(0,0,0,0.54);
       }
     */},
   ]

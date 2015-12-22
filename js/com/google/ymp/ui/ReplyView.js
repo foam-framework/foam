@@ -23,11 +23,6 @@ CLASS({
     function CSS() {/*
       $ {
         display: flex;
-        background: #fff;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
-        margin: 10px;
-        border-radius: 3px;
-        max-height: 96px;
         overflow: hidden;
         padding: 8px;
       }
