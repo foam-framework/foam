@@ -16,8 +16,16 @@ CLASS({
   templates: [
     function initE() {/*#U2
       <div class="$">
-        {{this.data.content}}
+
+      {{this.data.content}}
       </div>
+    */},
+    function CSS() {/*
+      $ {
+        display: flex;
+        overflow: hidden;
+        padding: 8px;
+      }
     */},
   ]
 });
