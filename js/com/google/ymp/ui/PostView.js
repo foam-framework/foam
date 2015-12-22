@@ -34,16 +34,15 @@ CLASS({
       name: 'data',
       postSet: function(old,nu) {
         if ( nu ) {
-          this.replies = this.replyDAO
-            .orderBy(this.Reply.CREATION_TIME)
-            .where(EQ(this.Reply.PARENT_POST, nu.id));
+          this.replies = this.replyDAO.where(EQ(this.Reply.PARENT_POST, nu.id))
+            .orderBy(this.Reply.getPrototype().CREATION_TIME);
         }
       }
     },
     {
       type: 'DAO',
       name: 'replies',
-      toPropertyE: 'foam.u2.DAOController',
+      toPropertyE: 'foam.u2.DAOListView',
     }
   ],
 

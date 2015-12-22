@@ -13,10 +13,15 @@ CLASS({
   package: 'com.google.ymp.ui',
   name: 'ReplyEditView',
   extends: 'foam.u2.View',
+
+  imports: [
+    'currentUser',
+  ],
+
   templates: [
     function initE() {/*#U2
       <div class="$">
-        <p>Reply</p>
+        <p>Public Reply as &nbsp;{{ this.currentUser.name }} </p>
         <:content displayHeight="4" />
       </div>
     */},
