@@ -39,7 +39,10 @@ CLASS({
 
   methods: {
     listen: function(sink, options) {
-      this.SUPER( this.loadForListeners ? this.offloadSink(sink) : sink, options);
+      // TODO: For pipe(), this offloadSink should coordinate with the select()'s offloadSink,
+      // so that the select puts, then eof, then the listen puts come through in order.
+      // Otherwise listener puts aren't in a guaranteed order.
+      this.SUPER( this.loadForListeners ? this.simpleOffloadSink(sink) : sink, options);
     },
     unlisten: function(sink) {
       /* Stop sending updates to the given sink. */
@@ -70,44 +73,75 @@ CLASS({
       return this.delegate.select(mysink, options);
     },
 
-    offloadSink: function(sink) {
-      // TODO: this doesn't address potential put()s going out of order. Chain of futures instead?
+    simpleOffloadSink: function(sink) {
       var self = this;
       return {
         __proto__: sink,
-        activePuts: 0, // semaphore to ensure the delegate's eof() comes after our async puts
         put: function(obj) {
-          var sinkSelf = this;
-          sinkSelf.activePuts++;
           self.offloadDAO.find(obj.id, {
             put: function(offload) {
-              sinkSelf.decrementPuts();
               if ( offload[self.property.name] )
                 obj[self.property.name] = offload[self.property.name];
               sink.put && sink.put(obj);
             },
             error: function(offload) {
               // fail-through
-              sinkSelf.decrementPuts();
               sink.put && sink.put(obj);
             }
           });
         },
         eof: function() {
-          if ( this.activePuts <= 0 ) sink.eof();
+          sink.eof && sink.eof();
         },
-        decrementPuts: function() {
-          --this.activePuts;
-          if (this.activePuts <= 0) {
-            sink.eof();
-            console.assert(this.activePuts === 0, "PropertyOffloadDAO had a bad activePut count", this.activePuts);
-          }
-        }
+      };
+    },
+
+    offloadSink: function(sink) {
+      var self = this;
+      return {
+        __proto__: sink,
+        previousFuture: afuture().set(),
+        put: function(obj) {
+          /* Each put sets up a new future in the chain. The offloaded-data find
+            starts immediately, and when it completes the previous future is
+            asked to call our completion, which will then trigger our future to set
+            the future for the next put (or eof) in the chain.
+          */
+          var sinkSelf = this;
+          var previousFuture = sinkSelf.previousFuture;
+          var myFuture = sinkSelf.previousFuture = afuture();
+
+          var completePutFn = function(ret) {
+            sink.put && sink.put(obj);
+            myFuture.set();
+          };
+
+          self.offloadDAO.find(obj.id, {
+            put: function(offload) {
+              if ( offload[self.property.name] )
+                obj[self.property.name] = offload[self.property.name];
+              previousFuture.get(completePutFn);
+            },
+            error: function(offload) {
+              // fail-through
+              previousFuture.get(competePutFn);
+            }
+          });
+        },
+        eof: function() {
+          var previousFuture = this.previousFuture;
+          var myFuture = this.previousFuture = afuture();
+          previousFuture.get(function() {
+            sink.eof && sink.eof();
+            myFuture.set();
+            // TODO: listenerFuture.set() to allow dao listeners to procede?
+          });
+        },
       };
     },
 
     find: function(id, sink) {
-      this.delegate.find(id, this.offloadSink(sink));
+      this.delegate.find(id, this.simpleOffloadSink(sink));
     }
   }
 });
