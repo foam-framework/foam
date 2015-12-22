@@ -56,8 +56,12 @@ CLASS({
       model_: 'ViewFactoryProperty',
       name: 'clientView',
       defaultValue: function() {
+        this.client.Y.registerModel(this.BrowserView.xbind({
+          title: "Avizi"
+        }), 'foam.browser.u2.BrowserView');
+
         return this.BrowserController.create({
-            data: this.client.postDAO
+            data: this.client.postDAO,
         }, this.client.Y);
       },
     },
