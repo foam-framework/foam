@@ -20,6 +20,8 @@ MODEL({
   name: 'Timer',
   extends: 'foam.u2.Element',
 
+  imports: [ 'dynamic' ],
+
   properties: [
     {
       name: 'progress',
@@ -37,6 +39,7 @@ MODEL({
       type: 'Int',
       name: 'duration',
       units: 'ms',
+      // TODO:
       view: { factory_: 'foam.ui.RangeView', maxValue: 10000 }, // TODO:
       defaultValue: 5000
     },
@@ -49,7 +52,7 @@ MODEL({
   methods: [
     function init() {
       this.SUPER();
-      this.X.dynamic(function() {
+      this.dynamic(function() {
         this.progress = this.duration ? 100 * Math.min(1, 1000 * this.elapsedTime / this.duration) : 100;
       }.bind(this));
       this.duration$.addListener(this.tick);
@@ -58,8 +61,8 @@ MODEL({
   ],
   actions: [
     function reset() {
-        this.elapsedTime = this.lastTick_ = 0;
-        this.tick();
+      this.elapsedTime = this.lastTick_ = 0;
+      this.tick();
     }
   ],
   templates: [
