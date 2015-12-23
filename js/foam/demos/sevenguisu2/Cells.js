@@ -152,15 +152,9 @@ MODEL({
         }
       ],
       methods: [
-        function isLoaded() {
-          return this.value;
-        },
-        function listenForLoad() {
-          this.value$.addListener(this.onDataLoad);
-        },
-        function toReadE() {
-          return this.E('span').add(this.value$);
-        },
+        function isLoaded() { return this.value; },
+        function listenForLoad() { this.value$.addListener(this.onDataLoad); },
+        function toReadE() { return this.E('span').add(this.value$); },
         function toWriteE() {
           this.formula$.addListener(this.onDataLoad);
           var e = this.E('input');
@@ -227,9 +221,7 @@ this.loadCells({"A0":"<div style=\"width:200px;\"><b><u>Benchmark</u></b></div>"
       }
       return map;
     },
-    function cellName(c, r) {
-      return String.fromCharCode(65 + c) + r;
-    },
+    function cellName(c, r) { return String.fromCharCode(65 + c) + r; },
     function cell(name) {
       var self = this;
       var cell = this.cells[name];
@@ -269,7 +261,7 @@ this.loadCells({"A0":"<div style=\"width:200px;\"><b><u>Benchmark</u></b></div>"
       $ {
         border-left: none;
         border-top: none;
-        overflow: auto; 
+        overflow: auto;
       }
     */},
     function initE() {/*#U2
