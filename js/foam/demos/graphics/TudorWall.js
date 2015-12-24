@@ -18,19 +18,19 @@
 CLASS({
   package: 'foam.demos.graphics',
   name: 'TudorWall',
-  extends: 'foam.graphics.CView',
+  extends: 'foam.graphics.SimpleRectangle', // TODO: Make be CView
 
   requires: [ 'foam.util.Timer' ],
   exports:  [ 'timer', 'cellSize', 'nx' ],
 
-  documentation: "Ported from Ana Tudor's demo at: http://codepen.io/thebabydino/pen/Qjejog/",
+  documentation: "Reproduction of Ana Tudor's demo at: http://codepen.io/thebabydino/pen/Qjejog/",
 
   models: [
     {
       name: 'Cell',
       extends: 'foam.graphics.SimpleRectangle',
       imports: [ 'timer', 'cellSize', 'nx' ],
-      constants: { FILL: 0.64 },
+      constants: { FILL_RATIO: 0.64 },
       properties: [
         'row',
         'col',
@@ -40,7 +40,7 @@ CLASS({
         function initCView() {
           this.x = 4 + this.cellSize * this.col;
           this.y = 4 + this.cellSize * this.row;
-          this.width = this.height = this.FILL * this.cellSize;
+          this.width = this.height = this.FILL_RATIO * this.cellSize;
           this.timer.time$.addListener(this.onTick);
         },
         function paintSelf(c) {
@@ -63,25 +63,19 @@ CLASS({
     [ 'nx', 25 ],
     [ 'ny', 13 ],
     [ 'cellSize', 20 ],
-    [ 'background', 'black' ],
-    { name: 'timer', factory: function() { return this.Timer.create(); } }
+    [ 'background', 'black' ], // TODO: Why doesn't this work?
+    { name: 'timer', factory: function() { return this.Timer.create({isStarted: true}); } }
   ],
 
   methods: [
     function initCView() {
       this.width  = 5000; //this.nx * this.cellSize;
       this.height = 5000; //this.ny * this.cellSize;
+      this.background = 'black';
 
       for ( var i = 0 ; i < this.nx ; i++ )
 	for ( var j = 0 ; j < this.ny ; j++ )
 	  this.addChild(this.Cell.create({row: j, col: i}));
-
-      this.timer.start();
-    },
-    function paintSelf(c) {
-      // TODO: Why is this needed?
-      this.background = 'black';
-      this.erase(c);
     }
   ]
 });
