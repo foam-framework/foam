@@ -20,13 +20,17 @@ MODEL({
   name: 'Timer',
   extends: 'foam.u2.Element',
 
+  requires: [
+    'foam.u2.ProgressView',
+    'foam.u2.RangeView'
+  ],
   imports: [ 'dynamic' ],
 
   properties: [
     {
       name: 'progress',
       label: 'Elapsed Time',
-      view: 'foam.ui.ProgressView' // TODO:
+      toPropertyE: 'foam.u2.ProgressView'
     },
     {
       name: 'elapsedTime',
@@ -39,8 +43,7 @@ MODEL({
       type: 'Int',
       name: 'duration',
       units: 'ms',
-      // TODO:
-      view: { factory_: 'foam.ui.RangeView', maxValue: 10000 }, // TODO:
+      toPropertyE: function() { return this.X.lookup('foam.u2.RangeView').create({maxValue: 10000}); },
       defaultValue: 5000
     },
     {
