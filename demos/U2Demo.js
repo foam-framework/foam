@@ -519,7 +519,7 @@ MODEL({
       <h2>Custom Elements</h2>
       <red>not red</red>
       <p as="p">
-        (( p.X.registerE('red', RedElement); ))
+        (( p.Y.registerE('red', RedElement); ))
         <red>red</red>
       </p>
       <red>not red again</red>
