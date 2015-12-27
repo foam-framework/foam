@@ -18,5 +18,11 @@
 CLASS({
   package: 'foam.u2',
   name: 'TextField',
-  extends: 'foam.u2.Input'
+  extends: 'foam.u2.Input',
+
+  templates: [
+    function CSS() {/*
+      $:read-only { border-width: 0; }
+    */}
+  ]
 });
