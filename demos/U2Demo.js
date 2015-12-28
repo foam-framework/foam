@@ -129,9 +129,8 @@ MODEL({name: 'Person', properties: ['firstName', 'lastName', 'age']});
 var dd = Person.create({firstName: 'Donald', lastName: 'Duck', age: 83});
 
 foam.u2.DetailView.create({data:dd}).write();
-
 var dv = foam.u2.DetailView.create().write();
-
+foam.u2.md.DetailView.create({data:dd}).write();
 
 
 setTimeout(function() { dv.data = dd; }, 2000);
