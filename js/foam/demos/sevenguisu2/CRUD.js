@@ -34,6 +34,7 @@ MODEL({
   extends: 'foam.u2.Element',
 
   requires: [
+    'foam.u2.DetailView',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO', // TODO: This shouldn't be required
     'foam.demos.sevenguisu2.Person',
@@ -63,6 +64,7 @@ MODEL({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
+      // TODO: replace with foam.u2.TableView when available
       view: {
         factory_: 'foam.ui.TableView',
         title: '',
@@ -77,7 +79,7 @@ MODEL({
     },
     {
       name: 'data',
-      view: { factory_: 'foam.ui.DetailView', title: '' },
+      toPropertyE: 'foam.u2.DetailView',
       factory: function() { return this.Person.create(); }
     }
   ],
@@ -94,7 +96,7 @@ MODEL({
       $ .summaryPane { width: 49%; display: inline-block; vertical-align: top; }
       $ .tableView { height: 184px; outline: none; }
     */},
-    function init() {/*#U2
+    function initE() {/*#U2
       <div class="$" x:data={{this}}>
         <span class="prefix label">Filter prefix: </span> <:prefix onKeyMode="true" type="search"/>
         <div class="content">
