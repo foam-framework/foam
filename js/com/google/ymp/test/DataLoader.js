@@ -68,19 +68,24 @@ CLASS({
       this.loadData(daoName, dao, model);
     },
 
-    function loadData(baseName, dao, model) {
+    function loadData(baseName, dao, model, opt_ret) {
+      var ret = opt_ret || nop;
       var dataPaths = this.DATA_PATHS.map(function(p) {
         return p + baseName + '.json';
       });
+      var found = false;
       for ( var i = 0; i < dataPaths.length; ++i ) {
         try {
           var result = this.fs.readFileSync(dataPaths[i]);
           if ( result ) {
-            JSONUtil.arrayToObjArray(this.Y, eval('(' + result + ')'), model).select(dao);
+            JSONUtil.arrayToObjArray(this.Y, eval('(' + result + ')'), model).select(dao)(ret);
+            found = true;
             break;
           }
         } catch (e) { this.console.log(e); }
       }
+
+      if ( ! found ) ret(null);
 
       return dao;
     },
