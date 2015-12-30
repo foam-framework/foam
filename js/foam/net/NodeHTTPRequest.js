@@ -20,7 +20,7 @@ CLASS({
   name: 'NodeHTTPRequest',
   extends: 'foam.net.BaseHTTPRequest',
   requires: [
-    'foam.net.HTTPResponse'
+    'foam.net.NodeHTTPResponse'
   ],
   properties: [
     {
@@ -45,27 +45,31 @@ CLASS({
       this.hostname = parsed.hostname;
       this.port = parsed.port;
       this.path = parsed.path;
+      return this;
     },
-    function asend() {
-      var options = {};
+    function setHeader(key, value) {
+      this.headers[key] = value;
+      return this;
+    },
+    function asend(opt_responseConfig) {
       if ( this.url ) {
         this.fromUrl(this.url);
       }
 
       var http = this.protocol === "http" ? this.http : this.https;
 
-
       var options = {
         hostname: this.hostname,
         method: this.method || "GET",
-        path: this.path
+        path: this.path,
+        headers: this.headers,
       };
 
       var self = this;
 
       var future = afuture();
 
-      var response = this.HTTPResponse.create();
+      var response = this.NodeHTTPResponse.create(opt_responseConfig);
       var req = http.request(options, function(res) {
         var status = res.statusCode;
         var headers = res.headers;
@@ -87,7 +91,7 @@ CLASS({
       }
 
       req.on('error', function(error) {
-        var response = self.HTTPResponse.create();
+        var response = self.NodeHTTPResponse.create();
         response.error = error;
         future.set(response);
       });
