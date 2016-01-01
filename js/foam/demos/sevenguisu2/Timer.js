@@ -36,7 +36,6 @@ MODEL({
       name: 'elapsedTime',
       units: 's',
       label: '',
-      mode: 'read-only',
       defaultValue: 0
     },
     {
@@ -75,13 +74,13 @@ MODEL({
       $ .label { display: inline-block; width: 130px; }
       $ button { width: 332px !important; margin-top: 16px !important; }
       $ input { margin-left: 12px; }
-      $ input[name="duration"] { width: 182px; }
+      $ .foam-u2-RangeView { width: 182px; }
       $ row { display: block; height: 30px; }
     */},
     function initE() {/*#U2
       <div class="$" x:data={{this}}>
         <row><span class="label">Elapsed Time:</span> <:progress width="50"/></row>
-        <row class="elapsed"><:elapsedTime precision="1" mode="read-only"/>s</row>
+        <row class="elapsed">{{this.dynamic(function(t) { return t.toFixed(1); }, this.elapsedTime$)}}s</row>
         <row><span class="label">Duration:</span> <:duration onKeyMode="true"/></row>
         <:reset/>
       </div>
