@@ -129,9 +129,8 @@ MODEL({name: 'Person', properties: ['firstName', 'lastName', 'age']});
 var dd = Person.create({firstName: 'Donald', lastName: 'Duck', age: 83});
 
 foam.u2.DetailView.create({data:dd}).write();
-
 var dv = foam.u2.DetailView.create().write();
-
+foam.u2.md.DetailView.create({data:dd}).write();
 
 
 setTimeout(function() { dv.data = dd; }, 2000);
@@ -519,7 +518,7 @@ MODEL({
       <h2>Custom Elements</h2>
       <red>not red</red>
       <p as="p">
-        (( p.X.registerE('red', RedElement); ))
+        (( p.Y.registerE('red', RedElement); ))
         <red>red</red>
       </p>
       <red>not red again</red>

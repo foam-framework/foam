@@ -17,12 +17,18 @@
 
 CLASS({
   package: 'foam.u2',
-  name: 'TextField',
+  name: 'RangeView',
   extends: 'foam.u2.Input',
+//  extends: 'foam.ui.AbstractNumberFieldView',
 
-  templates: [
-    function CSS() {/*
-      $:read-only { border-width: 0; }
-    */}
+  properties: [
+    [ 'maxValue', 100 ]
+  ],
+
+  methods: [
+    function initE() {
+      this.SUPER();
+      this.attrs({type: 'range', max: this.maxValue$});
+    }
   ]
 });

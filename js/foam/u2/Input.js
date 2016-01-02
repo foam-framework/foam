@@ -36,7 +36,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .foam-u2-Input:read-only { border-width: 0; }
+      $:read-only { border-width: 0; }
     */}
   ],
 

@@ -61,7 +61,7 @@ CLASS({
     {
       type: 'String',
       name: 'content',
-    }
+    },
   ],
 
   methods: [

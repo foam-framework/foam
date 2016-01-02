@@ -17,12 +17,27 @@
 
 CLASS({
   package: 'foam.u2',
-  name: 'TextField',
-  extends: 'foam.u2.Input',
+  name: 'ProgressView',
+  extends: 'foam.u2.View',
+
+  properties: [
+    [ 'nodeName', 'progress' ]
+  ],
 
   templates: [
     function CSS() {/*
-      $:read-only { border-width: 0; }
-    */}
+      $ {
+        margin: 2px 0 0 10px;
+        height: 23px;
+        width: 183px;
+      }
+    */},
+  ],
+
+  methods: [
+    function initE() {
+      this.SUPER();
+      this.cls(this.myCls()).attrs({value: this.data$, max: 100});
+    }
   ]
 });

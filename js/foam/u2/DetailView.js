@@ -27,7 +27,7 @@ CLASS({
   ],
 
   imports: [ 'dynamic' ],
-  exports: [ 'data' ],
+  exports: [ 'data', 'controllerMode' ],
 
   properties: [
     {
@@ -52,6 +52,10 @@ CLASS({
     },
     {
       name: 'properties'
+    },
+    {
+      name: 'controllerMode',
+      attribute: true
     },
     {
       name: 'title',

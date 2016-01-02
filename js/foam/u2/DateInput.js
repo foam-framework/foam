@@ -31,8 +31,8 @@ CLASS({
       Events.relate(
         this.data$,
         this.attrValue(null, this.onKey ? 'input' : null),
-        function(date) { debugger; return date ? date.toISOString().substring(0,10) : date; },
-        function(value) { debugger; return new Date(value); }
+        function(date) { return date ? date.toISOString().substring(0,10) : date; },
+        function(value) { return new Date(value); }
       );
     }
   ]

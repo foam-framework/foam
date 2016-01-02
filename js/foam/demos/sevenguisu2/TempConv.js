@@ -26,6 +26,8 @@ MODEL({
   templates: [
     // TODO: Outer <span> shouldn't be required.
     // TODO: x:data={{this}} shouldn't be required, use this:c instead
+    // TODO: precision doesn't work
+    // TODO: Whitespace should be preserved as a single character
     function toE() {/*#U2<span x:data={{this}}><:c onKeyMode="true" precision="4"/> Celsius = <:f onKeyMode="true" precision="4"/> Fahrenheit</span>*/}
   ],
   methods: [
