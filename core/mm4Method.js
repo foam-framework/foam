@@ -250,6 +250,7 @@ CLASS({
   ],
   methods: [
     function toE(X) {
+      console.assert(X, 'X required for Action.toE().');
       return X.lookup('foam.u2.ActionButton').create({data: X.data, action: this}, X);
     },
     function maybeCall(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
