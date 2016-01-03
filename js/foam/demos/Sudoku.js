@@ -22,10 +22,11 @@ CLASS({
   models: [
     {
       name: 'Cell',
+
       properties: [
         {
           name: 'value',
-          displayWidth: 3
+          displayWidth: 1
         }
       ],
       templates: [
@@ -66,13 +67,13 @@ CLASS({
       X = X.sub({data: this});
       var e = X.E();
       for ( var a = 0 ; a < 3 ; a++ ) {
-        var r1 = X.E('span');
+        var r1 = X.E().style({display: 'block'});
         e.add(r1);
         for ( var b = 0 ; b < 3 ; b++ ) {
-          var r2 = X.E('span');
+          var r2 = X.E().style({display: 'inline-block', border:'1px solid black'});
           r1.add(r2);
           for ( var c = 0 ; c < 3 ; c++ ) {
-            var r = X.E('div');
+            var r = X.E();
             r2.add(r);
             for ( var d = 0 ; d < 3 ; d++ ) {
               r.add(this.cells[a][b][c][d].toE(X.sub()));
@@ -80,7 +81,7 @@ CLASS({
           }
         }
       }
-      e.add(this.DO_SOLVE.toE(X));
+      e.tag('br').add(this.SOLVE.toE(X));
       return e;
     },
     function get(a, b, c, d) {
@@ -93,23 +94,19 @@ CLASS({
       this.cells[a][b][c][d].value = n;
       return true;
     },
-    function solve(a, b, c, d) {
+    function s(a, b, c, d) {
       if ( a == 3 ) return true;
-      if ( b == 3 ) return this.solve(a+1, 0, 0, 0);
-      if ( c == 3 ) return this.solve(a, b+1, 0, 0);
-      if ( d == 3 ) return this.solve(a, b, c+1, 0);
-      if ( this.get(a,b,c,d) ) return this.solve(a, b, c, d+1);
+      if ( b == 3 ) return this.s(a+1, 0, 0, 0);
+      if ( c == 3 ) return this.s(a, b+1, 0, 0);
+      if ( d == 3 ) return this.s(a, b, c+1, 0);
+      if ( this.get(a,b,c,d) ) return this.s(a, b, c, d+1);
       for ( var n = 1 ; n <= 9 ; n++ )
-        if ( this.set(a, b, c, d, n) && this.solve(a, b, c, d+1) ) return true;
+        if ( this.set(a, b, c, d, n) && this.s(a, b, c, d+1) ) return true;
       this.cells[a][b][c][d].value = 0;
       return false;
     }
   ],
   actions: [
-    {
-      name: 'doSolve',
-      label: 'Solve',
-      code: function() { this.solve(0,0,0,0); }
-    }
+    function solve() { this.s(0,0,0,0); }
   ]
 });
