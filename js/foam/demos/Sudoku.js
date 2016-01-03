@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.demos',
   name: 'Sudoku',
-  
+
   models: [
     {
       name: 'Cell',
@@ -57,15 +57,43 @@ CLASS({
       this.cells = [[1,2,3],[4,0,6],[0,0,0]];
     },
     function toE(X) {
+      X = X.sub({data: this});
       var e = X.E();
       for ( var i = 0 ; i < 3 ; i++ ) {
         var r = X.E('div');
         e.add(r);
         for ( var j = 0 ; j < 3 ; j++ ) {
-          r.add(this.cells[i][j].toE(X));
+          r.add(this.cells[i][j].toE(X.sub()));
         }
       }
+      e.add(this.DO_SOLVE.toE(X));
       return e;
+    },
+    function get(i, j) {
+      return this.cells[i][j].value;
+    },
+    function set(i, j, n) {
+      for ( var x = 0 ; x < 3 ; x++ )
+        for ( var y = 0 ; y < 3 ; y++ )
+          if ( this.get(x, y) == n ) return false;
+      this.cells[i][j].value = n;
+      return true;
+    },
+    function solve(i, j) {
+      if ( i == 3 ) return true;
+      if ( j == 3 ) return this.solve(i+1, 0); 
+      if ( this.get(i,j) ) return this.solve(i, j+1);
+      for ( var n = 1 ; n <= 9 ; n++ )
+        if ( this.set(i,j, n) && this.solve(i, j+1) ) return true;
+      this.cells[i][j].value = 0;
+      return false;
+    }
+  ],
+  actions: [
+    {
+      name: 'doSolve',
+      label: 'Solve',
+      code: function() { this.solve(0,0); }
     }
   ]
 });
