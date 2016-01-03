@@ -43,9 +43,11 @@ CLASS({
       name: 'cells',
       adapt: function(_, cs) {
         cs = cs.deepClone();
-        for ( var i = 0 ; i < 3 ; i++ )
-          for ( var j = 0 ; j < 3 ; j++ )
-            cs[i][j] = this.Cell.create({value: cs[i][j]});
+        for ( var a = 0 ; a < 3 ; a++ )
+          for ( var b = 0 ; b < 3 ; b++ )
+            for ( var c = 0 ; c < 3 ; c++ )
+              for ( var d = 0 ; d < 3 ; d++ )
+                cs[a][b][c][d] = this.Cell.create({value: cs[a][b][c][d]});
         return cs;
       }
     }
@@ -54,38 +56,52 @@ CLASS({
   methods: [
     function init() {
       this.SUPER();
-      this.cells = [[1,2,3],[4,0,6],[0,0,0]];
+      this.cells = [
+        [[[0,0,0],[0,7,1],[0,0,5]], [[5,0,0],[0,6,9],[0,7,1]], [[0,7,1],[8,5,3],[4,2,0]]],
+        [[[0,1,0],[0,0,2],[0,0,0]], [[7,8,0],[1,5,4],[0,9,2]], [[0,4,0],[3,6,0],[1,8,0]]],
+        [[[0,6,4],[0,2,3],[0,5,0]], [[9,0,5],[0,1,0],[0,0,0]], [[7,0,0],[5,9,0],[0,0,0]]]
+      ];
     },
     function toE(X) {
       X = X.sub({data: this});
       var e = X.E();
-      for ( var i = 0 ; i < 3 ; i++ ) {
-        var r = X.E('div');
-        e.add(r);
-        for ( var j = 0 ; j < 3 ; j++ ) {
-          r.add(this.cells[i][j].toE(X.sub()));
+      for ( var a = 0 ; a < 3 ; a++ ) {
+        var r1 = X.E('span');
+        e.add(r1);
+        for ( var b = 0 ; b < 3 ; b++ ) {
+          var r2 = X.E('span');
+          r1.add(r2);
+          for ( var c = 0 ; c < 3 ; c++ ) {
+            var r = X.E('div');
+            r2.add(r);
+            for ( var d = 0 ; d < 3 ; d++ ) {
+              r.add(this.cells[a][b][c][d].toE(X.sub()));
+            }
+          }
         }
       }
       e.add(this.DO_SOLVE.toE(X));
       return e;
     },
-    function get(i, j) {
-      return this.cells[i][j].value;
+    function get(a, b, c, d) {
+      return this.cells[a][b][c][d].value;
     },
-    function set(i, j, n) {
+    function set(a, b, c, d, n) {
       for ( var x = 0 ; x < 3 ; x++ )
         for ( var y = 0 ; y < 3 ; y++ )
-          if ( this.get(x, y) == n ) return false;
-      this.cells[i][j].value = n;
+          if ( this.get(a, b, x, y) == n || this.get(a, x, c, y) == n || this.get(x, b, y, d) == n ) return false;
+      this.cells[a][b][c][d].value = n;
       return true;
     },
-    function solve(i, j) {
-      if ( i == 3 ) return true;
-      if ( j == 3 ) return this.solve(i+1, 0); 
-      if ( this.get(i,j) ) return this.solve(i, j+1);
+    function solve(a, b, c, d) {
+      if ( a == 3 ) return true;
+      if ( b == 3 ) return this.solve(a+1, 0, 0, 0);
+      if ( c == 3 ) return this.solve(a, b+1, 0, 0);
+      if ( d == 3 ) return this.solve(a, b, c+1, 0);
+      if ( this.get(a,b,c,d) ) return this.solve(a, b, c, d+1);
       for ( var n = 1 ; n <= 9 ; n++ )
-        if ( this.set(i,j, n) && this.solve(i, j+1) ) return true;
-      this.cells[i][j].value = 0;
+        if ( this.set(a, b, c, d, n) && this.solve(a, b, c, d+1) ) return true;
+      this.cells[a][b][c][d].value = 0;
       return false;
     }
   ],
@@ -93,7 +109,7 @@ CLASS({
     {
       name: 'doSolve',
       label: 'Solve',
-      code: function() { this.solve(0,0); }
+      code: function() { this.solve(0,0,0,0); }
     }
   ]
 });
