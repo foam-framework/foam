@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.demos',
   name: 'ClockView',
-
   extends: 'foam.graphics.Circle',
 
   traits: [ 'com.google.misc.Colors' ],
