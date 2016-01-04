@@ -157,7 +157,12 @@ CLASS({
         this.id$el.style[key] = value;
       },
       onSetAttr: function(key, value) {
-        this.id$el.setAttribute(key, value === true ? '' : value);
+        // 'value' doesn't work consistently with setAttribute()
+        if ( key === 'value' ) {
+          this.id$el.value = value;
+        } else {
+          this.id$el.setAttribute(key, value === true ? '' : value);
+        }
       },
       onRemoveAttr: function(key, value) {
         this.id$el.removeAttribute(key);
