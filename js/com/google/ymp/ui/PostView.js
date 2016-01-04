@@ -61,7 +61,9 @@ CLASS({
               market: this.data.market,
             }),
             dao: this.replyDAO,
-          }));
+          }, this.Y.sub({
+            data: null
+          })));
       }
     },
   ],
