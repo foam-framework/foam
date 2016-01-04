@@ -109,7 +109,7 @@ CLASS({
           }, this.Y);
 
           view.subscribe(view.ROW_CLICK, this.oneTime(function(_, _, obj) {
-            var r = this.model.create();
+            var r = this.model.create(null, this.Y);
             r[this.relationship.destinationProperty] = obj.id;
             this.relatedDAO.put(r, {
               put: function(obj) {
@@ -118,7 +118,7 @@ CLASS({
                     model: this.model,
                     data: obj,
                     dao: this.relatedDAO
-                  }));
+                  }, view.Y));
               }.bind(this)
             });
           }.bind(this)));
