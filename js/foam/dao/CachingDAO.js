@@ -58,7 +58,7 @@ CLASS({
         var cache = this.cache;
 
         var futureDelegate = afuture();
-        if (this.initWithFutureDao) {
+        if ( this.initWithFutureDao ) {
           this.cache = this.FutureDAO.create({future: futureDelegate.get});
         }
 
