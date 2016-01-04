@@ -89,7 +89,7 @@ onclick={{something}} should not parse to an attribute.
 
 This would be a better template for Board.js:
 
-      <div class="$-row" repeat="row in 0..this.height-1">
+      <div class="^row" repeat="row in 0..this.height-1">
         <:Cell x={{row}} y={{col}} repeat="col in 0..this.width-1"/>
       </div>
 

@@ -85,19 +85,19 @@ MODEL({
   ],
   templates: [
     function CSS() {/*
-      $ { padding: 10px; }
-      $ .buttons { padding-left: 592px; }
-      $ .detailView { border: none; background: white; }
-      $ .content span { overflow: hidden !important; }
-      $ .content { width: 1000px; }
-      $ .detailPane { width: 45%; display: inline-block; margin-left: 50px; margin-top: 16px; }
-      $ .label { color: #039; font-size: 14px; padding-top: 6px; }
-      $ .prefix { margin-left: 10px; }
-      $ .summaryPane { width: 49%; display: inline-block; vertical-align: top; }
-      $ .tableView { height: 184px; outline: none; }
+      ^ { padding: 10px; }
+      ^ .buttons { padding-left: 592px; }
+      ^ .detailView { border: none; background: white; }
+      ^ .content span { overflow: hidden !important; }
+      ^ .content { width: 1000px; }
+      ^ .detailPane { width: 45%; display: inline-block; margin-left: 50px; margin-top: 16px; }
+      ^ .label { color: #039; font-size: 14px; padding-top: 6px; }
+      ^ .prefix { margin-left: 10px; }
+      ^ .summaryPane { width: 49%; display: inline-block; vertical-align: top; }
+      ^ .tableView { height: 184px; outline: none; }
     */},
     function initE() {/*#U2
-      <div class="$" x:data={{this}}>
+      <div class="^" x:data={{this}}>
         <span class="prefix label">Filter prefix: </span> <:prefix onKeyMode="true" type="search"/>
         <div class="content">
           <span class="summaryPane"><:filteredDAO hardSelection$={{this.selection$}}/></span>

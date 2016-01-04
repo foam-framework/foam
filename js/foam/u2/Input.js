@@ -35,7 +35,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $:read-only { border-width: 0; }
+      ^:read-only { border-width: 0; }
     */}
   ],
 

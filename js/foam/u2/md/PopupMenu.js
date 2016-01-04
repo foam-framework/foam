@@ -251,7 +251,7 @@ CLASS({
       ],
       methods: [
         function initE(opt_x, opt_e) {
-          opt_e.cls('foam-u2-md-PopupMenu');
+          opt_e.cls('foam-u2-md-PopupMenu-');
 
           for (var i = 0; i < this.choices.length; i++) {
             opt_e.start('li')
@@ -317,8 +317,9 @@ CLASS({
       ],
 
       templates: [
+        // These need to be literal CSS names, because inner models are weird.
         function CSS() {/*
-          .foam-u2-md-PopupMenu {
+          .foam-u2-md-PopupMenu- {
             background: white;
             border: 2px solid grey;
             display: table-footer-group;

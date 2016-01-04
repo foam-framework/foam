@@ -111,7 +111,7 @@ CLASS({
         display: flex;
         flex-grow: 1;
       }
-      single-stream-detail .foam-u2-DAOListView {
+      single-stream-detail .foam-u2-DAOListView- {
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -120,13 +120,13 @@ CLASS({
         overflow-x: hidden;
         overflow-y: auto;
       }
-      single-stream-detail .foam-u2-DAOListView envelope-citation {
+      single-stream-detail .foam-u2-DAOListView- envelope-citation {
        flex-shrink: 0;
       }
       single-stream-detail .message-entry {
         display: flex;
       }
-      single-stream-detail .message-entry .foam-u2-md-TextField {
+      single-stream-detail .message-entry .foam-u2-md-TextField- {
         flex-grow: 1;
       }
     */}

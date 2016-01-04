@@ -63,16 +63,10 @@ CLASS({
     },
     ['nodeName', 'div']
   ],
-  templates: [
-    function CSS() {/*
-      .foam-u2-DAOListView {
-      }
-    */}
-  ],
   methods: [
     function initE() {
       this.dao$Proxy.pipe(this.daoListener_);
-      this.cls('foam-u2-DAOListView');
+      this.cls(this.myCls());
     },
   ],
   listeners: [

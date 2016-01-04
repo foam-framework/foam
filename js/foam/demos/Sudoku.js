@@ -32,7 +32,7 @@ CLASS({
       ],
       templates: [
         function toE() {/*#U2
-          <span class="$" x:data={{this}}>
+          <span class="^" x:data={{this}}>
             <:value/>
           </span>
         */}

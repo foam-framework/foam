@@ -153,11 +153,11 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $-header {
+      ^header {
         align-items: center;
         display: flex;
       }
-      $-title {
+      ^title {
         color: #999;
         font-size: 14px;
         font-weight: 500;

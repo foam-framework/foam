@@ -15,7 +15,7 @@ CLASS({
   extends: 'foam.u2.View',
   templates: [
     function initE() {/*#U2
-      <div class="$">
+      <div class="^">
         {{this.data.name}}
       </div>
     */},

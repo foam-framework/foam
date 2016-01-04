@@ -69,7 +69,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         background: #fdfdfd;
         border: solid 1px #dddddd;
         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
@@ -77,10 +77,10 @@ CLASS({
         margin: 5px;
         padding: 3px;
       }
-      $ table {
+      ^ table {
         padding-bottom: 2px;
       }
-      $-title {
+      ^title {
         color: #333;
         float: left;
         font-size: 14px;
@@ -88,16 +88,16 @@ CLASS({
         margin-bottom: 8px;
         padding: 2px;
       }
-      $-toolbar {
+      ^toolbar {
         margin-left: 5px;
       }
-      $ input {
+      ^ input {
         border: solid 1px #aacfe4;
         font-size: 10px;
         margin: 2px 0 0px 2px;
         padding: 4px 2px;
       }
-      $ textarea {
+      ^ textarea {
         border: solid 1px #aacfe4;
         float: left;
         font-size: 10px;
@@ -106,7 +106,7 @@ CLASS({
         padding: 4px 2px;
         width: 98%;
       }
-      $ select {
+      ^ select {
         border: solid 1px #aacfe4;
         font-size: 10px;
         margin: 2px 0 0px 2px;

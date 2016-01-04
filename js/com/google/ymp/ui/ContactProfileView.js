@@ -48,7 +48,7 @@ CLASS({
 
   templates: [
     function initE() {/*#U2
-      <div class="$">
+      <div class="^">
         <self:contactDetails />
       </div>
     */},

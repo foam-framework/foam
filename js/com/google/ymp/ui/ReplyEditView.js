@@ -20,13 +20,13 @@ CLASS({
 
   templates: [
     function initE() {/*#U2
-      <div class="$">
+      <div class="^">
         <p>Public Reply as &nbsp;{{ this.currentUser.name }} </p>
         <:content displayHeight="4" />
       </div>
     */},
     function CSS() {/*
-      $ {
+      ^ {
         display: flex;
         flex-direction: column;
         overflow: hidden;

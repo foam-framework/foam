@@ -592,12 +592,11 @@ CLASS({
     },
 
     // Constructs a default class name for this view, with an optional extra.
-    // Without an extra, results in eg. 'foam-u2-Input'.
+    // Without an extra, results in eg. 'foam-u2-Input-'.
     // With an extra of "foo", results in 'foam-u2-Input-foo'.
     function myCls(opt_extra) {
       var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
-      if (!opt_extra) return base;
-      base.split(/ +/);
+      if (!opt_extra) opt_extra = '';
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
     function enableCls(cls, enabled, opt_negate) {

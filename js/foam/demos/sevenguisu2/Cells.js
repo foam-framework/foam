@@ -165,13 +165,13 @@ MODEL({
 
       templates: [
         function CSS() {/*
-          $ > span {
+          ^ > span {
             display: block;
             height: 15px;
             padding: 2px;
             width: 100%;
           }
-          $ > input {
+          ^ > input {
             border: none;
             outline: 1px solid blue;
             outline-offset: 0;
@@ -179,7 +179,7 @@ MODEL({
             width: 100%;
           }
         */},
-        function initE(){/*#U2<span class="$"></span>*/}
+        function initE(){/*#U2<span class="^"></span>*/}
       ]
     }
   ],
@@ -241,38 +241,38 @@ this.loadCells({"A0":"<div style=\"width:200px;\"><b><u>Benchmark</u></b></div>"
   ],
   templates: [
     function CSS() {/*
-      $ tr, $ td, $ th, $ input {
+      ^ tr, ^ td, ^ th, ^ input {
         color: #333;
         font: 13px roboto, arial, sans-serif;
       }
-      $ tr { height: 26px; }
-      $-cell { min-width: 102px; }
-      $, $ th, $ td { border: 1px solid #ccc; }
-      $ td { height: 100%; }
-      $ th, $ td {
+      ^ tr { height: 26px; }
+      ^cell { min-width: 102px; }
+      ^, ^ th, ^ td { border: 1px solid #ccc; }
+      ^ td { height: 100%; }
+      ^ th, ^ td {
         border-right: none;
         border-bottom: none;
       }
-      $ th {
+      ^ th {
         background: #eee;
         color: #333;
         padding: 2px 18px;
       }
-      $ {
+      ^ {
         border-left: none;
         border-top: none;
         overflow: auto;
       }
     */},
     function initE() {/*#U2
-      <table class="$" cellspacing="0">
+      <table class="^" cellspacing="0">
         <tr>
           <th></th>
           <th repeat="j in 0 .. this.columns-1">{{String.fromCharCode(65 + j)}}</th>
         </tr>
         <tr repeat="i in 0 .. this.rows-1">
           <th>{{i}}</th>
-          <td class="$-cell" repeat="j in 0 .. this.columns-1">{{this.cell(this.cellName(j, i))}}</td>
+          <td class="^cell" repeat="j in 0 .. this.columns-1">{{this.cell(this.cellName(j, i))}}</td>
         </tr>
       </table>
     */}

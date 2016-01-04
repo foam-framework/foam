@@ -56,7 +56,7 @@ CLASS({
       view.fromProperty && view.fromProperty(prop);
       this.child_ = view;
 
-      this.cls('foam-u2-PropertyView')
+      this.cls('foam-u2-PropertyView-')
           .start('td').cls('foam-u2-PropertyView-label').add(prop.label).end()
           .start('td').cls('foam-u2-PropertyView-view').add(
               this.child_,

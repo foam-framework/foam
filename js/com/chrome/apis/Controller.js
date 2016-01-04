@@ -152,7 +152,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $-menu-item {
+      ^menu-item {
         margin: 8px;
         padding: 8px;
       }
