@@ -26,6 +26,7 @@ CLASS({
       properties: [
         {
           name: 'value',
+          preSet: function(_, v) { return v || ''; },
           displayWidth: 1
         }
       ],
