@@ -374,7 +374,7 @@ CLASS({
 
     function E(opt_nodeName) {
       var Y = this.Y;
-      if (this.data && (this.Y.data !== this.data)) Y = Y.sub({ data: this.data });
+      if (this.data && !Y.data) Y = Y.sub({ data: this.data });
       var e = Y.elementForName(opt_nodeName);
 
       if ( ! e ) {

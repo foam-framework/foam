@@ -36,7 +36,7 @@ CLASS({
   properties: [
     {
       name: 'model',
-      lazyFactory: function() {
+      defaultValueFn: function() {
         return this.data.model;
       }
     },
