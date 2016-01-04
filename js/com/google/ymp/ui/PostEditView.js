@@ -24,6 +24,7 @@ CLASS({
   ],
   exports: [
     'market',
+    'data',
   ],
 
   properties: [
