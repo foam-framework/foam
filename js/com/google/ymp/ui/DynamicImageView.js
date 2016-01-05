@@ -19,7 +19,8 @@ CLASS({
   ],
   imports: [
     'dynamicImageDAO',
-    'highResImageDAO'
+    'highResImageDAO',
+    'dynamicImageDataDAO',
   ],
   exports: [
     'as data',
@@ -39,7 +40,7 @@ CLASS({
           .pipe({
             put: function(img) {
               self.currentImage = img;
-            }
+            }.bind(this)
           });
       }
     },
@@ -52,12 +53,21 @@ CLASS({
         return old;
       },
       postSet: function(old,nu) {
-        this.imageData = nu.image;
+        if ( old !== nu ) {
+          this.dynamicImageDataDAO.find(nu.id, {
+            put: function(imgD) {
+              this.imageData = imgD.image;
+            }.bind(this)
+          });
+        }
       }
     },
     {
       type: 'Image',
       name: 'imageData',
+      postSet: function(old,nu) {
+        console.log("Image setting", nu.length);
+      }
     },
     {
       type: 'String',

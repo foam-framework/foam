@@ -39,6 +39,7 @@ CLASS({
     'personDAO',
     'marketDAO',
     'highResImageDAO',
+    'dynamicImageDataDAO',
     'contactProfileDAO',
     'currentUser',
 
@@ -95,16 +96,22 @@ CLASS({
             name: 'dynamicImages',
             autoIndex: true,
             cache: true,
-            logging: true,
           }),
           property: this.DynamicImage.IMAGE,
-          joinToDAO: this.IDBDAO.create({
-            model: this.DynamicImage,
-            name: 'dynamicImageData'
-          }),
+          joinToDAO: this.dynamicImageDataDAO,
         });
         this.uploadImageDAO.pipe(d);
         return d;
+      },
+    },
+    {
+      name: 'dynamicImageDataDAO',
+      view: 'foam.ui.DAOListView',
+      lazyFactory: function() {
+        return this.IDBDAO.create({
+          model: this.DynamicImage,
+          name: 'dynamicImageData'
+        });
       },
     },
     {
