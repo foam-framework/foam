@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2',
   name: 'DAOUpdateController',
   extends: 'foam.u2.View',
+
   documentation: 'Expects $$DOC{ref:".data"} to be either: (a) the object to ' +
       'view, or (b) the ID to view. Either way, this will do a find.',
 
@@ -25,12 +27,12 @@ CLASS({
     'foam.persistence.ObjectReplicator',
     'foam.u2.md.DetailView',
     'foam.u2.md.Toolbar',
-    'foam.u2.md.ToolbarAction',
+    'foam.u2.md.ToolbarAction'
   ],
 
   imports: [
     'document',
-    'stack',
+    'stack'
   ],
 
   exports: [
@@ -119,16 +121,14 @@ CLASS({
     {
       name: 'doBack',
       framed: true,
-      code: function() {
-        this.stack.popView();
-      }
+      code: function() { this.stack.popView(); }
     }
   ],
 
   methods: [
     function initE() {
       this.cls(this.myCls()).add(this.toolbar_).add(this.body_);
-    },
+    }
   ],
 
   templates: [
@@ -144,6 +144,6 @@ CLASS({
         overflow-x: hidden;
         overflow-y: auto;
       }
-    */},
+    */}
   ]
 });
