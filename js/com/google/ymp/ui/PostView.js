@@ -87,22 +87,26 @@ CLASS({
       </div>
     */},
     function CSS() {/*
+      ^ {
+        overflow-y: hidden;
+      }
       ^flex-col {
         display: flex;
         flex-direction: column;
-        padding: 16px;
+        overflow: hidden;
       }
       ^author {
         text-align: right;
         margin-bottom: 4px;
         opacity: 0.54;
+        padding: 8px;
       }
       ^separator {
         border-bottom: 1px solid #e0e0e0;
         margin-bottom: 4px;
       }
       ^content {
-        padding: 8px 0px;
+        padding: 8px;
       }
       ^reply-title {
         margin: 8px;

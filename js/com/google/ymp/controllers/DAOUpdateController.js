@@ -38,15 +38,10 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $-body {
-        overflow-x: hidden;
-        overflow-y: auto;
-        height: 100%;
-      }
       ^body {
         overflow-x: hidden;
         overflow-y: auto;
-        height: 100%;
+        height: calc(100% - 56px);
       }
     */},
   ],
