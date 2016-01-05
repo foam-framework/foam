@@ -125,7 +125,7 @@ CLASS({
             },
             error: function(join) {
               // fail-through
-              previousFuture.get(competePutFn);
+              previousFuture.get(completePutFn);
             }
           });
         },
