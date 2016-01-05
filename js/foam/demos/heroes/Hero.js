@@ -20,7 +20,7 @@ CLASS({
   name: 'Hero',
 
   properties: [
-    { type: 'Int',     name: 'id' }, 
+    { type: 'Int',     name: 'id', visibility: 'final' }, 
     { type: 'String',  name: 'name' }, 
     { type: 'Boolean', name: 'starred' }
   ]

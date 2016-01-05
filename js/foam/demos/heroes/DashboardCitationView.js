@@ -20,10 +20,16 @@ CLASS({
   name: 'DashboardCitationView',
   extends: 'foam.u2.View',
   
+  imports: [ 'editHero' ],
+
   templates: [
     function initE() {/*#U2
-      <div style="width:100px;height:100px;border:2px solid black;background: gray;margin: 20px;">{{this.data.name$}}</div>
+      <div onClick="onClick" style="width:100px;height:100px;border:2px solid black;background: gray;margin: 20px;">{{this.data.name$}}</div>
     */}
+  ],
+
+  listeners: [
+    function onClick() { this.editHero(this.data); }
   ]
 });
   

@@ -24,7 +24,9 @@ CLASS({
     'foam.demos.heroes.CitationView',
     'foam.demos.heroes.DashboardCitationView',
     'foam.demos.heroes.Hero',
-    'foam.u2.DAOListView'
+    'foam.u2.Checkbox',
+    'foam.u2.DAOListView',
+    'foam.u2.DetailView'
   ],
 
   imports: [ 'dynamic' ],
@@ -35,7 +37,7 @@ CLASS({
       type: 'DAO',
       name: 'heroDAO',
       toPropertyE: function(X) {
-        return X.lookup('foam.u2.DAOListView').create({rowView: 'foam.demos.heroes.CitationView'});
+        return X.lookup('foam.u2.DAOListView').create({rowView: 'foam.demos.heroes.CitationView'}, X);
       },
       factory: function() {
         return JSONUtil.arrayToObjArray(this.X, [
@@ -56,21 +58,24 @@ CLASS({
       type: 'DAO',
       name: 'starredHeroDAO',
       toPropertyE: function(X) {
-        return X.lookup('foam.u2.DAOListView').create({rowView: 'foam.demos.heroes.DashboardCitationView'});
+        return X.lookup('foam.u2.DAOListView').create({rowView: 'foam.demos.heroes.DashboardCitationView'}, X);
       },
-      factory: function() {
-        return this.heroDAO.where(EQ(this.Hero.STARRED, true));
-      }
+      factory: function() { return this.heroDAO.where(EQ(this.Hero.STARRED, true)); }
     },
     {
       name: 'view',
       defaultValue: 'heroes'
+    },
+    {
+      name: 'selection',
+      toPropertyE: 'foam.u2.DetailView'
     }
   ],
 
-  method: [
+  methods: [
     function editHero(hero) {
       console.log('here: ', hero.toJSON());
+      this.selection = hero;
     }
   ],
 
@@ -80,8 +85,12 @@ CLASS({
         <div>Tour of Heroes</div>
         <:dashboard/> <:heroes/>
         <hr>
-        <:starredHeroDAO style="display:{{this.dynamic(function(view) { return view == 'dashboard' ? 'block' : 'none'; }, this.view$)}};"/>
-        <:heroDAO        style="display:{{this.dynamic(function(view) { return view == 'heroes'    ? 'block' : 'none'; }, this.view$)}};"/>
+        <:starredHeroDAO style="display:{{this.dynamic(function(view, s) { return ! s && view == 'dashboard' ? 'block' : 'none'; }, this.view$, this.selection$)}};"/>
+        <:heroDAO        style="display:{{this.dynamic(function(view, s) { return ! s && view == 'heroes'    ? 'block' : 'none'; }, this.view$, this.selection$)}};"/>
+        <div style="display:{{this.dynamic(function(s) { return s ? 'block' : 'none'; }, this.selection$)}};">
+          <:selection/>
+          <:back/>
+        </div>
       </div>
     */}
   ],
@@ -96,6 +105,10 @@ CLASS({
       name: 'heroes',
       isEnabled: function() { return this.view != 'heroes'; },
       code: function() { this.view = 'heroes'; }
+    },
+    {
+      name: 'back',
+      code: function() { this.selection = null; }
     }
   ]
 });

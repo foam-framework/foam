@@ -29,10 +29,7 @@ CLASS({
   ],
 
   listeners: [
-    function onClick() {
-      console.log('******************', this.data.id);
-      this.editHero(this.data);
-    }
+    function onClick() { this.editHero(this.data); }
   ]
 });
   
