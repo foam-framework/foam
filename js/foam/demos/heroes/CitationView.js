@@ -24,7 +24,7 @@ CLASS({
 
   templates: [
     function initE() {/*#U2
-      <div onClick="onClick">{{this.data.id}} {{this.data.name}} <:id/> <:name/></div>
+      <div onClick="onClick">{{this.data.id}} &nbsp; {{this.data.name}}</div>
     */}
   ],
 
