@@ -25,6 +25,7 @@ CLASS({
   */},
 
   requires: [
+    'com.google.ymp.DynamicImage',
     'com.google.ymp.bb.Post',
     'com.google.ymp.generators.PostContentGenerator',
     'foam.net.NodeHTTPRequest',
@@ -84,21 +85,29 @@ CLASS({
       name: 'contentGenerator',
       lazyFactory: function() { return this.PostContentGenerator.create(); },
     },
+    {
+      type: 'Boolean',
+      name: 'sideLoadedDynamicImages',
+      documentation: function() {/* Generating posts sometimes causes us to
+        side-load duplicate image data. This flag is used to indicate that
+        (even if no new images were requested) image data should be  written
+        back. */},
+      defaultValue: false,
+    },
   ],
 
   methods: [
     function generate(ret, productName) {
       var post = this.Post.create();
-
       post.id = createGUID();
 
       var self = this;
       apar(
           function(ret) { self.getTitle(ret, post, productName); },
           function(ret) { self.getContent(ret, post, productName + ' for sale'); },
-          function(ret) { self.getMarket(ret, post); },
           function(ret) { self.getAuthor(ret, post); },
-          function(ret) { self.getContact(ret, post); })
+          function(ret) { self.getContact(ret, post); },
+          function(ret) { self.getImageAndMarket(ret, post, productName); })
       (function() { ret(post); });
     },
 
@@ -151,10 +160,22 @@ CLASS({
       });
     },
 
-    function getImage(ret, post, productName) {
-      this.getImage_(ret, post, productName, 10, 10);
+    function getImageAndMarket(ret, post, productName) {
+      var self = this;
+      aseq(
+          function(ret) {
+            self.getMarket(function() { ret(post.market); }, post);
+          },
+          function(ret, marketId) {
+            self.getImage(ret, post, productName, marketId);
+          })
+      (function() { ret(post); });
     },
-    function getImage_(ret, post, productName, ttl, imgCount) {
+
+    function getImage(ret, post, productName, marketId) {
+      this.getImage_(ret, post, productName, marketId, 10, 10);
+    },
+    function getImage_(ret, post, productName, marketId, ttl, imgCount) {
       if ( ttl <= 0 ) {
         ret(post);
         return;
@@ -164,17 +185,57 @@ CLASS({
       var choice = Math.floor(Math.random() * imgCount);
       var id = productName + '_' + choice;
 
+      var self = this;
       var found = false;
-      dao.where(EQ(this.DynamicImage.IMAGE_ID, id)).limit(1).select({
+      var lookupCount = SimpleValue.create();
+      lookupCount.set(0);
+      dao.where(EQ(self.DynamicImage.IMAGE_ID, id)).select({
         put: function(img) {
-          found = true;
-          post.image = id;
-          ret(post);
+          if ( ! found ) {
+            // Set post.image and ret exactly once.
+            found = true;
+            post.image = id;
+          }
+
+          // If this image is already bound to this market, return.
+          if ( img.market === marketId ) return;
+
+          // Else: Lookup market-specific image, and if not found,
+          // create it.
+          var marketedId = img.id + '_' + marketId;
+          lookupCount.set(lookupCount.get() + 1);
+          dao.find(marketedId, {
+            put: function() {
+              lookupCount.set(lookupCount.get() - 1);
+            },
+            error: function() {
+              lookupCount.set(lookupCount.get() - 1);
+
+              // Copy image into this market.
+              var newImg = img.clone();
+              newImg.id = marketedId;
+              newImg.market = marketId;
+              dao.put(newImg, {
+                put: function(newImg) {
+                  self.sideLoadedDynamicImages_ = true;
+                },
+              });
+            },
+          });
         },
         eof: function() {
-          if ( found ) return;
-          this.getImage(ret, post, productName, ttl - 1, imgCount);
-        }.bind(this),
+          if ( found ) {
+            if ( lookupCount.get() !== 0 ) {
+              lookupCount.value$.addListener(function() {
+                if ( lookupCount.get() === 0 ) ret(post);
+              });
+            } else {
+              ret(post);
+            }
+          } else {
+            self.getImage(ret, post, productName, marketId, ttl - 1, imgCount);
+          }
+        },
       });
     },
 

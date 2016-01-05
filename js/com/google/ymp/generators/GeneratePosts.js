@@ -21,8 +21,23 @@ CLASS({
   requires: [
     'com.google.ymp.generators.PostGenerator',
     'com.google.ymp.generators.ProductNameGenerator',
+    'com.google.ymp.test.DataLoader',
   ],
   imports: ['console'],
+
+  properties: [
+    {
+      type: 'String',
+      name: 'imgDataBaseName',
+      defaultValue: 'postDynamicImage',
+    },
+    {
+      subType: 'com.google.ymp.test.DataLoader',
+      name: 'dataLoader',
+      documentation: 'Data loader used to load from/save to JSON file',
+      lazyFactory: function() { return this.DataLoader.create(); },
+    },
+  ],
 
   methods: [
     function execute() {
@@ -40,7 +55,7 @@ CLASS({
       };
       pnGenerator.generate(pnFn);
 
-      var numPosts = 10000;
+      var numPosts = 3;
       var posts = new Array(numPosts);
       var par = new Array(numPosts);
 
