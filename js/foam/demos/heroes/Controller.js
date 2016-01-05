@@ -21,24 +21,31 @@ CLASS({
   extends: 'foam.u2.Element', 
 
   requires: [
-    'foam.u2.DAOListView',
-    'foam.demos.heroes.Hero'
+    'foam.demos.heroes.CitationView',
+    'foam.demos.heroes.DashboardCitationView',
+    'foam.demos.heroes.Hero',
+    'foam.u2.DAOListView'
   ],
 
   imports: [ 'dynamic' ],
+
+  models: [
+  ],
 
   properties: [
     {
       type: 'DAO',
       name: 'heroDAO',
-      toPropertyE: function() { return this.X.lookup('foam.u2.DAOListView').create(); },
+      toPropertyE: function(X) {
+        return X.lookup('foam.u2.DAOListView').create({rowView: 'foam.demos.heroes.CitationView'});
+      },
       factory: function() {
         return JSONUtil.arrayToObjArray(this.X, [
 	  {"id": 11, "name": "Mr. Nice"},
-	  {"id": 12, "name": "Narco", starred: true},
-	  {"id": 13, "name": "Bombasto", starred: true},
+	  {"id": 12, "name": "Narco",     starred: true},
+	  {"id": 13, "name": "Bombasto",  starred: true},
 	  {"id": 14, "name": "Celeritas", starred: true},
-	  {"id": 15, "name": "Magneta", starred: true},
+	  {"id": 15, "name": "Magneta",   starred: true},
 	  {"id": 16, "name": "RubberMan"},
 	  {"id": 17, "name": "Dynama"},
 	  {"id": 18, "name": "Dr IQ"},
@@ -50,7 +57,9 @@ CLASS({
     {
       type: 'DAO',
       name: 'starredHeroDAO',
-      toPropertyE: function() { return this.X.lookup('foam.u2.DAOListView').create(); },
+      toPropertyE: function(X) {
+        return X.lookup('foam.u2.DAOListView').create({rowView: 'foam.demos.heroes.DashboardCitationView'});
+      },
       factory: function() {
         return this.heroDAO.where(EQ(this.Hero.STARRED, true));
       }
