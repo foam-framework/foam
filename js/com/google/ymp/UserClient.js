@@ -29,8 +29,9 @@ CLASS({
     'foam.u2.ActionButton',
   ],
   exports: [
-    'currentUserId$',
+    'currentUserId',
     'headerColor',
+    'postId',
   ],
 
   properties: [
@@ -42,6 +43,11 @@ CLASS({
         if ( old === nu ) return;
         if ( old && nu ) GLOBAL.location.reload();
       },
+    },
+    {
+      type: 'String',
+      name: 'postId',
+      memorable: true,
     },
     {
       name: 'client',

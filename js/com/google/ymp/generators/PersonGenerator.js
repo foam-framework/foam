@@ -888,6 +888,7 @@ CLASS({
   methods: [
     function generate(ret) {
       var person = this.Person.create();
+      person.id = createGUID();
       var self = this;
       apar(
           function(ret) { self.getName(ret, person); },
@@ -905,14 +906,16 @@ CLASS({
       dao.select(COUNT())(function(c) {
         var count = c.count;
         var num = Math.floor(Math.random() * 5) + 1;
-        var markets = new Array(num);
+        var markets = [];
         var par = [];
 
         var f = function(i, ret) {
           var choice = Math.floor(Math.random() * count);
           dao.skip(choice).limit(1).select({
             put: function(market) {
-              markets[i] = market.id;
+              if ( ! markets.some(function(marketId) {
+                return marketId === market.id;
+              }) ) markets.push(market.id);
               ret(markets);
             },
           });

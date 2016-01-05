@@ -50,7 +50,7 @@ CLASS({
 
       // Pick one.
       // (a) Generate markets from locations.
-      // this.populateAppData("location");
+      this.populateAppData("location");
       // this.generateMarkets();
       // (b) Load markets from file.
       this.populateAppData("market");

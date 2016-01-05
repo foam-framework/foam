@@ -71,7 +71,7 @@ CLASS({
           guid: true,
           sockets: true,
           isServer: true,
-          logging: true,
+          // logging: true,
         });
       },
     },
@@ -216,17 +216,17 @@ CLASS({
 
     // Used if auto-generating markets from locations.
     // Provides locationDAO_ for generators.MarketGenerator.
-    // {
-    //   name: 'locationDAO',
-    //   lazyFactory: function() {
-    //     return this.EasyDAO.create({
-    //       model: this.Location,
-    //       name: 'locations',
-    //       daoType: this.MDAO,
-    //       guid: true,
-    //     });
-    //   },
-    // },
+    {
+      name: 'locationDAO',
+      lazyFactory: function() {
+        return this.EasyDAO.create({
+          model: this.Location,
+          name: 'locations',
+          daoType: this.MDAO,
+          guid: true,
+        });
+      },
+    },
   ],
 
   methods: [
