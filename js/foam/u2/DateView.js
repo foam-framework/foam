@@ -15,14 +15,25 @@
  * limitations under the License.
  */
 
+// TODO: Add datalist support.
+
 CLASS({
   package: 'foam.u2',
-  name: 'TextField',
+  name: 'DateView',
   extends: 'foam.u2.tag.Input',
 
-  templates: [
-    function CSS() {/*
-      ^:read-only { border-width: 0; }
-    */}
+  methods: [
+    function initE() {
+      this.SUPER();
+      this.setAttribute('type', 'date');
+    },
+    function link() {
+      Events.relate(
+        this.data$,
+        this.attrValue(null, this.onKey ? 'input' : null),
+        function(date) { return date ? date.toISOString().substring(0,10) : date; },
+        function(value) { return new Date(value); }
+      );
+    }
   ]
 });

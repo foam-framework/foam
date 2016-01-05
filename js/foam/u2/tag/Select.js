@@ -15,28 +15,41 @@
  * limitations under the License.
  */
 
-// TODO: Add datalist support.
-
 CLASS({
-  package: 'foam.u2',
-  name: 'Checkbox',
+  package: 'foam.u2.tag',
+  name: 'Select',
   extends: 'foam.u2.View',
 
+  imports: [ 'dynamic' ],
+
   properties: [
-    [ 'nodeName', 'input' ],
+    [ 'nodeName', 'select' ],
     {
-      model_: 'BooleanProperty',
-      name: 'data'
-    }
+      name: 'choices',
+      factory: function() {
+        return [];
+      }
+    },
+    ['placeholder', ''],
   ],
 
   methods: [
     function initE() {
-      this.attrs({type: 'checkbox'});
-      Events.link(this.data$, this.attrValue('checked', 'change'));
-    },
-    function updateMode_(mode) {
-      this.setAttribute('disabled', mode === 'disabled' || mode === 'ro');
+      this.SUPER();
+      var self = this;
+
+      Events.link(this.data$, this.attrValue());
+
+      this.setChildren(this.dynamic(function(options, placeholder) {
+        var cs = [];
+        if ( placeholder )
+          cs.push(self.E('option').attrs({disabled: 'disabled'}).add(self.placeholder));
+        for ( var i = 0 ; i < options.length ; i++ ) {
+          var o = options[i];
+          cs.push(self.E('option').attrs({value: i}).add(o[1]));
+        }
+        return cs;
+      }, this.choices$, this.placeholder$));
     }
   ]
 });

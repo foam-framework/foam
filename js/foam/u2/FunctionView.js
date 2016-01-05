@@ -20,7 +20,7 @@ CLASS({
   name: 'FunctionView',
   extends: 'foam.u2.View',
   requires: [
-    'foam.u2.TextArea',
+    'foam.u2.tag.TextArea',
   ],
   imports: [
     'dynamic'

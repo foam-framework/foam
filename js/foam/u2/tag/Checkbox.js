@@ -18,22 +18,25 @@
 // TODO: Add datalist support.
 
 CLASS({
-  package: 'foam.u2',
-  name: 'DateInput',
-  extends: 'foam.u2.Input',
+  package: 'foam.u2.tag',
+  name: 'Checkbox',
+  extends: 'foam.u2.View',
+
+  properties: [
+    [ 'nodeName', 'input' ],
+    {
+      model_: 'BooleanProperty',
+      name: 'data'
+    }
+  ],
 
   methods: [
     function initE() {
-      this.SUPER();
-      this.setAttribute('type', 'date');
+      this.attrs({type: 'checkbox'});
+      Events.link(this.data$, this.attrValue('checked', 'change'));
     },
-    function link() {
-      Events.relate(
-        this.data$,
-        this.attrValue(null, this.onKey ? 'input' : null),
-        function(date) { return date ? date.toISOString().substring(0,10) : date; },
-        function(value) { return new Date(value); }
-      );
+    function updateMode_(mode) {
+      this.setAttribute('disabled', mode === 'disabled' || mode === 'ro');
     }
   ]
 });

@@ -29,7 +29,7 @@ CLASS({
   ],
 
   requires: [
-    'foam.u2.TextArea'
+    'foam.u2.tag.TextArea'
   ],
 
   methods: [

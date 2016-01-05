@@ -119,7 +119,7 @@ MODEL({
   name: 'Cells',
   extends: 'foam.u2.Element',
 
-  requires: [ 'foam.u2.Input', 'foam.u2.ElementParser', 'foam.u2.PropertyView' ],
+  requires: [ 'foam.u2.tag.Input', 'foam.u2.ElementParser', 'foam.u2.PropertyView' ],
   imports:  [ 'dynamicFn' ],
   exports:  [ 'as cells' ],
 
@@ -127,7 +127,7 @@ MODEL({
     {
       name: 'Cell',
       extends: 'foam.u2.ReadWriteView',
-      requires: [ 'foam.u2.Input' ],
+      requires: [ 'foam.u2.tag.Input' ],
       imports: [ 'cells' ],
       documentation: function() {/*
         Doesn't build inner views until value is set or user clicks on view.
