@@ -95,9 +95,10 @@ CLASS({
             name: 'dynamicImages',
             autoIndex: true,
             cache: true,
+            logging: true,
           }),
           property: this.DynamicImage.IMAGE,
-          joinToDAO: this.EasyDAO.create({
+          joinToDAO: this.IDBDAO.create({
             model: this.DynamicImage,
             name: 'dynamicImageData'
           }),
@@ -239,6 +240,10 @@ CLASS({
       this.IDBDAO.create({
         model: this.DynamicImage,
         name: 'dynamicImages',
+      }).removeAll();
+      this.IDBDAO.create({
+        model: this.DynamicImage,
+        name: 'dynamicImageData',
       }).removeAll();
     }
   ]
