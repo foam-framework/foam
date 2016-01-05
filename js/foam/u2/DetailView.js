@@ -33,7 +33,7 @@ CLASS({
     {
       name: 'data',
       postSet: function(_, data) {
-        if ( data.model_ !== this.model ) this.model = data.model_;
+        if ( data && data.model_ !== this.model ) this.model = data.model_;
       }
     },
     {
