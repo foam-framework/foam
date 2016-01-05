@@ -22,7 +22,7 @@ CLASS({
   
   templates: [
     function initE() {/*#U2
-      <div><:name/></div>
+      <div style="width:100px;height:100px;border:2px solid black;background: gray;margin: 20px;">{{this.data.name$}}</div>
     */}
   ]
 });
