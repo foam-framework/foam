@@ -74,7 +74,7 @@ CLASS({
 
   methods: [
     function editHero(hero) {
-      console.log('here: ', hero.toJSON());
+      console.log('hero: ', hero.id, hero.name);
       this.selection = hero;
     }
   ],
@@ -87,10 +87,14 @@ CLASS({
         <hr>
         <:starredHeroDAO style="display:{{this.dynamic(function(view, s) { return ! s && view == 'dashboard' ? 'block' : 'none'; }, this.view$, this.selection$)}};"/>
         <:heroDAO        style="display:{{this.dynamic(function(view, s) { return ! s && view == 'heroes'    ? 'block' : 'none'; }, this.view$, this.selection$)}};"/>
-        <div style="display:{{this.dynamic(function(s) { return s ? 'block' : 'none'; }, this.selection$)}};">
-          <:selection/>
-          <:back/>
-        </div>
+        {{ this.dynamic(function (s) { return s && this.detailE(X); }.bind(this), this.selection$) }}
+      </div>
+    */},
+    function detailE() {/*#U2
+      <div>
+        {{this.name$}}
+        <:selection/>
+        <:back/>
       </div>
     */}
   ],
