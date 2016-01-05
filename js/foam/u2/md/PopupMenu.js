@@ -251,11 +251,11 @@ CLASS({
       ],
       methods: [
         function initE(opt_x, opt_e) {
-          opt_e.cls('foam-u2-md-PopupMenu-');
+          opt_e.cls(this.myCls());
 
           for (var i = 0; i < this.choices.length; i++) {
             opt_e.start('li')
-                .cls('foam-u2-md-PopupMenu-choice')
+                .cls(this.myCls('choice'))
                 .cls(this.dynamic(function(i) {
                   return this.index === i ? 'selected' : '';
                 }.bind(this, i), this.index$))
@@ -317,9 +317,8 @@ CLASS({
       ],
 
       templates: [
-        // These need to be literal CSS names, because inner models are weird.
         function CSS() {/*
-          .foam-u2-md-PopupMenu- {
+          ^ {
             background: white;
             border: 2px solid grey;
             display: table-footer-group;
@@ -330,7 +329,7 @@ CLASS({
             padding: 0;
             position: absolute;
           }
-          .foam-u2-md-PopupMenu-choice {
+          ^choice {
             align-content: flex-start;
             align-items: flex-end;
             cursor: pointer;
@@ -339,7 +338,7 @@ CLASS({
             overflow: hidden;
             padding: 8px 0px 7px 0px;
           }
-          .foam-u2-md-PopupMenu-choice.selected {
+          ^choice.selected {
             font-weight: bold;
           }
         */}

@@ -699,7 +699,12 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       },
       adapt: function(_, newValue) {
         if ( ! Model ) return newValue;
-        return Array.isArray(newValue) ? JSONUtil.arrayToObjArray(this.X, newValue, Model) : newValue;
+        if ( ! Array.isArray(newValue) ) return newValue;
+        var id = this.id;
+        return JSONUtil.arrayToObjArray(this.X, newValue, Model).map(function(m) {
+          m.package = id;
+          return m;
+        });
       },
       postSet: function(_, models) {
         for ( var i = 0 ; i < models.length ; i++ ) this[models[i].name] = models[i];
