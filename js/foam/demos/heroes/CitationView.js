@@ -19,11 +19,20 @@ CLASS({
   package: 'foam.demos.heroes',
   name: 'CitationView',
   extends: 'foam.u2.View',
-  
+
+  imports: [ 'editHero' ],
+
   templates: [
     function initE() {/*#U2
-      <div><:id/> <:name/></div>
+      <div onClick="onClick">{{this.data.id}} {{this.data.name}} <:id/> <:name/></div>
     */}
+  ],
+
+  listeners: [
+    function onClick() {
+      console.log('******************', this.data.id);
+      this.editHero(this.data);
+    }
   ]
 });
   

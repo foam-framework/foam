@@ -28,9 +28,7 @@ CLASS({
   ],
 
   imports: [ 'dynamic' ],
-
-  models: [
-  ],
+  exports: [ 'editHero' ],
 
   properties: [
     {
@@ -67,6 +65,12 @@ CLASS({
     {
       name: 'view',
       defaultValue: 'heroes'
+    }
+  ],
+
+  method: [
+    function editHero(hero) {
+      console.log('here: ', hero.toJSON());
     }
   ],
 
