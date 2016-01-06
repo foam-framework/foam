@@ -101,6 +101,7 @@ CLASS({
         flex-grow: 0;
         flex-shrink: 0;
         overflow: hidden;
+        min-width: 60px;
         max-width: 60px;
         display: flex;
         justify-content: center;
