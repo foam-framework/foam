@@ -59,6 +59,7 @@ CLASS({
     },
     {
       name: 'title',
+      attribute: true,
       documentation: function() {/*
         <p>The display title for the $$DOC{ref:'foam.ui.View'}.
         </p>
@@ -125,14 +126,13 @@ CLASS({
       this.add(this.dynamic(function(model, properties) {
         if ( ! model ) return 'Set model or data.';
 
-        return this.actionBorder(
-          this.E('table').cls(this.myCls()).
-            start('tr').
+        var title = this.title && this.E('tr').
               start('td').cls(this.myCls('title')).attrs({colspan: 2}).
                 add(this.title$).
-              end().
-            end().
-            add(properties));
+              end();
+
+        return this.actionBorder(
+          this.E('table').cls(this.myCls()).add(title).add(properties));
       }.bind(this), this.model$, this.properties$));
     },
     function actionBorder(e) {
