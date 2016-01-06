@@ -80,23 +80,36 @@ CLASS({
   ],
 
   templates: [
+    function CSS() {/*#U2
+      h2 { color: #444; font-weight: lighter; }
+      body { margin: 2em; }
+      body, input[text], button { color: #888; font-family: Cambria, Georgia; }
+      button { padding: 0.2em; font-size: 14px}
+      * { font-family: Arial; }
+    */},
     function initE() {/*#U2
       <div x:data={{this}}>
-        <div>Tour of Heroes</div>
+        <h2>Tour of Heroes</h2>
         <:dashboard/> <:heroes/>
         <hr>
         {{ this.dynamic(function (s, v) {
           if ( s )                return this.detailE(X);
-          if ( v == 'dashboard' ) return this.STARRED_HERO_DAO;
+          if ( v == 'dashboard' ) return this.dashboardE(X);
           return this.HERO_DAO;
         }.bind(this), this.selection$, this.view$)}}
       </div>
     */},
     function detailE() {/*#U2
       <div>
-        {{this.name$}}
+        {{this.selection.name$}}
         <:selection/>
         <:back/>
+      </div>
+    */},
+    function dashboardE() {/*#U2
+      <div>
+        <h3>Top Heroes</h3>
+        <:starredHeroDAO/>
       </div>
     */}
   ],

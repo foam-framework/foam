@@ -20,8 +20,8 @@ CLASS({
   name: 'Hero',
 
   properties: [
-    { type: 'Int',     name: 'id', visibility: 'final' }, 
-    { type: 'String',  name: 'name' }, 
+    { type: 'Int',     name: 'id', visibility: 'final' },
+    { type: 'String',  name: 'name', toPropertyE: function() { return X.lookup('foam.u2.TextField').create({onKey: true}, X); } },
     { type: 'Boolean', name: 'starred' }
   ]
 });

@@ -32,4 +32,3 @@ CLASS({
     function onClick() { this.editHero(this.data); }
   ]
 });
-  
