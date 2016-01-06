@@ -98,7 +98,7 @@ CLASS({
             <div>
 
               <a href={{this.whatsAppLink$}} style="color:#000">
-                <i id="view23" class="material-icons-extended" style="font-size: 24px; color: currentColor">send</i></a>
+                <i class="material-icons-extended" style="font-size: 24px; color: currentColor">send</i></a>
               <self:replyButton />
             </div>
           </div>
