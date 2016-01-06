@@ -14,6 +14,8 @@ CLASS({
   name: 'DynamicImagePreView',
   extends: 'com.google.ymp.ui.DynamicImageView',
 
+  imports: [ 'maxLOD' ],
+
   properties: [
     [ 'nodeName', 'DYNAMIC-IMAGE-PREVIEW' ],
     {
