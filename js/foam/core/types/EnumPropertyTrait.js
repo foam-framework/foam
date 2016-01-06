@@ -34,7 +34,7 @@ CLASS({
       name: 'toPropertyE',
       defaultValue: function(X) {
         // TODO(braden): Use a FutureElement for this in the future.
-        return X.lookup('foam.u2.Select').create({
+        return X.lookup('foam.u2.tag.Select').create({
           prop: this,
           choices: this.choices,
         }, X);

@@ -21,6 +21,8 @@ CLASS({
     'foam.u2.DAOCreateController',
   ],
   imports: [
+    'location',
+    'encodeURIComponent',
     'replyDAO',
     'stack',
     'currentUser',
@@ -43,12 +45,20 @@ CLASS({
       type: 'DAO',
       name: 'replies',
       toPropertyE: 'foam.u2.DAOListView',
-    }
+    },
+    {
+      type: 'String',
+      name: 'whatsAppLink',
+      dynamicValue: function() {
+        return 'whatsapp://send?text=' + this.encodeURIComponent(
+            '"' + this.data.title + '" ' + this.location.href);
+      },
+    },
   ],
 
   actions: [
     {
-      name: 'createButton',
+      name: 'replyButton',
       ligature: 'reply',
       code: function() {
         this.stack.pushView(
@@ -66,50 +76,64 @@ CLASS({
           })));
       }
     },
+    {
+      name: 'sendButton',
+      ligature: 'send',
+      code: function() {},
+    },
   ],
 
   templates: [
     function initE() {/*#U2
-      <div class="$">
-        <div class="$-flex-col">
+      <div class="^">
+        <div class="^flex-col">
           <:image width="100%" />
-          <div class="$-content">{{ this.data.content$ }}</div>
-          <div class="$-author">Posted by&nbsp;<:author /></div>
-          <div class="$-separator"></div>
+          <div class="^content">{{ this.data.content$ }}</div>
+          <div class="^author">Posted by&nbsp;<:author /></div>
+          <div class="^separator"></div>
           <div><:contact /></div>
-          <div class="$-separator"></div>
-          <div class="$-flex-row">
-            <div class="$-reply-title">Replies</div>
-            <self:createButton />
+          <div class="^separator"></div>
+          <div class="^flex-row">
+            <div class="^reply-title">Replies</div>
+            <div>
+
+              <a href={{this.whatsAppLink$}} style="color:#000">
+                <i class="material-icons-extended" style="font-size: 24px; color: currentColor">send</i></a>
+              <self:replyButton />
+            </div>
           </div>
           <self:replies />
         </div>
       </div>
     */},
     function CSS() {/*
-      $-flex-col {
+      ^ {
+        overflow-y: hidden;
+      }
+      ^flex-col {
         display: flex;
         flex-direction: column;
-        padding: 16px;
+        overflow: hidden;
       }
-      $-author {
+      ^author {
         text-align: right;
         margin-bottom: 4px;
         opacity: 0.54;
+        padding: 8px;
       }
-      $-separator {
+      ^separator {
         border-bottom: 1px solid #e0e0e0;
         margin-bottom: 4px;
       }
-      $-content {
-        padding: 8px 0px;
+      ^content {
+        padding: 8px;
       }
-      $-reply-title {
+      ^reply-title {
         margin: 8px;
         font-size: 20px;
         color: rgba(0,0,0,0.54);
       }
-      $-flex-row {
+      ^flex-row {
         display: flex;
         flex-direction: row;
         align-items: baseline;

@@ -20,15 +20,9 @@ CLASS({
   name: 'DAOListView',
   extends: 'foam.u2.DAOListView',
 
-  templates: [
-    function CSS() {/*
-      .foam-u2-md-DAOListView {
-      }
-    */}
-  ],
   methods: [
     function initE() {
-      this.cls('foam-u2-md-DAOListView');
+      this.cls(this.myCls());
     }
   ],
   listeners: [

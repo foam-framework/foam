@@ -187,13 +187,13 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         display: flex;
         flex-direction: column;
         height: 100%;
         position: relative;
       }
-      $-header {
+      ^header {
         align-items: center;
         color: #fff;
         display: flex;
@@ -202,7 +202,7 @@ CLASS({
         height: 56px;
         padding: 0;
       }
-      $-header-title {
+      ^header-title {
         flex-grow: 1;
         font-size: 20px;
         font-weight: 500;
@@ -210,27 +210,27 @@ CLASS({
         margin-left: 12px;
       }
 
-      $-search-header span {
+      ^search-header span {
         flex-grow: 1;
       }
-      $-search-header input {
+      ^search-header input {
         color: #fff;
       }
 
       <% var prefixes = ['::-webkit-input', ':-moz', '::-moz', ':-ms-input'];
         for (var i = 0; i < prefixes.length; i++) { %>
-          $-search-header .foam-u2-md-TextField input><%= prefixes[i] %>-placeholder {
+          ^search-header .foam-u2-md-TextField- input><%= prefixes[i] %>-placeholder {
             color: #ccc;
           }
       <% } %>
 
-      $-search-header action-button {
+      ^search-header action-button {
         margin-right: 0;
       }
 
       <% var ANIMATION_TIME = '0.4s'; %>
 
-      $-menu-container {
+      ^menu-container {
         visibility: hidden;
         position: fixed;
         top: 0;
@@ -240,17 +240,17 @@ CLASS({
         z-index: 20;
         transition: visibility 0.01s linear <%= ANIMATION_TIME %>;
       }
-      $-menu-container$-menu-open {
+      ^menu-container^menu-open {
         visibility: visible;
         transition: visibility <%= ANIMATION_TIME %> linear;
       }
 
-      $-menu-inner {
+      ^menu-inner {
         position: relative;
         height: 100%;
         width: 100%;
       }
-      $-menu-overlay {
+      ^menu-overlay {
         background-color: #000;
         opacity: 0;
         position: absolute;
@@ -260,12 +260,12 @@ CLASS({
         width: 100%;
         transition: opacity <%= ANIMATION_TIME %> ease;
       }
-      $-menu-open $-menu-overlay {
+      ^menu-open ^menu-overlay {
         opacity: 0.4;
         transition: opacity <%= ANIMATION_TIME %> ease;
       }
 
-      $-menu-body {
+      ^menu-body {
         background-color: #fff;
         position: absolute;
         height: 100%;
@@ -276,17 +276,15 @@ CLASS({
         width: 300px;
         transition: transform <%= ANIMATION_TIME %> ease;
       }
-      $-menu-open $-menu-body {
+      ^menu-open ^menu-body {
         transform: translate3d(0, 0, 0);
         transition: transform <%= ANIMATION_TIME %> ease;
       }
 
-      $-body {
+      ^body {
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        overflow-x: hidden;
-        overflow-y: auto;
       }
     */},
   ],
@@ -305,7 +303,7 @@ CLASS({
       header.add(this.MENU_BUTTON);
       header.start('span')
           .cls(this.myCls('header-title'))
-          .add(this.title)
+          .add(this.title$)
           .end();
 
       if (this.spinner) header.add(this.spinner);

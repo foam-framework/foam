@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'IssueRestDAO',
   package: 'foam.apps.quickbug.dao',
+  name: 'IssueRestDAO',
   extends: 'foam.core.dao.RestDAO',
 
   requires: [

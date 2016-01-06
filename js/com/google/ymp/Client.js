@@ -14,11 +14,14 @@ CLASS({
   name: 'Client',
 
   requires: [
+    'Binding',
+    'PersistentContext',
     'foam.core.dao.AuthenticatedWebSocketDAO',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
     'foam.dao.EasyClientDAO',
     'foam.dao.CachingDAO',
+    'foam.core.dao.CloningDAO',
     'foam.core.dao.SyncDAO',
     'com.google.ymp.bb.ContactProfile',
     'com.google.ymp.bb.Post',
@@ -26,11 +29,14 @@ CLASS({
     'com.google.ymp.DynamicImage',
     'com.google.ymp.Person',
     'com.google.ymp.Market',
-    'foam.ui.DAOListView',
+    'com.google.ymp.ClientContext',
     'com.google.ymp.dao.DynamicWhereDAO',
     'foam.core.dao.JoinDAO',
   ],
 
+  imports: [
+    'appTitle$',
+  ],
   exports: [
     'postDAO',
     'replyDAO',
@@ -39,8 +45,10 @@ CLASS({
     'personDAO',
     'marketDAO',
     'highResImageDAO',
+    'dynamicImageDataDAO',
     'contactProfileDAO',
     'currentUser',
+    'currentUserId_ as currentUserId',
 
     'clearCache',
   ],
@@ -48,7 +56,6 @@ CLASS({
   properties: [
     {
       name: 'postDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Post,
@@ -61,7 +68,6 @@ CLASS({
     },
     {
       name: 'replyDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Reply,
@@ -74,41 +80,50 @@ CLASS({
     },
     {
       name: 'uploadImageDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.DynamicImage,
           name: 'dynamicImageSync',
+          daoType: MDAO,
           syncWithServer: true,
           sockets: true,
+          cache: false,
         });
       },
     },
     {
       name: 'dynamicImageDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        var d = this.JoinDAO.create({ // offload image data to separate DAO
-          delegate: this.EasyDAO.create({ // the rest of the properties are indexed
+        var e = this.EasyDAO.create({ // the rest of the properties are indexed
             model: this.DynamicImage,
             type: 'MDAO',
             name: 'dynamicImages',
             autoIndex: true,
             cache: true,
-          }),
-          property: this.DynamicImage.IMAGE,
-          joinToDAO: this.EasyDAO.create({
-            model: this.DynamicImage,
-            name: 'dynamicImageData'
-          }),
+          });
+        e.addIndex(this.DynamicImage.IMAGE_ID);
+        var d = this.CloningDAO.create({
+          delegate: this.JoinDAO.create({ // offload image data to separate DAO
+            delegate: e,
+            property: this.DynamicImage.IMAGE,
+            joinToDAO: this.dynamicImageDataDAO,
+          })
         });
         this.uploadImageDAO.pipe(d);
         return d;
       },
     },
     {
+      name: 'dynamicImageDataDAO',
+      lazyFactory: function() {
+        return this.IDBDAO.create({
+          model: this.DynamicImage,
+          name: 'dynamicImageData'
+        });
+      },
+    },
+    {
       name: 'highResImageDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() { /* Allow access to unfiltered images, but don't sync */
         return this.EasyClientDAO.create({
           model: this.DynamicImage,
@@ -119,10 +134,6 @@ CLASS({
     },
     {
       name: 'personDAO',
-      view: {
-        factory_:  'foam.ui.DAOListView',
-        rowView: 'foam.ui.DetailView'
-      },
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Person,
@@ -135,10 +146,6 @@ CLASS({
     },
     {
       name: 'contactProfileDAO',
-      view: {
-        factory_:  'foam.ui.DAOListView',
-        rowView: 'foam.ui.DetailView'
-      },
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.ContactProfile,
@@ -151,7 +158,6 @@ CLASS({
     },
     {
       name: 'marketDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
         return this.EasyClientDAO.create({
             model: this.Market,
@@ -160,21 +166,52 @@ CLASS({
       },
     },
     {
+      name: 'persistentContext',
+      transient: true,
+      lazyFactory: function() {
+        return this.PersistentContext.create({
+          dao: this.IDBDAO.create({ model: this.Binding }),
+          predicate: NOT_TRANSIENT,
+          context: this
+        });
+      },
+    },
+    {
+      type: 'com.google.ymp.ClientContext',
+      name: 'ctx',
+      transient: true,
+      defaultValue: null,
+      postSet: function(old, nu) { this.rebindCtx(old, nu); },
+    },
+    {
       model_: 'StringProperty',
       name: 'currentUserId',
       postSet: function(old, nu) {
+        if ( nu ) this.currentUserId_ = nu;
+      },
+    },
+    {
+      type: 'String',
+      name: 'currentUserId_',
+      preSet: function(old, nu) {
+        // Resist going from some user to no user. Usually caused by initial
+        // persistent context.
+        return (old && ! nu) ? old : nu;
+      },
+      postSet: function(old, nu) {
+        // Reset memorable value once this value is set.
+        if ( this.currentUserId ) this.currentUserId = '';
 
-        if ( ! nu ) {
-          this.clearCache();
-        }
-
-        if ( old === nu ) return;
         if ( ! this.currentUser || nu !== this.currentUser.id ) {
           // There's a delay on boot that caused the fine() to fail. TODO: This listener is pointless
           // after boot, once we have the user loaded.
           this.personDAO.where(EQ(this.Person.ID, nu)).pipe({ put: function(user) {
             this.currentUser = user;
-          }.bind(this) });
+          }.bind(this), eof: function() {
+            debugger;
+          }, error: function() {
+            debugger;
+          } });
         }
       },
     },
@@ -182,30 +219,57 @@ CLASS({
       name: 'currentUser',
       postSet: function(old, nu) {
         if ( old === nu ) return;
-        if ( nu ) {
-          if ( nu.id !== this.currentUserId ) this.currentUserId = nu.id;
-        }
+        // if ( nu ) {
+        //   if ( nu.id !== this.currentUserId ) this.currentUserId = nu.id;
+        // }
         this.subscribedMarkets = nu.subscribedMarkets;
 
         if ( old ) {
           this.clearCache();
         }
-      }
+        if ( nu ) {
+          this.appTitle = nu.name + '\'s Bulletin Boards';
+        }
+      },
     },
     {
       type: 'Array',
       name: 'subscribedMarkets',
-    }
+    },
+    {
+      type: 'String',
+      name: 'appTitle',
+      defaultValue: 'Avizi',
+    },
   ],
 
   methods: [
     function init() {
       this.SUPER();
       var WebSocket = this.AuthenticatedWebSocketDAO.xbind({
-        authToken$: this.currentUserId$,
+        authToken$: this.currentUserId_$,
       });
       this.Y.registerModel(WebSocket, 'foam.core.dao.WebSocketDAO');
-
+      this.persistentContext.bindObject('ctx', this.ClientContext,
+                                        undefined, 1);
+    },
+    function rebindCtx(old, nu) {
+      this.rebindCtxProperties(old, nu, [
+        'currentUserId_$',
+      ]);
+    },
+    function rebindCtxProperties(old, nu, propValueNames) {
+      var i;
+      if ( old ) {
+        for ( i = 0; i < propValueNames.length; ++i ) {
+          Events.unlink(old[propValueNames[i]], this[propValueNames[i]]);
+        }
+      }
+      if ( nu ) {
+        for ( i = 0; i < propValueNames.length; ++i ) {
+          Events.link(nu[propValueNames[i]], this[propValueNames[i]]);
+        }
+      }
     },
     function clearCache() {
       // Changing users, clear out old cache
@@ -239,6 +303,10 @@ CLASS({
       this.IDBDAO.create({
         model: this.DynamicImage,
         name: 'dynamicImages',
+      }).removeAll();
+      this.IDBDAO.create({
+        model: this.DynamicImage,
+        name: 'dynamicImageData',
       }).removeAll();
     }
   ]

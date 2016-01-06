@@ -264,13 +264,13 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         height: 100%;
         overflow-x: hidden;
         position: relative;
         width: 100%;
       }
-      $-panel {
+      ^panel {
         background-color: #fff;
         display: flex;
         flex-direction: column;
@@ -278,7 +278,7 @@ CLASS({
         overflow: hidden;
         position: absolute;
       }
-      $-edge {
+      ^edge {
         background-color: #000;
         height: 100%;
         opacity: 0.1;
@@ -289,10 +289,10 @@ CLASS({
         z-index: 100;
       }
 
-      $-hidden {
+      ^hidden {
         display: none;
       }
-      $-no-input {
+      ^no-input {
         pointer-events: none;
       }
     */},

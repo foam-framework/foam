@@ -50,7 +50,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         align-items: flex-end;
         border-bottom: 1px solid #e0e0e0;
         cursor: pointer;
@@ -62,7 +62,7 @@ CLASS({
         position: relative;
       }
 
-      $-label {
+      ^label {
         color: #999;
         flex-grow: 1;
         font-size: 85%;
@@ -72,11 +72,11 @@ CLASS({
         z-index: 0;
       }
 
-      $-value {
+      ^value {
         flex-grow: 1;
       }
 
-      $-down-arrow {
+      ^down-arrow {
         fill: #999;
         height: 12px;
         margin: 8px 8px 2px 16px;
@@ -84,10 +84,10 @@ CLASS({
       }
     */},
     function initE() {/*#U2
-      <div class="$" onClick="onClick">
-        <label class="$-label">{{this.label$}}</label>
-        <div class="$-value">{{this.text$}}</div>
-        <svg class="$-down-arrow" width="12px" height="12px" viewBox="0 0 48 48">
+      <div class="^" onClick="onClick">
+        <label class="^label">{{this.label$}}</label>
+        <div class="^value">{{this.text$}}</div>
+        <svg class="^down-arrow" width="12px" height="12px" viewBox="0 0 48 48">
           <g><path d="M0 16 l24 24 24 -24 z"></path></g>
         </svg>
       </div>

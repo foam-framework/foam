@@ -18,5 +18,5 @@
 CLASS({
   package: 'foam.u2',
   name: 'MultiLineTextField',
-  extends: 'foam.u2.TextArea'
+  extends: 'foam.u2.tag.TextArea'
 });

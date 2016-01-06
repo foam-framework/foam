@@ -1,5 +1,5 @@
-var d1 = foam.u2.DateInput.create();
-var d2 = foam.u2.DateInput.create();
+var d1 = foam.u2.DateView.create();
+var d2 = foam.u2.DateView.create();
 d1.data$ = d2.data$;
 d1.write();
 d2.write();
@@ -137,7 +137,7 @@ setTimeout(function() { dv.data = dd; }, 2000);
 // setTimeout(function() { dv.properties = [dv.model_.PROPERTIES, dv.model_.MODEL, dv.model_.DATA]; }, 5000);
 setTimeout(function() { dv.title = 'New Title'; }, 7000);
 
-var e15 = foam.u2.Input.create().write();
+var e15 = foam.u2.tag.Input.create().write();
 e15.data$ = timer.i$;
 
 var e15b = E('input').write();
@@ -145,18 +145,18 @@ e15b.data$ = timer.i$;
 
 E('div').style({height: '30px'}).write();
 
-foam.u2.Input.create().write().data$ = foam.u2.Input.create().write().data$;
+foam.u2.tag.Input.create().write().data$ = foam.u2.tag.Input.create().write().data$;
 
-foam.u2.Input.create({ onKey: true }).write().data$ = foam.u2.Input.create({ onKey: true }).write().data$;
-
-E('div').style({height: '30px'}).write();
-
-foam.u2.TextArea.create().write().data$ = foam.u2.TextArea.create().write().data$;
-foam.u2.TextArea.create({ onKey: true }).write().data$ = foam.u2.TextArea.create({ onKey: true }).write().data$;
+foam.u2.tag.Input.create({ onKey: true }).write().data$ = foam.u2.tag.Input.create({ onKey: true }).write().data$;
 
 E('div').style({height: '30px'}).write();
-var e16 = foam.u2.Select.create({placeholder: 'Pick a Colour:', choices: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
-var e17 = foam.u2.Select.create({choices: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
+
+foam.u2.tag.TextArea.create().write().data$ = foam.u2.tag.TextArea.create().write().data$;
+foam.u2.tag.TextArea.create({ onKey: true }).write().data$ = foam.u2.tag.TextArea.create({ onKey: true }).write().data$;
+
+E('div').style({height: '30px'}).write();
+var e16 = foam.u2.tag.Select.create({placeholder: 'Pick a Colour:', choices: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
+var e17 = foam.u2.tag.Select.create({choices: [['r', 'Red'],['g', 'Green'], ['b', 'Blue'], 'Pink']}).write();
 
 e16.data$ = e17.data$;
 
@@ -366,16 +366,16 @@ setInterval((function() {
 })(), 5000);
 
 E().add(
-  ' rw: ', foam.u2.Input.create({mode: 'rw', data: 'value'}),
-  ' disabled: ', foam.u2.Input.create({mode: 'disabled', data: 'value'}),
-  ' ro: ', foam.u2.Input.create({mode: 'ro', data: 'value'}),
-  ' hidden: ', foam.u2.Input.create({mode: 'hidden', data: 'value'})).write();
+  ' rw: ', foam.u2.tag.Input.create({mode: 'rw', data: 'value'}),
+  ' disabled: ', foam.u2.tag.Input.create({mode: 'disabled', data: 'value'}),
+  ' ro: ', foam.u2.tag.Input.create({mode: 'ro', data: 'value'}),
+  ' hidden: ', foam.u2.tag.Input.create({mode: 'hidden', data: 'value'})).write();
 
 E().add(
-  ' rw: ', foam.u2.Checkbox.create({mode: 'rw', data: true}),
-  ' disabled: ', foam.u2.Checkbox.create({mode: 'disabled', data: true}),
-  ' ro: ', foam.u2.Checkbox.create({mode: 'ro', data: true}),
-  ' hidden: ', foam.u2.Checkbox.create({mode: 'hidden', data: true})).write();
+  ' rw: ', foam.u2.tag.Checkbox.create({mode: 'rw', data: true}),
+  ' disabled: ', foam.u2.tag.Checkbox.create({mode: 'disabled', data: true}),
+  ' ro: ', foam.u2.tag.Checkbox.create({mode: 'ro', data: true}),
+  ' hidden: ', foam.u2.tag.Checkbox.create({mode: 'hidden', data: true})).write();
 
 
 

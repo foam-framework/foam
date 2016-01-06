@@ -29,8 +29,10 @@ CLASS({
     'foam.u2.ActionButton',
   ],
   exports: [
-    'currentUserId$',
+    'currentUserId',
     'headerColor',
+    'postId',
+    'appTitle',
   ],
 
   properties: [
@@ -42,6 +44,16 @@ CLASS({
         if ( old === nu ) return;
         if ( old && nu ) GLOBAL.location.reload();
       },
+    },
+    {
+      type: 'String',
+      name: 'postId',
+      memorable: true,
+    },
+    {
+      type: 'String',
+      name: 'appTitle',
+      defaultValue: 'Avizi',
     },
     {
       name: 'client',
@@ -57,7 +69,7 @@ CLASS({
       name: 'clientView',
       defaultValue: function() {
         this.client.Y.registerModel(this.BrowserView.xbind({
-          title: "Avizi"
+          title$: this.appTitle$,
         }), 'foam.browser.u2.BrowserView');
 
         return this.BrowserController.create({
@@ -87,5 +99,14 @@ CLASS({
 
   templates: [
     function toInnerHTML() {/*%%clientView()*/},
+    function CSS() {/*
+      .foam-browser-u2-BrowserView-header-title,
+      .foam-u2-md-Toolbar-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      img:not([src]){ display:none; }
+    */},
   ],
 });

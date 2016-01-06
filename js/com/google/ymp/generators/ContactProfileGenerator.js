@@ -70,6 +70,7 @@ CLASS({
   methods: [
     function generate(ret) {
       var cp = this.ContactProfile.create();
+      cp.id = createGUID();
       var parts = [this.randArrElem(this.prefixes),
                    this.randArrElem(this.names)];
       var f = function(method, ret) {

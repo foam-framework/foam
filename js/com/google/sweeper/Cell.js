@@ -55,7 +55,7 @@ CLASS({
   templates: [
     function CSS() {/*
       body { -webkit-user-select: none; }
-      $ {
+      ^ {
         border: 1px solid gray;
         display: table-cell;
         font-size: 18px;
@@ -65,22 +65,22 @@ CLASS({
         vertical-align: middle;
         width: 26px;
       }
-      $.covered {
+      ^.covered {
         background: #ccc;
         box-shadow: -2px -2px 10px rgba(0,0,0,.25) inset, 2px 2px 10px white inset;        
       }
-      $.marked $-flag {
+      ^.marked ^flag {
         display: block;
         color: #BD1616;
       }
-      $.covered font { visibility: hidden; }
-      $.marked font { display: none; }
-      $-flag { display: none; }
-      $.marked { background-color: #ccc; }
+      ^.covered font { visibility: hidden; }
+      ^.marked font { display: none; }
+      ^flag { display: none; }
+      ^.marked { background-color: #ccc; }
     */},
     function initE() {/*#U2
-      <span class="$" class={{this.stateClass()}} onclick="sweep" oncontextmenu="mark">
-        <span class="$-flag">&#x2691</span>
+      <span class="^" class={{this.stateClass()}} onclick="sweep" oncontextmenu="mark">
+        <span class="^flag">&#x2691</span>
         <font if={{this.mined}}>&#x2699</font>
         <font if={{!this.mined && this.mineCount}} color={{this.COLOURS[this.mineCount]}}>{{this.mineCount}}</font>
       </span>

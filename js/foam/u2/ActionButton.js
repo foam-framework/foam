@@ -49,7 +49,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      .foam-u2-ActionButton {
+      ^ {
         -webkit-box-shadow: inset 0 1px 0 0 #ffffff;
         box-shadow: inset 0 1px 0 0 #ffffff;
         background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
@@ -70,21 +70,21 @@ CLASS({
         visibility: hidden;
       }
 
-      .foam-u2-ActionButton.available {
+      ^available {
         visibility: visible;
       }
 
-      .foam-u2-ActionButton:hover {
+      ^:hover {
         background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
         background: -moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
         background-color: #dfdfdf;
       }
 
-      .foam-u2-ActionButton img {
+      ^ img {
         vertical-align: middle;
       }
 
-      .foam-u2-ActionButton:disabled { color: #bbb; -webkit-filter: grayscale(0.8); }
+      ^:disabled { color: #bbb; -webkit-filter: grayscale(0.8); }
     */}
   ],
 
@@ -92,8 +92,8 @@ CLASS({
     function initE() {
       var self = this;
       this.
-        cls('foam-u2-ActionButton').
-        cls('available', function() {
+        cls(this.myCls()).
+        cls(this.myCls('available'), function() {
           return self.action.isAvailable.call(self.data, self.action);
         }).
         on('click', function() { self.action.maybeCall(self.X, self.data); }).

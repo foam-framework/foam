@@ -142,9 +142,9 @@ CLASS({
               '}'),
         }.addActions({
           rulePrefix: function(parts) {
-            // Look for $ signs, and turn them into the model name.
+            // Look for ^ signs, and turn them into the model name.
             parts = parts.map(function(p) {
-              return p.indexOf('$') >= 0 ? p.replace(/\$/g, css.modelName_) : p;
+              return p.indexOf('^') >= 0 ? p.replace(/\^/g, css.modelName_ + '-') : p;
             });
             return parts.join(' ');
           },
@@ -186,7 +186,7 @@ CLASS({
     {
       name: 'model',
       documentation: 'Optional model which contains this CSS template. Used ' +
-          'to expand $ signs in CSS selectors to the model name.',
+          'to expand ^ signs in CSS selectors to the model name.',
       postSet: function(old, nu) {
         if (nu) this.modelName_ = nu.CSS_CLASS || cssClassize(nu.id);
       },

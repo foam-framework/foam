@@ -32,14 +32,12 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'data',
-      postSet: function(old, nu) {
-        this.dao = nu;
-      },
+      postSet: function(_, d) { this.dao = d; }
     },
     {
       // Separate from data so it can be a DAOProperty.
       model_: 'foam.core.types.DAOProperty',
-      name: 'dao',
+      name: 'dao'
     },
     {
       name: 'daoListener_',
@@ -53,7 +51,7 @@ CLASS({
     },
     {
       type: 'ViewFactory',
-      name: 'rowView',
+      name: 'rowView'
     },
     {
       name: 'rows',
@@ -63,17 +61,11 @@ CLASS({
     },
     ['nodeName', 'div']
   ],
-  templates: [
-    function CSS() {/*
-      .foam-u2-DAOListView {
-      }
-    */}
-  ],
   methods: [
     function initE() {
       this.dao$Proxy.pipe(this.daoListener_);
-      this.cls('foam-u2-DAOListView');
-    },
+      this.cls(this.myCls());
+    }
   ],
   listeners: [
     {

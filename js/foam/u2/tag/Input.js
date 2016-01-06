@@ -15,46 +15,42 @@
  * limitations under the License.
  */
 
+// TODO: Add datalist support.
+
 CLASS({
-  package: 'foam.u2',
-  name: 'TextArea',
-  extends: 'foam.u2.Element',
+  package: 'foam.u2.tag',
+  name: 'Input',
+  extends: 'foam.u2.View',
 
   properties: [
-    [ 'nodeName', 'textarea' ],
-    {
-      name: 'data',
-      postSet: function(_, d) {
-        if ( this.id$el ) this.id$el.value = d;
-      }
-    },
+    [ 'nodeName', 'input' ],
     {
       type: 'Boolean',
       name: 'onKey',
       attribute: true,
       defaultValue: false,
-      documentation: 'When true, $$DOC{ref:".data"} is updated on every ' +
-          'keystroke, rather than on blur.',
-    },
+      documentation: 'When true, $$DOC{ref:".data"} is updated on every keystroke, rather than on blur.'
+    }
+  ],
+
+  templates: [
+    function CSS() {/*
+      ^:read-only { border-width: 0; }
+    */}
   ],
 
   methods: [
     function initE() {
       this.cls(this.myCls());
-      this.on(this.onKey ? 'input' : 'change', this.onInput);
+      this.link();
     },
-    function load() {
-      this.SUPER();
-      this.data = this.data;
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'onInput',
-      code: function() {
-        if ( this.id$el ) this.data = this.id$el.value;
-      }
+    function link() {
+      Events.link(this.data$, this.attrValue(null, this.onKey ? 'input' : null));
+    },
+    function updateMode_(mode) {
+      // TODO: make sure that DOM is updated if values don't change
+      this.setAttribute('readonly', mode === 'ro');
+      this.setAttribute('disabled', mode === 'disabled');
     }
   ]
 });

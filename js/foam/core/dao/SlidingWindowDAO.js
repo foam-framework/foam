@@ -16,10 +16,12 @@
  */
 
 CLASS({
-  name: 'SlidingWindowDAO',
   package: 'foam.core.dao',
+  name: 'SlidingWindowDAO',
   extends: 'foam.dao.ProxyDAO',
+
   help: 'A DAO decorator which reduces network calls by caching a chunk of data around a given query for a period of time.',
+
   properties: [
     {
       name: 'queryCache',
@@ -50,7 +52,6 @@ CLASS({
         'query=' + (query ? query.toSQL() : ''),
         'order=' + (order ? order.toSQL() : '')
       ];
-
 
       if ( Expr.isInstance(sink) ) {
         var shortcircuit = true;
@@ -107,15 +108,12 @@ CLASS({
     }
   },
   listeners: [
-    {
-      name: 'purge',
-      code: function() {
-        this.timeout_ = undefined
-        var keys = Object.keys(this.queryCache);
-        var threshold = Date.now()  - this.queryTTL;
-        for ( var i = 0, key; key = keys[i]; i++ )
-          if ( this.queryCache[key][3] < threshold ) delete this.queryCache[key];
-      }
+    function purge() {
+      this.timeout_ = undefined
+      var keys = Object.keys(this.queryCache);
+      var threshold = Date.now()  - this.queryTTL;
+      for ( var i = 0, key; key = keys[i]; i++ )
+        if ( this.queryCache[key][3] < threshold ) delete this.queryCache[key];
     }
   ]
 });

@@ -32,7 +32,7 @@ CLASS({
       ],
       templates: [
         function toE() {/*#U2
-          <span class="$" x:data={{this}}>
+          <span class="^" x:data={{this}}>
             <:value/>
           </span>
         */}
@@ -96,10 +96,10 @@ CLASS({
       return true;
     },
     function s(a, b, c, d) {
+      if ( d == 3 ) { d = 0; c++; }
+      if ( c == 3 ) { c = 0; b++; }
+      if ( b == 3 ) { b = 0; a++; }
       if ( a == 3 ) return true;
-      if ( b == 3 ) return this.s(a+1, 0, 0, 0);
-      if ( c == 3 ) return this.s(a, b+1, 0, 0);
-      if ( d == 3 ) return this.s(a, b, c+1, 0);
       if ( this.get(a,b,c,d) ) return this.s(a, b, c, d+1);
       for ( var n = 1 ; n <= 9 ; n++ )
         if ( this.set(a, b, c, d, n) && this.s(a, b, c, d+1) ) return true;

@@ -28,7 +28,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         align-items: center;
         display: flex;
         font-size: 16px;
@@ -36,7 +36,7 @@ CLASS({
         line-height: 42px;
         padding: 8px 16px;
       }
-      $ img {
+      ^ img {
         flex-grow: 0;
         flex-shrink: 0;
         height: 24px;
@@ -44,7 +44,7 @@ CLASS({
         opacity: 0.6;
         width: 24px;
       }
-      $-label {
+      ^label {
         flex-grow: 1;
         overflow: hidden;
         text-overflow: ellipsis;

@@ -159,8 +159,8 @@ CLASS({
         classList: seq1(1, '"', repeat(sym('className'), ' '), '"'),
 
           className: str(seq(
-            alt('$', range('a','z'), range('A','Z')),
-            str(repeat(alt(range('a','z'), range('A', 'Z'), '$', '-', range('0', '9')))))),
+            alt('^', range('a','z'), range('A','Z')),
+            str(repeat(alt(range('a','z'), range('A', 'Z'), '^', '-', range('0', '9')))))),
 
         classValue: sym('braces'),
 
@@ -214,7 +214,7 @@ CLASS({
       as: function(as) { this.peek().as = as; },
       classList: function(cs) {
         for ( var i = 0 ; i < cs.length ; i++ ) {
-          if (cs[i].indexOf('$') >= 0) cs[i] = cs[i].replace(/\$/g, this.modelName_);
+          if (cs[i].indexOf('^') >= 0) cs[i] = cs[i].replace(/\^/g, this.modelName_ + '-');
           this.peek().classes.push('"' + cs[i] + '"');
         }
       },

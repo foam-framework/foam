@@ -41,25 +41,25 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         background: #fff;
         display: block;
         margin: 10px;
         overflow: hidden;
         padding: 24px 16px;
       }
-      $-shell {
+      ^shell {
         padding: 0;
       }
 
       @media not print {
-        $ {
+        ^ {
           border-radius: 3px;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
         }
       }
       @media print {
-        $ {
+        ^ {
           border: 6px double #000;
           margin: 6pt;
           page-break-inside: avoid;
@@ -67,7 +67,7 @@ CLASS({
       }
 
       @media (max-width: 600px) {
-        $-shell {
+        ^shell {
           margin: 0;
         }
       }

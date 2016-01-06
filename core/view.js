@@ -211,9 +211,9 @@ CLASS({
 // U2 Support
 
 var __element_map__ = {
-  INPUT:    'foam.u2.Input',
-  TEXTAREA: 'foam.u2.TextArea',
-  SELECT:   'foam.u2.Select'
+  INPUT:    'foam.u2.tag.Input',
+  TEXTAREA: 'foam.u2.tag.TextArea',
+  SELECT:   'foam.u2.tag.Select'
 };
 
 function elementForName(nodeName) {

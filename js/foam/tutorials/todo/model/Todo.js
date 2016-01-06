@@ -37,7 +37,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         align-items: center;
         border-bottom: 1px solid #eee;
         display: flex;
@@ -45,7 +45,7 @@ CLASS({
       }
     */},
     function toRowE() {/*#U2
-      <div class="$">
+      <div class="^">
         <:isCompleted showLabel="false"/>
         {{this.title$}}
       </div>

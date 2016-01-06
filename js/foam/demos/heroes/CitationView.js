@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,20 @@
  * limitations under the License.
  */
 
-// TODO: Add datalist support.
-
 CLASS({
-  package: 'foam.u2',
-  name: 'DateInput',
-  extends: 'foam.u2.Input',
+  package: 'foam.demos.heroes',
+  name: 'CitationView',
+  extends: 'foam.u2.View',
 
-  methods: [
-    function initE() {
-      this.SUPER();
-      this.setAttribute('type', 'date');
-    },
-    function link() {
-      Events.relate(
-        this.data$,
-        this.attrValue(null, this.onKey ? 'input' : null),
-        function(date) { return date ? date.toISOString().substring(0,10) : date; },
-        function(value) { return new Date(value); }
-      );
-    }
+  imports: [ 'editHero' ],
+
+  templates: [
+    function initE() {/*#U2
+      <div onClick="onClick">{{this.data.id}} &nbsp; {{this.data.name}}</div>
+    */}
+  ],
+
+  listeners: [
+    function onClick() { this.editHero(this.data); }
   ]
 });
