@@ -486,7 +486,7 @@ CLASS({
       }
       this.extraRows = [];
 
-      this.containerE.removeAllChildren();
+      if (this.containerE) this.containerE.removeAllChildren();
 
       this.cache = [];
       this.loadedTop = -1;
