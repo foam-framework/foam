@@ -22,6 +22,7 @@ CLASS({
 
   requires: [
     'com.google.ymp.controllers.DAOUpdateController',
+    'foam.u2.ScrollView',
     'foam.u2.md.Toolbar',
     'foam.u2.md.ToolbarAction',
   ],
@@ -32,6 +33,16 @@ CLASS({
   ],
 
   properties: [
+    {
+      type: 'ViewFactory',
+      name: 'rowView',
+      defaultValue: function(args, X) { return args.data.toRowE(X); },
+    },
+    {
+      type: 'ViewFactory',
+      name: 'listViewFactory',
+      defaultValue: 'foam.u2.ScrollView',
+    },
     {
       type: 'String',
       name: 'postId',

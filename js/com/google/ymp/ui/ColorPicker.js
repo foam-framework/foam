@@ -58,14 +58,12 @@ CLASS({
       this.pickColorFromE(ret, e);
     },
     function pickColorFromStr(ret, str) {
-      console.log('Start pickColorFromStr');
       var votes = {}, len = str.length;
       for ( var i = 0; i < str.length; ++i ) {
         this.castVote(votes, str.charCodeAt(i),
                       str.charCodeAt((i + 1) % len),
                       str.charCodeAt((i + 1) % len));
       }
-      console.log('End pickColorFromStr', this.extractWinner(votes));
       ret(this.pickPaletteColor(this.extractWinner(votes)));
     },
     function sampleImage(data, f) {

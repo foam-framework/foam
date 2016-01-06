@@ -20,7 +20,9 @@ CLASS({
   ],
   imports: [
     'personDAO',
+    'dynamic',
   ],
+  exports: [ 'data' ],
 
   properties: [
     {
@@ -52,17 +54,36 @@ CLASS({
       name: 'imgBGColor',
       defaultValue: '#fff',
     },
+    {
+      type: 'Int',
+      name: 'preferredHeight',
+      units: 'px',
+      defaultValue: 106,
+    },
+  ],
+
+  methods: [
+    function data_(name) {
+      return this.dynamic(function(data) { return data[name]; }, this.data$);
+    },
   ],
 
   templates: [
     function initE() {/*#U2
       <div class="^">
         (( this.Y.registerModel(this.DynamicImagePreView, 'com.google.ymp.ui.DynamicImageView'); ))
-        <div class="^img" style="background-color:{{this.imgBGColor$}}"><:image maxLOD="8" /></div>
+        <div class="^img" style="background-color:{{this.imgBGColor$}}"
+             x:maxLOD="8">
+
+          {{this.dynamic(function(data) {
+              return data.IMAGE;
+            }, this.data$)}}
+
+        </div>
         <div class="^flex-col">
-          <div class="^title">{{this.data.title}}</div>
+          <div class="^title">{{this.data_('title')}}</div>
           <div class="^author">Posted by<span>&nbsp;</span>{{this.authorName$}}</div>
-          <div class="^desc">{{this.data.content}}</div>
+          <div class="^desc">{{this.data_('content')}}</div>
           </div>
         </div>
       </div>
@@ -74,7 +95,7 @@ CLASS({
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
         margin: 10px;
         border-radius: 3px;
-        max-height: 96px;
+        height: 96px;
         overflow: hidden;
       }
       ^flex-col {
