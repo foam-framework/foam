@@ -24,6 +24,7 @@ CLASS({
   ],
 
   imports: [
+    'dynamic',
     'dynamicFn',
     'framed'
   ],
