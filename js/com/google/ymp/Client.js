@@ -21,7 +21,7 @@ CLASS({
     'foam.dao.IDBDAO',
     'foam.dao.EasyClientDAO',
     'foam.dao.CachingDAO',
-    'foam.dao.CloningDAO',
+    'foam.core.dao.CloningDAO',
     'foam.core.dao.SyncDAO',
     'com.google.ymp.bb.ContactProfile',
     'com.google.ymp.bb.Post',
