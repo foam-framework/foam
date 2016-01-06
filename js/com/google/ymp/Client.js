@@ -80,6 +80,7 @@ CLASS({
         return this.EasyDAO.create({
           model: this.DynamicImage,
           name: 'dynamicImageSync',
+          daoType: MDAO,
           syncWithServer: true,
           sockets: true,
           cache: false,
