@@ -29,7 +29,6 @@ CLASS({
     'foam.u2.DetailView'
   ],
 
-  imports: [ 'dynamic' ],
   exports: [ 'editHero' ],
 
   properties: [
