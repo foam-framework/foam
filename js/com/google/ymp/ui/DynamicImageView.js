@@ -65,9 +65,6 @@ CLASS({
     {
       type: 'Image',
       name: 'imageData',
-      postSet: function(old,nu) {
-        // console.log("Image setting", nu.length);
-      }
     },
     {
       type: 'String',

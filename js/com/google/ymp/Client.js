@@ -21,6 +21,7 @@ CLASS({
     'foam.dao.IDBDAO',
     'foam.dao.EasyClientDAO',
     'foam.dao.CachingDAO',
+    'foam.dao.CloningDAO',
     'foam.core.dao.SyncDAO',
     'com.google.ymp.bb.ContactProfile',
     'com.google.ymp.bb.Post',
@@ -101,10 +102,12 @@ CLASS({
             cache: true,
           });
         e.addIndex(this.DynamicImage.IMAGE_ID);
-        var d = this.JoinDAO.create({ // offload image data to separate DAO
-          delegate: e,
-          property: this.DynamicImage.IMAGE,
-          joinToDAO: this.dynamicImageDataDAO,
+        var d = this.CloningDAO.create({
+          delegate: this.JoinDAO.create({ // offload image data to separate DAO
+            delegate: e,
+            property: this.DynamicImage.IMAGE,
+            joinToDAO: this.dynamicImageDataDAO,
+          })
         });
         this.uploadImageDAO.pipe(d);
         return d;
