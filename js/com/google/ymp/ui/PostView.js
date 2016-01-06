@@ -21,6 +21,8 @@ CLASS({
     'foam.u2.DAOCreateController',
   ],
   imports: [
+    'location',
+    'encodeURIComponent',
     'replyDAO',
     'stack',
     'currentUser',
@@ -43,12 +45,20 @@ CLASS({
       type: 'DAO',
       name: 'replies',
       toPropertyE: 'foam.u2.DAOListView',
-    }
+    },
+    {
+      type: 'String',
+      name: 'whatsAppLink',
+      dynamicValue: function() {
+        return 'whatsapp://send?text=' + this.encodeURIComponent(
+            '"' + this.data.title + '" ' + this.location.href);
+      },
+    },
   ],
 
   actions: [
     {
-      name: 'createButton',
+      name: 'replyButton',
       ligature: 'reply',
       code: function() {
         this.stack.pushView(
@@ -66,6 +76,11 @@ CLASS({
           })));
       }
     },
+    {
+      name: 'sendButton',
+      ligature: 'send',
+      code: function() {},
+    },
   ],
 
   templates: [
@@ -80,7 +95,12 @@ CLASS({
           <div class="^separator"></div>
           <div class="^flex-row">
             <div class="^reply-title">Replies</div>
-            <self:createButton />
+            <div>
+
+              <a href={{this.whatsAppLink$}} style="color:#000">
+                <i id="view23" class="material-icons-extended" style="font-size: 24px; color: currentColor">send</i></a>
+              <self:replyButton />
+            </div>
           </div>
           <self:replies />
         </div>
