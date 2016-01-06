@@ -63,7 +63,7 @@ CLASS({
           caching: true,
           syncWithServer: true,
           sockets: true,
-        });
+        }).orderBy(DESC(this.Post.getPrototype().CREATION_TIME));
       },
     },
     {

@@ -41,7 +41,7 @@ CLASS({
     {
       type: 'ViewFactory',
       name: 'listViewFactory',
-      defaultValue: 'foam.u2.ScrollView',
+      defaultValue: 'foam.u2.DAOListView', //'foam.u2.ScrollView',
     },
     {
       type: 'String',
