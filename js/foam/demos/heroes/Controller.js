@@ -64,7 +64,7 @@ CLASS({
     },
     {
       name: 'view',
-      defaultValue: 'heroes'
+      defaultValue: 'dashboard'
     },
     {
       name: 'selection',
@@ -74,7 +74,6 @@ CLASS({
 
   methods: [
     function editHero(hero) {
-      console.log('hero: ', hero.id, hero.name);
       this.selection = hero;
     }
   ],
@@ -91,17 +90,17 @@ CLASS({
       <div x:data={{this}}>
         <h2>Tour of Heroes</h2>
         <:dashboard/> <:heroes/>
-        <hr>
+        <br>
         {{ this.dynamic(function (s, v) {
           if ( s )                return this.detailE(X);
           if ( v == 'dashboard' ) return this.dashboardE(X);
-          return this.HERO_DAO;
+          return this.heroesE(X);
         }.bind(this), this.selection$, this.view$)}}
       </div>
     */},
     function detailE() {/*#U2
       <div>
-        {{this.selection.name$}}
+        {{this.selection.name$}} details!
         <:selection title=""/>
         <:back/>
       </div>
@@ -110,6 +109,12 @@ CLASS({
       <div>
         <h3>Top Heroes</h3>
         <:starredHeroDAO/>
+      </div>
+    */},
+    function heroesE() {/*#U2
+      <div>
+        <h3>My Heroes</h3>
+        <:heroDAO/>
       </div>
     */}
   ],

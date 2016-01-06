@@ -23,8 +23,17 @@ CLASS({
   imports: [ 'editHero' ],
 
   templates: [
+    function CSS() {/*
+      ^ {
+        width: 100px;
+        height: 100px;
+        border: 2px solid black;
+        background: green;
+        margin: 20px;
+      }
+    */},
     function initE() {/*#U2
-      <div onClick="onClick" style="width:100px;height:100px;border:2px solid black;background: gray;margin: 20px;">
+      <div class="^" onClick="onClick">
         {{this.data.name$}}
       </div>
     */}
