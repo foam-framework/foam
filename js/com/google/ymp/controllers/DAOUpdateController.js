@@ -38,28 +38,6 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $, $- {
-        flex-direction: column;
-        display: flex;
-        flex-grow: 1;
-        overflow: hidden;
-      }
-      ^ {
-        flex-direction: column;
-        display: flex;
-        flex-grow: 1;
-        overflow: hidden;
-      }
-      $-body {
-        overflow-x: hidden;
-        overflow-y: auto;
-        flex-shrink: 1;
-      }
-      ^body {
-        overflow-x: hidden;
-        overflow-y: auto;
-        flex-shrink: 1;
-      }
     */},
   ],
 });
