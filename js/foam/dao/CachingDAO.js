@@ -98,6 +98,10 @@ CLASS({
       code: function(query, sink) { this.src.remove(query, sink); },
       swiftCode: 'src.remove(obj, sink: sink)',
     },
-    function removeAll(sink, options) { return this.src.removeAll(sink, options); }
+    {
+      name: 'removeAll',
+      code: function(sink, options) { return this.src.removeAll(sink, options); },
+      swiftCode: 'return src.removeAll(sink, options: options)',
+    },
   ]
 });

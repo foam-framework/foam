@@ -108,8 +108,12 @@ CLASS({
       swiftCode: 'delegate.remove(obj, sink: sink)',
     },
 
-    function removeAll() { /* Passthrough to delegate. */
-      return this.delegate.removeAll.apply(this.delegate, arguments);
+    {
+      name: 'removeAll',
+      code: function() {
+        return this.delegate.removeAll.apply(this.delegate, arguments);
+      },
+      swiftCode: 'return delegate.removeAll(sink, options: options)',
     },
 
     {
