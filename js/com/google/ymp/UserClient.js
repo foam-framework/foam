@@ -106,6 +106,10 @@ CLASS({
         overflow: hidden;
         text-overflow: ellipsis;
       }
+      .foam-browser-u2-BrowserView-body {
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
       img:not([src]){ display:none; }
     */},
   ],
