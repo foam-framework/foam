@@ -28,7 +28,6 @@ CLASS({
     'com.google.ymp.DynamicImage',
     'com.google.ymp.Person',
     'com.google.ymp.Market',
-    'foam.ui.DAOListView',
     'com.google.ymp.ClientContext',
     'com.google.ymp.dao.DynamicWhereDAO',
     'foam.core.dao.JoinDAO',
@@ -56,7 +55,6 @@ CLASS({
   properties: [
     {
       name: 'postDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Post,
@@ -69,7 +67,6 @@ CLASS({
     },
     {
       name: 'replyDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Reply,
@@ -82,7 +79,6 @@ CLASS({
     },
     {
       name: 'uploadImageDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.DynamicImage,
@@ -96,7 +92,6 @@ CLASS({
     },
     {
       name: 'dynamicImageDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
         var e = this.EasyDAO.create({ // the rest of the properties are indexed
             model: this.DynamicImage,
@@ -117,7 +112,6 @@ CLASS({
     },
     {
       name: 'dynamicImageDataDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
         return this.IDBDAO.create({
           model: this.DynamicImage,
@@ -127,7 +121,6 @@ CLASS({
     },
     {
       name: 'highResImageDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() { /* Allow access to unfiltered images, but don't sync */
         return this.EasyClientDAO.create({
           model: this.DynamicImage,
@@ -138,10 +131,6 @@ CLASS({
     },
     {
       name: 'personDAO',
-      view: {
-        factory_:  'foam.ui.DAOListView',
-        rowView: 'foam.ui.DetailView'
-      },
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.Person,
@@ -154,10 +143,6 @@ CLASS({
     },
     {
       name: 'contactProfileDAO',
-      view: {
-        factory_:  'foam.ui.DAOListView',
-        rowView: 'foam.ui.DetailView'
-      },
       lazyFactory: function() {
         return this.EasyDAO.create({
           model: this.ContactProfile,
@@ -170,7 +155,6 @@ CLASS({
     },
     {
       name: 'marketDAO',
-      view: 'foam.ui.DAOListView',
       lazyFactory: function() {
         return this.EasyClientDAO.create({
             model: this.Market,
