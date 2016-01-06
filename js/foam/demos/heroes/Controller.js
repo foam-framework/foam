@@ -18,13 +18,13 @@
 CLASS({
   package: 'foam.demos.heroes',
   name: 'Controller',
-  extends: 'foam.u2.Element', 
+  extends: 'foam.u2.Element',
 
   requires: [
     'foam.demos.heroes.CitationView',
     'foam.demos.heroes.DashboardCitationView',
     'foam.demos.heroes.Hero',
-    'foam.u2.Checkbox',
+    'foam.u2.tag.Checkbox',
     'foam.u2.DAOListView',
     'foam.u2.DetailView'
   ],
