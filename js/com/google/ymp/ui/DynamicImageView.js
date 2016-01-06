@@ -94,7 +94,8 @@ CLASS({
       this.start('img').attrs({
         src: this.imageData$
       }).style({
-        width: this.width$,
+        'min-width': this.width$,
+        'max-width': this.width$,
       }).on('click', this.clickZoom).end();
     },
     function predicate() { return EQ(this.DynamicImage.IMAGE_ID, this.data); },

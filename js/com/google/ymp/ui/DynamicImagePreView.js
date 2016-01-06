@@ -30,9 +30,9 @@ CLASS({
       this.start('img').attrs({
         src: this.imageData$
       }).style({
-        width: function() {
-          return this.width >= 0 ? this.width + 'px' : 'initial';
-        }.bind(this),
+        display: this.X.dynamic(function(imageData) {
+          return imageData ? 'block' : 'none';
+        }, this.imageData$)
       }).end();
     },
     function predicate() {
