@@ -85,9 +85,11 @@ CLASS({
         <div>Tour of Heroes</div>
         <:dashboard/> <:heroes/>
         <hr>
-        <:starredHeroDAO style="display:{{this.dynamic(function(view, s) { return ! s && view == 'dashboard' ? 'block' : 'none'; }, this.view$, this.selection$)}};"/>
-        <:heroDAO        style="display:{{this.dynamic(function(view, s) { return ! s && view == 'heroes'    ? 'block' : 'none'; }, this.view$, this.selection$)}};"/>
-        {{ this.dynamic(function (s) { return s && this.detailE(X); }.bind(this), this.selection$) }}
+        {{ this.dynamic(function (s, v) {
+          if ( s )                return this.detailE(X);
+          if ( v == 'dashboard' ) return this.STARRED_HERO_DAO;
+          return this.HERO_DAO;
+        }.bind(this), this.selection$, this.view$)}}
       </div>
     */},
     function detailE() {/*#U2
@@ -103,12 +105,12 @@ CLASS({
     {
       name: 'dashboard',
       isEnabled: function() { return this.view != 'dashboard'; },
-      code: function() { this.view = 'dashboard'; }
+      code: function() { this.back(); this.view = 'dashboard'; }
     },
     {
       name: 'heroes',
       isEnabled: function() { return this.view != 'heroes'; },
-      code: function() { this.view = 'heroes'; }
+      code: function() { this.back(); this.view = 'heroes'; }
     },
     {
       name: 'back',
