@@ -118,10 +118,16 @@ CLASS({
       name: 'rowView',
       documentation: 'The view for each row. Can specify a <tt>preferredHeight</tt>, which will become the <tt>rowHeight</tt> for the <tt>ScrollView</tt> if <tt>rowHeight</tt> is not set explicitly.',
       postSet: function(_, nu) {
-        if (typeof nu === 'string' && this.rowHeight < 0) {
-          var view = this.Y.lookup(nu);
-          if ( view.PREFERRED_HEIGHT )
-            this.rowHeight = view.create({ model: this.data.model }).preferredHeight;
+        var viewFactory, viewModel;
+        if ( typeof nu === 'string' ) {
+          viewModel = this.Y.lookup(nu);
+          viewFactory = viewModel.create.bind(viewModel);
+        } else {
+          viewFactory = nu;
+        }
+
+        if ( this.rowHeight < 0 ) {
+          this.rowHeight = viewFactory({ model: this.data.model, data: this.data.model.create(null, this.Y) }, this.Y).preferredHeight;
         }
       }
     },
@@ -596,10 +602,13 @@ CLASS({
           });
 
           this.add(this.view);
-          this.on('click', function() {
-            // "this" here is the scrollView.
-            this.publish(this.ROW_CLICK);
-          }.bind(this.scrollView));
+          this.on('click', this.onClick);
+        },
+      ],
+
+      listeners: [
+        function onClick() {
+          this.scrollView.publish(this.scrollView.ROW_CLICK, this.data);
         },
       ],
 
