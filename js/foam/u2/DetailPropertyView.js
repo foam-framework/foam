@@ -21,7 +21,7 @@ CLASS({
   extends: 'foam.u2.PropertyView',
 
   requires: [
-    'foam.u2.Select',
+    'foam.u2.tag.Select',
   ],
 
   properties: [

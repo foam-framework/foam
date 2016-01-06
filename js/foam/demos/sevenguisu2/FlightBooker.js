@@ -22,8 +22,8 @@ MODEL({
 
   // TODO: these shouldn't be required
   requires: [
-    'foam.u2.DateInput',
-    'foam.u2.Select'
+    'foam.u2.DateView',
+    'foam.u2.tag.Select'
   ],
 
   imports: [ 'dynamic' ],
@@ -35,7 +35,7 @@ MODEL({
       defaultValue: true,
       toPropertyE: function(X) {
         // TODO: Why do I need to lookup here?
-        return X.lookup('foam.u2.Select').create({
+        return X.lookup('foam.u2.tag.Select').create({
           choices: [
             [ true,  'one-way flight' ],
             [ false, 'return flight'  ]

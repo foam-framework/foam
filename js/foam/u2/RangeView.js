@@ -18,8 +18,7 @@
 CLASS({
   package: 'foam.u2',
   name: 'RangeView',
-  extends: 'foam.u2.Input',
-//  extends: 'foam.ui.AbstractNumberFieldView',
+  extends: 'foam.u2.tag.Input',
 
   properties: [
     [ 'maxValue', 100 ]

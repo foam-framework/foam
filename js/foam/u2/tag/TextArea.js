@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  package: 'foam.u2',
+  package: 'foam.u2.tag',
   name: 'TextArea',
   extends: 'foam.u2.Element',
 

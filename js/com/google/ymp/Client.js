@@ -80,8 +80,10 @@ CLASS({
         return this.EasyDAO.create({
           model: this.DynamicImage,
           name: 'dynamicImageSync',
+          daoType: MDAO,
           syncWithServer: true,
           sockets: true,
+          cache: false,
         });
       },
     },
@@ -89,14 +91,16 @@ CLASS({
       name: 'dynamicImageDAO',
       view: 'foam.ui.DAOListView',
       lazyFactory: function() {
-        var d = this.JoinDAO.create({ // offload image data to separate DAO
-          delegate: this.EasyDAO.create({ // the rest of the properties are indexed
+        var e = this.EasyDAO.create({ // the rest of the properties are indexed
             model: this.DynamicImage,
             type: 'MDAO',
             name: 'dynamicImages',
             autoIndex: true,
             cache: true,
-          }),
+          });
+        e.addIndex(this.DynamicImage.IMAGE_ID);
+        var d = this.JoinDAO.create({ // offload image data to separate DAO
+          delegate: e,
           property: this.DynamicImage.IMAGE,
           joinToDAO: this.dynamicImageDataDAO,
         });

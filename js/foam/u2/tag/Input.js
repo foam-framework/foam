@@ -18,7 +18,7 @@
 // TODO: Add datalist support.
 
 CLASS({
-  package: 'foam.u2',
+  package: 'foam.u2.tag',
   name: 'Input',
   extends: 'foam.u2.View',
 

@@ -20,7 +20,7 @@ CLASS({
   name: 'ReadWriteView',
   extends: 'foam.u2.Element',
 
-  requires: [ 'foam.u2.Input' ],
+  requires: [ 'foam.u2.tag.Input' ],
 
   properties: [
     'data'
