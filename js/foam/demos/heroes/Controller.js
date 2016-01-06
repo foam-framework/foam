@@ -102,7 +102,7 @@ CLASS({
     function detailE() {/*#U2
       <div>
         {{this.selection.name$}}
-        <:selection/>
+        <:selection title=""/>
         <:back/>
       </div>
     */},
