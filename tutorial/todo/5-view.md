@@ -49,7 +49,7 @@ CLASS({
   extends: 'foam.u2.View',
   templates: [
     function initE() {/*#U2
-      <div class="$">
+      <div class="^">
         {{this.data.title}}
       </div>
     */},
@@ -77,9 +77,9 @@ summary:
   `function`s whose entire body is a `/* block comment */`.
 - Adding `#U2` right at the start of a template enables the U2 parser.
     - It will become the default soon.
-- In CSS classes, `$` is expanded to the model name with dashes instead of
+- In CSS classes, `^` is expanded to the model name with dashes instead of
   periods.
-    - In this case, `$` becomes `com-todo-u2-TodoCitationView`.
+    - In this case, `^` becomes `com-todo-u2-TodoCitationView-`.
 - `{% raw %}{{ expression }}{% endraw %}` inserts the result of the expression at that spot.
     - Here we're putting in `this.data.title`.
 - `(( real JS code ))` runs the literal Javascript code.
@@ -194,7 +194,7 @@ Edit the template to read:
 {% highlight js %}
 {% raw %}
 function initE() {/*#U2
-  <div class="$">
+  <div class="^">
     <:isCompleted />
     {{this.data.title$}}
   </div>
@@ -228,7 +228,7 @@ set it to false in our template:
 {% highlight js %}
 {% raw %}
 function initE() {/*#U2
-  <div class="$">
+  <div class="^">
     <:isCompleted showLabel="false" />
     {{this.data.title$}}
   </div>
@@ -247,7 +247,7 @@ We'll have to add some CSS to finish customizing our citation view.
 In both U1 and U2, models can include a template called `CSS`. That template's
 output will be installed on the document exactly once.
 
-We mentioned the `$` CSS class shorthand earlier. In a `CSS` template, it
+We mentioned the `^` CSS class shorthand earlier. In a `CSS` template, it
 expands like it does in an `initE` template, to eg. `.com-todo-u2-TodoCitationView`.
 
 The [CSS guide]({{ site.url }}/guides/css) explains more about the various
@@ -265,14 +265,14 @@ CLASS({
   extends: 'foam.u2.View',
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         align-items: center;
         border-bottom: 1px solid #e0e0e0;
         display: flex;
       }
     */},
     function initE() {/*#U2
-      <div class="$">
+      <div class="^">
         <:isCompleted showLabel="false" />
         {{this.data.title$}}
       </div>
