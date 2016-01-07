@@ -489,9 +489,8 @@ MODEL({
 
       var f = arguments[arguments.length-1];
 
-      for ( var i = arguments.length-2 ; i >= 0 ; i-- ) {
-        f = arguments[i].aseq(f);
-      }
+      for ( var i = arguments.length-2 ; i >= 0 ; i-- )
+        f = arguments[i].aseq(i % 100 == 99 ? atramp(f) : f);
 
       return f;
     },
