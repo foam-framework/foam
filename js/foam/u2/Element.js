@@ -550,6 +550,16 @@ CLASS({
       }
     },
 
+    function replaceChild(oldE, newE) {
+      for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
+        if ( this.childNodes[i] === oldE ) {
+          this.childNodes[i] = newE;
+          this.onReplaceChild(oldE, newE);
+          break;
+        }
+      }
+    },
+
     function remove() {
       this.state.remove.call(this);
     },
@@ -711,19 +721,12 @@ CLASS({
 
     function valueE_(value) {
       var self = this;
-      var dyn  = this.E('span');
-      var last = null;
-      var X = this.Y;
-      var l = function() {
-        var e = self.E('span');
-        /*if ( value.get() ) */e.add(value.get() || '');
-        if ( last ) dyn.removeChild(last); //last.remove();
-        dyn.add(last = e);
+      var e    = value.get() || self.E('span');
+      var l    = function() {
+        self.replaceChild(e, e = value.get() || self.E('span'));
       };
       value.addListener(this.framed(l));
-      l();
-
-      return dyn;
+      return e;
     },
     // Better name?
     function tag(opt_nodeName) {
