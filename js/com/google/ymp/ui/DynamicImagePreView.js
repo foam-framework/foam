@@ -14,7 +14,10 @@ CLASS({
   name: 'DynamicImagePreView',
   extends: 'com.google.ymp.ui.DynamicImageView',
 
-  imports: [ 'maxLOD' ],
+  imports: [
+    'dynamic',
+    'maxLOD',
+  ],
 
   properties: [
     [ 'nodeName', 'DYNAMIC-IMAGE-PREVIEW' ],
@@ -32,9 +35,20 @@ CLASS({
       this.start('img').attrs({
         src: this.imageData$
       }).style({
-        display: this.X.dynamic(function(imageData) {
+        display: this.dynamic(function(imageData) {
           return imageData ? 'block' : 'none';
-        }, this.imageData$)
+        }, this.imageData$),
+        transition: this.dynamic(function(currentImage) {
+          return currentImage ? 'opacity 2000ms ease' : 'none';
+        }, this.currentImage$),
+        opacity: this.dynamic(function(imageData) {
+          // TODO(markdittmer): It would be better if we could force opacity
+          // change one frame after setting the transition, but U2 has no API
+          // for this pattern. Setting offsetLeft "forces layout" with the
+          // transition enabled/disabled.
+          if ( this.id$el ) this.id$el.offsetLeft = this.id$el.offsetLeft;
+          return imageData ? '1' : '0';
+        }.bind(this), this.imageData$),
       }).end();
     },
     function predicate() {
