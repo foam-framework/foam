@@ -19,6 +19,7 @@ CLASS({
     'foam.core.dao.AuthenticatedWebSocketDAO',
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO',
+    'foam.dao.LoggingDAO',
     'foam.dao.EasyClientDAO',
     'foam.dao.CachingDAO',
     'foam.core.dao.CloningDAO',
@@ -60,7 +61,7 @@ CLASS({
         return this.EasyDAO.create({
           model: this.Post,
           name: 'posts',
-          caching: true,
+          cache: true,
           syncWithServer: true,
           sockets: true,
         }).orderBy(DESC(this.Post.getPrototype().CREATION_TIME));
@@ -72,7 +73,7 @@ CLASS({
         return this.EasyDAO.create({
           model: this.Reply,
           name: 'replies',
-          caching: true,
+          cache: true,
           syncWithServer: true,
           sockets: true,
         });
@@ -95,12 +96,12 @@ CLASS({
       name: 'dynamicImageDAO',
       lazyFactory: function() {
         var e = this.EasyDAO.create({ // the rest of the properties are indexed
-            model: this.DynamicImage,
-            type: 'MDAO',
-            name: 'dynamicImages',
-            autoIndex: true,
-            cache: true,
-          });
+          model: this.DynamicImage,
+          type: 'MDAO',
+          name: 'dynamicImages',
+          autoIndex: true,
+          cache: true,
+        });
         e.addIndex(this.DynamicImage.IMAGE_ID);
         var d = this.CloningDAO.create({
           delegate: this.JoinDAO.create({ // offload image data to separate DAO
@@ -138,7 +139,7 @@ CLASS({
         return this.EasyDAO.create({
           model: this.Person,
           name: 'people',
-          caching: true,
+          cache: true,
           syncWithServer: true,
           sockets: true,
         });
@@ -150,7 +151,7 @@ CLASS({
         return this.EasyDAO.create({
           model: this.ContactProfile,
           name: 'contactProfiles',
-          caching: true,
+          cache: true,
           syncWithServer: true,
           sockets: true,
         });
