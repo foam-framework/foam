@@ -31,7 +31,7 @@ CLASS({
       framed: true,
       code: function() {
         this.postId = '';
-        this.stack.popView();
+        this.X.stack.popView();
       },
     },
   ],
