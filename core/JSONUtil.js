@@ -90,7 +90,7 @@ var JSONUtil = {
     var seq = [];
     var res = this.parse(X, str, seq);
     if ( seq.length ) {
-      aseq.apply(null, seq)(function() { ret(res); });
+      apar.apply(null, seq)(function() { ret(res); });
       return;
     }
     ret(res);
