@@ -18,7 +18,7 @@ __DATA({
     '<link rel="stylesheet" href="fonts.css" />',
   ],
   resources: [
-    '../../../fonts.css',
+    'fonts.css',
   ],
   appcacheManifest: true,
   precompileTemplates: true,
