@@ -18,7 +18,7 @@ cp manifest_build.json build/manifest.json
 cp index_build.html build/main.html
 
 cd "$BUILD_DIR"
-uglifyjs -b semicolons=false,beautify=false foam.js -c unused=false > foam-min.js
+uglifyjs foam.js -b semicolons=false,beautify=false -c unused=false > foam-min.js
 mv foam-min.js foam.js
 # rm unused.html
 
