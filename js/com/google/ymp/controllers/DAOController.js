@@ -98,4 +98,15 @@ CLASS({
       },
     },
   ],
+
+  templates: [
+    function CSS() {/*
+      ^ {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+    */},
+  ],
 });

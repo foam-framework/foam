@@ -543,7 +543,7 @@ CLASS({
     function CSS() {/*
       ^ {
         display: flex;
-        flex-direciton: column;
+        flex-direction: column;
         flex-grow: 1;
         overflow: hidden;
         position: relative;
