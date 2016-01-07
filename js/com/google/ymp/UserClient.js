@@ -21,12 +21,13 @@ CLASS({
     //'com.google.ymp.Browser',
     'com.google.ymp.Client',
     'com.google.ymp.controllers.DAOController',
-    'foam.memento.FragmentMementoMgr',
-    'foam.ui.DetailView',
     'foam.browser.u2.BrowserController',
     'foam.browser.u2.BrowserView',
-    'foam.u2.DetailView',
+    'foam.fonts.LigatureTester',
+    'foam.memento.FragmentMementoMgr',
     'foam.u2.ActionButton',
+    'foam.u2.DetailView',
+    'foam.ui.DetailView',
   ],
   exports: [
     'currentUserId',
@@ -71,10 +72,23 @@ CLASS({
         this.client.Y.registerModel(this.BrowserView.xbind({
           title$: this.appTitle$,
         }), 'foam.browser.u2.BrowserView');
-
-        return this.BrowserController.create({
+        this.client.Y.registerModel(this.LigatureTester.xbind({
+          timeout: 10000,
+        }), 'foam.fonts.LigatureTester');
+        var view = this.BrowserController.create({
             data: this.client.postDAO,
         }, this.client.Y);
+        view.subscribe(
+            ['loaded'],
+            EventService.oneTime(function() {
+              var e = window.document.getElementById('avizi-splash');
+              if ( ! e ) {
+                console.warn('Failed to find Avizi splash screen element');
+                return;
+              }
+              window.document.body.removeChild(e);
+            }));
+        return view;
       },
     },
     {
@@ -98,7 +112,9 @@ CLASS({
   ],
 
   templates: [
-    function toInnerHTML() {/*%%clientView()*/},
+    function toInnerHTML() {/*
+      %%clientView()
+    */},
     function CSS() {/*
       .foam-browser-u2-BrowserView-header-title,
       .foam-u2-md-Toolbar-title {

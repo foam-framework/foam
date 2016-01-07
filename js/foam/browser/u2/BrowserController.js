@@ -111,6 +111,11 @@ CLASS({
     },
     function initE() {
       this.cls(this.myCls('outer-container')).add(this.stack);
+      this.stack.subscribe(
+          ['stack-element-push'],
+          EventService.oneTime(function() {
+            this.publish(['loaded']);
+          }.bind(this)));
       this.stack.pushView(this.BrowserView.create({
         parent: this,
         model: this.model,

@@ -125,8 +125,11 @@ CLASS({
           opacity: 0,
           transition: 'opacity 300ms ease'
         });
-        this.requestAnimationFrame(function() { e.style({ opacity: 1 }); });
+        this.requestAnimationFrame(function() {
+          e.style({ opacity: 1 });
+        });
       }
+      this.publish(['stack-element-push'], e);
     },
     function elementAnimationRemove_(e) {
       if (this.transition === 'slide') {
@@ -358,7 +361,7 @@ CLASS({
           pushView: this.pushView_.bind(this, this.views_.length),
           popView: this.popView_.bind(this, this.views_.length),
           popChildViews: this.popView_.bind(this, this.views_.length+1),
-          replaceView: this.replaceView_.bind(this, this.views_.length)
+          replaceView: this.replaceView_.bind(this, this.views_.length),
         };
 
         // HACK: Replacing the values of properties on a child view is a hack

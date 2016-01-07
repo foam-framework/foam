@@ -117,10 +117,15 @@ CLASS({
     {
       name: 'dynamicImageDataDAO',
       lazyFactory: function() {
-        return this.IDBDAO.create({
+        return this.EasyDAO.create({
           model: this.DynamicImage,
-          name: 'dynamicImageData'
+          name: 'dynamicImageData',
+          cache: true,
         });
+        // return this.IDBDAO.create({
+        //   model: this.DynamicImage,
+        //   name: 'dynamicImageData'
+        // });
       },
     },
     {
