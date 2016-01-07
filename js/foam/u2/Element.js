@@ -212,9 +212,10 @@ CLASS({
         var out = this.createOutputStream();
         out(newE);
         var n = this.X.document.createElement('div');
-        n.outerHTML = out.toString();
+        n.innerHTML = out.toString();
+        // newE.load && newE.load();
 
-        e.replaceChild(oldE.id$el, n);
+        e.replaceChild(n.firstChild, oldE.id$el);
       },
       toString:      function() { return 'LOADED'; }
     },
@@ -573,7 +574,10 @@ CLASS({
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === oldE ) {
           this.childNodes[i] = newE;
-          this.onReplaceChild(oldE, newE);
+          oldE.state = this.UNLOADED;
+          oldE.visitChildren('unload');
+          this.state.onReplaceChild.call(this, oldE, newE);
+          newE.load && newE.load();
           break;
         }
       }
@@ -870,7 +874,8 @@ CLASS({
         manager.install(target);
         this.clickTarget_ = target;
       } else {
-        this.id$el.addEventListener(topic, listener);
+        // TODO: fix
+        this.id$el && this.id$el.addEventListener(topic, listener);
       }
     },
 
