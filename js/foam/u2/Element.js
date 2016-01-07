@@ -70,6 +70,7 @@ CLASS({
       onRemoveAttr:  function() { },
       onAddChildren: function() { },
       onInsertChildren: function() { },
+      onReplaceChild: function() { },
       toString:      function() { return 'INITIAL'; }
     },
     OUTPUT: {
@@ -119,6 +120,9 @@ CLASS({
         throw "Mutations not allowed in OUTPUT state.";
       },
       onInsertChildren: function() {
+        throw "Mutations not allowed in OUTPUT state.";
+      },
+      onReplaceChild: function() {
         throw "Mutations not allowed in OUTPUT state.";
       },
       toString:      function() { return 'OUTPUT'; }
@@ -199,6 +203,19 @@ CLASS({
           children[i].load && children[i].load();
         }
       },
+      onReplaceChild: function(oldE, newE) {
+        var e = this.id$el;
+        if ( ! e ) {
+          console.warn('Missing Element: ', this.id);
+          return
+        }
+        var out = this.createOutputStream();
+        out(newE);
+        var n = this.X.document.createElement('div');
+        n.outerHTML = out.toString();
+
+        e.replaceChild(oldE.id$el, n);
+      },
       toString:      function() { return 'LOADED'; }
     },
     UNLOADED: {
@@ -219,6 +236,7 @@ CLASS({
       onRemoveAttr:  function() { },
       onAddChildren: function() { },
       onInsertChildren: function() { },
+      onReplaceChild: function() { },
       toString:      function() { return 'UNLOADED'; }
     },
     DESTROYED: {
@@ -236,6 +254,7 @@ CLASS({
       onRemoveAttr:  function() { },
       onAddChildren: function() { },
       onInsertChildren: function() { },
+      onReplaceChild: function() { },
       toString:      function() { return 'DESTROYED'; }
     },
 
