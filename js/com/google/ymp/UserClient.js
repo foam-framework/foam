@@ -111,6 +111,42 @@ CLASS({
         overflow-y: auto;
       }
       img:not([src]){ display:none; }
+      .foam-u2-ScrollView-inner div:nth-child(12n+1) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(224,92,108);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+2) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(224,138,79);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+3) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(241,189,103);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+4) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(244,211,98);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+5) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(246,235,92);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+6) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(204,228,96);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+7) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(159,215,98);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+8) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(144,190,161);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+9) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(131,174,224);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+10) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(172,139,233);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+11) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(194,88,216);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+12) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(203,82,156);
+      }
     */},
   ],
 });
