@@ -14,10 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.mlang',
   name: 'CannedQuery',
+
   documentation: 'A model for a canned query. That is, a label-mlang pair.',
+
   properties: [
     {
       name: 'id',
@@ -30,7 +33,7 @@ CLASS({
     },
     {
       name: 'expression',
-      type: 'EXPR',
+      // type: 'EXPR',
     },
     {
       name: 'iconUrl',

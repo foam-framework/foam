@@ -60,7 +60,7 @@ CLASS({
     },
     {
       name: 'output',
-      type: 'foam.flow.CodeSampleOutput',
+      // type: 'foam.flow.CodeSampleOutput',
       factory: function() {
         return this.CodeSampleOutput.create();
       },
@@ -166,7 +166,7 @@ CLASS({
     {
       model_: 'ArrayProperty',
       name: 'openSnippets',
-      type: 'Array[Int]',
+      // type: 'Array[Int]',
       lazyFactory: function() { return [-2, -1]; },
       adapt: function(old, nu) {
         if ( old === nu || ! typeof nu !== 'string' ) return nu;

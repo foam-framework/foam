@@ -13,6 +13,7 @@ CLASS({
   package: 'foam.flow',
   name: 'CodeView',
   extends: 'foam.flow.Element',
+
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
   requires: [ 'foam.flow.SourceCode' ],
@@ -25,7 +26,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      type: 'foam.flow.SourceCode',
+//      type: 'foam.flow.SourceCode',
       factory: function() {
         return this.SourceCode.create();
       }

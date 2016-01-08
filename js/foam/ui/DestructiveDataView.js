@@ -52,7 +52,7 @@ CLASS({
     },
     {
       name: 'dataLinkedChildren',
-      type: 'Array[foam.patterns.ChildTreeTrait]',
+      //type: 'Array[foam.patterns.ChildTreeTrait]',
       factory: function() { return []; }
     }
   ],

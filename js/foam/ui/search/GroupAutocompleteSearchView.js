@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.ui.search',
   name: 'GroupAutocompleteSearchView',
@@ -46,7 +47,6 @@ CLASS({
     {
       name: 'dao',
       label: 'DAO',
-      type: 'DAO',
       required: true,
       factory: function() {
         return [];
@@ -56,8 +56,7 @@ CLASS({
       },
     },
     {
-      name: 'property',
-      type: 'Property',
+      name: 'property'
     },
     {
       name: 'name',

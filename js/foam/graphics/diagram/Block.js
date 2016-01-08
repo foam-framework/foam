@@ -15,17 +15,15 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'Block',
   package: 'foam.graphics.diagram',
+  name: 'Block',
+  extends: 'foam.graphics.diagram.LinearLayout',
   
   requires: ['foam.graphics.diagram.LinkPoint'],
 
-  extends: 'foam.graphics.diagram.LinearLayout',
   traits: ['foam.graphics.BorderTrait'],
 
-  
   documentation: function() {/*
     Represents one rectangular item. Typically used for a class or model representation.
     $$DOC{ref:'foam.graphics.diagram.Block',usePlural:true} include link points in the middle of each
@@ -39,7 +37,7 @@ CLASS({
     },
     {
       name: 'myLinkPoints',
-      type: 'foam.core.types.DAOProperty',
+      type: 'foam.core.types.DAO',
       factory: function() { return []; }
     },
     {

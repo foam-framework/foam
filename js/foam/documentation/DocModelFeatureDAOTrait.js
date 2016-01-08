@@ -18,6 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'DocModelFeatureDAOTrait',
+
   documentation: "Generates a featureDAO of all the inherited features of a $$DOC{ref:'Model'}.",
 
   requires: [
@@ -140,7 +141,7 @@ CLASS({
         return;
       }
 
-      console.log("Generating FeatureDAO...", this.data.id );
+      // console.log("Generating FeatureDAO...", this.data.id );
 
 //       this.featureDAO.removeAll();
 //       this.modelDAO.removeAll();
@@ -199,7 +200,6 @@ CLASS({
 
     },
 
-
     debugLogFeatureDAO: function() {
       /* For debugging purposes, prints out the state of the FeatureDAO. */
 
@@ -240,8 +240,6 @@ CLASS({
       }
       this.SUPER(isParentDestroyed);
     }
-
-
   },
 
   listeners: [

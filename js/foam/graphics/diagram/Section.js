@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'Section',
   package: 'foam.graphics.diagram',
+  name: 'Section',
+  extends: 'foam.graphics.diagram.LinearLayout',
+
   label: 'Section',
 
   requires: ['foam.graphics.Label as Label',
              'foam.graphics.diagram.LinkPoint'],
 
-  extends: 'foam.graphics.diagram.LinearLayout',
   traits: ['foam.graphics.BorderTrait'],
 
   properties: [
@@ -51,7 +51,7 @@ CLASS({
     },
     {
       name: 'myLinkPoints',
-      type: 'foam.core.types.DAOProperty',
+      type: 'foam.core.types.DAO',
       factory: function() { return []; }
     },
     {
@@ -62,7 +62,6 @@ CLASS({
       name: 'stretchy',
       defaultValue: false
     }
-
   ],
 
   methods: {
@@ -81,17 +80,11 @@ CLASS({
     },
     // TODO: account for movement that changes our parent but not our x,y,width,height
     addLinkPoints: function() {
-      {
-        var pt3 = this.LinkPoint.create({owner: this, name: 'sectionLeft', side:'left'});
-        this.myLinkPoints.push(pt3);
-      }
-      {
-        var pt4 = this.LinkPoint.create({owner: this, name: 'sectionRight', side:'right'});
-        this.myLinkPoints.push(pt4);
-      }
+      var pt3 = this.LinkPoint.create({owner: this, name: 'sectionLeft', side:'left'});
+      this.myLinkPoints.push(pt3);
+
+      var pt4 = this.LinkPoint.create({owner: this, name: 'sectionRight', side:'right'});
+      this.myLinkPoints.push(pt4);
     }
-
   }
-
-
 });

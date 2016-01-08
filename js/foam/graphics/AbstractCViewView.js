@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.graphics',
   name: 'AbstractCViewView',
-
   extends: 'foam.ui.View',
 
   documentation: function() {  /*
@@ -33,7 +32,7 @@ CLASS({
   properties: [
     {
       name: 'cview',
-      type: 'foam.graphics.CView',
+      // type: 'foam.graphics.CView',
       postSet: function(_, cview) {
         cview.view  = this;
         this.width  = cview.x + cview.width;

@@ -40,7 +40,7 @@ CLASS({
       name: 'groups'
     },
     {
-      type: 'foam.graphics.PieGraph',
+      // type: 'foam.graphics.PieGraph',
       name: 'pie',
       lazyFactory: function() {
         return this.PieGraph.create({

@@ -40,7 +40,7 @@ CLASS({
       },
     },
     {
-      type: 'foam.ui.md.OverflowActionList',
+      // type: 'foam.ui.md.OverflowActionList',
       name: 'rightActionList',
       lazyFactory: function() {
         return this.OverflowActionList.create({

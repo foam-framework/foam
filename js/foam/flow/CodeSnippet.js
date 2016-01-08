@@ -42,7 +42,7 @@ CLASS({
     },
     {
       name: 'src',
-      type: 'foam.flow.SourceCode',
+      // type: 'foam.flow.SourceCode',
       factory: function() {
         this.SourceCode.create({
           data: 'console.log("Hello world!");'
@@ -69,7 +69,7 @@ CLASS({
     },
     {
       name: 'following_',
-      type: 'foam.flow.CodeSnippet',
+      // type: 'foam.flow.CodeSnippet',
       defaultValue: null
     }
   ],

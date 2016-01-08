@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'LinkPoint',
   package: 'foam.graphics.diagram',
+  name: 'LinkPoint',
   //extends: 'foam.graphics.Point', // screws up ids
 
 //  requires: ['foam.graphics.diagram.ParentageListener as ParentageListener'],

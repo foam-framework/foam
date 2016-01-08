@@ -24,12 +24,12 @@ CLASS({
   properties: [
     {
       name: 'data',
-      type: 'foam.flow.CodeSampleOutput',
+      // type: 'foam.flow.CodeSampleOutput',
       required: true
     },
     {
       name: 'flare',
-      type: 'foam.ui.md.Flare',
+      // type: 'foam.ui.md.Flare',
       postSet: function(old, nu) {
         if ( old === nu ) return;
         if ( old ) old.flareState$.removeListener(this.onFlareStateChange);

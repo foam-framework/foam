@@ -52,7 +52,7 @@ CLASS({
       }
     },
     {
-      type: 'foam.apps.ctm.TaskManagerContext',
+      // type: 'foam.apps.ctm.TaskManagerContext',
       name: 'ctx',
       transient: true,
       defaultValue: null,

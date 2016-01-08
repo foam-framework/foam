@@ -23,12 +23,12 @@ CLASS({
 
   properties: [
     {
+      type: 'Boolean',
       name: 'vertical',
-      type: 'boolean',
       defaultValue: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'value',
       help: 'The first element being shown, starting at zero.',
       preSet: function(_, value) {
@@ -41,7 +41,7 @@ CLASS({
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'extent',
       help: 'Number of elements shown.',
       minValue: 1,
@@ -52,7 +52,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'size',
       defaultValue: 0,
       help: 'Total number of elements being scrolled through.',
@@ -63,30 +63,30 @@ CLASS({
       }
     },
     {
+      type: 'Int',
       name: 'minHandleSize',
-      type: 'int',
       defaultValue: 10,
       help: 'Minimum size to make the drag handle.'
     },
     {
+      type: 'Int',
       name: 'startY',
-      type: 'int',
       defaultValue: 0
     },
     {
+      type: 'Int',
       name: 'startValue',
       help: 'Starting value or current drag operation.',
-      type: 'int',
       defaultValue: 0
     },
     {
-      name: 'handleColor',
       type: 'String',
+      name: 'handleColor',
       defaultValue: 'rgb(107,136,173)'
     },
     {
-      name: 'borderColor',
       type: 'String',
+      name: 'borderColor',
       defaultValue: '#999'
     }
   ],

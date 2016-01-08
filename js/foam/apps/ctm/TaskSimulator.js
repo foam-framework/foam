@@ -17,7 +17,7 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.ctm.Task',
+      // type: 'foam.apps.ctm.Task',
       name: 'task',
       required: true
     },

@@ -93,7 +93,7 @@ CLASS({
       defaultValue: 'material-icons-extended',
     },
     {
-      type: 'foam.ui.ImageView',
+//      type: 'foam.ui.ImageView',
       name: 'imageView',
       lazyFactory: function() {
         return this.ImageView.create({
@@ -106,7 +106,7 @@ CLASS({
       },
     },
     {
-      type: 'foam.ui.LigatureView',
+//      type: 'foam.ui.LigatureView',
       name: 'ligatureView',
       defaultValue: null,
       postSet: function(old, nu) {
@@ -125,7 +125,7 @@ CLASS({
       },
     },
     {
-      type: 'foam.fonts.LigatureTester',
+//      type: 'foam.fonts.LigatureTester',
       name: 'ligatureTester',
       defaultValue: null,
     },

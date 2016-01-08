@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 CLASS({
   package: 'foam.ui',
   name: 'UpdateDetailView',

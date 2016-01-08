@@ -22,8 +22,8 @@ CLASS({
 
   properties: [
     {
-      name:  'style',
       type:  'String',
+      name:  'style',
       defaultValue: 'Line',
       // TODO: fix the view, it's not storabe
       view: {
@@ -67,33 +67,27 @@ CLASS({
     {
       model_: 'ColorProperty',
       name:  'gridColor',
-      type:  'String',
       defaultValue: undefined
     },
     {
       name:  'axisSize',
-      type:  'int',
       defaultValue: 2
     },
     {
       name:  'xAxisInterval',
-      type:  'int',
       defaultValue: 0
     },
     {
       name:  'yAxisInterval',
-      type:  'int',
       defaultValue: 0
     },
     {
       name:  'maxValue',
       label: 'Maximum Value',
-      type:  'float',
       defaultValue: -1
     },
     {
       name:  'data',
-      type:  'Array[float]',
       factory: function() { return []; },
       postSet: function(old, nu) {
         if ( old === nu ) return;

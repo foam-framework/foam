@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'DiagramRootTrait',
   package: 'foam.graphics.diagram',
+  name: 'DiagramRootTrait',
   
   requires: [ 'MDAO', 'foam.graphics.diagram.DiagramItemTrait' ],
   

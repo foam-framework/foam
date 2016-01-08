@@ -81,12 +81,12 @@ CLASS({
     },
     {
       name:  'children',
-      type:  'Array[View]',
+      // type:  'Array[View]',
       factory: function() { return []; }
     },
     {
       name:  'sortOrder',
-      type:  'Comparator',
+      // type:  'Comparator',
       postSet: function() { this.paintTable(); },
       defaultValue: undefined
     },
@@ -111,11 +111,11 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type:  'Int',
       name: 'height'
     },
     {
-      model_: 'BooleanProperty',
+      type:  'Boolean',
       name: 'scrollEnabled',
       defaultValue: false
     },
@@ -131,7 +131,7 @@ CLASS({
     },
     {
       name: 'scrollbar',
-      type: 'ScrollCView',
+      // type: 'ScrollCView',
       factory: function() {
         return this.ScrollCView.create({height:800, width: 24, x: 1, y: 0, size: 200, extent: 10});
       },

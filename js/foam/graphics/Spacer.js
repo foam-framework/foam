@@ -19,6 +19,7 @@ CLASS({
   package: 'foam.graphics',
   name: 'Spacer',
   extends: 'foam.graphics.CView',
+
   traits: [ 'foam.patterns.layout.LayoutItemHorizontalTrait', 'foam.patterns.layout.LayoutItemVerticalTrait' ],
   documentation: function() {/* A $$DOC{ref:'foam.graphics.CView'} layout spacer. No children
       or painting is supported. */},
@@ -63,7 +64,7 @@ CLASS({
     {
       name:  'fixedHeight',
       label: 'Fixed Height',
-      type:  'ConstraintValue',
+      // type:  'ConstraintValue',
       defaultValue: '',
       help: "Optional shortcut to set a fixed height (integer or percent value).",
       documentation: "Optional shortcut to set a fixed width (integer or percent value).",

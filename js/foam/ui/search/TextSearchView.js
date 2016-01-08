@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.ui.search',
   name: 'TextSearchView',
-
   extends: 'foam.ui.View',
 
   requires: [ 'foam.ui.TextFieldView' ],
@@ -43,21 +42,18 @@ CLASS({
     },
     {
       name:  'width',
-      type:  'int',
+      type:  'Int',
       defaultValue: 47
     },
     {
-      name: 'property',
-      type: 'Property'
+      name: 'property'
     },
     {
       name: 'predicate',
-      type: 'Object',
       defaultValue: TRUE
     },
     {
       name: 'view',
-      type: 'view',
       factory: function() { return this.TextFieldView.create({displayWidth:this.width, type: 'search', cssClass: 'foamSearchTextField'}); }
     },
     {

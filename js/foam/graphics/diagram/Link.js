@@ -16,15 +16,14 @@
  */
 
 CLASS({
-  name: 'Link',
   package: 'foam.graphics.diagram',
-
+  name: 'Link',
   extends: 'foam.graphics.CView',
 
   properties: [
     {
       name: 'start',
-      type: 'foam.graphics.diagram.LinkPoint[]',
+//       type: 'foam.graphics.diagram.LinkPoint[]',
       documentation: function () {/* The potential starting points of the link. */},
       postSet: function (old, nu) {
         if (old) old.forEach(function (pt) {
@@ -37,7 +36,7 @@ CLASS({
     },
     {
       name: 'end',
-      type: 'foam.graphics.diagram.LinkPoint[]',
+//      type: 'foam.graphics.diagram.LinkPoint[]',
       documentation: function () {/* The potential ending points of the link. */},
       postSet: function (old, nu) {
         if (old) old.forEach(function (pt) {

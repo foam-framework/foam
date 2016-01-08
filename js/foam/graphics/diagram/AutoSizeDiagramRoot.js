@@ -19,6 +19,7 @@ CLASS({
   name: 'AutoSizeDiagramRoot',
   package: 'foam.graphics.diagram',
   extends: 'foam.graphics.LockToPreferredLayout',
+
   traits: ['foam.graphics.diagram.DiagramItemTrait', 'foam.graphics.diagram.DiagramRootTrait'],
 
   documentation: function() {/* Use a $$DOC{ref:'foam.graphics.diagram.AutoSizeDiagramRoot'}

@@ -17,7 +17,6 @@
 
 CLASS({
   name: 'ExplainExpr',
-
   extends: 'UNARY',
 
   documentation: 'Pseudo-expression which outputs a human-readable description of its subexpression, and the plan for evaluating it.',
@@ -300,7 +299,7 @@ CLASS({
     {
       name:  'arg2',
       label: 'Argument',
-      type:  'Expr',
+      // type:  'Expr',
       help:  'Sub-expression',
       preSet: function(_, a) { return a.map(function(o) { return o.toUpperCase(); }); }
     }
@@ -382,7 +381,7 @@ CLASS({
     {
       name:  'arg2',
       label: 'Argument',
-      type:  'Expr',
+      // type:  'Expr',
       help:  'Sub-expression',
       defaultValue: TRUE,
       postSet: function(_, value) { this.pattern_ = undefined; }
@@ -536,7 +535,6 @@ CLASS({
   properties: [
     {
       name:  'sum',
-      type:  'int',
       help:  'Sum of values.',
       factory: function() { return 0; }
     },
@@ -566,18 +564,16 @@ CLASS({
   properties: [
     {
       name:  'count',
-      type:  'int',
+      type:  'Int',
       defaultValue: 0
     },
     {
       name:  'sum',
-      type:  'int',
       help:  'Sum of values.',
       defaultValue: 0
     },
     {
       name:  'avg',
-      type:  'floag',
       help:  'Average of values.',
       getter: function() { return this.sum / this.count; }
     },
@@ -607,7 +603,6 @@ CLASS({
   properties: [
     {
       name:  'min',
-      type:  'int',
       help:  'Minimum value.',
       defaultValue: undefined
     },
@@ -689,7 +684,7 @@ CLASS({
   properties: [
     {
       name:  'groups',
-      type:  'Map[Expr]',
+      // type:  'Map[Expr]',
       help:  'Groups.',
       factory: function() { return {}; }
     },
@@ -800,34 +795,34 @@ CLASS({
     {
       name:  'xFunc',
       label: 'X-Axis Function',
-      type:  'Expr',
+      // type:  'Expr',
       help:  'Sub-expression',
       defaultValue: TRUE
     },
     {
       name:  'yFunc',
       label: 'Y-Axis Function',
-      type:  'Expr',
+      // type:  'Expr',
       help:  'Sub-expression',
       defaultValue: TRUE
     },
     {
       name:  'acc',
       label: 'Accumulator',
-      type:  'Expr',
+      // type:  'Expr',
       help:  'Sub-expression',
       defaultValue: TRUE
     },
     {
       name:  'rows',
-      type:  'Map[Expr]',
+      // type:  'Map[Expr]',
       help:  'Rows.',
       factory: function() { return {}; }
     },
     {
       name:  'cols',
       label: 'Columns',
-      type:  'Map[Expr]',
+      // type:  'Map[Expr]',
       help:  'Columns.',
       factory: function() { return {}; }
     },
@@ -1115,7 +1110,7 @@ CLASS({
   properties: [
     {
       name: 'dao',
-      type: 'DAO',
+      // type: 'DAO',
       transient: true,
       hidden: true
     }

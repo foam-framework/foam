@@ -50,7 +50,6 @@ CLASS({
   properties: [
     {
       name:  'view',
-      type:  'Canvas2',
       postSet: function(_, view) {
         for ( var key in this.children ) {
           var child = this.children[key];

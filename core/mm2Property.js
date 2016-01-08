@@ -209,7 +209,7 @@ GLOBAL.Property = {
     },
     {
       name: 'aliases',
-      type: 'Array[String]',
+      // type: 'Array[String]',
       labels: ['javascript'],
       view: 'foam.ui.StringArrayView',
       factory: function() { return []; },
@@ -242,7 +242,7 @@ GLOBAL.Property = {
     },
     {
       name: 'subKey',
-      type: 'EXPR',
+      // type: 'EXPR',
       labels: ['javascript'],
       displayWidth: 20,
       defaultValue: 'ID',
@@ -316,7 +316,7 @@ GLOBAL.Property = {
     },
     {
       name: 'displayWidth',
-      type: 'int',
+      type: 'Int',
       displayWidth: 8,
       displayHeight: 1,
       defaultValue: 30,
@@ -327,7 +327,7 @@ GLOBAL.Property = {
     },
     {
       name: 'displayHeight',
-      type: 'int',
+      type: 'Int',
       displayWidth: 8,
       displayHeight: 1,
       defaultValue: 1,
@@ -339,7 +339,7 @@ GLOBAL.Property = {
     {
 //      model_: 'ViewFactoryProperty',
       name: 'view',
-      type: 'view',
+      // type: 'view',
       labels: ['javascript'],
       defaultValue: 'foam.ui.TextFieldView',
       help: 'View component for the property.',
@@ -374,7 +374,7 @@ GLOBAL.Property = {
     {
 //      model_: 'ViewFactoryProperty',
       name: 'detailView',
-      type: 'view',
+      // type: 'view',
       labels: ['javascript'],
       defaultValueFn: function() { return this.view; },
       help: 'View component for the property when rendering within a DetailView.',
@@ -387,7 +387,7 @@ GLOBAL.Property = {
     {
 //      model_: 'ViewFactoryProperty',
       name: 'citationView',
-      type: 'view',
+      // type: 'view',
       labels: ['javascript'],
       defaultValueFn: function() { return this.view; },
       help: 'View component for the property when rendering within a CitationView.',

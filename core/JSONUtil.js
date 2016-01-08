@@ -131,6 +131,23 @@ var JSONUtil = {
     if ( obj instanceof Date ) return obj;
 
     if ( obj instanceof Object ) {
+
+    if ( obj.model_ === 'Model' || opt_defaultModel === 'Model' ) {
+      if ( obj.properties ) {
+        for ( var i = 0 ; i < obj.properties.length ; i++ ) {
+          var p = obj.properties[i];
+          if ( p.type && ! p.model_ && p.type !== 'Property' ) {
+            p.model_ = p.type + 'Property';
+            X.arequire(p.model_)((function(obj, p) { return function(m) {
+              if ( Property && ! Property.isSubModel(m) ) {
+                console.log('ERROR: Use of non Property Sub-Model as Property type: ', obj.package + '.' + obj.name, p.type);
+              }
+            }; })(obj,p));
+          }
+        }
+      }
+    }
+
       for ( var key in obj )
         if ( key != 'model_' && key != 'prototype_' )
           obj[key] = this.mapToObj(X, obj[key], null, seq);

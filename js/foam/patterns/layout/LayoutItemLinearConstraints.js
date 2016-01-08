@@ -30,21 +30,21 @@ CLASS({
       defaultValue: 100,
       name: 'preferred',
       documentation: function() {/* The preferred item size. */},
-      type: 'foam.patterns.layout.ConstraintProperty'
+      // type: 'foam.patterns.layout.ConstraintProperty'
     },
     {
       model_: 'foam.patterns.layout.ConstraintProperty',
       defaultValue: 0,
       name: 'min',
       documentation: function() {/* The minimum size. */},
-      type: 'foam.patterns.layout.ConstraintProperty'
+      // type: 'foam.patterns.layout.ConstraintProperty'
     },
     {
       model_: 'foam.patterns.layout.ConstraintProperty',
       defaultValue: 999999999,
       name: 'max',
       documentation: function() {/* The maximum size. */},
-      type: 'foam.patterns.layout.ConstraintProperty'
+      // type: 'foam.patterns.layout.ConstraintProperty'
     },
     {
       model_: 'IntProperty',

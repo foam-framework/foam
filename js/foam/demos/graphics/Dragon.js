@@ -19,6 +19,7 @@ CLASS({
   package: 'foam.demos.graphics',
   name:  'Dragon',
   extends: 'foam.graphics.CView',
+
   traits: [ 'foam.ui.Colors' ],
 
   requires: [
@@ -33,7 +34,6 @@ CLASS({
     [ 'blowBubbles', true ],
     {
       name:  'eyes',
-      type:  'EyesCView',
       paint: true,
       factory: function() {
         return this.EyesCView.create({x:-50, y: -160, r: 25});
@@ -53,7 +53,6 @@ CLASS({
     {
       name:  'backgroundColor',
       label: 'Background',
-      type:  'String',
       defaultValue: 'gray'
     },
     'timer'

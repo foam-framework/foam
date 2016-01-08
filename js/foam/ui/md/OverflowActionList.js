@@ -59,7 +59,7 @@ CLASS({
       defaultValue: 'foam.ui.ActionButton',
     },
     {
-      type: 'foam.ui.md.OverlayDropdownView',
+      // type: 'foam.ui.md.OverlayDropdownView',
       name: 'moreActionsDropdown',
       lazyFactory: function() {
         return this.OverlayDropdownView.create({

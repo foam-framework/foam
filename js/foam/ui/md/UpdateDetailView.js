@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 CLASS({
   package: 'foam.ui.md',
   name: 'UpdateDetailView',
@@ -132,7 +131,7 @@ CLASS({
       }
     },
     {
-      type: 'foam.ui.md.Toolbar',
+      // type: 'foam.ui.md.Toolbar',
       name: 'toolbar',
       lazyFactory: function() {
         return this.Toolbar.create({

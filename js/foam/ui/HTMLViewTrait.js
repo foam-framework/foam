@@ -73,7 +73,7 @@ CLASS({
     },
     {
       name:   'shortcuts',
-      type:   'Array[Shortcut]',
+      // type:   'Array[Shortcut]',
       factory: function() { return []; },
       documentation: function() {/*
         Keyboard shortcuts for the view. TODO ???
@@ -122,7 +122,7 @@ CLASS({
     },
     {
       name: 'propertyViewProperty',
-      type: 'Property',
+      // type: 'Property',
       defaultValueFn: function() { return this.X.Property.VIEW; }
     },
     {

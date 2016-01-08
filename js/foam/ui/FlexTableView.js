@@ -76,8 +76,8 @@ CLASS({
       }
     },
     {
-      name:  'sortOrder',
-      type:  'Comparator',
+      name: 'sortOrder',
+      // type:  'Comparator',
       postSet: function(old, nu) {
         if ( old === nu ) return;
         this.updateHead();
@@ -86,7 +86,7 @@ CLASS({
       defaultValue: undefined
     },
     {
-      name:  'sortProp',
+      name: 'sortProp',
       defaultValue: undefined
     },
     {

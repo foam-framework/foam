@@ -19,23 +19,25 @@ CLASS({
   name: 'ToggleView',
   package: 'foam.ui.md',
   extends: 'foam.ui.SimpleView',
+
   traits: ['foam.ui.md.MDStyleTrait'],
   requires: ['foam.ui.md.HaloView'],
+
   properties: [
     {
-      name: 'data',
       type: 'Boolean',
+      name: 'data',
       view: 'foam.ui.BooleanView',
     },
     {
-      name: 'enabled',
       type: 'Boolean',
+      name: 'enabled',
       view: 'foam.ui.BooleanView',
       defaultValue: true,
     },
     {
-      name: 'label',
       type: 'String',
+      name: 'label',
       defaultValueFn: function() { return this.prop && this.prop.label; }
     },
     {
@@ -151,9 +153,6 @@ CLASS({
     */}
   ],
   listeners: [
-    {
-      name: 'onClick',
-      code: function(e) { this.enabled && (this.data = !this.data); }
-    },
+    function onClick(e) { this.enabled && (this.data = !this.data); }
   ]
 });

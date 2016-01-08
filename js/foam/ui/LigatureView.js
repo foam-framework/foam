@@ -23,7 +23,7 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
         this.$.textContent = nu;
-      },
+      }
     },
     {
       model_: 'StringProperty',
@@ -34,7 +34,7 @@ CLASS({
         var out = TemplateOutput.create(this);
         this.toHTML(out);
         this.$.outerHTML = out.toString();
-      },
+      }
     },
     {
       model_: 'StringProperty',
@@ -44,7 +44,7 @@ CLASS({
         if ( old === nu || ! this.$ ) return;
         this.$.className = this.className +
             (this.extraClassName ? ' ' + this.extraClassName : '');
-      },
+      }
     },
     {
       model_: 'StringProperty',
@@ -53,17 +53,17 @@ CLASS({
         if ( old === nu || ! this.$ ) return;
         this.$.className = this.className +
             (this.extraClassName ? ' ' + this.extraClassName : '');
-      },
+      }
     },
     {
       model_: 'IntProperty',
       name: 'width',
-      getter: function() { return this.$ ? this.$.scrollWidth : 0; },
+      getter: function() { return this.$ ? this.$.scrollWidth : 0; }
     },
     {
       model_: 'IntProperty',
       name: 'height',
-      getter: function() { return this.$ ? this.$.scrollHeight : 0; },
+      getter: function() { return this.$ ? this.$.scrollHeight : 0; }
     },
     {
       model_: 'IntProperty',
@@ -72,7 +72,7 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
         this.$.style['font-size'] = nu + 'px';
-      },
+      }
     },
     {
       name: 'color',
@@ -80,14 +80,14 @@ CLASS({
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
         this.$.style['color'] = nu;
-      },
-    },
+      }
+    }
   ],
 
   templates: [
     function toHTML() {/*
       <{{this.tagName}} id="%%id" %%cssClassAttr()
                         style="font-size: {{this.fontSize}}px; color: %%color">%%data</%%tagName>
-    */},
+    */}
   ]
 });
