@@ -19,6 +19,7 @@ CLASS({
   name: 'TableView',
   extends: 'foam.u2.TableView',
   requires: [
+    'foam.u2.md.ActionButton',
     // TODO(braden): Port Icon to U2.
     'foam.ui.Icon',
   ],
@@ -30,6 +31,25 @@ CLASS({
   },
 
   properties: [
+    {
+      type: 'Boolean',
+      name: 'editColumnsEnabled',
+      documentation: 'Set this to true to let the user select columns.',
+      defaultValue: false
+    },
+    {
+      type: 'String',
+      name: 'title',
+      documentation: 'The title for the table. When unset, defaults to the ' +
+          'plural name of the model.',
+      // Note that this is defaulted by the dynamic values in initE, because
+      // it should react to changing the model.
+    },
+    {
+      name: 'rowHeight',
+      documentation: 'Override this to set the (fixed!) row height of the table.',
+      defaultValue: 48
+    },
     {
       name: 'ascIcon',
       factory: function() {
@@ -55,20 +75,77 @@ CLASS({
       }
     },
     {
-      name: 'rowHeight',
-      documentation: 'Override this to set the (fixed!) row height of the table.',
-      defaultValue: 48
+      type: 'Array',
+      subType: 'Action',
+      name: 'actions',
+    },
+    {
+      name: 'columnSelectionE',
+      lazyFactory: function() {
+        var editor = this.EditColumnsView.create({
+          properties$: this.allProperties_$,
+          selectedProperties$: this.selectedProperties_$,
+          model$: this.model$
+        });
+        return this.OverlayDropdown.create().add(editor);
+      }
+    },
+  ],
+
+  actions: [
+    {
+      name: 'clearSelection',
+      ligature: 'clear_all',
+      isAvailable: function() { return !!this.hardSelection; },
+      code: function() {
+        this.hardSelection = null;
+      }
+    },
+    {
+      name: 'editColumns',
+      ligature: 'more_vert',
+      isAvailable: function() { return this.editColumnsEnabled; },
+      code: function() {
+        this.columnSelectionE.open();
+      }
     },
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.Y.registerModel(this.ActionButton.xbind({ type: 'icon' }),
+          'foam.u2.ActionButton');
+    },
+    function gatherActions(model) {
+      if (!model) return [];
+      // TODO(markdittmer): Should we be definign a getter for "actions_" so
+      // that we don't need to check "instance_"?
+      return model.actions_ || (model.instance_ && model.instance_.actions_) ||
+          model.actions;
+    },
     function initE() {
       // Add the title bar first.
-      //this.start('
+      this.start('flex-table-title-bar').cls(this.myCls('title-bar'))
+          .start('table-caption')
+              .cls(this.myCls('caption'))
+              .add(this.dynamic(function(title, model) {
+                return title || model.plural;
+              }, this.title$, this.model$))
+              .end()
+          .add(this.dynamic(function(hardSelection) {
+            var actions = hardSelection ? this.gatherActions(hardSelection.model_) : [];
+            actions = actions.concat(this.gatherActions(this.model_));
+            var X = this.Y.sub({ data: this });
+            return X.E('table-actions').cls(this.myCls('actions')).add(actions);
+          }.bind(this), this.hardSelection$))
+          .end();
+
       this.SUPER();
       this.cls(this.myCls('md'));
     },
   ],
+
   templates: [
     function CSS() {/*
       ^caption {
