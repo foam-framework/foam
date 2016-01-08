@@ -543,7 +543,6 @@ CLASS({
       type: 'String',
       displayWidth: 180,
       displayHeight: 30,
-      rows: 30, cols: 80,
       defaultValue: '',
       view: 'foam.ui.TextAreaView',
       // Doesn't work because of bootstrapping issues.
