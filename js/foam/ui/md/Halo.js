@@ -21,7 +21,7 @@ CLASS({
 
   extends: 'foam.graphics.Circle',
 
-  constant: {
+  constants: {
     RING_INNER_COLOR: 'rgba(0, 0, 0, 0)'
   },
 
