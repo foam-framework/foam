@@ -20,6 +20,8 @@ CLASS({
   extends: 'foam.u2.TableView',
   requires: [
     'foam.u2.md.ActionButton',
+    'foam.u2.md.EditColumnsView',
+    'foam.u2.md.OverlayDropdown',
     // TODO(braden): Port Icon to U2.
     'foam.ui.Icon',
   ],
@@ -139,6 +141,7 @@ CLASS({
             var X = this.Y.sub({ data: this });
             return X.E('table-actions').cls(this.myCls('actions')).add(actions);
           }.bind(this), this.hardSelection$))
+          .add(this.editColumnsEnabled ? this.columnSelectionE : null)
           .end();
 
       this.SUPER();

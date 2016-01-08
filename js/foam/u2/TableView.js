@@ -28,6 +28,7 @@ CLASS({
     'document',
     'dynamic',
     'hardSelection$',
+    'setTimeout',
     'softSelection$',
     'window'
   ],
@@ -83,18 +84,15 @@ CLASS({
         }
       },
       postSet: function(old, nu) {
-        this.scrollView.softCleanup();
-        // TODO(braden): Used to be initHTML and updateHead here.
+        this.scrollView.invalidate();
       },
     },
-    // TODO(braden): Used to have updateHead() and initHTML in a postSet.
     ['sortOrder', undefined],
     ['sortProp', undefined],
     {
       type: 'Int',
       name: 'minColWidth',
       defaultValue: 50
-      // TODO(braden): Used to have injectColStyles() here.
     },
     'hardSelection',
     'softSelection',
@@ -141,7 +139,6 @@ CLASS({
       lazyFactory: function() {
         return [];
       }
-      // TODO(braden): Used to have injectColStyles in a postSet.
     },
     {
       type: 'Boolean',
@@ -233,13 +230,8 @@ CLASS({
           }
 
           self.colWidths_[i].set(newW1);
-          // TODO(braden): Might need to tickle something to get it to update
-          // the column widths.
-          // Original had injectColStyle(i) here.
-          //self.colWidths_ = self.colWidths_;
           if (w2) {
             self.colWidths_[i + 1].set(newW2);
-            //self.injectColStyle(i + 1);
           }
         }
 
@@ -274,9 +266,14 @@ CLASS({
       this.headE.add(this.dynamic(function(props) {
         // TODO(braden): Find a way to remove the old listeners, or confirm that
         // it's already happening properly.
-        //this.colWidths_.forEach(function(value) { value.removeAllListeners(); });
         this.headRowE = this.E('flex-table-row').cls(this.myCls('row')).add(
             props.map(this.makeHeadCell.bind(this)));
+
+        // TODO(braden): This introduces a visible lag, where it renders and
+        // then updates the sizes immediately after.
+        // Find a better way to run something after this new value lands in the
+        // DOM.
+        this.setTimeout(this.onResize, 100);
         return this.headRowE;
       }.bind(this), this.selectedProperties_$, this.sortOrder$));
 
@@ -338,7 +335,7 @@ CLASS({
       name: 'makeRow',
       code: function(map, Y) {
         map = map || {};
-        map.properties = this.allProperties_;
+        map.properties$ = this.selectedProperties_$;
         return this.rowView(map, Y);
       }
     },

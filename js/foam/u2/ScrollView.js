@@ -477,16 +477,16 @@ CLASS({
     function softCleanup() {
       var keys = Object.keys(this.visibleRows);
       for ( var i = 0; i < keys.length; i++ ) {
-        this.visibleRows[keys[i]].unload();
+        this.visibleRows[keys[i]].remove();
       }
       this.visibleRows = {};
 
       for ( i = 0; i < this.extraRows.length; i++ ) {
-        this.extraRows[i].unload();
+        this.extraRows[i].remove();
       }
       this.extraRows = [];
 
-      if (this.containerE) this.containerE.removeAllChildren();
+      //if (this.containerE) { this.containerE.removeAllChildren(); }
 
       this.cache = [];
       this.loadedTop = -1;
