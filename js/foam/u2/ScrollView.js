@@ -56,14 +56,22 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.core.types.DAO',
       name: 'data',
+      postSet: function(old, nu) {
+        this.dao = nu;
+      },
+    },
+    {
+      // TODO(braden): This property only exists because we need to change its
+      // type to DAOProperty.
+      model_: 'foam.core.types.DAOProperty',
+      name: 'dao',
       onDAOUpdate: 'onDAOUpdate',
     },
     {
       name: 'model',
       documentation: 'The model for the data. Defaults to the DAO\'s model.',
-      defaultValueFn: function() { return this.data.model; }
+      defaultValueFn: function() { return this.dao.model; }
     },
     {
       name: 'runway',
@@ -127,7 +135,7 @@ CLASS({
         }
 
         if ( this.rowHeight < 0 ) {
-          this.rowHeight = viewFactory({ model: this.data.model, data: this.data.model.create(null, this.Y) }, this.Y).preferredHeight;
+          this.rowHeight = viewFactory({ model: this.dao.model, data: this.dao.model.create(null, this.Y) }, this.Y).preferredHeight;
         }
       }
     },
@@ -241,7 +249,7 @@ CLASS({
         this.busyComplete_ = this.spinnerBusyStatus.start();
         oldComplete && oldComplete();
 
-        this.data.select(COUNT())(function(c) {
+        this.dao.select(COUNT())(function(c) {
           this.count = c.count;
 
           // That will have updated the height of the inner view.
@@ -316,7 +324,7 @@ CLASS({
           // Something to load.
           var self = this;
           var updateNumber = ++this.daoUpdateNumber;
-          this.data.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select()(function(a) {
+          this.dao.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select()(function(a) {
             if ( updateNumber !== self.daoUpdateNumber ) return;
             if ( ! a || ! a.length ) return;
 
@@ -331,7 +339,7 @@ CLASS({
                 o = a[i].clone();
                 o.addListener(function(x) {
                   // TODO(kgr): remove the deepClone when the DAO does this itself.
-                  this.data.put(x.deepClone());
+                  this.dao.put(x.deepClone());
                 }.bind(self, o));
               }
               self.cache[toLoadTop + i] = o;
