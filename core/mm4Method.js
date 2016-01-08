@@ -168,7 +168,6 @@ CLASS({
       subType: 'Action',
       view: 'foam.ui.ArrayView',
       help: 'Child actions of this action.',
-      persistent: false,
       documentation: function() { /*
             Child $$DOC{ref:'Action',usePlural:true} of this instance.
         */}
@@ -1083,4 +1082,3 @@ CLASS({
     }
   ]
 });
-
