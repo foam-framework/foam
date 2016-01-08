@@ -34,6 +34,7 @@ CLASS({
       name: 'ascIcon',
       factory: function() {
         return this.Icon.create({
+          url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAOklEQVR4AWMYYaABCAkq+Q+EDYSUzGSYBVKGT8l0BkYgxKnMASgxDagACKDK7LEp84YogSgD8kYIAACj3BCo983dYwAAAABJRU5ErkJggg==',
           ligature: 'keyboard_arrow_up',
           width: 16,
           height: 16,
@@ -45,6 +46,7 @@ CLASS({
       name: 'descIcon',
       factory: function() {
         return this.Icon.create({
+          url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAQklEQVR4AWMYDoAFnYcJNBnuMFjDebYMtxk0MBVJMtxg+MxgA1XyBciTBLMxlQElbfAoQShDKMGjDKYErzIgHFEAAGLzEOwIrN0jAAAAAElFTkSuQmCC',
           ligature: 'keyboard_arrow_down',
           width: 16,
           height: 16,

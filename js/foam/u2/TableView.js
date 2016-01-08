@@ -193,7 +193,7 @@ CLASS({
     function measureColWidths(cells) {
       for (var i = 0; i < cells.length; i++) {
         if (!this.colWidths_[i])
-          this.colWidths_[i] = this.SimpleValue.create();
+          this.colWidths_[i] = this.makeColWidthValue(i);
         this.colWidths_[i].set(cells[i].id$el.offsetWidth);
       }
     },
@@ -278,7 +278,7 @@ CLASS({
         this.headRowE = this.E('flex-table-row').cls(this.myCls('row')).add(
             props.map(this.makeHeadCell.bind(this)));
         return this.headRowE;
-      }.bind(this), this.selectedProperties_$));
+      }.bind(this), this.selectedProperties_$, this.sortOrder$));
 
       // Attach a dynamic class to the head that reveals the column resizers
       // when one of them is being dragged.
@@ -293,6 +293,8 @@ CLASS({
       // These can get away with not being dynamic, because the whole header
       // will be rebuilt on a column change.
       cell.cls(this.myCls('col-' + i)).cls(this.myCls('cell'));
+      cell.on('click', this.onSortOrder.bind(this, prop));
+
       if (this.isPropNumeric(prop)) cell.cls(this.myCls('numeric'));
       var sorted = this.isSortedByProp(prop);
       if (sorted) cell.cls(this.myCls('sort'));
@@ -306,14 +308,10 @@ CLASS({
       colLabel.end();
 
       cell.add(this.makeResizeHandle(i));
-      var styleE = this.E('style');
+
       if (!this.colWidths_[i])
-        this.colWidths_[i] = this.SimpleValue.create();
-      this.colWidths_[i].addListener(function(obj, prop, old, nu) {
-        styleE.id$el.innerHTML = '#' + this.id + ' .' + this.myCls('col-' + i) +
-            '{ width: ' + nu + 'px; }';
-      }.bind(this));
-      cell.add(styleE);
+        this.colWidths_[i] = this.makeColWidthValue(i);
+
       return cell;
     },
 
@@ -322,6 +320,16 @@ CLASS({
     },
     function isSortedByProp(prop) {
       return this.sortProp === prop;
+    },
+    function makeColWidthValue(i) {
+      var styleE = this.E('style');
+      var value = this.SimpleValue.create();
+      value.addListener(function(obj, prop, old, nu) {
+        styleE.id$el.innerHTML = '#' + this.id + ' .' + this.myCls('col-' + i) +
+            '{ width: ' + nu + 'px; }';
+      }.bind(this));
+      this.headE.add(styleE);
+      return value;
     },
   ],
 
