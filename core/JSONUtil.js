@@ -131,11 +131,9 @@ var JSONUtil = {
     if ( obj instanceof Date ) return obj;
 
     if ( obj instanceof Object ) {
-      var j = 0;
-      for ( var key in obj ) {
-        if ( key != 'model_' && key != 'prototype_' ) obj[key] = this.mapToObj(X, obj[key], null, seq);
-        j++;
-      }
+      for ( var key in obj )
+        if ( key != 'model_' && key != 'prototype_' )
+          obj[key] = this.mapToObj(X, obj[key], null, seq);
 
       if ( opt_defaultModel && ! obj.model_ ) return opt_defaultModel.create(obj, X);
 
