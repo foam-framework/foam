@@ -108,7 +108,6 @@ GLOBAL.Property = {
       name: 'type',
       type: 'String',
       required: true,
-      // todo: curry arguments
       view: {
         factory_: 'foam.ui.ChoiceView',
         choices: [
