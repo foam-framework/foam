@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 CLASS({
   name: 'Message',
   plural: 'messages',
