@@ -29,9 +29,9 @@ CLASS({
     'foam.ui.md.FlexTableView'
   ],
   exports: [
-    'clock$',
-    'hardSelection$',
-    'softSelection$',
+    'clock',
+    'hardSelection',
+    'softSelection',
     'tasks'
   ],
 
