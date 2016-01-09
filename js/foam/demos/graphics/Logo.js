@@ -117,6 +117,7 @@ CLASS({
   package: 'foam.demos.graphics',
   name:  'Logo',
   extends: 'foam.ui.View',
+
   traits: [ 'foam.ui.Colors' ],
 
   requires: [
@@ -125,7 +126,7 @@ CLASS({
     'foam.ui.TextFieldView'
   ],
 
-  exports: [ 'text$', 'font$', 'colorList$', 'width$', 'height$' ],
+  exports: [ 'text', 'font', 'colorList', 'width', 'height' ],
 
   properties: [
     [ 'duration', 0 ],
