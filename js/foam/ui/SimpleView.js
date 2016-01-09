@@ -18,11 +18,11 @@
 CLASS({
   package: 'foam.ui',
   name: 'SimpleView',
-
   extends: 'foam.ui.BaseView',
+
   traits: [
     'foam.ui.HTMLViewTrait',
-    'foam.ui.U2ViewTrait',
+    'foam.ui.U2ViewTrait'
   ],
 
   requires: [ 'Property' ],
@@ -53,7 +53,6 @@ CLASS({
   properties: [
     {
       name: 'propertyViewProperty',
-      type: 'Property',
       defaultValueFn: function() { return this.Property.DETAIL_VIEW; }
     }
   ]
