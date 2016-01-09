@@ -24,12 +24,17 @@ CLASS({
     'window'
   ],
 
+  constants: {
+    TYPE_CLASSES: {
+      label: 'label-only',
+      icon: 'icon-only',
+      floating: 'floating-action-button'
+    }
+  },
+
   properties: [
     [ 'nodeName', 'ACTION-BUTTON' ],
-    {
-      type: 'Action',
-      name: 'action',
-    },
+    'action',
     {
       name: 'type',
       choices: ['label', 'icon', 'floating'],
@@ -48,7 +53,7 @@ CLASS({
           startAlpha: 0.2,
           finishAlpha: 0
         }, this.Y);
-      },
+      }
     },
     {
       name: 'icon',
@@ -70,7 +75,7 @@ CLASS({
     {
       model_: 'FloatProperty',
       name: 'alpha',
-      defaultValue: 1,
+      defaultValue: 1
     },
     {
       model_: 'foam.ui.ColorProperty',
@@ -81,17 +86,9 @@ CLASS({
           return this.setColor('rgba(0,0,0,0.65)');
         else
           return this.setColor(this.color);
-      },
+      }
     },
   ],
-
-  constants: {
-    TYPE_CLASSES: {
-      label: 'label-only',
-      icon: 'icon-only',
-      floating: 'floating-action-button'
-    }
-  },
 
   methods: [
     function initE() {
