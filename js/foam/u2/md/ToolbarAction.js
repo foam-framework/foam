@@ -14,14 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2.md',
   name: 'ToolbarAction',
+
   properties: [
     'data',
-    {
-      type: 'Action',
-      name: 'action',
-    },
-  ],
+    'action'
+  ]
 });
