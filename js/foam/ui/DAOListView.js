@@ -19,10 +19,10 @@
 CLASS({
   package: 'foam.ui',
   name: 'DAOListView',
+  extends: 'foam.ui.SimpleView',
 
   requires: ['SimpleValue'],
 
-  extends: 'foam.ui.SimpleView',
   traits: ['foam.ui.DAODataViewTrait'],
 
   constants: {
