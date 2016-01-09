@@ -47,6 +47,13 @@ MODEL({
       return this.rootPath + key.replace(/\./g, '/') + '.js';
     },
     find: function(key, sink) {
+      // Hack to avoid console error when not in debug mode.
+      // Should be generalized somehow. KGR
+      if ( ! DEBUG && key === 'DocumentationProperty' ) {
+        sink && sink.error();
+        return;
+      }
+
       if ( this.preload[key] ) {
         sink && sink.put && sink.put(this.preload[key]);
         delete this.preload[key];
