@@ -61,7 +61,7 @@ CLASS({
     },
     {
       name: 'choices',
-      type: 'Array[StringField]',
+      // type: 'Array[StringField]',
       documentation: 'Array of [value, text] choices. Simple String values ' +
           'are expanded to [str, str]. Can also be a map, which results in ' +
           '[key, value] pairs listed in enumeration order.',
