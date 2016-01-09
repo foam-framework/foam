@@ -30,7 +30,7 @@ CLASS({
     'codeViewName',
     'document'
   ],
-  exports: [ 'sampleCodeContext$' ],
+  exports: [ 'sampleCodeContext' ],
 
   properties: [
     {
