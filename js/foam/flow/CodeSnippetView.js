@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'CodeSnippetView',
   package: 'foam.flow',
+  name: 'CodeSnippetView',
   extends: 'foam.flow.Element',
 
   requires: [
@@ -24,7 +24,7 @@ CLASS({
     'codeViewName',
     'codeViewLoadState$'
   ],
-  exports: [ 'codeViewLoadState$' ],
+  exports: [ 'codeViewLoadState' ],
 
   constants: { ELEMENT_NAME: 'code-snippet' },
 
