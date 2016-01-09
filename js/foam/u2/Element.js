@@ -30,7 +30,6 @@ CLASS({
   ],
 
   onLoad: function() {
-    console.log('Running Element.static().');
     var self = this;
 
     Function.prototype.toE = function(X) {
