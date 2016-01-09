@@ -95,7 +95,7 @@ CLASS({
 
     manage: function(name, obj, version) {
       var write = EventService.merged((function() {
-        console.log('PersistentContext', 'updating', name);
+        // console.log('PersistentContext', 'updating', name);
         this.dao.put(this.Y.Binding.create({
           id:    name,
           value: JSONUtil.where(this.predicate).stringify(obj),
