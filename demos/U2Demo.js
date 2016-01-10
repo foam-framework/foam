@@ -255,11 +255,11 @@ MODEL({
       name: 'color'
     },
     {
-      model_: 'PasswordProperty',
+      type: 'Password',
       name: 'password'
     },
     {
-      model_: 'PhoneNumberProperty',
+      type: 'PhoneNumber',
       name: 'phoneNumber'
     }
   ]
