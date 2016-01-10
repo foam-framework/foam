@@ -18,7 +18,9 @@
 MODEL({
   package: 'foam.demos.sevenguisu2',
   name: 'Person',
+
   tableProperties: [ 'surname', 'name' ],
+
   properties: [
     { name: 'id', hidden: true },
                        // TODO: fix views
@@ -38,7 +40,7 @@ MODEL({
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO', // TODO: This shouldn't be required
     'foam.demos.sevenguisu2.Person',
-//    'foam.u2.TableView' // TODO: Doesn't exist
+    'foam.u2.md.TableView'
   ],
 
   properties: [
@@ -65,11 +67,12 @@ MODEL({
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
       // TODO: replace with foam.u2.TableView when available
-      view: {
-        factory_: 'foam.ui.TableView',
-        title: '',
-        scrollEnabled: true,
-        editColumns: false
+      toPropertyE: function(X) {
+        return X.lookup('foam.u2.md.TableView').create({
+          title: '',
+          scrollEnabed: true,
+          editColumns: false
+        });
       },
       factory: function() { return this.dao; }
     },
