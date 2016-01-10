@@ -58,7 +58,7 @@
     },
     {
       name: 'lastModified',
-      type: 'DateTimeArray',
+      type: 'DateTime',
       tableWidth: 100,
       documentation: function() {/* Override this to extract and/or apply the last
         modified time of the item, or something approximating it.

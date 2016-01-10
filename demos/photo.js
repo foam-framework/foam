@@ -80,7 +80,7 @@ var Photo = Model.create({
     { name: 'hash' },
     { type: 'Boolean', name: 'isLocal' },
     { type: 'Boolean', name: 'byAction' },
-    { type: 'DateTimeArray', name: 'timestamp' },
+    { type: 'DateTime', name: 'timestamp' },
     { name: 'albumId' },
     { type: 'Boolean', name: 'isCoverPhoto' },
     { name: 'jspb', hidden: true }
@@ -94,7 +94,7 @@ var Album = Model.create({
     { name: 'id', name: 'id' },
     { type: 'Boolean', name: 'isLocal' },
     { type: 'Boolean', name: 'byAction' },
-    { type: 'DateTimeArray', name: 'timestamp' },
+    { type: 'DateTime', name: 'timestamp' },
     { name: 'jspb', hidden: true }
   ],
   relationships: [

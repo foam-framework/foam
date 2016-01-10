@@ -12,7 +12,7 @@ CLASS({
       name: 'answerBy'
     },
     {
-      type: 'DateTimeArray',
+      type: 'DateTime',
       name: 'created'
     },
     {

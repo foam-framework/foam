@@ -26,12 +26,12 @@ CLASS({
       defaultValue: true,
     },
     {
-      type: 'DateTimeArray',
+      type: 'DateTime',
       name: 'date',
       help: 'The date and time of the event.',
     },
     {
-      type: 'DateTimeArray',
+      type: 'DateTime',
       name: 'endDate',
       help: 'The date and time the event ends.',
     },

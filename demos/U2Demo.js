@@ -201,7 +201,7 @@ MODEL({
       name: 'date'
     },
     {
-      type: 'DateTimeArray',
+      type: 'DateTime',
       name: 'dateTime'
     },
     {

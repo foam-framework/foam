@@ -654,7 +654,7 @@ CLASS({
               getter: function() { return !! this.blockedOn.length; }
             },
             {
-              type: 'DateTimeArray',
+              type: 'DateTime',
               name: 'modified',
               shortName: 'mod',
               mode: 'read-write',

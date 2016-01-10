@@ -48,7 +48,7 @@ CLASS({
       help: 'List of people who are CC\'ed on updates to this issue.'
     },
     {
-      type: 'DateTimeArray',
+      type: 'DateTime',
       name: 'closed',
       help: 'Date and time the issue was closed.'
     },

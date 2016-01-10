@@ -59,7 +59,7 @@ CLASS({
     },
     {
       name: 'lastModified',
-      type: 'DateTimeArray',
+      type: 'DateTime',
       tableWidth: 100,
     },
     {

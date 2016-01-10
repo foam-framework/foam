@@ -50,7 +50,7 @@ CLASS({
           name: 'obj',
         },
         {
-          type: 'DateTimeArray',
+          type: 'DateTime',
           name: 'timestamp'
         }
       ]

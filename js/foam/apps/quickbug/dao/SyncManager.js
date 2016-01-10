@@ -92,13 +92,13 @@ CLASS({
       transient: true
     },
     {
-      type: 'DateTimeArray',
+      type: 'DateTime',
       name:  'lastSync',
       help: 'The time of the last sync.',
       factory: function() { return new Date(); }
     },
     {
-      type: 'DateTimeArray',
+      type: 'DateTime',
       name:  'lastModified',
       help: 'The time of the last sync.',
       factory: function() { return new Date(); },

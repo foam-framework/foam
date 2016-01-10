@@ -28,7 +28,7 @@ CLASS({
       },
     },
     {
-      type: 'DateTimeArray',
+      type: 'DateTime',
       name: 'timestamp',
       factory: function() { return new Date(); },
     },

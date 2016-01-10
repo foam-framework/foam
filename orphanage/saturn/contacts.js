@@ -225,7 +225,7 @@ var Contact = FOAM({
         },
 
         {
-            type: 'DateTimeArray',
+            type: 'DateTime',
             factory: function() { return new Date(); },
             name: 'updated'
         },
