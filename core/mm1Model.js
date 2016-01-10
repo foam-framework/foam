@@ -436,6 +436,8 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
           }
 
           if ( ! p.model_ ) {
+            // The mapping from type to model_ is also done in JSONUtil,
+            // but that doesn't handle Bootstrap models. 
             if ( p.type && this.X.lookup(p.type + 'Property') ) {
               p.model_ = p.type + 'Property';
               p.type = undefined;
