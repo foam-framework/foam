@@ -158,8 +158,8 @@ CLASS({
       white: [0xFF, 0xFF, 0xFF],
       whitesmoke: [0xF5, 0xF5, 0xF5],
       yellow: [0xFF, 0xFF, 0x00],
-      yellowgreen: [0x9A, 0xCD, 0x32],
-    },
+      yellowgreen: [0x9A, 0xCD, 0x32]
+    }
   },
 
   properties: [
@@ -213,7 +213,7 @@ CLASS({
         c.red = c.green = c.blue = 0;
         c.alpha = 1.0;
         return c;
-      },
-    },
-  ],
+      }
+    }
+  ]
 });
