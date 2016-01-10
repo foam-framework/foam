@@ -16,8 +16,8 @@
  */
 
 CLASS({
-  name: 'GMailUserInfo',
   package: 'com.google.mail',
+  name: 'GMailUserInfo',
   properties: ['email', 'name', 'avatarUrl'],
   methods: {
     fromJSON: function(obj) {

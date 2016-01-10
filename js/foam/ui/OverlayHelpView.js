@@ -26,13 +26,13 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.HelpSnippetView',
       name: 'helpSnippets',
       required: true,
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'onComplete',
       defaultValue: nop,
     },
@@ -48,7 +48,7 @@ CLASS({
       ],
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'index',
       defaultValue: 0,
     },
@@ -65,7 +65,7 @@ CLASS({
       ],
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.OverlayView',
       name: 'overlays_',
     },

@@ -37,7 +37,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'clock'
     },
     {
@@ -63,7 +63,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'tableColumns',
       lazyFactory: function() { return this.Task.tableProperties; }
     },
@@ -72,7 +72,7 @@ CLASS({
       factory: function() { return QueryParserFactory(this.Task, true); }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'search',
       transient: true,
       view: {
@@ -105,19 +105,19 @@ CLASS({
       transient: true
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'memory',
       transient: true,
       view: 'foam.apps.ctm.TaskHistoryGraph'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'cpu',
       transient: true,
       view: 'foam.apps.ctm.TaskHistoryGraph'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'network',
       transient: true,
       view: 'foam.apps.ctm.TaskHistoryGraph'
@@ -142,7 +142,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'filteredCount'
     },
     {

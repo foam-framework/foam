@@ -18,17 +18,17 @@ CLASS({
     'merchant',
     'adStream',
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText',
       required: true,
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'summaryText',
       required: true,
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'imageUrl',
       toPropertyE: function(X) {
         // TODO(markdittmer): This should just be a (U2) ImageProperty.
@@ -36,7 +36,7 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'headerImageUrl',
       toPropertyE: function(X) {
         // TODO(markdittmer): This should just be a (U2) ImageProperty.

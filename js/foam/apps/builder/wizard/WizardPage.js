@@ -59,12 +59,12 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'nextTitle',
       defaultValue: 'Finish',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title',
       getter: function(name) {
         if ( ! this.hidden ) {
@@ -89,30 +89,30 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'hidden',
       defaultValue: false,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'scrollContent',
       documentation: 'If true, contentHTML will not be padded and occupy the full page width',
       defaultValue: false,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showWizardHeading',
       documentation: 'If true, heading is shown.',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showWizardInstructions',
       documentation: 'If true, instructions are shown.',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showWizardActions',
       documentation: 'If true, exit/back/next actions are shown.',
       defaultValue: true,

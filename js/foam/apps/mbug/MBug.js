@@ -73,7 +73,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'opening',
       defaultValue: false
     },

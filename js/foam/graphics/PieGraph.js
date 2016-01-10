@@ -58,7 +58,7 @@ CLASS({
       defaultValue: { }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'toColor',
       defaultValue: function(key, i, n) {
         return this.colorMap && this.colorMap[key] || this.toHSLColor(i, n);

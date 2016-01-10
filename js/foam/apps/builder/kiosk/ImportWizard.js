@@ -31,7 +31,7 @@ CLASS({
       defaultValue: 'Import existing app',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'appBuilderVersion',
       defaultValue: 1,
     },

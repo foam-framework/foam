@@ -27,23 +27,23 @@ CLASS({
       lazyFactory: function() { return createGUID(); },
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       type: 'com.google.plus.Person',
       name: 'customer',
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       type: 'com.google.plus.Person',
       name: 'merchant',
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'com.google.ow.model.OrderItem',
       name: 'items',
       lazyFactory: function() { return []; },
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'total',
       defaultValue: 0.0,
       toPropertyE: function(X) {
@@ -77,7 +77,7 @@ CLASS({
       ],
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isEmpty',
       defaultValue: true,
     },

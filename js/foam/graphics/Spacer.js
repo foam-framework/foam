@@ -78,7 +78,7 @@ CLASS({
     },
     {
       name: 'stretchFactor',
-      model_: 'IntProperty',
+      type: 'Int',
       defaultValue: 1
     }
   ]

@@ -15,50 +15,49 @@
  * limitations under the License.
  */
 CLASS({
-  model_: 'Model',
   package: 'foam.apps.quickbug.model.imported',
   name: 'IssueComment',
   properties:
   [
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       help: 'Person who authored this comment.',
       name: 'author',
       subType: 'IssuePerson'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       help: 'Whether the authenticated user can delete this comment.',
       name: 'canDelete'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       help: 'Content of this issue comment.',
       name: 'content'
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       help: 'Person who deleted this comment.',
       name: 'deletedBy',
       subType: 'IssuePerson'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       help: '0-based sequence number of this comment, unique to this issue.',
       name: 'id'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       help: 'Comment on an issue tracked by Google Project Hosting.',
       name: 'kind'
     },
     {
-      model_: 'DateProperty',
+      type: 'Date',
       help: 'Date and time the issue was last updated.',
       name: 'published'
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       name: 'updates',
       subType: 'IssueCommentUpdate'
     }

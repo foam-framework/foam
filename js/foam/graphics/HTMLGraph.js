@@ -16,17 +16,17 @@ CLASS({
 
   properties: [
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'graphColor',
       defaultValue: 'green'
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'backgroundColor',
       defaultValue: 'transparent'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name:  'data',
       preSet: function(old, nu) {
         if ( old === nu ) return nu;
@@ -36,17 +36,17 @@ CLASS({
       lazyFactory: function() { return []; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'width',
       defaultValue: 40
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'height',
       defaultValue: 15
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'min',
       defaultValueFn: function() {
         if ( this.data.length === 0 ) return 0;
@@ -58,7 +58,7 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'max',
       defaultValueFn: function() {
         if ( this.data.length === 0 ) return 100;

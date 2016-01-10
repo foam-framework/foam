@@ -26,7 +26,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'FactoryProperty',
+      type: 'Factory',
       hidden: true,
       name: 'factory',
       defaultValue: function(name, model, X) {
@@ -43,7 +43,7 @@ CLASS({
       hidden: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'storesModels',
       defaultValue: true,
       view: 'foam.ui.md.CheckboxView',

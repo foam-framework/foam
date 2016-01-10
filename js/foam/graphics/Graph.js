@@ -36,12 +36,12 @@ CLASS({
       }
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'graphColor',
       defaultValue: 'green'
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'backgroundColor',
       defaultValue: undefined
     },
@@ -50,22 +50,22 @@ CLASS({
       defaultValue: 6
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'drawShadow',
       defaultValue: true
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name:  'capColor',
       defaultValue: ''
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name:  'axisColor',
       defaultValue: 'black'
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name:  'gridColor',
       defaultValue: undefined
     },
@@ -97,7 +97,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'f',
       label: 'Data Function',
       required: false,

@@ -35,12 +35,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'src',
       required: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'type',
       factory: function() {
         return this.TYPES[this.src.split('.').pop()] || 'audio/mpeg';

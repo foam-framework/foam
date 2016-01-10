@@ -31,7 +31,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'rows',
       mode: 'read-only',
       defaultValue: 24
@@ -139,16 +139,16 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'rows'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'maxRows',
       defaultValue: 500000
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'rps',
       label: 'RPS',
       postSet: function(_, rps) {
@@ -157,7 +157,7 @@ CLASS({
       }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'rpsHistory',
       label: '',
       view: { factory_: 'foam.graphics.Graph', width: 1000, height: 60 }
@@ -167,14 +167,14 @@ CLASS({
       view: { factory_: 'foam.ui.ChoiceView', choices: [ 'Standard', 'FOAM' ] }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'dao',
       label: 'FOAM',
       view: 'TextAreaDAOView',
       factory: function() { return []; }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'dao2',
       label: 'Standard',
       view: 'StandardTextAreaDAOView',

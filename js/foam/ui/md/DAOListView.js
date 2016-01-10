@@ -32,7 +32,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isHidden',
       defaultValue: false,
       postSet: function(_, isHidden) {
@@ -77,12 +77,12 @@ CLASS({
     },
     {
       name: 'removalCheck_',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       documentation: 'Internal tracker of removal check sweep.',
       defaultValue: false,
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
       defaultValue: 'foam.ui.DetailView'
     },

@@ -827,7 +827,7 @@ CLASS({
       factory: function() { return {}; }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'children'
     }
   ],
@@ -1283,7 +1283,7 @@ CLASS({
       transient: true
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'roots'
     }
   ],

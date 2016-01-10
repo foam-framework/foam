@@ -32,7 +32,7 @@ CLASS({
       transient: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'position',
       memorable: true,
       displayWidth: 5,

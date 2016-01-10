@@ -26,22 +26,22 @@ CLASS({
     },
     {
       name: 'documented',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false
     },
     {
       name: 'undocumentedFeatureCount',
-      model_: 'IntProperty',
+      type: 'Int',
       defaultValue: 0
     },
     {
       name: 'documentedFeatureCount',
-      model_: 'IntProperty',
+      type: 'Int',
       defaultValue: 0
     },
     {
       name: 'undocumentedFeatures',
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       factory: function() { return []; }
     }
   ]

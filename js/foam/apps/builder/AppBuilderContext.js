@@ -35,19 +35,19 @@ CLASS({
 
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.apps.builder.Identity',
       name: 'identities',
       lazyFactory: function() { return []; },
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'hasSeenDesignerView',
       defaultValue: false,
       hidden: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'appBuilderAnalyticsEnabled',
       label: 'Send anonymous usage data from my apps to the App Builder team ' +
           'to help make App Builder better<br><a href="#">Learn more</a>',

@@ -20,14 +20,14 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'hash',
       defaultValueFn: function() {
         return (this.id + '$'  + this.color).hashCode();
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'colorableImageUrl',
       toPropertyE: function(X) {
         return X.lookup('foam.u2.Element').create({ nodeName: 'IMG' }, X)
@@ -41,7 +41,7 @@ CLASS({
       name: 'color',
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'colors',
       factory: function() {
         return [

@@ -21,11 +21,11 @@ CLASS({
   properties: [
     'id',
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'substreams',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText',
       defaultValue: 'Order',
     },

@@ -31,20 +31,20 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'refreshOnCacheHit',
       defaultValue: false,
       documentation: 'When true, makes a network call in the background to ' +
           'update the record, even on a cache hit.'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'cacheOnSelect',
       documentation: 'Whether to populate the cache on select().',
       defaultValue: false
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'staleTimeout',
       defaultValue: 500,
       units: 'ms',

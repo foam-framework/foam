@@ -22,7 +22,7 @@ CLASS({
       required: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'onTaskUpdate',
       defaultValue: function() {}
     }

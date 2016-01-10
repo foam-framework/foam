@@ -82,7 +82,7 @@ CLASS({
       defaultValue: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'isEnabled',
       defaultValue: function() { return true; }
     }

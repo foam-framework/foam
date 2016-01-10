@@ -48,7 +48,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'emptyList',
       defaultValue: false,
       postSet: function(old, nu) {

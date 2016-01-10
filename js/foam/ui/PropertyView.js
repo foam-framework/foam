@@ -75,7 +75,7 @@ CLASS({
     },
     {
       name: 'bound_',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false
     },
     {

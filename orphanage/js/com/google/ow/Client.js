@@ -152,7 +152,7 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'currentUserId',
       postSet: function(old, nu) {
         if ( old === nu ) return;
@@ -229,7 +229,7 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'createStreamItem',
       hidden: true,
       factory: function() {

@@ -23,25 +23,25 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'code'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'language',
       defaultValue: 'javascript'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'mode',
       defaultValue: 'read-only'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showActions',
       defaultValue: false
     },

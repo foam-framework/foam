@@ -24,7 +24,7 @@ CLASS({
     // This is the real, final choice. The internals use index only.
     // When useSelection is enabled, data is not set until a final choice is made.
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'autoSetData',
       help: 'If true, this.data is set when choices update and the current data is not one of the choices.',
       defaultValue: true
@@ -134,7 +134,7 @@ CLASS({
     // The authoritative selection internally. data and choice are outputs when
     // useSelection is enabled.
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'index',
       help: 'The index of the current choice.',
       transient: true,
@@ -151,14 +151,14 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'objToChoice',
       help: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
     },
     {
       name: 'useSelection',
       help: 'When set, data and choice do not update until an entry is firmly selected',
-      model_: 'BooleanProperty'
+      type: 'Boolean'
     },
     {
       model_: 'foam.core.types.DAOProperty',

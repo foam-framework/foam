@@ -162,7 +162,7 @@ CLASS({
       factory: function() { return this.dataFactory('videos', this.Video); },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'createStreamItem',
       hidden: true,
       factory: function() {

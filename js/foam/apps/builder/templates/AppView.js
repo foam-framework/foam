@@ -21,7 +21,7 @@ CLASS({
   properties: [
     'data',
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'delegate',
     },
     {

@@ -23,7 +23,7 @@ CLASS({
       defaultValue: 'fonmdsOzNBG3Hnc2m-rrvgoY',
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'scopes',
       lazyFactory: function() {
         return [

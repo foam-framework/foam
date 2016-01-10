@@ -38,7 +38,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'fitContents',
       defaultValue: false,
       documentation: function() {/* If set to true, the layout will set
@@ -46,7 +46,7 @@ CLASS({
       postSet: function() { this.calculatePreferredSize(); }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'stretchy',
       defaultValue: true,
 
@@ -57,7 +57,7 @@ CLASS({
       */},
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'layoutDirty',
       defaultValue: true,
       hidden: true

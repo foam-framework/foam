@@ -40,7 +40,7 @@ CLASS({
     { name: 'space',  factory: function() { return this.CView.create({width: 1500, height: 1000, background:'white'}); } },
     { name: 'clock1', factory: function() { return this.ClockView.create({x:300, y:300, r:60, color:'red'}); } },
     { name: 'clock2', factory: function() { return this.ClockView.create({x:0, y:0, r:60, color:'green'}); } },
-    { model_: 'IntProperty', name: 'stage', defaultValue: 2 }
+    { type: 'Int', name: 'stage', defaultValue: 2 }
   ],
 
   templates: [

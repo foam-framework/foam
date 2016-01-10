@@ -19,12 +19,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'className',
       defaultValue: 'md-actions',
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'data',
       preSet: function(old, nu) {
@@ -53,7 +53,7 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'maxNumActions',
       documentation: function() {/*
         Maximum number of $$DOC{ref:'Action',usePlural:true} to render. Value
@@ -62,7 +62,7 @@ CLASS({
       defaultValue: 0,
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'actionViewFactory',
       defaultValue: 'foam.ui.ActionButton',
     },

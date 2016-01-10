@@ -25,7 +25,7 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'rotation',
       units: 'turns',
       defaultValue: 0,
@@ -42,12 +42,12 @@ CLASS({
       lazyFactory: function() { return Movement.easeOut(0.9); }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'fwdDuration',
       defaultValue: 100
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'bwdDuration',
       defaultValue: 100
     },

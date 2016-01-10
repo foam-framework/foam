@@ -53,12 +53,12 @@ CLASS({
       postSet: function(old, nu) { this.onDataStateChange(); },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'className',
       defaultValue: 'md-subhead',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'stateLabelClassName',
       defaultValue: 'md-grey',
     },

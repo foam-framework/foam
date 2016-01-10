@@ -30,13 +30,13 @@ CLASS({
       defaultValueFn: function() { return this.name; },
     },
     {
-      model_: 'FactoryProperty',
+      type: 'Factory',
       hidden: true,
       name: 'factory',
       documentation: "Your factory is called as: factory(name, model, X). The name will be unique to the app, and model is the model to store in the dao.",
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'requiresUserConfiguration',
       help: 'True if the user should be shown an EditView to configure this DAOFactory',
       defaultValue: false,

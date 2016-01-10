@@ -118,7 +118,7 @@ CLASS({
       view: 'foam.ui.ImageView'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'query',
       postSet: function(old, nu) { if (nu) this.expanded = true; }
     },
@@ -131,7 +131,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'expanded',
       defaultValue: false,
       postSet: function(old, nu) {

@@ -34,7 +34,7 @@ CLASS({
   properties: [
     {
       name: 'documentInstallFn',
-      model_: 'FunctionProperty',
+      type: 'Function',
       documentation: function() {/* The function to call on the host's
         prototype, given context X as a parameter. */},
     },

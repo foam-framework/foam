@@ -34,7 +34,7 @@ CLASS({
       help: 'The property model to map autocomplete objecst to values with.'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'searchProperties',
       help: 'The properties with which to construct the autocomplete query with.'
     },
@@ -52,7 +52,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'usePlaceholder',
       defaultValue: true,
       postSet: function(_, newValue) {

@@ -20,8 +20,8 @@ MODEL({
   name: 'TempConv',
   label: 'Temperature Converter',
   properties: [
-    { name: 'c', model_: 'FloatProperty', view: { factory_: 'foam.ui.FloatFieldView', onKeyMode: true, precision: 4 } },
-    { name: 'f', model_: 'FloatProperty', view: { factory_: 'foam.ui.FloatFieldView', onKeyMode: true, precision: 4 } }
+    { name: 'c', type: 'Float', view: { factory_: 'foam.ui.FloatFieldView', onKeyMode: true, precision: 4 } },
+    { name: 'f', type: 'Float', view: { factory_: 'foam.ui.FloatFieldView', onKeyMode: true, precision: 4 } }
   ],
   templates: [
     function toDetailHTML() {/* $$c Celsius = $$f Fahrenheit */}

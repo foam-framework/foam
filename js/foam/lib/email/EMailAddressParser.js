@@ -16,13 +16,11 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.email.EMailAddressParser",
    "package": "foam.lib.email",
    "name": "EMailAddressParser",
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "parser",
          "lazyFactory": function () {
         return {

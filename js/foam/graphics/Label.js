@@ -66,12 +66,12 @@ CLASS({
       defaultValue: 'rgba(0,0,0,0)'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'padding',
       defaultValue: 5
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isShrinkable',
       defaultValue: false,
       documentation: function() {/* Indicates if the minimum size constraint should

@@ -192,7 +192,7 @@ var p = this.Person.create({
         { name: 'JSON',  factory: multiline(function() {/*
 > p.toJSON();"
 < "{
-   "model_": "foam.demos.modeldiagram.Person",
+   model_: "foam.demos.modeldiagram.Person",
    "id": 1,
    "firstName": "John",
    "lastName": "Smith",

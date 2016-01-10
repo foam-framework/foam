@@ -28,7 +28,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'currentUserId',
       memorable: true,
       postSet: function(old, nu, prop) {
@@ -48,7 +48,7 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'clientView',
       defaultValue: function() {
         return this.Browser.create({
@@ -57,7 +57,7 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'clientFactory',
       defaultValue: function() {
         return this.Client.create({

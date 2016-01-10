@@ -17,12 +17,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
       defaultValue: 'messageBundle'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'messages',
       type: 'Array[foam.i18n.Message]'
     }

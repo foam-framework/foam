@@ -37,9 +37,9 @@ CLASS({
     { name: '$input', getter: function() { return this.X.$(this.inputId); } },
     { name: 'labelId' },
     { name: '$label', getter: function() { return this.X.$(this.labelId); } },
-    { model_: 'BooleanProperty', name: 'focused', defaultValue: false },
+    { type: 'Boolean', name: 'focused', defaultValue: false },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enabled',
       defaultValue: true,
       postSet: function(old, nu) {
@@ -53,7 +53,7 @@ CLASS({
     'prop',
     { name: 'label', defaultValueFn: function() { return this.prop.label; } },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'onKeyMode',
       help: 'If true, value is updated on each keystroke.',
       documentation: function() { /* If true, value is updated on each keystroke. */},
@@ -84,28 +84,28 @@ CLASS({
       defaultValueFn: function() { return !! (this.prop && this.prop.autocompleter); }
     },
     {
-      model_: 'FactoryProperty',
+      type: 'Factory',
       name: 'autocompleter',
       defaultValue: 'foam.ui.QueryParserAutocompleter',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'acRowView',
       defaultValue: 'foam.ui.md.DetailView'
     },
     {
       name: 'autocompleteView',
     },
-    { model_: 'IntProperty', name: 'displayWidth' },
-    { model_: 'IntProperty', name: 'displayHeight' },
+    { type: 'Int', name: 'displayWidth' },
+    { type: 'Int', name: 'displayHeight' },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'type',
       defaultValue: 'text',
       documentation: function() { /* The type of field to create. */}
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'floatingLabel',
       documentation: 'Set true for the floating label (see MD spec) by ' +
           'default, but can be disabled where the label is redundant.',
@@ -123,7 +123,7 @@ CLASS({
       defaultValueFn: function() { return this.label; }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'growable',
       documentation: 'Set true if this text area should grow with the text.',
       defaultValue: false
@@ -146,7 +146,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'mode',
       defaultValue: 'read-write',
       view: {

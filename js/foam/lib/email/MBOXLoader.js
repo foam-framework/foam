@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.email.MBOXLoader",
    "package": "foam.lib.email",
    "name": "MBOXLoader",
    "requires": [
@@ -28,11 +26,11 @@ CLASS({
    ],
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "dao"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "parser",
          "lazyFactory": function () {
         var self = this;
@@ -335,7 +333,7 @@ CLASS({
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "load",
          "code": function (data) {
       this.parser.parseString(data);

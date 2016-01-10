@@ -27,7 +27,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'counter',
       defaultValue: 0
     },
@@ -59,7 +59,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'delayPuts',
       documentation: function() {/* Controlled externally. Determines whether
         incoming console messages should be put straight to

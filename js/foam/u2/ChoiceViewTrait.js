@@ -21,7 +21,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'autoSetData',
       documentation: 'When true, this.data will be set if choices are set ' +
           'and the current data is not one of the choices.',
@@ -137,7 +137,7 @@ CLASS({
       documentation: 'Default entry that is "selected" when $$DOC{ref:".data"} is empty.',
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'objToChoice',
       documentation: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
     },

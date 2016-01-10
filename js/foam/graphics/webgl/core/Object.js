@@ -120,7 +120,7 @@ CLASS({
       name: 'parentPosition_'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'translucent',
       defaultValue: false
     }

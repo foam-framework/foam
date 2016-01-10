@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "com.google.mail.ComposeView",
    "package": "com.google.mail",
    "name": "ComposeView",
    "extends": "foam.ui.DetailView",
@@ -34,32 +32,32 @@ CLASS({
    ],
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "parent",
          "type": "foam.patterns.ChildTreeTrait",
          "hidden": true
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "children",
          "type": "Array[foam.patterns.ChildTreeTrait]",
          "factory": function () { return []; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "id",
          "label": "Element ID",
          "type": "String",
          "factory": function () { return this.instance_.id || this.nextID(); }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "shortcuts",
          "type": "Array[Shortcut]",
          "factory": function () { return []; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "$",
          "mode": "read-only",
          "hidden": true,
@@ -69,25 +67,25 @@ CLASS({
          "help": "DOM Element."
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "tagName",
          "defaultValue": "span"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "tooltip"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "tabIndex"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "extraClassName",
          "defaultValue": ""
       },
       {
-         "model_": "BooleanProperty",
+         type: 'Boolean',
          "name": "showActions",
          "postSet": function (oldValue, showActions) {
         // TODO: No way to remove the decorator.
@@ -98,23 +96,23 @@ CLASS({
          "defaultValue": false
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "initializers_",
          "factory": function () { return []; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "destructors_",
          "factory": function () { return []; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "className",
          "defaultValue": "detailView",
          "help": "CSS class name(s), space separated."
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "model",
          "type": "Model",
          "postSet": function (_, m) {
@@ -126,28 +124,28 @@ CLASS({
       }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "title",
          "defaultValueFn": function () { return "Edit " + this.model.label; }
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "mode",
          "defaultValue": "read-write"
       },
       {
-         "model_": "BooleanProperty",
+         type: 'Boolean',
          "name": "showRelationships",
          "defaultValue": false
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "propertyViewProperty",
          "type": "Property",
          "defaultValueFn": function () { return this.Property.DETAIL_VIEW; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "data",
          "hidden": true,
          "transient": true,
@@ -160,7 +158,7 @@ CLASS({
    ],
    "actions": [
       {
-         "model_": "Action",
+         model_: "Action",
          "name": "back",
          "label": "",
          "isEnabled": function () { return true; },
@@ -176,13 +174,13 @@ CLASS({
    "listeners": [],
    "templates": [
       {
-         "model_": "Template",
+         model_: "Template",
          "name": "CSS",
          "args": [],
          "template": "\u000a      .email-compose-view {\u000a        display: flex;\u000a        flex-direction: column;\u000a        height: 100%;\u000a      }\u000a\u000a      .content {\u000a        margin-left: 16px;\u000a        margin-top: 44px;\u000a        display: flex;\u000a        flex-direction: column;\u000a        flex-grow: 1;\u000a        position: relative;\u000a       }\u000a\u000a      .richText {\u000a        flex-grow: 1;\u000a        margin-top: 30px;\u000a        margin-left: -2px;\u000a      }\u000a\u000a      .richText .placeholder { font-size: 14px; font-family: Roboto; }\u000a\u000a      iframe {\u000a        border: none;\u000a      }\u000a\u000a      .actionButtonCView-send {\u000a        position: absolute;\u000a        bottom: 10px;\u000a        right: 24px;\u000a        box-shadow: 3px 3px 3px #aaa;\u000a        -webkit-box-shadow: 3px 3px 3px #aaa;\u000a        border-radius: 30px;\u000a      }\u000a\u000a      .md-text-field-container {\u000a        height: 68p x;\u000a        margin-left: -12px;\u000a        margin-top: -18px;\u000a        margin-bottom: -8px;\u000a      }\u000a    ",
       },
       {
-         "model_": "Template",
+         model_: "Template",
          "name": "toHTML",
          "args": [],
          "template": "\u000a      <div id=\"<%= this.id %>\" class=\"email-compose-view\">\u000a        <div class=\"header\">\u000a          $$back{className: 'backButton'}\u000a          $$subject{mode: 'read-only', className: 'subject'}\u000a        </div>\u000a        <div class=\"content\">\u000a        $$to{placeholder: 'To', model_: 'foam.ui.md.TextFieldView'} <br>\u000a        $$cc{placeholder: 'Cc', model_: 'foam.ui.md.TextFieldView'} <br>\u000a        $$bcc{placeholder: 'Bcc', model_: 'foam.ui.md.TextFieldView'} <br>\u000a        $$subject{ placeholder: 'Subject', onKeyMode: true, model_: 'foam.ui.md.TextFieldView'}\u000a        $$body{model_: 'foam.ui.md.ToolbarRichTextView', height: 300, placeholder: 'Message'}\u000a        </div>\u000a        $$send{background: '#259b24', radius: 24, iconUrl: 'images/send.png'}\u000a      </div>\u000a    ",

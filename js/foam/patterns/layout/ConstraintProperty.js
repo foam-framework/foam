@@ -35,7 +35,7 @@ CLASS({
         // define a shared 'total size' property
         this.defineProperty(
           {
-            model_: 'IntProperty',
+            type: 'Int',
             name: 'constraintValue_TotalSize_',
             defaultValue: 0,
             hidden: true,
@@ -46,7 +46,7 @@ CLASS({
 
         this.defineProperty(
           {
-            model_: 'IntProperty',
+            type: 'Int',
             name: prop.name+"$Pix",
             defaultValue: 0,
             hidden: true,

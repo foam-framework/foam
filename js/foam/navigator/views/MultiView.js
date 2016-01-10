@@ -35,7 +35,7 @@ CLASS({
     },
     {
       name: 'viewFactory',
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       defaultValueFn: function() { return this.DetailView; }
     },
     {

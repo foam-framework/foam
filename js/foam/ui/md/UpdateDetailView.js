@@ -108,16 +108,16 @@ CLASS({
     {
       // Version of the data which changes whenever any property of the data is updated.
       // Used to help trigger isEnabled / isAvailable in Actions.
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'version'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showModelActions',
       defaultValue: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'outstandingChanges',
       hidden: true,
       dynamicValue: function() {
@@ -152,7 +152,7 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'innerView',
       defaultValue: 'foam.ui.md.DetailView'
     },
@@ -161,7 +161,7 @@ CLASS({
       defaultValue: 'md-update-detail-view'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'leftActions_',
       lazyFactory: function() {
         var myModel = this.model_;
@@ -184,7 +184,7 @@ CLASS({
       }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'rightActions_',
       lazyFactory: function() {
         return [

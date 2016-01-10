@@ -61,7 +61,7 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'zIndex',
       defaultValue: 1,
     },
@@ -99,7 +99,7 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'url',
     },
     {

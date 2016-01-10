@@ -38,7 +38,7 @@ CLASS({
     },
     {
       name: 'initWithFutureDao',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       swiftDefaultValue: 'true',
       defaultValue: true,
     },

@@ -27,12 +27,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'moveMode',
       defaultValue: 0,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'index',
       defaultValue: -1,
     },

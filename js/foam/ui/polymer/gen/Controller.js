@@ -48,7 +48,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'componentsToRegister',
       view: 'foam.ui.MultiLineStringArrayView',
       factory: function() {
@@ -127,7 +127,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'canonicalizeURL',
       factory: function() {
         return function(url) {
@@ -146,7 +146,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'shortenURL',
       factory: function() {
         return function(url) {
@@ -161,7 +161,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'filterNodes',
       factory: function() {
         return function(node, fltr, opt_acc) {
@@ -176,7 +176,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'getNodeAttribute',
       factory: function() {
         return function(node, attrName) {
@@ -190,7 +190,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'ELLIPSIS',
       defaultValue: '\u2026',
       todo: function() {/*

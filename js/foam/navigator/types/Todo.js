@@ -22,7 +22,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       required: true
     },
@@ -34,7 +34,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'priority',
       defaultValue: 3,
       view: {
@@ -43,17 +43,17 @@ CLASS({
       }
     },
     {
-      model_: 'DateProperty',
+      type: 'Date',
       name: 'dueDate',
       defaultValue: null
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'notes',
       view: 'foam.ui.TextAreaView'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'done',
       defaultValue: false
     }

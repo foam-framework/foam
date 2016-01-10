@@ -1369,7 +1369,7 @@ var featureDAO = [
     help: 'The coding identifier for the entity.'
   }],
   ['Arg', 'Property', {
-    model_: 'BooleanProperty',
+    type: 'Boolean',
     name: 'required',
     defaultValue: true
   }],

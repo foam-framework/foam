@@ -41,22 +41,22 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minLines',
       defaultValue: 10
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'maxLines',
       defaultValue: 10
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'readOnlyMinLines',
       defaultValue: 2
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'readOnlyMaxLines',
       defaultValue: 10
     }

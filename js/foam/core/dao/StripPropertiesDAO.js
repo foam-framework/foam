@@ -21,7 +21,7 @@ CLASS({
   extends: 'foam.dao.ProxyDAO',
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'propertyNames'
     }
   ],

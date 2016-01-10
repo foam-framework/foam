@@ -22,8 +22,8 @@ CLASS({
   properties: [
     { model_: 'Property', name: 'id', help: 'The FOAM ID, globally unique.' },
 
-    { model_: 'StringProperty', name: 'displayName' },
-    { model_: 'StringProperty', name: 'description' },
+    { type: 'String', name: 'displayName' },
+    { type: 'String', name: 'description' },
 
     {
       model_: 'ReferenceArrayProperty',

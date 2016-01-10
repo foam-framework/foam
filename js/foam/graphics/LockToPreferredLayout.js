@@ -28,7 +28,7 @@ CLASS({
   properties: [
     {
       name: 'layoutDirty',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: true,
       hidden: true
     }

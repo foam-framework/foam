@@ -34,7 +34,7 @@ CLASS({
       help: 'The FOAM type of this property.'
     },
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       name: 'model',
       help: 'The model for objects stored in the DAO.'
     },
@@ -43,7 +43,7 @@ CLASS({
       defaultValue: 'foam.ui.DAOListView'
     },
     {
-//      model_: 'FunctionProperty',
+//      type: 'Function',
       name: 'onDAOUpdate'
     },
     {

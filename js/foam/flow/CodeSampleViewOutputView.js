@@ -32,7 +32,7 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'dataView'
     },
     {

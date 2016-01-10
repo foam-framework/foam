@@ -5,12 +5,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'Tab',
       name: 'tabs'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'strings'
     }
   ],
@@ -43,7 +43,7 @@ CLASS({
       name: 'title'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'view'
     }
   ]

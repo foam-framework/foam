@@ -44,23 +44,23 @@ CLASS({
       defaultValueFn: function() { return [this.id]; },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText',
       defaultValue: 'Vote'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'vote',
       help: 'The client plus one/minus one vote',
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'tally',
       factory: function() { return Math.floor(Math.random() * 1000); }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'count',
       factory: function() { return Math.floor(Math.random() * 1000); }
     },

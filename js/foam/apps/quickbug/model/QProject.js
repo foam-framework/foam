@@ -389,7 +389,7 @@ CLASS({
 
           properties: [
             {
-              model_: 'IntProperty',
+              type: 'Int',
               name: 'id',
               shortName: 'i',
               label: 'ID',
@@ -511,7 +511,7 @@ CLASS({
               ]
             },
             {
-              model_: 'StringProperty',
+              type: 'String',
               name: 'metaPriority',
               compareProperty: (this.projectName == "chromium") ?
                 (function(p1, p2) {
@@ -589,7 +589,7 @@ CLASS({
               tableWidth: '87px',
             },
             {
-              model_: 'StringProperty',
+              type: 'String',
               name: 'status',
               shortName: 's',
               aliases: ['stat'],
@@ -600,7 +600,7 @@ CLASS({
               defaultValue: ''
             },
             {
-              model_: 'StringArrayProperty',
+              type: 'StringArray',
               name: 'cc',
               autocompleter: 'foam.apps.quickbug.model.PersonCompleter',
               displayWidth: 70
@@ -648,13 +648,13 @@ CLASS({
               type: 'String'
             },
             {
-              model_: 'BooleanProperty',
+              type: 'Boolean',
               name: 'blocked',
               tableWidth: '20px',
               getter: function() { return !! this.blockedOn.length; }
             },
             {
-              model_: 'DateTimeProperty',
+              type: 'DateTimeArray',
               name: 'modified',
               shortName: 'mod',
               mode: 'read-write',
@@ -668,7 +668,7 @@ CLASS({
               setter: function(v) { this.modified = v; }
             },
             {
-              model_: 'BooleanProperty',
+              type: 'Boolean',
               name: 'starred',
               tableLabel: '',
               tableWidth: '18px',
@@ -691,7 +691,7 @@ CLASS({
               help: 'Whether the authenticated user has starred this issue.'
             },
             {
-              model_: 'IntProperty',
+              type: 'Int',
               name: 'stars',
               tableWidth: '20px',
               help: 'Number of stars this issue has.',
@@ -716,7 +716,7 @@ CLASS({
               }
             },
             {
-              model_: 'StringProperty',
+              type: 'String',
               name: 'content',
               displayHeight: 4
             }

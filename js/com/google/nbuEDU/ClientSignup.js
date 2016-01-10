@@ -28,12 +28,12 @@ CLASS({
   properties: [
     'sid',
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText',
       defaultValue: 'StudyBuddy Sign Up'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'description',
       defaultValue: 'Please choose your location and school board:'
     },
@@ -45,7 +45,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'age',
       label: 'How many years old are you?',
       toPropertyE: function(X) {
@@ -65,7 +65,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'languageDAO',
       hidden: true,
       lazyFactory: function() {
@@ -76,7 +76,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'schoolBoardDAO',
       hidden: true,
       lazyFactory: function() {
@@ -88,7 +88,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'locationDAO',
       hidden: true,
       lazyFactory: function() {
@@ -100,7 +100,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'ageDAO',
       hidden: true,
       lazyFactory: function() {

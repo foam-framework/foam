@@ -65,7 +65,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showBorder',
       defaultValue: false,
     }

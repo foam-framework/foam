@@ -21,11 +21,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'x'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'y'
     },
     { name: 'canvasX', getter: function() { return this.x; } },

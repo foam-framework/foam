@@ -5,20 +5,20 @@ var Service = FOAM({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       mode: 'read-only'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'selected'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'description'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'cost',
       mode: 'read-only'
     }
@@ -42,7 +42,7 @@ var CompositeService = FOAM({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'children',
       postSet: function(_, value) {
         var self = this;
@@ -63,7 +63,7 @@ var CompositeService = FOAM({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'exclusive'
     }
   ],

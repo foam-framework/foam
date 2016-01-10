@@ -23,7 +23,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'expandable',
       defaultValue: true,
       postSet: function(old, nu) {
@@ -33,27 +33,27 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'expanded',
       defaultValue: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title',
       defaultValue: 'Heading'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleClass',
       defaultValue: 'md-subhead'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'icon',
       defaultValue: null
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'delegate'
     },
     {
@@ -66,12 +66,12 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'expandedIconId',
       lazyFactory: function() { return this.id + '-expanded-icon'; }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'expandedIcon',
       defaultValue: function() {
         return this.Icon.create({

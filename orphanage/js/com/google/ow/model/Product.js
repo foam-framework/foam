@@ -20,19 +20,19 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'summary',
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'price',
       toPropertyE: function(X) {
         // TODO(markdittmer): This should be a "currency E" of some kind.
@@ -44,7 +44,7 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'hash',
       defaultValueFn: function() {
         return this.id.hashCode();

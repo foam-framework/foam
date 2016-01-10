@@ -20,7 +20,7 @@ CLASS({
   package: 'foam.input.touch',
   properties: [
     'id', 'type',
-    { name: 'done', model_: 'BooleanProperty' },
+    { name: 'done', type: 'Boolean' },
     {
       name: 'x',
       documentation: 'The real latest X-coordinate. pageX, relative to the whole document, in CSS pixels.',

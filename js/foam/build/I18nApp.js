@@ -32,12 +32,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'appDefinition',
       required: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'targetPath',
       help: multiline(function() {/* Directory to write output files to.  Will
         be created if it doesn't exist. When outputFormat=foamData, this is
@@ -47,39 +47,39 @@ CLASS({
       required: true
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraFiles',
       help: 'Extra files to both load before loading models for i18n.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraClassPaths',
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'extractorModel',
       defaultValue: 'foam.i18n.MessagesExtractor'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'messageGeneratorModel',
       defaultValue: 'foam.i18n.MessageGenerator'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'placeholderModel',
       defaultValue: 'foam.i18n.Placeholder'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'messageModel',
       defaultValue: 'foam.i18n.Message'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'messageBundleModel',
       defaultValue: 'foam.i18n.MessageBundle'
     },
@@ -94,7 +94,7 @@ CLASS({
       defaultValue: 'chrome'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'dataId',
       help: 'Only applies to outputFormat=foamData. Package-qualified ID for data file.',
       defaultValue: 'foam.i18n.messages.Messages'
@@ -115,7 +115,7 @@ CLASS({
       lazyFactory: function() { return {}; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'pending_',
       defaultValue: 0,
       postSet: function(old, nu) {

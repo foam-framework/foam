@@ -22,26 +22,26 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'type',
       defaultValue: 'text'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'displayWidth',
       defaultValue: 30
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'onKeyMode',
       defaultValue: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'autocomplete',
       defaultValue: true
     },
@@ -50,7 +50,7 @@ CLASS({
     },
     'autocompleter',
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.MultiLineStringArrayView.RowView',
       name: 'inputs'
     }

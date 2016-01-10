@@ -25,7 +25,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       name: 'merchant',
       help: 'Merchant user id.',
       defaultValue: '0',

@@ -16,12 +16,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'code',
       defaultValue: 'console.log("Hello world!");'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'language',
       defaultValue: 'javascript'
     }

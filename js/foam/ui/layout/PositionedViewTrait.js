@@ -20,43 +20,43 @@ CLASS({
    "name": "PositionedViewTrait",
    "properties": [
       {
-         "model_": "FloatProperty",
+         type: 'Float',
          "name": "x",
          "units": "px",
          "defaultValue": 0
       },
       {
-         "model_": "FloatProperty",
+         type: 'Float',
          "name": "y",
          "units": "px",
          "defaultValue": 0
       },
       {
-         "model_": "FloatProperty",
+         type: 'Float',
          "name": "z",
          "units": "px",
          "defaultValue": 0
       },
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "width",
          "units": "px",
          "defaultValue": 100
       },
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "height",
          "units": "px",
          "defaultValue": 100
       },
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "preferredWidth",
          "units": "px",
          "defaultValue": 100
       },
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "preferredHeight",
          "units": "px",
          "defaultValue": 100

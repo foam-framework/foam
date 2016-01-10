@@ -17,7 +17,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'tableColumns',
       factory: function() { return this.Task.tableProperties; }
     }

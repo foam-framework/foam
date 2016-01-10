@@ -23,7 +23,7 @@ CLASS({
   traits: ['foam.ui.SimpleDynamicViewTrait'],
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
       required: true
     },

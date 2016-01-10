@@ -55,7 +55,7 @@ CLASS({
     },
     {
       name: 'spacing',
-      model_: 'IntProperty',
+      type: 'Int',
       defaultValue: 45
     }
   ],

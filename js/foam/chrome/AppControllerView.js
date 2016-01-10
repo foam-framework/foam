@@ -30,7 +30,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'loadCount_',
       defaultValue: 0
     }

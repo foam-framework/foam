@@ -31,7 +31,7 @@ CLASS({
   properties: [
     {
       name: 'scrollTop',
-      model_: 'IntProperty',
+      type: 'Int',
       postSet: function(old, nu) {
         this.show();
         if (this.timeoutID)
@@ -51,16 +51,16 @@ CLASS({
     },
     {
       name: 'scrollHeight',
-      model_: 'IntProperty'
+      type: 'Int'
     },
     {
       name: 'mouseOver',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false
     },
     {
       name: 'height',
-      model_: 'IntProperty',
+      type: 'Int',
       postSet: function(old, nu) {
         if ( this.$ ) {
           this.$.style.height = nu + 'px';
@@ -69,7 +69,7 @@ CLASS({
     },
     {
       name: 'width',
-      model_: 'IntProperty',
+      type: 'Int',
       defaultValue: 12,
       postSet: function(old, nu) {
         if (this.$) {
@@ -122,7 +122,7 @@ CLASS({
     },
     {
       name: 'lastDragY',
-      model_: 'IntProperty'
+      type: 'Int'
     }
   ],
 

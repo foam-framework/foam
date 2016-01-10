@@ -35,7 +35,7 @@ CLASS({
       required: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'appBuilderAnalyticsEnabled',
       defaultValue: true,
     },

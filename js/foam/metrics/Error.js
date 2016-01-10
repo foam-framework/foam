@@ -20,7 +20,7 @@ CLASS({
       defaultValue: 'error',
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isFatal',
       defaultValue: false,
     },

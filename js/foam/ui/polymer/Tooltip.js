@@ -29,7 +29,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'text',
       help: 'Help text to be shown in tooltip.',
       postSet: function() {
@@ -37,7 +37,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'html',
       help: 'Rich (HTML) help contents. Overrides "text" property.',
       postSet: function() { this.updateContents(); }
@@ -48,7 +48,7 @@ CLASS({
       postSet: function(_, next) { this.attach(next); }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tagName',
       defaultValue: 'core-tooltip'
     },
@@ -75,7 +75,7 @@ CLASS({
       defaultValue: false
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'noarrow',
       documentation: function() {/*
         Polymer attribute: noarrow.
@@ -103,7 +103,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'show',
       documentation: function() {/*
         Polymer attribute: show.

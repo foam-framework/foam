@@ -23,7 +23,7 @@ CLASS({
 
   properties: [
     {
-      //model_: 'FloatProperty',
+      //type: 'Float',
       name: 'data',
       postSet: function () { this.updateValue(); }
     }

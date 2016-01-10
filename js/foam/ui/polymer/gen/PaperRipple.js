@@ -69,7 +69,7 @@ CLASS({
     },
     {
       name: 'tagName',
-      model_: 'StringProperty',
+      type: 'String',
       defaultValue: 'paper-ripple'
     },
     {

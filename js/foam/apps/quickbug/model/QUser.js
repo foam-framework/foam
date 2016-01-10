@@ -22,7 +22,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'email'
     },
     {
@@ -34,7 +34,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'preferredProjects',
       view: 'foam.ui.MultiLineStringArrayView',
       // Temporary fix for QuickBug v.1.10 which broke the project list
@@ -46,7 +46,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'defaultProject',
       defaultValue: 'chromium'
     }

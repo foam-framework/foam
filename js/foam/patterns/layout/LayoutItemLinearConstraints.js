@@ -47,7 +47,7 @@ CLASS({
       // type: 'foam.patterns.layout.ConstraintProperty'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'stretchFactor',
       defaultValue: 0,
       documentation: function() {/* If zero, item will not grow unless all other
@@ -56,7 +56,7 @@ CLASS({
             total of all stretch factors in the layout). */},
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'shrinkFactor',
       defaultValue: 0,
       documentation: function() {/* If zero, item will not shrink unless all other

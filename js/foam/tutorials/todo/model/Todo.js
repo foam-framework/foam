@@ -29,7 +29,7 @@ CLASS({
       name: 'title',
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isCompleted',
       label: 'Completed',
     },

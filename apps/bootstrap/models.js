@@ -2,48 +2,48 @@ CLASS({
   name: 'AppConfig',
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       help: 'Name of the application.',
       name: 'name',
       defaultValue: 'My App'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       help: 'Path to FOAM source.',
       label: 'FOAM Source Directory',
       name: 'foamSourceDir',
       defaultValue: '../..'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       help: 'Path to app source.',
       label: 'App Source Directory',
       name: 'sourceDir',
       defaultValue: '.'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       help: 'Path to directory where code should be copied.',
       label: 'Build Directory',
       name: 'buildDir',
       defaultValue: '.'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       help: 'Whether or not to rebuild the FOAM framework every time.',
       label: 'Build FOAM Every Time',
       name: 'rebuildFOAM',
       defaultValue: false
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       help: 'Whether or not to wipe out the build directory before building.',
       label: 'Clean Build Directory Before Building',
       name: 'cleanBeforeBuild',
       defaultValue: false
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       help: 'Source files (not including main background page).',
       label: 'App Sources',
       name: 'sources',
@@ -57,14 +57,14 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       help: 'Main background page file name.',
       label: 'Background Page Source',
       name: 'backgroundSource',
       defaultValue: 'background_main.js'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       help: 'Source files for booting FOAM.',
       label: 'FOAM CSS Files',
       name: 'foamCSS',
@@ -73,7 +73,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       help: 'Source files for booting FOAM.',
       label: 'FOAM Sources',
       name: 'foamSources',
@@ -95,7 +95,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'version',
       help: 'Version of the application.',
       factory: function() {
@@ -103,7 +103,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'manifestVersion',
       help: 'Version of the Chrome Apps manifest format.',
       factory: function() {
@@ -111,7 +111,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'minimumChromeVersion',
       help: 'Minimum version of Chrome required for app to work.',
       factory: function() {
@@ -119,7 +119,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'permissions',
       help: 'Raw data inserted in to permissions section of manifest.',
       issues: 'This should be modeled.',
@@ -141,37 +141,37 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'windowID',
       help: 'Unique identifier for window.',
       factory: function() { return 'MyAppID'; }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'src',
       help: 'Name of source file to load in window.',
       factory: function() { return 'app.html'; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'width',
       help: 'Initial width of application window.',
       defaultValue: 1024
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'height',
       help: 'Initial height of application window.',
       defaultValue: 768
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minWidth',
       help: 'Minimium width of application window.',
       defaultValue: 400
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minHeight',
       help: 'Minimum height of application window.',
       defaultValue: 200

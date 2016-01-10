@@ -174,38 +174,38 @@ MODEL({
       name: 'default'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'string'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'displayWidth',
       displayWidth: 60
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'displayHeight',
       displayHeight: 3
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'boolean'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'defaultValueTrue',
       defaultValue: true
     },
     {
-      model_: 'DateProperty',
+      type: 'Date',
       name: 'date'
     },
     {
-      model_: 'DateTimeProperty',
+      type: 'DateTimeArray',
       name: 'dateTime'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'int'
     },
     {
@@ -213,16 +213,16 @@ MODEL({
       name: 'long'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'float'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'withUnits',
       units: 'ms'
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'function'
     },
     {
@@ -230,28 +230,28 @@ MODEL({
       name: 'template'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'array'
     },
     // ReferenceProperty
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'stringArray'
     },
     {
-      model_: 'EMailProperty',
+      type: 'EMail',
       name: 'email'
     },
     {
-      model_: 'ImageProperty',
+      type: 'Image',
       name: 'image'
     },
     {
-      model_: 'URLProperty',
+      type: 'URL',
       name: 'url'
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'color'
     },
     {

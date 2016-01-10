@@ -40,12 +40,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText',
       defaultValue: 'Ask a Question'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'description',
       defaultValueFn: function() { return this.titleText; }
     },
@@ -65,7 +65,7 @@ CLASS({
     },
     [ 'border', false ],
     {
-      model_: 'StringProperty',
+      type: 'String',
       label: 'Reply',
       name: 'newMessage',
       toPropertyE: function(X) {
@@ -97,7 +97,7 @@ CLASS({
       }
     },
     {
-      model_: 'ImportedProperty',
+      type: 'Imported',
       name: 'scrollEl'
     }
   ],

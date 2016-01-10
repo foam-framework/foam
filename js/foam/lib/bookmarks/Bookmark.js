@@ -47,7 +47,7 @@ CLASS({
       displayWidth: 40
     },
     {
-      model_: 'URLProperty',
+      type: 'URL',
       name:  'url',
       label: 'URL',
       help:  "Bookmarked page's URL.",

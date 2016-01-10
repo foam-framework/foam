@@ -74,7 +74,7 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.apps.builder.Identity',
       name: 'identities',
       lazyFactory: function() { return []; },
@@ -88,7 +88,7 @@ CLASS({
       defaultValue: null,
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'newIdentity_',
       documentation: function() {/* Future for identity produced by
         $$DOC{ref:'.createIdentity'}. */},

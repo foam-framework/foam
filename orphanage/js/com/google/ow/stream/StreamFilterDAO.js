@@ -18,12 +18,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tag',
       lazyFactory: function() { return createGUID(); },
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'substreams',
       required: true,
       postSet: function(_, nu) {

@@ -6,7 +6,7 @@
 		name: 'Todo',
 		properties: [
 			'id',
-			{ name: 'completed', model_: 'BooleanProperty' },
+			{ name: 'completed', type: 'Boolean' },
 			{ name: 'text', preSet: function (_, text) { return text.trim(); } }
 		],
 		templates: [

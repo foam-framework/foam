@@ -36,7 +36,7 @@ CLASS({
         return this.Toolbar.create({ title$: this.title$ });
       }
     },
-    { model_: 'StringProperty', name: 'title' },
+    { type: 'String', name: 'title' },
     {
       name: 'data',
       postSet: function(old,nu) {

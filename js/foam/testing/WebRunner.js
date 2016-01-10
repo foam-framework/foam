@@ -30,7 +30,7 @@ CLASS({
   ],
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'targets',
       adapt: function(_, a) {
         if ( typeof a === 'string' ) return a.split(',');
@@ -45,11 +45,11 @@ CLASS({
       },
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'allPassed'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'finished',
       defaultValue: false
     },

@@ -44,23 +44,23 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title',
       defaultValue: 'App Export',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'actionName',
       defaultValue: 'exportApp',
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'mayPublishToCWS',
       label: 'This app will be deployed to the Chrome Web Store',
       defaultValue: true,
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'infoIcon',
       defaultValue: {
             factory_: 'foam.ui.Icon',
@@ -70,7 +70,7 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'warningIcon',
       defaultValue: {
         factory_: 'foam.ui.Icon',
@@ -80,7 +80,7 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'permissions',
       defaultValue: function() {
         var permissionsText = this.prettyPermissionsHTML();
@@ -96,7 +96,7 @@ CLASS({
     },
     'permissionsView',
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'analyticsThanks',
       defaultValue: function() {
         return this.InfoOptionView.create({
@@ -122,7 +122,7 @@ CLASS({
     },
     'analyticsThanksView',
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'analyticsNoThanks',
       defaultValue: function() {
         return this.InfoOptionView.create({
@@ -150,7 +150,7 @@ CLASS({
     },
     'analyticsNoThanksView',
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'ownAnalytics',
       defaultValue: function() {
         return this.InfoOptionView.create({
@@ -177,7 +177,7 @@ CLASS({
     },
     'ownAnalyticsView',
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'abAnalytics',
       defaultValue: function() {
         return this.InfoOptionView.create({
@@ -205,7 +205,7 @@ CLASS({
     },
     'abAnalyticsView',
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'userDataWarning',
       defaultValue: function() {
         return this.InfoOptionView.create({
@@ -234,7 +234,7 @@ CLASS({
       },
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'appBuilderAnalyticsInitialValue_',
       defaultValue: true,
       postSet: function() {

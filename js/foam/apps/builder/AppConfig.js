@@ -29,7 +29,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'appId',
       label: 'Unique App ID',
       mode: 'read-only',
@@ -39,7 +39,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'appName',
       label: 'Application Name',
       help: multiline(function() {/*
@@ -77,19 +77,19 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'designerView',
       hidden: true,
       transient: true
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'appView',
       hidden: true,
       transient: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'version',
       label: 'Version',
       help: multiline(function() {/*
@@ -108,7 +108,7 @@ CLASS({
       help: 'The model id of the view to create to display this app.',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'termsOfService',
       label: 'Terms of Service',
       help: multiline(function() {/*
@@ -124,20 +124,20 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'privacyPolicyURL',
       label: 'Privacy policy URL',
       help: 'Link to app Privacy Policy.',
       view: 'foam.ui.md.TextFieldView'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'userDataWarning',
       transient: true,
       defaultValue: null
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'rotation',
       label:  'Rotation (Chrome OS only)',
       help: 'Measured in degrees.',
@@ -153,7 +153,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'kioskEnabled',
       label: 'Kiosk mode enabled',
       help: 'Allows the app to run as a kiosk app.',
@@ -168,7 +168,7 @@ CLASS({
       ]
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'sessionDataTimeoutTime',
       label: 'Session idle timeout',
       help: 'Time (in minutes) the app is idle before clearing browsing data.',
@@ -176,7 +176,7 @@ CLASS({
       defaultDescription: '0 = unlimited'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'sessionTimeoutTime',
       label: 'Timeout to return home',
       help: multiline(function() {/*
@@ -187,37 +187,37 @@ CLASS({
       defaultDescription: '0 = unlimited'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'virtualKeyboardEnabled',
       label: 'Virtual keyboard enabled',
       help: 'Enables the on-screen virtual keyboard.',
       defaultValue: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'chromeId',
       hidden: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'defaultWindowWidth',
       label: 'Default app window width',
       defaultValue: 800
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'defaultWindowHeight',
       label: 'Default app window height',
       defaultValue: 700
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minWindowWidth',
       label: 'Minimum app window width',
       defaultValue: 400
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minWindowHeight',
       label: 'Minimum app window height',
       defaultValue: 600
@@ -238,7 +238,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'appBuilderAnalyticsEnabled',
       hidden: true,
       defaultValue: true,
@@ -246,7 +246,7 @@ CLASS({
           'to help make App Builder better<br><a href="#">Learn more</a>'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'analyticsId',
       label: 'Google Analytics property tracking ID',
       help: 'When set, reports app usage statistics through Google Analytics.'

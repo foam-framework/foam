@@ -35,7 +35,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'stack',
       lazyFactory: function() { return []; }
     },
@@ -55,7 +55,7 @@ CLASS({
         v.subscribe(['click'], this.overlayBack);
       }
     },
-    { model_: 'BooleanProperty', name: 'sliderOpen', defaultValue: false },
+    { type: 'Boolean', name: 'sliderOpen', defaultValue: false },
     'slideLatch'
   ],
 

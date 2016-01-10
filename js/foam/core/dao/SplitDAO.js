@@ -16,7 +16,6 @@
  */
 
 CLASS({
-  "model_": "Model",
   "package": "foam.core.dao",
   "name": "SplitDAO",
   "extends": "foam.dao.ProxyDAO",
@@ -30,11 +29,11 @@ CLASS({
       "hidden": true
     },
     {
-      "model_": "FunctionProperty",
+      type: 'Function',
       "name": "placeholderFactory"
     },
     {
-      "model_": "IntProperty",
+      type: 'Int',
       "name": "staleTimeout",
       "defaultValue": 5000
     },
@@ -59,7 +58,7 @@ CLASS({
   ],
   "methods": [
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "init",
       "code": function () {
         this.SUPER();
@@ -75,21 +74,21 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "put",
       "code": function (obj, sink) {
         this.remote.put(obj, sink);
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "remove",
       "code": function (obj, sink) {
         this.remote.remove(obj, sink);
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "find",
       "code": function (key, sink) {
         var remote = this.remote;

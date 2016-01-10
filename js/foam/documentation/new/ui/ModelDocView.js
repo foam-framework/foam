@@ -41,7 +41,7 @@ CLASS({
           'InheritanceEngine.',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'docView',
       factory: function() {
         var typeMap = {

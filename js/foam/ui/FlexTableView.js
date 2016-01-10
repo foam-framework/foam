@@ -29,7 +29,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'className',
       lazyFactory: function() {
         return this.model.name + 'Table';
@@ -61,7 +61,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'properties',
       lazyFactory: function() {
         return (this.model && this.model.tableProperties &&
@@ -90,7 +90,7 @@ CLASS({
       defaultValue: undefined
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minColWidth',
       defaultValue: 50,
       postSet: function(old, nu) {
@@ -123,7 +123,7 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
       defaultValue: 'foam.ui.FlexTableRowView',
       documentation: 'Set this to override the row view. It should be a ' +
@@ -149,7 +149,7 @@ CLASS({
       }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'colWidths',
       lazyFactory: function() { return []; },
       postSet: function(old, nu) {
@@ -158,7 +158,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isResizing',
       defaultValue: false
     }

@@ -23,7 +23,7 @@ CLASS({
   ],
   extends: 'foam.ui.DetailView',
   properties: [
-    { model_: 'ModelProperty', name: 'model', defaultValue: 'AppController' }
+    { type: 'Model', name: 'model', defaultValue: 'AppController' }
   ],
   templates: [
     function CSS() {/*

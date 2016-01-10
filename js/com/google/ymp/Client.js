@@ -190,7 +190,7 @@ CLASS({
       postSet: function(old, nu) { this.rebindCtx(old, nu); },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'currentUserId',
       postSet: function(old, nu) {
         if ( nu ) this.currentUserId_ = nu;

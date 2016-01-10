@@ -24,45 +24,45 @@ CLASS({
       name: 'basicProperty'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'textField'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'textArea',
       displayHeight: 10
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'readOnlyTextField',
       defaultValue: 'Read only text field',
       mode: 'read-only'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'readOnlyTextArea',
       displayHeight: 10,
       defaultValue: 'Read only text field\nwith\nmultiple\n\n\nlines\nof\ndata.',
       mode: 'read-only'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'stringArrayProperty'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'intProperty'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'floatProperty'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'toggleBoolean'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'checkboxBoolean'
     },
     {

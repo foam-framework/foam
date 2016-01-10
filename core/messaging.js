@@ -19,9 +19,9 @@ CLASS({
   name: 'XHR',
 
   properties: [
-    { model_: 'IntProperty', name: 'delay', defaultValue: 0 },
+    { type: 'Int', name: 'delay', defaultValue: 0 },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'retries',
       defaultValueFn: function() {
         if ( this.authAgent ) return 2;
@@ -117,7 +117,7 @@ CLASS({
   name: 'RetryDecorator',
 
   properties: [
-    { model_: 'IntProperty', name: 'maxAttempts', defaultValue: 3 }
+    { type: 'Int', name: 'maxAttempts', defaultValue: 3 }
   ],
 
   methods: {
@@ -153,7 +153,7 @@ CLASS({
   name: 'DelayDecorator',
 
   properties: [
-    { model_: 'IntProperty', name: 'delayMs' },
+    { type: 'Int', name: 'delayMs' },
   ],
 
   methods: {
@@ -170,8 +170,8 @@ CLASS({
 CLASS({
   name: 'XhrMessenger',
   properties: [
-    { model_: 'URLProperty', name: 'url' },
-    { model_: 'StringProperty', name: 'method', defaultValue: "POST" }
+    { type: 'URL', name: 'url' },
+    { type: 'String', name: 'method', defaultValue: "POST" }
   ],
 
   methods: {

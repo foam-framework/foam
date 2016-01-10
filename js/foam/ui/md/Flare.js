@@ -52,12 +52,12 @@ CLASS({
       defaultValue: 'detached'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'growTime',
       defaultValue: 400
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'fadeTime',
       defaultValue: 200
     }

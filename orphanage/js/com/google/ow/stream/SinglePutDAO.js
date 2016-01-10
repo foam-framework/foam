@@ -18,7 +18,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tag',
       lazyFactory: function() { return createGUID(); },
     },
@@ -31,7 +31,7 @@ CLASS({
       lazyFactory: function() { return this.model.ID; },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'stringify',
       defaultValue: function(id) { return id.toString(); },
     },

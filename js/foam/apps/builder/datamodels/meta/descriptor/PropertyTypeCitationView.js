@@ -20,7 +20,7 @@ CLASS({
       defaultValue: 'md-property-type-citation-view',
     },
     {
-      model_: 'ImageProperty',
+      type: 'Image',
       name: 'image',
       view: {
         factory_: 'foam.ui.ImageView',

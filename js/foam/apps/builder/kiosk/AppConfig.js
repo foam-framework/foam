@@ -43,7 +43,7 @@ CLASS({
       hidden: true,
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'homepage',
       label: 'Homepage',
       help: multiline(function() {/*
@@ -63,37 +63,37 @@ CLASS({
       hidden: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enableNavBttns',
       label: 'Enable back/forward navigation buttons',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enableHomeBttn',
       label: 'Enable home button',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enableReloadBttn',
       label: 'Enable reload button',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enableLogoutBttn',
       label: 'Enable restart session button',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enableNavBar',
       label: 'Enable address bar',
       defaultValue: false,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enableURLTracking',
       label: 'Enable URL tracking (requires Google Analytics)',
       defaultValue: false,

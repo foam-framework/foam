@@ -105,37 +105,37 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'width',
       defaultValue: 500
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'height',
       defaultValue: 500
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'headerHeight',
       defaultValue: 119
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'footerHeight',
       defaultValue: 30
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'maxSearchWidth',
       defaultValue: 160
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'searchWidth',
       defaultValue: 160
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minThreeColumnWidth',
       defaultValue: 1250
     },

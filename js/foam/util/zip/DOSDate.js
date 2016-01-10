@@ -49,7 +49,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'DateTimeProperty',
+      type: 'DateTimeArray',
       name: 'date',
       factory: function() {
         return new Date();

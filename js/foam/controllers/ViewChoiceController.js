@@ -20,7 +20,7 @@ CLASS({
   name: 'ViewChoiceController',
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'views',
       subType: 'foam.ui.ViewChoice',
       help: 'View choices.',

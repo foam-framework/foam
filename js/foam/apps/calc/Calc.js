@@ -64,13 +64,13 @@ CLASS({
     [ 'editable', true ],
     { name: 'op', factory: function() { return this.DEFAULT_OP } },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'history',
       view: 'foam.ui.DAOListView',
       factory: function() { return [].sink; }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'row1',
       view: 'foam.ui.animated.Label'
     },

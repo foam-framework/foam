@@ -48,7 +48,7 @@
     },
     {
       name: 'name',
-      model_: 'StringProperty',
+      type: 'String',
       defaultValueFn: function() { return this.data && this.data.name; },
       documentation: function() {/* Override this to extract a useful name */}
     },
@@ -58,7 +58,7 @@
     },
     {
       name: 'lastModified',
-      model_: 'DateTimeProperty',
+      type: 'DateTimeArray',
       tableWidth: 100,
       documentation: function() {/* Override this to extract and/or apply the last
         modified time of the item, or something approximating it.
@@ -66,7 +66,7 @@
     },
     {
       name: 'labels',
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       factory: function() { return []; },
       documentation: function() {/* Override this to extract useful labels or tags
         from the item.

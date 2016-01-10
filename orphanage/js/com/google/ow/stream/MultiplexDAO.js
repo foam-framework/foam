@@ -18,16 +18,16 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'people',
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'repackageOriginal',
       defaultValue: false,
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'envelopeFactory',
       defaultValue: function(baseEnv, pid) {
         var env = baseEnv.clone();
@@ -39,14 +39,14 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'dataFactory',
       defaultValue: function(data, pid) {
         return data.clone();
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'putTo',
       defaultValue: function(env, sink, pid) {
         this.delegate.put(this.envelopeFactory(env, pid), sink);

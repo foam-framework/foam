@@ -27,12 +27,12 @@ CLASS({
       name: 'model'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'richSearch',
       defaultValue: false
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'keywordSearch',
       defaultValue: false
     },

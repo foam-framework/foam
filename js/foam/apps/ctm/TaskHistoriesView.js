@@ -23,7 +23,7 @@ CLASS({
       postSet: function(old, nu) { this.updateHTML(); }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name:  'properties'
     }
   ],

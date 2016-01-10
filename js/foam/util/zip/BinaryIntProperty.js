@@ -17,12 +17,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'size',
       defaultValue: 2,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'offset',
     },
     {

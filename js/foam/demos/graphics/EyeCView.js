@@ -35,7 +35,7 @@ CLASS({
       defaultValue: 'black'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name:  'r',
       label: 'Radius',
       defaultValue: 50

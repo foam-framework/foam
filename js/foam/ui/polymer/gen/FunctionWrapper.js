@@ -21,7 +21,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'impls',
       factory: function() { return []; }
     },
@@ -38,7 +38,7 @@ CLASS({
       defaultValue: null
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'fn',
       factory: function() {
         return function() {

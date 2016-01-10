@@ -35,17 +35,17 @@ CLASS({
       defaultValue: ''
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name:  'color',
       defaultValue: 'black'
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'border',
       label: 'Border Color'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name:  'maxWidth',
       label: 'Maximum Width',
       defaultValue: -1

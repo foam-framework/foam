@@ -31,7 +31,7 @@ CLASS({
       required: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'defaultControls',
       defaultValue: true
     },
@@ -42,17 +42,17 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'playing',
       defaultValue: false
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'playImgURL',
       defaultValue: 'images/play.png'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'pauseImgURL',
       defaultValue: 'images/pause.png'
     }

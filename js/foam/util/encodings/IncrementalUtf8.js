@@ -16,23 +16,22 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.util.encodings.IncrementalUtf8",
    "package": "foam.util.encodings",
    "name": "IncrementalUtf8",
+
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
         "name": "charcode",
         defaultValue: null
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "remaining",
          "defaultValue": 0
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "string"
       }
    ],
@@ -41,7 +40,7 @@ CLASS({
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "reset",
          "code": function () {
       this.string = '';
@@ -51,7 +50,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "put",
          "code": function (byte) {
       if ( byte instanceof ArrayBuffer ) {

@@ -64,7 +64,7 @@ CLASS({
     {
       // Version of the data which changes whenever any property of the data is updated.
       // Used to help trigger isEnabled / isAvailable in Actions.
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'version'
     }
   ],

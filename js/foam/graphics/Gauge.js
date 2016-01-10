@@ -27,13 +27,13 @@ CLASS({
       help: 'The label to appear on the meter.',
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'data',
       postSet: function(o, n) { if ( this.view ) this.view.paint(); },
       defaultValue: 1
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name:  'maxValue',
       label: 'Max. Value',
       help: 'Maximum Value.',

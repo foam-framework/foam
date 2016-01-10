@@ -25,12 +25,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'editColumnsEnabled',
       defaultValue: false
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title',
       defaultValue: 'Table',
       postSet: function(old, nu) {
@@ -51,7 +51,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name:  'properties',
       lazyFactory: function() { return this.getDefaultProperties(); }
     },
@@ -81,7 +81,7 @@ CLASS({
       }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'Action',
       name: 'actions',
       lazyFactory: function() {
@@ -90,7 +90,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'scrollEnabled',
       defaultValue: false
     },

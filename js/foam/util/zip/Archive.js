@@ -51,30 +51,30 @@ CLASS({
       hidden: true,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'numberOfFiles',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'sizeOfCentralDirectory',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'centralDirectoryStartOffset',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'commentLength',
       lazyFactory: function() {
         return this.comment.length;
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'comment',
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.util.zip.File',
       name: 'files',
     },

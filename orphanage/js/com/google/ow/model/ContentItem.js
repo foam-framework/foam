@@ -20,20 +20,20 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'hash',
       defaultValue: '',
     },
     {
-      model_: 'URLProperty',
+      type: 'URL',
       name: 'url',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'bytes',
     }
   ],

@@ -32,7 +32,7 @@ CLASS({
       name: 'lastView'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'painting',
       defaultValue: false
     }

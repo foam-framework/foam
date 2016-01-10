@@ -27,7 +27,7 @@ CLASS({
   properties: [
     [ 'nodeName', 'SHOPPING-ITEM' ],
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'quantity',
       defaultValue: 1,
     },

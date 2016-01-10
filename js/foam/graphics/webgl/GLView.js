@@ -62,7 +62,7 @@ CLASS({
     },
     {
       name: 'suspended',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false,
       documentation: function() {/*
           Suspend painting. While this property is true, this
@@ -85,28 +85,28 @@ CLASS({
       documentation: function() {/* Safe getter for the webGL view this scene draws into */ }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'x',
       defaultValue: 0,
       documentation: function() {/*
           The X offset of this view relative to its parent. */}
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'y',
       defaultValue: 0,
       documentation: function() {/*
           The Y offset of this view relative to its parent. */}
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'z',
       defaultValue: 0,
       documentation: function() {/*
           The Z offset of this view relative to its parent. */}
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'width',
       defaultValue: 10,
       documentation: function() {/*
@@ -114,7 +114,7 @@ CLASS({
           may render outside of its apparent rectangle. */}
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'height',
       defaultValue: 10,
       documentation: function() {/*

@@ -17,48 +17,48 @@
 
 CLASS({
    "package": "foam.util.busy",
-   "model_": "Model",
    "name": "BusyStatus",
+
    "imports": [
       "clearTimeout",
       "setTimeout"
    ],
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "busy",
          "defaultValue": false
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "minPreSpinnerWait",
          "units": "ms",
          "defaultValue": 500
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "minSpinnerShowTime",
          "units": "ms",
          "defaultValue": 500
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "waiting_",
          "hidden": true,
          "getter": function () { return Object.keys(this.processes_).length > 0; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "processes_",
          "factory": function () { return {}; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "nextProcessId_",
          "defaultValue": 0
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "timer_"
       }
    ],
@@ -67,7 +67,7 @@ CLASS({
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "start",
          "code": function () {
       var alreadyWaiting = this.waiting_;
@@ -88,7 +88,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "done_",
          "code": function (pid) {
       if ( ! this.processes_[pid] ) return; // Unrecognized topic; bail.
@@ -113,7 +113,7 @@ CLASS({
    ],
    "listeners": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "onTimer",
          "code": function () {
         var waiting = this.waiting_;

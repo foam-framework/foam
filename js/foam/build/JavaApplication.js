@@ -21,19 +21,19 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'controller'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraModels'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'version'
     }
   ]
