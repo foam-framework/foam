@@ -132,21 +132,22 @@ var JSONUtil = {
 
     if ( obj instanceof Object ) {
 
-    if ( obj.model_ === 'Model' || opt_defaultModel === 'Model' ) {
-      if ( obj.properties ) {
-        for ( var i = 0 ; i < obj.properties.length ; i++ ) {
-          var p = obj.properties[i];
-          if ( p.type && ! p.model_ && p.type !== 'Property' ) {
-            p.model_ = p.type + 'Property';
-            X.arequire(p.model_)((function(obj, p) { return function(m) {
-              if ( Property && ! Property.isSubModel(m) ) {
-                console.log('ERROR: Use of non Property Sub-Model as Property type: ', obj.package + '.' + obj.name, p.type);
-              }
-            }; })(obj,p));
+      // For Models, convert type: Value to model_: ValueProperty
+      if ( obj.model_ === 'Model' || opt_defaultModel === 'Model' ) {
+        if ( obj.properties ) {
+          for ( var i = 0 ; i < obj.properties.length ; i++ ) {
+            var p = obj.properties[i];
+            if ( p.type && ! p.model_ && p.type !== 'Property' ) {
+              p.model_ = p.type + 'Property';
+              X.arequire(p.model_)((function(obj, p) { return function(m) {
+                if ( Property && ! Property.isSubModel(m) ) {
+                  console.log('ERROR: Use of non Property Sub-Model as Property type: ', obj.package + '.' + obj.name, p.type);
+                }
+              }; })(obj,p));
+            }
           }
         }
       }
-    }
 
       for ( var key in obj )
         if ( key != 'model_' && key != 'prototype_' )
@@ -167,9 +168,18 @@ var JSONUtil = {
               future.set(obj);
               return;
             }
-            var tmp = model.create(obj, X);
-            obj.become(tmp);
-            future.set(obj);
+
+            // Some Properties have a preSet which calls JSONUtil.
+            // If they do this before a model is loaded then that
+            // property can have JSONUtil called twice.
+            // This check avoids building the object twice.
+            // Should be removed when JSONUtil made fully async
+            // and presets removed.
+            if ( ! obj.instance_ ) {
+              var tmp = model.create(obj, X);
+              obj.become(tmp);
+              future.set(obj);
+            }
           });
 
           return obj;
