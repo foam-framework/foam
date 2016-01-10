@@ -31,7 +31,7 @@ CLASS({
     'completer',
     'current',
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'closeTime',
       units: 'ms',
       help: 'Time to delay the actual close on a .close call.',

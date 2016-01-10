@@ -19,7 +19,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'time',
     },
     {

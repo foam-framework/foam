@@ -27,7 +27,7 @@ CLASS({
   ],
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'maxVisibleViews',
       defaultValue: 2,
       documentation: 'Limits the number of views on screen at a time.',
@@ -52,7 +52,7 @@ CLASS({
       defaultValue: 'stackview-container'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'noDecoration',
       documentation: 'If true, panel edges are not added',
       defaultValue: false,

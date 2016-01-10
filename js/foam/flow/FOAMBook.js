@@ -51,7 +51,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'codeViewName',
       factory: function() {
         this.X.registerElement('code-view', 'foam.flow.AceCodeView');

@@ -34,13 +34,13 @@ CLASS({
       },
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showHeader',
       documentation: 'If true, header content is shown.',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showFooter',
       documentation: 'If true, footer actions are shown.',
       defaultValue: true,

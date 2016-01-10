@@ -24,12 +24,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'rowDelay',
       defaultValue: 500,
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'onPut',
       defaultValue: function() {
         throw 'DelayedPutDAO: Put before merged listener initialized';

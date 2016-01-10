@@ -16,11 +16,11 @@ arequire('DemoView')(function(DemoView) {
         model_: 'Model',
         name: 'Person',
         properties: [
-          { model_: 'IntProperty', name: 'id' },
+          { type: 'Int', name: 'id' },
           { name: 'name' },
           { name: 'sex', defaultValue: 'M' },
-          { model_: 'IntProperty', name: 'age' },
-          { model_: 'ArrayProperty', name: 'kids' },
+          { type: 'Int', name: 'age' },
+          { type: 'Array', name: 'kids' },
           { name: 'troublesome"quoted"name' }
         ]
       });

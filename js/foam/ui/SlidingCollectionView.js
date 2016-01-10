@@ -22,22 +22,22 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'arr',
       lazyFactory: function() { return []; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'realIdx',
       defaultValue: -1
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'uiIdx',
       defaultValue: -1
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'queuedListeners',
       lazyFactory: function() { return []; }
     },

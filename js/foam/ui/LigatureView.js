@@ -17,7 +17,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'data',
       defaultValue: 'accessibility',
       postSet: function(old, nu) {
@@ -26,7 +26,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tagName',
       defaultValue: 'i',
       postSet: function(old, nu) {
@@ -37,7 +37,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'className',
       defaultValue: 'material-icons-extended',
       postSet: function(old, nu) {
@@ -47,7 +47,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'extraClassName',
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
@@ -56,17 +56,17 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'width',
       getter: function() { return this.$ ? this.$.scrollWidth : 0; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'height',
       getter: function() { return this.$ ? this.$.scrollHeight : 0; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'fontSize',
       defaultValue: 24,
       postSet: function(old, nu) {

@@ -70,21 +70,21 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.apps.builder.XHRBinding',
       name: 'inAuthBindings',
       lazyFactory: function() { return []; },
       postSet: function() { this.onAuthBindingsChange(); },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.apps.builder.XHRBinding',
       name: 'inHeaderBindings',
       lazyFactory: function() { return []; },
       postSet: function() { this.onHeaderBindingsChange(); },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.apps.builder.XHRBinding',
       name: 'authBindings',
       lazyFactory: function() {
@@ -92,7 +92,7 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.apps.builder.XHRBinding',
       name: 'headerBindings',
       lazyFactory: function() {
@@ -100,14 +100,14 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.apps.builder.XHRBinding',
       name: 'outAuthBindings',
       lazyFactory: function() { return []; },
       postSet: function() { this.onAuthBindingsChange(); },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.apps.builder.XHRBinding',
       name: 'outHeaderBindings',
       lazyFactory: function() { return []; },

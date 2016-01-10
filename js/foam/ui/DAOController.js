@@ -26,7 +26,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       name: 'model'
     },
     {
@@ -52,7 +52,7 @@ CLASS({
       name: 'selection'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'useSearchView',
       defaultValue: false/*,
       postSet: function(_, value) {

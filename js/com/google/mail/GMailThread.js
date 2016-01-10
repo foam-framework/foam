@@ -16,31 +16,29 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "com.google.mail.GMailThread",
    "package": "com.google.mail",
    "name": "GMailThread",
    "plural": "threads",
    "properties": [
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "historyId",
          "help": "The ID of the last history record that modified this thread."
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "id",
          "help": "The unique ID of the thread."
       },
       {
-         "model_": "ReferenceArrayProperty",
+         model_: "ReferenceArrayProperty",
          "name": "messages",
          "help": "The list of messages in the thread.",
          "subType": "Message",
          "subKey": "ID"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "snippet",
          "help": "A short part of the message text."
       }

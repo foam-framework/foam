@@ -26,11 +26,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'objId'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'errorMessage'
     },
     {

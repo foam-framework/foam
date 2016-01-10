@@ -26,11 +26,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'url',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'ligature',
       postSet: function(old, nu) {
         if ( old === nu ) return;
@@ -54,12 +54,12 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'width',
       defaultValue: 24,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'height',
       defaultValue: 24,
     },
@@ -73,22 +73,22 @@ CLASS({
       },
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'alpha',
       defaultValue: 1.0,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'fontSize',
       defaultValue: 24,
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'imageClassName',
       defaultValue: 'icon',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'imageClassName',
       defaultValue: 'material-icons-extended',
     },

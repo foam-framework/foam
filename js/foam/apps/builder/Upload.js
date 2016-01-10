@@ -17,11 +17,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'objectHashCode',
     },
   ],

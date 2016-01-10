@@ -33,21 +33,21 @@ CLASS({
 
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'newView',
       documentation: 'The view used for creating new instances. Will be ' +
           'pushed onto the stack view. Defaults to $$DOC{ref:".editView"}.',
       defaultValueFn: function() { return this.editView; }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'innerNewView',
       documentation: 'The view used as the inner view (where relevant) of ' +
           'the creation view. Defaults to $$DOC{ref:".innerEditView"}.',
       defaultValueFn: function() { return this.innerEditView; }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'editView',
       documentation: 'The view used for editing selected items. Will be ' +
           'pushed onto the stack view. Defaults to ' +
@@ -56,14 +56,14 @@ CLASS({
       defaultValue: 'foam.ui.md.UpdateDetailView'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'innerEditView',
       documentation: 'The view used as the inner view (where relevant) of ' +
           'the edit view. Defaults to $$DOC{ref:"foam.ui.md.DetailView"}.',
       defaultValue: 'foam.ui.md.DetailView'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
       documentation: 'The view used the render each item from the DAO.',
       defaultValue: 'foam.ui.md.DetailView'

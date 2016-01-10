@@ -23,12 +23,12 @@ CLASS({
       defaultValue: Movement.easeOut(0.9)
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'openDuration',
       defaultValue: 250
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'closeDuration',
       defaultValue: 250
     },

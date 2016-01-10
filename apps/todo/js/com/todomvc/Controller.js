@@ -25,9 +25,9 @@
 			},
 			{ name: 'dao' },
 			{ name: 'filteredDAO',    model_: 'foam.core.types.DAOProperty', view: 'foam.ui.DAOListView' },
-			{ name: 'completedCount', model_: 'IntProperty' },
-			{ name: 'activeCount',    model_: 'IntProperty', postSet: function (_, c) { this.toggle = !c; }},
-			{ name: 'toggle',         model_: 'BooleanProperty', postSet: function (_, n) {
+			{ name: 'completedCount', type: 'Int' },
+			{ name: 'activeCount',    type: 'Int', postSet: function (_, c) { this.toggle = !c; }},
+			{ name: 'toggle',         type: 'Boolean', postSet: function (_, n) {
 				if (n === this.activeCount > 0) {
 					this.dao.update(SET(this.Todo.COMPLETED, n));
 				}

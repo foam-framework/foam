@@ -53,7 +53,7 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'delegate',
     },
     {
@@ -96,7 +96,7 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'urlDAOFactory',
       defaultValue: function(data) {
         if ( ! data ) return this.NullDAO.create({}, this.Y);
@@ -111,7 +111,7 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'appMetricsDAOFactory',
       defaultValue: function(data) {
         if ( ! data ) return this.NullDAO.create({}, this.Y);
@@ -126,7 +126,7 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'appBuilderMetricsDAOFactory',
       defaultValue: function(data) {
         if ( ! data ) return this.NullDAO.create({}, this.Y);

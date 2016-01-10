@@ -30,7 +30,7 @@ CLASS({
       "name": "incomingView"
     },
     {
-      "model_": "foam.core.types.StringEnumProperty",
+      model_: "foam.core.types.StringEnumProperty",
       "name": "direction",
       "defaultValue": "horizontal",
       "choices": [
@@ -45,12 +45,12 @@ CLASS({
       ]
     },
     {
-      "model_": "BooleanProperty",
+      type: 'Boolean',
       "name": "reverse",
       "defaultValue": false
     },
     {
-      "model_": "FloatProperty",
+      type: 'Float',
       "name": "slideAmount",
       "defaultValue": 0
     },
@@ -60,7 +60,7 @@ CLASS({
   ],
   "methods": [
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "init",
       "code": function () {
         this.SUPER();
@@ -77,7 +77,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "toHTML",
       "code": function () {
         this.children = [];
@@ -85,7 +85,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "initHTML",
       "code": function () {
         this.layout();
@@ -93,7 +93,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "setView",
       "code": function (view) {
         if ( this.view ) {
@@ -110,7 +110,7 @@ CLASS({
       "args": []
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "slideView",
       "code": function (view, opt_interp, opt_time, opt_delay) {
         if ( ! this.$ ) return;
@@ -151,7 +151,7 @@ CLASS({
   ],
   "listeners": [
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "layout",
       "code": function () {
         this.view.width = this.width;
@@ -186,7 +186,7 @@ CLASS({
   ],
   "templates": [
     {
-      "model_": "Template",
+      model_: "Template",
       "name": "toInnerHTML",
       "args": [],
       "template": " <%= this.view %> "

@@ -29,12 +29,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'id',
       hidden: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'iconUrl',
       label: '',
       view: 'foam.ui.ImageView',
@@ -42,7 +42,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       aliases: ['t', 'task'],
       label: 'Task',
@@ -51,7 +51,7 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'memory',
       aliases: ['m', 'mem', 'mb'],
       units: 'MB',
@@ -60,7 +60,7 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'cpu',
       aliases: ['c'],
       label: 'CPU',
@@ -70,7 +70,7 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'network',
       aliases: ['n', 'net', 'b', 'bandwidth'],
       units: 'B/s',
@@ -79,7 +79,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'processId',
       aliases: ['p', 'pid', 'procid'],
       label: 'Process ID'

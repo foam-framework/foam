@@ -23,7 +23,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       name: 'tooltipModel',
       defaultValue: 'foam.ui.polymer.Tooltip'
     },

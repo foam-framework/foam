@@ -53,12 +53,12 @@ CLASS({
       defaultValueFn: function() { return this.prop ? this.prop.label : ''; }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'acRowView',
       defaultValue: 'foam.ui.md.DefaultACRowView'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
       defaultValue: 'DefaultRowView'
     },

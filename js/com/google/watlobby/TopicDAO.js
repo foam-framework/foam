@@ -27,7 +27,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'clientMode',
       defaultValue: true
     },

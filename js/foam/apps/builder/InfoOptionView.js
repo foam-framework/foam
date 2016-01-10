@@ -25,8 +25,8 @@ CLASS({
       extends: 'foam.ui.SimpleView',
 
       properties: [
-        { model_: 'ViewFactoryProperty', name: 'first', defaultValue: null },
-        { model_: 'ViewFactoryProperty', name: 'second', defaultValue: null },
+        { type: 'ViewFactory', name: 'first', defaultValue: null },
+        { type: 'ViewFactory', name: 'second', defaultValue: null },
       ],
 
       templates: [
@@ -44,27 +44,27 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title',
       defaultValue: 'Info heading'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'icon',
       defaultValue: null
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'details',
       defaultValue: null,
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'option',
       defaultValue: null,
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'outer',
       defaultValue: function() {
         return this.ExpandableView.create({
@@ -76,7 +76,7 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'inner',
       defaultValue: function() {
         return this.TwoView.create({

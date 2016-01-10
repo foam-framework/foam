@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.contacts.ContactNetworkDAO",
    "package": "foam.lib.contacts",
    "name": "ContactNetworkDAO",
    "extends": "AbstractDAO",
@@ -33,28 +31,28 @@ CLASS({
    "exports": [],
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "daoListeners_",
          "hidden": true,
          "transient": true,
          "factory": function () { return []; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "url",
          "defaultValue": "https://www.google.com/m8/feeds/contacts/default/full"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "authAgent"
       },
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "batchSize",
          "defaultValue": 1000
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "ajsonp",
          "hidden": true,
          "transient": true
@@ -65,7 +63,7 @@ CLASS({
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "select",
          "code": function (sink, options) {
       options = {
@@ -86,7 +84,7 @@ CLASS({
 
       var query = options.query;
 
-      if ( query && 
+      if ( query &&
            GtExpr.isInstance(query) &&
            query.arg1.equals(this.Contact.UPDATED) &&
            ConstantExpr.isInstance(query.arg2) ) {
@@ -106,7 +104,7 @@ CLASS({
       }
 
       sink = this.decorateSink_(sink || [].sink, options);
-        
+
       var url = this.url;
       var fc = this.createFlowControl_();
       var self = this;
@@ -139,7 +137,7 @@ CLASS({
                   ( i < contacts.length &&
                     ! fc.stopped ) ;
                   i++ ) {
-              if ( fc.errorEvt ) { 
+              if ( fc.errorEvt ) {
                 error = true;
                 sink.error && sink.error(fc.errorEvt);
                 future.set(sink);
@@ -163,7 +161,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "objFromJson",
          "code": function (c) {
       var self = this;

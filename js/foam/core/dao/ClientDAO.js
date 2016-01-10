@@ -16,10 +16,10 @@
  */
 
 CLASS({
-  model_: "Model",
   package: "foam.core.dao",
   name: "ClientDAO",
   extends: "AbstractDAO",
+
   properties: [
     {
       name: "asend",

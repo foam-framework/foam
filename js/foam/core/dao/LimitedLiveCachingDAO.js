@@ -25,7 +25,7 @@ CLASS({
     {
       name: 'src'
     },
-    { model_: 'IntProperty', name: 'cacheLimit', defaultValue: 100 },
+    { type: 'Int', name: 'cacheLimit', defaultValue: 100 },
     {
       name: 'cache',
       help: 'Alias for delegate.',

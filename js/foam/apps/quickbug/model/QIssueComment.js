@@ -24,7 +24,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
       preSet: function(_, v) { return v; },
       defaultValue: '0'
@@ -51,19 +51,19 @@ CLASS({
       view: 'foam.ui.RelativeDateTimeFieldView'
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       name: 'issueId',
       subType: 'foam.apps.quickbug.model.imported.Issue',
       hidden: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'content',
       displayWidth: 85,
       displayHeight: 8
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'seqNo',
       help: 'The sequence number for this comment, indicating where it shows in the comment list for a particular issue.'
     }

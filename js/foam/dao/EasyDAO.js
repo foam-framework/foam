@@ -65,13 +65,13 @@ CLASS({
       documentation: "The developer-friendly name for this $$DOC{ref:'.'}."
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'seqNo',
       defaultValue: false,
       documentation: "Have $$DOC{ref:'.'} use a sequence number to index items. Note that $$DOC{ref:'.seqNo'} and $$DOC{ref:'.guid'} features are mutually exclusive."
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'guid',
       label: 'GUID',
       defaultValue: false,
@@ -83,37 +83,37 @@ CLASS({
       documentation: "The property on your items to use to store the sequence number or guid. This is required for $$DOC{ref:'.seqNo'} or $$DOC{ref:'.guid'} mode."
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'cache',
       defaultValue: false,
       documentation: "Enable local caching of the $$DOC{ref:'DAO'}."
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'dedup',
       defaultValue: false,
       documentation: "Enable value de-duplication to save memory when caching."
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'logging',
       defaultValue: false,
       documentation: "Enable logging on the $$DOC{ref:'DAO'}."
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'timing',
       defaultValue: false,
       documentation: "Enable time tracking for concurrent $$DOC{ref:'DAO'} operations."
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'contextualize',
       defaultValue: false,
       documentation: "Contextualize objects on .find"
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'cloning',
       defaultValue: false,
       documentation: "True to clone results on select"
@@ -134,28 +134,28 @@ CLASS({
        */}
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'autoIndex',
       defaultValue: false,
       documentation: "Automatically generate an index."
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'migrationRules',
       subType: 'foam.core.dao.MigrationRule',
       documentation: "Creates an internal $$DOC{ref:'MigrationDAO'} and applies the given array of $$DOC{ref:'MigrationRule'}."
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'syncWithServer'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'sockets',
       defaultValue: false
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'serverUri',
       defaultValueFn: function() {
         return this.document && this.document.location ?
@@ -164,7 +164,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isServer',
       defaultValue: false
     },

@@ -78,15 +78,15 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'memory'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'cpu'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'network'
     }
   ],

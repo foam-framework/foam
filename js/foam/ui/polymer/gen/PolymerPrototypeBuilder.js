@@ -31,7 +31,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'polymerFnImpl',
       factory: function() {
         return function(name, proto) {

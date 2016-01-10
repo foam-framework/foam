@@ -15,12 +15,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'model',
       defaultValue: 'foam.util.Timer'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'view',
       defaultValue: 'foam.ui.DetailView'
     }

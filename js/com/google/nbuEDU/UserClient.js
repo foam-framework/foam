@@ -20,7 +20,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'clientFactory',
       defaultValue: function() {
         return this.Client.create({

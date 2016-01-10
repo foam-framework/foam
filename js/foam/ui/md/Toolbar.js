@@ -49,7 +49,7 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'leftActions',
       postSet: function(old, nu) {
@@ -62,7 +62,7 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'rightActions',
     },

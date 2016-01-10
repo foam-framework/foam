@@ -52,16 +52,16 @@ CLASS({
       defaultValue: 'none'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'booly'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enabledButton',
       defaultValue: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showButton',
       defaultValue: true
     },

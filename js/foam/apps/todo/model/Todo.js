@@ -34,26 +34,26 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isCompleted',
       label: 'Completed',
       defaultValue: false,
       view: 'foam.ui.md.CheckboxView'
     },
     {
-      //model_: 'ReferenceProperty',
+      //type: 'Reference',
       name: 'owner',
       //subType: 'foam.apps.todo.model.Person',
       //view: 'foam.apps.todo.ui.PersonView',
       view: 'foam.ui.md.TextFieldView',
     },
     {
-      model_: 'DateProperty',
+      type: 'Date',
       name: 'dueDate',
       view: 'foam.ui.md.DateFieldView'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'priority',
       defaultValue: 1
     },

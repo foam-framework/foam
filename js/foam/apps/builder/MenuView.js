@@ -26,15 +26,15 @@ CLASS({
       name: 'data',
     },
     {
-      model_:'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'selectionList',
     },
     {
-      model_:'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'accountList',
     },
     {
-      model_:'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'viewList',
     },
   ],

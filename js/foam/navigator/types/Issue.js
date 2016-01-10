@@ -71,7 +71,7 @@ CLASS({
       choices: ['S0', 'S1', 'S2', 'S3', 'S4']
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'starred',
       defaultValue: false
     },
@@ -82,7 +82,7 @@ CLASS({
       name: 'comment'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'cc',
       preSet: function(old, nu) {
         return nu || [];

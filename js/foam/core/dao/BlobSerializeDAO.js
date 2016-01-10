@@ -16,9 +16,9 @@
  */
 
 CLASS({
-  "model_": "Model",
   "package": "foam.core.dao",
   "name": "BlobSerializeDAO",
+
   "extends": "foam.dao.ProxyDAO",
   "requires": [
     "foam.util.Base64Encoder",
@@ -26,14 +26,14 @@ CLASS({
   ],
   "properties": [
     {
-      "model_": "ArrayProperty",
+      type: 'Array',
       "name": "properties",
       "subType": "Property"
     }
   ],
   "methods": [
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "serialize",
       "code": function (ret, obj) {
         obj = obj.clone();
@@ -65,7 +65,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "deserialize",
       "code": function (obj) {
         for ( var i = 0, prop; prop = this.properties[i]; i++ ) {
@@ -82,7 +82,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "put",
       "code": function (o, sink) {
         var self = this;
@@ -92,7 +92,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "select",
       "code": function (sink, options) {
         var self = this;
@@ -110,7 +110,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "find",
       "code": function (q, sink) {
         var self = this;

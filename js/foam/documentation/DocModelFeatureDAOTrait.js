@@ -62,7 +62,7 @@ CLASS({
     },
     {
       name: 'processBaseModels',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: true
     },
     {

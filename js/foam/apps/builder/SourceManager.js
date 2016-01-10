@@ -17,7 +17,7 @@ CLASS({
     {
       name: 'File',
       properties: [
-        { model_: 'StringProperty', name: 'path' },
+        { type: 'String', name: 'path' },
         { name: 'contents' },
       ],
     },
@@ -31,12 +31,12 @@ CLASS({
       transient: true,
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'sources',
       transient: true,
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'agetFile',
       defaultValue: null,
     },

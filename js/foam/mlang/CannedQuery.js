@@ -27,7 +27,7 @@ CLASS({
       defaultValueFn: function() { return this.label; }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'label',
       required: true,
     },

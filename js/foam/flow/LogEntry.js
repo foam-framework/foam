@@ -15,16 +15,16 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'id'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'mode',
       defaultValue: 'log'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'contents'
     }
   ]});

@@ -42,12 +42,12 @@ CLASS({
           },
         },
         {
-          model_: 'DateTimeProperty',
+          type: 'DateTime',
           name: 'timestamp',
           factory: function() { return new Date(); },
         },
         {
-          model_: 'BooleanProperty',
+          type: 'Boolean',
           name: 'promoted',
           defaultValue: false,
         },
@@ -56,7 +56,7 @@ CLASS({
         'owner',
         'source',
         {
-          model_: 'StringArrayProperty',
+          type: 'StringArray',
           name:'tags',
         },
         {
@@ -67,7 +67,7 @@ CLASS({
           },
         },
         {
-          model_: 'StringArrayProperty',
+          type: 'StringArray',
           name: 'substreams',
         },
       ],
@@ -97,15 +97,15 @@ CLASS({
           lazyFactory: function() { return createGUID(); },
         },
         {
-          model_: 'ReferenceProperty',
+          type: 'Reference',
           name: 'customer',
         },
         {
-          model_: 'ReferenceProperty',
+          type: 'Reference',
           name: 'merchant',
         },
         {
-          model_: 'ArrayProperty',
+          type: 'Array',
           name: 'items',
           lazyFactory: function() { return []; },
         },

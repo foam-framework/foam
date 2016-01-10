@@ -34,13 +34,13 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'path',
       defaultValue: '',
       required: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'parentPath',
       defaultValue: '',
       required: true
@@ -52,18 +52,18 @@ CLASS({
     // },
     // Directory only:
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isDirectory',
       defaultValue: false
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'entries',
       factory: function() { return []; }
     },
     // File only:
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'mimeType',
       defaultValue: ''
     },

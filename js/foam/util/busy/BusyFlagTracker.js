@@ -17,15 +17,15 @@
 
 CLASS({
    "package": "foam.util.busy",
-   "model_": "Model",
    "name": "BusyFlagTracker",
+
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "busyStatus"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "target",
          "postSet": function (oldTarget, newTarget) {
         if ( this.callback ) {
@@ -38,13 +38,13 @@ CLASS({
       }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "callback"
       }
    ],
    "listeners": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "onChange",
          "code": function (_, __, oldValue, newValue) {
         if ( newValue ) {

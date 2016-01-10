@@ -23,12 +23,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'trackingName',
       defaultValueFn: function() { return this.name; },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'trackingNameFn',
       defaultValue: function(X, that) { return this.trackingName; },
     },

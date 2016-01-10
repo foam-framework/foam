@@ -33,7 +33,7 @@ MODEL({
       }
     },
     {
-      model_: 'DateProperty',
+      type: 'Date',
       name: 'departDate',
       factory: function() { return new Date(Date.now()+3600000*24); },
       validate: function(departDate) {
@@ -43,7 +43,7 @@ MODEL({
       }
     },
     {
-      model_: 'DateProperty',
+      type: 'Date',
       name: 'returnDate',
       factory: function() { return new Date(Date.now()+2*3600000*24); },
       validate: function(oneWay, returnDate, departDate) {

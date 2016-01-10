@@ -36,7 +36,7 @@ CLASS({
   ],
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'agents',
       help: 'List of agents to execute once loaded',
       adapt: function(_, v) {
@@ -45,7 +45,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'port',
       defaultValue: 8000,
       adapt: function(_, v) {
@@ -68,7 +68,7 @@ CLASS({
       name: 'certFile',
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'quiet',
       help: 'Set to true to silence most logs outputs.',
       defaultValue: false,
@@ -78,7 +78,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'handlers',
       hidden: true
     },

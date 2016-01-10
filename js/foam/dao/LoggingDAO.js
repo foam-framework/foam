@@ -36,7 +36,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'logReads',
       defaultValue: false
     },

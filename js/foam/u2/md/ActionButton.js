@@ -73,7 +73,7 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'alpha',
       defaultValue: 1
     },

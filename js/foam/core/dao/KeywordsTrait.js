@@ -21,7 +21,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'keywords',
       preSet: function(_, a) {
         for ( var i = 0 ; i < a.length ; i++ ) a[i] = a[i].intern();

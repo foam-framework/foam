@@ -16,36 +16,35 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.util.Base64Decoder",
    "package": "foam.util",
    "name": "Base64Decoder",
+
    "properties": [
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "bufsize",
          "help": "Size of the internal buffer to use.",
          "defaultValue": 512
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "buffer",
          "factory": function () {
         return new ArrayBuffer(this.bufsize);
       }
       },
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "pos",
          "defaultValue": 0
       },
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "chunk",
          "defaultValue": 3
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "sink",
          "factory": function () { return [].sink; }
       }
@@ -53,7 +52,7 @@ CLASS({
    "actions": [],
    "constants": [
       {
-         "model_": "Constant",
+         model_: "Constant",
          "name": "TABLE",
          "value":          {
                         "0": 52,
@@ -128,7 +127,7 @@ CLASS({
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "lookup",
          "code": function (data) {
       return this.TABLE[data];
@@ -136,7 +135,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "put",
          "code": function (data) {
       var tmp = 0;
@@ -172,7 +171,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "emit",
          "code": function (bytes, tmp) {
       for(var j = 0; j < bytes; j++) {
@@ -190,7 +189,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "eof",
          "code": function () {
       this.sink.put(this.buffer.slice(0, this.pos));

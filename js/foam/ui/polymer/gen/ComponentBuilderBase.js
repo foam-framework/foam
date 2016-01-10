@@ -25,14 +25,14 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'provides',
       factory: function() {
         return [];
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'listensTo',
       factory: function() {
         return [];

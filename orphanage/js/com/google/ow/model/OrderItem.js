@@ -19,7 +19,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'id',
     },
     {
@@ -27,7 +27,7 @@ CLASS({
       name: 'product',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'summary',
       toPropertyE: function(X) {
         // TODO(markdittmer): We should have a non-input-element standard for
@@ -36,7 +36,7 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'quantity',
       defaultValue: 1,
       toPropertyE: function(X) {
@@ -46,7 +46,7 @@ CLASS({
       },
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'total',
       dynamicValue: function() {
         return this.product ? this.product.price * this.quantity : 0.00;

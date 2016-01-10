@@ -131,7 +131,7 @@ CLASS({
   properties: [
     [ 'duration', 0 ],
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'colorList',
       singular: 'color',
       factory: function() { return this.COLORS; }

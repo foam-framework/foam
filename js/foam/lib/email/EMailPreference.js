@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.email.EMailPreference",
    "package": "foam.lib.email",
    "name": "EMailPreference",
    "ids": [
@@ -25,12 +23,12 @@ CLASS({
    ],
    "properties": [
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "name",
          "label": "Preference Name"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "value",
          "label": "Preference Value"
       }

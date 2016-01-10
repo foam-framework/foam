@@ -17,19 +17,19 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'displayName',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'email',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'iconUrl',
       view: {
         factory_: 'foam.ui.ImageView',
@@ -47,7 +47,7 @@ CLASS({
       ],
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'label',
       defaultValueFn: function() { return this.displayName; },
     },

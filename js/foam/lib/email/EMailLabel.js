@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.email.EMailLabel",
    "package": "foam.lib.email",
    "name": "EMailLabel",
    "ids": [
@@ -25,17 +23,17 @@ CLASS({
    ],
    "properties": [
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "id",
          "label": "Label ID"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "displayName",
          "label": "Display Name"
       },
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "color",
          "label": "color",
          "defaultValue": 0
@@ -44,7 +42,7 @@ CLASS({
    "actions": [],
    "constants": [
       {
-         "model_": "Constant",
+         model_: "Constant",
          "name": "SystemLabels",
          "value":          {
                         "ALL": "^all",
@@ -65,7 +63,7 @@ CLASS({
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "RENDERABLE_SYSTEM_LABELS",
          "code": function () {
       if ( ! result ) {
@@ -76,7 +74,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "SYSTEM_LABEL_RENDER_NAMES",
          "code": function () {
       if ( ! result ) {
@@ -87,7 +85,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "SEARCHABLE_SYSTEM_LABELS",
          "code": function () {
       if ( ! result ) {
@@ -98,7 +96,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "isSystemLabel",
          "code": function () {
           return this.displayName.charAt(0) == '^';
@@ -106,7 +104,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "isRenderable",
          "code": function () {
           return !this.isSystemLabel() || this.RENDERABLE_SYSTEM_LABELS()[this.displayName];
@@ -114,7 +112,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "getRenderName",
          "code": function () {
           var displayName = this.displayName;
@@ -123,7 +121,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "isSearchable",
          "code": function () {
           return !this.isSystemLabel() || this.SEARCHABLE_SYSTEM_LABELS()[this.displayName];
@@ -131,7 +129,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "getSearch",
          "code": function () {
           switch(this.displayName) {

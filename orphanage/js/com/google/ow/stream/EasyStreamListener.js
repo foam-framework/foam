@@ -29,7 +29,7 @@ CLASS({
 
       properties: [
         {
-          model_: 'FunctionProperty',
+          type: 'Function',
           name: 'onPut',
           defaultValue: null,
         },
@@ -48,7 +48,7 @@ CLASS({
 
       properties: [
         {
-          model_: 'StringProperty',
+          type: 'String',
           name: 'tag',
           lazyFactory: function() { return createGUID(); },
         },
@@ -66,7 +66,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tag',
       lazyFactory: function() { return createGUID(); },
     },
@@ -75,33 +75,33 @@ CLASS({
       required: true,
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'substreams',
       required: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'singlePut',
       defaultValue: false,
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'onPut',
       defaultValue: null,
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'people',
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'envelopeFactory',
       defaultValueFn: function() {
         return this.MultiplexDAO.ENVELOPE_FACTORY.defaultValue;
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'dataFactory',
       defaultValueFn: function() {
         return this.MultiplexDAO.DATA_FACTORY.defaultValue;

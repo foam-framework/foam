@@ -168,10 +168,10 @@ CLASS({
         animate();
       }
     },
-    { model_: 'ViewFactoryProperty', name: 'mainView' },
-    { model_: 'ViewFactoryProperty', name: 'panelView' },
+    { type: 'ViewFactory', name: 'mainView' },
+    { type: 'ViewFactory', name: 'panelView' },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minWidth',
       defaultValueFn: function() {
         var e = this.main$();
@@ -179,9 +179,8 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'mainWidth',
-      model_: 'IntProperty',
       hidden: true,
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
@@ -192,9 +191,8 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'panelWidth',
-      model_: 'IntProperty',
       hidden: true,
       help: 'Set internally by the resize handler',
       postSet: function(_, x) {
@@ -204,7 +202,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minPanelWidth',
       defaultValueFn: function() {
         if ( this.panelView && this.panelView.minWidth )
@@ -215,7 +213,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'parentWidth',
       help: 'A pseudoproperty that returns the current width (CSS pixels) of the containing element',
       lazyFactory: function() {
@@ -223,20 +221,20 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'stripWidth',
       help: 'The width in (CSS) pixels of the minimal visible strip of panel',
       defaultValue: 30
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'panelRatio',
       help: 'The ratio (0-1) of the total width occupied by the panel, when ' +
           'the containing element is wide enough for expanded view.',
       defaultValue: 0.5
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'panelX',
       postSet: function(oldX, x) {
         if ( this.currentLayout ) this.currentLayout[2] = this.parentWidth-x;

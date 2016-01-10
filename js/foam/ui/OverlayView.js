@@ -22,7 +22,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'x',
       defaultValue: 0,
       postSet: function(old, nu) {
@@ -31,7 +31,7 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'y',
       defaultValue: 0,
       postSet: function(old, nu) {
@@ -40,7 +40,7 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'width',
       defaultValueFn: function() {
         var fullWidth = this.document.documentElement.clientWidth - this.x;
@@ -54,7 +54,7 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'height',
       defaultValueFn: function() {
         var fullHeight = this.document.documentElement.clientHeight - this.y;
@@ -68,7 +68,7 @@ CLASS({
       },
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'alpha',
       defaultValue: null,
       postSet: function(old, nu) {

@@ -18,16 +18,16 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'initial',
       required: true
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'parts'
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'toUpperCamel',
       factory: function() {
         return this.Memo.create({
@@ -40,7 +40,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'toLowerCamel',
       factory: function() {
         return this.Memo.create({
@@ -54,7 +54,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'toHyphen',
       factory: function() {
         return this.Memo.create({
@@ -67,7 +67,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'toUpperUnderscore',
       factory: function() {
         return this.Memo.create({

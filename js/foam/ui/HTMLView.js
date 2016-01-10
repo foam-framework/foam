@@ -33,7 +33,7 @@ CLASS({
       defaultValue: ''
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tag',
       defaultValue: 'span'
     },

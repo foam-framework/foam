@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.email.Conversation",
    "package": "foam.lib.email",
    "name": "Conversation",
    "tableProperties": [
@@ -27,16 +25,16 @@ CLASS({
    ],
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "id"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "recipients",
          "tableWidth": "100"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "subject",
          "shortName": "s",
          "mode": "read-write",
@@ -52,21 +50,21 @@ CLASS({
          "view": "foam.ui.TextFieldView"
       },
       {
-         "model_": "DateProperty",
+         type: 'Date',
          "name": "timestamp",
          "tableWidth": "75"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "emails",
          "view": "EMailsView"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "isUnread"
       },
       {
-         "model_": "StringArrayProperty",
+         type: 'StringArray',
          "name": "labels",
          "postSet": function (oldValue, newValue) {
         if (!newValue || !newValue.length) return;
@@ -86,11 +84,11 @@ CLASS({
    ],
    "actions": [
       {
-         "model_": "foam.lib.email.ConversationAction",
+         model_: "foam.lib.email.ConversationAction",
          "children": [],
          "keyboardShortcuts": [],
          "delegate":          {
-            "model_": "Action",
+            model_: "Action",
             "name": "reply",
             "help": "Reply to an email.",
             "children": [],
@@ -108,11 +106,11 @@ CLASS({
          "applyOnAll": false
       },
       {
-         "model_": "foam.lib.email.ConversationAction",
+         model_: "foam.lib.email.ConversationAction",
          "children": [],
          "keyboardShortcuts": [],
          "delegate":          {
-            "model_": "Action",
+            model_: "Action",
             "name": "replyAll",
             "help": "Reply to all recipients of an email.",
             "children": [],
@@ -135,11 +133,11 @@ CLASS({
          "applyOnAll": false
       },
       {
-         "model_": "foam.lib.email.ConversationAction",
+         model_: "foam.lib.email.ConversationAction",
          "children": [],
          "keyboardShortcuts": [],
          "delegate":          {
-            "model_": "Action",
+            model_: "Action",
             "name": "forward",
             "help": "Forward an email.",
             "children": [],
@@ -156,11 +154,11 @@ CLASS({
          "applyOnAll": false
       },
       {
-         "model_": "foam.lib.email.ConversationAction",
+         model_: "foam.lib.email.ConversationAction",
          "children": [],
          "keyboardShortcuts": [],
          "delegate":          {
-            "model_": "foam.lib.email.EMailMutationAction",
+            model_: "foam.lib.email.EMailMutationAction",
             "name": "star",
             "help": "Star an email.",
             "children": [],
@@ -178,11 +176,11 @@ CLASS({
          "applyOnAll": false
       },
       {
-         "model_": "foam.lib.email.ConversationAction",
+         model_: "foam.lib.email.ConversationAction",
          "children": [],
          "keyboardShortcuts": [],
          "delegate":          {
-            "model_": "foam.lib.email.EMailMutationAction",
+            model_: "foam.lib.email.EMailMutationAction",
             "name": "archive",
             "help": "Archive an email.",
             "isAvailable": function () { return this.hasLabel('INBOX'); },
@@ -200,11 +198,11 @@ CLASS({
          }
       },
       {
-         "model_": "foam.lib.email.ConversationAction",
+         model_: "foam.lib.email.ConversationAction",
          "children": [],
          "keyboardShortcuts": [],
          "delegate":          {
-            "model_": "foam.lib.email.EMailMutationAction",
+            model_: "foam.lib.email.EMailMutationAction",
             "name": "spam",
             "help": "Report an email as SPAM.",
             "isAvailable": function () { return ! this.hasLabel('SPAM'); },
@@ -222,11 +220,11 @@ CLASS({
          }
       },
       {
-         "model_": "foam.lib.email.ConversationAction",
+         model_: "foam.lib.email.ConversationAction",
          "children": [],
          "keyboardShortcuts": [],
          "delegate":          {
-            "model_": "foam.lib.email.EMailMutationAction",
+            model_: "foam.lib.email.EMailMutationAction",
             "name": "trash",
             "help": "Move an email to the trash.",
             "isAvailable": function () { return ! this.hasLabel('TRASH'); },
@@ -244,7 +242,7 @@ CLASS({
          }
       },
       {
-         "model_": "foam.lib.email.ConversationAction",
+         model_: "foam.lib.email.ConversationAction",
          "children": [],
          "keyboardShortcuts": [],
          "delegate": null
@@ -254,7 +252,7 @@ CLASS({
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "put",
          "code": function (email) {
       if ( ! this.emails ) this.emails = [];
@@ -265,7 +263,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "remove",
          "code": function (email) {
       if ( ! this.emails ) this.emails = [];
@@ -281,7 +279,7 @@ CLASS({
    ],
    "listeners": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "update",
          "code": function () {
         if ( ! this.emails || this.emails.length === 0 ) return;

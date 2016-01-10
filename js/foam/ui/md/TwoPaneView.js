@@ -23,7 +23,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'views',
       singular: 'view',
       subType: 'foam.ui.ViewChoice',
@@ -31,7 +31,7 @@ CLASS({
       postSet: function() { this.choice = this.choice; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'choice',
       preSet: function(_, c) {
         return Math.max(0, Math.min(c, this.views.length));

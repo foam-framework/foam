@@ -35,7 +35,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'clock'
     },
     {
@@ -61,7 +61,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'tableColumns',
       lazyFactory: function() { return this.Task.tableProperties; }
     },

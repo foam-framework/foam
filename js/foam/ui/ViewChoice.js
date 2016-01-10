@@ -34,7 +34,7 @@ CLASS({
       help: "View's label."
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'view',
       defaultValue: 'foam.ui.DetailView',
       help: 'View factory.'

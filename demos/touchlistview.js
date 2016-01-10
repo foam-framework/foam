@@ -3,9 +3,9 @@ CLASS({
 
   properties: [
     { name: 'id' },
-    { model_: 'StringProperty', name: 'first' },
-    { model_: 'StringProperty', name: 'last' },
-    { model_: 'StringProperty', name: 'email' },
+    { type: 'String', name: 'first' },
+    { type: 'String', name: 'last' },
+    { type: 'String', name: 'email' },
     {
       name: 'avatar',
       factory: function() {
@@ -13,7 +13,7 @@ CLASS({
         return URL.createObjectURL(blob);
       }
     },
-    { model_: 'StringProperty',
+    { type: 'String',
       name: 'color',
       factory: function() {
         var colors = 'e8ad62 9b26af 6639b6 4184f3 02a8f3 00bbd3 009587 0e9c57 9e9c57 8ac249 ccdb38 ffea3a f3b300 ff9700 ff5621 785447'.split(' ');

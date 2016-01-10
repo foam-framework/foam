@@ -26,7 +26,7 @@ CLASS({
       defaultValue: null
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showActions',
       defaultValue: false,
       preSet: function() { return false; }

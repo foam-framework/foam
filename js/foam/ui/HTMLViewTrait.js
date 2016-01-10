@@ -144,7 +144,7 @@ CLASS({
       */}
     },
    {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showActions',
       defaultValue: false,
       postSet: function(oldValue, showActions) {

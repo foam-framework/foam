@@ -69,7 +69,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'numHistoryItems',
       hidden: true,
       defaultValue: 64

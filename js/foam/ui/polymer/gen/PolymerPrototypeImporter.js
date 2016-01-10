@@ -33,7 +33,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'imported',
       defaultValue: false
     }

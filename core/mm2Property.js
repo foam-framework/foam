@@ -337,7 +337,7 @@ GLOBAL.Property = {
       */}
     },
     {
-//      model_: 'ViewFactoryProperty',
+//      type: 'ViewFactory',
       name: 'view',
       // type: 'view',
       labels: ['javascript'],
@@ -349,7 +349,7 @@ GLOBAL.Property = {
       */}
     },
     {
-//      model_: 'ViewFactoryProperty',
+//      type: 'ViewFactory',
       name: 'toPropertyE',
       labels: ['javascript'],
       defaultValue: function toPropertyE(X) {
@@ -372,7 +372,7 @@ GLOBAL.Property = {
       },
     },
     {
-//      model_: 'ViewFactoryProperty',
+//      type: 'ViewFactory',
       name: 'detailView',
       // type: 'view',
       labels: ['javascript'],
@@ -385,7 +385,7 @@ GLOBAL.Property = {
       */}
     },
     {
-//      model_: 'ViewFactoryProperty',
+//      type: 'ViewFactory',
       name: 'citationView',
       // type: 'view',
       labels: ['javascript'],
@@ -405,7 +405,7 @@ GLOBAL.Property = {
       help: 'The default view name for this property in swift.'
     },
     {
-//      model_: 'FunctionProperty',
+//      type: 'Function',
       name: 'detailViewPreRow',
       labels: ['javascript'],
       defaultValue: function() { return ""; },
@@ -416,7 +416,7 @@ GLOBAL.Property = {
       */}
     },
     {
-//      model_: 'FunctionProperty',
+//      type: 'Function',
       name: 'detailViewPostRow',
       labels: ['javascript'],
       defaultValue: function() { return ""; },

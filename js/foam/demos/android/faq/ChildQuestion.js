@@ -19,14 +19,14 @@ CLASS({
   name: 'ChildQuestion',
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'id',
     },
     {
       name: 'label',
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       name: 'question',
       subType: 'foam.demos.android.faq.Question',
       subKey: 'ID',

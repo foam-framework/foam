@@ -30,27 +30,27 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'extraClassName',
       defaultValue: 'loading'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'mode',
       defaultValue: 'read-write'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showActions',
       defaultValue: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'scroll',
       defaultValue: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'codeViewLoadState',
       defaultValue: 'unloaded',
       postSet: function(old, nu) {
@@ -59,12 +59,12 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'codeViewName',
       defaultValue: 'foam.flow.CodeView'
     },
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       name: 'actionButtonName',
       defaultValue: 'foam.ui.ActionButton'
     }

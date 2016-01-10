@@ -37,7 +37,7 @@ CLASS({
   properties: [
     'id',
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       lazyFactory: function() { return this.id.toString(); },
     },
@@ -46,15 +46,15 @@ CLASS({
       lazyFactory: function() { return [this.id]; }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'description'
     },
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       transient: true,
       name: 'model',
       help: 'The type of the content items. Should have an id property.',
@@ -70,7 +70,7 @@ CLASS({
       }
     },
     {
-      model_: 'ImportedProperty',
+      type: 'Imported',
       name: 'dao',
       hidden: true,
       transient: true,
@@ -80,7 +80,7 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       transient: true,
       name: 'contentRowView',
       help: 'The row view for the content item list.',
@@ -92,7 +92,7 @@ CLASS({
       help: 'The row element for the content item list.',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'contentDetailView',
       transient: true,
       help: 'The row view for the content item list.',

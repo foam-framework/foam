@@ -34,13 +34,13 @@ CLASS({
       getter: function() { return this.$UID__; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'globalX',
       defaultValue: 0,
       documentation: function() {/* The x position of the item, in canvas coordinates. */}
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'globalY',
       defaultValue: 0,
       documentation: function() {/* The y position of the item, in canvas coordinates. */}
@@ -51,7 +51,7 @@ CLASS({
     },
     {
       name: 'isLinkBlocking',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false,
       documentation: function() {/* If true, this item will register itself with the 
         root as a link routing blocking item. Links will attempt to avoid overlapping

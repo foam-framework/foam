@@ -74,7 +74,7 @@ CLASS({
       required: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'responseType'
     }
   ],

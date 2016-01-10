@@ -16,7 +16,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tag',
       lazyFactory: function() { return createGUID(); },
     },

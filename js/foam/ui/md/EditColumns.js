@@ -15,16 +15,16 @@ CLASS({
 
   properties: [
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       name: 'model',
       required: true,
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'properties',
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'Property',
       name: 'availableProperties',
       lazyFactory: function() {

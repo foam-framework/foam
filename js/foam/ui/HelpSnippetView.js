@@ -44,7 +44,7 @@ CLASS({
       ],
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'alpha',
       defaultValue: null,
       postSet: function(old, nu) {
@@ -53,12 +53,12 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'abeforeInit',
       defaultValue: anop,
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'aafterDestroy',
       defaultValue: anop,
     },

@@ -99,7 +99,7 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'url',
     },
     {

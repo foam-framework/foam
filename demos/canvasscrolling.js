@@ -54,12 +54,12 @@ CLASS({
       onDAOUpdate: 'onDAOUpdate'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'scrollTop',
       preSet: function(_, v) { if ( v < 0 ) return 0; return v; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'selectNumber'
     },
     {
@@ -230,7 +230,7 @@ CLASS({
 
 var dao = JSONUtil.arrayToObjArray(X, [
   {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [
 302078,
 333950,
@@ -277,7 +277,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [
 3864,
@@ -321,7 +321,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [
 30254
@@ -359,7 +359,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "published": new Date('Wed Sep 10 2014 18:07:09 GMT-0400 (EDT)'),
@@ -394,7 +394,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Sep 17 2014 17:40:23 GMT-0400 (EDT)'),
@@ -436,7 +436,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Sep 17 2014 17:43:13 GMT-0400 (EDT)'),
@@ -482,7 +482,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [
 398269
@@ -520,7 +520,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "published": new Date('Wed Sep 17 2014 17:40:43 GMT-0400 (EDT)'),
@@ -552,7 +552,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Sep 17 2014 17:44:05 GMT-0400 (EDT)'),
@@ -586,7 +586,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Thu Dec 19 2013 08:24:36 GMT-0500 (EST)'),
@@ -631,7 +631,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Tue Sep 03 2013 16:51:50 GMT-0400 (EDT)'),
@@ -716,7 +716,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [
 44414
@@ -758,7 +758,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "published": new Date('Wed Sep 22 2010 18:15:36 GMT-0400 (EDT)'),
@@ -806,7 +806,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [
 55399,
 61931
@@ -860,7 +860,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Thu Oct 07 2010 15:49:29 GMT-0400 (EDT)'),
@@ -910,7 +910,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Sep 22 2010 17:29:29 GMT-0400 (EDT)'),
@@ -958,7 +958,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Nov 25 2011 21:10:15 GMT-0500 (EST)'),
@@ -1002,7 +1002,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Thu Sep 30 2010 17:34:30 GMT-0400 (EDT)'),
@@ -1053,7 +1053,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:39 GMT-0400 (EDT)'),
@@ -1086,7 +1086,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "published": new Date('Wed Sep 22 2010 11:05:17 GMT-0400 (EDT)'),
@@ -1126,7 +1126,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:37 GMT-0400 (EDT)'),
@@ -1159,7 +1159,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Sep 24 2010 07:58:34 GMT-0400 (EDT)'),
@@ -1201,7 +1201,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Jan 26 2011 01:35:38 GMT-0500 (EST)'),
@@ -1245,7 +1245,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:13:40 GMT-0400 (EDT)'),
@@ -1286,7 +1286,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Sep 22 2010 15:39:17 GMT-0400 (EDT)'),
@@ -1334,7 +1334,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Sep 27 2010 17:47:38 GMT-0400 (EDT)'),
@@ -1379,7 +1379,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 17:35:28 GMT-0400 (EDT)'),
@@ -1425,7 +1425,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Nov 16 2011 17:25:07 GMT-0500 (EST)'),
@@ -1476,7 +1476,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Oct 18 2010 13:18:13 GMT-0400 (EDT)'),
@@ -1523,7 +1523,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Tue Sep 21 2010 18:28:09 GMT-0400 (EDT)'),
@@ -1557,7 +1557,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Oct 20 2010 12:51:49 GMT-0400 (EDT)'),
@@ -1605,7 +1605,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Thu Oct 07 2010 17:16:39 GMT-0400 (EDT)'),
@@ -1650,7 +1650,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Thu Sep 30 2010 20:35:49 GMT-0400 (EDT)'),
@@ -1692,7 +1692,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Dec 10 2010 21:33:44 GMT-0500 (EST)'),
@@ -1730,7 +1730,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Tue Sep 21 2010 10:54:41 GMT-0400 (EDT)'),
@@ -1764,7 +1764,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Dec 10 2010 21:32:44 GMT-0500 (EST)'),
@@ -1811,7 +1811,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Apr 18 2011 10:39:58 GMT-0400 (EDT)'),
@@ -1848,7 +1848,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Sep 24 2010 13:33:08 GMT-0400 (EDT)'),
@@ -1898,7 +1898,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:15 GMT-0400 (EDT)'),
@@ -1931,7 +1931,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Sep 27 2010 09:05:22 GMT-0400 (EDT)'),
@@ -1973,7 +1973,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Sep 20 2010 20:11:03 GMT-0400 (EDT)'),
@@ -2007,7 +2007,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:12 GMT-0400 (EDT)'),
@@ -2040,7 +2040,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Sun Nov 21 2010 17:30:17 GMT-0500 (EST)'),
@@ -2080,7 +2080,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Sep 20 2010 16:16:13 GMT-0400 (EDT)'),
@@ -2114,7 +2114,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "published": new Date('Mon Sep 20 2010 12:47:14 GMT-0400 (EDT)'),
@@ -2153,7 +2153,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Sep 27 2010 13:28:14 GMT-0400 (EDT)'),
@@ -2189,7 +2189,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Feb 28 2011 14:30:40 GMT-0500 (EST)'),
@@ -2239,7 +2239,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "published": new Date('Mon Sep 20 2010 06:55:25 GMT-0400 (EDT)'),
@@ -2281,7 +2281,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:10 GMT-0400 (EDT)'),
@@ -2314,7 +2314,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:09 GMT-0400 (EDT)'),
@@ -2347,7 +2347,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Oct 06 2010 20:13:25 GMT-0400 (EDT)'),
@@ -2391,7 +2391,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Sep 24 2010 14:54:10 GMT-0400 (EDT)'),
@@ -2437,7 +2437,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:07 GMT-0400 (EDT)'),
@@ -2475,7 +2475,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "published": new Date('Sun Sep 19 2010 20:05:53 GMT-0400 (EDT)'),
@@ -2511,7 +2511,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Jul 02 2014 13:53:52 GMT-0400 (EDT)'),
@@ -2550,7 +2550,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:06 GMT-0400 (EDT)'),
@@ -2583,7 +2583,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:05 GMT-0400 (EDT)'),
@@ -2616,7 +2616,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Feb 27 2013 16:36:05 GMT-0500 (EST)'),
@@ -2671,7 +2671,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:05 GMT-0400 (EDT)'),
@@ -2712,7 +2712,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Oct 01 2010 12:33:32 GMT-0400 (EDT)'),
@@ -2749,7 +2749,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Tue Sep 21 2010 17:57:15 GMT-0400 (EDT)'),
@@ -2788,7 +2788,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Tue Sep 21 2010 19:06:33 GMT-0400 (EDT)'),
@@ -2830,7 +2830,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:05 GMT-0400 (EDT)'),
@@ -2863,7 +2863,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Thu Jan 27 2011 05:21:39 GMT-0500 (EST)'),
@@ -2900,7 +2900,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Tue Oct 19 2010 15:54:25 GMT-0400 (EDT)'),
@@ -2953,7 +2953,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Nov 01 2010 14:21:06 GMT-0400 (EDT)'),
@@ -2996,7 +2996,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:02 GMT-0400 (EDT)'),
@@ -3029,7 +3029,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:01 GMT-0400 (EDT)'),
@@ -3064,7 +3064,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Thu Feb 17 2011 00:00:21 GMT-0500 (EST)'),
@@ -3113,7 +3113,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Oct 11 2010 14:47:10 GMT-0400 (EDT)'),
@@ -3158,7 +3158,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:57:00 GMT-0400 (EDT)'),
@@ -3194,7 +3194,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Oct 20 2010 23:37:02 GMT-0400 (EDT)'),
@@ -3233,7 +3233,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Sun Sep 19 2010 19:46:34 GMT-0400 (EDT)'),
@@ -3267,7 +3267,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:56:58 GMT-0400 (EDT)'),
@@ -3300,7 +3300,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Sep 20 2010 14:39:07 GMT-0400 (EDT)'),
@@ -3348,7 +3348,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Thu Feb 02 2012 14:17:04 GMT-0500 (EST)'),
@@ -3390,7 +3390,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:56:56 GMT-0400 (EDT)'),
@@ -3423,7 +3423,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:56:55 GMT-0400 (EDT)'),
@@ -3458,7 +3458,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Sat Sep 25 2010 11:15:52 GMT-0400 (EDT)'),
@@ -3509,7 +3509,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Jan 24 2011 20:37:43 GMT-0500 (EST)'),
@@ -3555,7 +3555,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Sep 24 2010 21:55:41 GMT-0400 (EDT)'),
@@ -3606,7 +3606,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:56:55 GMT-0400 (EDT)'),
@@ -3639,7 +3639,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Sat Oct 26 2013 08:50:36 GMT-0400 (EDT)'),
@@ -3684,7 +3684,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon Nov 29 2010 20:40:37 GMT-0500 (EST)'),
@@ -3725,7 +3725,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Mon May 23 2011 14:18:30 GMT-0400 (EDT)'),
@@ -3759,7 +3759,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:56:52 GMT-0400 (EDT)'),
@@ -3792,7 +3792,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Feb 27 2013 16:36:05 GMT-0500 (EST)'),
@@ -3826,7 +3826,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Thu Sep 23 2010 16:03:16 GMT-0400 (EDT)'),
@@ -3870,7 +3870,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:56:51 GMT-0400 (EDT)'),
@@ -3903,7 +3903,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [
 50
@@ -3947,7 +3947,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:56:51 GMT-0400 (EDT)'),
@@ -3985,7 +3985,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:56:50 GMT-0400 (EDT)'),
@@ -4018,7 +4018,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:56:49 GMT-0400 (EDT)'),
@@ -4051,7 +4051,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Oct 20 2010 14:42:58 GMT-0400 (EDT)'),
@@ -4085,7 +4085,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Thu Oct 07 2010 20:44:35 GMT-0400 (EDT)'),
@@ -4126,7 +4126,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Tue Feb 08 2011 08:14:35 GMT-0500 (EST)'),
@@ -4163,7 +4163,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "published": new Date('Sat Sep 18 2010 06:51:27 GMT-0400 (EDT)'),
@@ -4209,7 +4209,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Sat Sep 18 2010 06:03:39 GMT-0400 (EDT)'),
@@ -4243,7 +4243,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Sat Sep 18 2010 05:43:18 GMT-0400 (EDT)'),
@@ -4281,7 +4281,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Tue Apr 19 2011 00:51:24 GMT-0400 (EDT)'),
@@ -4324,7 +4324,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Jun 24 2011 13:10:13 GMT-0400 (EDT)'),
@@ -4357,7 +4357,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Tue Sep 21 2010 16:41:28 GMT-0400 (EDT)'),
@@ -4396,7 +4396,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "published": new Date('Fri Sep 17 2010 23:28:30 GMT-0400 (EDT)'),
@@ -4436,7 +4436,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Feb 27 2013 16:36:05 GMT-0500 (EST)'),
@@ -4469,7 +4469,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Feb 27 2013 16:36:05 GMT-0500 (EST)'),
@@ -4508,7 +4508,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Nov 16 2011 19:53:15 GMT-0500 (EST)'),
@@ -4551,7 +4551,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Tue Oct 05 2010 20:11:55 GMT-0400 (EDT)'),
@@ -4596,7 +4596,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Fri Aug 10 2012 16:56:45 GMT-0400 (EDT)'),
@@ -4629,7 +4629,7 @@ var dao = JSONUtil.arrayToObjArray(X, [
 "movedTo": []
 },
 {
-"model_": "QIssue",
+model_: "QIssue",
 "blockedOn": [],
 "blocking": [],
 "closed": new Date('Wed Sep 29 2010 05:15:12 GMT-0400 (EDT)'),

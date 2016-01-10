@@ -21,12 +21,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'x',
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'y',
       defaultValue: 0
     }

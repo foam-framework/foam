@@ -55,20 +55,20 @@ CLASS({
 
   properties: [
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       name:  'model',
       defaultValueFn: function() { return this.X.model ||
                                    ( this.data && this.data.model ); }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'className',
       lazyFactory: function() {
         return 'foamTable ' + this.model.name + 'Table';
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name:  'properties',
       postSet: function() { this.paintTable(); }
     },
@@ -120,12 +120,12 @@ CLASS({
       defaultValue: false
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'columnResizeEnabled',
       defaultValue: false
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'editColumnsEnabled',
       defaultValue: false
     },
@@ -153,27 +153,27 @@ CLASS({
       defaultValue: 0
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'selectionListeners_',
       lazyFactory: function() { return []; }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'hardSelectionListeners_',
       lazyFactory: function() { return []; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'mouseX',
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'mouseY',
       defaultValue: 0
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'mouseOverRow',
       defaultValue: false
     },

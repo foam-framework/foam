@@ -27,7 +27,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'views',
       subType: 'foam.ui.ViewChoice',
       view: 'foam.ui.ArrayView',

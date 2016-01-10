@@ -22,7 +22,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'data',
       lazyFactory: function() { return []; },
       adapt: function(old, nu) {

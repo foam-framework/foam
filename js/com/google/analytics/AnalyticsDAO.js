@@ -41,33 +41,33 @@ CLASS({
       ],
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'debug',
       defaultValue: false
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'propertyId'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'appName'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'appId'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'appVersion'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'endpoint',
       defaultValue: 'http://www.google-analytics.com/collect'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'debugEndpoint',
       defaultValue: 'https://www.google-analytics.com/debug/collect'
     },

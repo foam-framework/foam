@@ -32,7 +32,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tagName',
       defaultValueFn: function() {
         return this.inChromeApp() ? 'webview' : 'iframe';
@@ -47,7 +47,7 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'url',
       postSet: function(old, nu) {
         if ( old === nu || ( ! this.$ ) ||
@@ -56,22 +56,22 @@ CLASS({
       },
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isLoading',
       defaultValue: false,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'canGoBack',
       defaultValue: false,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'canGoForward',
       defaultValue: false,
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'Function',
       name: 'loadListeners_',
       lazyFactory: function() { return []; },

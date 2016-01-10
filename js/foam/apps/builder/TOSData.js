@@ -15,12 +15,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tos',
       label: 'Terms of Service',
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'accepted',
       label: 'I accept these Terms of Service',
     },

@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.contacts.PhoneNumber",
    "package": "foam.lib.contacts",
    "name": "PhoneNumber",
    "ids": [
@@ -25,11 +23,11 @@ CLASS({
    ],
    "properties": [
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "type"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "number"
       }
    ],

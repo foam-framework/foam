@@ -89,7 +89,7 @@ CLASS({
     },
     {
       name: 'acceptInvalid',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false,
       documentation: function() { /*
         If true, an invalid reference will just render as static text, rather than show an error.

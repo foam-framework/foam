@@ -20,7 +20,7 @@ CLASS({
   name: 'ResponsiveViewOption',
   properties: [
     { name: 'data' },
-    { model_: 'ViewFactoryProperty', name: 'controller' },
-    { model_: 'IntProperty', name: 'minWidth' }
+    { type: 'ViewFactory', name: 'controller' },
+    { type: 'Int', name: 'minWidth' }
   ]
 });

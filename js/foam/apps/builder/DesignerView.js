@@ -44,13 +44,13 @@ CLASS({
       },
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'autoUpdatePreviewHTML',
       help: 'If true, call updateHTML() on preview view on every data-related change.',
       defaultValue: true,
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'panel',
       defaultValue: {
         factory_: 'foam.apps.builder.Panel',
@@ -58,14 +58,14 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'app',
       defaultValue: 'foam.apps.builder.kiosk.KioskView',
     },
     'panelView',
     'appView',
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'hasSeenDesignerView',
       defaultValue: true,
       postSet: function(old, nu) {

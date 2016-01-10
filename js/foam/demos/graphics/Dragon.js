@@ -41,7 +41,7 @@ CLASS({
     },
     [ 'color', 'red' ],
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'r',
       label: 'Radius',
       defaultValue: 10

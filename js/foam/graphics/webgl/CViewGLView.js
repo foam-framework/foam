@@ -110,7 +110,7 @@ CLASS({
     },
     {
       name: 'painting',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false
     },
     {

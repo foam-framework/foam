@@ -15,17 +15,17 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'sid',
       help: 'The sub-stream this envelope is inside of.',
       defaultValue: '',
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'substreams',
       help: 'The sids of sub-streams owned by the content of this envelope.',
     },

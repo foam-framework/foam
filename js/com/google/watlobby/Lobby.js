@@ -41,11 +41,11 @@ CLASS({
 
   properties: [
     { name: 'timer' },
-    { name: 'speedWarp', defaultValue: 1, model_: 'FloatProperty' },
-    { name: 'showFOAMPowered', defaultValue: true, model_: 'BooleanProperty' },
-    { name: 'clientMode', defaultValue: false, model_: 'BooleanProperty' },
+    { name: 'speedWarp', defaultValue: 1, type: 'Float' },
+    { name: 'showFOAMPowered', defaultValue: true, type: 'Boolean' },
+    { name: 'clientMode', defaultValue: false, type: 'Boolean' },
     { name: 'n',          defaultValue: 25 },
-    { name: 'slideshowDelay', model_: 'IntProperty' },
+    { name: 'slideshowDelay', type: 'Int' },
     { name: 'width',      defaultValue: window.innerWidth },
     { name: 'height',     defaultValue: window.innerHeight },
     { name: 'background', defaultValue: '#ccf' },

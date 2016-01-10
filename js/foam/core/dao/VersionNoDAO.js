@@ -30,7 +30,7 @@ CLASS({
       transient: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'version',
       defaultValue: 1
     }

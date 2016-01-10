@@ -41,7 +41,7 @@ CLASS({
     },
     {
       name: 'put_',
-      model_: 'FunctionProperty',
+      type: 'Function',
       defaultValue: function(sink, obj) {
         var decoratedObj = obj.clone();
         decoratedObj.id = this.config.decorateID(obj.model_, obj.id);

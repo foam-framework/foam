@@ -15,111 +15,110 @@
  * limitations under the License.
  */
 CLASS({
-  model_: 'Model',
   package: 'foam.apps.quickbug.model.imported',
   name: 'Issue',
 
   properties:
   [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'id',
       help: 'ID of the issue, unique to this project.'
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       name: 'author',
       subType: 'IssuePerson',
       help: 'Person who originally filed this issue.',
       subType: 'IssuePerson'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'blockedOn',
       help: 'References to issues this issue is blocked on.'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'blocking',
       help: 'References to issues blocking on this issue.'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'cc',
       help: 'List of people who are CC\'ed on updates to this issue.'
     },
     {
-      model_: 'DateTimeProperty',
+      type: 'DateTime',
       name: 'closed',
       help: 'Date and time the issue was closed.'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'description',
       help: 'Description of the issue.'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'labels',
       help: 'Labels for this issue.'
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       name: 'mergedInto',
       subType: 'Issue',
       help: 'Reference to the issue this issue was merged into.',
       subType: 'Issue'
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       name: 'movedFrom',
       subType: 'Issue',
       help: 'Reference to the issue this issue was moved from.',
       subType: 'Issue'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'movedTo',
       help: 'Reference to the issue(s) this issue was moved to.'
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       name: 'owner',
       subType: 'IssuePerson',
       help: 'Person to whom this issue is currently assigned.',
     },
     {
-      model_: 'DateProperty',
+      type: 'Date',
       name: 'published',
       help: 'Date and time the issue was originally published.'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'starred',
       help: 'Whether the authenticated user has starred this issue.'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'stars',
       help: 'Number of stars this issue has.'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'state',
       help: 'State of this issue (open or closed).'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'status',
       help: 'Status of this issue.'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'summary',
       help: 'One-line summary of the issue.'
     },
     {
-      model_: 'DateProperty',
+      type: 'Date',
       name: 'updated',
       help: 'Date and time the issue was last updated.'
     }

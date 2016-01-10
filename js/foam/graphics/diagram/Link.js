@@ -55,7 +55,7 @@ CLASS({
     },
     {
       name: 'arrowLength',
-      model_: 'IntProperty',
+      type: 'Int',
       defaultValue: 20,
       documentation: function() {/* The pixel length of the arrowhead. */},
     },

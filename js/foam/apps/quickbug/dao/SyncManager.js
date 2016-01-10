@@ -46,26 +46,26 @@ CLASS({
       transient: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'itemsSynced',
       mode2: 'read-only',
       help: 'Number of items synced.'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'timesSynced',
       mode2: 'read-only',
       help: 'Number of times sync has been performed.'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'syncInterval',
       help: 'Delay after empty sync response.',
       units: 's',
       defaultValue: 60
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'delay',
       label: 'Delay',
       help:  'Delay after a non-empty sync response.',
@@ -73,73 +73,73 @@ CLASS({
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'batchSize',
       help: 'Maximum number of items per sync request; 0 for unlimited.',
       defaultValue: 0
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name:  'syncStatus',
       displayWidth: 40,
       help: 'Current status of the sync process.',
       transient: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'lastBatchSize',
       help: 'Number of item updates returned in last sync response.',
       transient: true
     },
     {
-      model_: 'DateTimeProperty',
+      type: 'DateTime',
       name:  'lastSync',
       help: 'The time of the last sync.',
       factory: function() { return new Date(); }
     },
     {
-      model_: 'DateTimeProperty',
+      type: 'DateTime',
       name:  'lastModified',
       help: 'The time of the last sync.',
       factory: function() { return new Date(); },
       transient: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'lastSyncDuration',
       help: 'Duration of last sync request.',
       units: 'ms',
       transient: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name:  'enabled',
       mode2: 'read-only',
       help: 'If the Sync Manager is currently enabled to perform periodic sync requests.',
       transient: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name:  'isSyncing',
       mode2: 'read-only',
       help: 'If the Sync Manager is currently syncing.',
       transient: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name:  'lastId',
       help: 'The id of the last item synced.',
       transient: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'query',
       displayWidth: 33,
       displayHeight: 4,
       help: 'Only sync items which match this query.'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'maxSyncAge',
       defaultValue: 6 * 24 * 60 * 60 * 1000,
       help: 'How old our database is allowed to be before we just toss it and start over.'

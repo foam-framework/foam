@@ -29,11 +29,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'drawTicks',
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'r',
       label: 'Radius',
       defaultValue: 100

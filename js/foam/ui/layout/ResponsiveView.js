@@ -25,7 +25,7 @@ CLASS({
   imports: ['window'],
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.layout.ResponsiveViewOption',
       name: 'options',
       preSet: function(_, v) {

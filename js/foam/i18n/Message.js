@@ -21,28 +21,28 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
       lazyFactory: function() {
         return this.model.name + '_Message_' + this.name;
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'description',
       required: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'meaning'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'placeholders',
       type: 'Array[foam.i18n.Placeholder]'
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'replaceValues',
       defaultValue: function(opt_selectors, opt_placeholders) {
         // TODO(markdittmer): Should we replace replaceValues() with toString()

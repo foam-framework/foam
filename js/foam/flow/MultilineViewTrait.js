@@ -15,27 +15,27 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'scroll',
       defaultValue: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minLines',
       defaultValue: 4
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'maxLines',
       defaultValue: 8
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'readOnlyMinLines',
       defaultValue: 4
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'readOnlyMaxLines',
       defaultValue: 8
     }

@@ -28,7 +28,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'feedback_',
       defaultValue: false
     },

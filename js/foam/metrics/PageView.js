@@ -20,7 +20,7 @@ CLASS({
       defaultValue: 'pageview',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'url',
       required: true,
     },

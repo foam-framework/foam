@@ -28,7 +28,7 @@ CLASS({
   imports: ["process"],
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'targets',
       adapt: function(_, a) {
         if ( ! Array.isArray(a) ) return a.split(',');
@@ -36,15 +36,15 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'xmlLogFile'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'allPassed'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraClassPaths',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },

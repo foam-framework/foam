@@ -20,7 +20,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'property',
       defaultValue: 'all',
       required: true,
