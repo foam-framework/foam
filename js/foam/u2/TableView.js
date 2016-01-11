@@ -103,7 +103,7 @@ CLASS({
       dynamicValue: [function() {
         this.data; this.sortOrder;
       }, function() {
-        return this.data.orderBy(this.sortOrder);
+        return this.data && this.data.orderBy(this.sortOrder);
       }]
     },
     {
