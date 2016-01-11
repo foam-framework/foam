@@ -304,7 +304,7 @@ CLASS({
       header.add(this.MENU_BUTTON);
       header.start('span')
           .cls(this.myCls('header-title'))
-          .add(this.title$)
+          .add(this.title)
           .end();
 
       if (this.spinner) header.add(this.spinner);
