@@ -40,7 +40,7 @@ MODEL({
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO', // TODO: This shouldn't be required
     'foam.demos.sevenguisu2.Person',
-    'foam.u2.md.TableView'
+    'foam.u2.TableView'
   ],
 
   properties: [
@@ -68,7 +68,7 @@ MODEL({
       name: 'filteredDAO',
       // TODO: replace with foam.u2.TableView when available
       toPropertyE: function(X) {
-        return X.lookup('foam.u2.md.TableView').create({
+        return X.lookup('foam.u2.TableView').create({
           title: '',
           scrollEnabed: true,
           editColumns: false
