@@ -66,7 +66,7 @@ CLASS({
           ]
         },
         {
-          model_: 'BooleanProperty',
+          type: 'Boolean',
           name: 'booleanField',
           label: 'I can be toggled on and off',
           defaultValue: false

@@ -28,7 +28,7 @@ CLASS({
   properties: [
     'data',
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'delegate',
     },
     {
@@ -36,7 +36,7 @@ CLASS({
       defaultValue: null,
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'height',
       defaultValue: 0,
       postSet: function(old, nu) {
@@ -64,7 +64,7 @@ CLASS({
       ],
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'coverPage',
       defaultValue: false,
       postSet: function(old, nu) {
@@ -85,7 +85,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'listeningForCancel_',
       defaultValue: false
     },

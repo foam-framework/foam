@@ -32,12 +32,12 @@ CLASS({
       name: 'dao'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'pos',
       help: 'Current row number.'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'total',
       help: 'Total number of rows.'
     },

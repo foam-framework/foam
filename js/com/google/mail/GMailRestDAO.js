@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "com.google.mail.GMailRestDAO",
    "package": "com.google.mail",
    "name": "GMailRestDAO",
    "extends": "foam.core.dao.RestDAO",
@@ -30,52 +28,52 @@ CLASS({
    "exports": [],
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "daoListeners_",
          "hidden": true,
          "transient": true,
          "factory": function () { return []; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "model",
          "label": "Type of data stored in this DAO."
       },
       {
-         "model_": "ArrayProperty",
+         type: 'Array',
          "name": "paramProperties",
          "help": "Properties that are handled as separate parameters rather than in the query.",
          "subType": "Property"
       },
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "batchSize",
          "defaultValue": 200
       },
       {
-         "model_": "IntProperty",
+         type: 'Int',
          "name": "skipThreshold",
          "defaultValue": 1000
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "url",
          "label": "REST API URL.",
          "defaultValue": "https://www.googleapis.com/gmail/v1/users"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "modelName",
          "defaultValueFn": function () { return this.model.plural; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "xhr",
          "transient": true,
          "factory": function () { return this.X.XHR.create({ responseType: 'json' }, this.Y); }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "ajsonp",
          "hidden": true,
          "transient": true
@@ -86,7 +84,7 @@ CLASS({
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "buildURL",
          "code": function () {
       return this.url + '/me/' + this.modelName;
@@ -94,7 +92,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "buildSelectParams",
          "code": function (sink, query) {
       var params = [];
@@ -115,7 +113,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "select",
          "code": function (sink, options) {
       sink = sink || [];
@@ -187,7 +185,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "onSelectData",
          "code": function (ret, data, sink, fc) {
       sink.put && sink.put(this.jsonToObj(data), null, fc);
@@ -196,7 +194,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "find",
          "code": function (key, sink, options) {
       options = options || {};
@@ -222,7 +220,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "buildFindURL",
          "code": function (key) {
       return this.url + '/me/' + this.modelName + '/' + key;
@@ -230,7 +228,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "buildFindParams",
          "code": function (urlParams) {
       var params = urlParams || [];

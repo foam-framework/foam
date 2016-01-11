@@ -27,7 +27,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       dynamicValue: function() {
         return [
@@ -49,15 +49,15 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'creator'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'collection'
     },
     {

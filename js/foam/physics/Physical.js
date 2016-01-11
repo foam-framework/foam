@@ -24,21 +24,21 @@ CLASS({
   },
 
   properties: [
-    { model_: 'FloatProperty', name: 'vx', defaultValue: 0 },
-    { model_: 'FloatProperty', name: 'vy', defaultValue: 0 },
+    { type: 'Float', name: 'vx', defaultValue: 0 },
+    { type: 'Float', name: 'vy', defaultValue: 0 },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'velocity',
       getter: function() { return Movement.distance(this.vx, this.vy); },
       setter: function(v) { this.setVelocityAndAngle(v, this.angleOfVelocity); }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'angleOfVelocity',
       getter: function() { return Math.atan2(this.vy, this.vx); },
       setter: function(a) { this.setVelocityAndAngle(this.velocity, a); }
     },
-    { model_: 'FloatProperty', name: 'mass', defaultValue: 1 }
+    { type: 'Float', name: 'mass', defaultValue: 1 }
   ],
 
   methods: {

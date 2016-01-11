@@ -22,7 +22,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'mergeStrategy',
       required: true
     }

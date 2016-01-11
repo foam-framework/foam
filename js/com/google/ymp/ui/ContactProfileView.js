@@ -16,6 +16,8 @@ CLASS({
 
   requires: [
     'com.google.ymp.bb.ContactProfile',
+    'com.google.ymp.ui.ContactRow',
+    'com.google.ymp.ui.ContactRowView',
   ],
   imports: [
     'contactProfileDAO',
@@ -29,28 +31,53 @@ CLASS({
       name: 'data',
       postSet: function(old,nu) {
         var self = this;
+        var pY = this.Y.sub();
         self.contactProfileDAO
           .where(EQ(self.ContactProfile.ID, nu))
           .limit(1)
           .pipe({
             put: function(profile) {
-              self.contactDetails = profile.contactDetails;
+              self.contacts = profile.contactDetails.map(function(rawContact) {
+                return self.buildContactRow(rawContact, pY);
+              });
             }
           });
       }
     },
     {
-      type: 'StringArray',
-      name: 'contactDetails',
-      //toPropertyE: 'someotherview'
+      type: 'ArrayProperty',
+      subType: 'com.google.ymp.ui.ContactRow',
+      name: 'contacts',
+      toPropertyE: function(X) {
+        return X.lookup('foam.u2.DAOListView').create({rowView: 'com.google.ymp.ui.ContactRowView'}, X);
+      },
     },
   ],
 
   templates: [
     function initE() {/*#U2
-      <div class="$">
-        <self:contactDetails />
+      <div class="^">
+        <self:contacts />
       </div>
     */},
+  ],
+
+  methods: [
+    function buildContactRow(contactString, ctx) {
+      var contactType = 'other';
+      var firstChar = contactString[0];
+      if (firstChar === '@') {
+        contactType = 'twitter';
+      } else if (firstChar === '+') {
+        contactType = 'phone';
+      } else if (contactString.indexOf('@') > 0) {
+        contactType = 'email';
+      }
+
+      return this.ContactRow.create({
+        type: contactType,
+        rawContact: contactString
+        }, ctx);
+    },
   ]
 });

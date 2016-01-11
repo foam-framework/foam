@@ -34,7 +34,6 @@ CLASS({
   properties: [
     {
       name: 'sourceView',
-      type: 'foam.graphics.CView',
       postSet: function() {
         this.$canvas = this.X.document.createElement('canvas');
         //this.X.document.body.appendChild(this.$canvas); // Debug
@@ -110,7 +109,7 @@ CLASS({
     },
     {
       name: 'painting',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false
     },
     {

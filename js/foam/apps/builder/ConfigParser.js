@@ -15,7 +15,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'functionLiteral',
       defaultValue: function() {
         throw new Error('Function object parsed from data-only JSON');

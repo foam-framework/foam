@@ -11,7 +11,7 @@ CLASS({
     { name: 'id' },
     { name: 'name' },
     { name: 'sex', defaultValue: 'M' },
-    { model_: 'IntProperty', name: 'age' }
+    { type: 'Int', name: 'age' }
   ]
 });
 

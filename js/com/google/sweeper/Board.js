@@ -51,14 +51,14 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         border: 1px solid gray;
         display: inline-block;
       }
     */},
     function initE() {/*#U2
-      <div class="$">
-        <div class="$-row" repeat="row in 0..this.height-1">
+      <div class="^">
+        <div class="^row" repeat="row in 0..this.height-1">
           (( for ( var col = 0 ; col < this.width ; col++ ) { ))
             {{this.cells[row][col]}}
           (( } ))

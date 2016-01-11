@@ -32,7 +32,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'inline',
       attribute: true,
       defaultValue: false
@@ -97,14 +97,14 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         align-items: center;
         display: flex;
         margin: 8px;
         padding: 32px 8px 8px 8px;
         position: relative;
       }
-      $-label {
+      ^label {
         color: #999;
         flex-grow: 1;
         font-size: 14px;
@@ -114,14 +114,14 @@ CLASS({
         transition: font-size 0.5s, top 0.5s;
         z-index: 0;
       }
-      $-label-offset {
+      ^label-offset {
         font-size: 85%;
         top: 8px;
       }
-      $-no-label {
+      ^no-label {
         padding-top: 8px;
       }
-      $ input {
+      ^ input {
         background: transparent;
         border-bottom: 1px solid #e0e0e0;
         border-left: none;
@@ -136,7 +136,7 @@ CLASS({
         resize: none;
         z-index: 1;
       }
-      $ input:focus {
+      ^ input:focus {
         border-bottom: 2px solid #4285f4;
         padding: 0 0 6px 0;
         outline: none;

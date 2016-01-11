@@ -22,10 +22,12 @@ CLASS({
 
   properties: [
     {
-      name: 'property'
+      name: 'property',
+      help: 'The single property to merge into the delegates objects',
     },
     {
-      name: 'joinToDAO'
+      name: 'joinToDAO',
+      help: 'The secondary DAO to merge into results from the delegate.',
     },
   ],
 
@@ -39,24 +41,24 @@ CLASS({
   */},
 
   methods: {
-    listen: function(sink, options) {
-      // TODO: For pipe(), this joinSink should coordinate with the select()'s joinSink,
-      // so that the select puts, then eof, then the listen puts come through in order.
-      // Otherwise listener puts aren't in a guaranteed order.
-      this.SUPER( this.simpleJoinSink(sink), options);
-    },
-    unlisten: function(sink) {
-      /* Stop sending updates to the given sink. */
-      var ls = this.daoListeners_;
-      for ( var i = 0; i < ls.length ; i++ ) {
-        if ( ls[i].__proto__.$UID === sink.$UID ||
-             ls[i].$UID === sink.$UID ) { // we may decorate, so check proto too
-          ls.splice(i, 1);
-          return true;
-        }
-      }
-      if ( DEBUG ) console.warn('Phantom DAO unlisten: ', this, sink);
-    },
+//     listen: function(sink, options) {
+//       // TODO: For pipe(), this joinSink should coordinate with the select()'s joinSink,
+//       // so that the select puts, then eof, then the listen puts come through in order.
+//       // Otherwise listener puts aren't in a guaranteed order.
+//       this.SUPER( this.simpleJoinSink(sink), options);
+//     },
+//     unlisten: function(sink) {
+//       /* Stop sending updates to the given sink. */
+//       var ls = this.daoListeners_;
+//       for ( var i = 0; i < ls.length ; i++ ) {
+//         if ( ls[i].__proto__.$UID === sink.$UID ||
+//              ls[i].$UID === sink.$UID ) { // we may decorate, so check proto too
+//           ls.splice(i, 1);
+//           return true;
+//         }
+//       }
+//       if ( DEBUG ) console.warn('Phantom DAO unlisten: ', this, sink);
+//     },
     put: function(obj, sink) {
       if ( obj.hasOwnProperty(this.property.name) ) {
         var join = this.model.create({ id: obj.id });
@@ -77,6 +79,7 @@ CLASS({
       return {
         __proto__: sink,
         put: function(obj) {
+console.log("Join lookup", obj.id, sink.name_);
           self.joinToDAO.find(obj.id, {
             put: function(join) {
               if ( join[self.property.name] )
@@ -123,7 +126,7 @@ CLASS({
             },
             error: function(join) {
               // fail-through
-              previousFuture.get(competePutFn);
+              previousFuture.get(completePutFn);
             }
           });
         },

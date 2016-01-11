@@ -31,12 +31,12 @@ CLASS({
     },
     'sid',
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText',
       defaultValue: 'StudyBuddy Signup Server'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'description',
       defaultValue: 'Responds to StudyBuddy signup requests.'
     },
@@ -69,7 +69,7 @@ CLASS({
           // determine the curriculum streams to add
           // Fake stream
           self.streamDAO.put(self.Envelope.create({
-            "model_": "com.google.ow.model.Envelope",
+            model_: "com.google.ow.model.Envelope",
             "owner": newUserId,
             "source": self.substreams[0]+"ServerSignup",
             "substreams": ["eduVidStream487673295"],
@@ -84,7 +84,7 @@ CLASS({
           }));
 
           self.streamDAO.put(self.Envelope.create({
-            "model_": "com.google.ow.model.Envelope",
+            model_: "com.google.ow.model.Envelope",
             "owner": newUserId,
             "source": self.substreams[0]+"ServerSignup",
             "substreams": ["eduVidStream487673295"],
@@ -107,7 +107,7 @@ CLASS({
               "id": "eduCommentsForum754788392995",
             });
           self.streamDAO.put(self.Envelope.create({
-            "model_": "com.google.ow.model.Envelope",
+            model_: "com.google.ow.model.Envelope",
             "owner": newUserId,
             "source": self.substreams[0]+"ServerSignup",
             "substreams": ["eduCommentsForum754788392995"],

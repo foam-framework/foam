@@ -1,11 +1,11 @@
-$ {
+^ {
   display: flex;
 }
 
-$-left-panel {
+^left-panel {
 }
 
-$-right-panel {
+^right-panel {
   overflow-y: scroll;
   height: 100%;
 }

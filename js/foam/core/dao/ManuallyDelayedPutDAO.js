@@ -28,7 +28,7 @@ CLASS({
       factory: function() { return []; }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'put_',
       factory: function() { return this.ProxyDAO.getFeature('put').code; }
     }

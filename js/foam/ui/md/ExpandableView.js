@@ -23,7 +23,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'delegate'
     },
     {
@@ -33,11 +33,11 @@ CLASS({
       name: 'expandableContent'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'contentClassName'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'expanded',
       defaultValue: true
     },
@@ -99,14 +99,14 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'transitionString',
       factory: function() {
         return this.transitions ? this.transitions.toString() : '';
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'transitionsEnabled',
       defaultValue: true
     }

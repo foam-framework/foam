@@ -15,7 +15,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'view'
     }
   ]

@@ -38,7 +38,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enabled',
       defaultValue: true
     },
@@ -73,21 +73,21 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'ImageProperty',
+      type: 'Image',
       name: 'image'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'roundImage'
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'background',
       defaultValue: '#FFFFFF',
       view: { factory_: 'foam.ui.md.ColorFieldView', choices: [ '#FFFFFF', '#EA4335', '#34A853', '#4285F4', '#FBBC05' ] }
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'color',
       // Convert capitalized colour names to standard Google colours
       preSet: function(_, c) { return this[c] || c; },
@@ -99,7 +99,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'timeout',
       defaultValue: 30,
       help: 'Time before automatically closing this topic, in seconds.',
@@ -120,12 +120,12 @@ CLASS({
       preSet: function(_, v) { return v.substring(v.lastIndexOf('=')+1); }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'text',
       displayHeight: 12
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'redirect',
       label: 'Redirect Topic'
     }

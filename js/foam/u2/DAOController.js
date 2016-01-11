@@ -36,7 +36,7 @@ CLASS({
   properties: [
     {
       name: 'model',
-      lazyFactory: function() {
+      defaultValueFn: function() {
         return this.data.model;
       }
     },
@@ -46,7 +46,12 @@ CLASS({
           '$$DOC{ref:".model"} is required instead.',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
+      name: 'listViewFactory',
+      defaultValue: 'foam.u2.DAOListView',
+    },
+    {
+      type: 'ViewFactory',
       name: 'listView',
       defaultValue: function(args, opt_X) {
         var args2 = {};
@@ -58,11 +63,11 @@ CLASS({
         args2.preferredWidth = args2.preferredWidth || 500;
         args2.maxWidth = args2.maxWidth || 500;
         args2.data$ = this.data$;
-        return this.DAOListView.create(args2, opt_X);
+        return this.listViewFactory(args2, opt_X);
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
     }
   ],

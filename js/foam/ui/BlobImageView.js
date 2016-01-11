@@ -31,11 +31,11 @@ CLASS({
       postSet: function() { this.onValueChange(); }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'displayWidth'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'displayHeight'
     }
   ],

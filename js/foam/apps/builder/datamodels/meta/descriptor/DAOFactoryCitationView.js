@@ -20,7 +20,7 @@ CLASS({
       defaultValue: 'md-dao-factory-citation-view',
     },
     {
-      model_: 'ImageProperty',
+      type: 'Image',
       name: 'image',
       view: {
         factory_: 'foam.ui.ImageView',

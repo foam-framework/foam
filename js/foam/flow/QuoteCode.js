@@ -10,8 +10,8 @@
  */
 
 CLASS({
-  name: 'QuoteCode',
   package: 'foam.flow',
+  name: 'QuoteCode',
   extends: 'foam.flow.Element',
 
   documentation: 'Facade for code views that quote a brief snippet.',
@@ -23,30 +23,30 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'code'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'language',
       defaultValue: 'javascript'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'mode',
       defaultValue: 'read-only'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showActions',
       defaultValue: false
     },
     {
-      type: 'foam.flow.CodeSnippet',
+      // type: 'foam.flow.CodeSnippet',
       name: 'codeSnippet',
       view: 'foam.flow.CodeSnippetView',
       lazyFactory: function() {
@@ -58,7 +58,7 @@ CLASS({
       }
     },
     {
-      type: 'foam.flow.SourceCode',
+      // type: 'foam.flow.SourceCode',
       name: 'sourceCode',
       view: {
         factory_: 'foam.flow.CodeView',

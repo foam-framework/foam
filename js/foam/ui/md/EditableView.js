@@ -30,7 +30,7 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'mode',
       defaultValue: 'read-only',
       postSet: function(old, nu) {
@@ -47,12 +47,12 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'editIconUrl',
       defaultValue: 'https://www.google.com/images/icons/material/system/1x/create_black_18dp.png',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'doneIconUrl',
       defaultValue: 'https://www.google.com/images/icons/material/system/1x/done_black_18dp.png',
     },

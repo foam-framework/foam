@@ -125,8 +125,11 @@ CLASS({
           opacity: 0,
           transition: 'opacity 300ms ease'
         });
-        this.requestAnimationFrame(function() { e.style({ opacity: 1 }); });
+        this.requestAnimationFrame(function() {
+          e.style({ opacity: 1 });
+        });
       }
+      this.publish(['stack-element-push'], e);
     },
     function elementAnimationRemove_(e) {
       if (this.transition === 'slide') {
@@ -264,13 +267,13 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         height: 100%;
         overflow-x: hidden;
         position: relative;
         width: 100%;
       }
-      $-panel {
+      ^panel {
         background-color: #fff;
         display: flex;
         flex-direction: column;
@@ -278,7 +281,7 @@ CLASS({
         overflow: hidden;
         position: absolute;
       }
-      $-edge {
+      ^edge {
         background-color: #000;
         height: 100%;
         opacity: 0.1;
@@ -289,10 +292,10 @@ CLASS({
         z-index: 100;
       }
 
-      $-hidden {
+      ^hidden {
         display: none;
       }
-      $-no-input {
+      ^no-input {
         pointer-events: none;
       }
     */},
@@ -358,7 +361,7 @@ CLASS({
           pushView: this.pushView_.bind(this, this.views_.length),
           popView: this.popView_.bind(this, this.views_.length),
           popChildViews: this.popView_.bind(this, this.views_.length+1),
-          replaceView: this.replaceView_.bind(this, this.views_.length)
+          replaceView: this.replaceView_.bind(this, this.views_.length),
         };
 
         // HACK: Replacing the values of properties on a child view is a hack

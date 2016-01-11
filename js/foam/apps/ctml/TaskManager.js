@@ -35,7 +35,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'clock'
     },
     {
@@ -50,7 +50,7 @@ CLASS({
       }
     },
     {
-      type: 'foam.apps.ctml.TaskManagerContext',
+      // type: 'foam.apps.ctml.TaskManagerContext',
       name: 'ctx',
       transient: true,
       defaultValue: null,
@@ -61,7 +61,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'tableColumns',
       lazyFactory: function() { return this.Task.tableProperties; }
     },

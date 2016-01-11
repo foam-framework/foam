@@ -29,8 +29,8 @@ CLASS({
     {
       name: 'StoreAndForwardOperation',
       properties: [
-        { model_: 'IntProperty', name: 'id' },
-        { model_: 'StringProperty', name: 'method', view: { factory_: 'foam.ui.ChoiceView', choices: ['put', 'remove'] } },
+        { type: 'Int', name: 'id' },
+        { type: 'String', name: 'method', view: { factory_: 'foam.ui.ChoiceView', choices: ['put', 'remove'] } },
         { name: 'obj' }
       ]
     }
@@ -53,8 +53,8 @@ CLASS({
         });
       }
     },
-    { model_: 'IntProperty', name: 'retryInterval', units: 'ms', defaultValue: 5000 },
-    { model_: 'BooleanProperty', name: 'syncing', defaultValue: false }
+    { type: 'Int', name: 'retryInterval', units: 'ms', defaultValue: 5000 },
+    { type: 'Boolean', name: 'syncing', defaultValue: false }
   ],
 
   methods: {

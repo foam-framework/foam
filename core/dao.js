@@ -535,22 +535,57 @@ CLASS({
       */},
     },
 
-    // Default removeAll: calls select() with the same options and
-    // calls remove() for all returned values.
-    function removeAll(sink, options) { /* Default $$DOC{ref:'.removeAll'}: calls
-            $$DOC{ref:'.select'} with the same options and calls $$DOC{ref:'.remove'}
-             for all returned values. */
-      var self = this;
-      var future = afuture();
-      this.select({
-        put: function(obj) {
-          self.remove(obj, { remove: sink && sink.remove });
+    {
+      name: 'removeAll',
+      // Default removeAll: calls select() with the same options and
+      // calls remove() for all returned values.
+      code: function(sink, options) { /* Default $$DOC{ref:'.removeAll'}: calls
+              $$DOC{ref:'.select'} with the same options and calls $$DOC{ref:'.remove'}
+               for all returned values. */
+        var self = this;
+        var future = afuture();
+        this.select({
+          put: function(obj) {
+            self.remove(obj, { remove: sink && sink.remove });
+          }
+        })(function() {
+          sink && sink.eof();
+          future.set();
+        });
+        return future.get;
+      },
+      args: [
+        {
+          name: 'sink',
+          swiftType: 'Sink = ArraySink()',
+        },
+        {
+          name: 'options',
+          swiftType: 'DAOQueryOptions = DAOQueryOptions()',
+        },
+      ],
+      swiftReturnType: 'Future',
+      swiftCode: function() {/*
+        let future = Future()
+        let removeSink = ClosureSink(args: [
+          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+            let obj = args[0] as! FObject
+            self.remove(obj, sink: ClosureSink(args: [
+              "removeFn": FoamFunction(fn: { (args) -> AnyObject? in
+                let obj = args[0] as! FObject
+                sink.remove(obj)
+                return nil
+              }),
+            ]));
+            return nil
+          }),
+        ])
+        self.select(removeSink, options: options).get { _ in
+          sink.eof()
+          future.set(sink)
         }
-      })(function() {
-        sink && sink.eof();
-        future.set();
-      });
-      return future.get;
+        return future;
+      */},
     },
 
     {

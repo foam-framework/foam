@@ -75,26 +75,26 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         align-items: center;
         display: flex;
         margin: 8px;
         padding: 8px;
       }
-      $-label {
+      ^label {
         color: #444;
         flex-grow: 1;
         margin-right: 12px;
       }
-      $-read-only {
+      ^read-only {
         opacity: 0.54;
       }
-      $-box-outer {
+      ^box-outer {
         height: 18px;
         position: relative;
         width: 18px;
       }
-      $-box {
+      ^box {
         border-radius: 2px;
         border: solid 2px #5a5a5a;
         box-sizing: border-box;
@@ -107,12 +107,12 @@ CLASS({
         transition: background-color 140ms, border-color 140ms;
         width: 18px;
       }
-      $-checked $-box {
+      ^checked ^box {
         background-color: #04a9f4;
         border-color: #04a9f4;
         fill: white;
       }
-      $-read-only$-checked $-box {
+      ^read-only^checked ^box {
         background-color: #5a5a5a;
         border-color: #5a5a5a;
       }

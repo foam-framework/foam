@@ -22,8 +22,8 @@ MODEL({
 
   // TODO: these shouldn't be required
   requires: [
-    'foam.u2.DateInput',
-    'foam.u2.Select'
+    'foam.u2.DateView',
+    'foam.u2.tag.Select'
   ],
 
   imports: [ 'dynamic' ],
@@ -35,7 +35,7 @@ MODEL({
       defaultValue: true,
       toPropertyE: function(X) {
         // TODO: Why do I need to lookup here?
-        return X.lookup('foam.u2.Select').create({
+        return X.lookup('foam.u2.tag.Select').create({
           choices: [
             [ true,  'one-way flight' ],
             [ false, 'return flight'  ]
@@ -69,16 +69,16 @@ MODEL({
                                                 
   templates: [
     function CSS() {/*
-      $ { padding: 10px; }
-      $ .error { border: 2px solid red; }
-      $-title { font-size: 18px; }
-      $-title, $ button, $ input, $ select {
+      ^ { padding: 10px; }
+      ^ .error { border: 2px solid red; }
+      ^title { font-size: 18px; }
+      ^title, ^ button, ^ input, ^ select {
         width: 160px; height: 24px; margin: 5px;
       }
     */},
     function initE() {/*#U2
-      <div class="$" x:data={{this}}>
-        <div class="$-title">Book Flight</div>
+      <div class="^" x:data={{this}}>
+        <div class="^title">Book Flight</div>
         <:oneWay/> <br>
         <:departDate/> <br>
         <:returnDate mode={{this.returnDateMode}}/> <br>

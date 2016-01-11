@@ -18,7 +18,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'id',
       defaultValue: 0,
       hidden: true

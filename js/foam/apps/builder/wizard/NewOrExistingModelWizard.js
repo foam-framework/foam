@@ -36,7 +36,7 @@ CLASS({
       }
     },
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       name: 'baseModel',
       help: 'The list is filtered to only include models that extend baseModel.',
       postSet: function() {

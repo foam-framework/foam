@@ -39,18 +39,18 @@ CLASS({
       transient: true
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'scopes',
       required: true,
       transient: true
     },
     {
-      model_: 'URLProperty',
+      type: 'URL',
       name: 'endpoint',
       defaultValue: "https://accounts.google.com/o/oauth2/"
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'refresh_',
       transient: true,
       lazyFactory: function() {

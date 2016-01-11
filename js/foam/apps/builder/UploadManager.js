@@ -48,11 +48,9 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.ImportExportFlow',
       name: 'data',
     },
     {
-      type: 'foam.apps.builder.XHRManager',
       name: 'xhrManager',
       documentation: function() {/* Construct own manager to ensure that
         contextual bindings for this upload do not leak into higher-level
@@ -62,7 +60,6 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.PackageManager',
       name: 'packageManager',
       lazyFactory: function() {
         return this.PackageManager.create({}, this.Y);

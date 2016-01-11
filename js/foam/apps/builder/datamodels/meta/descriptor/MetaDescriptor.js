@@ -20,7 +20,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'model',
       documentation: function() {/* The model id of the new item. */},
     },

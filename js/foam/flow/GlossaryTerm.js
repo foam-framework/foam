@@ -18,7 +18,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
       getter: function() {
         return this.replaceAll(this.term.toLowerCase(), ' ', '-') +
@@ -28,15 +28,15 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'term'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'sense'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'definition'
     },
     {

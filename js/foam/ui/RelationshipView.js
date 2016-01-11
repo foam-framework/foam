@@ -36,7 +36,7 @@ CLASS({
       name: 'args'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'viewModel',
       defaultValue: 'foam.ui.DAOController'
     },

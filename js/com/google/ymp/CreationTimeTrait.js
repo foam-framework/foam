@@ -17,7 +17,7 @@ CLASS({
     {
       type: 'DateTime',
       name: 'creationTime',
-      lazyFactory: function () { return new Date(); },
+      factory: function () { return new Date(); },
     },
   ],
 });

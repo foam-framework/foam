@@ -89,7 +89,7 @@ CLASS({
       lazyFactory: function() { return QueryParserFactory(this.model); }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'editableCitationViews',
       defaultValue: false,
       help: 'True if you want to allow the citation views to be editable.'
@@ -124,7 +124,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false,
       name: 'searchMode'
     },
@@ -134,7 +134,7 @@ CLASS({
       view: {factory_: 'foam.ui.TextFieldView', onKeyMode: true, placeholder: 'Search'} // TODO: change placeholder?
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'menuFactory'
     },
     {

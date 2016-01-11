@@ -16,11 +16,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'values',
       lazyFactory: function() { return {}; }
     }

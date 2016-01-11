@@ -30,7 +30,6 @@ CLASS({
     },
     {
       name: 'wizardStack',
-      type: 'ViewFactoryProperty[]',
       lazyFactory: function() { return []; },
       documentation: function() {/* If a nextViewFactory on a
         $$DOC{ref:'foam.apps.builder.wizard.WizardPage'}

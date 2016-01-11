@@ -29,14 +29,14 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'provides',
       factory: function() {
         return ['tagName', 'name', 'extends'];
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'listensTo',
       factory: function() {
         return ['source'];

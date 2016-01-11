@@ -27,7 +27,7 @@ CLASS({
   ],
 
   imports: [
-    'data'
+    'data$'
   ],
 
   properties: [

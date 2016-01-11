@@ -22,7 +22,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'zIndex',
       defaultValue: 1,
       postSet: function(old, nu) {

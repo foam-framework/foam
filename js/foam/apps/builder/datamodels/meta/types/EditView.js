@@ -42,7 +42,7 @@ CLASS({
       defaultValue: 'read-write',
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showHeader',
       defaultValue: true,
     },

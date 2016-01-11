@@ -32,7 +32,7 @@ CLASS({
       factory: function() { return []; }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'currentView',
       defaultValue: 0,
       preSet: function(_, v) { return Math.min(Math.max(v, 0), this.stack.length - 1); }
@@ -42,7 +42,7 @@ CLASS({
       defaultValue: false
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'direction',
       defaultValue: -1
     },
@@ -55,7 +55,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'sliderOpen',
       defaultValue: false
     },

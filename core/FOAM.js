@@ -154,7 +154,8 @@ var arequire = function(modelName) {
       },
       error: function() {
         var args = argsToArray(arguments);
-        console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
+        if ( modelName !== 'DocumentationProperty' )
+          console.warn.apply(console, ['Could not load model: ', modelName].concat(args));
         THIS.arequire$ModelLoadsInProgress[modelName] = false;
         future.set(undefined);
       }

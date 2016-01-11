@@ -52,7 +52,7 @@ CLASS({
     },
     {
       name: 'autoSizeLayout',
-      type: 'foam.graphics.diagram.AutoSizeDiagramRoot',
+      // type: 'foam.graphics.diagram.AutoSizeDiagramRoot',
       factory: function() {
         // Set the root to NOT paint until we have finished construct()
         return this.AutoSizeDiagramRoot.create({ suspended: true });
@@ -60,35 +60,35 @@ CLASS({
     },
     {
       name: 'outerMargin',
-      type: 'foam.graphics.diagram.Margin',
+      // type: 'foam.graphics.diagram.Margin',
       factory: function() {
         return this.Margin.create({ top: 5, left: 5, bottom: 5, right: 5 });
       }
     },
     {
       name: 'outerLayout',
-      type: 'foam.graphics.diagram.LinearLayout',
+      // type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'horizontal'});
       }
     },
     {
       name: 'extendsLayout',
-      type: 'foam.graphics.diagram.LinearLayout',
+      // type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
       }
     },
     {
       name: 'mainLayout',
-      type: 'foam.graphics.diagram.LinearLayout',
+      // type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'horizontal'});
       }
     },
     {
       name: 'extendsModelLayout',
-      type: 'foam.graphics.diagram.LinearLayout',
+      // type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
       }

@@ -24,6 +24,7 @@ CLASS({
   ],
   exports: [
     'market',
+    'data',
   ],
 
   properties: [
@@ -43,33 +44,33 @@ CLASS({
 
   templates: [
     function initE() {/*#U2
-      <div class="$">
+      <div class="^">
         (( this.Y.registerModel(this.DynamicImagePicker, 'com.google.ymp.ui.DynamicImageView'); ))
-        <div class="$-flex-col">
+        <div class="^flex-col">
           <:title />
           <:image width="100%" />
-          <div class="$-content"><:content /></div>
-          <div class="$-separator"></div>
+          <div class="^content"><:content /></div>
+          <div class="^separator"></div>
           <div><:contact /></div>
         </div>
       </div>
     */},
     function CSS() {/*
-      $-flex-col {
+      ^flex-col {
         display: flex;
         flex-direction: column;
         padding: 16px;
       }
-      $-author {
+      ^author {
         text-align: right;
         margin-bottom: 4px;
         opacity: 0.54;
       }
-      $-separator {
+      ^separator {
         border-bottom: 1px solid #e0e0e0;
         margin-bottom: 4px;
       }
-      $-content {
+      ^content {
         padding: 8px 0px;
       }
     */},

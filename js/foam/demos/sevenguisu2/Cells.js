@@ -119,7 +119,7 @@ MODEL({
   name: 'Cells',
   extends: 'foam.u2.Element',
 
-  requires: [ 'foam.u2.Input', 'foam.u2.ElementParser', 'foam.u2.PropertyView' ],
+  requires: [ 'foam.u2.tag.Input', 'foam.u2.ElementParser', 'foam.u2.PropertyView' ],
   imports:  [ 'dynamicFn' ],
   exports:  [ 'as cells' ],
 
@@ -127,7 +127,7 @@ MODEL({
     {
       name: 'Cell',
       extends: 'foam.u2.ReadWriteView',
-      requires: [ 'foam.u2.Input' ],
+      requires: [ 'foam.u2.tag.Input' ],
       imports: [ 'cells' ],
       documentation: function() {/*
         Doesn't build inner views until value is set or user clicks on view.
@@ -152,15 +152,9 @@ MODEL({
         }
       ],
       methods: [
-        function isLoaded() {
-          return this.value;
-        },
-        function listenForLoad() {
-          this.value$.addListener(this.onDataLoad);
-        },
-        function toReadE() {
-          return this.E('span').add(this.value$);
-        },
+        function isLoaded() { return this.value; },
+        function listenForLoad() { this.value$.addListener(this.onDataLoad); },
+        function toReadE() { return this.E('span').add(this.value$); },
         function toWriteE() {
           this.formula$.addListener(this.onDataLoad);
           var e = this.E('input');
@@ -171,13 +165,13 @@ MODEL({
 
       templates: [
         function CSS() {/*
-          $ > span {
+          ^ > span {
             display: block;
             height: 15px;
             padding: 2px;
             width: 100%;
           }
-          $ > input {
+          ^ > input {
             border: none;
             outline: 1px solid blue;
             outline-offset: 0;
@@ -185,7 +179,7 @@ MODEL({
             width: 100%;
           }
         */},
-        function initE(){/*#U2<span class="$"></span>*/}
+        function initE(){/*#U2<span class="^"></span>*/}
       ]
     }
   ],
@@ -227,9 +221,7 @@ this.loadCells({"A0":"<div style=\"width:200px;\"><b><u>Benchmark</u></b></div>"
       }
       return map;
     },
-    function cellName(c, r) {
-      return String.fromCharCode(65 + c) + r;
-    },
+    function cellName(c, r) { return String.fromCharCode(65 + c) + r; },
     function cell(name) {
       var self = this;
       var cell = this.cells[name];
@@ -249,38 +241,38 @@ this.loadCells({"A0":"<div style=\"width:200px;\"><b><u>Benchmark</u></b></div>"
   ],
   templates: [
     function CSS() {/*
-      $ tr, $ td, $ th, $ input {
+      ^ tr, ^ td, ^ th, ^ input {
         color: #333;
         font: 13px roboto, arial, sans-serif;
       }
-      $ tr { height: 26px; }
-      $-cell { min-width: 102px; }
-      $, $ th, $ td { border: 1px solid #ccc; }
-      $ td { height: 100%; }
-      $ th, $ td {
+      ^ tr { height: 26px; }
+      ^cell { min-width: 102px; }
+      ^, ^ th, ^ td { border: 1px solid #ccc; }
+      ^ td { height: 100%; }
+      ^ th, ^ td {
         border-right: none;
         border-bottom: none;
       }
-      $ th {
+      ^ th {
         background: #eee;
         color: #333;
         padding: 2px 18px;
       }
-      $ {
+      ^ {
         border-left: none;
         border-top: none;
-        overflow: auto; 
+        overflow: auto;
       }
     */},
     function initE() {/*#U2
-      <table class="$" cellspacing="0">
+      <table class="^" cellspacing="0">
         <tr>
           <th></th>
           <th repeat="j in 0 .. this.columns-1">{{String.fromCharCode(65 + j)}}</th>
         </tr>
         <tr repeat="i in 0 .. this.rows-1">
           <th>{{i}}</th>
-          <td class="$-cell" repeat="j in 0 .. this.columns-1">{{this.cell(this.cellName(j, i))}}</td>
+          <td class="^cell" repeat="j in 0 .. this.columns-1">{{this.cell(this.cellName(j, i))}}</td>
         </tr>
       </table>
     */}

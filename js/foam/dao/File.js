@@ -20,7 +20,7 @@ CLASS({
   name: 'File',
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'path'
     },
     {

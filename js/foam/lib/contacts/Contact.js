@@ -16,61 +16,59 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.contacts.Contact",
    "package": "foam.lib.contacts",
    "name": "Contact",
    "properties": [
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "id"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "type",
          "hidden": true,
          "defaultValue": "Contact"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "title",
          "displayWidth": 50
       },
       {
-         "model_": "DateTimeProperty",
+         type: 'DateTime',
          "name": "updated",
          "factory": function () { return new Date(); }
       },
       {
-         "model_": "BooleanProperty",
+         type: 'Boolean',
          "name": "deleted"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "etag"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "prefix"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "first"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "middle"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "last"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "suffix"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "displayName",
          "defaultValueFn": function () {
         // TODO: i18n and add middle/prefix/suffix when applicable.
@@ -84,31 +82,31 @@ CLASS({
       }
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "email",
          "label": ""
       },
       {
-         "model_": "ArrayProperty",
+         type: 'Array',
          "name": "phoneNumbers",
          "subType": "PhoneNumber"
       },
       {
-         "model_": "ArrayProperty",
+         type: 'Array',
          "name": "addresses",
          "subType": "Address"
       },
       {
-         "model_": "DateProperty",
+         type: 'Date',
          "name": "birthday"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "url",
          "displayWidth": 70
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "avatar",
          "type": "String",
          "view": "foam.ui.ImageView",
@@ -119,13 +117,13 @@ CLASS({
       }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "iconURL",
          "view": "foam.ui.ImageView",
          "defaultValue": "images/contact.png"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "note",
          "displayHeight": 10
       }
@@ -135,7 +133,7 @@ CLASS({
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "init",
          "code": function () {
       this.SUPER();
@@ -150,7 +148,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "generateAvatar",
          "code": function (letter) {
       if ( letter.length < 1 ) return '';

@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.demos',
   name: 'ClockView',
-
   extends: 'foam.graphics.Circle',
 
   traits: [ 'com.google.misc.Colors' ],
@@ -30,11 +29,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'drawTicks',
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'r',
       label: 'Radius',
       defaultValue: 100
@@ -46,21 +45,18 @@ CLASS({
     },
     {
       name: 'minuteHand',
-      type: 'Hand',
       factory: function() {
         return this.Hand.create({r:this.r-6, width:5, color: this.GREEN});
       }
     },
     {
       name: 'hourHand',
-      type: 'Hand',
       factory: function() {
         return this.Hand.create({r:this.r-15, width:7, color: this.YELLOW});
       }
     },
     {
       name: 'secondHand',
-      type: 'Hand',
       factory: function() {
         return this.Hand.create({r:this.r-6, width:3, color: this.RED});
       }
@@ -108,11 +104,11 @@ CLASS({
   },
 
   models: [
-    FOAM({
-      model_: 'Model',
+    {
       name: 'Hand',
       label: 'Clock Hand',
       extends: 'foam.graphics.CView',
+
       properties:
       [
         {
@@ -122,26 +118,20 @@ CLASS({
           defaultValue: 'blue'
         },
         {
-          model_: 'Property',
+          type: 'Int',
           name: 'width',
-          type: 'int',
-          view: 'foam.ui.IntFieldView',
           defaultValue: 5
         },
         {
-          model_: 'Property',
+          type: 'Int',
           name: 'r',
           label: 'Radius',
-          type: 'int',
-          view: 'foam.ui.IntFieldView',
           defaultValue: 100
         },
         {
-          model_: 'Property',
+          type: 'Int',
           name: 'a',
           label: 'Rotation',
-          type: 'int',
-          view: 'foam.ui.IntFieldView',
           defaultValue: 100
         }
       ],
@@ -158,6 +148,6 @@ CLASS({
           canvas.stroke();
         }
       ]
-    })
+    }
   ]
 });

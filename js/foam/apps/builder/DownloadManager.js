@@ -36,11 +36,9 @@ CLASS({
       ],
     },
     {
-      type: 'foam.apps.builder.ImportExportFlow',
       name: 'data',
     },
     {
-      type: 'foam.apps.builder.PackageManager',
       name: 'packageManager',
       lazyFactory: function() {
         return this.PackageManager.create({}, this.Y);

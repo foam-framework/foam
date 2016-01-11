@@ -36,7 +36,7 @@ CLASS({
       view: { factory_: 'foam.ui.TextFieldView', required: true }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'patternField',
       pattern: '###'
     },
@@ -45,12 +45,12 @@ CLASS({
       view: { factory_: 'foam.ui.TextFieldView', pattern: '###' }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'intStepView',
       view: { factory_: 'foam.ui.IntFieldView', step: 10 }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'floatStepView',
       view: { factory_: 'foam.ui.FloatFieldView', step: .1 }
     },
@@ -82,13 +82,13 @@ CLASS({
   name: 'ArrayDAOExample',
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'p1',
       subType: 'Bookmark'
       // No view: specified, so defaults to DAOController
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'p2',
       subType: 'Bookmark',
       view: { factory_: 'foam.ui.ArrayView', model: 'Bookmark', daoView: 'foam.ui.DAOListView' }

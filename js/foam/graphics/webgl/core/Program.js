@@ -30,14 +30,12 @@ CLASS({
   properties: [
     {
       name: 'vertexShader',
-      type: 'foam.graphics.webgl.core.Shader',
       postSet: function(old, nu) {
         this.destroy();
       }
     },
     {
       name: 'fragmentShader',
-      type: 'foam.graphics.webgl.core.Shader',
       postSet: function(old, nu) {
         this.destroy();
       }

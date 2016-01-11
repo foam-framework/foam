@@ -40,7 +40,7 @@ CLASS({
       },
     },
     {
-      type: 'foam.ui.md.OverflowActionList',
+      // type: 'foam.ui.md.OverflowActionList',
       name: 'rightActionList',
       lazyFactory: function() {
         return this.OverflowActionList.create({
@@ -49,7 +49,7 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'leftActions',
       postSet: function(old, nu) {
@@ -62,7 +62,7 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'rightActions',
     },

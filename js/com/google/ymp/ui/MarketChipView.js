@@ -40,10 +40,10 @@ CLASS({
 
   templates: [
     function initE() {/*#U2
-      <div class="$">{{ this.marketName$ }}</div>
+      <div class="^">{{ this.marketName$ }}</div>
     */},
     function CSS() {/*
-      $ {
+      ^ {
         display: inline;
       }
     */}

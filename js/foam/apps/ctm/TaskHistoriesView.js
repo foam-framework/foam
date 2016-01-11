@@ -18,12 +18,12 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.ctm.TaskController',
+      // type: 'foam.apps.ctm.TaskController',
       name: 'data',
       postSet: function(old, nu) { this.updateHTML(); }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name:  'properties'
     }
   ],

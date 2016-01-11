@@ -26,11 +26,11 @@ CLASS({
   properties: [
     {
       name: 'text',
-      model_: 'StringProperty'
+      type: 'String'
     },
     {
       name: 'url',
-      model_: 'StringProperty'
+      type: 'String'
     },
     {
       name: 'view',

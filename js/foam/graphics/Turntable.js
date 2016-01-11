@@ -23,7 +23,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'r',
       label: 'Radius',
       defaultValue: 150
@@ -45,7 +45,7 @@ CLASS({
       defaultValue: 10
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name:  'rpm',
       label: 'RPM',
       help:  'Rotations Per Minute. Standard values: 33, 45, and 78.',

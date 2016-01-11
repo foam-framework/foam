@@ -21,7 +21,7 @@ CLASS({
   extends: 'foam.u2.PropertyView',
 
   requires: [
-    'foam.u2.Select',
+    'foam.u2.tag.Select',
   ],
 
   properties: [
@@ -56,7 +56,7 @@ CLASS({
       view.fromProperty && view.fromProperty(prop);
       this.child_ = view;
 
-      this.cls('foam-u2-PropertyView')
+      this.cls('foam-u2-PropertyView-')
           .start('td').cls('foam-u2-PropertyView-label').add(prop.label).end()
           .start('td').cls('foam-u2-PropertyView-view').add(
               this.child_,

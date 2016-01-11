@@ -16,7 +16,6 @@
  */
 
 CLASS({
-  model_: "Model",
   package: "com.google.mail",
   name: "GMailMessageDAO",
   extends: "com.google.mail.GMailRestDAO",
@@ -87,19 +86,19 @@ CLASS({
       factory: function () { return this.GMailRestDAO.create({ model: this.GMailHistory }); }
     },
     {
-      model_: "IntProperty",
+      type: 'Int',
       name: "pollingPeriod",
       units: "ms",
       defaultValue: 10000
     },
     {
-      model_: "BooleanProperty",
+      type: 'Boolean',
       name: "syncing",
       transient: true,
       defaultValue: false
     },
     {
-      model_: "IntProperty",
+      type: 'Int',
       name: "lastClientVersion"
     }
   ],

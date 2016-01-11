@@ -16,8 +16,6 @@
  */
 
 CLASS({
-  "model_": "Model",
-  "id": "foam.lib.email.EMailLabelProperty",
   "package": "foam.lib.email",
   "name": "EMailLabelProperty",
   "extends": "BooleanProperty",

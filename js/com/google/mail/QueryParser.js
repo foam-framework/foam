@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "com.google.mail.QueryParser",
    "package": "com.google.mail",
    "name": "QueryParser",
    "requires": [
@@ -25,7 +23,7 @@ CLASS({
    ],
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "parser",
          "lazyFactory": function () {
         var EMail = this.EMail;

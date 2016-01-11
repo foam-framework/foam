@@ -23,7 +23,6 @@ CLASS({
   properties: [
     {
       name: 'stack',
-      type: 'Array[Matrix4]',
       help: 'The stack of matrices to multiply.',
       preSet: function(old, nu) {
         if ( old && old.length ) {

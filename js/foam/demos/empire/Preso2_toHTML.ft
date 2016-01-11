@@ -295,8 +295,8 @@ CLASS({
                    { name: 'value' },
                    ],
                    actions: [
-                   { name: 'minus', action: function() { this.value--; } },
-                   { name: 'plus',  action: function() { this.value++; } },
+                     function minus() { this.value--; },
+                     function plus() { this.value++; }
                    ]
                    });
                    var value = DataBindingDemo.create({value:5});

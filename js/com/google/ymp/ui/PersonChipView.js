@@ -41,10 +41,10 @@ CLASS({
 
   templates: [
     function initE() {/*#U2
-      <div class="$">{{ this.personName$ }}</div>
+      <div class="^">{{ this.personName$ }}</div>
     */},
     function CSS() {/*
-      $ {
+      ^ {
         display: inline;
       }
     */}

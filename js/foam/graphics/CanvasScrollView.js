@@ -27,7 +27,7 @@ CLASS({
       onDAOUpdate: 'onDAOUpdate'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'scrollTop',
       preSet: function(_, v) { if ( v < 0 ) return 0; return v; }
     },
@@ -35,7 +35,7 @@ CLASS({
       name: 'renderer'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'selectNumber'
     },
     {

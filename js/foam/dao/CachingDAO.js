@@ -37,6 +37,12 @@ CLASS({
       setter: function(dao) { this.delegate = dao; },
     },
     {
+      name: 'initWithFutureDao',
+      type: 'Boolean',
+      swiftDefaultValue: 'true',
+      defaultValue: true,
+    },
+    {
       name: 'model',
       defaultValueFn: function() { return this.src.model || this.cache.model; }
     }
@@ -52,7 +58,9 @@ CLASS({
         var cache = this.cache;
 
         var futureDelegate = afuture();
-        this.cache = this.FutureDAO.create({future: futureDelegate.get});
+        if ( this.initWithFutureDao ) {
+          this.cache = this.FutureDAO.create({future: futureDelegate.get});
+        }
 
         src.select(cache)(function() {
           // Actually means that cache listens to changes in the src.
@@ -67,7 +75,9 @@ CLASS({
         let cache = self.delegate
 
         let futureDao = FutureDAO()
-        self.delegate = futureDao
+        if initWithFutureDao {
+          self.delegate = futureDao
+        }
 
         let sink = DAOSink(args: ["delegate": cache])
         src.select(sink).get { _ in
@@ -88,6 +98,10 @@ CLASS({
       code: function(query, sink) { this.src.remove(query, sink); },
       swiftCode: 'src.remove(obj, sink: sink)',
     },
-    function removeAll(sink, options) { return this.src.removeAll(sink, options); }
+    {
+      name: 'removeAll',
+      code: function(sink, options) { return this.src.removeAll(sink, options); },
+      swiftCode: 'return src.removeAll(sink, options: options)',
+    },
   ]
 });

@@ -21,15 +21,63 @@ CLASS({
   extends: 'foam.u2.DAOController',
 
   requires: [
-    'foam.u2.DAOUpdateController',
+    'com.google.ymp.controllers.DAOUpdateController',
+    'foam.u2.ScrollView',
     'foam.u2.md.Toolbar',
     'foam.u2.md.ToolbarAction',
+  ],
+  imports: [
+    'document',
+    'postDAO',
+    'postId$',
+  ],
+
+  properties: [
+    {
+      type: 'ViewFactory',
+      name: 'rowView',
+      defaultValue: function(args, X) { return args.data.toRowE(X); },
+    },
+    {
+      type: 'ViewFactory',
+      name: 'listViewFactory',
+      defaultValue: 'foam.u2.ScrollView',
+    },
+    {
+      type: 'String',
+      name: 'postId',
+    },
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      this.postId$.addListener(this.onSetPost);
+      if ( this.postId )
+        this.onSetPost(this, ['property', 'postId'], '', this.postId);
+    },
   ],
 
   listeners: [
     {
       name: 'rowClick',
+      documentation: 'Arguments: receiver, topic, value',
       code: function(_, __, obj) {
+        this.postId = obj.id;
+      },
+    },
+    {
+      name: 'onSetPost',
+      documentation: 'Arguments: receiver, topic, oldValue, newValue',
+      code: function(_, __, ___, objId) {
+        if ( ! objId ) return;
+        this.postDAO.find(objId, { put: this.onGetPost });
+      },
+    },
+    {
+      name: 'onGetPost',
+      documentation: 'Arguments: obj (from put)',
+      code: function(obj) {
         var Y = this.Y.sub({ data: obj });
         var title = obj.title || obj.name;
         var daoUpdateController = this.DAOUpdateController.create({
@@ -46,8 +94,19 @@ CLASS({
           }),
         ]);
         daoUpdateController.toolbar_ = toolbar;
-        this.stack.pushView(daoUpdateController);
+        this.X.stack.pushView(daoUpdateController);
       },
     },
+  ],
+
+  templates: [
+    function CSS() {/*
+      ^ {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+    */},
   ],
 });

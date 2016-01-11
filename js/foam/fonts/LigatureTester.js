@@ -31,19 +31,19 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'expectedWidth',
       defaultValue: 24,
       required: true,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'expectedHeight',
       defaultValue: 24,
       required: true,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'timeout',
       units: 'ms',
       defaultValue: 1000,
@@ -86,7 +86,7 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'ligatureViewFactory',
       defaultValue: 'foam.ui.LigatureView',
     },
@@ -120,7 +120,7 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'timeoutID',
     },
   ],

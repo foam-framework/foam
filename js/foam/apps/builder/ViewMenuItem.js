@@ -15,15 +15,15 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'iconUrl',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'label',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'viewFactory',
     },
   ],

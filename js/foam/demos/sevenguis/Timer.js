@@ -33,7 +33,7 @@ MODEL({
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'duration',
       units: 'ms',
       view: { factory_: 'foam.ui.RangeView', maxValue: 10000 },

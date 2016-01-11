@@ -21,7 +21,6 @@ CLASS({
     'dao',
     'toolbar',
     {
-      type: 'foam.apps.builder.AppConfig',
       name: 'config',
       defaultValue: null,
       postSet: function(old, nu) {
@@ -32,12 +31,12 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title',
       defaultValue: 'Exporting App',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'actionName',
       defaultValue: 'exportApp',
     },
@@ -56,11 +55,11 @@ CLASS({
       ],
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'message',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'details',
       defaultValue: 'Still working...',
     },

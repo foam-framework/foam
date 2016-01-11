@@ -33,7 +33,9 @@ CLASS({
     },
     {
       name: 'value',
-      postSet: function(_, value) { this.element.setAttribute(this.property, value); }
+      postSet: function(_, value) {
+        this.element.setAttribute(this.property, value);
+      }
     }
   ],
 

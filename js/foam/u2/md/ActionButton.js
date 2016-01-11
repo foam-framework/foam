@@ -24,12 +24,17 @@ CLASS({
     'window'
   ],
 
+  constants: {
+    TYPE_CLASSES: {
+      label: 'label-only',
+      icon: 'icon-only',
+      floating: 'floating-action-button'
+    }
+  },
+
   properties: [
     [ 'nodeName', 'ACTION-BUTTON' ],
-    {
-      type: 'Action',
-      name: 'action',
-    },
+    'action',
     {
       name: 'type',
       choices: ['label', 'icon', 'floating'],
@@ -48,7 +53,7 @@ CLASS({
           startAlpha: 0.2,
           finishAlpha: 0
         }, this.Y);
-      },
+      }
     },
     {
       name: 'icon',
@@ -68,9 +73,9 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'alpha',
-      defaultValue: 1,
+      defaultValue: 1
     },
     {
       model_: 'foam.ui.ColorProperty',
@@ -81,17 +86,9 @@ CLASS({
           return this.setColor('rgba(0,0,0,0.65)');
         else
           return this.setColor(this.color);
-      },
+      }
     },
   ],
-
-  constants: {
-    TYPE_CLASSES: {
-      label: 'label-only',
-      icon: 'icon-only',
-      floating: 'floating-action-button'
-    }
-  },
 
   methods: [
     function initE() {
@@ -148,7 +145,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         align-items: baseline;
         border-radius: 2px;
         color: #02A8F3;
@@ -161,11 +158,11 @@ CLASS({
         position: relative;
       }
 
-      $-available {
+      ^available {
         display: inline-flex;
       }
 
-      $-icon-only {
+      ^icon-only {
         border-radius: 50%;
         flex-shrink: 0;
         transform: unset;
@@ -174,7 +171,7 @@ CLASS({
         width: 40px;
       }
 
-      $ .halo {
+      ^ .halo {
         border-radius: inherit;
         left: 0;
         position: absolute;
@@ -182,22 +179,22 @@ CLASS({
         z-index: 2;
       }
 
-      $-label-only $-label {
+      ^label-only ^label {
         color: inherit;
         text-transform: uppercase;
       }
 
-      $-icon-container {
+      ^icon-container {
         height: 24px;
         position: relative;
         width: 24px;
       }
-      $-icon {
+      ^icon {
         position: absolute;
         left: 0px;
       }
 
-      $-floating-action-button {
+      ^floating-action-button {
         background-color: #e51c23;
         border-radius: 50%;
         bottom: 10px;

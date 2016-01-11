@@ -164,7 +164,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showYears_',
       defaultValue: false
     },

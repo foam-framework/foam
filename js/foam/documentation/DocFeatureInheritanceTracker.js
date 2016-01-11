@@ -87,7 +87,7 @@ CLASS({
     {
       name: 'fromTrait',
       documentation: 'Indicates if the feature was inherited from a trait.',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false
     }
   ],

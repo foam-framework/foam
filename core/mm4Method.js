@@ -84,7 +84,7 @@ CLASS({
         */}
     },
     {
-      model_: 'DocumentationProperty',
+      type: 'Documentation',
       name: 'documentation',
       documentation: 'The developer documentation.',
       labels: ['documentation']
@@ -100,7 +100,7 @@ CLASS({
         */}
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'isAvailable',
       label: 'Available',
       displayWidth: 70,
@@ -112,7 +112,7 @@ CLASS({
         */}
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'isEnabled',
       label: 'Enabled',
       displayWidth: 70,
@@ -124,7 +124,7 @@ CLASS({
         */}
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'labelFn',
       label: 'Label Function',
       defaultValue: function(action) { return action.label; },
@@ -168,7 +168,6 @@ CLASS({
       subType: 'Action',
       view: 'foam.ui.ArrayView',
       help: 'Child actions of this action.',
-      persistent: false,
       documentation: function() { /*
             Child $$DOC{ref:'Action',usePlural:true} of this instance.
         */}
@@ -182,7 +181,7 @@ CLASS({
         */}
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'code',
       displayWidth: 80,
       displayHeight: 20,
@@ -193,7 +192,7 @@ CLASS({
         */}
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'action',
       displayWidth: 80,
       displayHeight: 20,
@@ -208,7 +207,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'keyboardShortcuts',
       documentation: function() { /*
             Keyboard shortcuts for the $$DOC{ref:'Action'}.
@@ -250,6 +249,7 @@ CLASS({
   ],
   methods: [
     function toE(X) {
+      console.assert(X, 'X required for Action.toE().');
       return X.lookup('foam.u2.ActionButton').create({data: X.data, action: this}, X);
     },
     function maybeCall(X, that) { /* Executes this action if $$DOC{ref:'.isEnabled'} is allows it. */
@@ -371,7 +371,7 @@ CLASS({
          */}
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'required',
       defaultValue: true,
       labels: ['debug'],
@@ -414,7 +414,7 @@ CLASS({
         */}
     },
     {
-      model_: 'DocumentationProperty',
+      type: 'Documentation',
       name: 'documentation',
       documentation: 'The developer documentation.',
       labels: ['debug']
@@ -527,7 +527,7 @@ CLASS({
       documentation: "A human readable description of the $$DOC{ref:'.'}."
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'args',
       type: 'Array[Arg]',
       subType: 'Arg',
@@ -543,7 +543,6 @@ CLASS({
       type: 'String',
       displayWidth: 180,
       displayHeight: 30,
-      rows: 30, cols: 80,
       defaultValue: '',
       view: 'foam.ui.TextAreaView',
       // Doesn't work because of bootstrapping issues.
@@ -572,7 +571,7 @@ CLASS({
        help: 'Sub-templates of this template.'
        },*/
     {
-      model_: 'DocumentationProperty',
+      type: 'Documentation',
       name: 'documentation',
       labels: ['debug'],
     },
@@ -621,11 +620,11 @@ CLASS({
          */}
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'swiftType',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'swiftValue',
     },
     {
@@ -639,7 +638,7 @@ CLASS({
          */}
     },
     {
-      model_: 'DocumentationProperty',
+      type: 'Documentation',
       name: 'documentation',
       documentation: 'The developer documentation.',
       labels: ['debug']
@@ -746,7 +745,7 @@ CLASS({
         */}
     },
     {
-      model_: 'DocumentationProperty',
+      type: 'Documentation',
       name: 'documentation',
       documentation: 'The developer documentation.',
       labels: ['debug']
@@ -795,7 +794,7 @@ CLASS({
       defaultValue: 'Void',
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'returnTypeRequired',
       defaultValue: true,
       documentation: function() { /*
@@ -804,7 +803,7 @@ CLASS({
       labels: ['debug']
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'args',
       type: 'Array[Arg]',
       subType: 'Arg',
@@ -832,7 +831,7 @@ CLASS({
         */}
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isFramed',
       help: 'As a listener, should this be animated?',
       defaultValue: false,
@@ -845,7 +844,7 @@ CLASS({
       name: 'labels'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'swiftCode',
       labels: ['swift'],
     },
@@ -1045,7 +1044,7 @@ CLASS({
       }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'chapters',
       type: 'Array[Document]',
       subtype: 'Documentation',
@@ -1082,4 +1081,3 @@ CLASS({
     }
   ]
 });
-

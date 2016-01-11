@@ -25,7 +25,7 @@ CLASS({
   properties: [
     {
       name: 'inlineStyle',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false,
       documentation: function() {/* When true, tightens margins and padding
         to their minimums to allow easy baseline alignment of MD views and

@@ -54,7 +54,7 @@ CLASS({
       }
     },
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       name: 'model',
       required: true,
       factory: function() { return this.instance_.dao && this.dao.model; }
@@ -131,7 +131,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'search',
       view: {
         factory_: 'foam.ui.md.TextFieldView',
@@ -142,7 +142,7 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'listView',
       defaultValue: {
         factory_: 'foam.ui.DAOListView',
@@ -153,7 +153,7 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'detailView',
       documentation: 'A ViewFactory for the main detail view. You usually ' +
           'will want to override $$DOC{ref:".innerDetailView"} rather than ' +
@@ -161,12 +161,12 @@ CLASS({
       defaultValue: { factory_: 'foam.ui.md.UpdateDetailView', perferredWidth: 1000 },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'innerDetailView',
       defaultValue: 'foam.ui.md.DetailView'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'createView',
       documentation: 'The view for creating a new item. Defaults to creating ' +
           'a new empty instance of $$DOC{ref:".model"} and passing it to ' +
@@ -180,7 +180,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'createFunction',
       documentation: 'Runs createView and adds the new view. "this" is the BrowserView, "this.data" is the BrowserConfig.',
       defaultValue: function() {
@@ -189,12 +189,12 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'menuRowView',
       defaultValue: 'foam.ui.md.CannedQueryCitationView'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'menuHeaderView',
       documentation: 'Rendered at the top of the menu. Empty by default.',
     },
@@ -248,14 +248,14 @@ CLASS({
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showAdd',
       documentation: 'An action to create a new value in $$DOC{ref:".dao"} ' +
           'will be rendered when this is set to true (the default).',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'searchWithinCannedQuery',
       documentation: 'By default, searches are against all of the DAO. To ' +
           'restrict searches to the currently selected canned query, set ' +

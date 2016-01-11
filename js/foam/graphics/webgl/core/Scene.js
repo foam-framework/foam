@@ -71,7 +71,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'fps',
       postSet: function(old,nu) {
         this.performance = (nu / this.targetFps) * 100;
@@ -83,7 +83,7 @@ CLASS({
       defaultValue: 50
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'performance',
       help: 'Performance indicator as a percentage, based on targetFps. Updated once per second.',
     },

@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.email.Attachment",
    "package": "foam.lib.email",
    "name": "Attachment",
    "plural": "Attachments",
@@ -32,7 +30,7 @@ CLASS({
    ],
    "properties": [
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "id",
          "label": "Identifier",
          "displayWidth": 50,
@@ -41,7 +39,7 @@ CLASS({
          }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "filename",
          "label": "File Name",
          "type": "String",
@@ -49,41 +47,41 @@ CLASS({
          "view": "foam.ui.TextFieldView"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "type",
          "type": "String",
          "displayWidth": 30,
          "view": "foam.ui.TextFieldView"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "size",
          "type": "int",
          "displayWidth": 10,
          "view": "foam.ui.TextFieldView"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "position",
          "type": "int",
          "displayWidth": 10,
          "view": "foam.ui.TextFieldView"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "file",
          "type": "File",
          "hidden": true
       },
       {
-         "model_": "BooleanProperty",
+         type: 'Boolean',
          "name": "inline",
          "defaultValue": false
       }
    ],
    "actions": [
       {
-         "model_": "Action",
+         model_: "Action",
          "name": "view",
          "help": "View an attachment.",
          "children": [],
@@ -96,7 +94,7 @@ CLASS({
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "atoMime",
          "code": function (ret) {
        if ( !this.file ) {

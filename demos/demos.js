@@ -23,7 +23,7 @@ CLASS({
   properties: [
     {
       name:  'parent',
-      type:  'CView',
+      // type:  'CView',
       hidden: true
     },
     {
@@ -47,9 +47,9 @@ CLASS({
       defaultValue: 'red'
     },
     {
+      type:  'Int',
       name:  'numDev',
       label: 'Number of Developers',
-      type:  'int',
       postSet: function(_, devs) {
         if ( ! this.cIndex ) this.cIndex = 1;
         var colours = ['#33f','#f00','#fc0','#33f','#3c0'];
@@ -66,36 +66,36 @@ CLASS({
     {
       name:  'totalCode',
       label: 'Code',
-      type:  'int',
+      type:  'Int',
       defaultValue: 0
     },
     {
       name: 'features',
-      type: 'Array[String]',
+      // type: 'Array[String]',
       view: 'foam.ui.StringArrayView',
       factory: function() { return []; },
       help: 'Features to be implemented be Entity.'
     },
     {
       name: 'entities',
-      type: 'Array[String]',
+      // type: 'Array[String]',
       view: 'foam.ui.StringArrayView',
       factory: function() { return []; },
       help: 'Data entities to be supported.'
     },
     {
       name:  'x',
-      type:  'int',
+      type:  'Int',
       defaultValue: 0
     },
     {
       name:  'y',
-      type:  'int',
+      type:  'Int',
       defaultValue: 0
     },
     {
       name:  'selectedX',
-      type:  'int',
+      type:  'Int',
       preSet: function(oldX, x) {
         return ( x < 0 || x > this.features.length ) ? oldX : x;
       },
@@ -103,7 +103,7 @@ CLASS({
     },
     {
       name:  'selectedY',
-      type:  'int',
+      type:  'Int',
       preSet: function(oldY, y) {
         return ( y < 0 || y > this.entities.length ) ? oldY : y;
       },
@@ -111,17 +111,16 @@ CLASS({
     },
     {
       name:  'width',
-      type:  'int',
+      type:  'Int',
       defaultValue: 0
     },
     {
       name:  'height',
-      type:  'int',
+      type:  'Int',
       defaultValue: 0
     },
     {
       name:  'mouse',
-      type:  'foam.input.Mouse',
       view: { factory_: 'foam.ui.DetailView', model: this.Mouse },
       factory: function() {
         return this.Mouse.create();
@@ -130,7 +129,7 @@ CLASS({
     {
       model_: 'Property',
       name: 'alpha',
-      type: 'int',
+      type: 'Int',
       view: 'foam.ui.IntFieldView',
       defaultValue: 1
     }
@@ -394,7 +393,7 @@ CLASS({
   properties: [
     {
       name:  'parent',
-      type:  'CView',
+      // type:  'CView',
       hidden: true
     },
     {
@@ -404,12 +403,12 @@ CLASS({
     },
     {
       name:  'x',
-      type:  'int',
+      type:  'Int',
       defaultValue: 100
     },
     {
       name:  'y',
-      type:  'int',
+      type:  'Int',
       defaultValue: 100
     }
   ],

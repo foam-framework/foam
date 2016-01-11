@@ -88,11 +88,11 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'lScore'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'rScore'
     },
     {

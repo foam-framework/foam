@@ -21,15 +21,15 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'heading'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'content'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'expanded',
       defaultValue: false
     },

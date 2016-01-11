@@ -16,7 +16,6 @@
  */
 
 CLASS({
-  "model_": "Model",
   "name": "IssueCommentUpdate",
   "package": "foam.apps.quickbug.model.imported",
   "tableProperties": [
@@ -32,47 +31,47 @@ CLASS({
   ],
   "properties": [
     {
-      "model_": "StringArrayProperty",
+      type: 'StringArray',
       "name": "blockedOn",
       "help": "Changes made to the list of issues blocked on this issue."
     },
     {
-      "model_": "StringArrayProperty",
+      type: 'StringArray',
       "name": "blocking",
       "help": "Changes made to the list of issues blocking this issue."
     },
     {
-      "model_": "StringArrayProperty",
+      type: 'StringArray',
       "name": "cc",
       "help": "Changes made to the issue's cc list."
     },
     {
-      "model_": "StringProperty",
+      type: 'String',
       "name": "kind",
       "help": "Metadata updates made as part of a comment."
     },
     {
-      "model_": "StringArrayProperty",
+      type: 'StringArray',
       "name": "labels",
       "help": "Changes made to the issue's labels."
     },
     {
-      "model_": "StringProperty",
+      type: 'String',
       "name": "mergedInto",
       "help": "ID of the issue this issue has been merged into."
     },
     {
-      "model_": "StringProperty",
+      type: 'String',
       "name": "owner",
       "help": "Updated owner of the issue."
     },
     {
-      "model_": "StringProperty",
+      type: 'String',
       "name": "status",
       "help": "Updated status of the issue."
     },
     {
-      "model_": "StringProperty",
+      type: 'String',
       "name": "summary",
       "help": "Updated summary of the issue."
     }

@@ -113,48 +113,42 @@ MODEL({
     }
   ],
   listeners: [
-    {
-      name: 'onClick',
-      code: function(evt) {
-        var x = evt.offsetX, y = evt.offsetY, c = this.canvas.findChildAt(x, y);
-        if ( c ) {
-          this.selected = c;
-        } else {
-          this.selected = this.addCircle(x, y);
-          this.updateMemento();
-        }
+    function onClick(evt) {
+      var x = evt.offsetX, y = evt.offsetY, c = this.canvas.findChildAt(x, y);
+      if ( c ) {
+        this.selected = c;
+      } else {
+        this.selected = this.addCircle(x, y);
+        this.updateMemento();
       }
     },
-    {
-      name: 'onRightClick',
-      code: function(evt) {
-        evt.preventDefault();
-        if ( ! this.selected ) return;
+    function onRightClick(evt) {
+      evt.preventDefault();
+      if ( ! this.selected ) return;
 
-        var p = this.PopupView.create({view: this.DiameterDialog.create({data: this.selected}), width: 450, height: 110});
-        p.openOn(this.$);
+      var p = this.PopupView.create({view: this.DiameterDialog.create({data: this.selected}), width: 450, height: 110});
+      p.openOn(this.$);
 
-        // If the size is changed with the dialog, then create an updated memento
-        var oldR = this.selected.r;
-        p.subscribe(p.CLOSED_TOPIC, function() {
-          if ( this.selected.r !== oldR )
-            this.updateMemento();
-          p = null;
-        }.bind(this));
-      }
+      // If the size is changed with the dialog, then create an updated memento
+      var oldR = this.selected.r;
+      p.subscribe(p.CLOSED_TOPIC, function() {
+        if ( this.selected.r !== oldR )
+          this.updateMemento();
+        p = null;
+      }.bind(this));
     }
   ],
   templates: [
     function CSS() {/*
-      $ { width:600px; margin: 20px; }
-      $ canvas { border: 1px solid black; }
-      $ .md-card { font-size: 20px; }
-      $ .actionButton { margin: 10px; }
-      $ input[type='range'] { width: 400px; }
+      ^ { width:600px; margin: 20px; }
+      ^ canvas { border: 1px solid black; }
+      ^ .md-card { font-size: 20px; }
+      ^ .actionButton { margin: 10px; }
+      ^ input[type='range'] { width: 400px; }
     */},
     function initE() {/*#U2
-      <div class="$" x:data={{this}}>
-        <center class="$-buttonRow"><:back label="Undo"}/> <:forth label="Redo"}/></center>
+      <div class="^" x:data={{this}}>
+        <center class="^buttonRow"><:back label="Undo"}/> <:forth label="Redo"}/></center>
         {{this.canvas}}
       </div>
     */}

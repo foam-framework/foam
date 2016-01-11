@@ -108,7 +108,6 @@ GLOBAL.Property = {
       name: 'type',
       type: 'String',
       required: true,
-      // todo: curry arguments
       view: {
         factory_: 'foam.ui.ChoiceView',
         choices: [
@@ -210,7 +209,7 @@ GLOBAL.Property = {
     },
     {
       name: 'aliases',
-      type: 'Array[String]',
+      // type: 'Array[String]',
       labels: ['javascript'],
       view: 'foam.ui.StringArrayView',
       factory: function() { return []; },
@@ -243,7 +242,7 @@ GLOBAL.Property = {
     },
     {
       name: 'subKey',
-      type: 'EXPR',
+      // type: 'EXPR',
       labels: ['javascript'],
       displayWidth: 20,
       defaultValue: 'ID',
@@ -317,7 +316,7 @@ GLOBAL.Property = {
     },
     {
       name: 'displayWidth',
-      type: 'int',
+      type: 'Int',
       displayWidth: 8,
       displayHeight: 1,
       defaultValue: 30,
@@ -328,7 +327,7 @@ GLOBAL.Property = {
     },
     {
       name: 'displayHeight',
-      type: 'int',
+      type: 'Int',
       displayWidth: 8,
       displayHeight: 1,
       defaultValue: 1,
@@ -338,9 +337,9 @@ GLOBAL.Property = {
       */}
     },
     {
-//      model_: 'ViewFactoryProperty',
+//      type: 'ViewFactory',
       name: 'view',
-      type: 'view',
+      // type: 'view',
       labels: ['javascript'],
       defaultValue: 'foam.ui.TextFieldView',
       help: 'View component for the property.',
@@ -350,7 +349,7 @@ GLOBAL.Property = {
       */}
     },
     {
-//      model_: 'ViewFactoryProperty',
+//      type: 'ViewFactory',
       name: 'toPropertyE',
       labels: ['javascript'],
       defaultValue: function toPropertyE(X) {
@@ -373,9 +372,9 @@ GLOBAL.Property = {
       },
     },
     {
-//      model_: 'ViewFactoryProperty',
+//      type: 'ViewFactory',
       name: 'detailView',
-      type: 'view',
+      // type: 'view',
       labels: ['javascript'],
       defaultValueFn: function() { return this.view; },
       help: 'View component for the property when rendering within a DetailView.',
@@ -386,9 +385,9 @@ GLOBAL.Property = {
       */}
     },
     {
-//      model_: 'ViewFactoryProperty',
+//      type: 'ViewFactory',
       name: 'citationView',
-      type: 'view',
+      // type: 'view',
       labels: ['javascript'],
       defaultValueFn: function() { return this.view; },
       help: 'View component for the property when rendering within a CitationView.',
@@ -406,7 +405,7 @@ GLOBAL.Property = {
       help: 'The default view name for this property in swift.'
     },
     {
-//      model_: 'FunctionProperty',
+//      type: 'Function',
       name: 'detailViewPreRow',
       labels: ['javascript'],
       defaultValue: function() { return ""; },
@@ -417,7 +416,7 @@ GLOBAL.Property = {
       */}
     },
     {
-//      model_: 'FunctionProperty',
+//      type: 'Function',
       name: 'detailViewPostRow',
       labels: ['javascript'],
       defaultValue: function() { return ""; },

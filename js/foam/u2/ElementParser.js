@@ -51,12 +51,11 @@ CLASS({
 
       START: sym('html'),
 
-      html: repeat0(sym('htmlPart')),
+      html: seq1(1, sym('whitespace'), repeat0(sym('htmlPart'), sym('whitespace'))),
 
       // Use simpleAlt() because endTag() doesn't always look ahead and will
       // break the regular alt().
       htmlPart: simpleAlt(
-        plus(alt(' ', '\t', '\r', '\n')),
         sym('code'),
         sym('child'),
         sym('comment'),
@@ -160,8 +159,8 @@ CLASS({
         classList: seq1(1, '"', repeat(sym('className'), ' '), '"'),
 
           className: str(seq(
-            alt('$', range('a','z'), range('A','Z')),
-            str(repeat(alt(range('a','z'), range('A', 'Z'), '$', '-', range('0', '9')))))),
+            alt('^', range('a','z'), range('A','Z')),
+            str(repeat(alt(range('a','z'), range('A', 'Z'), '^', '-', range('0', '9')))))),
 
         classValue: sym('braces'),
 
@@ -215,7 +214,7 @@ CLASS({
       as: function(as) { this.peek().as = as; },
       classList: function(cs) {
         for ( var i = 0 ; i < cs.length ; i++ ) {
-          if (cs[i].indexOf('$') >= 0) cs[i] = cs[i].replace(/\$/g, this.modelName_);
+          if (cs[i].indexOf('^') >= 0) cs[i] = cs[i].replace(/\^/g, this.modelName_ + '-');
           this.peek().classes.push('"' + cs[i] + '"');
         }
       },
@@ -246,7 +245,14 @@ CLASS({
       xattribute: function(xs) { this.peek().xattributes[xs[1]] = xs[2]; },
       text: function(t) {
         if ( ! this.peek() ) return; // TODO: Or add an implicit Element
-        this.peek().children.push('"' + t.trim() + '"');
+        // trim leading and trailing whitespace and replace with a single space
+        var trimed = t.trim();
+        if ( trimed.length ) this.peek().children.push(
+          '"' +
+          (t.charAt(0) === trimed.charAt(0) ? '' : ' ') +
+          trimed +
+          (t.charAt(t.length-1) === trimed.charAt(trimed.length-1) ? '' : ' ') +
+          '"');
       },
       code: function (c) { this.addCode(c); },
       literalStyleValue: function(v) { return '"' + v + '"'; },

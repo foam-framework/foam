@@ -10,9 +10,10 @@
  */
 
 CLASS({
-  name: 'SourceCodeListView',
   package: 'foam.flow',
+  name: 'SourceCodeListView',
   extends: 'foam.ui.View',
+
   traits: [
     'foam.ui.DAODataViewTrait'
   ],
@@ -30,19 +31,18 @@ CLASS({
       // TODO(markdittmer): Should be able to use foam.ui.ModeProperty here
       // but it doesn't seem to be working. It should eliminate the need for
       // a postSet.
-      model_: 'StringProperty',
+      type: 'String',
       name: 'mode',
       defaultValue: 'read-write'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
       defaultValue: 'foam.flow.CodeView'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'openViews',
-      type: 'Array[Int]',
       lazyFactory: function() { return [-2, -1]; }
     }
   ],

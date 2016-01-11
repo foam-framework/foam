@@ -16,10 +16,11 @@
  */
 
 CLASS({
-  model_: "Model",
   package: "node.dao",
   name: "JSModelFileDAO",
+
   extends: "AbstractDAO",
+
   properties: [
     {
       name: "daoListeners_",
@@ -36,7 +37,7 @@ CLASS({
       factory: function () { return require('path'); }
     },
     {
-      model_: "StringProperty",
+      type: 'String',
       name: "prefix",
       defaultValueFn: function () {
         return 'js';

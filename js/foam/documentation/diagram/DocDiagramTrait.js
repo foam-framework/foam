@@ -16,15 +16,15 @@
  */
 
 CLASS({
-  name: 'DocDiagramTrait',
   package: 'foam.documentation.diagram',
+  name: 'DocDiagramTrait',
   // enhances BaseDetailView to add diagram support
 
   properties: [
     {
       name: 'diagramItem',
       documentation: "The diagram item we create and are managing.",
-      type: 'foam.graphics.diagram.DiagramItemTrait'
+      // type: 'foam.graphics.diagram.DiagramItemTrait'
     }
   ],
 

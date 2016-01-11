@@ -45,7 +45,7 @@ CLASS({
       factory: function() { return this.GestureManager.create(); },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'menuView',
       defaultValue: 'foam.ui.md.PopupView',
     },
@@ -60,7 +60,7 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'nav',
       defaultValue: function() {
         return this.PermanentNav.create({

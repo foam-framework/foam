@@ -202,7 +202,6 @@ var IDENTITY = IdentityExpr.create();
 /** An n-ary function. **/
 CLASS({
   name: 'NARY',
-
   extends: 'Expr',
   abstract: true,
 
@@ -212,7 +211,7 @@ CLASS({
     {
       name:  'args',
       label: 'Arguments',
-      type:  'Expr[]',
+      // type:  'Expr[]',
       swiftType:  'NSArray',
       swiftFactory: 'return []',
       help:  'Sub-expressions',
@@ -348,8 +347,8 @@ CLASS({
 
   properties: [
     {
+      type:  'Int',
       name:  'count',
-      type:  'int',
       defaultValue: 0
     },
     {

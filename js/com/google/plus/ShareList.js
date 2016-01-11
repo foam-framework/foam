@@ -28,9 +28,9 @@ CLASS({
     {
       name: 'HistoryItem',
       properties: [
-        { model_: 'StringProperty', name: 'id' },
-        { model_: 'StringProperty', name: 'displayName' },
-        { model_: 'StringProperty', name: 'type' },
+        { type: 'String', name: 'id' },
+        { type: 'String', name: 'displayName' },
+        { type: 'String', name: 'type' },
       ]
     }
   ],
@@ -45,7 +45,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       subType: 'com.google.plus.Person',
       name: 'owner'
     },
@@ -68,13 +68,13 @@ CLASS({
       help: 'People to which to share.',
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'history',
       subType: 'com.google.plus.ShareList.HistoryItem',
       factory: function() { return [].dao; }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'sharesPending',
       getter: function() {
         return (this.instance_.circles && this.instance_.circles.length) ||

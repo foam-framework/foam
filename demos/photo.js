@@ -78,11 +78,11 @@ var Photo = Model.create({
   properties: [
     { name: 'id' },
     { name: 'hash' },
-    { model_: 'BooleanProperty', name: 'isLocal' },
-    { model_: 'BooleanProperty', name: 'byAction' },
-    { model_: 'DateTimeProperty', name: 'timestamp' },
+    { type: 'Boolean', name: 'isLocal' },
+    { type: 'Boolean', name: 'byAction' },
+    { type: 'DateTime', name: 'timestamp' },
     { name: 'albumId' },
-    { model_: 'BooleanProperty', name: 'isCoverPhoto' },
+    { type: 'Boolean', name: 'isCoverPhoto' },
     { name: 'jspb', hidden: true }
   ]
 });
@@ -92,9 +92,9 @@ var Album = Model.create({
   name: 'Album',
   properties: [
     { name: 'id', name: 'id' },
-    { model_: 'BooleanProperty', name: 'isLocal' },
-    { model_: 'BooleanProperty', name: 'byAction' },
-    { model_: 'DateTimeProperty', name: 'timestamp' },
+    { type: 'Boolean', name: 'isLocal' },
+    { type: 'Boolean', name: 'byAction' },
+    { type: 'DateTime', name: 'timestamp' },
     { name: 'jspb', hidden: true }
   ],
   relationships: [
@@ -109,11 +109,11 @@ var PhotoDetail = FOAM({
   model_: 'Model',
   name: 'PhotoDetail',
   properties: [
-    { model_: 'IntProperty', name: 'id' },
+    { type: 'Int', name: 'id' },
     { name: 'photoId' },
     { name: 'albumId' },
     { name: 'hash' },
-    { model_: 'IntProperty', name: 'totalComments' }
+    { type: 'Int', name: 'totalComments' }
   ]
 });
 

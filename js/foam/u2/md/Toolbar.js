@@ -29,7 +29,7 @@ CLASS({
   properties: [
     'title',
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.u2.md.ToolbarAction',
       name: 'leftActions_',
       postSet: function(old, nu) {
@@ -39,7 +39,7 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.u2.md.ToolbarAction',
       name: 'rightActions_',
       postSet: function(old, nu) {
@@ -71,14 +71,14 @@ CLASS({
 
   templates: [
     function initE() {/*#U2
-      <toolbar class="$">
-        <actions class="$-actions $-left">{{this.leftActionButtons_$}}</actions>
-        <header class="$-title">{{this.title$}}</header>
-        <actions class="$-actions $-right">{{this.rightActionButtons_$}}</actions>
+      <toolbar class="^">
+        <actions class="^actions ^left">{{this.leftActionButtons_$}}</actions>
+        <header class="^title">{{this.title$}}</header>
+        <actions class="^actions ^right">{{this.rightActionButtons_$}}</actions>
       </toolbar>
     */},
     function CSS() {/*
-      $ {
+      ^ {
         align-items: center;
         background-color: #3e50b4;
         color: #fff;
@@ -92,19 +92,19 @@ CLASS({
         width: 100%;
       }
 
-      $-title {
+      ^title {
         flex-grow: 1;
       }
 
-      .foam-u2-md-Card $ {
+      .foam-u2-md-Card- ^ {
         background-color: transparent;
         color: currentColor;
       }
-      .foam-u2-md-Card $-actions {
+      .foam-u2-md-Card- ^actions {
         margin: 0;
       }
 
-      $-header {
+      ^header {
         color: #fff;
         display: flex;
         flex-grow: 1;
@@ -112,19 +112,19 @@ CLASS({
         margin-left: 8px;
         overflow-x: hidden;
       }
-      .foam-u2-md-Card $-header {
+      .foam-u2-md-Card- ^header {
         color: currentColor;
         margin: 0;
       }
 
-      $-actions {
+      ^actions {
         display: flex;
         position: relative;
       }
-      $-left {
+      ^left {
         align-items: flex-start;
       }
-      $-right {
+      ^right {
         align-items: flex-end;
       }
     */},

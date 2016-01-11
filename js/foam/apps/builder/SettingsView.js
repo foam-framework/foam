@@ -25,7 +25,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'analyticsEnabled',
       label: 'Send app usage data from my apps to the App Builder team ' +
           'to help make App Builder better<br><a href="#">Learn more</a>',

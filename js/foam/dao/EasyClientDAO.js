@@ -60,7 +60,7 @@ CLASS({
       name: 'googleSignIn_',
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'sockets',
       defaultValue: false
     },
@@ -69,7 +69,7 @@ CLASS({
       defaultValue: 0
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'logging',
       defaultValue: false,
       documentation: "Enable logging on the $$DOC{ref:'DAO'}."

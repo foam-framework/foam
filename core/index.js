@@ -1160,7 +1160,7 @@ var MDAO = Model.create({
       required: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'autoIndex',
       defaultValue: false
     }

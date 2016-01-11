@@ -16,10 +16,10 @@
  */
 
 CLASS({
-  name: 'LinearLayout',
   package: 'foam.graphics.diagram',
-   
+  name: 'LinearLayout',
   extends: 'foam.graphics.LinearLayout',
+
   traits: ['foam.graphics.diagram.DiagramItemTrait' ],
   
   documentation: function() {/* Overridden from 

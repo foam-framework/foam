@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'SectionGroup',
   package: 'foam.graphics.diagram',
+  name: 'SectionGroup',
+  extends: 'foam.graphics.diagram.LinearLayout',
+
   label: 'Section Group',
 
   requires: ['foam.graphics.diagram.Section'],
-  
-  extends: 'foam.graphics.diagram.LinearLayout',
-  
+    
   documentation: function() {/*
       A group of $$DOC{ref:'foam.graphics.diagram.Section',usePlural:true}, with a heading.
       Typically placed inside $$DOC{ref:'foam.graphics.diagram.Block',usePlural:true}.
@@ -38,7 +37,7 @@ CLASS({
     },
     {
       name: 'titleSection',
-      type: 'foam.graphics.diagram.Section',
+      // type: 'foam.graphics.diagram.Section',
       documentation: function() {/* The $$DOC{ref:'foam.graphics.diagram.Section'} created
         to display the title text.
       */},

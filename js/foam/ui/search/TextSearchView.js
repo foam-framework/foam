@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.ui.search',
   name: 'TextSearchView',
-
   extends: 'foam.ui.View',
 
   requires: [ 'foam.ui.TextFieldView' ],
@@ -28,12 +27,12 @@ CLASS({
       name: 'model'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'richSearch',
       defaultValue: false
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'keywordSearch',
       defaultValue: false
     },
@@ -43,21 +42,18 @@ CLASS({
     },
     {
       name:  'width',
-      type:  'int',
+      type:  'Int',
       defaultValue: 47
     },
     {
-      name: 'property',
-      type: 'Property'
+      name: 'property'
     },
     {
       name: 'predicate',
-      type: 'Object',
       defaultValue: TRUE
     },
     {
       name: 'view',
-      type: 'view',
       factory: function() { return this.TextFieldView.create({displayWidth:this.width, type: 'search', cssClass: 'foamSearchTextField'}); }
     },
     {

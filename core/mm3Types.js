@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 CLASS({
   name: 'Message',
   plural: 'messages',
@@ -280,7 +279,7 @@ CLASS({
       name: 'toPropertyE',
       labels: ['javascript'],
       defaultValue: function(X) {
-        return X.lookup('foam.u2.Checkbox').create(null, X);
+        return X.lookup('foam.u2.tag.Checkbox').create(null, X);
       }
     },
     [ 'defaultValue', false ],
@@ -340,7 +339,7 @@ CLASS({
       name: 'toPropertyE',
       labels: ['javascript'],
       defaultValue: function(X) {
-        return X.lookup('foam.u2.DateInput').create(null, X);
+        return X.lookup('foam.u2.DateView').create(null, X);
       }
     },
     {
@@ -525,7 +524,7 @@ CLASS({
       label: 'Protobuf tag',
       required: false,
       help: 'The protobuf tag number for this field.'
-    },
+    }
   ]
 });
 

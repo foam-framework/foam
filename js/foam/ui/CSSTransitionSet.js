@@ -73,7 +73,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'cssString_'
     }
   ],

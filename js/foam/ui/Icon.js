@@ -26,11 +26,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'url',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'ligature',
       postSet: function(old, nu) {
         if ( old === nu ) return;
@@ -54,12 +54,12 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'width',
       defaultValue: 24,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'height',
       defaultValue: 24,
     },
@@ -73,27 +73,27 @@ CLASS({
       },
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'alpha',
       defaultValue: 1.0,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'fontSize',
       defaultValue: 24,
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'imageClassName',
       defaultValue: 'icon',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'imageClassName',
       defaultValue: 'material-icons-extended',
     },
     {
-      type: 'foam.ui.ImageView',
+//      type: 'foam.ui.ImageView',
       name: 'imageView',
       lazyFactory: function() {
         return this.ImageView.create({
@@ -106,7 +106,7 @@ CLASS({
       },
     },
     {
-      type: 'foam.ui.LigatureView',
+//      type: 'foam.ui.LigatureView',
       name: 'ligatureView',
       defaultValue: null,
       postSet: function(old, nu) {
@@ -125,7 +125,7 @@ CLASS({
       },
     },
     {
-      type: 'foam.fonts.LigatureTester',
+//      type: 'foam.fonts.LigatureTester',
       name: 'ligatureTester',
       defaultValue: null,
     },

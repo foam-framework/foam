@@ -21,7 +21,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'autoSetData',
       documentation: 'When true, this.data will be set if choices are set ' +
           'and the current data is not one of the choices.',
@@ -61,7 +61,7 @@ CLASS({
     },
     {
       name: 'choices',
-      type: 'Array[StringField]',
+      // type: 'Array[StringField]',
       documentation: 'Array of [value, text] choices. Simple String values ' +
           'are expanded to [str, str]. Can also be a map, which results in ' +
           '[key, value] pairs listed in enumeration order.',
@@ -137,7 +137,7 @@ CLASS({
       documentation: 'Default entry that is "selected" when $$DOC{ref:".data"} is empty.',
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'objToChoice',
       documentation: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
     },

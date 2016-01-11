@@ -35,7 +35,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'scrollValue',
       defaultValue: 0,
       postSet: function() {
@@ -43,7 +43,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'scrollSize',
       defaultValue: 10,
       postSet: function() {

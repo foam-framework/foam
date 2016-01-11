@@ -47,7 +47,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'viewIndex',
       preSet: function(_, value) {
         if ( value >= this.views.length ) return 0;

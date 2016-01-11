@@ -22,7 +22,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'data',
       postSet: function(old, nu) {
@@ -39,7 +39,7 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'maxShowActions',
       defaultValue: 4,
     },
@@ -54,12 +54,12 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'moreActionsFactory',
       defaultValue: 'foam.ui.ActionButton',
     },
     {
-      type: 'foam.ui.md.OverlayDropdownView',
+      // type: 'foam.ui.md.OverlayDropdownView',
       name: 'moreActionsDropdown',
       lazyFactory: function() {
         return this.OverlayDropdownView.create({
@@ -72,12 +72,12 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'showActions_',
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'moreActions_',
     },

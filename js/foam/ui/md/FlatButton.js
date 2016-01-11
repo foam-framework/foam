@@ -39,7 +39,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'raised',
       defaultValue: false
     },
@@ -52,7 +52,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'font',
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
@@ -60,7 +60,7 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'alpha',
       defaultValue: null,
       postSet: function(old, nu) {
@@ -69,7 +69,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'background',
       postSet: function(old, nu) {
         if ( old === nu || ! this.$ ) return;
@@ -116,11 +116,11 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'iconUrl',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'ligature',
     },
     {
@@ -169,7 +169,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isHidden',
       defaultValue: false
     }

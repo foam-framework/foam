@@ -18,6 +18,6 @@
 MODEL({
   package: 'foam.demos.sevenguis',
   name: 'Counter',
-  properties: [ { model_: 'IntProperty', name: 'value' } ],
+  properties: [ { type: 'Int', name: 'value' } ],
   actions: [ { name: 'Count', code: function() { this.value++; } } ]
 });

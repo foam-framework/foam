@@ -20,7 +20,7 @@ CLASS({
   name: 'XMLResultWriter',
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       defaultValue: 'FOAM Tests'
     },

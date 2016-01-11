@@ -41,8 +41,8 @@ CLASS({
   ],
 
   properties: [
-    { model_: 'IntProperty', name: 'count' },
-    { model_: 'IntProperty', name: 'totalCount' },
+    { type: 'Int', name: 'count' },
+    { type: 'Int', name: 'totalCount' },
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
@@ -93,7 +93,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'sql',
       displayWidth: 35,
       displayHeight: 8

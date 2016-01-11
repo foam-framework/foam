@@ -16,9 +16,9 @@
  */
 
 CLASS({
-  "model_": "Model",
-  "name": "User",
   "package": "foam.apps.quickbug.model.imported",
+  "name": "User",
+
   "tableProperties": [
     "id",
     "kind",
@@ -26,17 +26,17 @@ CLASS({
   ],
   "properties": [
     {
-      "model_": "StringProperty",
+      type: 'String',
       "name": "id",
       "help": "User identifier."
     },
     {
-      "model_": "StringProperty",
+      type: 'String',
       "name": "kind",
       "help": "User on Google Code Project Hosting."
     },
     {
-      "model_": "ArrayProperty",
+      type: 'Array',
       "name": "projects",
       "help": "Projects of which this user is a member.",
       "subType": "Project"

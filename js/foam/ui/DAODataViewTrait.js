@@ -27,7 +27,7 @@ CLASS({
       re-rendered.</p>
   */},
 
-  exports: ['dao as daoViewCurrentDAO'],
+  exports: [ 'dao as daoViewCurrentDAO' ],
 
   properties: [
     {

@@ -49,7 +49,7 @@ CLASS({
       type: 'String',
       name: 'search',
       toPropertyE: function(X) {
-        return X.lookup('foam.u2.Input').create({
+        return X.lookup('foam.u2.TextField').create({
           inline: true,
           onKey: true
         }, X);
@@ -81,7 +81,17 @@ CLASS({
   ],
   methods: [
     function initE() {
-      this.add(this.delegate);
+      this.cls(this.myCls()).add(this.delegate);
     },
-  ]
+  ],
+  templates: [
+    function CSS() {/*
+      ^ {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+    */}
+  ],
 });

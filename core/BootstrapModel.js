@@ -247,8 +247,18 @@ var BootstrapModel = {
     //        });
     // Workaround for crbug.com/258552
     this.models && Object_forEach(this.models, function(m) {
-      //cls.model_[m.name] = cls[m.name] = JSONUtil.mapToObj(X, m, Model);
-      if ( this[m.name] ) cls[m.name] = this[m.name];
+      if ( this[m.name] ) {
+        var model = this[m.name];
+        defineLocalProperty(cls, m.name, function() {
+          var Y = this.Y;
+          return {
+            __proto__: model,
+            create: function(args, opt_X) {
+              return model.create(args, opt_X || Y);
+            }
+          };
+        });
+      }
     }.bind(this));
 
     // build requires

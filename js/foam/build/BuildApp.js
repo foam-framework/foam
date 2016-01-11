@@ -40,7 +40,7 @@ CLASS({
       help: 'Name of the main controller/model to create',
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'coreFiles',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
@@ -54,60 +54,60 @@ CLASS({
       required: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'precompileTemplates',
       help: 'True to precompile templates of models loaded from the ModelDAO.',
       defaultValue: false
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'includeFoamCSS',
       defaultValue: false
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'icon'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'version'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'resources'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'appcacheManifest',
       defaultValue: false
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraFiles',
       help: 'Extra files to both load during the build process, and include in the built image.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraBuildFiles',
       help: 'Extra files to load during the build process, but NOT include in the built image.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraModels',
       help: 'Extra models to include in the image regardless of if they were arequired or not.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; },
       factory: function() { return ['foam.ui.FoamTagView']; }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'blacklistModels',
       help: 'Models to unconditionally exclude from the image, even if they are listed as required.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'outputManifest',
       defaultValue: false,
       help: 'Set to true to write out a MANIFEST file listing all included models.'
@@ -118,7 +118,7 @@ CLASS({
       defaultValue: 'main.html'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'htmlHeaders'
     },
     {
@@ -193,27 +193,27 @@ CLASS({
       factory: function() { return this.FileDAO.create(); }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraClassPaths',
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'locale'
     },
     // TODO(markdittmer): Remove "i18nMessagesPath" when all build processes
     // no longer require it.
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'i18nMessagesPath'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'i18nTranslationsPath'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'i18nMessages',
       adapt: function(_, s) {
         if (typeof s === 'string') return s.split(',');
@@ -221,7 +221,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'i18nTranslations',
       adapt: function(_, s) {
         if (typeof s === 'string') return s.split(',');
@@ -229,14 +229,14 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'jsFileName',
       getter: function() {
         return 'foam' + (this.locale ? '_' + this.locale : '') + '.js';
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'manifestFileName',
       getter: function() {
         return 'app' + (this.locale ? '_' + this.locale : '') + '.manifest';
@@ -253,7 +253,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'delegate'
     }
   ],

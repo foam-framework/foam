@@ -30,12 +30,12 @@ CLASS({
     ['bufferPos', 0],
     ['needed', 0],
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'framing',
       defaultValue: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'finished',
       defaultValue: false
     },

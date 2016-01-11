@@ -33,14 +33,14 @@ CLASS({
     {
       name: 'Url',
       properties: [
-        { model_: 'URLProperty', name: 'value'  },
-        { model_: 'StringProperty', name: 'type',
+        { type: 'URL', name: 'value'  },
+        { type: 'String', name: 'type',
           documentation: function() {/* "otherProfile" - URL for another profile.
             "contributor" - URL to a site for which this person is a contributor.
             "website" - URL for this Google+ Page's primary website.
             "other" - O */},
         },
-        { model_: 'StringProperty', name: 'label'  },
+        { type: 'String', name: 'label'  },
       ]
     },
   ],
@@ -54,14 +54,14 @@ CLASS({
 
   properties: [
     { model_: 'foam.core.types.JSONStringProperty', name: 'id', help: 'The FOAM and/or Google Plus ID, globally unique.' },
-    { model_: 'StringProperty', name: 'objectType', defaultValue: 'person',
+    { type: 'String', name: 'objectType', defaultValue: 'person',
       documentation: function() {/* "person" - represents an actual person.
         "page" - represents a page. */},
     },
-    //{ model_: 'StringProperty', name: 'plusId', help: 'GAIA/G+ ID'  },
+    //{ type: 'String', name: 'plusId', help: 'GAIA/G+ ID'  },
 
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'com.google.plus.Circle',
       name: 'circles',
       help: "All of this Person's circles.",
@@ -92,7 +92,7 @@ CLASS({
 
     { model_: 'foam.core.types.JSONArrayProperty', name: 'emails', fromItemJSON: function(vt) { return vt.value; } },
 
-    { model_: 'ArrayProperty', subType: 'com.google.plus.Person.Url', name: 'urls' },
+    { type: 'Array', subType: 'com.google.plus.Person.Url', name: 'urls' },
 
     {
       model_: 'foam.core.types.JSONStringProperty',
@@ -109,43 +109,43 @@ CLASS({
     { model_: 'foam.core.types.JSONImageProperty', name: 'image', jsonPath: [ 'image', 'url' ] },
   ],
 });
-//   { model_: 'StringProperty', name: 'tagline'  },
-//   { model_: 'StringProperty', name: 'braggingRights'  },
-//   { model_: 'StringProperty', name: 'aboutMe'  },
-//   { model_: 'StringProperty', name: 'relationshipStatus'  },
-//   { model_: 'StringProperty', name: 'url'  },
+//   { type: 'String', name: 'tagline'  },
+//   { type: 'String', name: 'braggingRights'  },
+//   { type: 'String', name: 'aboutMe'  },
+//   { type: 'String', name: 'relationshipStatus'  },
+//   { type: 'String', name: 'url'  },
 //   "organizations": [
 //     {
-//       { model_: 'StringProperty', name: 'name'  },
-//       { model_: 'StringProperty', name: 'department'  },
-//       { model_: 'StringProperty', name: 'title'  },
-//       { model_: 'StringProperty', name: 'type'  },
-//       { model_: 'StringProperty', name: 'startDate'  },
-//       { model_: 'StringProperty', name: 'endDate'  },
-//       { model_: 'StringProperty', name: 'location'  },
-//       { model_: 'StringProperty', name: 'description'  },
-//       { model_: 'BooleanProperty', name: 'primary'  },
+//       { type: 'String', name: 'name'  },
+//       { type: 'String', name: 'department'  },
+//       { type: 'String', name: 'title'  },
+//       { type: 'String', name: 'type'  },
+//       { type: 'String', name: 'startDate'  },
+//       { type: 'String', name: 'endDate'  },
+//       { type: 'String', name: 'location'  },
+//       { type: 'String', name: 'description'  },
+//       { type: 'Boolean', name: 'primary'  },
 //     }
 //   ],
 //   "placesLived": [
 //     {
-//       { model_: 'StringProperty', name: 'value'  },
-//       { model_: 'BooleanProperty', name: 'primary'  },
+//       { type: 'String', name: 'value'  },
+//       { type: 'Boolean', name: 'primary'  },
 //     }
 //   ],
-//   { model_: 'BooleanProperty', name: 'isPlusUser'  },,
-//   { model_: 'StringProperty', name: 'language'  },
+//   { type: 'Boolean', name: 'isPlusUser'  },,
+//   { type: 'String', name: 'language'  },
 //   "ageRange": {
 //     { model_: 'IntegerProperty', name: 'min'  },,
 //     { model_: 'IntegerProperty', name: 'max'  },
 //   },
 //   { model_: 'IntegerProperty', name: 'plusOneCount'  },,
 //   { model_: 'IntegerProperty', name: 'circledByCount'  },,
-//   { model_: 'BooleanProperty', name: 'verified'  },,
+//   { type: 'Boolean', name: 'verified'  },,
 //   "cover": {
-//     { model_: 'StringProperty', name: 'layout'  },
+//     { type: 'String', name: 'layout'  },
 //     "coverPhoto": {
-//       { model_: 'StringProperty', name: 'url'  },
+//       { type: 'String', name: 'url'  },
 //       { model_: 'IntegerProperty', name: 'height'  },,
 //       { model_: 'IntegerProperty', name: 'width'  },
 //     },
@@ -154,4 +154,4 @@ CLASS({
 //       { model_: 'IntegerProperty', name: 'leftImageOffset'  },
 //     }
 //   },
-//   { model_: 'StringProperty', name: 'domain'  },
+//   { type: 'String', name: 'domain'  },

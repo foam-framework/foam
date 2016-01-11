@@ -18,13 +18,11 @@
 CLASS({
   package: 'foam.graphics',
   name: 'PieGraph',
-
   extends: 'foam.graphics.CView',
 
   properties: [
     {
       name:  'r',
-      type:  'int',
       view:  'foam.ui.IntFieldView',
       defaultValue: 50,
       postSet: function(old, nu) {
@@ -39,7 +37,6 @@ CLASS({
     },
     {
       name:  'lineWidth',
-      type:  'int',
       defaultValue: 1,
       postSet: function(old, nu) {
         if ( old === nu ) return;
@@ -52,7 +49,7 @@ CLASS({
     },
     {
       name:  'data',
-      type:  'Array[float]',
+      // type:  'Array[float]',
       factory: function() { return []; }
     },
     {
@@ -61,7 +58,7 @@ CLASS({
       defaultValue: { }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'toColor',
       defaultValue: function(key, i, n) {
         return this.colorMap && this.colorMap[key] || this.toHSLColor(i, n);

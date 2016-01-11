@@ -16,7 +16,6 @@
  */
 
 CLASS({
-  "model_": "Model",
   "package": "com.google.mail",
   "name": "EMailExtensionsAgent",
   "requires": [
@@ -24,7 +23,7 @@ CLASS({
   ],
   "methods": [
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "execute",
       "code": function () {
         var self = this;

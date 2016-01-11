@@ -25,12 +25,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'displayHeight',
       defaultValue: 5
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'displayWidth',
       defaultValue: 70
     }

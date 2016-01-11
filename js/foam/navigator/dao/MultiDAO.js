@@ -34,7 +34,7 @@ CLASS({
   properties: [
     {
       name: 'models',
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       factory: function() { return []; }
     },
     {
@@ -63,7 +63,7 @@ CLASS({
     },
     {
       name: 'listeners_',
-      model_: 'ArrayProperty',
+      type: 'Array',
       factory: function() { return []; }
     }
   ],

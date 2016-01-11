@@ -111,7 +111,7 @@ CLASS({
       view: { factory_: 'foam.ui.md.DAOListView', rowView: 'foam.ui.md.DetailView' },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'createStreamItem',
       hidden: true,
       factory: function() {

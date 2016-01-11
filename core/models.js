@@ -95,7 +95,7 @@ CLASS({
 
     manage: function(name, obj, version) {
       var write = EventService.merged((function() {
-        console.log('PersistentContext', 'updating', name);
+        // console.log('PersistentContext', 'updating', name);
         this.dao.put(this.Y.Binding.create({
           id:    name,
           value: JSONUtil.where(this.predicate).stringify(obj),
@@ -119,7 +119,7 @@ CLASS({
     },
     bindObject: function(name, factory, transientValues, version) {
       version = version || 1;
-      console.log('PersistentContext', 'binding', name);
+      // console.log('PersistentContext', 'binding', name);
       var future = afuture();
       transientValues = transientValues || {};
 
@@ -127,7 +127,7 @@ CLASS({
         future.set(this.context[name]);
       } else {
         var newinit = (function() {
-          console.log('PersistentContext', 'newInit', name);
+          // console.log('PersistentContext', 'newInit', name);
           var obj = factory.create();
           obj.copyFrom(transientValues);
           this.context[name] = obj;
@@ -138,11 +138,11 @@ CLASS({
         this.dao.find(name, {
           put: function (binding) {
             if ( binding.version !== version ) {
-              console.log('PersistentContext', 'verison mismatch', name);
+              // console.log('PersistentContext', 'verison mismatch', name);
               newinit();
               return;
             }
-            console.log('PersistentContext', 'existingInit', name);
+            // console.log('PersistentContext', 'existingInit', name);
             //                  var obj = JSONUtil.parse(binding.value);
             //                  var obj = JSON.parse(binding.value);
             try {
@@ -173,7 +173,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'email'
     }
   ]

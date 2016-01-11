@@ -49,7 +49,7 @@ CLASS({
     },
     { name: 'subKey' },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'innerView',
       defaultValue: 'foam.ui.DAOListView'
     },

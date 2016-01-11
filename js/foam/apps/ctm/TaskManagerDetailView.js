@@ -42,12 +42,12 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'numHistoryItems',
       defaultValue: 64
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showActions',
       defaultValue: false,
       preSet: function() { return false; }

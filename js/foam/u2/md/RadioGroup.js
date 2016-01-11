@@ -107,27 +107,27 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         align-items: center;
         display: flex;
         margin: 0 0 0 16px;
         padding: 0;
       }
 
-      $-vertical {
+      ^vertical {
         align-items: flex-start;
         flex-direction: column;
       }
 
-      $-vertical $-choice-outer {
+      ^vertical ^choice-outer {
         display: block;
       }
-      $-horizontal $-choice-outer {
+      ^horizontal ^choice-outer {
         display: inline-block;
         margin-right: 16px;
       }
 
-      $-choice-container {
+      ^choice-container {
         display: block;
         margin: 8px;
         padding: 8px;
@@ -135,7 +135,7 @@ CLASS({
         white-space: nowrap;
       }
 
-      $-choice-background {
+      ^choice-background {
         align-items: flex-end;
         display: flex;
         flex-direction: row;
@@ -143,14 +143,14 @@ CLASS({
         white-space: nowrap;
       }
 
-      $-choice-indicator {
+      ^choice-indicator {
         align-self: center;
         height: 16px;
         position: relative;
         width: 16px;
       }
 
-      $-choice-indicator-off {
+      ^choice-indicator-off {
         border-color: #5a5a5a;
         border-radius: 50%;
         border: solid 2px;
@@ -162,11 +162,11 @@ CLASS({
         transition: border-color 0.28s;
         width: 16px;
       }
-      $-choice-selected $-choice-indicator-off {
+      ^choice-selected ^choice-indicator-off {
         border-color: #4285f4;
       }
 
-      $-choice-indicator-on {
+      ^choice-indicator-on {
         background-color: #4285f4;
         border-radius: 50%;
         height: 8px;
@@ -178,11 +178,11 @@ CLASS({
         transition: transform ease 0.28s;
         width: 8px;
       }
-      $-choice-selected $-choice-indicator-on {
+      ^choice-selected ^choice-indicator-on {
         transform: scale(1);
       }
 
-      $-choice-indicator-container {
+      ^choice-indicator-container {
         cursor: pointer;
         display: inline-block;
         height: 48px;
@@ -192,11 +192,11 @@ CLASS({
         vertical-align: middle;
         width: 48px;
       }
-      $-choice-indicator-container .halo {
+      ^choice-indicator-container .halo {
         border-radius: 50%;
       }
 
-      $-choice-label {
+      ^choice-label {
         display: block;
         margin-left: 12px;
         pointer-events: none;

@@ -29,7 +29,7 @@ CLASS({
       setter: function(dao) { this.data = dao; }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'views',
       subType: 'foam.ui.ViewChoice',
       help: 'View choices.'
@@ -42,7 +42,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'view',
       defaultValue: 'foam.ui.View',
       postSet: function(old, v) {
@@ -73,7 +73,7 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'headerView',
       defaultValue: 'foam.ui.View'
     },

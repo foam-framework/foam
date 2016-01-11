@@ -30,12 +30,12 @@ CLASS({
       name: 'view'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isOpen',
       defaultValue: false
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'animating',
       defaultValue: false
     },

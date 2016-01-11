@@ -28,7 +28,7 @@ CLASS({
       defaultValue: 'span',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'propertyName',
       defaultValue: 'name',
       help: 'The name of the property to use, as in this.data[propertyName].',

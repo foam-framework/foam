@@ -66,19 +66,19 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         align-items: center;
         display: flex;
         margin: 8px;
         padding: 8px;
       }
-      $-label {
+      ^label {
         flex-grow: 1;
         margin-bottom: auto;
         margin-top: auto;
         opacity: 0.54;
       }
-      $-text {
+      ^text {
         margin-bottom: auto;
         margin-right: 20px;
         margin-top: auto;
@@ -86,13 +86,13 @@ CLASS({
       }
 
 
-      $-switch {
+      ^switch {
         height: 14px;
         position: relative;
         width: 36px;
       }
 
-      $-background {
+      ^background {
         background-color: #9e9e9e;
         border-radius: 7px;
         display: inline-block;
@@ -102,11 +102,11 @@ CLASS({
         position: absolute;
         width: 36px;
       }
-      $-background$-on {
+      ^background^on {
         background-color: #7baaf7;
       }
 
-      $-halo {
+      ^halo {
         border-radius: 50%;
         cursor: pointer;
         height: 48px;
@@ -117,7 +117,7 @@ CLASS({
         z-index: 2;
       }
 
-      $-lever {
+      ^lever {
         background-color: #f5f5f5;
         border-radius: 50%;
         border: 1px solid #ccc;
@@ -130,7 +130,7 @@ CLASS({
         transition: left .08s;
         width: 20px;
       }
-      $-on $-lever {
+      ^on ^lever {
         background-color: #3367d6;
         border: none;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.26);

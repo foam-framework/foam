@@ -39,7 +39,7 @@ CLASS({
       transient: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'sequenceValue',
       defaultValue: 1
     }

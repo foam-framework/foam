@@ -17,15 +17,15 @@
 
 CLASS({
    "package": "foam.ui.layout",
-   "model_": "Model",
    "name": "OverlaySlider",
    extends: "foam.ui.View",
+
    "traits": [
       "foam.ui.layout.PositionedDOMViewTrait"
    ],
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "view",
          "postSet": function (old, v) {
         old && old.destroy();
@@ -33,14 +33,14 @@ CLASS({
       }
       },
       {
-         "model_": "FloatProperty",
+         type: 'Float',
          "name": "slideAmount",
          "defaultValue": 0
       }
    ],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "init",
          "code": function () {
       this.SUPER();
@@ -50,7 +50,7 @@ CLASS({
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "updateHTML",
          "code": function () {
       this.children = [];
@@ -62,13 +62,13 @@ CLASS({
    ],
    "listeners": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "onClick",
          "code": function () { this.publish(['click']); },
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "layout",
          "code": function () {
         var width = Math.min(this.view.preferredWidth, this.width);
@@ -94,13 +94,13 @@ CLASS({
    ],
    "templates": [
       {
-         "model_": "Template",
+         model_: "Template",
          "name": "toInnerHTML",
          "args": [],
          "template": "\u000a      <% this.on('click', this.onClick, this.id + '-slider'); %>\u000a      <div id=\"<%= this.id %>-slider\" class=\"overlay-slider\"></div> %%view "
       },
       {
-         "model_": "Template",
+         model_: "Template",
          "name": "CSS",
          "args": [],
          "template": "\u000a      .overlay-slider {\u000a        position: absolute;\u000a        background: black;\u000a      }\u000a\u000a      * {\u000a        transform-style: preserve-3d;\u000a        -webkit-transform-style: preserve-3d;\u000a      }\u000a    "

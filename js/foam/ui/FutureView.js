@@ -40,7 +40,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'spinnerView',
       documentation: 'The view to use for the spinner. Defaults to SpinnerView.',
       defaultValue: 'foam.ui.SpinnerView'
@@ -68,7 +68,7 @@ CLASS({
       documentation: 'The View instance for the spinner.'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'innerView',
       documentation: 'The view to be rendered after the future resolves, and ' +
           'passed the data provided by the Future.'

@@ -27,7 +27,6 @@ CLASS({
   properties: [
     {
       name: 'view',
-      type: 'view',
       factory: function() {
         return this.ChoiceView.create({
           label: this.label,
@@ -38,19 +37,18 @@ CLASS({
       }
     },
     {
+      type:  'Int',
       name:  'width',
-      type:  'int',
       defaultValue: 47
     },
     {
+      type:  'Int',
       name:  'size',
-      type:  'int',
       defaultValue: 17
     },
     {
       name:  'dao',
       label: 'DAO',
-      type: 'DAO',
       required: true,
       factory: function() { return []; },
       postSet: function() {
@@ -59,7 +57,6 @@ CLASS({
     },
     {
       name: 'property',
-      type: 'Property'
     },
     {
       name: 'name',
@@ -72,26 +69,24 @@ CLASS({
     },
     {
       name: 'filter',
-      type: 'Object',
       defaultValue: TRUE
     },
     {
       name: 'predicate',
-      type: 'Object',
       defaultValue: TRUE
     },
     {
       name: 'memento',
     },
     {
-      name: 'label',
       type: 'String',
+      name: 'label',
       defaultValueFn: function() { return this.property.label; }
     },
     {
       name: 'floatingLabel',
       defaultValue: true
-    },
+    }
   ],
 
   methods: [

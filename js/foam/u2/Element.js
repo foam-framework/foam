@@ -24,12 +24,12 @@ CLASS({
   ],
 
   imports: [
+    'dynamic',
     'dynamicFn',
     'framed'
   ],
 
   onLoad: function() {
-    console.log('Running Element.static().');
     var self = this;
 
     Function.prototype.toE = function(X) {
@@ -69,6 +69,7 @@ CLASS({
       onRemoveAttr:  function() { },
       onAddChildren: function() { },
       onInsertChildren: function() { },
+      onReplaceChild: function() { },
       toString:      function() { return 'INITIAL'; }
     },
     OUTPUT: {
@@ -121,6 +122,9 @@ CLASS({
       onInsertChildren: function() {
         throw "Mutations not allowed in OUTPUT state.";
       },
+      onReplaceChild: function() {
+        throw "Mutations not allowed in OUTPUT state.";
+      },
       toString:      function() { return 'OUTPUT'; }
     },
     LOADED: {
@@ -158,7 +162,12 @@ CLASS({
         this.id$el.style[key] = value;
       },
       onSetAttr: function(key, value) {
-        this.id$el.setAttribute(key, value === true ? '' : value);
+        // 'value' doesn't work consistently with setAttribute()
+        if ( key === 'value' ) {
+          this.id$el.value = value;
+        } else {
+          this.id$el.setAttribute(key, value === true ? '' : value);
+        }
       },
       onRemoveAttr: function(key, value) {
         this.id$el.removeAttribute(key);
@@ -194,6 +203,20 @@ CLASS({
           children[i].load && children[i].load();
         }
       },
+      onReplaceChild: function(oldE, newE) {
+        var e = this.id$el;
+        if ( ! e ) {
+          console.warn('Missing Element: ', this.id);
+          return
+        }
+        var out = this.createOutputStream();
+        out(newE);
+        var n = this.X.document.createElement('div');
+        n.innerHTML = out.toString();
+        // newE.load && newE.load();
+
+        e.replaceChild(n.firstChild, oldE.id$el);
+      },
       toString:      function() { return 'LOADED'; }
     },
     UNLOADED: {
@@ -214,6 +237,7 @@ CLASS({
       onRemoveAttr:  function() { },
       onAddChildren: function() { },
       onInsertChildren: function() { },
+      onReplaceChild: function() { },
       toString:      function() { return 'UNLOADED'; }
     },
     DESTROYED: {
@@ -231,6 +255,7 @@ CLASS({
       onRemoveAttr:  function() { },
       onAddChildren: function() { },
       onInsertChildren: function() { },
+      onReplaceChild: function() { },
       toString:      function() { return 'DESTROYED'; }
     },
 
@@ -375,7 +400,7 @@ CLASS({
 
     function E(opt_nodeName) {
       var Y = this.Y;
-      if (this.data && (this.Y.data !== this.data)) Y = Y.sub({ data: this.data });
+      if (this.data && !Y.data) Y = Y.sub({ data: this.data });
       var e = Y.elementForName(opt_nodeName);
 
       if ( ! e ) {
@@ -545,6 +570,19 @@ CLASS({
       }
     },
 
+    function replaceChild(newE, oldE) {
+      for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
+        if ( this.childNodes[i] === oldE ) {
+          this.childNodes[i] = newE;
+          oldE.state = this.UNLOADED;
+          oldE.visitChildren('unload');
+          this.state.onReplaceChild.call(this, oldE, newE);
+          newE.load && newE.load();
+          break;
+        }
+      }
+    },
+
     function remove() {
       this.state.remove.call(this);
     },
@@ -588,12 +626,11 @@ CLASS({
     },
 
     // Constructs a default class name for this view, with an optional extra.
-    // Without an extra, results in eg. 'foam-u2-Input'.
+    // Without an extra, results in eg. 'foam-u2-Input-'.
     // With an extra of "foo", results in 'foam-u2-Input-foo'.
     function myCls(opt_extra) {
       var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
-      if (!opt_extra) return base;
-      base.split(/ +/);
+      if (!opt_extra) opt_extra = '';
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
     function enableCls(cls, enabled, opt_negate) {
@@ -707,19 +744,12 @@ CLASS({
 
     function valueE_(value) {
       var self = this;
-      var dyn  = this.E('span');
-      var last = null;
-      var X = this.Y;
-      var l = function() {
-        var e = self.E('span');
-        /*if ( value.get() ) */e.add(value.get() || '');
-        if ( last ) dyn.removeChild(last); //last.remove();
-        dyn.add(last = e);
+      var e    = value.get() || self.E('span');
+      var l    = function() {
+        self.replaceChild(e = value.get() || self.E('span'), e);
       };
       value.addListener(this.framed(l));
-      l();
-
-      return dyn;
+      return e;
     },
     // Better name?
     function tag(opt_nodeName) {
@@ -844,7 +874,8 @@ CLASS({
         manager.install(target);
         this.clickTarget_ = target;
       } else {
-        this.id$el.addEventListener(topic, listener);
+        // TODO: fix
+        this.id$el && this.id$el.addEventListener(topic, listener);
       }
     },
 

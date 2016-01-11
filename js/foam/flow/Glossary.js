@@ -23,7 +23,7 @@ CLASS({
       defaultValue: 'Glossary'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enumerate',
       defaultValue: false
     },

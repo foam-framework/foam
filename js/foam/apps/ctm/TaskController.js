@@ -58,7 +58,7 @@ CLASS({
       name: 'tasks'
     },
     {
-      type: 'foam.apps.ctm.Task',
+      // type: 'foam.apps.ctm.Task',
       name: 'task',
       factory: function() {
         return this.RANDOM_TASK();
@@ -69,13 +69,13 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'numHistoryItems',
       hidden: true,
       defaultValue: 64
     },
     {
-      type: 'foam.apps.ctm.TaskSimulator',
+      // type: 'foam.apps.ctm.TaskSimulator',
       name: 'simulator',
       factory: function() {
         return this.TaskSimulator.create({
@@ -85,7 +85,7 @@ CLASS({
       }
     },
     {
-      type: 'foam.apps.ctm.History',
+      // type: 'foam.apps.ctm.History',
       name: 'memory',
       factory: function() {
         return this.History.create({
@@ -96,7 +96,7 @@ CLASS({
       }
     },
     {
-      type: 'foam.apps.ctm.History',
+      // type: 'foam.apps.ctm.History',
       name: 'cpu',
       factory: function() {
         return this.History.create({
@@ -107,7 +107,7 @@ CLASS({
       }
     },
     {
-      type: 'foam.apps.ctm.History',
+      // type: 'foam.apps.ctm.History',
       name: 'network',
       factory: function() {
         return this.History.create({

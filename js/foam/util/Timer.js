@@ -21,59 +21,59 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'interval',
       help:  'Interval of time between updating time.',
       units: 'ms',
       defaultValue: 10
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'i',
       defaultValue: 0
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name:  'timeWarp',
       defaultValue: 1.0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'duration',
       units: 'ms',
       defaultValue: -1
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'percent',
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'startTime',
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'time',
       help:  'The current time in milliseconds since epoch.',
       preSet: function(_, t) { return Math.ceil(t); },
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'second',
       help:  'The second of the current minute.',
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'minute',
       help:  'The minute of the current hour.',
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'hour',
       help:  'The hour of the current day.',
       defaultValue: 0
@@ -123,6 +123,12 @@ CLASS({
     }
   ],
 
+  methods: [
+    function init() {
+      this.SUPER();
+      this.tick();
+    },
+  ],
   listeners: [
     {
       name: 'tick',

@@ -31,12 +31,12 @@ CLASS({
       defaultValue: 'nbuEDUSignup'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText',
       defaultValue: 'StudyBuddy: Help with School'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'description',
       defaultValue: '<p>You are invited to join the StudyBuddy community.</p><p>Tap this card to get help with school.</p>'
     },

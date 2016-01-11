@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.ui',
   name: 'ImageView',
-
   extends: 'foam.ui.View',
 
   properties: [

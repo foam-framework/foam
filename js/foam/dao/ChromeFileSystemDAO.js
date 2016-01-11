@@ -44,7 +44,7 @@ MODEL({
       }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'backlog_',
       factory: function() { return []; }
     },

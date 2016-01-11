@@ -127,14 +127,14 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         display: flex;
         flex-direction: column;
         height: 100%;
         width: 100%;
       }
 
-      $-body {
+      ^body {
         overflow-x: hidden;
         overflow-y: auto;
       }

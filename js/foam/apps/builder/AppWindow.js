@@ -15,32 +15,32 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
       defaultValue: 'foam.apps.builder.AppConfig',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       defaultValue: 'App Builder App',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'width',
       defaultValue: 800,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'height',
       defaultValue: 700,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minWidth',
       defaultValue: 400,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minHeight',
       defaultValue: 600,
     },

@@ -74,11 +74,11 @@ CLASS({
       defaultValue: DEFAULT_OP
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'row1'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'history',
       view: 'foam.ui.DAOListView',
       factory: function() { return [].sink; }

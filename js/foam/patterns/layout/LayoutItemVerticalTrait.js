@@ -30,7 +30,7 @@ CLASS({
   properties: [
     {
       name: 'verticalConstraints',
-      type: 'foam.patterns.layout.LayoutItemLinearConstraints',
+      // type: 'foam.patterns.layout.LayoutItemLinearConstraints',
       documentation: function() {/* Vertical layout constraints. If undefined,
                               no constraints or preferences are assumed. */},
       factory: function() {

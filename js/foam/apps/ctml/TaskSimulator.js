@@ -17,12 +17,12 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.ctml.Task',
+      // type: 'foam.apps.ctml.Task',
       name: 'task',
       required: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'onTaskUpdate',
       defaultValue: function() {}
     }

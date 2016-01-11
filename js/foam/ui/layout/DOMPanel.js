@@ -23,8 +23,8 @@ CLASS({
     'window'
   ],
   properties: [
-    { model_: 'IntProperty', name: 'width' },
-    { model_: 'IntProperty', name: 'height' },
+    { type: 'Int', name: 'width' },
+    { type: 'Int', name: 'height' },
     { name: 'tagName', defaultValue: 'div' },
     { name: 'data', postSet: function() {
       this.updateHTML();

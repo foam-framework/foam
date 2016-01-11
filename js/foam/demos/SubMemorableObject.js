@@ -28,13 +28,13 @@ CLASS({
       memorable: true
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'other',
       memorable: false,
       factory: function() { return ['a','b','b']; }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'zoomLevel',
       memorable: true
     }

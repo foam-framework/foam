@@ -24,6 +24,6 @@ CLASS({
   properties: [
     'status',
     'description',
-    { model_: 'BooleanProperty', name: 'meansOpen' }
+    { type: 'Boolean', name: 'meansOpen' }
   ]
 });

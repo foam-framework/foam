@@ -40,7 +40,7 @@ CLASS({
       factory: function() { return this.X.QIssue; }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'saving',
       defaultValue: false
     },

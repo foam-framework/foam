@@ -21,11 +21,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'id'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       documentation: function() {/*
         Meaning varies based on $$DOC{ref:'.type'}.
@@ -36,17 +36,17 @@ CLASS({
       */},
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'value',
       defaultValue: 1
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'interactive',
       defaultValue: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'subType',
       defaultValue: 'metrics'
     },
@@ -65,7 +65,7 @@ CLASS({
       ]
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'created',
       factory: function() { return Date.now(); }
     },

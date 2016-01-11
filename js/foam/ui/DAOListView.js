@@ -19,10 +19,10 @@
 CLASS({
   package: 'foam.ui',
   name: 'DAOListView',
+  extends: 'foam.ui.SimpleView',
 
   requires: ['SimpleValue'],
 
-  extends: 'foam.ui.SimpleView',
   traits: ['foam.ui.DAODataViewTrait'],
 
   constants: {
@@ -31,7 +31,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isHidden',
       defaultValue: false,
       postSet: function(_, isHidden) {
@@ -39,7 +39,7 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
       defaultValue: 'foam.ui.DetailView'
     },
@@ -79,19 +79,19 @@ CLASS({
       help: 'The number of chunks currently loaded.'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'painting',
       defaultValue: false,
       transient: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'repaintRequired',
       defaultValue: false,
       transient: true
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'propertyListeners_',
       lazyFactory: function() { return []; }
     }

@@ -29,7 +29,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       name: 'owner',
       type: 'com.google.plus.Person',
       postSet: function(old,nu) {
@@ -37,7 +37,7 @@ CLASS({
       }
     },
     {
-      model_: 'ReferenceProperty',
+      type: 'Reference',
       name: 'source',
       type: 'com.google.plus.Person',
     },

@@ -103,14 +103,19 @@ CLASS({
       this.ElementParser.create();
       this.SharedStyles.create();
       this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
-      this.Y.registerModel(this.Checkbox, 'foam.u2.Checkbox');
+      this.Y.registerModel(this.Checkbox, 'foam.u2.tag.Checkbox');
       this.Y.registerModel(this.TextField, 'foam.u2.TextField');
       this.Y.registerModel(this.MultiLineTextField, 'foam.u2.MultiLineTextField');
-      this.Y.registerModel(this.Select, 'foam.u2.Select');
+      this.Y.registerModel(this.Select, 'foam.u2.tag.Select');
       this.SUPER();
     },
     function initE() {
       this.cls(this.myCls('outer-container')).add(this.stack);
+      this.stack.subscribe(
+          ['stack-element-push'],
+          EventService.oneTime(function() {
+            this.publish(['loaded']);
+          }.bind(this)));
       this.stack.pushView(this.BrowserView.create({
         parent: this,
         model: this.model,

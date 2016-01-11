@@ -19,7 +19,8 @@ CLASS({
   ],
   imports: [
     'dynamicImageDAO',
-    'highResImageDAO'
+    'highResImageDAO',
+    'dynamicImageDataDAO',
   ],
   exports: [
     'as data',
@@ -29,31 +30,38 @@ CLASS({
     [ 'nodeName', 'DYNAMIC-IMAGE' ],
     {
       name: 'data',
-      postSet: function(old,nu) {
+      postSet: function(old, nu) {
         // look up the image id to find the best quality available
         var self = this;
+        if ( old !== nu ) self.clearCurrentImage();
         self.dynamicImageDAO
           .where(self.predicate())
           .orderBy(DESC(self.DynamicImage.LEVEL_OF_DETAIL))
           .limit(1)
           .pipe({
             put: function(img) {
-              self.currentImage = img;
-            }
+              self.setCurrentImage(img);
+            }.bind(this)
           });
       }
     },
     {
       name: 'currentImage',
-      preSet: function(old, nu) {
-        if ( ! old || ( nu && nu.levelOfDetail > old.levelOfDetail ) ) {
-          return nu;
+      postSet: function(old, nu) {
+        if ( ! nu ) {
+          this.imageData = '';
+          return;
         }
-        return old;
+
+        if ( old !== nu ) {
+          this.dynamicImageDataDAO.find(nu.id, {
+            put: function(imgD) {
+              this.imageData = imgD.image;
+            }.bind(this)
+          });
+        }
       },
-      postSet: function(old,nu) {
-        this.imageData = nu.image;
-      }
+      defaultValue: null,
     },
     {
       type: 'Image',
@@ -84,10 +92,26 @@ CLASS({
       this.start('img').attrs({
         src: this.imageData$
       }).style({
-        width: this.width$,
+        'min-width': this.width$,
+        'max-width': this.width$,
+        transition: this.dynamic(function(currentImage) {
+          return currentImage ? 'opacity 250ms ease' : 'none';
+        }, this.currentImage$),
+        opacity: this.dynamic(function(imageData) {
+          return imageData ? '1' : '0';
+        }, this.imageData$),
       }).on('click', this.clickZoom).end();
     },
     function predicate() { return EQ(this.DynamicImage.IMAGE_ID, this.data); },
+    function clearCurrentImage() {
+      this.currentImage = null;
+    },
+    function setCurrentImage(newImage) {
+      var old = this.currentImage, nu = newImage;
+      if ( ! old || (nu && nu.levelOfDetail > old.levelOfDetail) ) {
+        this.currentImage = newImage;
+      }
+    },
   ],
 
   listeners: [

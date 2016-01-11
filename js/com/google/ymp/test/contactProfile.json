@@ -2,12 +2,12 @@
   {
     "model_": "com.google.ymp.bb.ContactProfile",
     "id": "contact_1",
-    "contactDetails": ["555-123-4567", "jbond@mi6.uk"],
+    "contactDetails": ["+ 555-123-4567", "jbond@mi6.uk"],
   },
   {
     "model_": "com.google.ymp.bb.ContactProfile",
     "id": "contact_2",
-    "contactDetails": ["555-888-0909", "@KingJames", "Come to the corner of First and Main"],
+    "contactDetails": ["+ 555-888-0909", "@KingJames", "Come to the corner of First and Main"],
   },
   {
     "model_": "com.google.ymp.bb.ContactProfile",

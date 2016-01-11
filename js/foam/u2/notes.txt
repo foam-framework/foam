@@ -36,7 +36,7 @@ X.registerElement()
 
 X.elementMap_;  -> starts with constant collection
 
-<foam.u2.Input prop={{this.FIRST_NAME}}/>
+<foam.u2.tag.Input prop={{this.FIRST_NAME}}/>
 
 element: true, Property property
 
@@ -89,7 +89,7 @@ onclick={{something}} should not parse to an attribute.
 
 This would be a better template for Board.js:
 
-      <div class="$-row" repeat="row in 0..this.height-1">
+      <div class="^row" repeat="row in 0..this.height-1">
         <:Cell x={{row}} y={{col}} repeat="col in 0..this.width-1"/>
       </div>
 
@@ -111,3 +111,4 @@ This should work in Cells.
 
 
 We need a TableView
+visibility / mode is completely broken

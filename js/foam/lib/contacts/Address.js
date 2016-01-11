@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.contacts.Address",
    "package": "foam.lib.contacts",
    "name": "Address",
    "ids": [
@@ -25,43 +23,43 @@ CLASS({
    ],
    "properties": [
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "type"
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "poBox",
          "label": "P.O. Box",
          "displayWidth": 70
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "street",
          "displayWidth": 70
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "localArea",
          "displayWidth": 70
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "city",
          "displayWidth": 70
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "county",
          "label": "County / Area",
          "displayWidth": 70
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "postalCode",
          "displayWidth": 12
       },
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "country",
          "displayWidth": 40
       }

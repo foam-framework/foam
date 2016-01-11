@@ -29,6 +29,7 @@ CLASS({
   package: 'foam.ui',
   name: 'ScrollView',
   extends: 'foam.ui.AbstractDAOView',
+
   requires: [
     'foam.util.busy.BusyStatus',
     'foam.ui.SpinnerView',
@@ -102,7 +103,7 @@ CLASS({
       documentation: 'If the <tt>rowHeight</tt> is not set, a <tt>rowView</tt> will be constructed and its height checked. This property holds that view so it can be destroyed properly.'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
       documentation: 'The view for each row. Can specify a <tt>preferredHeight</tt>, which will become the <tt>rowHeight</tt> for the <tt>ScrollView</tt> if <tt>rowHeight</tt> is not set explicitly.',
       postSet: function(_, nu) {
@@ -129,7 +130,7 @@ CLASS({
     },
     {
       name: 'cache',
-      model_: 'ArrayProperty',
+      type: 'Array',
       documentation: function() {/*
         <p>An array holding all the rows the <tt>ScrollView</tt> has loaded so far. Only a subset of these are visible (that is, rendered into a $$DOC{ref: "ScrollViewRow"} and stored in <tt>visibleRows</tt>).</p>
 

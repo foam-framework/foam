@@ -72,7 +72,7 @@ CLASS({
 
   templates: [
     function CSS() {/*
-      $ {
+      ^ {
         align-items: center;
         border-bottom: 1px solid #eee;
         display: flex;
@@ -81,7 +81,7 @@ CLASS({
       }
     */},
     function initE() {/*#U2
-      <div class="$">
+      <div class="^">
         {{this.dynamic(function(data, prop) {
           return data.propertyValue(prop);
         }, this.data$, this.prop$)}}

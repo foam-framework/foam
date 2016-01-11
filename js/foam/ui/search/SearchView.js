@@ -31,7 +31,6 @@ CLASS({
     },
     {
       name: 'predicate',
-      type: 'Object',
       defaultValue: TRUE
     }
   ],

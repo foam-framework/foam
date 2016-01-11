@@ -26,12 +26,12 @@ CLASS({
   properties: [
     { model_: 'Property', name: 'id', help: 'The FOAM ID, globally unique.' },
 
-    { model_: 'StringProperty', name: 'displayName' },
-    { model_: 'StringProperty', name: 'description' },
+    { type: 'String', name: 'displayName' },
+    { type: 'String', name: 'description' },
     { model_: 'foam.core.types.JSONImageProperty', name: 'image', jsonPath: [ 'image', 'url' ] },
 
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'com.google.plus.Circle',
       name: 'circles',
       help: "All of this Community's circles.",
