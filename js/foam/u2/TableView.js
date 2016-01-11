@@ -26,7 +26,6 @@ CLASS({
 
   imports: [
     'document',
-    'dynamic',
     'hardSelection$',
     'setTimeout',
     'softSelection$',
@@ -68,7 +67,7 @@ CLASS({
     },
     {
       type: 'Array',
-      name: 'selectedProperties_',
+      name: 'columnProperties_',
       documentation: 'An array of Property objects for all selected ' +
           'properties. That is, the current set of columns. Defaults to the ' +
           'model\'s tableProperties if defined, or all non-hidden properties ' +
@@ -135,10 +134,7 @@ CLASS({
     },
     {
       type: 'Array',
-      name: 'colWidths_',
-      lazyFactory: function() {
-        return [];
-      }
+      name: 'colWidths_'
     },
     {
       type: 'Boolean',
@@ -167,9 +163,9 @@ CLASS({
       var cells = this.headRowE.children;
 
       for (var i = 0; i < cells.length; i++) {
-        if (this.selectedProperties_[i].tableWidth) {
+        if (this.columnProperties_[i].tableWidth) {
           cells[i].style({
-            width: this.selectedProperties_[i].tableWidth + 'px',
+            width: this.columnProperties_[i].tableWidth + 'px',
             'flex-grow': null
           });
         } else {
@@ -275,7 +271,7 @@ CLASS({
         // DOM.
         this.setTimeout(this.onResize, 100);
         return this.headRowE;
-      }.bind(this), this.selectedProperties_$, this.sortOrder$));
+      }.bind(this), this.columnProperties_$, this.sortOrder$));
 
       // Attach a dynamic class to the head that reveals the column resizers
       // when one of them is being dragged.
@@ -335,7 +331,7 @@ CLASS({
       name: 'makeRow',
       code: function(map, Y) {
         map = map || {};
-        map.properties$ = this.selectedProperties_$;
+        map.properties$ = this.columnProperties_$;
         return this.rowView(map, Y);
       }
     },

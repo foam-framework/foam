@@ -86,7 +86,7 @@ CLASS({
       lazyFactory: function() {
         var editor = this.EditColumnsView.create({
           properties$: this.allProperties_$,
-          selectedProperties$: this.selectedProperties_$,
+          selectedProperties$: this.columnProperties_$,
           model$: this.model$
         });
         return this.OverlayDropdown.create().add(editor);

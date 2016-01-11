@@ -18,17 +18,18 @@ CLASS({
   package: 'foam.u2.md',
   name: 'OverlayDropdown',
   extends: 'foam.u2.Element',
-  requires: [
-  ],
 
   imports: [
     'document',
-    'dynamic',
     'window',
   ],
   exports: [
     'as dropdown',
   ],
+
+  documentation: 'A popup overlay that grows from the top-right corner of ' +
+      'its container. Useful for e.g. "..." overflow menus in action bars. ' +
+      'Just $$DOC{ref:".add"} things to this container.',
 
   properties: [
     {

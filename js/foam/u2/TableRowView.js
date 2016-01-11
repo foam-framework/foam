@@ -19,7 +19,6 @@ CLASS({
   name: 'TableRowView',
   extends: 'foam.u2.View',
   imports: [
-    'dynamic',
     'hardSelection$',
     'tableView',
   ],
