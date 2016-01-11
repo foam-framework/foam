@@ -762,14 +762,14 @@ CLASS({
       var e    = nextE();
       var l    = function() {
         var first = Array.isArray(e) ? e[0] : e;
-        var nextE = nextE();
-        this.insertBefore(first, nextE);
+        var e2 = nextE();
+        self.insertBefore(e2, first);
         if ( Array.isArray(e) ) {
           for ( var i = 0 ; i < e.length ; i++ ) e.remove();
         } else {
           e.remove();
         }
-        e = nextE();
+        e = e2;
       };
       value.addListener(this.framed(l));
       return e;
