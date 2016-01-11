@@ -524,7 +524,7 @@ CLASS({
       label: 'Protobuf tag',
       required: false,
       help: 'The protobuf tag number for this field.'
-    },
+    }
   ]
 });
 
