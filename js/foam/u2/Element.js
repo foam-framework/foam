@@ -752,6 +752,28 @@ CLASS({
     },
 
     function valueE_(value) {
+      function nextE() {
+        var e = value.get();
+        return ! e || ( Array.isArray(e) && e.length == 0 ) ?
+          self.E('span') :
+          e ;
+      }
+      var self = this;
+      var e    = nextE();
+      var l    = function() {
+        var first = Array.isArray(e) ? e[0] : e;
+        var nextE = nextE();
+        this.insertBefore(first, nextE);
+        if ( Array.isArray(e) ) {
+          for ( var i = 0 ; i < e.length ; i++ ) e.remove();
+        } else {
+          e.remove();
+        }
+        e = nextE();
+      };
+      value.addListener(this.framed(l));
+      return e;
+      /*
       var self = this;
       var e    = value.get() || self.E('span');
       var l    = function() {
@@ -759,6 +781,7 @@ CLASS({
       };
       value.addListener(this.framed(l));
       return e;
+      */
     },
     // Better name?
     function tag(opt_nodeName) {
@@ -839,7 +862,15 @@ CLASS({
       } else {
         this.childNodes.splice(index, 0, children);
       }
-      this.state.onInsertChildren.call(this, Array.isArray(children) ? children : [children], reference, before ? 'beforebegin' : 'afterend');
+      this.state.onInsertChildren.call(
+        this,
+        Array.isArray(children) ?
+          children :
+          [children],
+        reference,
+        before ?
+          'beforebegin' :
+          'afterend');
       return this;
     },
 
