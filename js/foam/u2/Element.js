@@ -569,7 +569,7 @@ CLASS({
       }
     },
 
-    function replaceChild(oldE, newE) {
+    function replaceChild(newE, oldE) {
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === oldE ) {
           this.childNodes[i] = newE;
@@ -745,7 +745,7 @@ CLASS({
       var self = this;
       var e    = value.get() || self.E('span');
       var l    = function() {
-        self.replaceChild(e, e = value.get() || self.E('span'));
+        self.replaceChild(e = value.get() || self.E('span'), e);
       };
       value.addListener(this.framed(l));
       return e;
