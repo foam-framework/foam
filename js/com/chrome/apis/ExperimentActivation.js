@@ -19,6 +19,9 @@ CLASS({
   package: 'com.chrome.apis',
   name: 'ExperimentActivation',
   ids: ['origin', 'experiment'],
+  requires: [
+    'com.chrome.apis.ApiKey'
+  ],
   properties: [
     {
       name: 'origin',
@@ -35,6 +38,16 @@ CLASS({
     {
       name: 'apiKeys',
       relatedModel: 'com.chrome.apis.ApiKey'
+    }
+  ],
+  actions: [
+    {
+      name: 'generateApiKey',
+      code: function() {
+        // TODO: Request new key from backend.
+        this.apiKeys.removeAll();
+        this.apiKeys.put(this.ApiKey.create());
+      }
     }
   ]
 });
