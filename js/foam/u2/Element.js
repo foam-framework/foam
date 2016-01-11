@@ -86,6 +86,7 @@ CLASS({
 
         this.visitChildren('load');
         if ( this.focused ) this.id$el.focus();
+        this.id$el.e_ = this;
       },
       unload: function() {
         this.state = this.UNLOADED;
