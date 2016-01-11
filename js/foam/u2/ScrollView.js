@@ -14,24 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2',
   name: 'ScrollView',
   extends: 'foam.u2.View',
+
   requires: [
     'foam.input.touch.GestureTarget',
     'foam.util.busy.BusyStatus',
-    'foam.u2.SpinnerView',
+    'foam.u2.SpinnerView'
   ],
 
   imports: [
     'dynamic',
     'gestureManager',
     'selection$',
-    'window',
+    'window'
   ],
   exports: [
-    'as scrollView',
+    'as scrollView'
   ],
 
   documentation: function() {/*
@@ -51,7 +53,7 @@ CLASS({
   */},
 
   constants: {
-    ROW_CLICK: ['row-click'],
+    ROW_CLICK: ['row-click']
   },
 
   properties: [
@@ -59,14 +61,14 @@ CLASS({
       name: 'data',
       postSet: function(old, nu) {
         this.dao = nu;
-      },
+      }
     },
     {
       // TODO(braden): This property only exists because we need to change its
       // type to DAOProperty.
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
-      onDAOUpdate: 'onDAOUpdate',
+      onDAOUpdate: 'onDAOUpdate'
     },
     {
       name: 'model',
@@ -87,7 +89,7 @@ CLASS({
     },
     {
       name: 'scrollHeight',
-      documentation: 'The total height of the scrollable pane. Generally <tt>count * rowHeight</tt>.',
+      documentation: 'The total height of the scrollable pane. Generally <tt>count * rowHeight</tt>.'
     },
     {
       name: 'scrollTop',
@@ -140,10 +142,10 @@ CLASS({
       }
     },
     {
-      name: 'containerE',
+      name: 'containerE'
     },
     {
-      name: 'scrollerE',
+      name: 'scrollerE'
     },
     {
       name: 'viewportHeight',
@@ -442,7 +444,7 @@ CLASS({
           }
         }
 
-        for (var i = 0; i < toAdd.length; i++) {
+        for ( var i = 0 ; i < toAdd.length ; i++ ) {
           this.containerE.add(toAdd[i]);
         }
 
@@ -544,7 +546,7 @@ CLASS({
           });
       this.containerE.end();
       this.scrollerE.end();
-    },
+    }
   ],
 
   templates: [
@@ -568,7 +570,7 @@ CLASS({
         transform: translate3d(0,0,0);
         width: 100%;
       }
-    */},
+    */}
   ],
 
   models: [
@@ -578,24 +580,24 @@ CLASS({
       documentation: 'Wrapper for a single row in a ScrollView. Users should not need to create or manipulate these; they\'re internal to the ScrollView.',
       imports: [
         'dynamic',
-        'scrollView',
+        'scrollView'
       ],
       properties: [
         {
           name: 'data',
           postSet: function(old, nu) {
             this.view.data = nu;
-          },
+          }
         },
         {
           name: 'view',
           postSet: function(old, nu) {
             if (nu) nu.data = this.data;
-          },
+          }
         },
         {
           name: 'y',
-        },
+        }
       ],
 
       methods: [
@@ -611,13 +613,13 @@ CLASS({
 
           this.add(this.view);
           this.on('click', this.onClick);
-        },
+        }
       ],
 
       listeners: [
         function onClick() {
           this.scrollView.publish(this.scrollView.ROW_CLICK, this.data);
-        },
+        }
       ],
 
       templates: [
@@ -627,7 +629,7 @@ CLASS({
             position: absolute;
             width: 100%;
           }
-        */},
+        */}
       ]
     }
   ]
