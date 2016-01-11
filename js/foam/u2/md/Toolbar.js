@@ -70,11 +70,13 @@ CLASS({
   ],
 
   templates: [
+    // TODO(braden): Once dynamic returning arrays works again, revert the
+    // <actions> tags below.
     function initE() {/*#U2
       <toolbar class="^">
-        <actions class="^actions ^left">{{this.leftActionButtons_$}}</actions>
+        {{this.dynamic(function(buttons) { return this.E('actions').cls(this.myCls('actions')).cls(this.myCls('left')).add(buttons); }.bind(this), this.leftActionButtons_$)}}
         <header class="^title">{{this.title$}}</header>
-        <actions class="^actions ^right">{{this.rightActionButtons_$}}</actions>
+        {{this.dynamic(function(buttons) { return this.E('actions').cls(this.myCls('actions')).cls(this.myCls('right')).add(buttons); }.bind(this), this.rightActionButtons_$)}}
       </toolbar>
     */},
     function CSS() {/*

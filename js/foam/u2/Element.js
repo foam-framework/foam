@@ -87,6 +87,16 @@ CLASS({
 
         this.visitChildren('load');
         if ( this.focused ) this.id$el.focus();
+        // Allows you to take the DOM element and map it back to a
+        // foam.u2.Element object.  This is expensive when building
+        // lots of DOM since it adds an extra DOM call per Element.
+        // But you could use it to cut down on the number of listeners
+        // in something like a table view by doing per table listeners
+        // rather than per-row listeners and in the event finding the right
+        // U2 view by walking the DOM tree and checking e_.
+        // This could save more time than the work spent here adding e_ to each
+        // DOM element.
+        // this.id$el.e_ = this;
       },
       unload: function() {
         this.state = this.UNLOADED;
