@@ -367,12 +367,7 @@ CLASS({
       this.window.addEventListener('resize', this.onResize);
       this.onResize();
 
-      if ( this.gestureManager ) {
-        this.gestureManager.install(this.scrollGesture);
-      } else {
-        console.warn('Missing gestureManager in ScrollView.');
-      }
-
+      if (this.gestureManager) this.gestureManager.install(this.scrollGesture);
       this.scrollerE.on('scroll', this.onScroll);
 
       if (this.rowHeight < 0) {
@@ -474,7 +469,7 @@ CLASS({
     function unload() {
       this.softCleanup();
       this.window.removeEventListener('resize', this.onResize);
-      this.gestureManager.uninstall(this.scrollGesture);
+      if (this.gestureManager) this.gestureManager.uninstall(this.scrollGesture);
     },
 
     // Cleans up all internal state in the ScrollView, but doesn't run the
