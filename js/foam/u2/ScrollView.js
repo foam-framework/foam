@@ -367,7 +367,12 @@ CLASS({
       this.window.addEventListener('resize', this.onResize);
       this.onResize();
 
-      this.gestureManager.install(this.scrollGesture);
+      if ( this.gestureManager ) {
+        this.gestureManager.install(this.scrollGesture);
+      } else {
+        console.warn('Missing gestureManager in ScrollView.');
+      }
+
       this.scrollerE.on('scroll', this.onScroll);
 
       if (this.rowHeight < 0) {
