@@ -33,7 +33,7 @@ CLASS({
 
   properties: [
     {
-      type: 'DAO',
+      // type: 'DAO',
       name: 'heroDAO',
       toPropertyE: function(X) {
         return X.lookup('foam.u2.DAOListView').create({rowView: 'foam.demos.heroes.CitationView'}, X);
@@ -54,7 +54,7 @@ CLASS({
       }
     },
     {
-      type: 'DAO',
+      // type: 'DAO',
       name: 'starredHeroDAO',
       toPropertyE: function(X) {
         return X.lookup('foam.u2.DAOListView').create({rowView: 'foam.demos.heroes.DashboardCitationView'}, X);
