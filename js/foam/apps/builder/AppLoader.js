@@ -68,12 +68,10 @@ CLASS({
     },
     {
       model_: 'foam.core.types.DAOProperty',
-      type: 'com.google.analytics.AnalyticsDAO',
       name: 'appMetricsDAO',
     },
     {
       model_: 'foam.core.types.DAOProperty',
-      type: 'com.google.analytics.AnalyticsDAO',
       name: 'appBuilderMetricsDAO',
     },
     {

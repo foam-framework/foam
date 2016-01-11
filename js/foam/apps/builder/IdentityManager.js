@@ -53,13 +53,11 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.XHRManager',
       name: 'xhrManager',
       required: true,
       transient: true,
     },
     {
-      type: 'foam.apps.builder.Identity',
       name: 'identity',
       documentation: function() {/* Current identity. */},
       defaultValue: null,
@@ -80,7 +78,6 @@ CLASS({
       lazyFactory: function() { return []; },
     },
     {
-      type: 'foam.apps.builder.XHRBinding',
       name: 'oauthBinding_',
       documentation: function() {/*
         $$DOC{ref:'foam.apps.builder.XHRBinding'} for current identity's
@@ -95,7 +92,6 @@ CLASS({
       defaultValue: false,
     },
     {
-      type: 'foam.util.Base64Encoder',
       name: 'b64e_',
       lazyFactory: function() { return this.Base64Encoder.create({}, this.Y); },
     },

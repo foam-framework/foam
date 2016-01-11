@@ -32,7 +32,6 @@ CLASS({
       defaultValue: 'New Kiosk App',
     },
     {
-      type: 'foam.apps.builder.AppWindow',
       name: 'appWindow',
       lazyFactory: function() {
         return this.AppWindow.create({

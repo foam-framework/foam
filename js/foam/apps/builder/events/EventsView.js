@@ -64,14 +64,12 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.TOSData',
       name: 'tosData',
       lazyFactory: function() {
         return this.TOSData.create({}, this.Y);
       },
     },
     {
-      type: 'foam.ui.md.PopupView',
       name: 'tosView',
       lazyFactory: function() {
         return this.PopupView.create({

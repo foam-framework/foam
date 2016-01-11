@@ -22,11 +22,9 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.ImportExportFlow',
       name: 'data',
     },
     {
-      type: 'foam.apps.builder.ConfigParser',
       name: 'configParser',
       lazyFactory: function() {
         return this.ConfigParser.create({}, this.Y).parser;

@@ -27,7 +27,6 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.AppConfig',
       name: 'data',
       postSet: function(old, nu) {
         if ( old ) {

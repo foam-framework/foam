@@ -62,7 +62,6 @@ CLASS({
     {
       name: 'dataConfigs',
       help: 'The data and dao definitions this app uses.',
-      type: 'DataConfig[]',
       factory: function() { return []; },
       adapt: function(old,nu) {
         if ( Array.isArray(nu) ) {
@@ -223,7 +222,6 @@ CLASS({
       defaultValue: 600
     },
     {
-      type: 'foam.apps.builder.AppWindow',
       name: 'appWindow',
       lazyFactory: function() {
         return this.AppWindow.create({

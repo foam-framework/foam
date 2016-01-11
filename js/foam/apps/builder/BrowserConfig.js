@@ -101,18 +101,15 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.BrowserConfig',
       name: 'menuSelection',
     },
     {
-      type: 'foam.apps.builder.Identity',
       name: 'accountSelection',
       defaultValueFn: function() {
         return this.identityManager.getIdentity();
       },
     },
     {
-      type: 'foam.apps.builder.ViewMenuItem',
       name: 'viewSelection',
       postSet: function(_, nu) {
         if ( nu ) nu.viewFactory({ data: this }).open();

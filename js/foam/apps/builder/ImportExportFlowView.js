@@ -25,7 +25,6 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.ImportExportFlow',
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;
@@ -46,7 +45,6 @@ CLASS({
       defaultValue: true,
     },
     {
-      type: 'foam.apps.builder.StateView',
       name: 'stateView',
       lazyFactory: function() {
         var view = this.StateView.create({}, this.Y);

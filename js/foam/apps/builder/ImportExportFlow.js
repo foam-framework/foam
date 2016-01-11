@@ -21,7 +21,6 @@ CLASS({
     'dao',
     'toolbar',
     {
-      type: 'foam.apps.builder.AppConfig',
       name: 'config',
       defaultValue: null,
       postSet: function(old, nu) {

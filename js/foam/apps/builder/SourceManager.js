@@ -25,7 +25,6 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.XHRManager',
       name: 'xhrManager',
       required: true,
       transient: true,

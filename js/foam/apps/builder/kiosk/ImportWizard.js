@@ -36,7 +36,6 @@ CLASS({
       defaultValue: 1,
     },
     {
-      type: 'foam.apps.builder.ImportExportFlow',
       name: 'importFlow',
       lazyFactory: function() {
         return this.ImportExportFlow.create({

@@ -19,7 +19,6 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.Identity',
       name: 'identity',
       lazyFactory: function() {
         return DEBUG ? (

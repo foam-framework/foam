@@ -22,7 +22,6 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.BrowserConfig',
       name: 'data',
     },
     {
