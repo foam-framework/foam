@@ -19,6 +19,8 @@ CLASS({
   package: 'foam.u2',
   name: 'Element',
 
+  documentation: 'Virtual-DOM Element. Root model for all U2 UI components.',
+
   requires: [
     'foam.u2.ElementValue'
   ],
@@ -472,6 +474,32 @@ CLASS({
       return this.ElementValue.create(args);
     },
 
+
+    //
+    // Lifecycle
+    //
+
+    function output(/* OutputStream */ out) {
+      /* Transitions to the OUTPUT state, outputting self to supplied OutputStream. */
+      return this.state.output.call(this, out);
+    },
+
+    function load() {
+      /* Transitions to the LOADED state, initializing DOM. */
+      this.state.load.call(this);
+    },
+
+    function unload() {
+      /* Transitions to the UNLOADED state, removing DOM. */
+      this.state.unload.call(this);
+    },
+
+    function destroy() {
+      /* Transition to the DESTROYED state. Reserved for future use. */
+      this.state.destroy.call(this);
+    },
+
+
     //
     // State
     //
@@ -521,9 +549,11 @@ CLASS({
       }
     },
 
+
     //
     // Focus
     //
+
     function focus() {
       this.focused = true;
       this.onFocus();
@@ -535,9 +565,11 @@ CLASS({
       return this;
     },
 
+
     //
     // Visibility
     //
+
     function show(opt_shown) {
       if ( opt_shown ) {
         this.removeCls('foam-u2-Element-hidden');
@@ -551,23 +583,6 @@ CLASS({
       return this.show(opt_hidden === undefined ? false : ! opt_hidden);
     },
 
-    //
-    // Lifecycle
-    //
-    function load() {
-      /* Transitions to the LOADED state, initializing DOM. */
-      this.state.load.call(this);
-    },
-
-    function unload() {
-      /* Transitions to the UNLOADED state, removing DOM. */
-      this.state.unload.call(this);
-    },
-
-    function destroy() {
-      /* Transition to the DESTROYED state. Reserved for future use. */
-      this.state.destroy.call(this);
-    },
 
     //
     // DOM Compatibility
@@ -674,6 +689,16 @@ CLASS({
       }
     },
 
+    function insertBefore(child, reference) {
+      /* Insert a single child before the reference element. */
+      return this.insertAt_(child, reference, true);
+    },
+
+    function insertAfter(child, reference) {
+      /* Insert a single child after the reference element. */
+      return this.insertAt_(child, reference, false);
+    },
+
     function remove() {
       /*
         Remove this Element from its parent Element.
@@ -699,6 +724,7 @@ CLASS({
         }
       }
     },
+
 
     //
     // Fluent Methods
@@ -790,51 +816,8 @@ CLASS({
       return this;
     },
 
-    function cls_(oldClass, newClass) {
-      if ( oldClass === newClass ) return;
-      this.removeCls(oldClass);
-      if ( newClass ) {
-        this.classes[newClass] = true;
-        this.onSetCls(newClass, true);
-      }
-    },
-
-    function dynamicAttr_(key, fn) {
-      this.dynamicFn(fn, function(value) {
-        this.setAttribute(key, value);
-      }.bind(this));
-    },
-
-    function valueAttr_(key, value) {
-      var l = function() {
-        this.setAttribute(key, value.get());
-      }.bind(this);
-      value.addListener(l);
-      l();
-    },
-
     function attrs(map) {
       for ( var key in map ) this.setAttribute(key, map[key]);
-      return this;
-    },
-
-    function dynamicStyle_(key, fn) {
-      this.dynamicFn(fn, function(value) {
-        this.style_(key, value);
-      }.bind(this));
-    },
-
-    function valueStyle_(key, v) {
-      var l = function(value) {
-        this.style_(key, v.get());
-      }.bind(this);
-      v.addListener(l);
-      l();
-    },
-
-    function style_(key, value) {
-      this.css[key] = value;
-      this.onSetStyle(key, value);
       return this;
     },
 
@@ -851,48 +834,8 @@ CLASS({
       return this;
     },
 
-    function valueE_(value) {
-      var self = this;
-
-      function nextE() {
-        var e = value.get();
-
-        // Convert e or e[0] into a SPAN if needed,
-        // So that it can be located later.
-        if ( ! e ) {
-          e = self.E('SPAN');
-        } else if ( Array.isArray(e) ) {
-          if ( e.length ) {
-            if ( typeof e[0] === 'string' )
-              e[0] = self.E('SPAN').add(e[0]);
-          } else {
-            e = self.E('SPAN');
-          }
-        } else if ( typeof e === 'string' ) {
-          e = self.E('SPAN').add(e);
-        }
-
-        return e;
-      }
-
-      var e = nextE();
-      var l = function() {
-        var first = Array.isArray(e) ? e[0] : e;
-        var e2 = nextE();
-        self.insertBefore(e2, first);
-        if ( Array.isArray(e) ) {
-          for ( var i = 0 ; i < e.length ; i++ ) e.remove();
-        } else {
-          e.remove();
-        }
-        e = e2;
-      };
-      value.addListener(this.framed(l));
-      return e;
-    },
-
-    // Better name?
     function tag(opt_nodeName) {
+      /* Create a new Element and add it as a child. Return this. */
       var c = this.E(opt_nodeName || 'br');
       c.parent_ = this;
       this.add(c);
@@ -900,6 +843,7 @@ CLASS({
     },
 
     function start(opt_nodeName) {
+      /* Create a new Element and add it as a child. Return the child. */
       var c = this.E(opt_nodeName);
       c.parent_ = this;
       this.add(c);
@@ -907,12 +851,14 @@ CLASS({
     },
 
     function end() {
+      /* Return this Element's parent. Used to terminate a start(). */
       var p = this.parent_;
       this.parent_ = null;
       return p;
     },
 
     function add(/* vargs */) {
+      /* Add Children to this Element. */
       var es = [];
       var Y = this.Y;
 
@@ -946,45 +892,13 @@ CLASS({
       return this;
     },
 
-    function insertBefore(child, reference) {
-      return this.insertAt_(child, reference, true);
-    },
-
-    function insertAfter(child, reference) {
-      return this.insertAt_(child, reference, false);
-    },
-
-    function addBefore(reference/* vargs */) {
+    function addBefore(reference/*, vargs */) {
+      /* Add a variable number of children before the reference element. */
       var children = [];
       for ( var i = 1 ; i < arguments.length ; i++ ) {
         children.push(arguments[i]);
       }
       return this.insertAt_(children, reference, true);
-    },
-
-    function insertAt_(children, reference, before) {
-      var i = this.childNodes.indexOf(reference);
-
-      if ( i == -1 ) {
-        console.warn("Reference node isn't a child of this.");
-        return this;
-      }
-
-      if ( ! Array.isArray(children) ) children = [ children ];
-
-      var Y = this.Y;
-      children = children.map(function(e) { return e.toE ? e.toE(Y) : e; });
-
-      var index = before ? i : (i + 1);
-      this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
-      this.state.onInsertChildren.call(
-        this,
-        children,
-        reference,
-        before ?
-          'beforebegin' :
-          'afterend');
-      return this;
     },
 
     function removeAllChildren() {
@@ -1005,46 +919,10 @@ CLASS({
       return this;
     },
 
-    function addEventListener_(topic, listener) {
-      if ( topic === 'click' && this.X.gestureManager ) {
-        var manager = this.X.gestureManager;
-        var self = this;
-        var target = this.X.lookup('foam.input.touch.GestureTarget').create({
-          containerID: this.id$el.id,
-          enforceContainment: true,
-          gesture: 'tap',
-          handler: {
-            tapClick: function(pointMap) {
-              return listener({
-                preventDefault: function() { },
-                stopPropagation: function() { },
-                pointMap: pointMap,
-                target: self.id$el
-              });
-            }
-          }
-        });
-        manager.install(target);
-        this.clickTarget_ = target;
-      } else {
-        // TODO: fix
-        this.id$el && this.id$el.addEventListener(topic, listener);
-      }
-    },
-
-    function removeEventListener_(topic, listener) {
-      if ( topic === 'click' && this.X.gestureManager && this.clickTarget_ ) {
-        this.X.gestureManager.uninstall(this.clickTarget_);
-        this.clickTarget = '';
-      } else {
-        this.id$el.removeEventListener(topic, listener);
-      }
-    },
 
     //
     // Output Methods
     //
-    function output(out) { return this.state.output.call(this, out); },
 
     function outputInnerHTML(out) {
       for ( var i = 0 ; i < this.childNodes.length ; i++ )
@@ -1098,6 +976,165 @@ CLASS({
       return this;
     },
 
+    function toString() {
+      var s = this.createOutputStream();
+      this.output_(s);
+      return s.toString();
+    },
+
+    function toHTML() { return this.outerHTML; },
+
+    function initHTML() { this.load(); },
+
+
+    //
+    // Internal
+    //
+
+    function insertAt_(children, reference, before) {
+      var i = this.childNodes.indexOf(reference);
+
+      if ( i == -1 ) {
+        console.warn("Reference node isn't a child of this.");
+        return this;
+      }
+
+      if ( ! Array.isArray(children) ) children = [ children ];
+
+      var Y = this.Y;
+      children = children.map(function(e) { return e.toE ? e.toE(Y) : e; });
+
+      var index = before ? i : (i + 1);
+      this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
+      this.state.onInsertChildren.call(
+        this,
+        children,
+        reference,
+        before ?
+          'beforebegin' :
+          'afterend');
+      return this;
+    },
+
+    function cls_(oldClass, newClass) {
+      if ( oldClass === newClass ) return;
+      this.removeCls(oldClass);
+      if ( newClass ) {
+        this.classes[newClass] = true;
+        this.onSetCls(newClass, true);
+      }
+    },
+
+    function dynamicAttr_(key, fn) {
+      this.dynamicFn(fn, function(value) {
+        this.setAttribute(key, value);
+      }.bind(this));
+    },
+
+    function valueAttr_(key, value) {
+      var l = function() {
+        this.setAttribute(key, value.get());
+      }.bind(this);
+      value.addListener(l);
+      l();
+    },
+
+    function dynamicStyle_(key, fn) {
+      this.dynamicFn(fn, function(value) {
+        this.style_(key, value);
+      }.bind(this));
+    },
+
+    function valueStyle_(key, v) {
+      var l = function(value) {
+        this.style_(key, v.get());
+      }.bind(this);
+      v.addListener(l);
+      l();
+    },
+
+    function style_(key, value) {
+      this.css[key] = value;
+      this.onSetStyle(key, value);
+      return this;
+    },
+
+    function valueE_(value) {
+      var self = this;
+
+      function nextE() {
+        var e = value.get();
+
+        // Convert e or e[0] into a SPAN if needed,
+        // So that it can be located later.
+        if ( ! e ) {
+          e = self.E('SPAN');
+        } else if ( Array.isArray(e) ) {
+          if ( e.length ) {
+            if ( typeof e[0] === 'string' )
+              e[0] = self.E('SPAN').add(e[0]);
+          } else {
+            e = self.E('SPAN');
+          }
+        } else if ( typeof e === 'string' ) {
+          e = self.E('SPAN').add(e);
+        }
+
+        return e;
+      }
+
+      var e = nextE();
+      var l = function() {
+        var first = Array.isArray(e) ? e[0] : e;
+        var e2 = nextE();
+        self.insertBefore(e2, first);
+        if ( Array.isArray(e) ) {
+          for ( var i = 0 ; i < e.length ; i++ ) e.remove();
+        } else {
+          e.remove();
+        }
+        e = e2;
+      };
+      value.addListener(this.framed(l));
+      return e;
+    },
+
+    function addEventListener_(topic, listener) {
+      if ( topic === 'click' && this.X.gestureManager ) {
+        var manager = this.X.gestureManager;
+        var self = this;
+        var target = this.X.lookup('foam.input.touch.GestureTarget').create({
+          containerID: this.id$el.id,
+          enforceContainment: true,
+          gesture: 'tap',
+          handler: {
+            tapClick: function(pointMap) {
+              return listener({
+                preventDefault: function() { },
+                stopPropagation: function() { },
+                pointMap: pointMap,
+                target: self.id$el
+              });
+            }
+          }
+        });
+        manager.install(target);
+        this.clickTarget_ = target;
+      } else {
+        // TODO: fix
+        this.id$el && this.id$el.addEventListener(topic, listener);
+      }
+    },
+
+    function removeEventListener_(topic, listener) {
+      if ( topic === 'click' && this.X.gestureManager && this.clickTarget_ ) {
+        this.X.gestureManager.uninstall(this.clickTarget_);
+        this.clickTarget = '';
+      } else {
+        this.id$el.removeEventListener(topic, listener);
+      }
+    },
+
     function output_(out) {
       /** Output the element without transitioning to the OUTPUT state. **/
       out('<', this.nodeName);
@@ -1146,22 +1183,13 @@ CLASS({
       out('>');
     },
 
-    function toString() {
-      var s = this.createOutputStream();
-      this.output_(s);
-      return s.toString();
-    },
-
-    function toHTML() { return this.outerHTML; },
-
-    function initHTML() { this.load(); },
 
     //
-    // Template Support (internal)
+    // Template Support
     //
     // Shorter versions of methods used by TemplateParser.
     //
-    //            !!! INTERNAL USE ONLY !!!
+    // !!! INTERNAL USE ONLY !!!
 
     function a() { return this.add.apply(this, arguments); },
     function c() { return this.cls.apply(this, arguments); },
