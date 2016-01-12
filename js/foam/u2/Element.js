@@ -206,7 +206,6 @@ CLASS({
         for ( var i = 0 ; i < children.length ; i++ ) {
           out(children[i]);
         }
-
         reference.id$el.insertAdjacentHTML(where, out);
         for ( var i = 0 ; i < children.length ; i++ ) {
           children[i].load && children[i].load();
@@ -802,31 +801,34 @@ CLASS({
       return p;
     },
     function add(/* vargs */) {
-      var args = new Array(arguments.length);
-      for ( var i = 0 ; i < arguments.length ; i++ ) args[i] = arguments[i];
+      var es = [];
+      var Y = this.Y;
 
-      for ( var i = 0 ; i < args.length ; i++ ) {
-        var c = args[i];
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        var c = arguments[i];
 
         // Remove null values
         if ( c === undefined || c === null ) {
-          Array.prototype.splice.call(args, i, 1);
-          i--;
-          continue;
+          // nop
         } else if ( Array.isArray(c) ) {
-          Array.prototype.splice.apply(args, [i, 1].concat(c));
-          i--;
-          continue;
+          es = es.concat(c.map(function (c) { return c.toE ? c.toE(Y) : c; }));
         } else if ( c.toE ) {
-          args[i] = c.toE(this.Y);
+          es.push(c.toE(Y));
         } else if ( Value.isInstance(c) ) {
-          args[i] = this.valueE_(c);
+          var v = this.valueE_(c);
+          if ( Array.isArray(v) ) {
+            es = es.concat(v.map(function (c) { return c.toE ? c.toE(Y) : c; }));
+          } else {
+            es.push(v.toE ? v.toE(Y) : v);
+          }
+        } else {
+          es.push(c);
         }
       }
 
-      if ( args.length ) {
-        this.childNodes.push.apply(this.childNodes, args);
-        this.onAddChildren.apply(this, args);
+      if ( es.length ) {
+        this.childNodes.push.apply(this.childNodes, es);
+        this.onAddChildren.apply(this, es);
       }
 
       return this;
@@ -856,17 +858,16 @@ CLASS({
         return this;
       }
 
+      if ( ! Array.isArray(children) ) children = [ children ];
+
+      var Y = this.Y;
+      children = children.map(function(e) { return e.toE ? e.toE(Y) : e; });
+
       var index = before ? i : (i + 1);
-      if ( Array.isArray(children) ) {
-        this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
-      } else {
-        this.childNodes.splice(index, 0, children);
-      }
+      this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
       this.state.onInsertChildren.call(
         this,
-        Array.isArray(children) ?
-          children :
-          [children],
+        children,
         reference,
         before ?
           'beforebegin' :
