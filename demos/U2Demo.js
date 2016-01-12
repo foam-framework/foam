@@ -295,6 +295,11 @@ var e = E('div').add(
 e.addBefore(e.children[1], E('span').add('there '), E('span').add('world'));
 e.write();
 
+var oldChild = E().add('First Child').style({color: 'red'});
+var newChild = E().add('Second Child').style({color: 'green'});
+var e = E('div').tag('br').add(oldChild).tag('br').write();
+e.replaceChild(newChild, oldChild);
+
 var dv2 = foam.u2.DetailView.create({data: AllViews.create()}).write();
 var dv3 = foam.u2.DetailView.create({data: dv2.data}).write();
 
