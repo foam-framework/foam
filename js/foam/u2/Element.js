@@ -339,6 +339,9 @@ CLASS({
       factory: function () { return this.INITIAL; }
     },
     {
+      name: 'parentNode'
+    },
+    {
       name: 'nodeName',
       adapt: function(_, v) {
         // Convert to uppercase so that checks against OPTIONAL_CLOSE_TAGS
@@ -852,7 +855,6 @@ CLASS({
     function tag(opt_nodeName) {
       /* Create a new Element and add it as a child. Return this. */
       var c = this.E(opt_nodeName || 'br');
-      c.parent_ = this;
       this.add(c);
       return this;
     },
@@ -860,16 +862,13 @@ CLASS({
     function start(opt_nodeName) {
       /* Create a new Element and add it as a child. Return the child. */
       var c = this.E(opt_nodeName);
-      c.parent_ = this;
       this.add(c);
       return c;
     },
 
     function end() {
       /* Return this Element's parent. Used to terminate a start(). */
-      var p = this.parent_;
-      this.parent_ = null;
-      return p;
+      return this.parentNode;
     },
 
     function add(/* vargs */) {
@@ -900,6 +899,10 @@ CLASS({
       }
 
       if ( es.length ) {
+        for ( var i = 0 ; i < es.length ; i++ )
+          if ( foam.u2.Element.isInstance(es[i]) )
+            es[i].parentNode = this;
+
         this.childNodes.push.apply(this.childNodes, es);
         this.onAddChildren.apply(this, es);
       }
