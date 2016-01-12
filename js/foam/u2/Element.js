@@ -330,6 +330,8 @@ CLASS({
   properties: [
     {
       model_: 'foam.u2.EIDProperty',
+      // TODO: Move id management out of EIDProperty to Element so that
+      // it can be more easily tied to lifecycle.
       name: 'id'
     },
     {
@@ -443,6 +445,11 @@ CLASS({
 
     function initE() {
       /* Template method for adding addtion element initialization just before Element is output(). */
+    },
+
+    function el() {
+      /* Return this Element's real DOM element, if loaded. */
+      return this.id$el;
     },
 
     function E(opt_nodeName /* | DIV */) {
@@ -968,19 +975,26 @@ CLASS({
       return f;
     },
 
-    function write(opt_X) {
+    function write(opt_X /* | GLOBAL */) {
+      /* Write Element to document. For testing purposes. */
       opt_X = opt_X || GLOBAL;
-      /* For debugging, not production. */
       (opt_X.document || document).writeln(this.outerHTML);
       this.load();
       return this;
     },
 
     function toString() {
+      /* Converts Element to HTML String without transitioning state. */
       var s = this.createOutputStream();
       this.output_(s);
       return s.toString();
     },
+
+
+    //
+    // U1 Compatibility
+    //
+    // Remove when U1 removed.
 
     function toHTML() { return this.outerHTML; },
 
@@ -988,7 +1002,7 @@ CLASS({
 
 
     //
-    // Internal
+    // Internal (DO NOT USE)
     //
 
     function insertAt_(children, reference, before) {
