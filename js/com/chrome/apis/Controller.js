@@ -23,6 +23,8 @@ CLASS({
     'com.chrome.apis.ApiKey',
     'com.chrome.apis.Experiment',
     'com.chrome.apis.ExperimentActivation',
+    'com.chrome.apis.ExperimentActivationCitationView',
+    'com.chrome.apis.ExperimentActivationDetailView',
     'com.chrome.apis.Origin',
     'com.chrome.apis.User',
     'foam.dao.EasyDAO'
