@@ -31,7 +31,7 @@ e.on('click', function() { console.log('clicked'); });
 
 var e13 = E('div').add(
   'dynamic function PLAN B * ',
-  function() { return timer.second % 2 ? 'PING' : E('span').add('PONG').style({color: 'orange'}); },
+  function() { return timer.second % 2 ? ['PING', ' ', 'PING'] : E('span').add('PONG').style({color: 'orange'}); },
   ' *    dynamic value: ',
   timer.i$,
   '  ',

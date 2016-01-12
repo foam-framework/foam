@@ -32,6 +32,7 @@ CLASS({
   onLoad: function() {
     var self = this;
 
+    // Add .toE() to Functions so that they can be used as dynamic Elements.
     Function.prototype.toE = function(X) {
       var dyn  = X.E('span');
       var last = null;
@@ -47,6 +48,7 @@ CLASS({
   },
 
   constants: {
+    // Initial State of an Element
     INITIAL: {
       output: function(out) {
         this.initE(this.Y, this);
@@ -72,6 +74,11 @@ CLASS({
       onReplaceChild: function() { },
       toString:      function() { return 'INITIAL'; }
     },
+
+    // State of an Element after it has been output (to a String) but before it is loaded.
+    // This should be only a brief transitory state, as the Element should be loaded
+    // almost immediately after being output.  It is an error to try and mutate the Element
+    // while in the OUTPUT state.
     OUTPUT: {
       output: function(out) {
         // Only warn because it could be useful for debugging.
@@ -136,6 +143,9 @@ CLASS({
       },
       toString:      function() { return 'OUTPUT'; }
     },
+
+    // State of an Element after it has been loaded.
+    // A Loaded Element should be visible in the DOM.
     LOADED: {
       output:        function(out) { console.warn('Duplicate output.'); },
       load:          function() { console.error('Duplicate load.'); },
@@ -206,7 +216,6 @@ CLASS({
         for ( var i = 0 ; i < children.length ; i++ ) {
           out(children[i]);
         }
-
         reference.id$el.insertAdjacentHTML(where, out);
         for ( var i = 0 ; i < children.length ; i++ ) {
           children[i].load && children[i].load();
@@ -228,6 +237,9 @@ CLASS({
       },
       toString:      function() { return 'LOADED'; }
     },
+
+    // State of an Element after it has been removed from the DOM.
+    // An unloaded Element can be re-added to the DOM.
     UNLOADED: {
       output:        function() { },
       load:          function() {
@@ -249,6 +261,11 @@ CLASS({
       onReplaceChild: function() { },
       toString:      function() { return 'UNLOADED'; }
     },
+
+    // State of an Element after it has been destroyed.
+    // A destroyed Element returns all resources and cannot be re-added to the DOM.
+    // Not currently used.
+    /*
     DESTROYED: {
       output:        function() { throw 'Attempt to output() destroyed Element.'; },
       load:          function() { throw 'Attempt to load() destroyed Element.'; },
@@ -267,8 +284,9 @@ CLASS({
       onReplaceChild: function() { },
       toString:      function() { return 'DESTROYED'; }
     },
+    */
 
-    // ???: Should we disallow these? Yes
+    // TODO: Don't allow these as they lead to ambiguous markup.
     OPTIONAL_CLOSE_TAGS: {
       BODY: true,
       COLGROUP: true,
@@ -287,6 +305,9 @@ CLASS({
       TR: true
     },
 
+    // Element nodeName's that are self-closing.
+    // Used to gernate valid HTML output.
+    // Used by ElementParser for valid HTML parsing.
     ILLEGAL_CLOSE_TAGS: {
       area: true,
       base: true,
@@ -320,15 +341,17 @@ CLASS({
         // and ILLEGAL_CLOSE_TAGS work.
         return v.toUpperCase();
       },
-      defaultValue: 'div'
+      defaultValue: 'DIV'
     },
     {
       name: 'attributeMap',
+      documentation: 'Same information as attributes, but in map form for faster lookup',
       transient: true,
       factory: function() { return {}; }
     },
     {
       name: 'attributes',
+      documentation: 'Array of {name: ..., value: ...} attributes.',
       factory: function() { return []; },
       postSet: function(_, attrs) {
         this.attributeMap = {};
@@ -338,22 +361,27 @@ CLASS({
     },
     {
       name: 'classes',
+      documentation: 'CSS classes assigned to this Element. Stored as a map of true values.',
       factory: function() { return {}; }
     },
     {
       name: 'css',
+      documentation: 'Styles added to this Element.',
       factory: function() { return {}; }
     },
     {
       name: 'childNodes',
+      documentation: 'Children of this Element.',
       factory: function() { return []; }
     },
     {
       name: 'elListeners',
+      documentation: 'DOM listeners of this Element.',
       factory: function() { return []; }
     },
     {
       name: 'children',
+      documentation: 'Virtual property of non-String childNodes.',
       transient: true,
       getter: function() {
         return this.childNodes.filter(function(c) { return typeof c !== 'string'; });
@@ -390,26 +418,40 @@ CLASS({
     function init() {
       this.SUPER();
 
+      this.installCSS();
+    },
+
+    function installCSS() {
+      /* Find CSS template in model ancestry and install. */
       var m = this.model_;
-      while (m) {
+      while ( m ) {
         for ( var i = 0 ; i < m.templates.length ; i++ ) {
           var t = m.templates[i];
           if ( t.name === 'CSS' ) {
             t.futureTemplate(function(m) {
               X.addStyle(m.getPrototype());
             }.bind(this, m));
-            break;
+
+            return;
           }
         }
         m = m.extends && X.lookup(m.extends);
       }
     },
 
-    function initE() {},
+    function initE() {
+      /* Template method for adding addtion element initialization just before Element is output(). */
+    },
 
-    function E(opt_nodeName) {
+    function E(opt_nodeName /* | DIV */) {
+      /* Create a new Element */
       var Y = this.Y;
-      if (this.data && !Y.data) Y = Y.sub({ data: this.data });
+
+      // ???: Is this needed / a good idea?
+      if ( this.data && ! Y.data ) Y = Y.sub({ data: this.data });
+
+      // Some names have sub-Models registered for them.
+      // Example 'input'
       var e = Y.elementForName(opt_nodeName);
 
       if ( ! e ) {
@@ -421,6 +463,7 @@ CLASS({
     },
 
     function attrValue(opt_name, opt_event) {
+      /* Convenience method for creating an ElementValue. */
       var args = { element: this };
 
       if ( opt_name  ) args.property = opt_name;
@@ -432,9 +475,12 @@ CLASS({
     //
     // State
     //
+    // The following methods are state-dependent, so just delegate to the current state object.
+
     function onSetAttr(key, value) {
       this.state.onSetAttr.call(this, key, value);
     },
+
     function onRemoveAttr(key) {
       this.state.onRemoveAttr.call(this, key);
     },
@@ -464,7 +510,12 @@ CLASS({
     },
 
     function visitChildren(methodName) {
-      for (var i = 0; i < this.childNodes.length; i++) {
+      /*
+        Call the named method on all children.
+        Typically used to transition state of all children at once.
+        Ex.: this.visitChildren('load');
+      */
+      for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
         var c = this.childNodes[i];
         c[methodName] && c[methodName].call(c);
       }
@@ -503,16 +554,37 @@ CLASS({
     //
     // Lifecycle
     //
-    function load() { this.state.load.call(this); },
+    function load() {
+      /* Transitions to the LOADED state, initializing DOM. */
+      this.state.load.call(this);
+    },
 
-    function unload() { this.state.unload.call(this); },
+    function unload() {
+      /* Transitions to the UNLOADED state, removing DOM. */
+      this.state.unload.call(this);
+    },
 
-    function destroy() { this.state.destroy.call(this); },
+    function destroy() {
+      /* Transition to the DESTROYED state. Reserved for future use. */
+      this.state.destroy.call(this);
+    },
 
     //
     // DOM Compatibility
     //
+    // Methods with the same interface as the real DOM.
+
     function setAttribute(name, value) {
+      /*
+        Set an Element attribute or property.
+
+        If this model has a property named 'name' which has 'attribute: true',
+        then the property will be updated with value.
+        Otherwise, the DOM attribute will be set.
+
+        Value can be either a string, a Value, or an Object.
+        If Value is undefined, null or false, the attribute will be removed.
+      */
       var prop = this.model_.getProperty(name);
 
       if ( prop && prop.attribute ) {
@@ -550,6 +622,7 @@ CLASS({
     },
 
     function removeAttribute(name) {
+      /* Remove attribute named 'name'. */
       for ( var i = 0 ; i < this.attributes.length ; i++ ) {
         if ( this.attributes[i].name === name ) {
           this.attributes.splice(i, 1);
@@ -560,26 +633,35 @@ CLASS({
       }
     },
 
-    function getAttributeNode(name) { return this.attributeMap[name]; },
+    function getAttributeNode(name) {
+      /* Get {name: ..., value: ...} attributeNode associated with 'name', if exists. */
+      return this.attributeMap[name];
+    },
 
     function getAttribute(name) {
+      /* Get value associated with attribute 'name', or undefined if attribute not set. */
       var attr = this.getAttributeNode(name);
       return attr && attr.value;
     },
 
-    function appendChild(c) { this.childNodes.push(c); },
+    function appendChild(c) {
+      // TODO: finish implementation
+      this.childNodes.push(c);
+    },
 
     function removeChild(c) {
+      /* Remove a Child node (String or Element). */
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === c ) {
           this.childNodes.splice(i, 1);
           c.remove();
-          break;
+          return;
         }
       }
     },
 
     function replaceChild(newE, oldE) {
+      /* Replace current child oldE with newE. */
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === oldE ) {
           this.childNodes[i] = newE;
@@ -587,21 +669,27 @@ CLASS({
           oldE.visitChildren('unload');
           this.state.onReplaceChild.call(this, oldE, newE);
           newE.load && newE.load();
-          break;
+          return;
         }
       }
     },
 
     function remove() {
+      /*
+        Remove this Element from its parent Element.
+        Will transition to UNLOADED state.
+      */
       this.state.remove.call(this);
     },
 
     function addEventListener(topic, listener) {
+      /* Add DOM listener. */
       this.elListeners.push([topic, listener]);
       this.onAddListener(topic, listener);
     },
 
     function removeEventListener(topic, listener) {
+      /* Remove DOM listener. */
       for ( var i = 0 ; i < this.elListeners.length ; i++ ) {
         var l = this.elListeners[i];
         if ( l[0] == topic && l[1] === listener ) {
@@ -613,35 +701,47 @@ CLASS({
     },
 
     //
-    // DOM-like
+    // Fluent Methods
     //
+    // Methods which return 'this' so they can be chained.
+
     function removeCls(cls) {
+      /* Remove CSS class. */
       if ( cls ) {
         delete this.classes[cls];
         this.onSetCls(cls, false);
       }
+      return this;
     },
 
-    //
-    // Fluent Methods
-    //
     function setID(id) {
+      /*
+        Explicitly set Element's id.
+        Normally id's are automatically assigned.
+        Setting specific ID's hinders composability.
+      */
       this.id = id;
       return this;
     },
+
     function on(topic, listener) {
+      /* Shorter fluent version of addEventListener. Prefered method. */
       this.addEventListener(topic, listener);
       return this;
     },
 
-    // Constructs a default class name for this view, with an optional extra.
-    // Without an extra, results in eg. 'foam-u2-Input-'.
-    // With an extra of "foo", results in 'foam-u2-Input-foo'.
     function myCls(opt_extra) {
+      /*
+        Constructs a default class name for this view, with an optional extra.
+      // TODO: Braden, remove the trailing '-'.
+        Without an extra, results in eg. 'foam-u2-Input-'.
+        With an extra of "foo", results in 'foam-u2-Input-foo'.
+      */
       var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
       if (!opt_extra) opt_extra = '';
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
+
     function enableCls(cls, enabled, opt_negate) {
       function negate(a, b) { return b ? ! a : a; }
 
@@ -660,7 +760,7 @@ CLASS({
       } else {
         enabled = negate(enabled, opt_negate);
         var parts = cls.split(' ');
-        for (var i = 0; i < parts.length; i++) {
+        for ( var i = 0 ; i < parts.length ; i++ ) {
           this.classes[parts[i]] = enabled;
           this.onSetCls(parts[i], enabled);
         }
@@ -753,13 +853,44 @@ CLASS({
 
     function valueE_(value) {
       var self = this;
-      var e    = value.get() || self.E('span');
-      var l    = function() {
-        self.replaceChild(e = value.get() || self.E('span'), e);
+
+      function nextE() {
+        var e = value.get();
+
+        // Convert e or e[0] into a SPAN if needed,
+        // So that it can be located later.
+        if ( ! e ) {
+          e = self.E('SPAN');
+        } else if ( Array.isArray(e) ) {
+          if ( e.length ) {
+            if ( typeof e[0] === 'string' )
+              e[0] = self.E('SPAN').add(e[0]);
+          } else {
+            e = self.E('SPAN');
+          }
+        } else if ( typeof e === 'string' ) {
+          e = self.E('SPAN').add(e);
+        }
+
+        return e;
+      }
+
+      var e = nextE();
+      var l = function() {
+        var first = Array.isArray(e) ? e[0] : e;
+        var e2 = nextE();
+        self.insertBefore(e2, first);
+        if ( Array.isArray(e) ) {
+          for ( var i = 0 ; i < e.length ; i++ ) e.remove();
+        } else {
+          e.remove();
+        }
+        e = e2;
       };
       value.addListener(this.framed(l));
       return e;
     },
+
     // Better name?
     function tag(opt_nodeName) {
       var c = this.E(opt_nodeName || 'br');
@@ -767,43 +898,49 @@ CLASS({
       this.add(c);
       return this;
     },
+
     function start(opt_nodeName) {
       var c = this.E(opt_nodeName);
       c.parent_ = this;
       this.add(c);
       return c;
     },
+
     function end() {
       var p = this.parent_;
       this.parent_ = null;
       return p;
     },
-    function add(/* vargs */) {
-      var args = new Array(arguments.length);
-      for ( var i = 0 ; i < arguments.length ; i++ ) args[i] = arguments[i];
 
-      for ( var i = 0 ; i < args.length ; i++ ) {
-        var c = args[i];
+    function add(/* vargs */) {
+      var es = [];
+      var Y = this.Y;
+
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        var c = arguments[i];
 
         // Remove null values
         if ( c === undefined || c === null ) {
-          Array.prototype.splice.call(args, i, 1);
-          i--;
-          continue;
+          // nop
         } else if ( Array.isArray(c) ) {
-          Array.prototype.splice.apply(args, [i, 1].concat(c));
-          i--;
-          continue;
+          es = es.concat(c.map(function (c) { return c.toE ? c.toE(Y) : c; }));
         } else if ( c.toE ) {
-          args[i] = c.toE(this.Y);
+          es.push(c.toE(Y));
         } else if ( Value.isInstance(c) ) {
-          args[i] = this.valueE_(c);
+          var v = this.valueE_(c);
+          if ( Array.isArray(v) ) {
+            es = es.concat(v.map(function (c) { return c.toE ? c.toE(Y) : c; }));
+          } else {
+            es.push(v.toE ? v.toE(Y) : v);
+          }
+        } else {
+          es.push(c);
         }
       }
 
-      if ( args.length ) {
-        this.childNodes.push.apply(this.childNodes, args);
-        this.onAddChildren.apply(this, args);
+      if ( es.length ) {
+        this.childNodes.push.apply(this.childNodes, es);
+        this.onAddChildren.apply(this, es);
       }
 
       return this;
@@ -833,13 +970,20 @@ CLASS({
         return this;
       }
 
+      if ( ! Array.isArray(children) ) children = [ children ];
+
+      var Y = this.Y;
+      children = children.map(function(e) { return e.toE ? e.toE(Y) : e; });
+
       var index = before ? i : (i + 1);
-      if ( Array.isArray(children) ) {
-        this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
-      } else {
-        this.childNodes.splice(index, 0, children);
-      }
-      this.state.onInsertChildren.call(this, Array.isArray(children) ? children : [children], reference, before ? 'beforebegin' : 'afterend');
+      this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
+      this.state.onInsertChildren.call(
+        this,
+        children,
+        reference,
+        before ?
+          'beforebegin' :
+          'afterend');
       return this;
     },
 
@@ -1009,29 +1153,27 @@ CLASS({
     },
 
     function toHTML() { return this.outerHTML; },
-    function initHTML() { this.load(); },
 
+    function initHTML() { this.load(); },
 
     //
     // Template Support (internal)
     //
+    // Shorter versions of methods used by TemplateParser.
+    //
+    //            !!! INTERNAL USE ONLY !!!
+
     function a() { return this.add.apply(this, arguments); },
     function c() { return this.cls.apply(this, arguments); },
     function e() { return this.end(); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
     function i(id) { return this.setID(id); },
     function n(nodeName) { this.nodeName = nodeName; return this; },
-    function o(m) {
-      for ( var k in m ) this.on(k, m[k]);
-      return this;
-    },
+    function o(m) { for ( var k in m ) this.on(k, m[k]); return this; },
     function p(a) { a[0] = this; return this; },
     function s(opt_nodeName) { return this.start(opt_nodeName); },
     function t(as) { return this.attrs(as); },
-    function x(m) {
-      for ( var k in m ) this.X.set(k, m[k]);
-      return this;
-    },
+    function x(m) { for ( var k in m ) this.X.set(k, m[k]); return this; },
     function y() { return this.style.apply(this, arguments); },
   ]
 });

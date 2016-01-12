@@ -21,11 +21,11 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.u2.md.CitationView',
+    'foam.u2.md.CitationView'
   ],
 
   constants: {
-    ROW_CLICK: ['row-click'],
+    ROW_CLICK: ['row-click']
   },
 
   properties: [
@@ -61,53 +61,46 @@ CLASS({
     },
     ['nodeName', 'div']
   ],
+
   methods: [
     function initE() {
       this.dao$Proxy.pipe(this.daoListener_);
       this.cls(this.myCls());
     }
   ],
+
   listeners: [
-    {
-      name: 'onDAOPut',
-      code: function(obj) {
-        if ( this.rows[obj.id] ) {
-          this.rows[obj.id].data = obj;
-          return;
-        }
+    function onDAOPut(obj) {
+      if ( this.rows[obj.id] ) {
+        this.rows[obj.id].data = obj;
+        return;
+      }
+      
+      var Y = this.Y.sub({ data: obj });
+      
+      var child = this.rowView ?
+        this.rowView({ data: obj }, Y) :
+        obj.toRowE ? obj.toRowE(Y) :
+        obj.toE ? obj.toE(Y) :
+        this.CitationView.create({ data: obj }, Y);
+      
+      child.on('click', function() {
+        this.publish(this.ROW_CLICK, obj);
+      }.bind(this));
 
-        var Y = this.Y.sub({ data: obj });
-
-        var child = this.rowView ?
-            this.rowView({ data: obj }, Y) :
-            obj.toRowE ? obj.toRowE(Y) :
-            obj.toE ? obj.toE(Y) :
-            this.CitationView.create({ data: obj }, Y);
-
-        child.on('click', function() {
-          this.publish(this.ROW_CLICK, obj);
-        }.bind(this));
-
-        this.rows[obj.id] = child;
-        this.add(child);
+      this.rows[obj.id] = child;
+      this.add(child);
+    },
+    function onDAORemove(obj) {
+      if ( this.rows[obj.id] ) {
+        this.removeChild(this.rows[obj.id]);
+        delete this.rows[obj.id];
       }
     },
-    {
-      name: 'onDAORemove',
-      code: function(obj) {
-        if ( this.rows[obj.id] ) {
-          this.removeChild(this.rows[obj.id]);
-          delete this.rows[obj.id];
-        }
-      }
-    },
-    {
-      name: 'onDAOReset',
-      code: function(obj) {
-        this.removeAllChildren();
-        this.rows = {};
-        this.dao.select(this.daoListener_);
-      }
+    function onDAOReset(obj) {
+      this.removeAllChildren();
+      this.rows = {};
+      this.dao.select(this.daoListener_);
     }
   ]
 });
