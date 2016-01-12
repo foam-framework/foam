@@ -449,7 +449,7 @@ CLASS({
 
     function el() {
       /* Return this Element's real DOM element, if loaded. */
-      return this.el();
+      return this.id$el;
     },
 
     function E(opt_nodeName /* | DIV */) {
