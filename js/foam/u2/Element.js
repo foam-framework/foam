@@ -32,6 +32,7 @@ CLASS({
   onLoad: function() {
     var self = this;
 
+    // Add .toE() to Functions so that they can be used as dynamic Elements.
     Function.prototype.toE = function(X) {
       var dyn  = X.E('span');
       var last = null;
@@ -47,6 +48,7 @@ CLASS({
   },
 
   constants: {
+    // Initial State of an Element
     INITIAL: {
       output: function(out) {
         this.initE(this.Y, this);
@@ -72,6 +74,11 @@ CLASS({
       onReplaceChild: function() { },
       toString:      function() { return 'INITIAL'; }
     },
+
+    // State of an Element after it has been output (to a String) but before it is loaded.
+    // This should be only a brief transitory state, as the Element should be loaded
+    // almost immediately after being output.  It is an error to try and mutate the Element
+    // while in the OUTPUT state.
     OUTPUT: {
       output: function(out) {
         // Only warn because it could be useful for debugging.
@@ -136,6 +143,9 @@ CLASS({
       },
       toString:      function() { return 'OUTPUT'; }
     },
+
+    // State of an Element after it has been loaded.
+    // A Loaded Element should be visible in the DOM.
     LOADED: {
       output:        function(out) { console.warn('Duplicate output.'); },
       load:          function() { console.error('Duplicate load.'); },
@@ -227,6 +237,9 @@ CLASS({
       },
       toString:      function() { return 'LOADED'; }
     },
+
+    // State of an Element after it has been removed from the DOM.
+    // An unloaded Element can be re-added to the DOM.
     UNLOADED: {
       output:        function() { },
       load:          function() {
@@ -248,6 +261,11 @@ CLASS({
       onReplaceChild: function() { },
       toString:      function() { return 'UNLOADED'; }
     },
+
+    // State of an Element after it has been destroyed.
+    // A destroyed Element returns all resources and cannot be re-added to the DOM.
+    // Not currently used.
+    /*
     DESTROYED: {
       output:        function() { throw 'Attempt to output() destroyed Element.'; },
       load:          function() { throw 'Attempt to load() destroyed Element.'; },
@@ -266,8 +284,9 @@ CLASS({
       onReplaceChild: function() { },
       toString:      function() { return 'DESTROYED'; }
     },
+    */
 
-    // ???: Should we disallow these? Yes
+    // TODO: Don't allow these as they lead to ambiguous markup.
     OPTIONAL_CLOSE_TAGS: {
       BODY: true,
       COLGROUP: true,
@@ -286,6 +305,9 @@ CLASS({
       TR: true
     },
 
+    // Element nodeName's that are self-closing.
+    // Used to gernate valid HTML output.
+    // Used by ElementParser for valid HTML parsing.
     ILLEGAL_CLOSE_TAGS: {
       area: true,
       base: true,
@@ -319,15 +341,17 @@ CLASS({
         // and ILLEGAL_CLOSE_TAGS work.
         return v.toUpperCase();
       },
-      defaultValue: 'div'
+      defaultValue: 'DIV'
     },
     {
       name: 'attributeMap',
+      documentation: 'Same information as attributes, but in map form for faster lookup',
       transient: true,
       factory: function() { return {}; }
     },
     {
       name: 'attributes',
+      documentation: 'Array of {name: ..., value: ...} attributes.',
       factory: function() { return []; },
       postSet: function(_, attrs) {
         this.attributeMap = {};
@@ -337,22 +361,27 @@ CLASS({
     },
     {
       name: 'classes',
+      documentation: 'CSS classes assigned to this Element. Stored as a map of true values.',
       factory: function() { return {}; }
     },
     {
       name: 'css',
+      documentation: 'Styles added to this Element.',
       factory: function() { return {}; }
     },
     {
       name: 'childNodes',
+      documentation: 'Children of this Element.',
       factory: function() { return []; }
     },
     {
       name: 'elListeners',
+      documentation: 'DOM listeners of this Element.',
       factory: function() { return []; }
     },
     {
       name: 'children',
+      documentation: 'Virtual property of non-String childNodes.',
       transient: true,
       getter: function() {
         return this.childNodes.filter(function(c) { return typeof c !== 'string'; });
@@ -659,7 +688,7 @@ CLASS({
       } else {
         enabled = negate(enabled, opt_negate);
         var parts = cls.split(' ');
-        for (var i = 0; i < parts.length; i++) {
+        for ( var i = 0 ; i < parts.length ; i++ ) {
           this.classes[parts[i]] = enabled;
           this.onSetCls(parts[i], enabled);
         }
