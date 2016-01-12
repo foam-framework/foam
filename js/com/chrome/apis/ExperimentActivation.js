@@ -37,7 +37,8 @@ CLASS({
   relationship: [
     {
       name: 'apiKeys',
-      relatedModel: 'com.chrome.apis.ApiKey'
+      relatedModel: 'com.chrome.apis.ApiKey',
+      relatedProperty: 'experimentActivation'
     }
   ],
   actions: [
