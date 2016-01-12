@@ -852,20 +852,32 @@ CLASS({
     },
 
     function valueE_(value) {
+      var self = this;
+
       function nextE() {
         var e = value.get();
-        return ! e || ( Array.isArray(e) && e.length == 0 ) ?
-          self.E('span') :
-          e ;
-      }
-      var self = this;
-      var e    = nextE();
-      var l    = function() {
-        var first = Array.isArray(e) ? e[0] : e;
-        if ( typeof first === 'string' ) {
-          first = this.E('SPAN').add(first);
-          if ( Array.isArray(e) ) e[0] = first;
+
+        // Convert e or e[0] into a SPAN if needed,
+        // So that it can be located later.
+        if ( ! e ) {
+          e = self.E('SPAN');
+        } else if ( Array.isArray(e) ) {
+          if ( e.length ) {
+            if ( typeof e[0] === 'string' )
+              e[0] = self.E('SPAN').add(e[0]);
+          } else {
+            e = self.E('SPAN');
+          }
+        } else if ( typeof e === 'string' ) {
+          e = self.E('SPAN').add(e);
         }
+
+        return e;
+      }
+
+      var e = nextE();
+      var l = function() {
+        var first = Array.isArray(e) ? e[0] : e;
         var e2 = nextE();
         self.insertBefore(e2, first);
         if ( Array.isArray(e) ) {
@@ -877,15 +889,6 @@ CLASS({
       };
       value.addListener(this.framed(l));
       return e;
-      /*
-      var self = this;
-      var e    = value.get() || self.E('span');
-      var l    = function() {
-        self.replaceChild(e = value.get() || self.E('span'), e);
-      };
-      value.addListener(this.framed(l));
-      return e;
-      */
     },
 
     // Better name?
