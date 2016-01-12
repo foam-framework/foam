@@ -481,6 +481,18 @@ CLASS({
       return this.ElementValue.create(args);
     },
 
+    function myCls(opt_extra) {
+      /*
+        Constructs a default class name for this view, with an optional extra.
+      // TODO: Braden, remove the trailing '-'.
+        Without an extra, results in eg. 'foam-u2-Input-'.
+        With an extra of "foo", results in 'foam-u2-Input-foo'.
+      */
+      var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
+      if (!opt_extra) opt_extra = '';
+      return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
+    },
+
 
     //
     // Lifecycle
@@ -711,6 +723,7 @@ CLASS({
         Remove this Element from its parent Element.
         Will transition to UNLOADED state.
       */
+      // TODO: remove from parent
       this.state.remove.call(this);
     },
 
@@ -738,15 +751,6 @@ CLASS({
     //
     // Methods which return 'this' so they can be chained.
 
-    function removeCls(cls) {
-      /* Remove CSS class. */
-      if ( cls ) {
-        delete this.classes[cls];
-        this.onSetCls(cls, false);
-      }
-      return this;
-    },
-
     function setID(id) {
       /*
         Explicitly set Element's id.
@@ -757,25 +761,31 @@ CLASS({
       return this;
     },
 
-    function on(topic, listener) {
-      /* Shorter fluent version of addEventListener. Prefered method. */
-      this.addEventListener(topic, listener);
+    function cls(/* Value | String */ cls) {
+      /* Add a CSS cls to this Element. */
+      if ( typeof cls === 'function' ) {
+        var lastValue = null;
+        this.dynamicFn(cls, function(value) {
+          this.cls_(lastValue, value);
+          lastValue = value;
+        }.bind(this));
+      } else if ( Value.isInstance(cls) ) {
+        var lastValue = null;
+        var l = function() {
+          var v = cls.get();
+          this.cls_(lastValue, v);
+          lastValue = v;
+        }.bind(this);
+        cls.addListener(l);
+        l();
+      } else {
+        this.cls_(null, cls);
+      }
       return this;
     },
 
-    function myCls(opt_extra) {
-      /*
-        Constructs a default class name for this view, with an optional extra.
-      // TODO: Braden, remove the trailing '-'.
-        Without an extra, results in eg. 'foam-u2-Input-'.
-        With an extra of "foo", results in 'foam-u2-Input-foo'.
-      */
-      var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
-      if (!opt_extra) opt_extra = '';
-      return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
-    },
-
     function enableCls(cls, enabled, opt_negate) {
+      /* Enable/disable a CSS class based on a dynamic value. */
       function negate(a, b) { return b ? ! a : a; }
 
       if ( typeof enabled === 'function' ) {
@@ -801,34 +811,32 @@ CLASS({
       return this;
     },
 
-    function cls(cls) {
-      if ( typeof cls === 'function' ) {
-        var lastValue = null;
-        this.dynamicFn(cls, function(value) {
-          this.cls_(lastValue, value);
-          lastValue = value;
-        }.bind(this));
-      } else if ( Value.isInstance(cls) ) {
-        var lastValue = null;
-        var l = function() {
-          var v = cls.get();
-          this.cls_(lastValue, v);
-          lastValue = v;
-        }.bind(this);
-        cls.addListener(l);
-        l();
-      } else {
-        this.cls_(null, cls);
+    function removeCls(cls) {
+      /* Remove specified CSS class. */
+      if ( cls ) {
+        delete this.classes[cls];
+        this.onSetCls(cls, false);
       }
       return this;
     },
 
+    function on(topic, listener) {
+      /* Shorter fluent version of addEventListener. Prefered method. */
+      this.addEventListener(topic, listener);
+      return this;
+    },
+
     function attrs(map) {
+      /* Set multiple attributes at once. */
       for ( var key in map ) this.setAttribute(key, map[key]);
       return this;
     },
 
     function style(map) {
+      /*
+        Set CSS styles.
+        Map values can be Objects or dynamic Values.
+      */
       for ( var key in map ) {
         var value = map[key];
         if ( typeof value === 'function' )
@@ -909,7 +917,9 @@ CLASS({
     },
 
     function removeAllChildren() {
-      while ( this.childNodes.length ) this.removeChild(this.childNodes[0]);
+      /* Remove all of this Element's children. */
+      while ( this.childNodes.length )
+        this.removeChild(this.childNodes[0]);
       return this;
     },
 
@@ -933,11 +943,17 @@ CLASS({
 
     function outputInnerHTML(out) {
       for ( var i = 0 ; i < this.childNodes.length ; i++ )
-        out(this.childNodes[i]/*.toString()*/);
+        out(this.childNodes[i]);
       return out;
     },
 
     function createOutputStream() {
+      /*
+        Create an OutputStream.
+        Suitable for providing to the output() method for
+        serializing an Element hierarchy.
+        Call toString() on the OutputStream to get output.
+      */
       var self = this;
       var buf = [];
       var f = function templateOut(/* arguments */) {
@@ -1031,6 +1047,7 @@ CLASS({
     },
 
     function cls_(oldClass, newClass) {
+      /* Replace oldClass with newClass. Called by cls(). */
       if ( oldClass === newClass ) return;
       this.removeCls(oldClass);
       if ( newClass ) {
