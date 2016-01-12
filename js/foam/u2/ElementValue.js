@@ -45,8 +45,8 @@ CLASS({
     {
       name: 'onAttrValueChange',
       code: function() {
-        this.value = this.element.id$el ?
-          this.element.id$el[this.property] :
+        this.value = this.element.el() ?
+          this.element.el()[this.property] :
           this.element.getAttribute(this.property) ;
       }
     }

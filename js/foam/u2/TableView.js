@@ -187,7 +187,7 @@ CLASS({
       for (var i = 0; i < cells.length; i++) {
         if (!this.colWidths_[i])
           this.colWidths_[i] = this.makeColWidthValue(i);
-        this.colWidths_[i].set(cells[i].id$el.offsetWidth);
+        this.colWidths_[i].set(cells[i].el().offsetWidth);
       }
     },
     function onSortOrder(prop) {
@@ -202,7 +202,7 @@ CLASS({
       handle.on('mousedown', function(e) {
         var self = this;
         var startX = e.x;
-        var col1 = handle.id$el.parentElement;
+        var col1 = handle.el().parentElement;
         var col2 = col1.nextElementSibling;
         var row = col1.parentElement;
         var w1 = col1.offsetWidth;
@@ -318,7 +318,7 @@ CLASS({
       var styleE = this.E('style');
       var value = this.SimpleValue.create();
       value.addListener(function(obj, prop, old, nu) {
-        styleE.id$el.innerHTML = '#' + this.id + ' .' + this.myCls('col-' + i) +
+        styleE.el().innerHTML = '#' + this.id + ' .' + this.myCls('col-' + i) +
             '{ width: ' + nu + 'px; }';
       }.bind(this));
       this.headE.add(styleE);

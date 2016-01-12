@@ -230,7 +230,7 @@ CLASS({
       // TODO(braden): This sucks and needs fixing.
       if (!e) return;
 
-      this.delegate_.id$el = e.id$el.offsetTop - this.vMargin;
+      this.delegate_.el() = e.el().offsetTop - this.vMargin;
     },
   ],
 
@@ -289,7 +289,7 @@ CLASS({
             // Containment is not sufficient.
             // It's too eager to close the popup, and we want to keep it open so
             // long as the mouse is nearby.
-            var pos = this.id$el.getBoundingClientRect();
+            var pos = this.el().getBoundingClientRect();
             var margin = 50;
             if (evt.clientX < pos.left - margin || pos.right + margin < evt.clientX ||
                 evt.clientY < pos.top - margin || pos.bottom + margin < evt.clientY) {
@@ -302,7 +302,7 @@ CLASS({
           code: function(evt) {
             // Make sure the target element is a child of the popup, otherwise close
             // the popup.
-            if (!this.id$el.contains(evt.target)) {
+            if (!this.el().contains(evt.target)) {
               this.popup.close();
             }
           }

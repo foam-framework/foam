@@ -95,7 +95,7 @@ CLASS({
         }
 
         this.visitChildren('load');
-        if ( this.focused ) this.id$el.focus();
+        if ( this.focused ) this.el().focus();
         // Allows you to take the DOM element and map it back to a
         // foam.u2.Element object.  This is expensive when building
         // lots of DOM since it adds an extra DOM call per Element.
@@ -105,7 +105,7 @@ CLASS({
         // U2 view by walking the DOM tree and checking e_.
         // This could save more time than the work spent here adding e_ to each
         // DOM element.
-        // this.id$el.e_ = this;
+        // this.el().e_ = this;
       },
       unload: function() {
         this.state = this.UNLOADED;
@@ -152,7 +152,7 @@ CLASS({
       output:        function(out) { console.warn('Duplicate output.'); },
       load:          function() { console.error('Duplicate load.'); },
       unload:        function() {
-        var e = this.id$el;
+        var e = this.el();
         if ( e ) {
           e.remove();
         }
@@ -162,7 +162,7 @@ CLASS({
       remove:        function() { this.unload(); },
       destroy:       function() { },
       onSetCls:      function(cls, enabled) {
-        var e = this.id$el;
+        var e = this.el();
         if ( ! e ) {
           console.warn('Missing Element: ', this.id);
           return
@@ -171,7 +171,7 @@ CLASS({
         e.classList[enabled ? 'add' : 'remove'](cls);
       },
       onFocus: function() {
-        this.id$el.focus();
+        this.el().focus();
       },
       onAddListener: function(topic, listener) {
         this.addEventListener_(topic, listener);
@@ -180,21 +180,21 @@ CLASS({
         this.addRemoveListener_(topic, listener);
       },
       onSetStyle: function(key, value) {
-        this.id$el.style[key] = value;
+        this.el().style[key] = value;
       },
       onSetAttr: function(key, value) {
         // 'value' doesn't work consistently with setAttribute()
         if ( key === 'value' ) {
-          this.id$el.value = value;
+          this.el().value = value;
         } else {
-          this.id$el.setAttribute(key, value === true ? '' : value);
+          this.el().setAttribute(key, value === true ? '' : value);
         }
       },
       onRemoveAttr: function(key, value) {
-        this.id$el.removeAttribute(key);
+        this.el().removeAttribute(key);
       },
       onAddChildren: function() {
-        var e = this.id$el;
+        var e = this.el();
         if ( ! e ) {
           console.warn('Missing Element: ', this.id);
           return
@@ -209,7 +209,7 @@ CLASS({
         }
       },
       onInsertChildren: function(children, reference, where) {
-        var e = this.id$el;
+        var e = this.el();
         if ( ! e ) {
           console.warn("Missing Element: ", this.id);
           return;
@@ -218,13 +218,13 @@ CLASS({
         for ( var i = 0 ; i < children.length ; i++ ) {
           out(children[i]);
         }
-        reference.id$el.insertAdjacentHTML(where, out);
+        reference.el().insertAdjacentHTML(where, out);
         for ( var i = 0 ; i < children.length ; i++ ) {
           children[i].load && children[i].load();
         }
       },
       onReplaceChild: function(oldE, newE) {
-        var e = this.id$el;
+        var e = this.el();
         if ( ! e ) {
           console.warn('Missing Element: ', this.id);
           return
@@ -235,7 +235,7 @@ CLASS({
         n.innerHTML = out.toString();
         // newE.load && newE.load();
 
-        e.replaceChild(n.firstChild, oldE.id$el);
+        e.replaceChild(n.firstChild, oldE.el());
       },
       toString:      function() { return 'LOADED'; }
     },
@@ -1118,7 +1118,7 @@ CLASS({
         var manager = this.X.gestureManager;
         var self = this;
         var target = this.X.lookup('foam.input.touch.GestureTarget').create({
-          containerID: this.id$el.id,
+          containerID: this.el().id,
           enforceContainment: true,
           gesture: 'tap',
           handler: {
@@ -1127,7 +1127,7 @@ CLASS({
                 preventDefault: function() { },
                 stopPropagation: function() { },
                 pointMap: pointMap,
-                target: self.id$el
+                target: self.el()
               });
             }
           }
@@ -1136,7 +1136,7 @@ CLASS({
         this.clickTarget_ = target;
       } else {
         // TODO: fix
-        this.id$el && this.id$el.addEventListener(topic, listener);
+        this.el() && this.el().addEventListener(topic, listener);
       }
     },
 
@@ -1145,7 +1145,7 @@ CLASS({
         this.X.gestureManager.uninstall(this.clickTarget_);
         this.clickTarget = '';
       } else {
-        this.id$el.removeEventListener(topic, listener);
+        this.el().removeEventListener(topic, listener);
       }
     },
 

@@ -230,13 +230,13 @@ CLASS({
       name: 'onResize',
       isMerged: 100,
       code: function() {
-        this.viewportHeight = this.id$el.offsetHeight;
+        this.viewportHeight = this.el().offsetHeight;
       }
     },
     {
       name: 'onScroll',
       code: function() {
-        this.scrollTop = this.scrollerE.id$el.scrollTop;
+        this.scrollTop = this.scrollerE.el().scrollTop;
         this.update();
       }
     },
@@ -255,7 +255,7 @@ CLASS({
           this.count = c.count;
 
           // That will have updated the height of the inner view.
-          var s = this.scrollerE.id$el;
+          var s = this.scrollerE.el();
           if ( s ) s.scrollTop = this.scrollTop;
 
           this.X.setTimeout(this.update.bind(this), 0);
@@ -371,7 +371,7 @@ CLASS({
       this.scrollerE.on('scroll', this.onScroll);
 
       if (this.rowHeight < 0) {
-        var style = this.window.getComputedStyle(this.rowSizeTestE.children[0].id$el);
+        var style = this.window.getComputedStyle(this.rowSizeTestE.children[0].el());
         this.rowHeight = this.X.parseFloat(style.height);
 
         this.rowSizeTestE.remove();

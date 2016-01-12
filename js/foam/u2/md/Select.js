@@ -43,7 +43,7 @@ CLASS({
           choices: this.choices,
           autoSetData: this.autoSetData
         });
-        popup.open(this.index, this.id$el);
+        popup.open(this.index, this.el());
       }
     },
   ],
