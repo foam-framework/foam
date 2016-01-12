@@ -32,6 +32,7 @@ CLASS({
   ],
 
   onLoad: function() {
+    /* Called when Model loaded. */
     var self = this;
 
     // Add .toE() to Functions so that they can be used as dynamic Elements.
@@ -111,12 +112,12 @@ CLASS({
         this.state = this.UNLOADED;
         this.visitChildren('unload');
       },
-      remove:        function() { },
-      destroy:       function() { },
-      onSetCls:      function(cls, enabled) {
+      remove: function() { },
+      destroy: function() { },
+      onSetCls: function(cls, enabled) {
         throw "Mutations not allowed in OUTPUT state.";
       },
-      onFocus:      function(cls, enabled) {
+      onFocus: function(cls, enabled) {
         throw "Mutations not allowed in OUTPUT state.";
       },
       onAddListener: function(topic, listener) {
@@ -125,13 +126,13 @@ CLASS({
       onRemoveListener: function(topic, listener) {
         throw "Mutations not allowed in OUTPUT state.";
       },
-      onSetStyle:    function(key, value) {
+      onSetStyle: function(key, value) {
         throw "Mutations not allowed in OUTPUT state.";
       },
-      onSetAttr:     function(key, value) {
+      onSetAttr: function(key, value) {
         throw "Mutations not allowed in OUTPUT state.";
       },
-      onRemoveAttr:     function(key, value) {
+      onRemoveAttr: function(key, value) {
         throw "Mutations not allowed in OUTPUT state.";
       },
       onAddChildren: function(c) {
@@ -143,7 +144,7 @@ CLASS({
       onReplaceChild: function() {
         throw "Mutations not allowed in OUTPUT state.";
       },
-      toString:      function() { return 'OUTPUT'; }
+      toString: function() { return 'OUTPUT'; }
     },
 
     // State of an Element after it has been loaded.
@@ -159,9 +160,9 @@ CLASS({
         this.state = this.UNLOADED;
         this.visitChildren('unload');
       },
-      remove:        function() { this.unload(); },
-      destroy:       function() { },
-      onSetCls:      function(cls, enabled) {
+      remove: function() { this.unload(); },
+      destroy: function() { },
+      onSetCls: function(cls, enabled) {
         var e = this.el();
         if ( ! e ) {
           console.warn('Missing Element: ', this.id);
@@ -233,18 +234,17 @@ CLASS({
         out(newE);
         var n = this.X.document.createElement('div');
         n.innerHTML = out.toString();
-        // newE.load && newE.load();
-
         e.replaceChild(n.firstChild, oldE.el());
+        newE.load && newE.load();
       },
-      toString:      function() { return 'LOADED'; }
+      toString: function() { return 'LOADED'; }
     },
 
     // State of an Element after it has been removed from the DOM.
     // An unloaded Element can be re-added to the DOM.
     UNLOADED: {
-      output:        function() { },
-      load:          function() {
+      output: function() { },
+      load: function() {
         this.state = this.LOADED;
         this.visitChildren('load');
       },
