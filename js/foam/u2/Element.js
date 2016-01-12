@@ -447,7 +447,7 @@ CLASS({
       /* Create a new Element */
       var Y = this.Y;
 
-      // ???: Is this need / a good idea?
+      // ???: Is this needed / a good idea?
       if ( this.data && ! Y.data ) Y = Y.sub({ data: this.data });
 
       // Some names have sub-Models registered for them.
@@ -480,6 +480,7 @@ CLASS({
     function onSetAttr(key, value) {
       this.state.onSetAttr.call(this, key, value);
     },
+
     function onRemoveAttr(key) {
       this.state.onRemoveAttr.call(this, key);
     },
@@ -509,7 +510,12 @@ CLASS({
     },
 
     function visitChildren(methodName) {
-      for (var i = 0; i < this.childNodes.length; i++) {
+      /*
+        Call the named method on all children.
+        Typically used to transition state of all children at once.
+        Ex.: this.visitChildren('load');
+      */
+      for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
         var c = this.childNodes[i];
         c[methodName] && c[methodName].call(c);
       }
@@ -558,11 +564,10 @@ CLASS({
       this.state.unload.call(this);
     },
 
-    /* Reserved for future use.
     function destroy() {
+      /* Transition to the DESTROYED state. Reserved for future use. */
       this.state.destroy.call(this);
     },
-    */
 
     //
     // DOM Compatibility
@@ -696,20 +701,19 @@ CLASS({
     },
 
     //
-    // DOM-like
+    // Fluent Methods
     //
+    // Methods which return 'this' so they can be chained.
+
     function removeCls(cls) {
       /* Remove CSS class. */
       if ( cls ) {
         delete this.classes[cls];
         this.onSetCls(cls, false);
       }
+      return this;
     },
 
-    //
-    // Fluent Methods
-    //
-    // Methods which return 'this' so they can be chained.
     function setID(id) {
       /*
         Explicitly set Element's id.
@@ -858,6 +862,10 @@ CLASS({
       var e    = nextE();
       var l    = function() {
         var first = Array.isArray(e) ? e[0] : e;
+        if ( typeof first === 'string' ) {
+          first = this.E('SPAN').add(first);
+          if ( Array.isArray(e) ) e[0] = first;
+        }
         var e2 = nextE();
         self.insertBefore(e2, first);
         if ( Array.isArray(e) ) {
