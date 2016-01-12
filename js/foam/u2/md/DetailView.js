@@ -74,16 +74,13 @@ CLASS({
       this.SUPER();
     },
     function initE() {
-      // TODO(braden): Once dynamic() returning arrays works again, revert to
-      // returning properties and relationships directly, instead of wrapping
-      // them.
       this.cls(this.myCls()).
       add(this.dynamic(function(model, properties) {
-        return !model ? 'Set model or data.' : this.E().add(properties);
-      }.bind(this), this.model$, this.properties$)).
+        return !model ? 'Set model or data.' : properties;
+      }, this.model$, this.properties$)).
       add(this.dynamic(function(model, showRelationships, relationships) {
-        return model && showRelationships ? this.E().add(relationships) : undefined;
-      }.bind(this), this.model$, this.showRelationships$, this.relationships$));
+        return model && showRelationships ? relationships : undefined;
+      }, this.model$, this.showRelationships$, this.relationships$));
     },
     function elementForFeature(fName) {
       var f = this.model_.getFeature(fName) || this.X.data.model_.getFeature(fName);
