@@ -19,6 +19,8 @@ CLASS({
   package: 'foam.u2',
   name: 'ElementValue',
 
+  documentation: 'A Value bound to an Element attribute. Used to bind values to DOM.',
+
   constants: {
     __isValue__: true
   },

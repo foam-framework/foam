@@ -418,26 +418,40 @@ CLASS({
     function init() {
       this.SUPER();
 
+      this.installCSS();
+    },
+
+    function installCSS() {
+      /* Find CSS template in model ancestry and install. */
       var m = this.model_;
-      while (m) {
+      while ( m ) {
         for ( var i = 0 ; i < m.templates.length ; i++ ) {
           var t = m.templates[i];
           if ( t.name === 'CSS' ) {
             t.futureTemplate(function(m) {
               X.addStyle(m.getPrototype());
             }.bind(this, m));
-            break;
+
+            return;
           }
         }
         m = m.extends && X.lookup(m.extends);
       }
     },
 
-    function initE() {},
+    function initE() {
+      /* Template method for adding addtion element initialization just before Element is output(). */
+    },
 
-    function E(opt_nodeName) {
+    function E(opt_nodeName /* | DIV */) {
+      /* Create a new Element */
       var Y = this.Y;
-      if (this.data && !Y.data) Y = Y.sub({ data: this.data });
+
+      // ???: Is this need / a good idea?
+      if ( this.data && ! Y.data ) Y = Y.sub({ data: this.data });
+
+      // Some names have sub-Models registered for them.
+      // Example 'input'
       var e = Y.elementForName(opt_nodeName);
 
       if ( ! e ) {
@@ -449,6 +463,7 @@ CLASS({
     },
 
     function attrValue(opt_name, opt_event) {
+      /* Convenience method for creating an ElementValue. */
       var args = { element: this };
 
       if ( opt_name  ) args.property = opt_name;
@@ -460,6 +475,8 @@ CLASS({
     //
     // State
     //
+    // The following methods are state-dependent, so just delegate to the current state object.
+
     function onSetAttr(key, value) {
       this.state.onSetAttr.call(this, key, value);
     },
@@ -531,16 +548,38 @@ CLASS({
     //
     // Lifecycle
     //
-    function load() { this.state.load.call(this); },
+    function load() {
+      /* Transitions to the LOADED state, initializing DOM. */
+      this.state.load.call(this);
+    },
 
-    function unload() { this.state.unload.call(this); },
+    function unload() {
+      /* Transitions to the UNLOADED state, removing DOM. */
+      this.state.unload.call(this);
+    },
 
-    function destroy() { this.state.destroy.call(this); },
+    /* Reserved for future use.
+    function destroy() {
+      this.state.destroy.call(this);
+    },
+    */
 
     //
     // DOM Compatibility
     //
+    // Methods with the same interface as the real DOM.
+
     function setAttribute(name, value) {
+      /*
+        Set an Element attribute or property.
+
+        If this model has a property named 'name' which has 'attribute: true',
+        then the property will be updated with value.
+        Otherwise, the DOM attribute will be set.
+
+        Value can be either a string, a Value, or an Object.
+        If Value is undefined, null or false, the attribute will be removed.
+      */
       var prop = this.model_.getProperty(name);
 
       if ( prop && prop.attribute ) {
@@ -578,6 +617,7 @@ CLASS({
     },
 
     function removeAttribute(name) {
+      /* Remove attribute named 'name'. */
       for ( var i = 0 ; i < this.attributes.length ; i++ ) {
         if ( this.attributes[i].name === name ) {
           this.attributes.splice(i, 1);
@@ -588,26 +628,35 @@ CLASS({
       }
     },
 
-    function getAttributeNode(name) { return this.attributeMap[name]; },
+    function getAttributeNode(name) {
+      /* Get {name: ..., value: ...} attributeNode associated with 'name', if exists. */
+      return this.attributeMap[name];
+    },
 
     function getAttribute(name) {
+      /* Get value associated with attribute 'name', or undefined if attribute not set. */
       var attr = this.getAttributeNode(name);
       return attr && attr.value;
     },
 
-    function appendChild(c) { this.childNodes.push(c); },
+    function appendChild(c) {
+      // TODO: finish implementation
+      this.childNodes.push(c);
+    },
 
     function removeChild(c) {
+      /* Remove a Child node (String or Element). */
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === c ) {
           this.childNodes.splice(i, 1);
           c.remove();
-          break;
+          return;
         }
       }
     },
 
     function replaceChild(newE, oldE) {
+      /* Replace current child oldE with newE. */
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === oldE ) {
           this.childNodes[i] = newE;
@@ -615,21 +664,27 @@ CLASS({
           oldE.visitChildren('unload');
           this.state.onReplaceChild.call(this, oldE, newE);
           newE.load && newE.load();
-          break;
+          return;
         }
       }
     },
 
     function remove() {
+      /*
+        Remove this Element from its parent Element.
+        Will transition to UNLOADED state.
+      */
       this.state.remove.call(this);
     },
 
     function addEventListener(topic, listener) {
+      /* Add DOM listener. */
       this.elListeners.push([topic, listener]);
       this.onAddListener(topic, listener);
     },
 
     function removeEventListener(topic, listener) {
+      /* Remove DOM listener. */
       for ( var i = 0 ; i < this.elListeners.length ; i++ ) {
         var l = this.elListeners[i];
         if ( l[0] == topic && l[1] === listener ) {
@@ -644,6 +699,7 @@ CLASS({
     // DOM-like
     //
     function removeCls(cls) {
+      /* Remove CSS class. */
       if ( cls ) {
         delete this.classes[cls];
         this.onSetCls(cls, false);
@@ -653,23 +709,35 @@ CLASS({
     //
     // Fluent Methods
     //
+    // Methods which return 'this' so they can be chained.
     function setID(id) {
+      /*
+        Explicitly set Element's id.
+        Normally id's are automatically assigned.
+        Setting specific ID's hinders composability.
+      */
       this.id = id;
       return this;
     },
+
     function on(topic, listener) {
+      /* Shorter fluent version of addEventListener. Prefered method. */
       this.addEventListener(topic, listener);
       return this;
     },
 
-    // Constructs a default class name for this view, with an optional extra.
-    // Without an extra, results in eg. 'foam-u2-Input-'.
-    // With an extra of "foo", results in 'foam-u2-Input-foo'.
     function myCls(opt_extra) {
+      /*
+        Constructs a default class name for this view, with an optional extra.
+      // TODO: Braden, remove the trailing '-'.
+        Without an extra, results in eg. 'foam-u2-Input-'.
+        With an extra of "foo", results in 'foam-u2-Input-foo'.
+      */
       var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
       if (!opt_extra) opt_extra = '';
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
+
     function enableCls(cls, enabled, opt_negate) {
       function negate(a, b) { return b ? ! a : a; }
 
@@ -811,6 +879,7 @@ CLASS({
       return e;
       */
     },
+
     // Better name?
     function tag(opt_nodeName) {
       var c = this.E(opt_nodeName || 'br');
@@ -818,17 +887,20 @@ CLASS({
       this.add(c);
       return this;
     },
+
     function start(opt_nodeName) {
       var c = this.E(opt_nodeName);
       c.parent_ = this;
       this.add(c);
       return c;
     },
+
     function end() {
       var p = this.parent_;
       this.parent_ = null;
       return p;
     },
+
     function add(/* vargs */) {
       var es = [];
       var Y = this.Y;
@@ -1070,29 +1142,27 @@ CLASS({
     },
 
     function toHTML() { return this.outerHTML; },
-    function initHTML() { this.load(); },
 
+    function initHTML() { this.load(); },
 
     //
     // Template Support (internal)
     //
+    // Shorter versions of methods used by TemplateParser.
+    //
+    //            !!! INTERNAL USE ONLY !!!
+
     function a() { return this.add.apply(this, arguments); },
     function c() { return this.cls.apply(this, arguments); },
     function e() { return this.end(); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
     function i(id) { return this.setID(id); },
     function n(nodeName) { this.nodeName = nodeName; return this; },
-    function o(m) {
-      for ( var k in m ) this.on(k, m[k]);
-      return this;
-    },
+    function o(m) { for ( var k in m ) this.on(k, m[k]); return this; },
     function p(a) { a[0] = this; return this; },
     function s(opt_nodeName) { return this.start(opt_nodeName); },
     function t(as) { return this.attrs(as); },
-    function x(m) {
-      for ( var k in m ) this.X.set(k, m[k]);
-      return this;
-    },
+    function x(m) { for ( var k in m ) this.X.set(k, m[k]); return this; },
     function y() { return this.style.apply(this, arguments); },
   ]
 });
