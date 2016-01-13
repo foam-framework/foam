@@ -34,7 +34,7 @@ CLASS({
       subType: 'com.chrome.apis.Experiment'
     }
   ],
-  relationship: [
+  relationships: [
     {
       name: 'apiKeys',
       relatedModel: 'com.chrome.apis.ApiKey',
