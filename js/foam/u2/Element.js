@@ -1110,7 +1110,7 @@ CLASS({
           } else {
             e = self.E('SPAN');
           }
-        } else if ( typeof e === 'string' ) {
+        } else if ( ! foam.u2.Element.isInstance(e) ) {
           e = self.E('SPAN').add(e);
         }
 
