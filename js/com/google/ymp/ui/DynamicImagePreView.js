@@ -46,7 +46,7 @@ CLASS({
           // change one frame after setting the transition, but U2 has no API
           // for this pattern. Setting offsetLeft "forces layout" with the
           // transition enabled/disabled.
-          if ( this.id$el ) this.id$el.offsetLeft = this.id$el.offsetLeft;
+          if ( this.el() ) this.el().offsetLeft = this.el().offsetLeft;
           return imageData ? '1' : '0';
         }.bind(this), this.imageData$),
       }).end();

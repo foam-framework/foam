@@ -33,6 +33,7 @@ CLASS({
 
   properties: [
     {
+      // model_: 'foam.core.types.DAOProperty',
       // type: 'DAO',
       name: 'heroDAO',
       toPropertyE: function(X) {
@@ -54,6 +55,7 @@ CLASS({
       }
     },
     {
+      // model_: 'foam.core.types.DAOProperty',
       // type: 'DAO',
       name: 'starredHeroDAO',
       toPropertyE: function(X) {

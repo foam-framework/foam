@@ -87,7 +87,7 @@ CLASS({
     function getFullHeight() {
       if (this.state !== this.LOADED) return;
 
-      var myStyle = this.window.getComputedStyle(this.dropdownE_.id$el);
+      var myStyle = this.window.getComputedStyle(this.dropdownE_.el());
 
       var border = 0;
       ['border-top', 'border-bottom'].forEach(function(name) {
@@ -96,11 +96,11 @@ CLASS({
       });
 
       var last = this.dropdownE_.children[this.dropdownE_.children.length - 1];
-      var margin = parseInt(this.window.getComputedStyle(last.id$el)['margin-bottom']);
+      var margin = parseInt(this.window.getComputedStyle(last.el())['margin-bottom']);
       if (Number.isNaN(margin)) margin = 0;
 
       return Math.min(border + last.offsetTop + last.offsetHeight + margin,
-          this.document.body.clientHeight - this.dropdownE_.id$el.getBoundingClientRect().top);
+          this.document.body.clientHeight - this.dropdownE_.el().getBoundingClientRect().top);
     },
     function initE() {
       this.addToSelf_ = true;
@@ -191,7 +191,7 @@ CLASS({
       this.animationComplete = true;
     },
     function onMouseLeave(e) {
-      console.assert(e.target === this.dropdownE_.id$el,
+      console.assert(e.target === this.dropdownE_.el(),
           'mouseleave should only fire on this, not on children');
       this.close();
     },

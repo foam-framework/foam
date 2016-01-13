@@ -19,6 +19,8 @@ CLASS({
   package: 'foam.u2',
   name: 'Element',
 
+  documentation: 'Virtual-DOM Element. Root model for all U2 UI components.',
+
   requires: [
     'foam.u2.ElementValue'
   ],
@@ -30,6 +32,7 @@ CLASS({
   ],
 
   onLoad: function() {
+    /* Called when Model loaded. */
     var self = this;
 
     // Add .toE() to Functions so that they can be used as dynamic Elements.
@@ -93,7 +96,7 @@ CLASS({
         }
 
         this.visitChildren('load');
-        if ( this.focused ) this.id$el.focus();
+        if ( this.focused ) this.el().focus();
         // Allows you to take the DOM element and map it back to a
         // foam.u2.Element object.  This is expensive when building
         // lots of DOM since it adds an extra DOM call per Element.
@@ -103,18 +106,18 @@ CLASS({
         // U2 view by walking the DOM tree and checking e_.
         // This could save more time than the work spent here adding e_ to each
         // DOM element.
-        // this.id$el.e_ = this;
+        // this.el().e_ = this;
       },
       unload: function() {
         this.state = this.UNLOADED;
         this.visitChildren('unload');
       },
-      remove:        function() { },
-      destroy:       function() { },
-      onSetCls:      function(cls, enabled) {
+      remove: function() { },
+      destroy: function() { },
+      onSetCls: function(cls, enabled) {
         throw "Mutations not allowed in OUTPUT state.";
       },
-      onFocus:      function(cls, enabled) {
+      onFocus: function(cls, enabled) {
         throw "Mutations not allowed in OUTPUT state.";
       },
       onAddListener: function(topic, listener) {
@@ -123,13 +126,13 @@ CLASS({
       onRemoveListener: function(topic, listener) {
         throw "Mutations not allowed in OUTPUT state.";
       },
-      onSetStyle:    function(key, value) {
+      onSetStyle: function(key, value) {
         throw "Mutations not allowed in OUTPUT state.";
       },
-      onSetAttr:     function(key, value) {
+      onSetAttr: function(key, value) {
         throw "Mutations not allowed in OUTPUT state.";
       },
-      onRemoveAttr:     function(key, value) {
+      onRemoveAttr: function(key, value) {
         throw "Mutations not allowed in OUTPUT state.";
       },
       onAddChildren: function(c) {
@@ -141,7 +144,7 @@ CLASS({
       onReplaceChild: function() {
         throw "Mutations not allowed in OUTPUT state.";
       },
-      toString:      function() { return 'OUTPUT'; }
+      toString: function() { return 'OUTPUT'; }
     },
 
     // State of an Element after it has been loaded.
@@ -150,17 +153,17 @@ CLASS({
       output:        function(out) { console.warn('Duplicate output.'); },
       load:          function() { console.error('Duplicate load.'); },
       unload:        function() {
-        var e = this.id$el;
+        var e = this.el();
         if ( e ) {
           e.remove();
         }
         this.state = this.UNLOADED;
         this.visitChildren('unload');
       },
-      remove:        function() { this.unload(); },
-      destroy:       function() { },
-      onSetCls:      function(cls, enabled) {
-        var e = this.id$el;
+      remove: function() { this.unload(); },
+      destroy: function() { },
+      onSetCls: function(cls, enabled) {
+        var e = this.el();
         if ( ! e ) {
           console.warn('Missing Element: ', this.id);
           return
@@ -169,7 +172,7 @@ CLASS({
         e.classList[enabled ? 'add' : 'remove'](cls);
       },
       onFocus: function() {
-        this.id$el.focus();
+        this.el().focus();
       },
       onAddListener: function(topic, listener) {
         this.addEventListener_(topic, listener);
@@ -178,21 +181,21 @@ CLASS({
         this.addRemoveListener_(topic, listener);
       },
       onSetStyle: function(key, value) {
-        this.id$el.style[key] = value;
+        this.el().style[key] = value;
       },
       onSetAttr: function(key, value) {
         // 'value' doesn't work consistently with setAttribute()
         if ( key === 'value' ) {
-          this.id$el.value = value;
+          this.el().value = value;
         } else {
-          this.id$el.setAttribute(key, value === true ? '' : value);
+          this.el().setAttribute(key, value === true ? '' : value);
         }
       },
       onRemoveAttr: function(key, value) {
-        this.id$el.removeAttribute(key);
+        this.el().removeAttribute(key);
       },
       onAddChildren: function() {
-        var e = this.id$el;
+        var e = this.el();
         if ( ! e ) {
           console.warn('Missing Element: ', this.id);
           return
@@ -207,7 +210,7 @@ CLASS({
         }
       },
       onInsertChildren: function(children, reference, where) {
-        var e = this.id$el;
+        var e = this.el();
         if ( ! e ) {
           console.warn("Missing Element: ", this.id);
           return;
@@ -216,13 +219,13 @@ CLASS({
         for ( var i = 0 ; i < children.length ; i++ ) {
           out(children[i]);
         }
-        reference.id$el.insertAdjacentHTML(where, out);
+        reference.el().insertAdjacentHTML(where, out);
         for ( var i = 0 ; i < children.length ; i++ ) {
           children[i].load && children[i].load();
         }
       },
       onReplaceChild: function(oldE, newE) {
-        var e = this.id$el;
+        var e = this.el();
         if ( ! e ) {
           console.warn('Missing Element: ', this.id);
           return
@@ -231,18 +234,17 @@ CLASS({
         out(newE);
         var n = this.X.document.createElement('div');
         n.innerHTML = out.toString();
-        // newE.load && newE.load();
-
-        e.replaceChild(n.firstChild, oldE.id$el);
+        e.replaceChild(n.firstChild, oldE.el());
+        newE.load && newE.load();
       },
-      toString:      function() { return 'LOADED'; }
+      toString: function() { return 'LOADED'; }
     },
 
     // State of an Element after it has been removed from the DOM.
     // An unloaded Element can be re-added to the DOM.
     UNLOADED: {
-      output:        function() { },
-      load:          function() {
+      output: function() { },
+      load: function() {
         this.state = this.LOADED;
         this.visitChildren('load');
       },
@@ -328,11 +330,16 @@ CLASS({
   properties: [
     {
       model_: 'foam.u2.EIDProperty',
+      // TODO: Move id management out of EIDProperty to Element so that
+      // it can be more easily tied to lifecycle.
       name: 'id'
     },
     {
       name: 'state',
       factory: function () { return this.INITIAL; }
+    },
+    {
+      name: 'parentNode'
     },
     {
       name: 'nodeName',
@@ -443,6 +450,11 @@ CLASS({
       /* Template method for adding addtion element initialization just before Element is output(). */
     },
 
+    function el() {
+      /* Return this Element's real DOM element, if loaded. */
+      return this.id$el;
+    },
+
     function E(opt_nodeName /* | DIV */) {
       /* Create a new Element */
       var Y = this.Y;
@@ -471,6 +483,44 @@ CLASS({
 
       return this.ElementValue.create(args);
     },
+
+    function myCls(opt_extra) {
+      /*
+        Constructs a default class name for this view, with an optional extra.
+      // TODO: Braden, remove the trailing '-'.
+        Without an extra, results in eg. 'foam-u2-Input-'.
+        With an extra of "foo", results in 'foam-u2-Input-foo'.
+      */
+      var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
+      if (!opt_extra) opt_extra = '';
+      return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
+    },
+
+
+    //
+    // Lifecycle
+    //
+
+    function output(/* OutputStream */ out) {
+      /* Transitions to the OUTPUT state, outputting self to supplied OutputStream. */
+      return this.state.output.call(this, out);
+    },
+
+    function load() {
+      /* Transitions to the LOADED state, initializing DOM. */
+      this.state.load.call(this);
+    },
+
+    function unload() {
+      /* Transitions to the UNLOADED state, removing DOM. */
+      this.state.unload.call(this);
+    },
+
+    function destroy() {
+      /* Transition to the DESTROYED state. Reserved for future use. */
+      this.state.destroy.call(this);
+    },
+
 
     //
     // State
@@ -521,9 +571,11 @@ CLASS({
       }
     },
 
+
     //
     // Focus
     //
+
     function focus() {
       this.focused = true;
       this.onFocus();
@@ -535,9 +587,11 @@ CLASS({
       return this;
     },
 
+
     //
     // Visibility
     //
+
     function show(opt_shown) {
       if ( opt_shown ) {
         this.removeCls('foam-u2-Element-hidden');
@@ -551,23 +605,6 @@ CLASS({
       return this.show(opt_hidden === undefined ? false : ! opt_hidden);
     },
 
-    //
-    // Lifecycle
-    //
-    function load() {
-      /* Transitions to the LOADED state, initializing DOM. */
-      this.state.load.call(this);
-    },
-
-    function unload() {
-      /* Transitions to the UNLOADED state, removing DOM. */
-      this.state.unload.call(this);
-    },
-
-    function destroy() {
-      /* Transition to the DESTROYED state. Reserved for future use. */
-      this.state.destroy.call(this);
-    },
 
     //
     // DOM Compatibility
@@ -674,11 +711,22 @@ CLASS({
       }
     },
 
+    function insertBefore(child, reference) {
+      /* Insert a single child before the reference element. */
+      return this.insertAt_(child, reference, true);
+    },
+
+    function insertAfter(child, reference) {
+      /* Insert a single child after the reference element. */
+      return this.insertAt_(child, reference, false);
+    },
+
     function remove() {
       /*
         Remove this Element from its parent Element.
         Will transition to UNLOADED state.
       */
+      // TODO: remove from parent
       this.state.remove.call(this);
     },
 
@@ -700,19 +748,11 @@ CLASS({
       }
     },
 
+
     //
     // Fluent Methods
     //
     // Methods which return 'this' so they can be chained.
-
-    function removeCls(cls) {
-      /* Remove CSS class. */
-      if ( cls ) {
-        delete this.classes[cls];
-        this.onSetCls(cls, false);
-      }
-      return this;
-    },
 
     function setID(id) {
       /*
@@ -724,25 +764,31 @@ CLASS({
       return this;
     },
 
-    function on(topic, listener) {
-      /* Shorter fluent version of addEventListener. Prefered method. */
-      this.addEventListener(topic, listener);
+    function cls(/* Value | String */ cls) {
+      /* Add a CSS cls to this Element. */
+      if ( typeof cls === 'function' ) {
+        var lastValue = null;
+        this.dynamicFn(cls, function(value) {
+          this.cls_(lastValue, value);
+          lastValue = value;
+        }.bind(this));
+      } else if ( Value.isInstance(cls) ) {
+        var lastValue = null;
+        var l = function() {
+          var v = cls.get();
+          this.cls_(lastValue, v);
+          lastValue = v;
+        }.bind(this);
+        cls.addListener(l);
+        l();
+      } else {
+        this.cls_(null, cls);
+      }
       return this;
     },
 
-    function myCls(opt_extra) {
-      /*
-        Constructs a default class name for this view, with an optional extra.
-      // TODO: Braden, remove the trailing '-'.
-        Without an extra, results in eg. 'foam-u2-Input-'.
-        With an extra of "foo", results in 'foam-u2-Input-foo'.
-      */
-      var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
-      if (!opt_extra) opt_extra = '';
-      return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
-    },
-
     function enableCls(cls, enabled, opt_negate) {
+      /* Enable/disable a CSS class based on a dynamic value. */
       function negate(a, b) { return b ? ! a : a; }
 
       if ( typeof enabled === 'function' ) {
@@ -768,29 +814,243 @@ CLASS({
       return this;
     },
 
-    function cls(cls) {
-      if ( typeof cls === 'function' ) {
-        var lastValue = null;
-        this.dynamicFn(cls, function(value) {
-          this.cls_(lastValue, value);
-          lastValue = value;
-        }.bind(this));
-      } else if ( Value.isInstance(cls) ) {
-        var lastValue = null;
-        var l = function() {
-          var v = cls.get();
-          this.cls_(lastValue, v);
-          lastValue = v;
-        }.bind(this);
-        cls.addListener(l);
-        l();
-      } else {
-        this.cls_(null, cls);
+    function removeCls(cls) {
+      /* Remove specified CSS class. */
+      if ( cls ) {
+        delete this.classes[cls];
+        this.onSetCls(cls, false);
       }
       return this;
     },
 
+    function on(topic, listener) {
+      /* Shorter fluent version of addEventListener. Prefered method. */
+      this.addEventListener(topic, listener);
+      return this;
+    },
+
+    function attrs(map) {
+      /* Set multiple attributes at once. */
+      for ( var key in map ) this.setAttribute(key, map[key]);
+      return this;
+    },
+
+    function style(map) {
+      /*
+        Set CSS styles.
+        Map values can be Objects or dynamic Values.
+      */
+      for ( var key in map ) {
+        var value = map[key];
+        if ( typeof value === 'function' )
+          this.dynamicStyle_(key, value);
+        else if ( Value.isInstance(value) )
+          this.valueStyle_(key, value);
+        else
+          this.style_(key, value);
+      }
+      return this;
+    },
+
+    function tag(opt_nodeName) {
+      /* Create a new Element and add it as a child. Return this. */
+      var c = this.E(opt_nodeName || 'br');
+      this.add(c);
+      return this;
+    },
+
+    function start(opt_nodeName) {
+      /* Create a new Element and add it as a child. Return the child. */
+      var c = this.E(opt_nodeName);
+      this.add(c);
+      return c;
+    },
+
+    function end() {
+      /* Return this Element's parent. Used to terminate a start(). */
+      return this.parentNode;
+    },
+
+    function add(/* vargs */) {
+      /* Add Children to this Element. */
+      var es = [];
+      var Y = this.Y;
+
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        var c = arguments[i];
+
+        // Remove null values
+        if ( c === undefined || c === null ) {
+          // nop
+        } else if ( Array.isArray(c) ) {
+          es = es.concat(c.map(function (c) { return c.toE ? c.toE(Y) : c; }));
+        } else if ( c.toE ) {
+          es.push(c.toE(Y));
+        } else if ( Value.isInstance(c) ) {
+          var v = this.valueE_(c);
+          if ( Array.isArray(v) ) {
+            es = es.concat(v.map(function (c) { return c.toE ? c.toE(Y) : c; }));
+          } else {
+            es.push(v.toE ? v.toE(Y) : v);
+          }
+        } else {
+          es.push(c);
+        }
+      }
+
+      if ( es.length ) {
+        for ( var i = 0 ; i < es.length ; i++ )
+          if ( foam.u2.Element.isInstance(es[i]) )
+            es[i].parentNode = this;
+
+        this.childNodes.push.apply(this.childNodes, es);
+        this.onAddChildren.apply(this, es);
+      }
+
+      return this;
+    },
+
+    function addBefore(reference/*, vargs */) {
+      /* Add a variable number of children before the reference element. */
+      var children = [];
+      for ( var i = 1 ; i < arguments.length ; i++ ) {
+        children.push(arguments[i]);
+      }
+      return this.insertAt_(children, reference, true);
+    },
+
+    function removeAllChildren() {
+      /* Remove all of this Element's children. */
+      while ( this.childNodes.length )
+        this.removeChild(this.childNodes[0]);
+      return this;
+    },
+
+    function setChildren(value) {
+      /** value -- a Value of an array of children which set this elements contents, replacing old children **/
+      var l = function() {
+        this.removeAllChildren();
+        this.add.apply(this, value.get());
+      }.bind(this);
+
+      value.addListener(l);
+      l();
+
+      return this;
+    },
+
+
+    //
+    // Output Methods
+    //
+
+    function outputInnerHTML(out) {
+      for ( var i = 0 ; i < this.childNodes.length ; i++ )
+        out(this.childNodes[i]);
+      return out;
+    },
+
+    function createOutputStream() {
+      /*
+        Create an OutputStream.
+        Suitable for providing to the output() method for
+        serializing an Element hierarchy.
+        Call toString() on the OutputStream to get output.
+      */
+      var self = this;
+      var buf = [];
+      var f = function templateOut(/* arguments */) {
+        for ( var i = 0 ; i < arguments.length ; i++ ) {
+          var o = arguments[i];
+          if ( o === null || o === undefined ) {
+            // NOP
+          } else if ( typeof o === 'string' ) {
+            buf.push(o);
+          } else if ( typeof o === 'number' ) {
+            buf.push(o);
+          } else if ( X.foam.u2.Element.isInstance(o) ) {
+            o.output(f);
+          } else {
+            if ( o && o.toView_ ) o = o.toView_();
+            if ( ! ( o === null || o === undefined ) ) {
+              if ( o.toHTML ) {
+                buf.push(o.toHTML());
+              } else {
+                buf.push(o);
+              }
+              // TODO(kgr): Figure out what this line was supposed to do.
+              //if ( o.initHTML && self && obj.addChild ) self.addChild(o);
+            }
+          }
+        }
+      };
+
+      f.toString = function() {
+        if ( buf.length === 0 ) return '';
+        if ( buf.length > 1 ) buf = [buf.join('')];
+        return buf[0];
+      }
+
+      return f;
+    },
+
+    function write(opt_X /* | GLOBAL */) {
+      /* Write Element to document. For testing purposes. */
+      opt_X = opt_X || GLOBAL;
+      (opt_X.document || document).writeln(this.outerHTML);
+      this.load();
+      return this;
+    },
+
+    function toString() {
+      /* Converts Element to HTML String without transitioning state. */
+      var s = this.createOutputStream();
+      this.output_(s);
+      return s.toString();
+    },
+
+
+    //
+    // U1 Compatibility
+    //
+    // Remove when U1 removed.
+
+    function toHTML() { return this.outerHTML; },
+
+    function initHTML() { this.load(); },
+
+
+    //
+    // Internal (DO NOT USE)
+    //
+
+    function insertAt_(children, reference, before) {
+      var i = this.childNodes.indexOf(reference);
+
+      if ( i == -1 ) {
+        console.warn("Reference node isn't a child of this.");
+        return this;
+      }
+
+      if ( ! Array.isArray(children) ) children = [ children ];
+
+      var Y = this.Y;
+      children = children.map(function(e) { return e.toE ? e.toE(Y) : e; });
+
+      var index = before ? i : (i + 1);
+      this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
+      this.state.onInsertChildren.call(
+        this,
+        children,
+        reference,
+        before ?
+          'beforebegin' :
+          'afterend');
+      return this;
+    },
+
     function cls_(oldClass, newClass) {
+      /* Replace oldClass with newClass. Called by cls(). */
       if ( oldClass === newClass ) return;
       this.removeCls(oldClass);
       if ( newClass ) {
@@ -813,11 +1073,6 @@ CLASS({
       l();
     },
 
-    function attrs(map) {
-      for ( var key in map ) this.setAttribute(key, map[key]);
-      return this;
-    },
-
     function dynamicStyle_(key, fn) {
       this.dynamicFn(fn, function(value) {
         this.style_(key, value);
@@ -835,19 +1090,6 @@ CLASS({
     function style_(key, value) {
       this.css[key] = value;
       this.onSetStyle(key, value);
-      return this;
-    },
-
-    function style(map) {
-      for ( var key in map ) {
-        var value = map[key];
-        if ( typeof value === 'function' )
-          this.dynamicStyle_(key, value);
-        else if ( Value.isInstance(value) )
-          this.valueStyle_(key, value);
-        else
-          this.style_(key, value);
-      }
       return this;
     },
 
@@ -891,126 +1133,12 @@ CLASS({
       return e;
     },
 
-    // Better name?
-    function tag(opt_nodeName) {
-      var c = this.E(opt_nodeName || 'br');
-      c.parent_ = this;
-      this.add(c);
-      return this;
-    },
-
-    function start(opt_nodeName) {
-      var c = this.E(opt_nodeName);
-      c.parent_ = this;
-      this.add(c);
-      return c;
-    },
-
-    function end() {
-      var p = this.parent_;
-      this.parent_ = null;
-      return p;
-    },
-
-    function add(/* vargs */) {
-      var es = [];
-      var Y = this.Y;
-
-      for ( var i = 0 ; i < arguments.length ; i++ ) {
-        var c = arguments[i];
-
-        // Remove null values
-        if ( c === undefined || c === null ) {
-          // nop
-        } else if ( Array.isArray(c) ) {
-          es = es.concat(c.map(function (c) { return c.toE ? c.toE(Y) : c; }));
-        } else if ( c.toE ) {
-          es.push(c.toE(Y));
-        } else if ( Value.isInstance(c) ) {
-          var v = this.valueE_(c);
-          if ( Array.isArray(v) ) {
-            es = es.concat(v.map(function (c) { return c.toE ? c.toE(Y) : c; }));
-          } else {
-            es.push(v.toE ? v.toE(Y) : v);
-          }
-        } else {
-          es.push(c);
-        }
-      }
-
-      if ( es.length ) {
-        this.childNodes.push.apply(this.childNodes, es);
-        this.onAddChildren.apply(this, es);
-      }
-
-      return this;
-    },
-
-    function insertBefore(child, reference) {
-      return this.insertAt_(child, reference, true);
-    },
-
-    function insertAfter(child, reference) {
-      return this.insertAt_(child, reference, false);
-    },
-
-    function addBefore(reference/* vargs */) {
-      var children = [];
-      for ( var i = 1 ; i < arguments.length ; i++ ) {
-        children.push(arguments[i]);
-      }
-      return this.insertAt_(children, reference, true);
-    },
-
-    function insertAt_(children, reference, before) {
-      var i = this.childNodes.indexOf(reference);
-
-      if ( i == -1 ) {
-        console.warn("Reference node isn't a child of this.");
-        return this;
-      }
-
-      if ( ! Array.isArray(children) ) children = [ children ];
-
-      var Y = this.Y;
-      children = children.map(function(e) { return e.toE ? e.toE(Y) : e; });
-
-      var index = before ? i : (i + 1);
-      this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
-      this.state.onInsertChildren.call(
-        this,
-        children,
-        reference,
-        before ?
-          'beforebegin' :
-          'afterend');
-      return this;
-    },
-
-    function removeAllChildren() {
-      while ( this.childNodes.length ) this.removeChild(this.childNodes[0]);
-      return this;
-    },
-
-    function setChildren(value) {
-      /** value -- a Value of an array of children which set this elements contents, replacing old children **/
-      var l = function() {
-        this.removeAllChildren();
-        this.add.apply(this, value.get());
-      }.bind(this);
-
-      value.addListener(l);
-      l();
-
-      return this;
-    },
-
     function addEventListener_(topic, listener) {
       if ( topic === 'click' && this.X.gestureManager ) {
         var manager = this.X.gestureManager;
         var self = this;
         var target = this.X.lookup('foam.input.touch.GestureTarget').create({
-          containerID: this.id$el.id,
+          containerID: this.el().id,
           enforceContainment: true,
           gesture: 'tap',
           handler: {
@@ -1019,7 +1147,7 @@ CLASS({
                 preventDefault: function() { },
                 stopPropagation: function() { },
                 pointMap: pointMap,
-                target: self.id$el
+                target: self.el()
               });
             }
           }
@@ -1028,7 +1156,7 @@ CLASS({
         this.clickTarget_ = target;
       } else {
         // TODO: fix
-        this.id$el && this.id$el.addEventListener(topic, listener);
+        this.el() && this.el().addEventListener(topic, listener);
       }
     },
 
@@ -1037,65 +1165,8 @@ CLASS({
         this.X.gestureManager.uninstall(this.clickTarget_);
         this.clickTarget = '';
       } else {
-        this.id$el.removeEventListener(topic, listener);
+        this.el().removeEventListener(topic, listener);
       }
-    },
-
-    //
-    // Output Methods
-    //
-    function output(out) { return this.state.output.call(this, out); },
-
-    function outputInnerHTML(out) {
-      for ( var i = 0 ; i < this.childNodes.length ; i++ )
-        out(this.childNodes[i]/*.toString()*/);
-      return out;
-    },
-
-    function createOutputStream() {
-      var self = this;
-      var buf = [];
-      var f = function templateOut(/* arguments */) {
-        for ( var i = 0 ; i < arguments.length ; i++ ) {
-          var o = arguments[i];
-          if ( o === null || o === undefined ) {
-            // NOP
-          } else if ( typeof o === 'string' ) {
-            buf.push(o);
-          } else if ( typeof o === 'number' ) {
-            buf.push(o);
-          } else if ( X.foam.u2.Element.isInstance(o) ) {
-            o.output(f);
-          } else {
-            if ( o && o.toView_ ) o = o.toView_();
-            if ( ! ( o === null || o === undefined ) ) {
-              if ( o.toHTML ) {
-                buf.push(o.toHTML());
-              } else {
-                buf.push(o);
-              }
-              // TODO(kgr): Figure out what this line was supposed to do.
-              //if ( o.initHTML && self && obj.addChild ) self.addChild(o);
-            }
-          }
-        }
-      };
-
-      f.toString = function() {
-        if ( buf.length === 0 ) return '';
-        if ( buf.length > 1 ) buf = [buf.join('')];
-        return buf[0];
-      }
-
-      return f;
-    },
-
-    function write(opt_X) {
-      opt_X = opt_X || GLOBAL;
-      /* For debugging, not production. */
-      (opt_X.document || document).writeln(this.outerHTML);
-      this.load();
-      return this;
     },
 
     function output_(out) {
@@ -1146,22 +1217,13 @@ CLASS({
       out('>');
     },
 
-    function toString() {
-      var s = this.createOutputStream();
-      this.output_(s);
-      return s.toString();
-    },
-
-    function toHTML() { return this.outerHTML; },
-
-    function initHTML() { this.load(); },
 
     //
-    // Template Support (internal)
+    // Template Support
     //
     // Shorter versions of methods used by TemplateParser.
     //
-    //            !!! INTERNAL USE ONLY !!!
+    // !!! INTERNAL USE ONLY !!!
 
     function a() { return this.add.apply(this, arguments); },
     function c() { return this.cls.apply(this, arguments); },
