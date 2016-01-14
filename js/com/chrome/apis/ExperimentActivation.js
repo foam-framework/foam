@@ -18,11 +18,14 @@
 CLASS({
   package: 'com.chrome.apis',
   name: 'ExperimentActivation',
-  ids: ['origin', 'experiment'],
   requires: [
     'com.chrome.apis.ApiKey'
   ],
   properties: [
+    {
+      name: 'id',
+      hidden: true
+    },
     {
       name: 'origin',
       type: 'Reference',
@@ -47,7 +50,11 @@ CLASS({
       code: function() {
         // TODO: Request new key from backend.
         this.apiKeys.removeAll();
-        this.apiKeys.put(this.ApiKey.create());
+        this.apiKeys.put(this.ApiKey.create({
+          expires: new Date(Date.now() + 36000),
+          experiment: this.experiment,
+          apiName: 'CustomApiName-' + Math.floor(Math.random() * 100 ).toString(16)
+        }));
       }
     }
   ]

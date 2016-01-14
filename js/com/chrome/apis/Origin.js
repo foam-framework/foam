@@ -29,7 +29,8 @@ CLASS({
     {
       name: 'owner',
       type: 'Reference',
-      subType: 'com.chrome.apis.User'
+      subType: 'com.chrome.apis.User',
+      hidden: true
     }
   ],
   relationships: [
