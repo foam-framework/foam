@@ -248,20 +248,20 @@ CLASS({
         this.state = this.LOADED;
         this.visitChildren('load');
       },
-      unload:        function() { },
-      remove:        function() { debugger; console.error('Remove after unload.'); },
-      destroy:       function() { },
-      onSetCls:      function() { },
-      onFocus:       function() { },
-      onAddListener: function() { },
+      unload:         function() { },
+      remove:         function() { debugger; console.error('Remove after unload.'); },
+      destroy:        function() { },
+      onSetCls:       function() { },
+      onFocus:        function() { },
+      onAddListener:  function() { },
       onRemoveListener: function() { },
-      onSetStyle:    function() { },
-      onSetAttr:     function() { },
-      onRemoveAttr:  function() { },
-      onAddChildren: function() { },
+      onSetStyle:     function() { },
+      onSetAttr:      function() { },
+      onRemoveAttr:   function() { },
+      onAddChildren:  function() { },
       onInsertChildren: function() { },
       onReplaceChild: function() { },
-      toString:      function() { return 'UNLOADED'; }
+      toString:       function() { return 'UNLOADED'; }
     },
 
     // State of an Element after it has been destroyed.
@@ -409,7 +409,7 @@ CLASS({
       getter: function() { return this.outputInnerHTML(this.createOutputStream()).toString(); }
     },
     {
-      name: 'clickTarget_',
+      name: 'clickTarget_'
     }
   ],
 
@@ -1024,7 +1024,7 @@ CLASS({
     // Internal (DO NOT USE)
     //
 
-    function insertAt_(children, reference, before) {
+    function insertAt_(/* Element[] */ children, /* Element */ reference, /* Boolean */ before) {
       var i = this.childNodes.indexOf(reference);
 
       if ( i == -1 ) {
@@ -1060,12 +1060,14 @@ CLASS({
     },
 
     function dynamicAttr_(key, fn) {
+      /* Set an attribute based off of a dynamic function. */
       this.dynamicFn(fn, function(value) {
         this.setAttribute(key, value);
       }.bind(this));
     },
 
     function valueAttr_(key, value) {
+      /* Set an attribute based off of a dynamic Value. */
       var l = function() {
         this.setAttribute(key, value.get());
       }.bind(this);
@@ -1074,12 +1076,14 @@ CLASS({
     },
 
     function dynamicStyle_(key, fn) {
+      /* Set a CSS style based off of a dynamic function. */
       this.dynamicFn(fn, function(value) {
         this.style_(key, value);
       }.bind(this));
     },
 
     function valueStyle_(key, v) {
+      /* Set a CSS style based off of a dynamic Value. */
       var l = function(value) {
         this.style_(key, v.get());
       }.bind(this);
@@ -1088,12 +1092,18 @@ CLASS({
     },
 
     function style_(key, value) {
+      /* Set a CSS style based off of a literal value. */
       this.css[key] = value;
       this.onSetStyle(key, value);
       return this;
     },
 
     function valueE_(value) {
+      /*
+        Return an Element or an Array of Elements which are
+        returned from the supplied dynamic Value.
+        The Element(s) are replaced when the Value changes.
+      */
       var self = this;
 
       function nextE() {
@@ -1134,6 +1144,7 @@ CLASS({
     },
 
     function addEventListener_(topic, listener) {
+      /* Add a real DOM listener, with gestureManager support, if needed. */
       if ( topic === 'click' && this.X.gestureManager ) {
         var manager = this.X.gestureManager;
         var self = this;
@@ -1161,6 +1172,7 @@ CLASS({
     },
 
     function removeEventListener_(topic, listener) {
+      /* Remove a real DOM listener, with gestureManager support, if needed. */
       if ( topic === 'click' && this.X.gestureManager && this.clickTarget_ ) {
         this.X.gestureManager.uninstall(this.clickTarget_);
         this.clickTarget = '';
