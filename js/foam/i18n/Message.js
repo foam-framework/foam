@@ -39,7 +39,6 @@ CLASS({
     {
       type: 'Array',
       name: 'placeholders',
-      type: 'Array[foam.i18n.Placeholder]'
     },
     {
       type: 'Function',
