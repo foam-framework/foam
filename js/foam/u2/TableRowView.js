@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2',
   name: 'TableRowView',
   extends: 'foam.u2.View',
+
   imports: [
     'hardSelection$',
-    'tableView',
+    'tableView'
   ],
 
   properties: [
@@ -32,14 +34,16 @@ CLASS({
     function isPropNumeric(prop) {
       return IntProperty.isInstance(prop) || FloatProperty.isInstance(prop);
     },
+
     function getBodyCellClasses(prop, i) {
       var classes = [this.tableView.myCls('cell'), this.tableView.myCls('col-' + i)];
       if (this.isPropNumeric(prop))
         classes.push(this.tableView.myCls('numeric'));
       return classes;
     },
-    // Override me to add classes to each row.
+
     function getBodyRowClasses() {
+      /* Template method for adding classes to each row. */
       return [];
     },
 
@@ -65,12 +69,12 @@ CLASS({
           prop.tableFormatter(this.data[prop.name], this.data, this) :
           this.data[prop.name]);
       return cell;
-    },
+    }
   ],
 
   listeners: [
     function onClick() {
       this.hardSelection = this.data;
-    },
-  ],
+    }
+  ]
 });
