@@ -18,5 +18,5 @@ CLASS({
   package: 'foam.net.proto',
   name: 'JSONProtoDateTimeProperty',
   extends: 'DateTimeProperty',
-  traits: ['foam.net.proto.JSONProtoPropertyTrait.js'],
+  traits: ['foam.net.proto.JSONProtoPropertyTrait'],
 });

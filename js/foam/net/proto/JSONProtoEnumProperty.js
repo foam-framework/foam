@@ -20,6 +20,6 @@ CLASS({
   extends: 'IntProperty',
   traits: [
     'foam.core.types.EnumPropertyTrait',
-    'foam.net.proto.JSONProtoPropertyTrait.js',
+    'foam.net.proto.JSONProtoPropertyTrait',
   ],
 });

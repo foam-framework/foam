@@ -18,5 +18,5 @@ CLASS({
   package: 'foam.net.proto',
   name: 'JSONProtoFloatProperty',
   extends: 'FloatProperty',
-  traits: ['foam.net.proto.JSONProtoPropertyTrait.js'],
+  traits: ['foam.net.proto.JSONProtoPropertyTrait'],
 });

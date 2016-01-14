@@ -18,5 +18,5 @@ CLASS({
   package: 'foam.net.proto',
   name: 'JSONProtoStringProperty',
   extends: 'StringProperty',
-  traits: ['foam.net.proto.JSONProtoPropertyTrait.js'],
+  traits: ['foam.net.proto.JSONProtoPropertyTrait'],
 });
