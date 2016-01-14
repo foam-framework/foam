@@ -1,6 +1,3 @@
-* Can't set boolean properties from index.html parameters.
-  - Problem: fromString() sets the property directly which means that it can only be called after object created.
-
 validate
 async/future view loading
 
