@@ -46,44 +46,36 @@ CLASS({
     ['descIcon', '&#9660;'],
     {
       name: 'data',
-      postSet: function(old, nu) {
-        this.model = this.getModel();
+      postSet: function(_, data) {
+        var model = this.data && this.data.model;
+        if ( this.model !== model ) this.model = model;
       }
     },
     {
       name: 'model',
-      lazyFactory: function() {
-        return this.getModel();
+      defaultValueFn: function() {
+        return this.X.model;
       },
-      postSet: function(old, nu) {
-        if (old === nu) return;
-        if (nu && this.allProperties_.length === 0)
-          this.allProperties_ = nu.getRuntimeProperties().filter(
-            function(prop) { return !prop.hidden; });
+      postSet: function(_, model) {
+        if ( ! this.columnProperties )
+          this.columnProperties_ = this.getColumnProperties_();
       }
     },
     {
       type: 'Array',
-      name: 'allProperties_',
-      documentation: 'All the (non-hidden) properties on the model.'
-    },
-    {
-      type: 'Array',
-      name: 'columnProperties_',
+      name: 'columnProperties',
       documentation: 'An array of Property objects for all selected ' +
           'properties. That is, the current set of columns. Defaults to the ' +
           'model\'s tableProperties if defined, or all non-hidden properties ' +
           'otherwise.',
-      lazyFactory: function() {
-        if (this.model && this.model.tableProperties &&
-            this.model.tableProperties.length > 0) {
-          return this.model.tableProperties.map(function(name) {
-            return this.model.getProperty(name);
-          }.bind(this));
-        } else {
-          return this.allProperties_;
-        }
-      },
+      factory: function() { return null; },
+      postSet: function(_, ps) {
+        this.columnProperties_ = ps;
+      }
+    },
+    {
+      type: 'Array',
+      name: 'columnProperties_',
       postSet: function(old, nu) {
         this.scrollView.invalidate();
       }
@@ -128,9 +120,9 @@ CLASS({
       name: 'scrollView',
       factory: function() {
         return this.ScrollView.create({
-          data: this.filteredDAO$Proxy,
+          data:      this.filteredDAO$Proxy,
           rowHeight: this.rowHeight,
-          rowView: this.makeRow,
+          rowView:   this.makeRow
         });
       }
     },
@@ -157,20 +149,29 @@ CLASS({
       this.window.removeEventListener('resize', this.onResize);
     },
 
-    function getModel() {
-      return this.X.model || (this.data && this.data.model);
+    function getColumnProperties_() {
+      if ( ! this.model ) return [];
+
+      if ( this.model.tableProperties && this.model.tableProperties.length > 0 ) {
+          return this.model.tableProperties.map(function(name) {
+            return this.model.getProperty(name);
+          }.bind(this));
+      }
+
+      return this.model.getRuntimeProperties().filter(NOT(Property.HIDDEN));
     },
 
     function computeColWidths() {
       /* Call this to populate the colWidths_ array with the actual values. */
-      if (!this.headE || !this.headRowE) return;
+      if ( ! this.headE ||  ! this.headRowE ) return;
 
       var cells = this.headRowE.children;
+      var columnProperties = this.columnProperties_;
 
-      for (var i = 0; i < cells.length; i++) {
-        if (this.columnProperties_[i].tableWidth) {
+      for ( var i = 0 ; i < cells.length ; i++ ) {
+        if ( columnProperties[i].tableWidth ) {
           cells[i].style({
-            width: this.columnProperties_[i].tableWidth + 'px',
+            width: columnProperties[i].tableWidth + 'px',
             'flex-grow': null
           });
         } else {
@@ -181,7 +182,7 @@ CLASS({
         }
       }
       this.measureColWidths(cells);
-      for (var i = 0; i < cells.length; i++) {
+      for ( var i = 0 ; i < cells.length ; i++ ) {
         cells[i].style({
           width: null,
           'flex-grow': null
@@ -189,8 +190,8 @@ CLASS({
       }
     },
     function measureColWidths(cells) {
-      for (var i = 0; i < cells.length; i++) {
-        if (!this.colWidths_[i])
+      for ( var i = 0 ; i < cells.length ; i++ ) {
+        if ( ! this.colWidths_[i] )
           this.colWidths_[i] = this.makeColWidthValue(i);
         this.colWidths_[i].set(cells[i].el().offsetWidth);
       }
@@ -225,18 +226,17 @@ CLASS({
           var newW1 = w1 + ( col2 ? Math.min(w2, delta) : delta );
           var newW2 = w2 + Math.min(-delta, w1);
 
-          if (newW1 < minWidth) {
+          if ( newW1 < minWidth ) {
             newW1 = minWidth;
             newW2 = w1 + w2 - minWidth;
-          } else if (w2 && newW2 < minWidth) {
+          } else if ( w2 && newW2 < minWidth ) {
             newW1 = w1 + w2 - minWidth;
             newW2 = minWidth;
           }
 
           self.colWidths_[i].set(newW1);
-          if (w2) {
+          if ( w2 )
             self.colWidths_[i + 1].set(newW2);
-          }
         }
 
         var onMouseUp = function(e) {
@@ -268,7 +268,11 @@ CLASS({
       // Populate the header. The whole header is wrapped in a dynamic().
       // It would be slightly better if only the children were, but dynamically
       // producing an array of elements is not supported right now.
-      this.headE.add(this.dynamic(function(props) {
+      this.headE.add(this.dynamic(function(dao, props) {
+        if ( ! dao ) return 'set dao';
+
+console.log('props: ', props);
+
         // TODO(braden): Find a way to remove the old listeners, or confirm that
         // it's already happening properly.
         this.headRowE = this.E('flex-table-row').cls(this.myCls('row')).add(
@@ -280,7 +284,7 @@ CLASS({
         // DOM.
         this.setTimeout(this.onResize, 100);
         return this.headRowE;
-      }.bind(this), this.columnProperties_$, this.sortOrder$));
+      }.bind(this), this.data$, this.columnProperties_$, this.sortOrder$));
 
       // Attach a dynamic class to the head that reveals the column resizers
       // when one of them is being dragged.
@@ -344,7 +348,7 @@ CLASS({
       map.properties$ = this.columnProperties_$;
       return this.rowView(map, Y);
     },
-    code: function onResize() {
+    function onResize() {
       this.computeColWidths();
     }
   ],
