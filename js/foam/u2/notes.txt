@@ -107,5 +107,4 @@ This should work in Cells.
     }
 
 
-We need a TableView
 visibility / mode is completely broken

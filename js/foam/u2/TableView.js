@@ -14,14 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2',
   name: 'TableView',
   extends: 'foam.u2.View',
+
   requires: [
     'SimpleValue',
     'foam.u2.ScrollView',
-    'foam.u2.TableRowView',
+    'foam.u2.TableRowView'
   ],
 
   imports: [
@@ -33,7 +35,7 @@ CLASS({
   ],
 
   exports: [
-    'as tableView',
+    'as tableView'
   ],
 
   documentation: 'A view that renders a table. Note that it does not use real HTML <tt>&lt;table&gt;</tt> tags. Features draggable columns and click-to-sort.',
@@ -46,7 +48,7 @@ CLASS({
       name: 'data',
       postSet: function(old, nu) {
         this.model = this.getModel();
-      },
+      }
     },
     {
       name: 'model',
@@ -63,7 +65,7 @@ CLASS({
     {
       type: 'Array',
       name: 'allProperties_',
-      documentation: 'All the (non-hidden) properties on the model.',
+      documentation: 'All the (non-hidden) properties on the model.'
     },
     {
       type: 'Array',
@@ -84,7 +86,7 @@ CLASS({
       },
       postSet: function(old, nu) {
         this.scrollView.invalidate();
-      },
+      }
     },
     ['sortOrder', undefined],
     ['sortProp', undefined],
@@ -140,7 +142,7 @@ CLASS({
       type: 'Boolean',
       name: 'isResizing',
       defaultValue: false
-    },
+    }
   ],
 
   methods: [
@@ -149,15 +151,18 @@ CLASS({
       this.window.addEventListener('resize', this.onResize);
       this.onResize();
     },
+
     function unload() {
       this.SUPER();
       this.window.removeEventListener('resize', this.onResize);
     },
+
     function getModel() {
       return this.X.model || (this.data && this.data.model);
     },
-    // Call this to populate the colWidths_ array with the actual values.
+
     function computeColWidths() {
+      /* Call this to populate the colWidths_ array with the actual values. */
       if (!this.headE || !this.headRowE) return;
 
       var cells = this.headRowE.children;
@@ -194,9 +199,12 @@ CLASS({
       this.sortProp = prop;
       this.sortOrder = this.sortOrder === prop ? DESC(prop) : prop;
     },
-    // Returns a new resize handler element, with event bindings, that follows
-    // column i.
+
     function makeResizeHandle(i) {
+      /*
+        Returns a new resize handler element, with event bindings, that follows
+        column i.
+       */
       var handle = this.E('flex-col-resize-handle').cls(this.myCls('resize-handle'));
       handle.on('click', function(e) { e.stopPropagation(); });
       handle.on('mousedown', function(e) {
@@ -244,6 +252,7 @@ CLASS({
 
       return handle;
     },
+
     function initE() {
       // Need to make sure to bind in the flex-table-view-col-resize class, to
       // the resize boolean.
@@ -280,6 +289,7 @@ CLASS({
       // Populate the body.
       this.bodyE.add(this.scrollView);
     },
+
     function makeHeadCell(prop, i) {
       // Returns an array of Elements, suitable for add().
       var cell = this.E('flex-table-cell');
@@ -311,9 +321,11 @@ CLASS({
     function isPropNumeric(prop) {
       return IntProperty.isInstance(prop) || FloatProperty.isInstance(prop);
     },
+
     function isSortedByProp(prop) {
       return this.sortProp === prop;
     },
+
     function makeColWidthValue(i) {
       var styleE = this.E('style');
       var value = this.SimpleValue.create();
@@ -323,24 +335,18 @@ CLASS({
       }.bind(this));
       this.headE.add(styleE);
       return value;
-    },
+    }
   ],
 
   listeners: [
-    {
-      name: 'makeRow',
-      code: function(map, Y) {
-        map = map || {};
-        map.properties$ = this.columnProperties_$;
-        return this.rowView(map, Y);
-      }
+    function makeRow(map, Y) {
+      map = map || {};
+      map.properties$ = this.columnProperties_$;
+      return this.rowView(map, Y);
     },
-    {
-      name: 'onResize',
-      code: function() {
-        this.computeColWidths();
-      }
-    },
+    code: function onResize() {
+      this.computeColWidths();
+    }
   ],
 
   templates: [
@@ -439,6 +445,6 @@ CLASS({
         flex-grow: 0;
         flex-shrink: 0;
       }
-    */},
+    */}
   ]
 });
