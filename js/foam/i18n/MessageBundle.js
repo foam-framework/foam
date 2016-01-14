@@ -24,7 +24,6 @@ CLASS({
     {
       type: 'Array',
       name: 'messages',
-      type: 'Array[foam.i18n.Message]'
     }
   ],
 
