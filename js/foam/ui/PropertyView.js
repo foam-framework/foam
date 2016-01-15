@@ -31,7 +31,6 @@ CLASS({
   properties: [
     {
       name: 'prop',
-      type: 'Property',
       documentation: function() {/*
           The $$DOC{ref:'Property'} for which to generate a $$DOC{ref:'foam.ui.View'}.
       */},
@@ -68,7 +67,7 @@ CLASS({
     },
     {
       name: 'view',
-      type: 'foam.ui.View',
+      // type: 'foam.ui.View',
       adapt: function(_, v) { return v && v.toView_ ? v.toView_() : v; },
       documentation: function() {/*
         The new sub-$$DOC{ref:'foam.ui.View'} generated for the given $$DOC{ref:'Property'}.
@@ -76,12 +75,12 @@ CLASS({
     },
     {
       name: 'bound_',
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       defaultValue: false
     },
     {
       name: 'parent',
-      type: 'foam.ui.View',
+      // type: 'foam.ui.View',
       postSet: function(_, p) {
         if ( ! p ) return; // TODO(jacksonic): We shouldn't pretend we aren't part of the tree
         p[this.prop.name + 'View'] = this.view.cview || this.view;

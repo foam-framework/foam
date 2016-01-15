@@ -66,7 +66,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'polymerFnImpl',
       factory: function() {
         return function(name, proto) {
@@ -90,7 +90,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'linksToLoad',
       factory: function() {
         return [
@@ -111,7 +111,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'components',
       factory: function() { return []; },
       hidden: true
@@ -175,13 +175,13 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'demosRendered',
       defaultValue: false,
       hidden: true
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'demoNameWhitelist',
       factory: function() {
         return [
@@ -191,7 +191,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'demoNameBlacklist',
       factory: function() {
         return [
@@ -203,7 +203,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'modelsLoadingCount',
       defaultValue: 0
     },

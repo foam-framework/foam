@@ -12,7 +12,7 @@ CLASS({
     'id',
     'b',
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'cs',
       subType: 'C',
       view: 'foam.ui.DAOListView',
@@ -33,7 +33,7 @@ CLASS({
       factory: function() { return B.create({id: 1, b:'nested B'}); }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'bs',
       subType: 'B',
       view: 'foam.ui.DAOListView',

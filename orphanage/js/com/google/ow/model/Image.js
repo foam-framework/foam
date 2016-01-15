@@ -15,15 +15,15 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'url',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'dataUrl',
     },
   ],

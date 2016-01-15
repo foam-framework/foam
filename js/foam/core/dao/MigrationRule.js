@@ -21,15 +21,15 @@ CLASS({
   ids: ['modelName'],
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'modelName',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'version'
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'migration'
     }
   ]

@@ -127,7 +127,7 @@ CLASS({
       lazyFactory: function() { return this.BOTTOM; }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'overlapPanels',
       documentation: function() {/*
         Indicates whether main view should be allowed to overlap the slide
@@ -186,10 +186,10 @@ CLASS({
         animate();
       }
     },
-    { model_: 'ViewFactoryProperty', name: 'mainView' },
-    { model_: 'ViewFactoryProperty', name: 'panelView' },
+    { type: 'ViewFactory', name: 'mainView' },
+    { type: 'ViewFactory', name: 'panelView' },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minHeight',
       defaultValueFn: function() {
         var e = this.$main();
@@ -197,9 +197,9 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'mainHeight',
-      model_: 'IntProperty',
+      type: 'Int',
       hidden: true,
       help: 'Set internally by the resize handler',
       postSet: function(_, y) {
@@ -210,9 +210,9 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'panelHeight',
-      model_: 'IntProperty',
+      type: 'Int',
       hidden: true,
       help: 'Set internally by the resize handler',
       postSet: function(_, y) {
@@ -224,7 +224,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minPanelHeight',
       defaultValueFn: function() {
         if ( this.panelView && this.panelView.minHeight )
@@ -235,7 +235,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'parentHeight',
       help: function() {/*
         A pseudoproperty that returns the current height (CSS pixels) of the
@@ -247,13 +247,13 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'stripHeight',
       help: 'The height in (CSS) pixels of the minimal visible strip of panel',
       defaultValue: 30
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'panelRatio',
       help: function() {/*
         The ratio (0-1) of the total height occupied by the panel, when
@@ -262,7 +262,7 @@ CLASS({
       defaultValue: 0.5
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'panelY',
       postSet: function(oldY, y) {
         if ( this.currentLayout ) this.currentLayout[2] = this.parentHeight - y;

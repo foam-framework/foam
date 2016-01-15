@@ -1,0 +1,51 @@
+<html manifest="app.manifest">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <title>Avizi</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="fonts.css" />
+    <script language="javascript" src="foam.js"></script>
+    <style>
+      body {
+        background-color: #3e50b4 ! important;
+      }
+      @keyframes pulseopacity {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.3;
+        }
+      }
+      #avizi-splash {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation-name: pulseopacity;
+        animation-duration: 1.0s;
+        animation-timing-function: cubic-bezier(0,.3,.8,1);
+        animation-delay: 0;
+        animation-direction: alternate;
+        animation-iteration-count: infinite;
+        animation-fill-mode: none;
+        animation-play-state: running;
+      }
+      #avizi-text {
+        font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
+        font-size: 72px;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="avizi-splash">
+      <span id="avizi-text">Avizi</span>
+    </div>
+    <foam id="ymp" model="com.google.ymp.UserClient"></foam></body>
+</html>

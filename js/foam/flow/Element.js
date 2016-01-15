@@ -20,7 +20,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'inner'
     },
     {

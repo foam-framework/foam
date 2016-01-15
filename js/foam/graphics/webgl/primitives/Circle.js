@@ -41,7 +41,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'segments',
       defaultValue: 64,
       postSet: function() {
@@ -68,7 +68,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'dynamicLOD',
       help: 'If above zero, scales the segments with the radius. This value acts as a divisor: Log(r/dynamicLOD). Large values mean fewer segments for a given radius.',
       postSet: function(old,nu) {

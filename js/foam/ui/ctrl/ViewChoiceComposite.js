@@ -30,14 +30,14 @@ CLASS({
       name: 'label',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'unselectedViewFactory',
       documentation: 'The view factory when no view is selected.',
       factory: function() { return function() {}; },
       postSet: function() { this.choice = this.choice; }
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'views',
       documentation: 'An array of ViewChoiceComposites.',
       postSet: function() {
@@ -77,7 +77,7 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'viewFactory',
       view: 'foam.ui.ViewFactoryView',
     }

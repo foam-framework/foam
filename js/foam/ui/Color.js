@@ -15,22 +15,22 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'red',
       preSet: function(_, v) { return Math.max(0, Math.min(255, v)); },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'green',
       preSet: function(_, v) { return Math.max(0, Math.min(255, v)); },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'blue',
       preSet: function(_, v) { return Math.max(0, Math.min(255, v)); },
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'alpha',
       preSet: function(_, v) { return Math.max(0.0, Math.min(1.0, v)); },
     },

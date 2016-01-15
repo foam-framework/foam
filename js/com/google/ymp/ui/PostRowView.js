@@ -15,28 +15,17 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'com.google.ymp.ui.ColorPicker',
     'com.google.ymp.ui.DynamicImagePreView',
   ],
   imports: [
     'personDAO',
-    'dynamic',
   ],
   exports: [ 'data' ],
 
   properties: [
     {
+      type: 'String',
       name: 'authorName',
-      postSet: function(old, nu) {
-        if ( old === nu ) return;
-        if ( ! nu ) {
-          this.imgBGColor = '#fff';
-          return;
-        }
-        this.ColorPicker.create().pickColorFromStr(function(color) {
-          this.imgBGColor = color;
-        }.bind(this), nu);
-      },
     },
     {
       name: 'data',
@@ -48,11 +37,6 @@ CLASS({
           },
         });
       },
-    },
-    {
-      type: 'String',
-      name: 'imgBGColor',
-      defaultValue: '#fff',
     },
     {
       type: 'Int',
@@ -72,13 +56,8 @@ CLASS({
     function initE() {/*#U2
       <div class="^">
         (( this.Y.registerModel(this.DynamicImagePreView, 'com.google.ymp.ui.DynamicImageView'); ))
-        <div class="^img" style="background-color:{{this.imgBGColor$}}"
-             x:maxLOD="8">
-
-          {{this.dynamic(function(data) {
-              return data.IMAGE;
-            }, this.data$)}}
-
+        <div class="^img">
+          <:image maxLOD="8" />
         </div>
         <div class="^flex-col">
           <div class="^title">{{this.data_('title')}}</div>

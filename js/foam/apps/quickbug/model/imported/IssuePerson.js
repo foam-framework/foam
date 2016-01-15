@@ -14,23 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
-  model_: 'Model',
-  name: 'IssuePerson',
   package: 'foam.apps.quickbug.model.imported',
+  name: 'IssuePerson',
+
   properties:
   [
     {
-      model_: 'StringProperty',
+      type: 'String',
       help: 'Link to this user\'s page.',
       name: 'htmlLink'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'kind'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       help: 'User\'s name.',
       name: 'name'
     }

@@ -37,7 +37,7 @@ MODEL({
       defaultValue: null
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'suggestedDirName',
       defaultValue: ''
     },

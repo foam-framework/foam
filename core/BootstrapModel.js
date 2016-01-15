@@ -490,8 +490,6 @@ var BootstrapModel = {
       }
     }
 
-    if ( this.onLoad ) this.onLoad();
-
     return cls;
   },
 
@@ -514,13 +512,11 @@ var BootstrapModel = {
 
   getPrototype: function() { /* Returns the definition $$DOC{ref:'Model'} of this instance. */
     if ( ! this.instance_.prototype_ ) {
-      //console.profile('getPrototype' + this.name);
-      //for ( var i = 0 ; i < 0 ; i++ ) this.buildPrototype();
-      //console.profileEnd();
-    return this.instance_.prototype_ = this.buildPrototype();
+      this.instance_.prototype_ = this.buildPrototype();
+      this.onLoad && this.onLoad();
     }
+
     return this.instance_.prototype_;
-//    return this.instance_.prototype_ || ( this.instance_.prototype_ = this.buildPrototype() );
   },
 
   saveDefinition: function(self) {

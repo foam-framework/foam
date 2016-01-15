@@ -25,7 +25,7 @@ CLASS({
       }
     },
     {
-      type: 'foam.apps.ctm.TaskManager',
+      // type: 'foam.apps.ctm.TaskManager',
       name: 'taskManager'
     },
     {
@@ -41,7 +41,7 @@ CLASS({
       defaultValue: -1
     },
     {
-      type: 'foam.graphics.Graph',
+      // type: 'foam.graphics.Graph',
       name: 'graph',
       lazyFactory: function() {
         return this.Graph.create({

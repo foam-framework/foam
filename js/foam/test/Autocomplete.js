@@ -49,7 +49,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'query',
       subType: 'foam.test.Autocomplete.Person',
       subKey: 'NAME',

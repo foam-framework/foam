@@ -30,7 +30,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'revisitModels',
       defaultValue: false
     },

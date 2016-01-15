@@ -29,7 +29,7 @@ CLASS({
     {
       name:  'name',
       label: 'File Name',
-      model_: 'StringProperty',
+      type: 'String',
       defaultValueFn: function() {
         return this.model.plural + '.xml';
       }

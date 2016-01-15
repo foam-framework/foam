@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.ui',
   name:  'ChoiceView',
-
   extends: 'foam.ui.AbstractChoiceView',
 
   /*
@@ -28,18 +27,18 @@ CLASS({
    */
   properties: [
     {
-      name:  'name',
       type:  'String',
+      name:  'name',
       defaultValue: 'field'
     },
     {
-      name:  'helpText',
       type:  'String',
+      name:  'helpText',
       defaultValue: undefined
     },
     {
+      type:  'Int',
       name:  'size',
-      type:  'int',
       defaultValue: 1
     }
   ],

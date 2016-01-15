@@ -17,7 +17,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'zIndex',
       defaultValue: 2,
     },
@@ -36,7 +36,7 @@ CLASS({
       ],
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'innerView',
       defaultValue: 'foam.ui.md.DetailView'
     },

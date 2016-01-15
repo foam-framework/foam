@@ -20,13 +20,13 @@ CLASS({
   name: 'SyncTrait',
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'syncProperty',
       defaultValue: -1,
       hidden: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'deleted',
       defaultValue: false,
       hidden: true

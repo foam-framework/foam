@@ -31,7 +31,7 @@ CLASS({
   properties: [
     'data',
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'delegate',
       defaultValue: 'foam.ui.md.DetailView',
     },

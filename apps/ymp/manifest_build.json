@@ -1,0 +1,46 @@
+{
+  "short_name": "Avizi",
+  "name": "Avizi",
+  "icons": [
+    {
+      "src": "icon96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icon192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "icon384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "icon512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "splash_screens": [
+    {
+      "src": "splash240_320.png",
+      "sizes": "240x320"
+    },
+    {
+      "src": "splash750_1334.png",
+      "sizes": "750x1334"
+    }
+  ],
+  "start_url": "main.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#3e50b4",
+  "background_color": "#3e50b4"
+}

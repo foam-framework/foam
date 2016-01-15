@@ -124,7 +124,7 @@ CLASS({
       name: 'authAgent2'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'scopes',
       factory: function() {
         return [

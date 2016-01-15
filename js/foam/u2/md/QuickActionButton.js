@@ -29,14 +29,14 @@ CLASS({
       name: 'action',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'iconUrl',
       defaultValueFn: function() {
         return this.action ? this.action.iconUrl : '';
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'ligature',
       defaultValueFn: function() {
         return this.action ? this.action.ligature : '';
@@ -77,7 +77,7 @@ CLASS({
       defaultValue: '#02A8F3',
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'alpha',
       defaultValue: 1,
     },

@@ -25,7 +25,7 @@ CLASS({
   properties: [
     'id',
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'onAdd',
       args: [
         { name: 'ret', documentation: 'Callback when transition complete' },
@@ -34,7 +34,7 @@ CLASS({
       ],
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'onRemove',
       args: [
         { name: 'ret', documentation: 'Callback when transition complete' },
@@ -43,7 +43,7 @@ CLASS({
       ],
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'onResize',
       args: [
         { name: 'ret', documentation: 'Callback when transition complete' },

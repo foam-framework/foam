@@ -30,16 +30,16 @@ CLASS({
     'codeViewName',
     'document'
   ],
-  exports: [ 'sampleCodeContext$' ],
+  exports: [ 'sampleCodeContext' ],
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'codeViewName',
       defaultValue: 'foam.flow.CodeView'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title',
       defaultValue: 'Example'
     },
@@ -60,24 +60,24 @@ CLASS({
     },
     {
       name: 'output',
-      type: 'foam.flow.CodeSampleOutput',
+      // type: 'foam.flow.CodeSampleOutput',
       factory: function() {
         return this.CodeSampleOutput.create();
       },
       view: 'foam.flow.CodeSampleOutputView'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'hasHTML',
       defaultValue: false
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'actionButtonName',
       defaultValue: 'foam.ui.ActionButton'
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'packagePath_',
       defaultValue: function(Y, path, i, opt_noCreate) {
         if ( i === path.length ) return Y;
@@ -94,7 +94,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'packagePath',
       defaultValue: function(X, path, opt_noCreate) {
         return path ?
@@ -103,7 +103,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'registerModel',
       defaultValue: function(model, opt_name) {
         var root    = this;
@@ -122,7 +122,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'lookup',
       defaultValue: function(path) {
         if ( ! path ) return undefined;
@@ -131,7 +131,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'classFn',
       defaultValue: function(modelHash, opt_X) {
         var Y = opt_X || this;
@@ -164,9 +164,9 @@ CLASS({
       defaultValue: 'hold'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'openSnippets',
-      type: 'Array[Int]',
+      // type: 'Array[Int]',
       lazyFactory: function() { return [-2, -1]; },
       adapt: function(old, nu) {
         if ( old === nu || ! typeof nu !== 'string' ) return nu;
@@ -179,7 +179,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'running',
       defaultValue: false
     }

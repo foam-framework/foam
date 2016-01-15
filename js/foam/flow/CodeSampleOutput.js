@@ -19,20 +19,17 @@ CLASS({
     'foam.flow.VirtualConsole',
     'foam.flow.VirtualConsoleView'
   ],
-  imports: [
-  ],
-  exports: [
-  ],
+
   properties: [
     {
       name: 'viewOutput',
-      type: 'foam.flow.CodeSampleViewOutput',
+      // type: 'foam.flow.CodeSampleViewOutput',
       factory: function() { return this.CodeSampleViewOutput.create(); },
       view: 'foam.flow.CodeSampleViewOutputView'
     },
     {
       name: 'virtualConsole',
-      type: 'foam.flow.VirtualConsole',
+      // type: 'foam.flow.VirtualConsole',
       factory: function() { return this.VirtualConsole.create(); },
       view: 'foam.flow.VirtualConsoleView'
     }

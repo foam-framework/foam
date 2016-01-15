@@ -38,7 +38,7 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'toolbarActions_',
       postSet: function(old, nu) {
@@ -54,7 +54,7 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.ui.md.ToolbarAction',
       name: 'dataToolbarActions_',
       postSet: function(old, nu) {
@@ -64,7 +64,7 @@ CLASS({
       },
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'hideOwnActions',
       help: "If true, do not autoxmatically add the view's own actions to the toolbar, just the data's actions",
       defaultValue: false,

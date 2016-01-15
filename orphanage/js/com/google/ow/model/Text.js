@@ -16,12 +16,12 @@ CLASS({
   properties: [
     'id',
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText',
       defaultValue: '...',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'message',
     },
   ],

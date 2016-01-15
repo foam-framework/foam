@@ -29,13 +29,11 @@ CLASS({
     },
     {
       name:  'borderWidth',
-      type:  'int',
       defaultValue: 1
     },
     {
       name: 'r',
       label: 'Radius',
-      type: 'int',
       defaultValue: 20
     },
     {

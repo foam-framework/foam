@@ -27,11 +27,11 @@ CLASS({
       type: 'Model'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'properties'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'availableProperties'
     }
   ],

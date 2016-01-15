@@ -21,11 +21,11 @@ CLASS({
     'id',
     'substream',
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'people',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText',
       defaultValue: 'Conversation',
     },

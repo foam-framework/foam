@@ -29,7 +29,7 @@ CLASS({
   properties: [
     'title',
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.u2.md.ToolbarAction',
       name: 'leftActions_',
       postSet: function(old, nu) {
@@ -39,7 +39,7 @@ CLASS({
       },
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.u2.md.ToolbarAction',
       name: 'rightActions_',
       postSet: function(old, nu) {

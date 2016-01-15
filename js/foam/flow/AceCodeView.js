@@ -48,7 +48,7 @@ CLASS({
     {
       // TODO(markdittmer): Should be able to use foam.ui.ModeProperty here
       // but it doesn't seem to be working.
-      model_: 'StringProperty',
+      type: 'String',
       name: 'mode',
       defaultValue: 'read-write',
       postSet: function(old, nu) {
@@ -61,22 +61,22 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'codeViewLoadState',
       defaultValue: 'unloaded'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'pathToAce',
       defaultValue: 'ace-builds/src-noconflict/ace.js'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'aceTheme',
       defaultValue: 'ace/theme/textmate'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'aceMode',
       defaultValue: 'ace/mode/javascript',
       postSet: function(old, nu) {
@@ -85,32 +85,32 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'aceTabSize',
       defaultValue: 2
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'aceMinLines',
       defaultValue: 5
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'aceMaxLines',
       defaultValue: 25
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'aceReadOnlyTheme',
       defaultValue: 'ace/theme/kuroir'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'aceReadOnlyMinLines',
       defaultValue: 2
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'aceReadOnlyMaxLines',
       defaultValue: 25
     },
@@ -121,7 +121,7 @@ CLASS({
       name: 'codeView'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'allFolded',
       defaultValue: false
     }

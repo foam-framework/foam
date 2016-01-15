@@ -26,7 +26,6 @@ CLASS({
     },
     {
       name: 'predicate',
-      type: 'Object',
       defaultValue: TRUE,
       postSet: function(old, nu) {
         // Update the memento's fields based on the current views.

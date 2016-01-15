@@ -50,12 +50,12 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'panel',
       defaultValue: 'foam.apps.builder.templates.PanelView',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'app',
       defaultValue: {
         factory_: 'foam.apps.builder.templates.AppView',

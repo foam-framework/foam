@@ -15,7 +15,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'accessToken',
     },
   ],

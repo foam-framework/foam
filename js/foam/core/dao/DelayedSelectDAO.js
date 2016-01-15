@@ -23,11 +23,11 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'initialDelay'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'rowDelay'
     }
   ],

@@ -18,6 +18,7 @@ CLASS({
   package: 'foam.browser.u2',
   name: 'BrowserView',
   extends: 'foam.u2.View',
+
   requires: [
     'foam.u2.DAOController',
     'foam.u2.DAOCreateController',
@@ -25,27 +26,27 @@ CLASS({
     'foam.u2.SearchBorder',
     'foam.u2.md.ActionButton',
     'foam.u2.md.TextField',
-    'foam.u2.md.Select',
+    'foam.u2.md.Select'
   ],
   imports: [
     'document',
     'dynamic',
     'headerColor',
     'menuFactory',
-    'stack',
+    'stack'
   ],
   exports: [
-    'headerColor',
+    'headerColor'
   ],
 
   constants: {
-    MENU_CLOSE: ['menu-close'],
+    MENU_CLOSE: ['menu-close']
   },
 
   properties: [
     {
       name: 'data',
-      documentation: 'This is the DAO to view.',
+      documentation: 'This is the DAO to view.'
     },
     {
       name: 'title',
@@ -100,7 +101,7 @@ CLASS({
       defaultValue: false
     },
     {
-      name: 'menuView_',
+      name: 'menuView_'
     },
     {
       name: 'menuOpen',
@@ -112,7 +113,7 @@ CLASS({
           menu.subscribe(this.MENU_CLOSE, this.onMenuTouch);
           this.menuRendered_ = true;
         }
-      },
+      }
     },
     {
       name: 'searchMode',
@@ -139,7 +140,7 @@ CLASS({
       getter: function() {
         return this.daoController.maxWidth;
       }
-    },
+    }
   ],
 
   actions: [
@@ -172,7 +173,7 @@ CLASS({
       code: function() {
         this.stack.pushView(this.DAOCreateController.create({ model: this.data.model }));
       }
-    },
+    }
   ],
 
   listeners: [
@@ -182,7 +183,7 @@ CLASS({
       code: function() {
         this.menuOpen = false;
       }
-    },
+    }
   ],
 
   templates: [
@@ -285,8 +286,9 @@ CLASS({
         display: flex;
         flex-direction: column;
         flex-grow: 1;
+        overflow: hidden;
       }
-    */},
+    */}
   ],
 
   methods: [
@@ -303,7 +305,7 @@ CLASS({
       header.add(this.MENU_BUTTON);
       header.start('span')
           .cls(this.myCls('header-title'))
-          .add(this.title$)
+          .add(this.title)
           .end();
 
       if (this.spinner) header.add(this.spinner);
@@ -355,6 +357,6 @@ CLASS({
                   .end()
               .start('div').cls(this.myCls('menu-body'));
       this.menuView_.end().end().end();
-    },
-  ],
+    }
+  ]
 });

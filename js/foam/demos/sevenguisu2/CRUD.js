@@ -18,12 +18,13 @@
 MODEL({
   package: 'foam.demos.sevenguisu2',
   name: 'Person',
+
   tableProperties: [ 'surname', 'name' ],
+
   properties: [
     { name: 'id', hidden: true },
-                       // TODO: fix views
-    { name: 'name',    view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } },
-    { name: 'surname', view: { factory_: 'foam.ui.TextFieldView', onKeyMode: true } }
+    { name: 'name',    toPropertyE: function(X) { return X.lookup('foam.u2.TextField').create({onKey: true}, X); } },
+    { name: 'surname', toPropertyE: function(X) { return X.lookup('foam.u2.TextField').create({onKey: true}, X); } }
   ]
 });
 
@@ -38,7 +39,7 @@ MODEL({
     'foam.dao.EasyDAO',
     'foam.dao.IDBDAO', // TODO: This shouldn't be required
     'foam.demos.sevenguisu2.Person',
-//    'foam.u2.TableView' // TODO: Doesn't exist
+    'foam.u2.TableView'
   ],
 
   properties: [
@@ -65,11 +66,12 @@ MODEL({
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
       // TODO: replace with foam.u2.TableView when available
-      view: {
-        factory_: 'foam.ui.TableView',
-        title: '',
-        scrollEnabled: true,
-        editColumns: false
+      toPropertyE: function(X) {
+        return X.lookup('foam.u2.TableView').create({
+          title: '',
+          scrollEnabed: true,
+          editColumns: false
+        });
       },
       factory: function() { return this.dao; }
     },
@@ -86,9 +88,9 @@ MODEL({
   templates: [
     function CSS() {/*
       ^ { padding: 10px; }
-      ^ .buttons { padding-left: 592px; }
       ^ .detailView { border: none; background: white; }
-      ^ .content span { overflow: hidden !important; }
+      ^ .content span { margin-top: 24px; overflow: hidden !important; }
+      ^ .buttons { margin-top: 24px; }
       ^ .content { width: 1000px; }
       ^ .detailPane { width: 45%; display: inline-block; margin-left: 50px; margin-top: 16px; }
       ^ .label { color: #039; font-size: 14px; padding-top: 6px; }
@@ -101,8 +103,10 @@ MODEL({
         <span class="prefix label">Filter prefix: </span> <:prefix onKeyMode="true" type="search"/>
         <div class="content">
           <span class="summaryPane"><:filteredDAO hardSelection$={{this.selection$}}/></span>
-          <span class="detailPane"><:data/></span>
-          <div class="buttons"><:createItem/> <:updateItem/> <:deleteItem/></div>
+          <span class="detailPane">
+            <:data/>
+            <div class="buttons"><:createItem/> <:updateItem/> <:deleteItem/></div>
+          </span>
         </div>
       </div>
     */}

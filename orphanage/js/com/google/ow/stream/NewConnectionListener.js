@@ -25,19 +25,19 @@ CLASS({
       required: true,
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'substreams',
       required: true,
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'getConnectionSubstreams',
       defaultValue: function(env) {
         return [ '/' + env.data.id ];
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'getPeople',
       required: true,
       defaultValue: function(env) {
@@ -45,33 +45,33 @@ CLASS({
       },
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'singlePut',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'forwardSignalEnvelope',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'createClientForSource',
       defaultValue: false,
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'streamDataFactory',
       defaultValueFn: function() {
         return this.MultiplexDAO.DATA_FACTORY.defaultValue;
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'streamClientFactory',
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'streamClientEnvelopeFactory',
       defaultValue: function(inputEnv, pid) {
         var data = this.streamClientFactory(inputEnv, pid);
@@ -83,7 +83,7 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'connectionListenerFactory',
       defaultValue: function(env) {
         return this.EasyStreamListener.create({
@@ -95,7 +95,7 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'onNewConnection',
       defaultValue: function(env) {
         var people = this.getPeople(env);

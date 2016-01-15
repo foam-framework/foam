@@ -125,8 +125,11 @@ CLASS({
           opacity: 0,
           transition: 'opacity 300ms ease'
         });
-        this.requestAnimationFrame(function() { e.style({ opacity: 1 }); });
+        this.requestAnimationFrame(function() {
+          e.style({ opacity: 1 });
+        });
       }
+      this.publish(['stack-element-push'], e);
     },
     function elementAnimationRemove_(e) {
       if (this.transition === 'slide') {
@@ -178,7 +181,7 @@ CLASS({
       return e;
     },
     function resize() {
-      var width = this.id$el.offsetWidth;
+      var width = this.el().offsetWidth;
       var index = this.views_.length - 1;
       while (index >= 0 && width >= (this.views_[index].content.minWidth || this.defaultMinWidth)) {
         width -= (this.views_[index].content.minWidth || this.defaultMinWidth);
@@ -201,7 +204,7 @@ CLASS({
 
       if (this.visibleStart_ < 0) return;
 
-      width = this.id$el.offsetWidth;
+      width = this.el().offsetWidth;
       var sizes = [];
       for (var i = this.visibleStart_; i <= this.visibleEnd_; i++) {
         var min = this.views_[i].content.minWidth || this.defaultMinWidth;
@@ -228,7 +231,7 @@ CLASS({
       }
 
       var foundTop = false;
-      var pos = this.id$el.offsetWidth;
+      var pos = this.el().offsetWidth;
       for (i = this.visibleEnd_; i >= 0; i--) {
         var size = sizes[i] || 0; // size zero for buried items to the left
         pos -= size; // left edge
@@ -358,7 +361,7 @@ CLASS({
           pushView: this.pushView_.bind(this, this.views_.length),
           popView: this.popView_.bind(this, this.views_.length),
           popChildViews: this.popView_.bind(this, this.views_.length+1),
-          replaceView: this.replaceView_.bind(this, this.views_.length)
+          replaceView: this.replaceView_.bind(this, this.views_.length),
         };
 
         // HACK: Replacing the values of properties on a child view is a hack

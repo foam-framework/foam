@@ -36,12 +36,12 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'url',
       view: 'foam.ui.md.TextFieldView',
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'urlEnabled',
     }
   ],

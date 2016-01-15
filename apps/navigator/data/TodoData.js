@@ -3,7 +3,7 @@ var TodoData = [];
 arequire('foam.navigator.types.Todo')(function(todoModel) {
   TodoData = JSONUtil.arrayToObjArray(X, [
     {
-      // "model_": "foam.navigator.types.Todo",
+      // model_: "foam.navigator.types.Todo",
       "id": "Todo:1",
       "lastModified": new Date('Mon Jan 26 2015 20:33:57 GMT-0500 (EST)'),
       "labels": [
@@ -16,7 +16,7 @@ arequire('foam.navigator.types.Todo')(function(todoModel) {
       "notes": "Web search results should be intelligently included in FOAM SLICE search results."
     },
     {
-      // "model_": "foam.navigator.types.Todo",
+      // model_: "foam.navigator.types.Todo",
       "id": "Todo:2",
       "lastModified": new Date('Mon Jan 26 2015 20:42:14 GMT-0500 (EST)'),
       "labels": [
@@ -31,7 +31,7 @@ arequire('foam.navigator.types.Todo')(function(todoModel) {
       "done": true
     },
     {
-      // "model_": "foam.navigator.types.Todo",
+      // model_: "foam.navigator.types.Todo",
       "id": "Todo:3",
       "lastModified": new Date('Mon Jan 26 2015 20:43:45 GMT-0500 (EST)'),
       "labels": [
@@ -43,7 +43,7 @@ arequire('foam.navigator.types.Todo')(function(todoModel) {
       "notes": "We already have one app that uses chrome.fileSystem in a one-off sort of way. We should build a DAO for managing this more cleanly in the Chrome App space."
     },
     {
-      // "model_": "foam.navigator.types.Todo",
+      // model_: "foam.navigator.types.Todo",
       "id": "Todo:4",
       "lastModified": new Date('Mon Jan 26 2015 20:46:08 GMT-0500 (EST)'),
       "labels": [
@@ -56,7 +56,7 @@ arequire('foam.navigator.types.Todo')(function(todoModel) {
       "done": true
     },
     {
-      // "model_": "foam.navigator.types.Todo",
+      // model_: "foam.navigator.types.Todo",
       "id": "Todo:5",
       "lastModified": new Date('Mon Jan 26 2015 20:47:52 GMT-0500 (EST)'),
       "labels": [
@@ -69,7 +69,7 @@ arequire('foam.navigator.types.Todo')(function(todoModel) {
       "done": true
     },
     {
-      // "model_": "foam.navigator.types.Todo",
+      // model_: "foam.navigator.types.Todo",
       "id": "Todo:6",
       "lastModified": new Date('Mon Jan 26 2015 20:49:49 GMT-0500 (EST)'),
       "labels": [

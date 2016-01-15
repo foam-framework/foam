@@ -35,7 +35,7 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'icon',
       defaultValue: {
         factory_: 'foam.ui.Icon',

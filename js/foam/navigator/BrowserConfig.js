@@ -38,7 +38,7 @@ CLASS({
       }
     },
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       name: 'model',
       required: true
     },
@@ -54,12 +54,12 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'queryParserFactory'
     },
     {
       name: 'iconURL',
-      model_: 'StringProperty',
+      type: 'String',
       label: 'Icon'
     }
   ]

@@ -29,11 +29,11 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'props'
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'values'
     }
   ],

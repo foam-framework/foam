@@ -30,7 +30,7 @@ CLASS({
       name: 'idToken'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'scopes',
       factory: function() {
         return [

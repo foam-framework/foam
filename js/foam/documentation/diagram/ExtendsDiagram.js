@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.documentation.diagram',
   name: 'ExtendsDiagram',
-
   extends: 'foam.ui.DestructiveDataView',
 
   requires: [
@@ -38,14 +37,14 @@ CLASS({
   properties: [
     {
       name: 'diagramItem',
-      type: 'foam.graphics.diagram.LinearLayout',
+      // type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
       }
     },
     {
       name: 'mainLayout',
-      type: 'foam.graphics.diagram.LinearLayout',
+      // type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
       }
@@ -56,7 +55,7 @@ CLASS({
     },
     {
       name: 'spacing',
-      model_: 'IntProperty',
+      type: 'Int',
       defaultValue: 45
     }
   ],

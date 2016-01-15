@@ -35,7 +35,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
       defaultValue: 'foam.ui.md.TextFieldView'
     },

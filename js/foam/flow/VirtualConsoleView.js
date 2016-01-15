@@ -13,6 +13,7 @@ CLASS({
   name: 'VirtualConsoleView',
   package: 'foam.flow',
   extends: 'foam.flow.Element',
+
   traits: [ 'foam.flow.MultilineViewTrait' ],
 
   constants: { ELEMENT_NAME: 'virtual-console' },
@@ -20,7 +21,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      type: 'foam.flow.VirtualConsole',
+      // type: 'foam.flow.VirtualConsole',
       required: true
     },
     {
@@ -38,7 +39,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'scrollable',
       defaultValue: true
     }
@@ -49,18 +50,15 @@ CLASS({
   ],
 
   listeners: [
-    {
-      name: 'setScrollableCSS_',
-      code: function() {
-        if ( ! this.$ ) return;
-
-        var style = this.$.style;
-        if ( this.scrollable ) {
-          style.overflow = 'auto';
-        } else {
-          style['max-height'] = 'initial';
-          style.overflow = 'initial';
-        }
+    function setScrollableCSS_() {
+      if ( ! this.$ ) return;
+      
+      var style = this.$.style;
+      if ( this.scrollable ) {
+        style.overflow = 'auto';
+      } else {
+        style['max-height'] = 'initial';
+        style.overflow = 'initial';
       }
     }
   ],

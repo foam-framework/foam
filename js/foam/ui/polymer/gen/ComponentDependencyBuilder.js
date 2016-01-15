@@ -30,21 +30,21 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'provides',
       factory: function() {
         return ['deps'];
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'listensTo',
       factory: function() {
         return ['source'];
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'dir'
     }
   ],

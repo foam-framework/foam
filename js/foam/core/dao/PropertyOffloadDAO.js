@@ -28,7 +28,7 @@ CLASS({
       name: 'offloadDAO'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'loadOnSelect'
     }
   ],

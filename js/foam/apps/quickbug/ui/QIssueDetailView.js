@@ -36,7 +36,7 @@ CLASS({
       factory: function() { return this.X.QIssue; }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'saveEnabled',
       defaultValue: false
     },

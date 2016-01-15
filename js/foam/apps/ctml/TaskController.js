@@ -57,7 +57,7 @@ CLASS({
       name: 'tasks'
     },
     {
-      type: 'foam.apps.ctml.Task',
+      // type: 'foam.apps.ctml.Task',
       name: 'task',
       factory: function() {
         return this.RANDOM_TASK();
@@ -68,7 +68,7 @@ CLASS({
       }
     },
     {
-      type: 'foam.apps.ctml.TaskSimulator',
+      // type: 'foam.apps.ctml.TaskSimulator',
       name: 'simulator',
       factory: function() {
         return this.TaskSimulator.create({
@@ -78,15 +78,15 @@ CLASS({
       }
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'memory'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'cpu'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'network'
     }
   ],

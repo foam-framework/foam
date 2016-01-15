@@ -37,17 +37,17 @@ CLASS({
 
   properties: [
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'f',
       required: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'f_',
       transient: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'hashFunction',
       defaultValueFn: function() { return this.IDENTITY; }
     },

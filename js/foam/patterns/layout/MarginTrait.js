@@ -38,7 +38,7 @@ CLASS({
 
       properties: [
         {
-          model_: 'IntProperty',
+          type: 'Int',
           name: 'addAmount',
           documentation: function() {/* The amount to add to the proxied pixel values. */},
           defaultValue: 0,
@@ -72,28 +72,28 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'top',
       label: 'Top Margin',
       documentation: function() {/* Margin in pixels. */},
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'left',
       label: 'Left Margin',
       documentation: function() {/* Margin in pixels. */},
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'right',
       label: 'Right Margin',
       documentation: function() {/* Margin in pixels. */},
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'bottom',
       label: 'Bottom Margin',
       documentation: function() {/* Margin in pixels. */},

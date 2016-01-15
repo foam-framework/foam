@@ -41,34 +41,34 @@ CLASS({
       required: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'icon'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'version'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraFiles',
       help: 'Extra files to both load during the build process, and include in the built image.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraBuildFiles',
       help: 'Extra files to load during the build process, but NOT include in the built image.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'models',
       help: 'Models to include and generate code for.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; },
       factory: function() { return []; }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'blacklistModels',
       help: 'Models to unconditionally exclude from the image, even if they are listed as required.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
@@ -88,13 +88,13 @@ CLASS({
       factory: function() { return this.FileDAO.create(); }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraClassPaths',
       help: 'List of extra .js hierarchies to load models from.  Paths will be checked in the order given, finally falling back to the main FOAM js/ hierarchy.',
       adapt: function(_, s) { if ( typeof s === 'string' ) return s.split(','); return s; }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'delegate'
     }
   ],

@@ -151,7 +151,7 @@ CLASS({
       name: 'data'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'valueViewModel',
       postSet: function() {
         if (this.valueViewModel) {

@@ -32,7 +32,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'inline',
       attribute: true,
       defaultValue: false

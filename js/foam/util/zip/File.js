@@ -52,76 +52,76 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'packagedVersion',
       // Copied from /usr/bin/zip (Zip 3.0 July 5th 2008) on OS X.
       defaultValue: (0x031E | 0),
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minimumVersion',
       // Copied from /usr/bin/zip (Zip 3.0 July 5th 2008) on OS X.
       defaultValue: (0x000A | 0),
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'bitFlag',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'compressionMethod',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'lastModified',
       lazyFactory: function() {
         return this.DOSDate.create({}, this.Y).toNumber();
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'contentCRC32',
       lazyFactory: function() {
         return this.crc32.fromChunk(this.fileContents);
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'compressedSize',
       lazyFactory: function() {
         return this.fileContents.size();
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'uncompressedSize',
       lazyFactory: function() {
         return this.fileContents.size();
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'fileNameLength',
       lazyFactory: function() {
         return this.fileName.length;
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'extraFieldLength',
       lazyFactory: function() {
         return this.extraField.length;
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'fileCommentLength',
       lazyFactory: function() {
         return this.fileComment.length;
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'diskNumber',
     },
     {
@@ -132,11 +132,11 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'offsetOnDisk',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'fileName',
     },
     {
@@ -144,7 +144,7 @@ CLASS({
       defaultValue: '',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'fileComment',
     },
     {

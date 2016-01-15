@@ -29,7 +29,7 @@ CLASS({
   properties: [
     'appSelection',
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'menuSelectionFuture',
       documentation: function() {/*
         Create a FutureView for a BrowserView. Resolve future and unhook

@@ -35,12 +35,11 @@ CLASS({
       required: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'appBuilderAnalyticsEnabled',
       defaultValue: true,
     },
     {
-      type: 'foam.apps.builder.XHRManager',
       name: 'xhrManager',
       documentation: function() {/* Used for registering shared XHR headers.
         Also, use $$DOC{ref:'.xhrManager.Y'} as context for sub-components
@@ -51,7 +50,6 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.SourceManager',
       name: 'sourceManager',
       transient: true,
       lazyFactory: function() {

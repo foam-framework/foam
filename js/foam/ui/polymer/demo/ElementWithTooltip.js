@@ -23,12 +23,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tagName',
       defaultValue: 'div'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'data',
       defaultValue: 'Text with tooltip'
     },

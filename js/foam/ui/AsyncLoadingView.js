@@ -55,7 +55,7 @@
      },
      {
        name: 'view',
-       type: 'foam.ui.View',
+       // type: 'foam.ui.View',
        documentation: function() {/*
          The new sub-$$DOC{ref:'foam.ui.View'} generated for the given $$DOC{ref:'Property'}.
        */}

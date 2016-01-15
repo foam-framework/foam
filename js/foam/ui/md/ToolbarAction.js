@@ -12,11 +12,11 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'ToolbarAction',
-  extends: '',
+
   properties: [
     'data',
     {
-      type: 'Action',
+//      type: 'Action',
       name: 'action',
     },
   ],

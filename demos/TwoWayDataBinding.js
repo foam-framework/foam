@@ -27,8 +27,8 @@ apar(
     name: 'Temperature2',
     documentation: "Version 2: Save as version 1, but upgrades fields to FloatProperties and sets the 'precision' of the views.",
     properties: [
-      { name: 'c', model_: 'FloatProperty' },
-      { name: 'f', model_: 'FloatProperty' }
+      { name: 'c', type: 'Float' },
+      { name: 'f', type: 'Float' }
     ],
     methods: {
       init: function() { Events.relate(this.c$, this.f$, this.c2f, this.f2c); },
@@ -53,14 +53,14 @@ apar(
     properties: [
       {
         name: 'c',
-        model_: 'FloatProperty',
+        type: 'Float',
         postSet: function(oldValue, newValue) {
           if ( oldValue !== newValue ) this.f = 9/5 * newValue + 32;
         }
       },
       {
         name: 'f',
-        model_: 'FloatProperty',
+        type: 'Float',
         defaultValue: 32,
         postSet: function(oldValue, newValue) {
           if ( oldValue !== newValue ) this.c = 5/9 * ( newValue - 32 );

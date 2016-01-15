@@ -17,6 +17,9 @@ __DATA({
   htmlHeaders: [
     '<link rel="stylesheet" href="fonts.css" />',
   ],
+  resources: [
+    'fonts.css',
+  ],
   appcacheManifest: true,
   precompileTemplates: true,
   coreFiles: [

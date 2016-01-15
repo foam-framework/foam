@@ -21,8 +21,11 @@ CLASS({
   requires: [
     'com.chrome.apis.AccessGroup',
     'com.chrome.apis.ApiKey',
+    'com.chrome.apis.ApiKeyCitationView',
     'com.chrome.apis.Experiment',
     'com.chrome.apis.ExperimentActivation',
+    'com.chrome.apis.ExperimentActivationCitationView',
+    'com.chrome.apis.ExperimentActivationDetailView',
     'com.chrome.apis.Origin',
     'com.chrome.apis.User',
     'foam.dao.EasyDAO'
@@ -121,6 +124,7 @@ CLASS({
         return this.EasyDAO.create({
           model: this.ExperimentActivation,
           daoType: 'LOCAL',
+          guid: true,
           cache: true,
           cloning: true,
           contextualize: true

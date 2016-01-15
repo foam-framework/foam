@@ -38,12 +38,12 @@ CLASS({
       factory: function() { return this.$UID; }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       factory: function() { return 'IsolatedContext' + this.id; }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'packagePath_',
       defaultValue: function(Y, path, i, opt_noCreate) {
         if ( i === path.length ) return Y;
@@ -58,7 +58,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'packagePath',
       defaultValue: function(X, path, opt_noCreate) {
         return path ? this.packagePath_(X, path.split('.'), 0, opt_noCreate) :
@@ -66,7 +66,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'registerModel',
       defaultValue: function(model, opt_name) {
         var root    = this;
@@ -85,7 +85,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'lookup',
       defaultValue: function(path) {
         if ( ! path ) return undefined;
@@ -94,7 +94,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'classFn',
       defaultValue: function(modelHash, opt_X) {
         var Y = opt_X || this;
@@ -105,14 +105,14 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'sub_',
       factory: function() {
         return this.X.sub;
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'sub',
       defaultValue: function() {
         var sub = this.sub_.apply(this, arguments);

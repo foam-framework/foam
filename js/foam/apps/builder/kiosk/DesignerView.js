@@ -48,11 +48,11 @@ CLASS({
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'url',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'panel',
       defaultValue: {
         factory_: 'foam.ui.md.PopupView',
@@ -96,7 +96,7 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'app',
       defaultValue: {
         factory_: 'foam.apps.builder.AppConfigActionsView',

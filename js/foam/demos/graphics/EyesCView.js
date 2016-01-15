@@ -19,8 +19,8 @@ CLASS({
   package: 'foam.demos.graphics',
   name:  'EyesCView',
   label: 'Eyes',
-
   extends: 'foam.graphics.CView',
+
   traits: [ 'foam.ui.Colors' ],
 
   requires: [ 'foam.demos.graphics.EyeCView' ],

@@ -21,12 +21,13 @@ CLASS({
     //'com.google.ymp.Browser',
     'com.google.ymp.Client',
     'com.google.ymp.controllers.DAOController',
-    'foam.memento.FragmentMementoMgr',
-    'foam.ui.DetailView',
     'foam.browser.u2.BrowserController',
     'foam.browser.u2.BrowserView',
-    'foam.u2.DetailView',
+    'foam.fonts.LigatureTester',
+    'foam.memento.FragmentMementoMgr',
     'foam.u2.ActionButton',
+    'foam.u2.DetailView',
+    'foam.ui.DetailView',
   ],
   exports: [
     'currentUserId',
@@ -37,7 +38,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'currentUserId',
       memorable: true,
       postSet: function(old, nu, prop) {
@@ -65,20 +66,33 @@ CLASS({
       },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'clientView',
       defaultValue: function() {
         this.client.Y.registerModel(this.BrowserView.xbind({
           title$: this.appTitle$,
         }), 'foam.browser.u2.BrowserView');
-
-        return this.BrowserController.create({
+        this.client.Y.registerModel(this.LigatureTester.xbind({
+          timeout: 10000,
+        }), 'foam.fonts.LigatureTester');
+        var view = this.BrowserController.create({
             data: this.client.postDAO,
         }, this.client.Y);
+        view.subscribe(
+            ['loaded'],
+            EventService.oneTime(function() {
+              var e = window.document.getElementById('avizi-splash');
+              if ( ! e ) {
+                console.warn('Failed to find Avizi splash screen element');
+                return;
+              }
+              window.document.body.removeChild(e);
+            }));
+        return view;
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'clientFactory',
       defaultValue: function() {
         return this.Client.create({
@@ -98,7 +112,9 @@ CLASS({
   ],
 
   templates: [
-    function toInnerHTML() {/*%%clientView()*/},
+    function toInnerHTML() {/*
+      %%clientView()
+    */},
     function CSS() {/*
       .foam-browser-u2-BrowserView-header-title,
       .foam-u2-md-Toolbar-title {
@@ -106,7 +122,47 @@ CLASS({
         overflow: hidden;
         text-overflow: ellipsis;
       }
+      .foam-browser-u2-BrowserView-body {
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
       img:not([src]){ display:none; }
+      .foam-u2-ScrollView-inner div:nth-child(12n+1) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(224,92,108);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+2) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(224,138,79);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+3) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(241,189,103);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+4) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(244,211,98);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+5) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(246,235,92);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+6) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(204,228,96);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+7) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(159,215,98);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+8) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(144,190,161);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+9) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(131,174,224);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+10) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(172,139,233);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+11) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(194,88,216);
+      }
+      .foam-u2-ScrollView-inner div:nth-child(12n+12) .com-google-ymp-ui-PostRowView-img {
+        background-color: rgb(203,82,156);
+      }
     */},
   ],
 });

@@ -25,7 +25,7 @@ CLASS({
   properties: [
     [ 'nodeName', 'input' ],
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'data'
     }
   ],

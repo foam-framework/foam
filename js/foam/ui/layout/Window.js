@@ -24,8 +24,8 @@ CLASS({
     'window'
   ],
   properties: [
-    { model_: 'IntProperty', name: 'width' },
-    { model_: 'IntProperty', name: 'height' },
+    { type: 'Int', name: 'width' },
+    { type: 'Int', name: 'height' },
     {
       name: 'window',
       postSet: function(o, w) {
@@ -56,7 +56,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'rendered',
       defaultValue: false
     }

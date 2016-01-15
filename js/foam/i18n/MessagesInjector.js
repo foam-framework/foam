@@ -18,7 +18,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'ready_',
       defaultValue: false
     },

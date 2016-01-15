@@ -64,7 +64,6 @@ CLASS({
     'onWindowClosed',
     'performance',
     {
-      type: 'foam.apps.builder.XHRManager',
       name: 'xhrManager',
       documentation: function() {/* Top-level XHR manager controlled by
         $$DOC{ref:'.identityManager'}. Use $$DOC{ref:'.xhrManager.Y'} as context
@@ -75,7 +74,6 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.IdentityManager',
       name: 'identityManager',
       factory: function() {
         return this.IdentityManager.create({
@@ -163,7 +161,6 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.BrowserConfig',
       name: 'menuSelection',
       view: 'foam.browser.ui.BrowserView',
       defaultValueFn: function() {
@@ -172,19 +169,16 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.ImportExportManager',
       name: 'importExportManager',
       factory: function() {
         return this.ImportExportManager.create({}, this.xhrManager.Y);
       },
     },
     {
-      type: 'foam.input.touch.TouchManager',
       name: 'touchManager',
       lazyFactory: function() { return this.TouchManager.create(); },
     },
     {
-      type: 'foam.input.touch.GestureManager',
       name: 'gestureManager',
       lazyFactory: function() { return this.GestureManager.create(); },
     },
@@ -200,30 +194,28 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.AppBuilderContext',
       name: 'ctx',
       transient: true,
       defaultValue: null,
       postSet: function(old, nu) { this.rebindCtx(old, nu); },
     },
     {
-      type: 'foam.apps.builder.Identity',
       name: 'identity',
       defaultValue: null,
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'foam.apps.builder.Identity',
       name: 'identities',
       lazyFactory: function() { return []; },
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'hasSeenDesignerView',
       defaultValue: false,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'appBuilderAnalyticsEnabled',
       defaultValue: true,
     },
@@ -262,8 +254,8 @@ CLASS({
     },
     function createFirstIdentity() {
       if ( DEBUG ) {
-        this.identity$ = this.ctx.identity$;
-        this.identityManager.identity$ = this.ctx.identity$;
+        this.identity = this.ctx.identity;
+        this.identityManager.identity = this.ctx.identity;
         return;
       }
 

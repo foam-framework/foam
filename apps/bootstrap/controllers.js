@@ -22,7 +22,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'appConfigSources',
       getter: function() {
         var ac = this.appConfig;

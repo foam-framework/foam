@@ -31,8 +31,8 @@ var FObject = {
         this.X.sub({}, (this.X.NAME ? this.X.NAME : '') + '_' + this.name_ ) : this.X.sub() );
   },
 
-  replaceModel_: function(model, otherModel, X) {
-    while ( otherModel ) {
+  replaceModel_: function(feature, dataModel, X) {
+    while ( dataModel ) {
       // this name mangling has to use the primary model's package, otherwise
       // it's ambiguous which model a replacement is intended for:
       //     ReplacementThing -> package.Thing or foo.Thing or bar.Thing...
@@ -40,15 +40,15 @@ var FObject = {
       // This means you must put your model-for-models in the same package
       // as the primary model-to-be-replaced.
       var replacementName =                                 // want: package.otherPrimaryModel
-        ( model.package   ? model.package + '.' : '' ) +          // package.
-        ( otherModel.name ? otherModel.name     : otherModel ) +  // other
-        model.name ;                                              // PrimaryModel
+        ( dataModel.package   ? dataModel.package + '.' : '' ) +          // package.
+        ( dataModel.name ? dataModel.name     : dataModel ) +  // other
+        feature.name ;                                              // PrimaryModel
 
       var replacementModel = X.lookup(replacementName);
 
       if ( replacementModel ) return replacementModel;
 
-      otherModel = X.lookup(otherModel.extends);
+      dataModel = X.lookup(dataModel.extends);
     }
 
     return undefined;
@@ -59,8 +59,13 @@ var FObject = {
   create: function(args, opt_X) {
     // console.log('**** create ', this.model_.name, this.model_.count__ = (this.model_.count__ || 0)+1);
     // check for a model-for-model replacement, only if args.model is a Model instance
-    if ( args && args.model && (opt_X || X).Model.isInstance(args.model) ) {
-      var ret = this.replaceModel_(this.model_, args.model, opt_X || X);
+    var dataModel = args ?
+        args.model ? args.model :
+        args.data ? args.data.model_ :
+        undefined : undefined;
+
+    if ( dataModel && (opt_X || X).Model.isInstance(dataModel) ) {
+      var ret = this.replaceModel_(this.model_, dataModel, opt_X || X);
       if ( ret ) return ret.create(args, opt_X);
     }
 
@@ -193,7 +198,7 @@ var FObject = {
         if ( key ) {
           var asValue = key !== '$' && key != '$$' && key.charAt(key.length-1) == '$';
           if ( asValue ) {
-            console.warn('Deprecated use of value$ export. Just remove the $. ', this.name, key, alias);
+            console.warn('Deprecated use of value$ export. Just remove the $. ', self.model_.id, this.name, key, alias);
           }
           if ( asValue ) key = key.slice(0, key.length-1);
 

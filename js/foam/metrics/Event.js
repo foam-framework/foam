@@ -20,7 +20,7 @@ CLASS({
       defaultValue: 'event',
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'label',
     },
   ],

@@ -8,14 +8,14 @@ CLASS({
   ],
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'id'
     },
-    { name: 'completed', model_: 'BooleanProperty' },
+    { name: 'completed', type: 'Boolean' },
     { name: 'text' },
-    { model_: 'StringArrayProperty', name: 'labels' },
-    { model_: 'IntProperty', name: 'priority' },
-    { model_: 'IntProperty', name: 'parent' }
+    { type: 'StringArray', name: 'labels' },
+    { type: 'Int', name: 'priority' },
+    { type: 'Int', name: 'parent' }
   ],
   relationships: [
     {

@@ -16,19 +16,17 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "com.google.mail.GMailDraft",
    "package": "com.google.mail",
    "name": "GMailDraft",
    "plural": "drafts",
    "properties": [
       {
-         "model_": "StringProperty",
+         type: 'String',
          "name": "id",
          "help": "The immutable ID of the draft."
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "message",
          "subType": "Message",
          "help": "The message content of the draft."

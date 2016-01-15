@@ -21,42 +21,42 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'id'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'controller'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'appcacheManifest',
       defaultValue: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'includeFoamCSS',
       defaultValue: false
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'icon'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'precompileTemplates',
       defaultValue: true
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'resources'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'htmlFileName'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'htmlHeaders',
       factory: function() { return [
         '<meta charset="utf-8"/>',
@@ -65,32 +65,32 @@ CLASS({
       ]; }
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'coreFiles',
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraModels'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'extraFiles'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'defaultView'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'htmlHeaders'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'appcache',
       defaultValue: false
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'version'
     }
   ]

@@ -51,7 +51,7 @@ CLASS({
       defaultValue: 'foam.u2.DAOListView',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'listView',
       defaultValue: function(args, opt_X) {
         var args2 = {};
@@ -67,7 +67,7 @@ CLASS({
       }
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'rowView',
     }
   ],

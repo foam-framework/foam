@@ -49,12 +49,12 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'useSimpleSerialization',
       defaultValue: true
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'indicies'
     }
   ],

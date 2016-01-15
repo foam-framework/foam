@@ -70,7 +70,7 @@ CLASS({
       help: 'Help text associated with the relationship.'
     },
     {
-      model_: 'DocumentationProperty',
+      type: 'Documentation',
       name: 'documentation',
       documentation: function() { /*
           The developer documentation.

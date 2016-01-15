@@ -16,24 +16,23 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.util.encodings.QuotedPrintable",
    "package": "foam.util.encodings",
    "name": "QuotedPrintable",
+
    "properties": [],
    "actions": [],
    "constants": [],
    "messages": [],
    "methods": [
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "encode",
          "code": function (str) {
     },
          "args": []
       },
       {
-         "model_": "Method",
+         model_: "Method",
          "name": "decode",
          "code": function (str, decoder) {
       var result = "";

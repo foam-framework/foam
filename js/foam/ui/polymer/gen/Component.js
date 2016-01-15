@@ -45,7 +45,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'url',
       tableFormatter: function(url, self, tableView) {
         return self.shortenURL(url);
@@ -53,22 +53,22 @@ CLASS({
       required: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       defaultValue: ''
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'extends',
       defaultValue: ''
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'tagName',
       defaultValue: ''
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'source',
       view: 'foam.ui.MultiLineStringArrayView',
       tableFormatter: function(src, self, tableView) {
@@ -96,7 +96,7 @@ CLASS({
       defaultValue: ''
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'deps',
       view: 'foam.ui.MultiLineStringArrayView',
       tableFormatter: function(arr, self, tableView) {

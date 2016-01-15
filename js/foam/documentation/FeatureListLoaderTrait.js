@@ -18,6 +18,7 @@
 CLASS({
   package: 'foam.documentation',
   name: 'FeatureListLoaderTrait',
+
   documentation: 'Trait loads the documentation of the given feature list.',
 
   requires: [ 'foam.documentation.DocFeatureCollapsedView',
@@ -107,15 +108,14 @@ CLASS({
       isMerged: 100,
       code: function() {
         var self = this;
-        if (!this.documentViewRef) {
-          console.warn("this.documentViewRef non-existent");
-        } else if (!this.documentViewRef.get()) {
-          console.warn("this.documentViewRef not set");
-        } else if (!this.documentViewRef.get().valid) {
-          console.warn("this.documentViewRef not valid");
+        if ( ! this.documentViewRef ) {
+          // console.warn("this.documentViewRef non-existent");
+        } else if ( ! this.documentViewRef.get() ) {
+          // console.warn("this.documentViewRef not set");
+        } else if ( ! this.documentViewRef.get().valid ) {
+          // console.warn("this.documentViewRef not valid");
           this.documentViewRef.get().valid$.addListener(this.rebuildSelfDAOs);
         } else {
-
           this.selfFeaturesDAO = [].sink;
           this.featureDAO
             .where(
@@ -149,9 +149,6 @@ CLASS({
       }
 
       this.SUPER(isParentDestroyed);
-
     }
-
   }
-
 });

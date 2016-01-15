@@ -21,6 +21,13 @@ CLASS({
   properties: [
     {
       name: 'id',
+      hidden: true
+    },
+    {
+      name: 'key',
+      factory: function() {
+        return createGUID();
+      }
     },
     {
       name: 'apiName',
@@ -36,18 +43,20 @@ CLASS({
     {
       name: 'experiment',
       type: 'Reference',
-      subType: 'com.google.apis.Experiment',
-      help: 'The API that this API Key enables.'
+      subType: 'com.chrome.apis.Experiment',
+      help: 'The API that this API Key enables.',
+      hidden: true
     },
     {
       name: 'expires',
       type: 'DateTime',
-      help: 'The time when this API key expires.'
+      help: 'The time when this API key expires.',
+      hidden: true
     },
     {
       name: 'revoked',
       type: 'Boolean',
-      defaultValue: true,
+      defaultValue: false,
       help: 'Has the API key been revoked?'
     }
   ],

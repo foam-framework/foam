@@ -424,7 +424,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
         of this $$DOC{ref:'Model'} in a search view. */}
     },
     {
-//      model_: 'ArrayProperty',
+//      type: 'Array',
       name: 'properties',
       type: 'Array[Property]',
       subType: 'Property',
@@ -449,6 +449,8 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
           }
 
           if ( ! p.model_ ) {
+            // The mapping from type to model_ is also done in JSONUtil,
+            // but that doesn't handle Bootstrap models. 
             if ( p.type && this.X.lookup(p.type + 'Property') ) {
               p.model_ = p.type + 'Property';
               p.type = undefined;
@@ -585,7 +587,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       }
     },
     {
-//      model_: 'ArrayProperty',
+//      type: 'Array',
       name: 'methods',
       subType: 'Method',
       factory: function() { return []; },

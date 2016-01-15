@@ -24,7 +24,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'items',
       lazyFactory: function() { return []; },
     },

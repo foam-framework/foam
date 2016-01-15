@@ -26,43 +26,43 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'right',
       view: 'foam.ui.polymer.demo.ElementWithTooltip',
       defaultValue: 'Right'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'top',
       view: 'foam.ui.polymer.demo.ElementWithTooltip',
       defaultValue: 'Top'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'left',
       view: 'foam.ui.polymer.demo.ElementWithTooltip',
       defaultValue: 'Left'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'bottom',
       view: 'foam.ui.polymer.demo.ElementWithTooltip',
       defaultValue: 'Bottom'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'noArrow',
       view: 'foam.ui.polymer.demo.ElementWithTooltip',
       defaultValue: 'NoArrow'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'richText',
       view: 'foam.ui.polymer.demo.ElementWithTooltip',
       defaultValue: 'RichText'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'show',
       view: 'foam.ui.polymer.demo.ElementWithTooltip',
       defaultValue: 'Show'

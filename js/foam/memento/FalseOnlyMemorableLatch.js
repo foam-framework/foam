@@ -20,7 +20,7 @@ CLASS({
   name: 'FalseOnlyMemorableLatch',
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'value',
       memorable: true,
       defaultValue: true,

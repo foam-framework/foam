@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
- 
 CLASS({
-  name: 'LockToPreferredLayout',
   package: 'foam.graphics.diagram',
+  name: 'LockToPreferredLayout',
   extends: 'foam.graphics.LockToPreferredLayout',
+
   traits: ['foam.graphics.diagram.DiagramItemTrait'],
   
   documentation: function() {/* Overridden from 

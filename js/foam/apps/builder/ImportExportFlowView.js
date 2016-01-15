@@ -25,7 +25,6 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.apps.builder.ImportExportFlow',
       name: 'data',
       postSet: function(old, nu) {
         if ( old === nu ) return;
@@ -34,19 +33,18 @@ CLASS({
       },
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showHeader',
       documentation: 'If true, header content is shown.',
       defaultValue: true,
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showFooter',
       documentation: 'If true, footer actions are shown.',
       defaultValue: true,
     },
     {
-      type: 'foam.apps.builder.StateView',
       name: 'stateView',
       lazyFactory: function() {
         var view = this.StateView.create({}, this.Y);

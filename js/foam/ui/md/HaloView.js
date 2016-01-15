@@ -33,7 +33,7 @@ CLASS({
     },
     {
       name: 'halo',
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       defaultValue: {
         factory_: 'foam.ui.md.Halo'
       }

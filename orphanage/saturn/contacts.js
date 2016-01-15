@@ -24,11 +24,11 @@ var PhoneNumber = FOAM({
 
     properties: [
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'type'
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'number'
         }
     ]
@@ -44,43 +44,43 @@ var Address = FOAM({
 
     properties: [
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'type'
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'poBox',
             label: 'P.O. Box',
             displayWidth: 70
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'street',
             displayWidth: 70
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'localArea',
             displayWidth: 70
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'city',
             displayWidth: 70
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'county',
             label: 'County / Area',
             displayWidth: 70
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'postalCode',
             displayWidth: 12
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'country',
             displayWidth: 40
         }
@@ -161,7 +161,7 @@ var ContactAvatarNetworkDAO = FOAM({
       required: 'true'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'baseUrl',
       defaultValue: 'https://www.google.com/m8/feeds/photos/media/default/'
     }
@@ -214,44 +214,44 @@ var Contact = FOAM({
 
     properties: [
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'id'
         },
 
         {
-            model_: 'StringProperty',
+            type: 'String',
             displayWidth: 50,
             name: 'title'
         },
 
         {
-            model_: 'DateTimeProperty',
+            type: 'DateTime',
             factory: function() { return new Date(); },
             name: 'updated'
         },
 
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'prefix'
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'first'
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'middle'
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'last'
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'suffix'
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'displayName',
             defaultValueFn: function() {
                // TODO: i18n and add middle/prefix/suffix when applicable.
@@ -265,26 +265,26 @@ var Contact = FOAM({
             }
         },
         {
-            model_: 'EMailProperty',
+            type: 'EMail',
             name: 'email',
             label: ''
         },
         {
-            model_: 'ArrayProperty',
+            type: 'Array',
             name: 'phoneNumbers',
             subType: 'PhoneNumber'
         },
         {
-            model_: 'ArrayProperty',
+            type: 'Array',
             name: 'addresses',
             subType: 'Address'
         },
         {
-            model_: 'DateProperty',
+            type: 'Date',
             name: 'birthday'
         },
         {
-            model_: 'URLProperty',
+            type: 'URL',
             displayWidth: 70,
             name: 'url'
         },
@@ -299,7 +299,7 @@ var Contact = FOAM({
             }
         },
         {
-            model_: 'StringProperty',
+            type: 'String',
             name: 'note',
             displayHeight: 10
         }

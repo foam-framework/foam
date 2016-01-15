@@ -34,7 +34,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: "StringProperty",
+      type: 'String',
       name: "gmailId",
       label: "Message ID",
       mode: "read-write",
@@ -58,7 +58,7 @@ CLASS({
       }
     },
     {
-      model_: "StringProperty",
+      type: 'String',
       name: "convId",
       label: "Conversation ID",
       mode: "read-write",
@@ -67,7 +67,7 @@ CLASS({
       displayWidth: 30
     },
     {
-      model_: "DateTimeProperty",
+      type: 'DateTime',
       name: "timestamp",
       label: "Date",
       visibility: 'ro',
@@ -82,7 +82,7 @@ CLASS({
       displayWidth: 45
     },
     {
-      model_: "StringProperty",
+      type: 'String',
       name: "from",
       shortName: "f",
       visibility: 'final',
@@ -103,7 +103,7 @@ CLASS({
       tableWidth: "120"
     },
     {
-      model_: "StringArrayProperty",
+      type: 'StringArray',
       name: "to",
       shortName: "t",
       required: true,
@@ -112,7 +112,7 @@ CLASS({
       displayWidth: 90
     },
     {
-      model_: "StringArrayProperty",
+      type: 'StringArray',
       name: "cc",
       required: true,
       visibility: 'final',
@@ -120,7 +120,7 @@ CLASS({
       displayWidth: 90
     },
     {
-      model_: "StringArrayProperty",
+      type: 'StringArray',
       name: "bcc",
       required: true,
       visibility: 'final',
@@ -128,7 +128,7 @@ CLASS({
       displayWidth: 90
     },
     {
-      model_: "StringArrayProperty",
+      type: 'StringArray',
       name: "replyTo",
       visibility: 'final'
     },
@@ -142,7 +142,7 @@ CLASS({
       tableWidth: "45%"
     },
     {
-      model_: "StringArrayProperty",
+      type: 'StringArray',
       name: "labels",
       visibility: 'rw',
       postSet: function (_, a) {
@@ -163,7 +163,7 @@ CLASS({
       help: "Email attachments."
     },
     {
-      model_: "StringProperty",
+      type: 'String',
       name: "body",
       label: "",
       visibility: 'final',
@@ -199,28 +199,28 @@ CLASS({
       name: "inInbox"
     },
     {
-      model_: "StringProperty",
+      type: 'String',
       name: "snippet",
       visibility: 'ro',
       mode: "read-only",
       defaultValueFn: function () { return this.body.substr(0, 100); }
     },
     {
-      model_: "BooleanProperty",
+      type: 'Boolean',
       name: "messageSent",
       help: "True if the user has marked this message to be sent.",
       defaultValue: false
     },
     {
-      model_: "BooleanProperty",
+      type: 'Boolean',
       name: "deleted"
     },
     {
-      model_: "IntProperty",
+      type: 'Int',
       name: "clientVersion"
     },
     {
-      model_: "IntProperty",
+      type: 'Int',
       name: "serverVersion"
     },
     {

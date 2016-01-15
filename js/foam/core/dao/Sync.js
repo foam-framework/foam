@@ -40,30 +40,30 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'syncs'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'syncing',
       defaultValue: false
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       help: 'Number of objects to sync from client if client store is empty.  0 to sync them all',
       name: 'initialSyncWindow',
       defaultValue: 0
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'syncedFromServer',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'syncedFromClient'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'purgedFromClient'
     }
   ],

@@ -68,7 +68,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'objToChoice',
       help: 'A Function which adapts an object from the DAO to a [key, value, ...] choice.'
     },

@@ -20,7 +20,7 @@ CLASS({
   name: 'CloningDAO',
   properties: [
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'onSelect',
       defaultValue: false
     }

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 CLASS({
   name: 'Message',
   plural: 'messages',
@@ -525,7 +524,7 @@ CLASS({
       label: 'Protobuf tag',
       required: false,
       help: 'The protobuf tag number for this field.'
-    },
+    }
   ]
 });
 
@@ -945,6 +944,10 @@ CLASS({
       defaultValue: 'foam.ui.TextFieldView'
 // TODO: Uncomment when all usages of ReferenceProperty/ReferenceArrayProperty fixed.
 //      defaultValue: 'KeyView'
+    },
+    {
+      name: 'toPropertyE',
+      defaultValue: function(X) { return X.lookup('foam.u2.ReferenceView').create(null, X); }
     },
     {
       name: 'prototag',

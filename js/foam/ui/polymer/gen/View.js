@@ -23,7 +23,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'content',
       defaultValue: '',
       postSet: function() {

@@ -21,7 +21,7 @@ CLASS({
   properties: [
     'id',
     {
-      model_: 'EMailProperty',
+      type: 'EMail',
       name: 'email',
       mode: 'read-only'
     },

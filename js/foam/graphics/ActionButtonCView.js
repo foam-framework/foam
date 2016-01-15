@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.graphics',
   name: 'ActionButtonCView',
-
   extends: 'foam.graphics.CView',
 
   requires: [
@@ -37,8 +36,8 @@ CLASS({
       }
     },
     {
-      name:  'font',
       type:  'String',
+      name:  'font',
       defaultValue: ''
     },
     {
@@ -86,17 +85,14 @@ CLASS({
     },
     {
       name:  'iconWidth',
-      type:  'int',
       defaultValue: 0
     },
     {
       name:  'iconHeight',
-      type:  'int',
       defaultValue: 0
     },
     {
       name:  'radius',
-      type:  'int',
       defaultValue: 0,
       postSet: function(_, r) {
         if ( r ) this.width = this.height = 2 * r;

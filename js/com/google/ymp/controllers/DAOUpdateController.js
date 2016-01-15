@@ -31,13 +31,24 @@ CLASS({
       framed: true,
       code: function() {
         this.postId = '';
-        this.stack.popView();
+        this.X.stack.popView();
       },
     },
   ],
 
   templates: [
     function CSS() {/*
+      ^ {
+        flex-direction: column;
+        display: flex;
+        flex-grow: 1;
+        overflow: hidden;
+      }
+      ^body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        flex-shrink: 1;
+      }
     */},
   ],
 });

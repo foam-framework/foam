@@ -22,13 +22,13 @@ CLASS({
 
   properties: [
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'border',
       label: 'Border Color',
       defaultValue: 'black'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'a',
       label: 'Angle'
     },

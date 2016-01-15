@@ -53,12 +53,12 @@ CLASS({
       properties: [
         'id',
         {
-          model_: 'IntProperty',
+          type: 'Int',
           name: 'syncNo',
           defaultValue: -1
         },
         {
-          model_: 'BooleanProperty',
+          type: 'Boolean',
           name: 'deleted',
           defaultValue: false
         }

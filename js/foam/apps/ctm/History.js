@@ -28,12 +28,12 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'numItems',
       defaultValue: 64
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'history',
       factory: function() { return [].sink; },
       preSet: function(_, nu) { return nu ? nu.sink : nu; }

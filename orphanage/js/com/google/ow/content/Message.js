@@ -25,7 +25,7 @@ CLASS({
   properties: [
     'id', 'sid', 'from',
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'content',
     },
     'name'

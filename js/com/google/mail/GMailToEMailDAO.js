@@ -16,7 +16,6 @@
  */
 
 CLASS({
-  "model_": "Model",
   "package": "com.google.mail",
   "name": "GMailToEMailDAO",
   "extends": "foam.core.dao.AbstractAdapterDAO",
@@ -29,7 +28,7 @@ CLASS({
   ],
   "properties": [
     {
-      "model_": "ModelProperty",
+      type: 'Model',
       "name": "model",
       "defaultValueFn": function () { return this.EMail; },
       "type": "Model"
@@ -37,7 +36,7 @@ CLASS({
   ],
   "methods": [
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "adaptSink_",
       "code": function(sink) {
         if ( MaxExpr.isInstance(sink) &&
@@ -48,7 +47,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "init",
       "code": function (args) {
         this.SUPER(args);
@@ -95,7 +94,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "aToB",
       "code": function (obj) {
         var msg = this.FOAMGMailMessage.create({
@@ -125,7 +124,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "bToA",
       "code": function (obj) {
         var self= this;
@@ -173,7 +172,7 @@ CLASS({
       }
     },
     {
-      "model_": "Method",
+      model_: "Method",
       "name": "adaptOptions_",
       "code": function (options) {
         var newoptions = {};

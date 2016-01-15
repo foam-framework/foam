@@ -81,7 +81,17 @@ CLASS({
   ],
   methods: [
     function initE() {
-      this.add(this.delegate);
+      this.cls(this.myCls()).add(this.delegate);
     },
-  ]
+  ],
+  templates: [
+    function CSS() {/*
+      ^ {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+    */}
+  ],
 });

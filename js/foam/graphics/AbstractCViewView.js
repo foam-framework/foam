@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.graphics',
   name: 'AbstractCViewView',
-
   extends: 'foam.ui.View',
 
   documentation: function() {  /*
@@ -33,7 +32,7 @@ CLASS({
   properties: [
     {
       name: 'cview',
-      type: 'foam.graphics.CView',
+      // type: 'foam.graphics.CView',
       postSet: function(_, cview) {
         cview.view  = this;
         this.width  = cview.x + cview.width;
@@ -50,7 +49,7 @@ CLASS({
       documentation: 'CSS class name(s), space separated.'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'scalingRatio',
       preSet: function(_, v) { return v <= 0 ? 1 : v ; },
       defaultValue: 1,
@@ -65,7 +64,7 @@ CLASS({
     'role',
     'tabIndex',
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'width',
       defaultValue: 100,
       documentation: function() {/*
@@ -74,7 +73,7 @@ CLASS({
         */}
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name:  'height',
       defaultValue: 100,
       documentation: function() {/*

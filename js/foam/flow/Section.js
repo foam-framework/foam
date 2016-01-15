@@ -26,7 +26,7 @@ CLASS({
       name: 'title'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'fullTitle',
       getter: function() {
         return (this.enumerate ? this.ordinal + ' ' : '') + this.title;
@@ -39,12 +39,12 @@ CLASS({
       factory: function() { return []; }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'enumerate',
       defaultValue: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'sectionAnchor',
       getter: function() {
         return this.replaceAll('section--' + this.fullTitle.toLowerCase(), /[. ]/, '-');

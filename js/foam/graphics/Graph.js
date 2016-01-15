@@ -22,8 +22,8 @@ CLASS({
 
   properties: [
     {
-      name:  'style',
       type:  'String',
+      name:  'style',
       defaultValue: 'Line',
       // TODO: fix the view, it's not storabe
       view: {
@@ -36,12 +36,12 @@ CLASS({
       }
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'graphColor',
       defaultValue: 'green'
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name: 'backgroundColor',
       defaultValue: undefined
     },
@@ -50,50 +50,44 @@ CLASS({
       defaultValue: 6
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'drawShadow',
       defaultValue: true
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name:  'capColor',
       defaultValue: ''
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name:  'axisColor',
       defaultValue: 'black'
     },
     {
-      model_: 'ColorProperty',
+      type: 'Color',
       name:  'gridColor',
-      type:  'String',
       defaultValue: undefined
     },
     {
       name:  'axisSize',
-      type:  'int',
       defaultValue: 2
     },
     {
       name:  'xAxisInterval',
-      type:  'int',
       defaultValue: 0
     },
     {
       name:  'yAxisInterval',
-      type:  'int',
       defaultValue: 0
     },
     {
       name:  'maxValue',
       label: 'Maximum Value',
-      type:  'float',
       defaultValue: -1
     },
     {
       name:  'data',
-      type:  'Array[float]',
       factory: function() { return []; },
       postSet: function(old, nu) {
         if ( old === nu ) return;
@@ -103,7 +97,7 @@ CLASS({
       }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'f',
       label: 'Data Function',
       required: false,

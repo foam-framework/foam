@@ -20,7 +20,7 @@ CLASS({
       hidden: true,
     },
     {
-      model_: 'DateTimeProperty',
+      type: 'DateTime',
       name: 'modified',
       help: 'The last modified time of the record.',
       hidden: true,

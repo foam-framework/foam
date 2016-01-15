@@ -54,7 +54,7 @@ CLASS({
       */},
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'feedback',
       defaultValue: false,
       swiftDefaultValue: 'false',

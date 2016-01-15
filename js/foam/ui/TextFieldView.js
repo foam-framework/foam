@@ -79,37 +79,37 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       defaultValue: 'field',
       documentation: function() { /* The name of the field. */}
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'displayWidth',
       defaultValue: 30,
       documentation: function() { /* The width to fix the HTML text box. */}
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'displayHeight',
       defaultValue: 1,
       documentation: function() { /* The height to fix the HTML text box. */}
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'type',
       defaultValue: 'text',
       documentation: function() { /* The type of field to create. */}
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'placeholder',
       defaultValue: undefined,
       documentation: function() { /* Placeholder to use when empty. */}
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'onKeyMode',
       help: 'If true, value is updated on each keystroke.',
       documentation: function() { /* If true, value is updated on each keystroke. */},
@@ -133,7 +133,7 @@ CLASS({
       ]
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'escapeHTML',
       defaultValue: true,
       // TODO: make the default 'true' for security reasons
@@ -141,19 +141,19 @@ CLASS({
       documentation: function() { /* If true, HTML content is escaped in display mode. */}
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'mode',
       defaultValue: 'read-write',
       view: { factory_: 'foam.ui.ChoiceView', choices: ['read-only', 'read-write', 'final'] },
       documentation: function() { /* Can be 'read-only', 'read-write' or 'final'. */}
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'required',
       documentation: 'If value is required.'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'pattern',
       documentation: 'Regex pattern for value.'
     },
@@ -166,7 +166,7 @@ CLASS({
       documentation: function() { /* The object to bind to the user's entered text. */}
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'readWriteTagName',
       defaultValueFn: function() {
         return this.displayHeight === 1 ? 'input' : 'textarea';
@@ -174,7 +174,7 @@ CLASS({
       hidden: true
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'autocomplete',
       defaultValue: true,
       documentation: function() { /* Set to true to enable autocomplete. */}

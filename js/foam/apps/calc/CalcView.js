@@ -33,7 +33,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'row1Formatted',
       view: 'foam.ui.animated.Label',
       preSet: function(_,nu) {
@@ -56,7 +56,7 @@ CLASS({
       }
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'animating_',
       defaultValue: false,
       postSet: function(old, nu) {

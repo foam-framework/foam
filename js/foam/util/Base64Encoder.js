@@ -25,7 +25,7 @@ CLASS({
       defaultValueFn: function () { return this.TABLE; }
     },
     {
-      model_: "BooleanProperty",
+      type: 'Boolean',
       name: "urlSafe",
       postSet: function (_, v) {
         this.table = this.TABLE.clone();

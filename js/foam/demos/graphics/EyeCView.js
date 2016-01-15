@@ -19,7 +19,6 @@ CLASS({
   package: 'foam.demos.graphics',
   name:  'EyeCView',
   label: 'Eye',
-
   extends: 'foam.graphics.CView',
 
   requires: [ 'foam.graphics.Circle' ],
@@ -36,14 +35,13 @@ CLASS({
       defaultValue: 'black'
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name:  'r',
       label: 'Radius',
       defaultValue: 50
     },
     {
       name:  'lid',
-      type:  'Circle',
       paint: true,
       factory: function() {
         return this.Circle.create({r: this.r});
@@ -51,7 +49,6 @@ CLASS({
     },
     {
       name:  'white',
-      type:  'Circle',
       paint: true,
       factory: function() {
         return this.Circle.create({r: this.r*0.8, color: 'white'});
@@ -59,7 +56,6 @@ CLASS({
     },
     {
       name:  'pupil',
-      type:  'Circle',
       paint: true,
       lazyFactory: function() {
         return this.Circle.create({r: this.r / 5});

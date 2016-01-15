@@ -36,7 +36,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'testArray',
       subType: 'Property',
       factory: function() {

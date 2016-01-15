@@ -24,12 +24,12 @@ CLASS({
       defaultValue: null,
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'callback',
       defaultValue: function() {}
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'milliseconds',
       defaultValue: 0,
       postSet: function(old, nu) {
@@ -38,7 +38,7 @@ CLASS({
       },
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'seconds',
       defaultValue: 0,
       postSet: function(old, nu) {
@@ -48,7 +48,7 @@ CLASS({
       },
     },
     {
-      model_: 'FloatProperty',
+      type: 'Float',
       name: 'minutes',
       defaultValue: 0,
       postSet: function(old, nu) {

@@ -35,7 +35,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'selectionListFactory',
       defaultValue: function() {
         var view = this.DAOListView.create({
@@ -50,7 +50,7 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'accountListFactory',
       defaultValue: function() {
         var view = this.DAOListView.create({
@@ -65,7 +65,7 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'viewListFactory',
       defaultValue: function() {
         var view = this.DAOListView.create({
@@ -89,7 +89,7 @@ CLASS({
       },
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'menuFactory',
       defaultValue: function() {
         return this.MenuView.create({
@@ -101,44 +101,41 @@ CLASS({
       },
     },
     {
-      type: 'foam.apps.builder.BrowserConfig',
       name: 'menuSelection',
     },
     {
-      type: 'foam.apps.builder.Identity',
       name: 'accountSelection',
       defaultValueFn: function() {
         return this.identityManager.getIdentity();
       },
     },
     {
-      type: 'foam.apps.builder.ViewMenuItem',
       name: 'viewSelection',
       postSet: function(_, nu) {
         if ( nu ) nu.viewFactory({ data: this }).open();
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       lazyFactory: function() {
         return this.model ? this.model.name : 'BrowserConfig';
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'label',
       lazyFactory: function() {
         return this.model ? this.model.label : 'Browser Config';
       },
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'iconUrl',
       view: 'foam.ui.ImageView',
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'detailView',
       defaultValue: {
         factory_: 'foam.ui.md.UpdateDetailView',

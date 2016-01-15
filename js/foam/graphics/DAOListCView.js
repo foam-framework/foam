@@ -22,7 +22,7 @@ CLASS({
 
   properties: [
     { model_: 'foam.core.types.DAOProperty', name: 'dao' },
-    { model_: 'IntProperty', name: 'scrollTop', preSet: function(_,t) { return Math.max(t, 0); }, postSet: function() { this.scroll(); } },
+    { type: 'Int', name: 'scrollTop', preSet: function(_,t) { return Math.max(t, 0); }, postSet: function() { this.scroll(); } },
     { name: 'rowRenderer' },
     { name: 'objs', postSet: function() { this.view && this.view.paint(); }, factory: function() { return []; } }
   ],

@@ -21,7 +21,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'id',
     },
     {
@@ -31,7 +31,7 @@ CLASS({
       name: 'body',
     },
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       name: 'questions',
       subType: 'foam.demos.android.faq.ChildQuestion',
     },

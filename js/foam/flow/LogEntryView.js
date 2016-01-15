@@ -19,7 +19,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      type: 'foam.flow.LogEntry'
+      // type: 'foam.flow.LogEntry'
     }
   ],
 

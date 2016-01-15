@@ -15,12 +15,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       required: true
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'example',
       required: true
     }

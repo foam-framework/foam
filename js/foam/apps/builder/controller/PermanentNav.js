@@ -24,27 +24,27 @@ CLASS({
   properties: [
     [ 'tagName', 'permanent-nav' ],
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title',
       defaultValue: 'title',
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'titleHeight',
       defaultValue: 56,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'minWidth',
       defaultValue: 400,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'preferredWidth',
       defaultValue: 400,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'maxWidth',
       defaultValue: 400,
       postSet: function(old, nu) {
@@ -57,18 +57,18 @@ CLASS({
       lazyFactory: function() { return []; },
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'listView',
       defaultValue: 'foam.ui.DAOListView'
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'menuView',
       defaultValue: null,
 
     },
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'listView',
       defaultValue: 'foam.ui.DAOListView'
     },

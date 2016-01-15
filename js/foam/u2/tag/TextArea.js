@@ -25,7 +25,7 @@ CLASS({
     {
       name: 'data',
       postSet: function(_, d) {
-        if ( this.id$el ) this.id$el.value = d;
+        if ( this.el() ) this.el().value = d;
       }
     },
     {
@@ -53,7 +53,7 @@ CLASS({
     {
       name: 'onInput',
       code: function() {
-        if ( this.id$el ) this.data = this.id$el.value;
+        if ( this.el() ) this.data = this.el().value;
       }
     }
   ]

@@ -64,17 +64,17 @@ CLASS({
       name: 'Preferences',
       properties: [
         {
-          model_: 'IntProperty',
+          type: 'Int',
           name: 'version',
           mode: 'read-only',
           defaultValue: 0
         },
         {
-          model_: 'BooleanProperty',
+          type: 'Boolean',
           name: 'receiveEmails',
         },
         {
-          model_: 'StringProperty',
+          type: 'String',
           name: 'name'
         },
         {

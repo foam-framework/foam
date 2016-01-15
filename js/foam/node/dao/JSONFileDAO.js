@@ -38,7 +38,7 @@ CLASS({
       }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'writing',
       defaultValue: false
     }

@@ -42,16 +42,16 @@ CLASS({
       defaultValue: 'popupChoiceView'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'showValue'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'opened',
       transient: true
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'updateListener'
     },
     {

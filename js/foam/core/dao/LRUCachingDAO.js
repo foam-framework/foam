@@ -23,7 +23,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'maxSize',
       defaultValue: 100
     },
@@ -50,7 +50,7 @@ CLASS({
           name: 'obj',
         },
         {
-          model_: 'DateTimeProperty',
+          type: 'DateTime',
           name: 'timestamp'
         }
       ]

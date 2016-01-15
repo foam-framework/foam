@@ -32,7 +32,7 @@ CLASS({
       factory: function() { return {}; }
     },
     {
-      model_: 'FunctionProperty',
+      type: 'Function',
       name: 'stringify',
       factory: function() {
         var jsonUtil = JSONUtil.compact.where(NOT_TRANSIENT);

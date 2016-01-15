@@ -24,7 +24,6 @@ CLASS({
     'location',
     'encodeURIComponent',
     'replyDAO',
-    'stack',
     'currentUser',
   ],
   exports: [
@@ -61,7 +60,7 @@ CLASS({
       name: 'replyButton',
       ligature: 'reply',
       code: function() {
-        this.stack.pushView(
+        this.X.stack.pushView(
           this.DAOCreateController.create({
             model: this.Reply,
             data: this.Reply.create({

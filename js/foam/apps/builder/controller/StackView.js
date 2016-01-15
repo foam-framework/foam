@@ -145,7 +145,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ArrayProperty',
+      type: 'Array',
       subType: 'ChildView',
       name: 'views_',
       documentation: 'Internal array of view data.',

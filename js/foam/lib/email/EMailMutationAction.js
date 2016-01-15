@@ -16,8 +16,6 @@
  */
 
 CLASS({
-   "model_": "Model",
-   "id": "foam.lib.email.EMailMutationAction",
    "package": "foam.lib.email",
    "name": "EMailMutationAction",
    "extends": "Action",
@@ -26,7 +24,7 @@ CLASS({
    "exports": [],
    "properties": [
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "name",
          "type": "String",
          "required": true,
@@ -36,7 +34,7 @@ CLASS({
          "help": "The coding identifier for the action."
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "label",
          "type": "String",
          "displayWidth": 70,
@@ -45,7 +43,7 @@ CLASS({
          "help": "The display label for the action."
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "speechLabel",
          "type": "String",
          "displayWidth": 70,
@@ -54,7 +52,7 @@ CLASS({
          "help": "The speech label for the action."
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "help",
          "label": "Help Text",
          "type": "String",
@@ -64,7 +62,7 @@ CLASS({
          "help": "Help text associated with the action."
       },
       {
-         "model_": "DocumentationProperty",
+         model_: "DocumentationProperty",
          "name": "documentation",
          "getter": function () {
         var doc = this.instance_.documentation;
@@ -86,7 +84,7 @@ CLASS({
       }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "default",
          "type": "Boolean",
          "view": "BooleanView",
@@ -94,7 +92,7 @@ CLASS({
          "help": "Indicates if this is the default action."
       },
       {
-         "model_": "FunctionProperty",
+         type: 'Function',
          "name": "isAvailable",
          "label": "Available",
          "displayHeight": 3,
@@ -103,7 +101,7 @@ CLASS({
          "defaultValue": function () { return true; }
       },
       {
-         "model_": "FunctionProperty",
+         type: 'Function',
          "name": "isEnabled",
          "label": "Enabled",
          "displayHeight": 3,
@@ -112,28 +110,28 @@ CLASS({
          "defaultValue": function () { return true; }
       },
       {
-         "model_": "FunctionProperty",
+         type: 'Function',
          "name": "labelFn",
          "label": "Label Function",
          "help": "Function to determine label. Defaults to 'this.label'.",
          "defaultValue": function (action) { return action.label; }
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "iconUrl",
          "type": "String",
          "defaultValue": "",
          "help": "Provides a url for an icon to render for this action"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "showLabel",
          "type": "String",
          "defaultValue": true,
          "help": "Property indicating whether the label should be rendered alongside the icon"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "children",
          "type": "Array",
          "subType": "Action",
@@ -142,29 +140,29 @@ CLASS({
          "help": "Child actions of this action."
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "parent",
          "type": "String",
          "help": "The parent action of this action"
       },
       {
-         "model_": "StringArrayProperty",
+         type: 'StringArray',
          "name": "keyboardShortcuts"
       },
       {
-         "model_": "Property",
+         model_: "Property",
          "name": "translationHint",
          "label": "Description for Translation",
          "type": "String",
          "defaultValue": ""
       },
       {
-         "model_": "BooleanProperty",
+         type: 'Boolean',
          "name": "backOnComplete",
          "defaultValue": false
       },
       {
-         "model_": "FunctionProperty",
+         type: 'Function',
          "name": "action",
          "displayHeight": 20,
          "help": "Function to implement action.",

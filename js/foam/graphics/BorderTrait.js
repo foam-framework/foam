@@ -18,19 +18,19 @@
 CLASS({
   package: 'foam.graphics',
   name:  'BorderTrait',
+
   documentation: function() {/* Add $$DOC{ref:'.'} to a CView to paint
                               a rectangular border around your item. */},
 
   properties: [
     {
+      type:  'String',
       name:  'border',
       label: 'Border Color',
-      type:  'String',
       defaultValue: undefined
     },
     {
       name:  'borderWidth',
-      type:  'int',
       defaultValue: 1,
       documentation: function() {/*
         The width to draw the border, straddling the item's edge. A width of 1

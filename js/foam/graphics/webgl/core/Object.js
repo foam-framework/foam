@@ -40,7 +40,6 @@ CLASS({
   properties: [
     {
       name: 'relativePosition',
-      type: 'foam.graphics.webgl.matrix.Matrix4',
       lazyFactory: function() {
         return this.StackMatrix4.create({
             stack: [
@@ -72,18 +71,15 @@ CLASS({
     },
     {
       name: 'positionMatrix',
-      type: 'foam.graphics.webgl.matrix.Matrix4',
       lazyFactory: function() {
         return this.updatePosition();
       }
     },
     {
       name: 'mesh',
-      type: 'foam.graphics.webgl.core.ArrayBuffer'
     },
     {
       name: 'meshNormals',
-      type: 'foam.graphics.webgl.core.ArrayBuffer',
       postSet: function(old, nu) {
         this.doUpdatePosition();
       }
@@ -91,7 +87,6 @@ CLASS({
     {
       name: 'meshMatrix',
       help: 'Transformations to apply to the mesh, but not pass on to children.',
-      type: 'foam.graphics.webgl.matrix.Matrix4',
       lazyFactory: function() {
         return this.Matrix4.create();
       }
@@ -99,7 +94,6 @@ CLASS({
     {
       name: 'normalMatrix',
       help: 'The inverse transpose of the positioning matrix (pos*rel*mesh)',
-      type: 'foam.graphics.webgl.matrix.Matrix4',
       lazyFactory: function() {
         // only fill this in if normals are set
         return this.Matrix4.create();
@@ -120,7 +114,7 @@ CLASS({
       name: 'parentPosition_'
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'translucent',
       defaultValue: false
     }

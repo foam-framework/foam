@@ -54,7 +54,7 @@ CLASS({
       factory: function() { return {}; }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       defaultValue: 'window'
     },
@@ -83,7 +83,7 @@ CLASS({
       factory: function() { return {}; }
     },
     {
-      model_: 'BooleanProperty',
+      type: 'Boolean',
       name: 'isBackground',
       defaultValue: false
     },

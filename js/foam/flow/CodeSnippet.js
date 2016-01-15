@@ -25,11 +25,11 @@ CLASS({
       defaultValue: 0,
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'ordering'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'name',
       lazyFactory: function() {
         if ( this.title ) return this.title.replace(/[^a-zA-Z0-9]/g, '_');
@@ -37,12 +37,12 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title'
     },
     {
       name: 'src',
-      type: 'foam.flow.SourceCode',
+      // type: 'foam.flow.SourceCode',
       factory: function() {
         this.SourceCode.create({
           data: 'console.log("Hello world!");'
@@ -50,7 +50,7 @@ CLASS({
       }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'ref',
       postSet: function(old, nu) {
         if ( old === nu || ! this.codeSnippets ) return;
@@ -69,7 +69,7 @@ CLASS({
     },
     {
       name: 'following_',
-      type: 'foam.flow.CodeSnippet',
+      // type: 'foam.flow.CodeSnippet',
       defaultValue: null
     }
   ],

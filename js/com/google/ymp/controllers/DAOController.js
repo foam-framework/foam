@@ -94,8 +94,19 @@ CLASS({
           }),
         ]);
         daoUpdateController.toolbar_ = toolbar;
-        this.stack.pushView(daoUpdateController);
+        this.X.stack.pushView(daoUpdateController);
       },
     },
+  ],
+
+  templates: [
+    function CSS() {/*
+      ^ {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+    */},
   ],
 });

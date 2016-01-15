@@ -44,11 +44,11 @@ CLASS({
     },
     {
       name: 'name',
-      model_: 'StringProperty'
+      type: 'String'
     },
     {
       name: 'iconURL',
-      model_: 'StringProperty',
+      type: 'String',
       label: 'Icon',
       view: 'foam.ui.ImageView',
       tableLabel: 'Icon',
@@ -59,12 +59,12 @@ CLASS({
     },
     {
       name: 'lastModified',
-      model_: 'DateTimeProperty',
+      type: 'DateTime',
       tableWidth: 100,
     },
     {
       name: 'labels',
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       factory: function() { return []; }
     }
   ]

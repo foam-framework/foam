@@ -2,7 +2,7 @@ CLASS({
   name: 'Question',
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'id'
     },
     {
@@ -12,24 +12,24 @@ CLASS({
       name: 'answerBy'
     },
     {
-      model_: 'DateTimeProperty',
+      type: 'DateTime',
       name: 'created'
     },
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'labels'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'title'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'question',
       preSet: function(_, q) { return StringProperty.ADAPT.defaultValue(null, q).trim(); }
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'answer',
       preSet: function(_, q) { return StringProperty.ADAPT.defaultValue(null, q).trim(); }
     },

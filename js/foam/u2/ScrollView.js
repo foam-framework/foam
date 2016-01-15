@@ -14,24 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2',
   name: 'ScrollView',
   extends: 'foam.u2.View',
+
   requires: [
     'foam.input.touch.GestureTarget',
     'foam.util.busy.BusyStatus',
-    'foam.u2.SpinnerView',
+    'foam.u2.SpinnerView'
   ],
 
   imports: [
     'dynamic',
     'gestureManager',
     'selection$',
-    'window',
+    'window'
   ],
   exports: [
-    'as scrollView',
+    'as scrollView'
   ],
 
   documentation: function() {/*
@@ -51,19 +53,27 @@ CLASS({
   */},
 
   constants: {
-    ROW_CLICK: ['row-click'],
+    ROW_CLICK: ['row-click']
   },
 
   properties: [
     {
-      type: 'foam.core.types.DAO',
       name: 'data',
-      onDAOUpdate: 'onDAOUpdate',
+      postSet: function(old, nu) {
+        this.dao = nu;
+      }
+    },
+    {
+      // TODO(braden): This property only exists because we need to change its
+      // type to DAOProperty.
+      model_: 'foam.core.types.DAOProperty',
+      name: 'dao',
+      onDAOUpdate: 'onDAOUpdate'
     },
     {
       name: 'model',
       documentation: 'The model for the data. Defaults to the DAO\'s model.',
-      defaultValueFn: function() { return this.data.model; }
+      defaultValueFn: function() { return this.dao.model; }
     },
     {
       name: 'runway',
@@ -79,7 +89,7 @@ CLASS({
     },
     {
       name: 'scrollHeight',
-      documentation: 'The total height of the scrollable pane. Generally <tt>count * rowHeight</tt>.',
+      documentation: 'The total height of the scrollable pane. Generally <tt>count * rowHeight</tt>.'
     },
     {
       name: 'scrollTop',
@@ -127,15 +137,15 @@ CLASS({
         }
 
         if ( this.rowHeight < 0 ) {
-          this.rowHeight = viewFactory({ model: this.data.model, data: this.data.model.create(null, this.Y) }, this.Y).preferredHeight;
+          this.rowHeight = viewFactory({ model: this.dao.model, data: this.dao.model.create(null, this.Y) }, this.Y).preferredHeight;
         }
       }
     },
     {
-      name: 'containerE',
+      name: 'containerE'
     },
     {
-      name: 'scrollerE',
+      name: 'scrollerE'
     },
     {
       name: 'viewportHeight',
@@ -220,13 +230,13 @@ CLASS({
       name: 'onResize',
       isMerged: 100,
       code: function() {
-        this.viewportHeight = this.id$el.offsetHeight;
+        this.viewportHeight = this.el().offsetHeight;
       }
     },
     {
       name: 'onScroll',
       code: function() {
-        this.scrollTop = this.scrollerE.id$el.scrollTop;
+        this.scrollTop = this.scrollerE.el().scrollTop;
         this.update();
       }
     },
@@ -241,11 +251,11 @@ CLASS({
         this.busyComplete_ = this.spinnerBusyStatus.start();
         oldComplete && oldComplete();
 
-        this.data.select(COUNT())(function(c) {
+        this.dao.select(COUNT())(function(c) {
           this.count = c.count;
 
           // That will have updated the height of the inner view.
-          var s = this.scrollerE.id$el;
+          var s = this.scrollerE.el();
           if ( s ) s.scrollTop = this.scrollTop;
 
           this.X.setTimeout(this.update.bind(this), 0);
@@ -316,7 +326,7 @@ CLASS({
           // Something to load.
           var self = this;
           var updateNumber = ++this.daoUpdateNumber;
-          this.data.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select()(function(a) {
+          this.dao.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select()(function(a) {
             if ( updateNumber !== self.daoUpdateNumber ) return;
             if ( ! a || ! a.length ) return;
 
@@ -331,7 +341,7 @@ CLASS({
                 o = a[i].clone();
                 o.addListener(function(x) {
                   // TODO(kgr): remove the deepClone when the DAO does this itself.
-                  this.data.put(x.deepClone());
+                  this.dao.put(x.deepClone());
                 }.bind(self, o));
               }
               self.cache[toLoadTop + i] = o;
@@ -357,11 +367,11 @@ CLASS({
       this.window.addEventListener('resize', this.onResize);
       this.onResize();
 
-      this.gestureManager.install(this.scrollGesture);
+      if (this.gestureManager) this.gestureManager.install(this.scrollGesture);
       this.scrollerE.on('scroll', this.onScroll);
 
       if (this.rowHeight < 0) {
-        var style = this.window.getComputedStyle(this.rowSizeTestE.children[0].id$el);
+        var style = this.window.getComputedStyle(this.rowSizeTestE.children[0].el());
         this.rowHeight = this.X.parseFloat(style.height);
 
         this.rowSizeTestE.remove();
@@ -434,7 +444,7 @@ CLASS({
           }
         }
 
-        for (var i = 0; i < toAdd.length; i++) {
+        for ( var i = 0 ; i < toAdd.length ; i++ ) {
           this.containerE.add(toAdd[i]);
         }
 
@@ -459,7 +469,7 @@ CLASS({
     function unload() {
       this.softCleanup();
       this.window.removeEventListener('resize', this.onResize);
-      this.gestureManager.uninstall(this.scrollGesture);
+      if (this.gestureManager) this.gestureManager.uninstall(this.scrollGesture);
     },
 
     // Cleans up all internal state in the ScrollView, but doesn't run the
@@ -469,16 +479,16 @@ CLASS({
     function softCleanup() {
       var keys = Object.keys(this.visibleRows);
       for ( var i = 0; i < keys.length; i++ ) {
-        this.visibleRows[keys[i]].unload();
+        this.visibleRows[keys[i]].remove();
       }
       this.visibleRows = {};
 
       for ( i = 0; i < this.extraRows.length; i++ ) {
-        this.extraRows[i].unload();
+        this.extraRows[i].remove();
       }
       this.extraRows = [];
 
-      this.containerE.removeAllChildren();
+      //if (this.containerE) { this.containerE.removeAllChildren(); }
 
       this.cache = [];
       this.loadedTop = -1;
@@ -536,14 +546,14 @@ CLASS({
           });
       this.containerE.end();
       this.scrollerE.end();
-    },
+    }
   ],
 
   templates: [
     function CSS() {/*
       ^ {
         display: flex;
-        flex-direciton: column;
+        flex-direction: column;
         flex-grow: 1;
         overflow: hidden;
         position: relative;
@@ -552,6 +562,7 @@ CLASS({
         -webkit-overflow-scrolling: touch;
         flex-grow: 1;
         height: 100%;
+        overflow-x: hidden;
         overflow-y: auto;
         width: 100%;
       }
@@ -560,7 +571,7 @@ CLASS({
         transform: translate3d(0,0,0);
         width: 100%;
       }
-    */},
+    */}
   ],
 
   models: [
@@ -570,24 +581,24 @@ CLASS({
       documentation: 'Wrapper for a single row in a ScrollView. Users should not need to create or manipulate these; they\'re internal to the ScrollView.',
       imports: [
         'dynamic',
-        'scrollView',
+        'scrollView'
       ],
       properties: [
         {
           name: 'data',
           postSet: function(old, nu) {
             this.view.data = nu;
-          },
+          }
         },
         {
           name: 'view',
           postSet: function(old, nu) {
             if (nu) nu.data = this.data;
-          },
+          }
         },
         {
           name: 'y',
-        },
+        }
       ],
 
       methods: [
@@ -603,13 +614,13 @@ CLASS({
 
           this.add(this.view);
           this.on('click', this.onClick);
-        },
+        }
       ],
 
       listeners: [
         function onClick() {
           this.scrollView.publish(this.scrollView.ROW_CLICK, this.data);
-        },
+        }
       ],
 
       templates: [
@@ -619,7 +630,7 @@ CLASS({
             position: absolute;
             width: 100%;
           }
-        */},
+        */}
       ]
     }
   ]

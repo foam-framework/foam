@@ -34,23 +34,23 @@ CLASS({
       help: 'TODO: this is just for test data, remove!'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'description'
     },
     {
-      model_: 'URLProperty',
+      type: 'URL',
       name: 'content'
     },
     {
-      model_: 'ImageProperty',
+      type: 'Image',
       name: 'preview'
     },
     {
-      model_: 'BlobProperty',
+      type: 'Blob',
       name: 'cache_'
     },
     {
@@ -59,7 +59,7 @@ CLASS({
       defaultValue: 'none'
     },
     {
-      model_: 'ImportedProperty',
+      type: 'Imported',
       name: 'envelope_',
       transient: true,
       compareProperty: function() { return 0; }

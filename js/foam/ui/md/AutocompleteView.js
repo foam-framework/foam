@@ -24,7 +24,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'ViewFactoryProperty',
+      type: 'ViewFactory',
       name: 'acRowView'
     },
     {

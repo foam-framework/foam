@@ -18,7 +18,6 @@
 CLASS({
   package: 'foam.documentation.diagram',
   name: 'TraitListDiagram',
-
   extends: 'foam.ui.BaseView',
 
   requires: [
@@ -57,14 +56,14 @@ CLASS({
     },
     {
       name: 'diagramItem',
-      type: 'foam.graphics.diagram.LinearLayout',
+      // type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'vertical'});
       }
     },
     {
       name: 'mainLayout',
-      type: 'foam.graphics.diagram.LinearLayout',
+      // type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.LinearLayout.create({orientation:'horizontal'});
       }
@@ -75,7 +74,7 @@ CLASS({
     },
     {
       name: 'spacing',
-      model_: 'IntProperty',
+      type: 'Int',
       defaultValue: 45
     }
   ],

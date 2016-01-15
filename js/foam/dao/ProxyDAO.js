@@ -76,7 +76,7 @@ CLASS({
       */}
     },
     {
-      model_: 'ModelProperty',
+      type: 'Model',
       name: 'model',
       type: 'Model',
       required: false,

@@ -51,12 +51,12 @@ CLASS({
       },
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'failed',
       mode: 'read-only'
     },
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'passed',
       mode: 'read-only'
     }

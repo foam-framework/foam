@@ -304,8 +304,8 @@ CLASS({
                    { name: 'value' },
                    ],
                    actions: [
-                   { name: 'minus', action: function() { this.value--; } },
-                   { name: 'plus',  action: function() { this.value++; } },
+                     function minus() { this.value--; },
+                     function plus()  { this.value++; }
                    ]
                    });
                    var value = DataBindingDemo.create({value:5});
@@ -614,7 +614,7 @@ CLASS({
 
   <slide>
     <!-- TODO: Dirty hack to prevent display from slide 3 from showing up in legend mode. -->
-    <% setTimeout(function() { $('display').style.display='none'; }, 6000); %>
+    <% setTimeout(function() { var e = document.getElementById('display'); if ( e ) e.style.display='none'; }, 6000); %>
     <div class="heading-card">
       <div class="flex-row">
         <div class="small-color-block red">&nbsp;</div>

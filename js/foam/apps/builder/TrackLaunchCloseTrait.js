@@ -24,7 +24,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'IntProperty',
+      type: 'Int',
       name: 'launchTime',
       lazyFactory: function() { return this.getCurrentTime(); },
     },

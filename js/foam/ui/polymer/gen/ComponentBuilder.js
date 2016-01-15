@@ -36,7 +36,7 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringArrayProperty',
+      type: 'StringArray',
       name: 'provides',
       factory: function() {
         return ['source'];

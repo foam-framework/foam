@@ -25,7 +25,6 @@ CLASS({
   properties: [
     {
       name: 'view',
-      type: 'view',
       factory: function() {
         return this.MultiChoiceView.create({size:this.size, cssClass: 'foamSearchChoiceView'});
       }

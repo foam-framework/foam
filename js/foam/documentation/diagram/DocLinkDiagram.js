@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-
-
 CLASS({
-  name: 'DocLinkDiagram',
   package: 'foam.documentation.diagram',
+  name: 'DocLinkDiagram',
 
   traits: [ 'foam.patterns.ChildTreeTrait',
             'foam.documentation.diagram.DocDiagramTrait'],
@@ -29,14 +27,14 @@ CLASS({
   properties: [
     {
       name: 'diagramItem',
-      type: 'foam.graphics.diagram.LinearLayout',
+      // type: 'foam.graphics.diagram.LinearLayout',
       factory: function() {
         return this.Link.create({arrowStyle: 'generalization'});
       }
     },
     {
       name: 'start',
-      type: 'foam.documentation.diagram.DocDiagramTrait',
+      // type: 'foam.documentation.diagram.DocDiagramTrait',
       postSet: function() {
         if ( ! this.start ) return;
         
@@ -48,7 +46,7 @@ CLASS({
     },
     {
       name: 'end',
-      type: 'foam.documentation.diagram.DocDiagramTrait',
+      // type: 'foam.documentation.diagram.DocDiagramTrait',
       postSet: function() {
         if ( ! this.end ) return;
         
@@ -59,7 +57,5 @@ CLASS({
       }
     }
   ]
-
-
 });
 

@@ -40,12 +40,12 @@ CLASS({
 
   properties: [
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'titleText',
       defaultValue: 'Ask a Question'
     },
     {
-      model_: 'StringProperty',
+      type: 'String',
       name: 'description',
       defaultValueFn: function() { return this.titleText; }
     },
@@ -65,7 +65,7 @@ CLASS({
     },
     [ 'border', false ],
     {
-      model_: 'StringProperty',
+      type: 'String',
       label: 'Reply',
       name: 'newMessage',
       toPropertyE: function(X) {
@@ -91,13 +91,13 @@ CLASS({
           this.streamDAO.put(env);
           // scroll ui (hacky)
           this.setTimeout(function() {
-            this.scrollEl && this.scrollEl.id$el && this.scrollEl.id$el.scrollIntoView(false);
+            this.scrollEl && this.scrollEl.el() && this.scrollEl.el().scrollIntoView(false);
            }.bind(this), 300);
         }
       }
     },
     {
-      model_: 'ImportedProperty',
+      type: 'Imported',
       name: 'scrollEl'
     }
   ],
@@ -132,7 +132,7 @@ CLASS({
           data: this.dao,
           rowView: this.contentRowE || this.contentRowView,
         }, Y))
-        .on('click', function() { e.id$el.scrollIntoView(false); })
+        .on('click', function() { e.el().scrollIntoView(false); })
       .end()
       .add(this.NEW_MESSAGE);
       this.scrollEl = e;
