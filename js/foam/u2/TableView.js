@@ -59,15 +59,25 @@ CLASS({
       postSet: function(_, model) {
         if ( ! this.columnProperties )
           this.columnProperties_ = this.getColumnProperties_();
+
+        this.allProperties_ = model.getRuntimeProperties().filter(function(p) {
+          return ! p.hidden;
+        });
       }
+    },
+    {
+      type: 'Array',
+      name: 'allProperties_',
+      documentation: 'All the (non-hidden) properties on the model.',
     },
     {
       type: 'Array',
       name: 'columnProperties',
       documentation: 'An array of Property objects for all selected ' +
-          'properties. That is, the current set of columns. Defaults to the ' +
-          'model\'s tableProperties if defined, or all non-hidden properties ' +
-          'otherwise.',
+          'properties. If this is set, this is exactly the set of properties ' +
+          'that will be displayed. Otherwise the model\'s tableProperties, ' +
+          'if defined, will be displayed. Finally, all non-hidden properties ' +
+          'will be displayed.',
       factory: function() { return null; },
       postSet: function(_, ps) {
         this.columnProperties_ = ps;
@@ -158,7 +168,9 @@ CLASS({
           }.bind(this));
       }
 
-      return this.model.getRuntimeProperties().filter(NOT(Property.HIDDEN));
+      return this.model.getRuntimeProperties().filter(function(p) {
+        return ! p.hidden;
+      });
     },
 
     function computeColWidths() {
@@ -387,9 +399,11 @@ console.log('props: ', props);
       }
 
       ^row {
+        align-items: center;
         display: flex;
         flex-shrink: 0;
         flex-grow: 0;
+        height: 100%;
       }
 
       ^col-label {
@@ -403,6 +417,7 @@ console.log('props: ', props);
         display: flex;
         flex-grow: 0;
         flex-shrink: 0;
+        padding: 8px;
         position: relative;
       }
       ^cell^numeric {
@@ -420,15 +435,32 @@ console.log('props: ', props);
         flex-shrink: 0;
       }
 
-      ^cell ^resize-handle {
+      ^head ^cell ^resize-handle {
+        background-color: #ccc;
         display: block;
         position: absolute;
         top: 0;
         right: 0px;
-        width: 3px;
-        height: 100%;
+        width: 1px;
+        bottom: 0;
         z-index: 9;
         cursor: ew-resize;
+      }
+
+      ^cell:last-child ^resize-handle {
+        display: none;
+      }
+
+      ^head ^row {
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        height: 36px;
+      }
+
+      ^head ^cell {
+        height: 100%;
+        margin: 0;
+        padding: 0 8px;
       }
 
       ^numeric {
@@ -443,6 +475,7 @@ console.log('props: ', props);
       }
 
       ^col-label label {
+        font-weight: bold;
         flex-grow: 0;
       }
       ^col-label span {

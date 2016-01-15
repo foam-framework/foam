@@ -14,24 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'com.chrome.apis',
-  name: 'ExperimentActivationDetailView',
-  extends: 'foam.u2.md.DetailView',
-  requires: [
-    'foam.u2.md.Label'
-  ],
-  templates: [
-    function initE() {/*#U2
-<div style="margin-top: 12px">
-(( this.Y.registerE('label', this.Label); ))
-<label>Origin</label>
-<:origin/>
-<label>Experiment</label>
-<:experiment/>
-<:generateApiKey/>
-<:apiKeys/>
-</div>
-*/}
+  name: 'ApiKeyCitationView',
+  extends: 'foam.u2.md.CitationView',
+  methods: [
+    function initE() {
+      this.start('div')
+        .cls(this.myCls())
+        .start('div').add(this.data.key).end()
+        .start('div').style({ "margin-left": "16px" }).add("Expires ", this.data.expires.toString())
+        .end();
+    }
   ]
 });

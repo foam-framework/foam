@@ -83,7 +83,7 @@ CLASS({
     function initE() {/*#U2
       <div class="^">
         {{this.dynamic(function(data, prop) {
-          return data.propertyValue(prop);
+          return data ? data.propertyValue(prop) : '';
         }, this.data$, this.prop$)}}
       </div>
     */},

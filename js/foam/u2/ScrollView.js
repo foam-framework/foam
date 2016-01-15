@@ -562,6 +562,7 @@ CLASS({
         -webkit-overflow-scrolling: touch;
         flex-grow: 1;
         height: 100%;
+        overflow-x: hidden;
         overflow-y: auto;
         width: 100%;
       }

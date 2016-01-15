@@ -35,7 +35,8 @@ CLASS({
     {
       name: 'owner',
       type: 'Reference',
-      subType: 'com.chrome.apis.User'
+      subType: 'com.chrome.apis.User',
+      toPropertyE: function(X) { return X.lookup("foam.u2.TextField").create(null, X); }
     },
     {
       name: 'frozen',

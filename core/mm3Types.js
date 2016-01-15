@@ -946,6 +946,10 @@ CLASS({
 //      defaultValue: 'KeyView'
     },
     {
+      name: 'toPropertyE',
+      defaultValue: function(X) { return X.lookup('foam.u2.ReferenceView').create(null, X); }
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       required: false,

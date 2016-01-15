@@ -451,7 +451,9 @@ CLASS({
               X.addStyle(m.getPrototype());
             }.bind(this, m));
 
-            return;
+            // Break, not return. We're done iterating the templates on this
+            // model, but we still want to install its parent's CSS, if any.
+            break;
           }
         }
         m = m.extends && X.lookup(m.extends);

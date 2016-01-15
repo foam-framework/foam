@@ -18,5 +18,12 @@ CLASS({
   package: 'com.chrome.apis',
   name: 'ExperimentActivationCitationView',
   extends: 'foam.u2.md.CitationView',
-
+  requires: [
+    'foam.u2.ReferenceView'
+  ],
+  methods: [
+    function initE() {
+      this.add(this.data.EXPERIMENT);
+    }
+  ]
 });
