@@ -1191,7 +1191,7 @@ CLASS({
         var e2 = nextE();
         self.insertBefore(e2, first);
         if ( Array.isArray(e) ) {
-          for ( var i = 0 ; i < e.length ; i++ ) e.remove();
+          for ( var i = 0 ; i < e.length ; i++ ) e[i].remove();
         } else {
           e.remove();
         }
