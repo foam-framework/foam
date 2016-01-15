@@ -59,15 +59,25 @@ CLASS({
       postSet: function(_, model) {
         if ( ! this.columnProperties )
           this.columnProperties_ = this.getColumnProperties_();
+
+        this.allProperties_ = model.getRuntimeProperties().filter(function(p) {
+          return ! p.hidden;
+        });
       }
+    },
+    {
+      type: 'Array',
+      name: 'allProperties_',
+      documentation: 'All the (non-hidden) properties on the model.',
     },
     {
       type: 'Array',
       name: 'columnProperties',
       documentation: 'An array of Property objects for all selected ' +
-          'properties. That is, the current set of columns. Defaults to the ' +
-          'model\'s tableProperties if defined, or all non-hidden properties ' +
-          'otherwise.',
+          'properties. If this is set, this is exactly the set of properties ' +
+          'that will be displayed. Otherwise the model\'s tableProperties, ' +
+          'if defined, will be displayed. Finally, all non-hidden properties ' +
+          'will be displayed.',
       factory: function() { return null; },
       postSet: function(_, ps) {
         this.columnProperties_ = ps;
@@ -158,7 +168,9 @@ CLASS({
           }.bind(this));
       }
 
-      return this.model.getRuntimeProperties().filter(NOT(Property.HIDDEN));
+      return this.model.getRuntimeProperties().filter(function(p) {
+        return ! p.hidden;
+      });
     },
 
     function computeColWidths() {
