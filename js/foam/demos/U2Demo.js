@@ -1,5 +1,40 @@
-var d1 = foam.u2.DateView.create();
-var d2 = foam.u2.DateView.create();
+/**
+ * @license
+ * Copyright 2016 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+CLASS({
+  package: 'foam.demos',
+  name: 'U2Demo',
+  extends: 'foam.u2.Element',
+
+  requires: [
+    'foam.util.Timer',
+    'foam.u2.tag.Checkbox',
+    'foam.u2.MultiLineTextField',
+    'foam.u2.FunctionView',
+    'foam.u2.md.DetailView as MDDetailView',
+    'foam.u2.DateView'
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+
+var d1 = this.DateView.create();
+var d2 = this.DateView.create();
 d1.data$ = d2.data$;
 d1.write();
 d2.write();
@@ -7,10 +42,10 @@ d1.data$.addListener(function() { console.log("8** ", d1.data); });
 
 d1.date = new Date();
 
-var timer = foam.util.Timer.create();
+var timer = GLOBAL.timer = this.Timer.create();
  timer.start();
 var E = X.E.bind(X.sub());
-var dynamic = X.dynamic;
+var dynamic = GLOBAL.dynamic = X.dynamic;
 
 E('b').add('bold', E('br')).write();
 
@@ -130,7 +165,7 @@ var dd = Person.create({firstName: 'Donald', lastName: 'Duck', age: 83});
 
 foam.u2.DetailView.create({data:dd}).write();
 var dv = foam.u2.DetailView.create().write();
-foam.u2.md.DetailView.create({data:dd}).write();
+this.MDDetailView.create({data:dd}).write();
 
 
 setTimeout(function() { dv.data = dd; }, 2000);
@@ -566,3 +601,7 @@ e.write();
 
 console.log(p.model_.templates[0].template.toString().length, p.toE.toString().length);
 // 1238 861 -> 811 (tag) -> 790 (div br defaults) -> 742 (remove empty strings "")
+
+    }
+  ]
+});
