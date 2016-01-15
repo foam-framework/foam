@@ -24,9 +24,9 @@ CLASS({
     'foam.demos.heroes.CitationView',
     'foam.demos.heroes.DashboardCitationView',
     'foam.demos.heroes.Hero',
-    'foam.u2.tag.Checkbox',
     'foam.u2.DAOListView',
-    'foam.u2.DetailView'
+    'foam.u2.DetailView',
+    'foam.u2.tag.Checkbox'
   ],
 
   exports: [ 'editHero' ],
