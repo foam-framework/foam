@@ -399,9 +399,11 @@ console.log('props: ', props);
       }
 
       ^row {
+        align-items: center;
         display: flex;
         flex-shrink: 0;
         flex-grow: 0;
+        height: 100%;
       }
 
       ^col-label {
@@ -415,6 +417,7 @@ console.log('props: ', props);
         display: flex;
         flex-grow: 0;
         flex-shrink: 0;
+        padding: 8px;
         position: relative;
       }
       ^cell^numeric {
@@ -433,14 +436,31 @@ console.log('props: ', props);
       }
 
       ^cell ^resize-handle {
+        background-color: #ccc;
         display: block;
         position: absolute;
         top: 0;
         right: 0px;
-        width: 3px;
-        height: 100%;
+        width: 1px;
+        bottom: 0;
         z-index: 9;
         cursor: ew-resize;
+      }
+
+      ^cell:last-child ^resize-handle {
+        display: none;
+      }
+
+      ^head ^row {
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        height: 36px;
+      }
+
+      ^head ^cell {
+        height: 100%;
+        margin: 0;
+        padding: 0 8px;
       }
 
       ^numeric {
@@ -455,6 +475,7 @@ console.log('props: ', props);
       }
 
       ^col-label label {
+        font-weight: bold;
         flex-grow: 0;
       }
       ^col-label span {
