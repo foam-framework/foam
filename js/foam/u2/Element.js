@@ -60,6 +60,10 @@ CLASS({
     // Initial State of an Element
     INITIAL: {
       output: function(out) {
+        // Pass 'this' as second opt_e argument to compiled
+        // initE templates so that they know to initialize
+        // the current/this Element instead of makign a new
+        // one. Shouln't be used by users.
         this.initE(this.Y, this);
         this.output_(out);
 
@@ -506,7 +510,7 @@ CLASS({
         With an extra of "foo", results in 'foam-u2-Input-foo'.
       */
       var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
-      if (!opt_extra) opt_extra = '';
+      if ( ! opt_extra ) opt_extra = '';
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
 
