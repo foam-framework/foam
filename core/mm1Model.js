@@ -370,6 +370,19 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       documentation: function() { /* $$DOC{ref:'Interface',usePlural:true} implemented by this $$DOC{ref:'Model'} .*/}
     },
     {
+      name: 'swiftImplements',
+      type: 'Array[String]',
+      view: 'foam.ui.StringArrayView',
+      defaultValueFn: function() { return this.implements; },
+      help: 'Swift interfaces implemented by this Model.',
+    },
+    {
+      name: 'swiftCode',
+      type: 'String',
+      defaultValue: '',
+      help: 'Swift code to drop in when generating the swift class for this model.',
+    },
+    {
       name: 'onLoad',
       type: 'Function',
       labels: ['javascript'],
