@@ -435,7 +435,7 @@ console.log('props: ', props);
         flex-shrink: 0;
       }
 
-      ^cell ^resize-handle {
+      ^head ^cell ^resize-handle {
         background-color: #ccc;
         display: block;
         position: absolute;

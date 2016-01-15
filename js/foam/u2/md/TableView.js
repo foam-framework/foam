@@ -201,6 +201,11 @@ CLASS({
         font-weight: 500;
       }
 
+      ^md ^head ^row {
+        border: none;
+        height: 64px;
+      }
+
       ^md ^body {
         border-top: solid 1px #ddd;
         color: rgba(0, 0, 0, 0.87);
@@ -223,12 +228,17 @@ CLASS({
       }
 
       ^md ^head ^cell:hover ^resize-handle {
-        background: #f5f5f5;
+        background-color: #f5f5f5;
       }
 
       ^md ^head ^cell ^resize-handle:hover,
       ^md ^col-resize ^resize-handle {
-        background: #eee;
+        background-color: #eee !important;
+      }
+
+      ^md ^head ^cell ^resize-handle {
+        background-color: rgba(0, 0, 0, 0);
+        width: 3px;
       }
 
       ^md ^body ^row:hover,
