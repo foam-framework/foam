@@ -1,3 +1,5 @@
+templates take opt_e as second parameter in case they are being called from initE() which should customize the current element rather than make a new one.  However, this will interfere with the ability of templates to accept parameters in the future.  Either compile initE() templates differently, or do something else.
+
 validate
 async/future view loading
 
