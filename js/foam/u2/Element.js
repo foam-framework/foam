@@ -22,16 +22,20 @@ CLASS({
   documentation: 'Virtual-DOM Element. Root model for all U2 UI components.',
 
   requires: [
+    'foam.u2.DefaultValidator',
     'foam.u2.ElementValue'
   ],
 
   imports: [
     'dynamic',
     'dynamicFn',
-    'framed'
+    'framed',
+    'elementValidator'
   ],
 
   onLoad: function() {
+    this.getPrototype().DEFAULT_VALIDATOR = foam.u2.DefaultValidator.create(null, this.X);
+
     /* Called when Model loaded. */
     var self = this;
 
@@ -51,6 +55,8 @@ CLASS({
   },
 
   constants: {
+    DEFAULT_VALIDATOR: null,
+
     // Initial State of an Element
     INITIAL: {
       output: function(out) {
@@ -340,6 +346,12 @@ CLASS({
     },
     {
       name: 'parentNode'
+    },
+    {
+      name: 'elementValidator',
+      defaultValueFn: function() {
+        return this.DEFAULT_VALIDATOR;
+      }
     },
     {
       name: 'nodeName',
@@ -899,9 +911,12 @@ CLASS({
       }
 
       if ( es.length ) {
-        for ( var i = 0 ; i < es.length ; i++ )
+        for ( var i = 0 ; i < es.length ; i++ ) {
           if ( foam.u2.Element.isInstance(es[i]) )
             es[i].parentNode = this;
+          else
+            es[i] = this.sanitizeText(es[i]);
+        }
 
         this.childNodes.push.apply(this.childNodes, es);
         this.onAddChildren.apply(this, es);
@@ -997,7 +1012,8 @@ CLASS({
     function write(opt_X /* | GLOBAL */) {
       /* Write Element to document. For testing purposes. */
       opt_X = opt_X || GLOBAL;
-      (opt_X.document || document).writeln(this.outerHTML);
+      document.body.insertAdjacentHTML('beforeend', this.outerHTML);
+//      (opt_X.document || document).writeln(this.outerHTML);
       this.load();
       return this;
     },
@@ -1007,6 +1023,39 @@ CLASS({
       var s = this.createOutputStream();
       this.output_(s);
       return s.toString();
+    },
+
+
+    //
+    // Validation and Sanitization
+    //
+
+    function validateNodeName(name) {
+      return this.elementValidator.validateNodeName(name);
+    },
+
+    function validateClass(cls) {
+      return this.elementValidator.validateClass(name);
+    },
+
+    function validateAttributeName(name) {
+      return this.elementValidator.validateAttributeName(name);
+    },
+
+    function validateAttributeValue(value) {
+      return this.elementValidator.validateAttributeValue(name);
+    },
+
+    function validateStyleName(name) {
+      return this.elementValidator.validateStyleName(name);
+    },
+
+    function validateStyleValue(value) {
+      return this.elementValidator.validateStyleValue(name);
+    },
+
+    function sanitizeText(text) {
+      return this.elementValidator.sanitizeText(text);
     },
 
 
