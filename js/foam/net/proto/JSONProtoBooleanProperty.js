@@ -16,7 +16,7 @@
  */
 CLASS({
   package: 'foam.net.proto',
-  name: 'JSONProtoArrayProperty',
-  extends: 'ArrayProperty',
+  name: 'JSONProtoBooleanProperty',
+  extends: 'BooleanProperty',
   traits: ['foam.net.proto.JSONProtoPropertyTrait'],
 });
