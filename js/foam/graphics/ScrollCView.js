@@ -159,7 +159,7 @@ CLASS({
 
       if ( ! c ) return;
 
-      this.erase();
+      this.erase(c);
 
       if ( this.extent >= this.size ) return;
 
