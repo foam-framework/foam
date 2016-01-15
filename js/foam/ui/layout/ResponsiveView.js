@@ -34,7 +34,7 @@ CLASS({
     },
     {
       name: 'current',
-      type: 'foam.ui.layout.ResponsiveViewOption',
+      subType: 'foam.ui.layout.ResponsiveViewOption',
       postSet: function(old, v) {
         if ( old !== v ) this.updateHTML();
       }
