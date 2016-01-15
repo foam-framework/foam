@@ -44,7 +44,7 @@ CLASS({
 
     bind: function(a, b) {
       if ( ! a.get() ) this.initial_ = b.get();
-      Events.relate(a, b, this.hashToMemento_.bind(this), this.mementoToHash_, true);
+      Events.relate(a, b, this.hashToMemento_.bind(this), this.mementoToHash_, false);
     },
 
     hashToMemento_: function(h) {
