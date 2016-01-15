@@ -920,7 +920,9 @@ CLASS({
         for ( var i = 0 ; i < es.length ; i++ ) {
           if ( foam.u2.Element.isInstance(es[i]) )
             es[i].parentNode = this;
-          else
+          else if ( es[i].toHTML ) {
+            // NOP, remove with U1
+          } else
             es[i] = this.sanitizeText(es[i]);
         }
 
@@ -1061,8 +1063,8 @@ CLASS({
     },
 
     function sanitizeText(text) {
-      return this;
-//      return this.elementValidator.sanitizeText(text);
+//      return this;
+      return this.elementValidator.sanitizeText(text);
     },
 
 

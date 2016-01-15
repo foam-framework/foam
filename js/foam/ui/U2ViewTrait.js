@@ -13,7 +13,6 @@ CLASS({
   package: 'foam.ui',
   name: 'U2ViewTrait',
 
-
   methods: [
     function toE() { return this; },
     function load() { return this.initHTML && this.initHTML(); },
