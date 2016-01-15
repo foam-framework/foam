@@ -1061,7 +1061,8 @@ CLASS({
     },
 
     function sanitizeText(text) {
-      return this.elementValidator.sanitizeText(text);
+      return this;
+//      return this.elementValidator.sanitizeText(text);
     },
 
 
