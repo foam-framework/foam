@@ -305,6 +305,7 @@ MODEL({
     // Function for returning multi-line strings from commented functions.
     // Ex. var str = multiline(function() { /* multi-line string here */ });
     function multiline(f) {
+      if ( typeof f === 'string' ) return f;
       var s = f.toString();
       var start = s.indexOf('/*');
       var end   = s.lastIndexOf('*/');
