@@ -260,7 +260,7 @@ MODEL({
       parser.model = model;
       return parser.parser.parseString(t).toString();
     },
-    parseU2: function(t, model) {
+    parseU2: function(_, t, model) {
       // TODO: temporary hack until onLoad() gets called sooner
       X.foam.u2.ElementParser.getPrototype();
       if ( ! X.foam.u2.ElementParser.parser__ )
@@ -272,11 +272,12 @@ MODEL({
     },
     compile: function(t, model) {
       if ( t.name !== 'CSS' ) {
+        // TODO: this doesn't work
         if ( model.isSubModel(X.lookup('foam.u2.Element')) ) {
-          return eval('(function() { return ' + this.parseU2(t.template, model) + '; })()');
+          return eval('(function() { return ' + this.parseU2(t, t.template, model) + '; })()');
         }
         if ( t.template.startsWith('#U2') ) {
-          var code = '(function() { return ' + this.parseU2(t.template.substring(3), model) + '; })()';
+          var code = '(function() { return ' + this.parseU2(t, t.template.substring(3), model) + '; })()';
           return eval(code);
         }
       }
