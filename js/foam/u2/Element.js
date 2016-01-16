@@ -60,15 +60,9 @@ CLASS({
     // Initial State of an Element
     INITIAL: {
       output: function(out) {
-        // Pass 'this' as second opt_e argument to compiled
-        // initE templates so that they know to initialize
-        // the current/this Element instead of makign a new
-        // one. Shouln't be used by users.
-        this.initE(this.Y, this);
+        this.initE(this.Y);
         this.output_(out);
-
         this.state = this.OUTPUT;
-
         return out;
       },
       load:          function() { console.error('Must output before loading.'); },
