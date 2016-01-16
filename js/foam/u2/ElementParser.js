@@ -49,7 +49,11 @@ CLASS({
         this.peek().children.push({code: c.trim()});
       },
 
-      START: sym('html'),
+      START: sym('template'),
+
+      initTemplate: sym('template'),
+
+      template: sym('html'),
 
       html: seq1(1, sym('whitespace'), repeat0(sym('htmlPart'), sym('whitespace'))),
 
@@ -198,7 +202,7 @@ CLASS({
 
       space: alt(' ', '\t', '\r', '\n')
     }.addActions({
-      START: function(xs) {
+      template: function(xs) {
         var output = [];
         var out = output.push.bind(output);
         var e = this.peek().children[0];

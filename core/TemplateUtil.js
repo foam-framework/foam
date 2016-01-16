@@ -260,12 +260,15 @@ MODEL({
       parser.model = model;
       return parser.parser.parseString(t).toString();
     },
-    parseU2: function(_, t, model) {
+    parseU2: function(template, t, model) {
       X.foam.u2.ElementParser.getPrototype();
 
       var parser = this.U2Parser_ || ( this.U2Parser_ = X.foam.u2.ElementParser.parser__.create() );
       parser.modelName_ = cssClassize(model.id);
-      return parser.parseString(t.trim()).toString();
+      var out = parser.parseString(
+        t.trim(),
+        template.name === 'initE' ? parser.initTemplate : parser.template);
+      return out.toString();
     },
     compile: function(t, model) {
       if ( t.name !== 'CSS' ) {
