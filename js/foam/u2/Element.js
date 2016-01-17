@@ -528,16 +528,19 @@ CLASS({
     function load() {
       /* Transitions to the LOADED state, initializing DOM. */
       this.state.load.call(this);
+      this.publish(this.PSEDO_EVENTS.load);
     },
 
     function unload() {
       /* Transitions to the UNLOADED state, removing DOM. */
       this.state.unload.call(this);
+      this.publish(this.PSEDO_EVENTS.unload);
     },
 
     function destroy() {
       /* Transition to the DESTROYED state. Reserved for future use. */
       this.state.destroy.call(this);
+      this.publish(this.PSEDO_EVENTS.destroy);
     },
 
 
