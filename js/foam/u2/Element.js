@@ -57,6 +57,13 @@ CLASS({
   constants: {
     DEFAULT_VALIDATOR: null,
 
+    // Psedo-DOM events names for Lifecycle Transitions
+    PSEDO_EVENTS: {
+      load:    [ 'LOAD'    ],
+      unload:  [ 'UNLOAD'  ],
+      destroy: [ 'DESTROY' ]
+    },
+
     // Initial State of an Element
     INITIAL: {
       output: function(out) {
@@ -1196,6 +1203,12 @@ CLASS({
     },
 
     function addEventListener_(topic, listener) {
+      var pt = this.PSEDO_EVENTS[topic];
+      if ( pt ) {
+        this.subscribe(pt, listener);
+        return;
+      }
+
       /* Add a real DOM listener, with gestureManager support, if needed. */
       if ( topic === 'click' && this.X.gestureManager ) {
         var manager = this.X.gestureManager;
@@ -1224,6 +1237,12 @@ CLASS({
     },
 
     function removeEventListener_(topic, listener) {
+      var pt = this.PSEDO_EVENTS[topic];
+      if ( pt ) {
+        this.unsubscribe(pt, listener);
+        return;
+      }
+
       /* Remove a real DOM listener, with gestureManager support, if needed. */
       if ( topic === 'click' && this.X.gestureManager && this.clickTarget_ ) {
         this.X.gestureManager.uninstall(this.clickTarget_);
