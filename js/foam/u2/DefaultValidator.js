@@ -49,9 +49,10 @@ CLASS({
     function sanitizeText(text) {
       if ( ! text ) return text;
       text = text.toString();
-      return text.replace(/[&<"']/g, function (m) {
+//      return text.replace(/[&<"']/g, function (m) {
+      return text.replace(/[<"']/g, function (m) {
         switch ( m ) {
-          case '&': return '&amp;';
+//          case '&': return '&amp;';
           case '<': return '&lt;';
           case '"': return '&quot;';
           default:  return '&#039';
