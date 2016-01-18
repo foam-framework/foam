@@ -47,7 +47,7 @@ CLASS({
         if ( typeof v === 'function' ) return v(this.Y);
         if ( typeof v === 'string' ) {
           var m = this.X.lookup(v);
-          if ( m ) return m.create();
+          if ( m ) return m.create({}, this.Y);
         }
         return v;
       }
@@ -60,7 +60,7 @@ CLASS({
 
   methods: [
     function initE() {
-      var view = this.view || this.prop.toPropertyE();
+      var view = this.view || this.prop.toPropertyE(this.Y);
       var prop = this.prop;
 
       // TODO: remove check once all views extend View

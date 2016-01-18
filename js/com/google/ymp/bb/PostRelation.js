@@ -45,7 +45,7 @@ CLASS({
       documentation: 'ID of the post discovered to be related',
     },
     {
-      type: 'StringEnum',
+      type: 'foam.core.types.StringEnum',
       name: 'type',
       documentation: 'A label indicating the type of relation',
       defaultValue: 'REQ_TO_AD',

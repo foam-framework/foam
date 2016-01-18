@@ -32,7 +32,7 @@ CLASS({
       documentation: 'ID of the post against which the filter is applied',
     },
     {
-      type: 'StringEnum',
+      type: 'foam.core.types.StringEnum',
       name: 'type',
       documentation: 'A label indicating the type of filter applied',
       defaultValue: 'STARRED',

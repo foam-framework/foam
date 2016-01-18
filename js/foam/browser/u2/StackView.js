@@ -256,8 +256,8 @@ CLASS({
         });
       }
     },
-    function initE(opt_x, opt_e) {
-      opt_e.cls(this.myCls());
+    function initE(opt_x) {
+      this.cls(this.myCls());
     },
     function load() {
       this.SUPER();
