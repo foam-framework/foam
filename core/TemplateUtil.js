@@ -260,23 +260,24 @@ MODEL({
       parser.model = model;
       return parser.parser.parseString(t).toString();
     },
-    parseU2: function(t, model) {
-      // TODO: temporary hack until onLoad() gets called sooner
+    parseU2: function(template, t, model) {
       X.foam.u2.ElementParser.getPrototype();
-      if ( ! X.foam.u2.ElementParser.parser__ )
-        X.foam.u2.ElementParser.onLoad();
 
       var parser = this.U2Parser_ || ( this.U2Parser_ = X.foam.u2.ElementParser.parser__.create() );
       parser.modelName_ = cssClassize(model.id);
-      return parser.parseString(t.trim()).toString();
+      var out = parser.parseString(
+        t.trim(),
+        template.name === 'initE' ? parser.initTemplate : parser.template);
+      return out.toString();
     },
     compile: function(t, model) {
       if ( t.name !== 'CSS' ) {
+        // TODO: this doesn't work
         if ( model.isSubModel(X.lookup('foam.u2.Element')) ) {
-          return eval('(function() { return ' + this.parseU2(t.template, model) + '; })()');
+          return eval('(function() { return ' + this.parseU2(t, t.template, model) + '; })()');
         }
         if ( t.template.startsWith('#U2') ) {
-          var code = '(function() { return ' + this.parseU2(t.template.substring(3), model) + '; })()';
+          var code = '(function() { return ' + this.parseU2(t, t.template.substring(3), model) + '; })()';
           return eval(code);
         }
       }

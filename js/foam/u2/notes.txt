@@ -108,3 +108,8 @@ This should work in Cells.
 
 
 visibility / mode is completely broken
+
+&nbsp; is an issue
+needs to be escaped, but is used in templates
+extend parser
+.escape('&nbsp;')

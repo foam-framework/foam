@@ -553,7 +553,6 @@ var grammar = {
 
   addActions: function(map) {
     for ( var key in map ) this.addAction(key, map[key]);
-
     return this;
   }
 };

@@ -49,7 +49,24 @@ CLASS({
         this.peek().children.push({code: c.trim()});
       },
 
-      START: sym('html'),
+      generateCode: function(xs, isInit) {
+        var output = [];
+        var out = output.push.bind(output);
+        var e = this.peek().children[0];
+        e.as = e.as || '$e';
+        if ( ! e.output ) {
+          throw 'Template Parse Error: Unclosed tag: ' + this.peek().nodeName;
+        }
+        e.output(out, true, isInit);
+        this.reset();
+        return 'function(X){X=X||this.X;var s=[];' + output.join('') + ';return ' + e.as + ';}';
+      },
+
+      START: sym('template'),
+
+      initTemplate: sym('html'),
+
+      template: sym('html'),
 
       html: seq1(1, sym('whitespace'), repeat0(sym('htmlPart'), sym('whitespace'))),
 
@@ -198,17 +215,11 @@ CLASS({
 
       space: alt(' ', '\t', '\r', '\n')
     }.addActions({
-      START: function(xs) {
-        var output = [];
-        var out = output.push.bind(output);
-        var e = this.peek().children[0];
-        e.as = e.as || '$e';
-        if ( ! e.output ) {
-          throw 'Template Parse Error: Unclosed tag: ' + this.peek().nodeName;
-        }
-        e.output(out, true);
-        this.reset();
-        return 'function(X, opt_e){X=X||this.X;var s=[];' + output.join('') + ';return ' + e.as + ';}';
+      template: function(xs) {
+        return this.generateCode(xs);
+      },
+      initTemplate: function(xs) {
+        return this.generateCode(xs, true);
       },
       id: function(id) { this.peek().id = id; },
       as: function(as) { this.peek().as = as; },
@@ -287,12 +298,12 @@ CLASS({
             }
             if ( ! first ) out('})');
           },
-          output: function(out, firstE) {
+          output: function(out, firstE, isInit) {
             var nn = this.nodeName === 'div' ? null : '"' + this.nodeName + '"';
             var longForm = false;
             if ( firstE ) {
               if ( this.as ) out('var ', this.as, '=');
-              out('(opt_e||X.E())');
+              out(isInit ? 'this' : 'X.E()');
               if ( nn ) out('.n(', nn, ')');
             } else {
               longForm = this.as ||

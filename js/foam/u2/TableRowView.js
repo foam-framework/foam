@@ -47,7 +47,7 @@ CLASS({
       return [];
     },
 
-    function initE(opt_e) {
+    function initE() {
       this.getBodyRowClasses().forEach(function(c) { this.cls(c); }.bind(this));
 
       this.dynamic(function(props) {

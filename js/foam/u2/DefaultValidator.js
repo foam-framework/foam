@@ -23,7 +23,7 @@ CLASS({
 
   methods: [
     function validateNodeName(name) {
-
+      return true;
     },
 
     function validateClass(cls) {
@@ -47,7 +47,17 @@ CLASS({
     },
 
     function sanitizeText(text) {
-      return text;
+      if ( ! text ) return text;
+      text = text.toString();
+//      return text.replace(/[&<"']/g, function (m) {
+      return text.replace(/[<"']/g, function (m) {
+        switch ( m ) {
+//          case '&': return '&amp;';
+          case '<': return '&lt;';
+          case '"': return '&quot;';
+          default:  return '&#039';
+        }
+      });
     }
   ]
 });

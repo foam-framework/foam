@@ -222,6 +222,7 @@ MODEL({
     },
 
     /** Subscribe to notifications for the specified topic. **/
+    // TODO: Return subscription
     subscribe: function (topic, listener) {
       if ( ! this.subs_ ) this.subs_ = {};
       //console.log("Sub: ",this, listener);

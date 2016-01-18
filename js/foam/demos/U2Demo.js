@@ -47,7 +47,11 @@ var timer = GLOBAL.timer = this.Timer.create();
 var E = X.E.bind(X.sub());
 var dynamic = GLOBAL.dynamic = X.dynamic;
 
-E('b').add('bold', E('br')).write();
+E('b').add(
+  'bold',
+  E('br'),
+  '<span style="color:red">HTML Injection Attempt</span>',
+  E('br')).write();
 
 E('b').add(
   'color: ',

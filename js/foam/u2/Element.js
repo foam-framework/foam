@@ -57,14 +57,19 @@ CLASS({
   constants: {
     DEFAULT_VALIDATOR: null,
 
+    // Psedo-DOM events names for Lifecycle Transitions
+    PSEDO_EVENTS: {
+      load:    [ 'LOAD'    ],
+      unload:  [ 'UNLOAD'  ],
+      destroy: [ 'DESTROY' ]
+    },
+
     // Initial State of an Element
     INITIAL: {
       output: function(out) {
-        this.initE(this.Y, this);
+        this.initE(this.Y);
         this.output_(out);
-
         this.state = this.OUTPUT;
-
         return out;
       },
       load:          function() { console.error('Must output before loading.'); },
@@ -506,7 +511,7 @@ CLASS({
         With an extra of "foo", results in 'foam-u2-Input-foo'.
       */
       var base = this.model_.CSS_CLASS || cssClassize(this.model_.id);
-      if (!opt_extra) opt_extra = '';
+      if ( ! opt_extra ) opt_extra = '';
       return base.split(/ +/).map(function(c) { return c + '-' + opt_extra; }).join(' ');
     },
 
@@ -523,16 +528,19 @@ CLASS({
     function load() {
       /* Transitions to the LOADED state, initializing DOM. */
       this.state.load.call(this);
+      this.publish(this.PSEDO_EVENTS.load);
     },
 
     function unload() {
       /* Transitions to the UNLOADED state, removing DOM. */
       this.state.unload.call(this);
+      this.publish(this.PSEDO_EVENTS.unload);
     },
 
     function destroy() {
       /* Transition to the DESTROYED state. Reserved for future use. */
       this.state.destroy.call(this);
+      this.publish(this.PSEDO_EVENTS.destroy);
     },
 
 
@@ -916,7 +924,9 @@ CLASS({
         for ( var i = 0 ; i < es.length ; i++ ) {
           if ( foam.u2.Element.isInstance(es[i]) )
             es[i].parentNode = this;
-          else
+          else if ( es[i].toHTML ) {
+            // NOP, remove with U1
+          } else
             es[i] = this.sanitizeText(es[i]);
         }
 
@@ -1057,6 +1067,7 @@ CLASS({
     },
 
     function sanitizeText(text) {
+//      return this;
       return this.elementValidator.sanitizeText(text);
     },
 
@@ -1184,7 +1195,7 @@ CLASS({
         var e2 = nextE();
         self.insertBefore(e2, first);
         if ( Array.isArray(e) ) {
-          for ( var i = 0 ; i < e.length ; i++ ) e.remove();
+          for ( var i = 0 ; i < e.length ; i++ ) e[i].remove();
         } else {
           e.remove();
         }
@@ -1195,6 +1206,12 @@ CLASS({
     },
 
     function addEventListener_(topic, listener) {
+      var pt = this.PSEDO_EVENTS[topic];
+      if ( pt ) {
+        this.subscribe(pt, listener);
+        return;
+      }
+
       /* Add a real DOM listener, with gestureManager support, if needed. */
       if ( topic === 'click' && this.X.gestureManager ) {
         var manager = this.X.gestureManager;
@@ -1223,6 +1240,12 @@ CLASS({
     },
 
     function removeEventListener_(topic, listener) {
+      var pt = this.PSEDO_EVENTS[topic];
+      if ( pt ) {
+        this.unsubscribe(pt, listener);
+        return;
+      }
+
       /* Remove a real DOM listener, with gestureManager support, if needed. */
       if ( topic === 'click' && this.X.gestureManager && this.clickTarget_ ) {
         this.X.gestureManager.uninstall(this.clickTarget_);
