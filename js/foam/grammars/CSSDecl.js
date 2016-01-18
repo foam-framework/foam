@@ -188,7 +188,13 @@ CLASS({
       documentation: 'Optional model which contains this CSS template. Used ' +
           'to expand ^ signs in CSS selectors to the model name.',
       postSet: function(old, nu) {
-        if (nu) this.modelName_ = nu.CSS_CLASS || cssClassize(nu.id);
+        if (nu) {
+          // Need to buildPrototype to make sure things like constants get
+          // properly populated. Otherwise the CSS_CLASS constant is not
+          // honoured.
+          nu.buildPrototype();
+          this.modelName_ = nu.CSS_CLASS || cssClassize(nu.id);
+        }
       },
     },
     {
