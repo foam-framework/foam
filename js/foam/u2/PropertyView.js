@@ -47,7 +47,7 @@ CLASS({
         if ( typeof v === 'function' ) return v(this.Y);
         if ( typeof v === 'string' ) {
           var m = this.X.lookup(v);
-          if ( m ) return m.create({}, this.Y);
+          if ( m ) return m.create(undefined, this.Y);
         }
         return v;
       }
