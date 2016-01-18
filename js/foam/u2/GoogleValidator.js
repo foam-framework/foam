@@ -24,10 +24,13 @@ CLASS({
 
   constants: [
     DEFAULT_DISALLOWED_NODE_NAMES = {
+      APPLET: true,
+      EMBED: true,
       META: true,
-      TEMPLATE: true,
+      OBJECT: true,
       SCRIPT: true,
       STYLE: true,
+      TEMPLATE: true
     }
   ],
 

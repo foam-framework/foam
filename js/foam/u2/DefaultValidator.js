@@ -23,7 +23,7 @@ CLASS({
 
   methods: [
     function validateNodeName(name) {
-
+      return true;
     },
 
     function validateClass(cls) {
