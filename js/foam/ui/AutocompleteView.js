@@ -113,9 +113,9 @@ CLASS({
       console.assert( this.X.document === document, 'X.document is not global document');
 
       var div    = document.createElement('div');
-      var window = document.defaultView;
+      var window_ = document.defaultView;
 
-      console.assert( this.X.window === window, 'X.window is not global window');
+      console.assert( this.X.window === window_, 'X.window is not global window');
 
       parentNode.insertAdjacentHTML('afterend', this.toHTML().trim());
 
