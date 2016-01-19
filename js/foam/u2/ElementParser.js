@@ -59,7 +59,8 @@ CLASS({
         }
         e.output(out, true, isInit);
         this.reset();
-        return 'function(X){X=X||this.X;var s=[];' + output.join('') + ';return ' + e.as + ';}';
+        var prefix = isInit ? 'function(){var X=this.x,s=[];' : 'function(X){X=X||this.X;var s=[];' ;
+        return prefix + output.join('') + ';return ' + e.as + ';}';
       },
 
       START: sym('template'),
