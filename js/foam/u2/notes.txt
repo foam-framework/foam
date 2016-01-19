@@ -1,3 +1,5 @@
+Good idea to replace E() with start().end() and tag()?
+
 validate
 async/future view loading
 
