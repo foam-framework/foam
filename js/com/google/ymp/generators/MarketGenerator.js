@@ -36,7 +36,7 @@ CLASS({
 
   properties: [
     {
-      type: 'StringEnum',
+      type: 'foam.core.types.StringEnum',
       name: 'direction',
       defaultValue: 'W',
       choices: [

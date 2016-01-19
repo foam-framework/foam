@@ -183,7 +183,7 @@ CLASS({
       },
     },
     {
-      type: 'com.google.ymp.ClientContext',
+      subType: 'com.google.ymp.ClientContext',
       name: 'ctx',
       transient: true,
       defaultValue: null,

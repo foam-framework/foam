@@ -250,10 +250,10 @@ CLASS({
         'itemHeight', 'itemWidth', 'hMargin'
       ],
       methods: [
-        function initE(X) {
+        function initE() {
           this.cls(this.myCls());
 
-          for (var i = 0; i < this.choices.length; i++) {
+          for ( var i = 0 ; i < this.choices.length ; i++ ) {
             this.start('li')
                 .cls(this.myCls('choice'))
                 .cls(this.dynamic(function(i) {

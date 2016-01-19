@@ -144,13 +144,20 @@ var arequire = function(modelName) {
         // Contextualize the model for THIS context
         m.X = THIS;
 
-        m.arequire()(function(m) {
+        var next_ = function(m) {
           THIS.arequire$ModelLoadsInProgress[modelName] = false;
           THIS.GLOBAL.X.registerModel(m);
+
           if ( ! THIS.lookupCache_[m.id] )
             THIS.lookupCache_[m.id] = m;
           future.set(m);
-        });
+        };
+
+        if ( m.arequire ) {
+          m.arequire()(next_);
+        } else {
+          next_(m);
+        }
       },
       error: function() {
         var args = argsToArray(arguments);
@@ -164,10 +171,7 @@ var arequire = function(modelName) {
     return future.get;
   }
 
-  if ( ! model.arequire )
-    throw 'Required non-model "' + modelName + '"';
-
-  return model.arequire();
+  return model.arequire ? model.arequire() : aconstant(model);
 }
 
 var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/foam-framework/foam/" target="_blank">\

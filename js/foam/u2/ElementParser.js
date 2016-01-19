@@ -59,7 +59,8 @@ CLASS({
         }
         e.output(out, true, isInit);
         this.reset();
-        return 'function(X){X=X||this.X;var s=[];' + output.join('') + ';return ' + e.as + ';}';
+        var prefix = isInit ? 'function(){var X=this.x,s=[];' : 'function(X){X=X||this.X;var s=[];' ;
+        return prefix + output.join('') + ';return ' + e.as + ';}';
       },
 
       START: sym('template'),
@@ -107,6 +108,7 @@ CLASS({
       tagPart: alt(
         sym('id'),
         sym('as'),
+        sym('enableClass'),
         sym('class'),
         sym('style'),
         sym('on'),
@@ -171,6 +173,8 @@ CLASS({
 
       valueOrLiteral: alt(sym('braces'), sym('value')),
 
+      enableClass: seq('class.', sym('className'), '=', sym('braces')),
+
       class: seq1(1, 'class=', alt(sym('classList'), sym('classValue'))),
 
         classList: seq1(1, '"', repeat(sym('className'), ' '), '"'),
@@ -223,6 +227,9 @@ CLASS({
       },
       id: function(id) { this.peek().id = id; },
       as: function(as) { this.peek().as = as; },
+      enableClass: function(a) {
+        this.peek().enableClasses.push([a[1], a[3]]);
+      },
       classList: function(cs) {
         for ( var i = 0 ; i < cs.length ; i++ ) {
           if (cs[i].indexOf('^') >= 0) cs[i] = cs[i].replace(/\^/g, this.modelName_ + '-');
@@ -277,14 +284,15 @@ CLASS({
       },
       startTagName: function(n) {
         this.stack.push({
-          nodeName:    n,
-          id:          null,
-          classes:     [], // TODO: support for dynamic classes
-          xattributes: {},
-          attributes:  {},
-          style:       {},
-          listeners:   {},
-          children:    [],
+          nodeName:      n,
+          id:            null,
+          classes:       [],
+          enableClasses: [],
+          xattributes:   {},
+          attributes:    {},
+          style:         {},
+          listeners:     {},
+          children:      [],
           outputMap: function(out, f, m) {
             var first = true;
             for ( var key in m ) {
@@ -309,6 +317,7 @@ CLASS({
               longForm = this.as ||
                 this.id ||
                 this.children.length ||
+                this.enableClasses.length ||
                 this.classes.length ||
                 Object.keys(this.attributes).length ||
                 Object.keys(this.xattributes).length ||
@@ -327,6 +336,10 @@ CLASS({
 
             for ( var i = 0 ; i < this.classes.length ; i++ ) {
               out('.c(', this.classes[i], ')');
+            }
+
+            for ( var i = 0 ; i < this.enableClasses.length ; i++ ) {
+              out(".d('", this.enableClasses[i][0], "',", this.enableClasses[i][1], ')');
             }
 
             this.outputMap(out, 'y', this.style);

@@ -690,7 +690,7 @@ var BootstrapModel = {
     else
       go();
 
-    return this.required__
+    return this.required__;
   },
 
   getMyFeature: function(featureName) {

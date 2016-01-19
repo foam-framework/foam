@@ -23,7 +23,8 @@ CLASS({
 
   requires: [
     'foam.u2.DefaultValidator',
-    'foam.u2.ElementValue'
+    'foam.u2.ElementValue',
+    'foam.u2.Entity'
   ],
 
   imports: [
@@ -67,7 +68,7 @@ CLASS({
     // Initial State of an Element
     INITIAL: {
       output: function(out) {
-        this.initE(this.Y);
+        this.initE();
         this.output_(out);
         this.state = this.OUTPUT;
         return out;
@@ -786,6 +787,15 @@ CLASS({
       return this;
     },
 
+    function entity(name) {
+      this.add(this.Entity.create({name: name}));
+      return this;
+    },
+
+    function nbsp() {
+      return this.entity('nbsp');
+    },
+
     function cls(/* Value | String */ cls) {
       /* Add a CSS cls to this Element. */
       if ( typeof cls === 'function' ) {
@@ -810,7 +820,7 @@ CLASS({
     },
 
     function enableCls(cls, enabled, opt_negate) {
-      /* Enable/disable a CSS class based on a dynamic value. */
+      /* Enable/disable a CSS class based on a boolean-ish dynamic value. */
       function negate(a, b) { return b ? ! a : a; }
 
       if ( typeof enabled === 'function' ) {
@@ -922,7 +932,7 @@ CLASS({
 
       if ( es.length ) {
         for ( var i = 0 ; i < es.length ; i++ ) {
-          if ( foam.u2.Element.isInstance(es[i]) )
+          if ( foam.u2.Element.isInstance(es[i]) || this.Entity.isInstance(es[i]) )
             es[i].parentNode = this;
           else if ( es[i].toHTML ) {
             // NOP, remove with U1
@@ -995,7 +1005,7 @@ CLASS({
             buf.push(o);
           } else if ( typeof o === 'number' ) {
             buf.push(o);
-          } else if ( X.foam.u2.Element.isInstance(o) ) {
+          } else if ( X.foam.u2.Element.isInstance(o) || self.Entity.isInstance(o) ) {
             o.output(f);
           } else {
             if ( o && o.toView_ ) o = o.toView_();
@@ -1313,6 +1323,7 @@ CLASS({
 
     function a() { return this.add.apply(this, arguments); },
     function c() { return this.cls.apply(this, arguments); },
+    function d() { return this.enableCls.apply(this, arguments); },
     function e() { return this.end(); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
     function i(id) { return this.setID(id); },

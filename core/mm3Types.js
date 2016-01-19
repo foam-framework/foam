@@ -1466,3 +1466,17 @@ CLASS({
     },
   ]
 });
+
+CLASS({
+  name: 'EnumProperty',
+  extends: 'Property',
+  properties: [
+    {
+      name: 'enum'
+    },
+    {
+      name: 'toPropertyE',
+      defaultValue: function(X) { return X.lookup('foam.u2.EnumView').create(null, X); }
+    }
+  ]
+});
