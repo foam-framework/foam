@@ -23,7 +23,8 @@ CLASS({
 
   requires: [
     'foam.u2.DefaultValidator',
-    'foam.u2.ElementValue'
+    'foam.u2.ElementValue',
+    'foam.u2.Entity'
   ],
 
   imports: [
@@ -786,6 +787,15 @@ CLASS({
       return this;
     },
 
+    function entity(name) {
+      this.add(this.Entity.create({name: name}));
+      return this;
+    },
+
+    function nbsp() {
+      return this.entity('nbsp');
+    },
+
     function cls(/* Value | String */ cls) {
       /* Add a CSS cls to this Element. */
       if ( typeof cls === 'function' ) {
@@ -922,7 +932,7 @@ CLASS({
 
       if ( es.length ) {
         for ( var i = 0 ; i < es.length ; i++ ) {
-          if ( foam.u2.Element.isInstance(es[i]) )
+          if ( foam.u2.Element.isInstance(es[i]) || this.Entity.isInstance(es[i]) )
             es[i].parentNode = this;
           else if ( es[i].toHTML ) {
             // NOP, remove with U1
@@ -995,7 +1005,7 @@ CLASS({
             buf.push(o);
           } else if ( typeof o === 'number' ) {
             buf.push(o);
-          } else if ( X.foam.u2.Element.isInstance(o) ) {
+          } else if ( X.foam.u2.Element.isInstance(o) || self.Entity.isInstance(o) ) {
             o.output(f);
           } else {
             if ( o && o.toView_ ) o = o.toView_();
