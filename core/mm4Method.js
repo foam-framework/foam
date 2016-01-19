@@ -868,7 +868,8 @@ var args = this.args;
 var swiftReturnType = this.swiftReturnType;
 while (extendsModel) {
   extendsModel = model.X.lookup(extendsModel);
-  var method = extendsModel.methods.filter(filter);
+  var method = extendsModel.methods.filter(filter).concat(
+      extendsModel.listeners.filter(filter));
   method = method.length > 0 && method[0];
   override = override || method ? 'override' : '';
   args = method && method.args || args;
@@ -907,6 +908,13 @@ if ( i != args.length - 1 ) { %>, <% }
 %>) -> <%= swiftReturnType %> {
 <%= this.swiftCode %>
   }
+<% } %>
+<% if ( this.swiftCode && !override && args.length == 0 ) { %>
+    lazy var <%= name %>Listener_: PropertyChangeListener = {
+      return PropertyChangeListener(callback: { _, _, _, _ in
+        self.`<%= name %>`()
+      })
+    }()
 <% } %>*/}
     },
     {

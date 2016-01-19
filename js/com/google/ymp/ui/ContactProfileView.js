@@ -45,7 +45,7 @@ CLASS({
       }
     },
     {
-      type: 'ArrayProperty',
+      type: 'Array',
       subType: 'com.google.ymp.ui.ContactRow',
       name: 'contacts',
       toPropertyE: function(X) {

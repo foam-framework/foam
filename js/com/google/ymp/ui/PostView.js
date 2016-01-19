@@ -41,7 +41,7 @@ CLASS({
       }
     },
     {
-      type: 'DAO',
+      type: 'foam.core.types.DAO',
       name: 'replies',
       toPropertyE: 'foam.u2.DAOListView',
     },
