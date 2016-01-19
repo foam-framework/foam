@@ -57,7 +57,9 @@ E('b').add(
   'bold',
   E('br'),
   '<span style="color:red">HTML Injection Attempt</span>',
-  E('br')).write();
+  E('br'),
+  'foo'
+  ).nbsp().entity('amp').add('bar').write();
 
 E('b').add(
   'color: ',
