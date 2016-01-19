@@ -810,7 +810,7 @@ CLASS({
     },
 
     function enableCls(cls, enabled, opt_negate) {
-      /* Enable/disable a CSS class based on a dynamic value. */
+      /* Enable/disable a CSS class based on a boolean-ish dynamic value. */
       function negate(a, b) { return b ? ! a : a; }
 
       if ( typeof enabled === 'function' ) {
