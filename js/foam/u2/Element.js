@@ -68,7 +68,7 @@ CLASS({
     // Initial State of an Element
     INITIAL: {
       output: function(out) {
-        this.initE(this.Y);
+        this.initE();
         this.output_(out);
         this.state = this.OUTPUT;
         return out;
