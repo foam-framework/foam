@@ -27,6 +27,23 @@ CLASS({
     'document',
   ],
 
+  properties: [
+    {
+      type: 'Boolean',
+      name: 'inline',
+      defaultValue: false,
+      attribute: true,
+    },
+    {
+      type: 'Boolean',
+      name: 'showLabel',
+      attribute: true,
+      defaultValueFn: function() {
+        return !this.inline;
+      }
+    },
+  ],
+
   listeners: [
     {
       name: 'onClick',
@@ -57,19 +74,26 @@ CLASS({
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        margin: 24px 16px 8px;
+        margin: 8px 16px;
         padding: 8px 0;
         position: relative;
+      }
+      ^.show-label {
+        margin-top: 24px;
       }
 
       ^label {
         color: #999;
+        display: none;
         flex-grow: 1;
         font-size: 85%;
         font-weight: 500;
         position: absolute;
         top: -8px;
         z-index: 0;
+      }
+      ^.show-label ^label {
+        display: block;
       }
 
       ^value {
@@ -84,7 +108,7 @@ CLASS({
       }
     */},
     function initE() {/*#U2
-      <div class="^" onClick="onClick">
+      <div class="^" class.show-label={{this.showLabel$}} onClick="onClick">
         <label class="^label">{{this.label$}}</label>
         <div class="^value">{{this.text$}}</div>
         <svg class="^down-arrow" width="12px" height="12px" viewBox="0 0 48 48">
