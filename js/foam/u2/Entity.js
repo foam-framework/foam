@@ -22,7 +22,12 @@ CLASS({
 
   documentation: 'Virtual-DOM Entity.',
 
-  properties: [ 'name' ],
+  properties: [
+    {
+      name: 'name',
+      regex: /^[a-z]\w*$/i
+    }
+  ],
 
   methods: [
     function output(out) { out('&', this.name, ';'); }
