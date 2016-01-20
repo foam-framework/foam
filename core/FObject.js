@@ -591,6 +591,13 @@ var FObject = {
         }; })(setter, prop.adapt);
       }
 
+      if ( prop.regex ) {
+        setter = (function(setter, name, regex) { return function regexValidator(oldValue, newValue) {
+          if ( ! ( newValue && ( typeof newValue === 'string' ) && newValue.match(regex) ) ) throw 'Invalid Property value for "' + name + '", "' + newValue + '" violates regex: ' + regex; 
+          setter.call(this, oldValue, newValue);
+        }; })(setter, prop.name, prop.regex);
+      }
+
       setter = (function(setter, defaultValue) { return function setInstanceVar(newValue) {
         setter.call(this, typeof this.instance_[name] === 'undefined' ? defaultValue : this.instance_[name], newValue);
       }; })(setter, prop.defaultValue);

@@ -511,6 +511,10 @@ GLOBAL.Property = {
       */}
     },
     {
+      name: 'regex',
+      labels: ['javascript'],
+    },
+    {
       name: 'validate',
       type: 'Function',
       labels: ['javascript'],
