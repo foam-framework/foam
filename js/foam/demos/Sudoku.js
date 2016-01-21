@@ -26,16 +26,12 @@ CLASS({
       properties: [
         {
           name: 'value',
-          preSet: function(_, v) { return v || ''; },
+          adapt: function(_, v) { return v || ''; },
           displayWidth: 1
         }
       ],
       templates: [
-        function toE() {/*#U2
-          <span class="^" x:data={{this}}>
-            <:value/>
-          </span>
-        */}
+        function toE() {/*#U2 <span x:data={{this}}><:value/></span>*/}
       ]
     }
   ],
