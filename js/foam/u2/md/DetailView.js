@@ -20,6 +20,10 @@ CLASS({
   name: 'DetailView',
   extends: 'foam.u2.View',
 
+  traits: [
+    'foam.u2.md.MDViewOverridesTrait'
+  ],
+
   requires: [
     'foam.u2.PropertyView',
     'foam.u2.RelationshipView',
@@ -66,13 +70,6 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.Y.registerModel(this.Checkbox, 'foam.u2.tag.Checkbox');
-      this.Y.registerModel(this.TextField, 'foam.u2.TextField');
-      this.Y.registerModel(this.MultiLineTextField, 'foam.u2.MultiLineTextField');
-      this.Y.registerModel(this.Select, 'foam.u2.tag.Select');
-      this.SUPER();
-    },
     function initE() {
       this.cls(this.myCls()).
       add(this.dynamic(function(model, properties) {

@@ -41,6 +41,9 @@ CLASS({
       return model;
     },
     function generate(model) {
+      if ( model.swiftSource ) {
+        return model.swiftSource();
+      }
       return this.swiftSource.call(this.prepModel(model), undefined, this);
     },
     function genDetailView(model) {
