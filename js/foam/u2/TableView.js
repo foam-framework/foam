@@ -290,11 +290,7 @@ console.log('props: ', props);
         this.headRowE = this.E('flex-table-row').cls(this.myCls('row')).add(
             props.map(this.makeHeadCell.bind(this)));
 
-        // TODO(braden): This introduces a visible lag, where it renders and
-        // then updates the sizes immediately after.
-        // Find a better way to run something after this new value lands in the
-        // DOM.
-        this.setTimeout(this.onResize, 100);
+        this.onResize();
         return this.headRowE;
       }.bind(this), this.data$, this.columnProperties_$, this.sortOrder$));
 
@@ -361,7 +357,11 @@ console.log('props: ', props);
       return this.rowView(map, Y);
     },
     function onResize() {
-      this.computeColWidths();
+      if (this.headRowE && this.headRowE.state === this.headRowE.LOADED) {
+        this.computeColWidths();
+      } else {
+        this.headRowE.on('load', this.computeColWidths.bind(this));
+      }
     }
   ],
 
