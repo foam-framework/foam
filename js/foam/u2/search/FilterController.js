@@ -24,10 +24,10 @@ CLASS({
   ],
 
   requires: [
-    'foam.u2.TextField',
     'foam.u2.md.Card',
     'foam.u2.md.Select',
     'foam.u2.md.TableView',
+    'foam.u2.md.TextField',
     'foam.u2.search.GroupBySearchView',
     'foam.u2.search.SearchMgr',
     'foam.u2.search.TextSearchView'
@@ -77,6 +77,9 @@ CLASS({
     {
       name: 'filterChoice',
       label: 'New Filter',
+      lazyFactory: function() {
+        return this.defaultFilter;
+      }
     },
     {
       name: 'title',
@@ -186,16 +189,15 @@ CLASS({
         key: view.name,
         prop: prop
       }).add(view);
+      var card = this.Card.create({ padding: false }).style({
+        'margin-bottom': '0'
+      }).add(filterView);
 
-      this.searchViews[view.name] = filterView;
+      this.searchViews[view.name] = card;
       return filterView;
     },
     function renderFilter(key) {
-      var card = this.Card.create({
-        padding: false
-      });
-      card.add(this.searchViews[key]).style({ 'margin-bottom': '0' });
-      this.filtersE_.add(card);
+      this.filtersE_.add(this.searchViews[key]);
     },
     function addFilter_(name) {
       var highestCount = 0;
@@ -207,6 +209,16 @@ CLASS({
       var key = name + (highestCount === 0 ? '' : '_' + (+highestCount + 1));
       this.searchFields = this.searchFields.pushF(key);
       return key;
+    },
+    function addFilter(name, opt_value) {
+      var key = this.addFilter_(name);
+      if (opt_value) {
+        // TODO(braden): This is a terrible hack added for expediency. The
+        // correct answer should be to supply this value in the context to the
+        // inner TextSearchView or similar. That ran into problems with putting
+        // the FilterView in the context of the action in its element.
+        this.searchViews[key].children[0].bodyE.children[0].view.data = opt_value;
+      }
     },
     function removeFilter(key) {
       // Need to count them up, looking for the right one.
@@ -237,7 +249,7 @@ CLASS({
       code: function() { this.searchMgr.clear(); }
     },
     {
-      name: 'addFilter',
+      name: 'newFilter',
       code: function() {
         this.addFilter_(this.filterChoice);
       }
@@ -322,7 +334,7 @@ CLASS({
                   return !DateProperty.isInstance(prop) && !prop.hidden;
                 }).map(function(prop) { return [prop.name, prop.label]; }) }) }}
               </div>
-              <self:addFilter />
+              <self:newFilter />
             </div>
             <div class="^count">
               <div class="^count-text">
@@ -342,7 +354,11 @@ CLASS({
           </div>
         </div>
         <div class="^results">
-          {{this.TableView.create({ data: this.filteredDAO$Proxy, editColumnsEnabled: true })}}
+          {{this.TableView.create({
+            data: this.filteredDAO$Proxy,
+            editColumnsEnabled: true,
+            title$: this.title$,
+          })}}
         </div>
       </div>
 
