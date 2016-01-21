@@ -60,9 +60,21 @@ CLASS({
         if ( ! this.columnProperties )
           this.columnProperties_ = this.getColumnProperties_();
 
-        this.allProperties_ = model.getRuntimeProperties().filter(function(p) {
-          return ! p.hidden;
-        });
+        var allProps = [];
+        var columnProps = {};
+        for (var i = 0; i < this.columnProperties_.length; i++) {
+          columnProps[this.columnProperties_[i].name] = true;
+          allProps.push(this.columnProperties_[i]);
+        }
+
+        var props = model.getRuntimeProperties();
+
+        for (var i = 0; i < props.length; i++) {
+          if (props[i].hidden || columnProps[props[i].name]) continue;
+          allProps.push(props[i]);
+        }
+
+        this.allProperties_ = allProps;
       }
     },
     {
@@ -283,18 +295,12 @@ CLASS({
       this.headE.add(this.dynamic(function(dao, props) {
         if ( ! dao ) return 'set dao';
 
-console.log('props: ', props);
-
         // TODO(braden): Find a way to remove the old listeners, or confirm that
         // it's already happening properly.
         this.headRowE = this.E('flex-table-row').cls(this.myCls('row')).add(
             props.map(this.makeHeadCell.bind(this)));
 
-        // TODO(braden): This introduces a visible lag, where it renders and
-        // then updates the sizes immediately after.
-        // Find a better way to run something after this new value lands in the
-        // DOM.
-        this.setTimeout(this.onResize, 100);
+        this.onResize();
         return this.headRowE;
       }.bind(this), this.data$, this.columnProperties_$, this.sortOrder$));
 
@@ -361,7 +367,11 @@ console.log('props: ', props);
       return this.rowView(map, Y);
     },
     function onResize() {
-      this.computeColWidths();
+      if (this.headRowE && this.headRowE.state === this.headRowE.LOADED) {
+        this.computeColWidths();
+      } else {
+        this.headRowE.on('load', this.computeColWidths.bind(this));
+      }
     }
   ],
 

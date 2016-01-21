@@ -20,18 +20,23 @@ CLASS({
   name: 'EnumValue',
   properties: [
     {
+      type: 'String',
       name: 'name'
     },
     {
-      name: 'constant'
-    },
-    {
+      type: 'String',
       name: 'description',
     },
     {
       name: 'value'
     },
     {
+      name: 'swiftValue',
+      labels: ['swift'],
+      defaultValueFn: function() { return this.value },
+    },
+    {
+      type: 'String',
       name: 'label'
     }
   ]

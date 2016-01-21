@@ -230,7 +230,7 @@ CLASS({
       // TODO(braden): This sucks and needs fixing.
       if (!e) return;
 
-      this.delegate_.el() = e.el().offsetTop - this.vMargin;
+      this.delegate_.el().scrollTop = e.el().offsetTop - this.vMargin;
     },
   ],
 
