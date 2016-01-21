@@ -564,6 +564,8 @@ MODEL({
       <br>
       <b>timer: </b> <timer:SECOND/> <timer:STOP/> <timer:START/> <br/>
 
+      &lt; &amp; &gt;
+
       <br>
       {{ E('i').add('italic') }}
       <br/>
