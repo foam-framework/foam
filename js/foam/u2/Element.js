@@ -1325,6 +1325,7 @@ CLASS({
     function c() { return this.cls.apply(this, arguments); },
     function d() { return this.enableCls.apply(this, arguments); },
     function e() { return this.end(); },
+    function f(e) { return this.entity(e); },
     function g(opt_nodeName) { return this.tag(opt_nodeName); },
     function i(id) { return this.setID(id); },
     function n(nodeName) { this.nodeName = nodeName; return this; },

@@ -59,7 +59,7 @@ CLASS({
         }
         e.output(out, true, isInit);
         this.reset();
-        var prefix = isInit ? 'function(){var X=this.x,s=[];' : 'function(X){X=X||this.X;var s=[];' ;
+        var prefix = isInit ? 'function(){var X=this.X,s=[];' : 'function(X){X=X||this.X;var s=[];' ;
         return prefix + output.join('') + ';return ' + e.as + ';}';
       },
 
@@ -77,6 +77,7 @@ CLASS({
         sym('code'),
         sym('child'),
         sym('comment'),
+        sym('entity'),
         sym('text'),
         sym('endTag'),
         sym('startTag')),
@@ -145,7 +146,11 @@ CLASS({
         alt(range('a','z'), range('A','Z'), '$', '_'),
         str(repeat(alt(range('a','z'), range('A', 'Z'), '$', '_', range('0', '9')))))),
 
-      text: str(plus(not(alt('<', '{{', '(('), anyChar))),
+      entity: sym('entity_'),
+
+      entity_: seq('&', alphaChar, repeat(wordChar), ';'),
+
+      text: str(plus(not(alt('<', '{{', '((', sym('entity_')), anyChar))),
 
       if: seq1(1, 'if=', sym('ifExpr')),
 
@@ -261,6 +266,10 @@ CLASS({
       },
       attribute: function(xs) { this.peek().attributes[xs[0]] = xs[1]; },
       xattribute: function(xs) { this.peek().xattributes[xs[1]] = xs[2]; },
+      entity: function(a) {
+        var entity = a[1] + a[2].join('');
+        this.peek().children.push({entity: entity});
+      },
       text: function(t) {
         if ( ! this.peek() ) return; // TODO: Or add an implicit Element
         // trim leading and trailing whitespace and replace with a single space
@@ -354,7 +363,11 @@ CLASS({
                 if ( outputting ) out(')');
                 c.output(out);
                 outputting = false;
-              } else if ( c.code ) {
+              } else if ( c.entity ) {
+                if ( outputting ) out(')');
+                out(".entity('", c.entity, "')");
+                outputting = false;
+              }  else if ( c.code ) {
                 if ( outputting ) out(')');
                 out('.p(s);', c.code, 's[0]');
                 outputting = false;
