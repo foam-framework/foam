@@ -60,9 +60,21 @@ CLASS({
         if ( ! this.columnProperties )
           this.columnProperties_ = this.getColumnProperties_();
 
-        this.allProperties_ = model.getRuntimeProperties().filter(function(p) {
-          return ! p.hidden;
-        });
+        var allProps = [];
+        var columnProps = {};
+        for (var i = 0; i < this.columnProperties_.length; i++) {
+          columnProps[this.columnProperties_[i].name] = true;
+          allProps.push[this.columnProperties_[i]];
+        }
+
+        var props = model.getRuntimeProperties();
+
+        for (var i = 0; i < props.length; i++) {
+          if (props[i].hidden || columnProps[props[i].name]) continue;
+          allProps.push(props[i]);
+        }
+
+        this.allProperties_ = allProps;
       }
     },
     {
