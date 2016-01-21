@@ -64,7 +64,7 @@ CLASS({
         var columnProps = {};
         for (var i = 0; i < this.columnProperties_.length; i++) {
           columnProps[this.columnProperties_[i].name] = true;
-          allProps.push[this.columnProperties_[i]];
+          allProps.push(this.columnProperties_[i]);
         }
 
         var props = model.getRuntimeProperties();
@@ -294,8 +294,6 @@ CLASS({
       // producing an array of elements is not supported right now.
       this.headE.add(this.dynamic(function(dao, props) {
         if ( ! dao ) return 'set dao';
-
-console.log('props: ', props);
 
         // TODO(braden): Find a way to remove the old listeners, or confirm that
         // it's already happening properly.
