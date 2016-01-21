@@ -157,6 +157,10 @@ function literal_ic(str, opt_value) {
   return f;
 }
 
+var alphaChar    = alt(range('a','z'), range('A', 'Z'));
+var alphaNumChar = alt(alphaChar, range('0', '9'));
+var wordChar     = alt(alphaNumChar, '_');
+
 function anyChar(ps) {
   return ps.head ? ps.tail/*.setValue(ps.head)*/ : undefined;
 }
