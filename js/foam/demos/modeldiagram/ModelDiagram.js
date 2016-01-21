@@ -208,9 +208,9 @@ var p = this.Person.create({
         { name: 'Grid View', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="border:1px solid;max-height:510px" width="35%" src="./js/foam/demos/modeldiagram/WarpedGrid.png">'; }, initHTML: function() { }}; } },
         { name: 'Query' },
         { name: 'Local Store' },
-        { name: 'IndexedDB' },
         { name: 'ClientDAO' },
         { name: 'ServerDAO' },
+        { name: 'IndexedDB' },
         { name: 'Offline' },
         { name: 'FileDAO' },
         { name: 'MongoDB' },
@@ -225,6 +225,79 @@ var p = this.Person.create({
 
       // JS
       fs.forEach(function(f) { feature(f, anim, 0, 0, 0.5); });
+
+      // Adapters
+      anim.push([0]);
+      anim.push([1000, function() {
+        var r = 0;
+        var cs = self.children.clone();
+        for ( var j = 1 ; j < cs.length ; j++ ) {
+          var c = cs[j];
+          if ( self.Box.isInstance(c) ) {
+            c.oldX = c.x;
+            c.oldY = c.y;
+            c.scaleX = 0.45;
+            c.scaleY = 0.45;
+            c.x = 400*Math.cos(r) + 800;
+            c.y = 400*Math.sin(r) + 450;
+            console.log(c.x, c.y);
+            r += 2*Math.PI/30;
+          }
+        }
+      }]);
+
+      var adapters = [];
+
+      anim.push([0]);
+      anim.push(function() {
+        for ( var j = 0 ; j < 100 ; j++ ) {
+          var c = self.Box.create({alpha: 0, title: 'Adapter', x: 800, y: 450, width: 60, height: 60, background: 'red', color: 'white'});
+          adapters.push(c);
+          self.addChildren(c);
+        }
+      });
+
+      anim.push([500, function() {
+        for ( var j = 0 ; j < adapters.length ; j++ ) {
+          var c = adapters[j];
+          var a = Math.random() * Math.PI * 2;
+          var r = Math.sqrt(Math.random()) * 330;
+          c.alpha = 0.5;
+          c.x = r * Math.cos(a) + 800;
+          c.y = r * Math.sin(a) + 450;
+        }
+      }]);
+
+      anim.push([0]);
+      anim.push([500, function() {
+        for ( var j = 0 ; j < adapters.length ; j++ ) {
+          self.removeChild(adapters[j]);
+        }
+        var cs = self.children.clone();
+        for ( var j = 1 ; j < cs.length ; j++ ) {
+          var c = cs[j];
+          if ( self.Box.isInstance(c) ) {
+            c.x = c.oldX;
+            c.y = c.oldY;
+            c.scaleX = c.scaleY = 1;
+          }
+        }
+      }]);
+
+
+      anim.push([0]);
+      anim.push([500, function() {
+        var cs = self.children.clone();
+        for ( var j = 1 ; j < cs.length ; j++ ) {
+          var c = cs[j];
+          if ( self.Box.isInstance(c) ) {
+            c.x = c.oldX;
+            c.y = c.oldY;
+            c.scaleX = c.scaleY = 1;
+          }
+        }
+      }]);
+
 
       // Java
       anim.push([0]);
