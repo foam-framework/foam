@@ -85,6 +85,8 @@ CLASS({
         color: #444;
         flex-grow: 1;
         margin-right: 12px;
+        overflow: hidden;
+        white-space: nowrap;
       }
       ^read-only {
         opacity: 0.54;
