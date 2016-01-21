@@ -36,6 +36,10 @@ CLASS({
     },
 
     function generate(model) {
+      if ( model.javaSource ) {
+        return model.javaSource();
+      }
+
       model = this.prepModel_(model);
 
       var filter = function(m) {

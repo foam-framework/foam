@@ -57,5 +57,19 @@ CLASS({
         this[value.name] = value.value;
       }
     },
+      ],
+  templates: [
+    {
+      name: 'swiftSource',
+      labels: ['swift'],
+      template: function() {/*enum <%= this.name %>
+*/}
+    },
+    {
+      name: 'javaSource',
+      labels: ['java'],
+      template: function() {/*enum <%= this.name %>
+*/}
+    },
   ]
 });
