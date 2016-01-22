@@ -59,7 +59,7 @@ CLASS({
         }
         e.output(out, true, isInit);
         this.reset();
-        var prefix = isInit ? 'function(){var X=this.X,s=[];' : 'function(X){X=X||this.X;var s=[];' ;
+        var prefix = isInit ? 'function(){var X=this.Y,s=[];' : 'function(X){X=X||this.Y;var s=[];' ;
         return prefix + output.join('') + ';return ' + e.as + ';}';
       },
 
