@@ -1472,7 +1472,11 @@ CLASS({
   extends: 'Property',
   properties: [
     {
-      name: 'enum'
+      name: 'enum',
+    },
+    {
+      name: 'choices',
+      swiftType: '[AnyObject]',
     },
     {
       name: 'toPropertyE',
