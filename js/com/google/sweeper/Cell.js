@@ -43,7 +43,7 @@ CLASS({
       factory: function() { return Math.random() < 0.18; }
     }
   ],
-  
+
   methods: [
     function stateClass() {
       return this.dynamic(
@@ -67,7 +67,7 @@ CLASS({
       }
       ^.covered {
         background: #ccc;
-        box-shadow: -2px -2px 10px rgba(0,0,0,.25) inset, 2px 2px 10px white inset;        
+        box-shadow: -2px -2px 10px rgba(0,0,0,.25) inset, 2px 2px 10px white inset;
       }
       ^.marked ^flag {
         display: block;
@@ -80,8 +80,8 @@ CLASS({
     */},
     function initE() {/*#U2
       <span class="^" class={{this.stateClass()}} onclick="sweep" oncontextmenu="mark">
-        <span class="^flag">&#x2691</span>
-        <font if={{this.mined}}>&#x2699</font>
+        <span class="^flag">&#x2691;</span>
+        <font if={{this.mined}}>&#x2699;</font>
         <font if={{!this.mined && this.mineCount}} color={{this.COLOURS[this.mineCount]}}>{{this.mineCount}}</font>
       </span>
     */}
