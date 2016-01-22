@@ -25,6 +25,7 @@ CLASS({
   properties: [
     {
       name: 'name',
+      // parser: seq(alphaChar, repeat0(wordChar)),
       regex: /^[a-z]\w*$/i
     }
   ],
