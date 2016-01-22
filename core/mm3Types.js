@@ -1473,10 +1473,7 @@ CLASS({
   properties: [
     {
       name: 'enum',
-    },
-    {
-      name: 'choices',
-      swiftType: '[AnyObject]',
+      swiftType: 'FoamEnum.Type',
     },
     {
       name: 'toPropertyE',
