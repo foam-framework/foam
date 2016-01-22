@@ -148,7 +148,7 @@ CLASS({
 
       entity: sym('entity_'),
 
-      entity_: seq('&', alphaChar, repeat(wordChar), ';'),
+      entity_: seq('&', alt(alphaChar, '#'), repeat(wordChar), ';'),
 
       text: str(plus(not(alt('<', '{{', '((', sym('entity_')), anyChar))),
 
