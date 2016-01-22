@@ -82,6 +82,35 @@ CLASS({
       }
     },
     {
+      type: 'Array',
+      name: 'filters',
+      documentation: 'Can be set to an array of property names to select ' +
+          'those as the filters. Otherwise, defaults to all non-hidden ' +
+          'properties in alphabetical order by label.',
+      adapt: function(old, nu) {
+        if (nu && nu.length && typeof nu[0] === 'string') {
+          var out = [];
+          for (var i = 0; i < nu.length; i++) {
+            var f = this.model.getFeature(nu[i]);
+            out.push([f.name, f.label]);
+          }
+          return out;
+        }
+
+        return nu;
+      },
+      lazyFactory: function() {
+        var props = this.model.getRuntimeProperties().filter(function(p) {
+          return !p.hidden;
+        });
+        return props.sort(function(a, b) {
+          return a.LABEL.compareProperty(a, b);
+        }).map(function(p) {
+          return [p.name, p.label];
+        });
+      }
+    },
+    {
       name: 'title',
     },
     {
@@ -331,9 +360,11 @@ CLASS({
           <div class="^adding">
             <div class="^add-filter">
               <div class="^add-choice">
-                {{ this.Select.create({ inline: true, data$: this.filterChoice$, choices: this.model.getRuntimeProperties().filter(function(prop) {
-                  return !DateProperty.isInstance(prop) && !prop.hidden;
-                }).map(function(prop) { return [prop.name, prop.label]; }) }) }}
+                {{ this.Select.create({
+                  inline: true,
+                  data$: this.filterChoice$,
+                  choices: this.filters
+                }) }}
               </div>
               <self:newFilter />
             </div>
