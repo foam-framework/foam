@@ -236,43 +236,27 @@ var p = this.Person.create({
           if ( self.Box.isInstance(c) ) {
             c.oldX = c.x;
             c.oldY = c.y;
-            c.scaleX = 0.45;
-            c.scaleY = 0.45;
-            c.x = 400*Math.cos(r) + 800;
-            c.y = 400*Math.sin(r) + 450;
+            c.scaleX = 0.5;
+            c.scaleY = 0.5;
+            c.x = 400*Math.cos(r) + 900 - c.width/4;
+            c.y = 400*Math.sin(r) + 500 - c.height/4;
             console.log(c.x, c.y);
             r += 2*Math.PI/30;
           }
         }
       }]);
 
-      var adapters = [];
-
       anim.push([0]);
-      anim.push(function() {
-        for ( var j = 0 ; j < 100 ; j++ ) {
-          var c = self.Box.create({alpha: 0, title: 'Adapter', x: 800, y: 450, width: 60, height: 60, background: 'red', color: 'white'});
-          adapters.push(c);
-          self.addChildren(c);
-        }
-      });
-
-      anim.push([500, function() {
-        for ( var j = 0 ; j < adapters.length ; j++ ) {
-          var c = adapters[j];
-          var a = Math.random() * Math.PI * 2;
-          var r = Math.sqrt(Math.random()) * 330;
-          c.alpha = 0.5;
-          c.x = r * Math.cos(a) + 800;
-          c.y = r * Math.sin(a) + 450;
-        }
+      var adapter = self.Circle.create({color: 'pink', border: 'gray', x:900, y:500, alpha: 0, radius: 0});
+        self.addChildren(adapter);
+      anim.push([1000, function() {
+        adapter.r = 320;
+        adapter.alpha = 0.35;
       }]);
 
       anim.push([0]);
       anim.push([500, function() {
-        for ( var j = 0 ; j < adapters.length ; j++ ) {
-          self.removeChild(adapters[j]);
-        }
+        self.removeChild(adapter);
         var cs = self.children.clone();
         for ( var j = 1 ; j < cs.length ; j++ ) {
           var c = cs[j];
@@ -285,7 +269,6 @@ var p = this.Person.create({
       }]);
 
 
-      anim.push([0]);
       anim.push([500, function() {
         var cs = self.children.clone();
         for ( var j = 1 ; j < cs.length ; j++ ) {
