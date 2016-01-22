@@ -111,6 +111,13 @@ CLASS({
       }
     },
     {
+      type: 'Boolean',
+      name: 'allowDuplicateFilters',
+      documentation: 'Set this to true to allow having multiple filters on ' +
+          'the same property.',
+      defaultValue: false
+    },
+    {
       name: 'title',
     },
     {
@@ -230,10 +237,14 @@ CLASS({
     },
     function addFilter_(name) {
       var highestCount = 0;
+      var alreadyExists = false;
       for (var i = 0; i < this.searchFields.length; i++) {
         var split = this.splitName(this.searchFields[i]);
         if (split.count > highestCount) highestCount = split.count;
+        if (split.name === name) alreadyExists = true;
       }
+
+      if (alreadyExists && !this.allowDuplicateFilters) return undefined;
 
       var key = name + (highestCount === 0 ? '' : '_' + (+highestCount + 1));
       this.searchFields = this.searchFields.pushF(key);
@@ -241,7 +252,7 @@ CLASS({
     },
     function addFilter(name, opt_value) {
       var key = this.addFilter_(name);
-      if (opt_value) {
+      if (key && opt_value) {
         // TODO(braden): This is a terrible hack added for expediency. The
         // correct answer should be to supply this value in the context to the
         // inner TextSearchView or similar. That ran into problems with putting
