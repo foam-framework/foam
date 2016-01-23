@@ -1,3 +1,33 @@
+var FProto = {
+  name: 'FProto',
+  extends: null,
+  create: function() { return { __proto__: this, instance_: {} } },
+  toString: function() { return 'FProto' + this.model_.name; }
+};
+
+
+MODEL({
+  name: 'FObject',
+  extends: 'FProto',
+
+  properties: [
+    {
+      name: 'model_'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'toString',
+      code: function() { return this.model_.name; }
+    }
+  ],
+
+  axioms: [
+  ]
+});
+
+
 MODEL({
   name: 'Model',
 
@@ -6,7 +36,8 @@ MODEL({
       name: 'name'
     },
     {
-      name: 'extends'
+      name: 'extends',
+      defaultValue: 'FObject'
     },
     {
       type: 'Array',
@@ -17,6 +48,16 @@ MODEL({
       type: 'Array',
       subType: 'Method',
       name: 'methods'
+    },
+    {
+      name: 'proto',
+      // TODO: replace with lazyFactory
+      factory: function() {
+        return {
+          __proto__: FProto,
+          model_: this
+        }
+      }
     }
   ],
 
@@ -24,7 +65,7 @@ MODEL({
     {
       name: 'createPrototype',
       code: function() {
-        
+
       }
     }
   ]
