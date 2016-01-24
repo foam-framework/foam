@@ -62,7 +62,14 @@ MODEL({
     {
       type: 'Array',
       subType: 'Method',
-      name: 'methods'
+      name: 'methods',
+      adaptElement: function(e) {
+        if ( typeof e === 'function' ) {
+          console.assert(e.name, 'Method must be named');
+          return Method.create({name: e.name, code: e});
+        }
+        return e;
+      }
     },
     {
       name: 'proto',
@@ -202,6 +209,16 @@ MODEL({
       name: 'preSet',
       defaultValue: function(_, a) {
         return a.map(function() { return global[this.subType].create(a); });
+      }
+    },
+    {
+      name: 'adaptElement'
+    },
+    {
+      name: 'adapt',
+      defaultValue: function(a) {
+        if ( ! a ) return [];
+        return a.map(this.adaptElement);
       }
     }
   ]
