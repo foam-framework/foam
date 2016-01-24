@@ -30,17 +30,12 @@ function FEATURE_ENABLED(labels) {
 
 var GLOBAL = GLOBAL || this;
 
-Object.defineProperty_ = Object.defineProperty;
-Object.defineProperty = function() {
-  this.defineProperty_.apply(this, arguments);
-};
-
 function MODEL(model) {
   var proto;
 
   function defineProperty(proto, key, map) {
     if ( ! map.value || proto === Object.prototype || proto === Array.prototype )
-      Object.defineProperty_.apply(this, arguments);
+      Object.defineProperty.apply(this, arguments);
     else
       proto[key] = map.value;
   }
@@ -59,12 +54,14 @@ function MODEL(model) {
                                  GLOBAL[model.extendsObject] ;
   }
 
-  if ( model.properties ) for ( var i = 0 ; i < model.properties.length ; i++ ) {
-    var p = model.properties[i];
-    defineProperty(
-      proto,
-      p.name,
-      { get: p.getter, enumerable: false });
+  if ( model.properties ) {
+    for ( var i = 0 ; i < model.properties.length ; i++ ) {
+      var p = model.properties[i];
+      defineProperty(
+        proto,
+        p.name,
+        { get: p.getter, enumerable: false });
+    }
   }
 
   for ( key in model.constants )
