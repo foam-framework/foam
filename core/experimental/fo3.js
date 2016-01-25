@@ -1,31 +1,16 @@
 var global = global || this;
 
 
+var models = [];
 function MODEL(m) {
   global[m.name] = m;
-  // Insert magic here
+
 }
 
 
 MODEL({
-  name: 'FProto',
-  extends: null
-
-  methods: [
-    {
-      name: 'toString',
-      code: function() {
-        // Distinguish between prototypes and Objects.
-        return (this.instance_ ? 'FProto' : '') + this.model_.name;
-      }
-    }
-  ]
-});
-
-
-MODEL({
   name: 'FObject',
-  extends: 'FProto',
+  extends: null,
 
   properties: [
   ],
@@ -33,7 +18,10 @@ MODEL({
   methods: [
     {
       name: 'toString',
-      code: function() { return this.model_.name; }
+      code: function() {
+        // Distinguish between prototypes and instances.
+        return (this.instance_ ? 'FProto' : '') + this.model_.name;
+      }
     }
   ],
 
@@ -72,12 +60,10 @@ MODEL({
     },
     {
       name: 'proto',
-      // TODO: replace with lazyFactory
       factory: function() {
-        return {
-          __proto__: FProto,
-          model_: this
-        }
+        var p = this.extends ? Object.create(global[this.extends.proto]) : {};
+        p.model_ = this;
+        return p;
       }
     }
   ],
@@ -85,7 +71,11 @@ MODEL({
   methods: [
     {
       name: 'create',
-      code: function() { return { __proto__: this, instance_: {} } },
+      code: function() {
+        var obj = Object.create(this);
+        obj.instance_ = {};
+        return obj;
+      }
     }
   ]
 });
@@ -300,4 +290,8 @@ MODEL({
   create: create object then update
   remote create from regular objects or remove from prototypes
   acreate or afromJSON
+
+  TODO:
+  - property overriding
+
 */
