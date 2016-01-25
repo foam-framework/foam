@@ -175,12 +175,9 @@ MODEL({
           }
         }
 
-console.log('*** ', m.name);        
-debugger;
         if ( m.methods ) {
           for ( var j = 0 ; j < m.methods.length ; j++ ) {
             var meth = m.methods[j];
-            console.log('*********************** Adding Method: ', meth.name);
             proto[meth.name] = meth.code;
           }
         }
@@ -343,8 +340,6 @@ for ( var i = 0 ; i < models.length ; i++ ) {
   var m = models[i];
   var proto = global[m.name];
 
-console.log('PASS 1', i, m.name);
-
   if ( m.axioms ) {
     for ( var i = 0 ; j < m.axioms.length ; j++ ) {
       var a = m.axioms[j];
@@ -357,8 +352,6 @@ for ( var i = 0 ; i < models.length.length ; i++ ) {
   var m = models[i];
   var proto = global[m.name];
 
-console.log('PASS 2', i, m.name);
-
   if ( m.methods ) {
     for ( var j = 0 ; i < m.methods ; j++ ) {
       var meth = m.methods[j];
@@ -370,8 +363,6 @@ console.log('PASS 2', i, m.name);
 for ( var i = 0 ; i < models.length ; i++ ) {
   var m = models[i];
   var proto = global[m.name];
-
-console.log('PASS 3', i, m.name);
 
   if ( m.properties ) {
     for ( var j = 0 ; j < m.properties.length ; j++ ) {
@@ -411,4 +402,5 @@ MODEL({
 });
 
 var p = Person.create({name: 'Adam', age: 0});
-console.log(p);
+console.log(p.name, p.age);
+p.sayHello();
