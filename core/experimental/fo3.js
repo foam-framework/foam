@@ -29,7 +29,7 @@ function propertyInstall(proto) {
   var hasDefaultValue = this.hasOwnProperty('defaultValue');
   var defaultValue    = this.defaultValue;
   
-  /* Future
+  /* Future: needs events and slot support first.
      Object.defineProperty(proto, slotName, {
      get: function propSlotGetter() {
      return this.getSlot(name);
@@ -41,7 +41,6 @@ function propertyInstall(proto) {
      });
   */
   
-  console.log('Defining Property ', proto.model_.name, name);
   Object.defineProperty(proto, name, {
     get: function propGetter() {
       if ( getter ) return getter.call(this);
@@ -85,6 +84,7 @@ function propertyInstall(proto) {
 
 
 var FProto = {
+  // Parent of all generated Prototypes
   create: function(args) {
     var obj = Object.create(this);
     obj.instance_ = {};
@@ -99,7 +99,6 @@ var FProto = {
 
 var models = [];
 function MODEL(m) {
-console.log('PASS 0', m.name);
   var proto = Object.create(FProto);
   global[m.name] = proto;
   proto.model_ = m;
@@ -110,6 +109,8 @@ console.log('PASS 0', m.name);
 MODEL({
   name: 'FObject',
   extends: null,
+
+  documentation: 'Base model for model hierarchy.',
 
   properties: [
   ],
@@ -131,6 +132,8 @@ MODEL({
 
 MODEL({
   name: 'Model',
+
+  documentation: 'Class/Prototype description.',
 
   properties: [
     {
@@ -175,6 +178,7 @@ MODEL({
           }
         }
 
+        // TODO: should be covered by .axions above
         if ( m.methods ) {
           for ( var j = 0 ; j < m.methods.length ; j++ ) {
             var meth = m.methods[j];
@@ -182,6 +186,7 @@ MODEL({
           }
         }
         
+        // TODO: should be covered by .axions above
         if ( m.properties ) {
           for ( var j = 0 ; j < m.properties.length ; j++ ) {
             var p = m.properties[j];
@@ -214,12 +219,17 @@ MODEL({
     },
     {
       name: 'preSet'
+    },
+    {
+      name: 'expression'
+      // TODO: not implemented
     }
   ],
 
   methods: [
     {
       name: 'install',
+      // TODO: can this be installed with axioms:
       code: propertyInstall
     }
   ]
@@ -336,6 +346,8 @@ MODEL({
 */
 
 
+// Bootstrap Prototypes
+
 for ( var i = 0 ; i < models.length ; i++ ) {
   var m = models[i];
   var proto = global[m.name];
@@ -380,8 +392,10 @@ MODEL = function(m) {
   return proto;
 }
 
+var CLASS = MODEL;
 
-MODEL({
+
+CLASS({
   name: 'Person',
 
   properties: [
