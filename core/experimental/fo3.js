@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
+
 function propertyInstall(proto) {
+  /* Install a property onto a prototype from a Property definition (Property is 'this'). */
   proto[constantize(this.name)] = this;
 
   var name            = this.name;
@@ -97,7 +99,11 @@ var FProto = {
 };
 
 
+// Temporary collection of models to be updated later.
 var models = [];
+
+// Bootstrap Model definition which just creates place-holder prototypes
+// which are then patched later.
 function MODEL(m) {
   var proto = Object.create(FProto);
   global[m.name] = proto;
@@ -124,6 +130,10 @@ MODEL({
       }
     }
   ],
+
+  // TODO: insert core/FObject.js functionality
+
+  // TODO: insert EventService and PropertyChangeSupport here
 
   axioms: [
   ]
