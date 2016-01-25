@@ -13,12 +13,11 @@ MODEL({
 
   methods: [
     {
-      name: 'create',
-      code: function() { return { __proto__: this, instance_: {} } },
-    },
-    {
       name: 'toString',
-      code: function() { return 'FProto' + this.model_.name; }
+      code: function() {
+        // Distinguish between prototypes and Objects.
+        return (this.instance_ ? 'FProto' : '') + this.model_.name;
+      }
     }
   ]
 });
@@ -84,14 +83,10 @@ MODEL({
   ],
 
   methods: [
-    /*
     {
-      name: 'createPrototype',
-      code: function() {
-
-      }
+      name: 'create',
+      code: function() { return { __proto__: this, instance_: {} } },
     }
-    */
   ]
 });
 
