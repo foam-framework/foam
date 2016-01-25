@@ -16,11 +16,38 @@
  */
 var global = global || this;
 
+// Minimal Stdlib, to be replaced
+
+function memoize1(f) {
+  /** Faster version of memoize() when only dealing with one argument. **/
+  var cache = {};
+  var g = function(arg) {
+    var key = arg ? arg.toString() : '';
+    if ( ! cache.hasOwnProperty(key) ) cache[key] = f.call(this, arg);
+    return cache[key];
+  };
+  g.name = f.name;
+  return g;
+}
+
+var constantize = memoize1(function(str) {
+  // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
+  // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X and this.Y.
+  if ( str === 'x' ) return 'X_';
+  if ( str === 'y' ) return 'Y_';
+  if ( str === '$' ) return '$_';
+  return str.replace(/[a-z][^0-9a-z_]/g, function(a) {
+    return a.substring(0,1) + '_' + a.substring(1,2);
+  }).toUpperCase();
+});
+
+// End of Stdlib
+
 
 var models = [];
 function MODEL(m) {
-  global[m.name] = m;
-
+  global[m.name] = {};
+  models.push(m);
 }
 
 
@@ -120,15 +147,9 @@ MODEL({
 
   methods: [
     {
-      name: 'installInModel',
-      code: function(model) {
-        model[constantize(this.name)] = this;
-      }
-    },
-    {
-      name: 'installInProto',
+      name: 'install',
       code: function(proto) {
-        this.installInModel(proto);
+        proto[constantize(this.name)] = this;
 
         var name            = prop.name;
         var slotName        = name + '$';
@@ -212,7 +233,7 @@ MODEL({
 
   methods: [
     {
-      name: 'installInProto',
+      name: 'install',
       code: function(proto) {
         proto[this.name] = this.code;
       }
@@ -235,15 +256,9 @@ MODEL({
 
   methods: [
     {
-      name: 'installInModel',
-      code: function(model) {
-        model[constantize(this.name)] = this.value;
-      }
-    },
-    {
-      name: 'installInProto',
+      name: 'install',
       code: function(proto) {
-        this.installInModel(proto);
+        proto[constantize(this.name)] = this.value;
       }
     }
   ]
@@ -311,3 +326,38 @@ MODEL({
   - property overriding
 
 */
+
+
+for ( var i = 0 ; i < models.length ; i++ ) {
+  var m = models[i];
+  var proto = global[m.name];
+
+  if ( m.axioms ) {
+    for ( var i = 0 ; i < m.axioms ; i++ ) {
+      var a = m.axioms[i];
+      a.install.call(a, proto);
+    }
+  }
+}
+
+for ( var i = 0 ; i < models.length ; i++ ) {
+  var m = models[i];
+  var proto = global[m.name];
+  if ( m.methods ) {
+    for ( var i = 0 ; i < m.methods ; i++ ) {
+      var meth = m.methods[i];
+      proto[meth.name] = meth.code;
+    }
+  }
+}
+
+for ( var i = 0 ; i < models.length ; i++ ) {
+  var m = models[i];
+  var proto = global[m.name];
+  if ( m.properties ) {
+    for ( var i = 0 ; i < m.properties ; i++ ) {
+      var p = m.properties[i];
+      Property.install.call(p, proto);
+    }
+  }
+}
