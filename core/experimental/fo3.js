@@ -119,7 +119,13 @@ MODEL({
 
   methods: [
     {
-      name: 'install',
+      name: 'installInModel',
+      function(model) {
+        model[constantize(this.name)] = this;
+      }
+    },
+    {
+      name: 'installInProto',
       function() {
         // TODO:
       }
@@ -142,7 +148,7 @@ MODEL({
 
   methods: [
     {
-      name: 'install',
+      name: 'installInProto',
       function(proto) {
         proto[this.name] = this.code;
       }
@@ -165,9 +171,15 @@ MODEL({
 
   methods: [
     {
-      name: 'install',
+      name: 'installInModel',
+      function(model) {
+        model[constantize(this.name)] = this.value;
+      }
+    },
+    {
+      name: 'installInProto',
       function(proto) {
-        proto[this.name] = this.value;
+        this.installInModel(proto);
       }
     }
   ]
@@ -224,28 +236,6 @@ MODEL({
   ]
 });
 
-
-MODEL({
-  name: 'Method',
-
-  properties: [
-    {
-      name: 'name'
-    },
-    {
-      name: 'code'
-    }
-  ],
-
-  methods: [
-    {
-      name: 'install',
-      function() {
-        // TODO:
-      }
-    }
-  ]
-});
 
 
 /*
