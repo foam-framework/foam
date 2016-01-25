@@ -63,7 +63,10 @@ CLASS({
 
   listeners: [
     function close() {
-      if ( this.opened ) this.remove();
+      if ( this.opened ) {
+        this.remove();
+        this.opened = false;
+      }
     },
     function onTimeout() {
       if ( this.document.previousTooltip_ !== this ) return;
