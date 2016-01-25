@@ -15,76 +15,6 @@
  * limitations under the License.
  */
 
-
-function propertyInstall(proto) {
-  /* Install a property onto a prototype from a Property definition (Property is 'this'). */
-  proto[constantize(this.name)] = this;
-
-  var name            = this.name;
-  var slotName        = name + '$';
-  var adapt           = this.adapt
-  var preSet          = this.preSet;
-  var postSet         = this.postSet;
-  var getter          = this.getter;
-  var setter          = this.setter;
-  var factory         = this.factory;
-  var hasDefaultValue = this.hasOwnProperty('defaultValue');
-  var defaultValue    = this.defaultValue;
-  
-  /* Future: needs events and slot support first.
-     Object.defineProperty(proto, slotName, {
-     get: function propSlotGetter() {
-     return this.getSlot(name);
-     },
-     set: function propSlotSetter(value) {
-     value.link.link(this.getSlot(name));
-     },
-     configurable: true
-     });
-  */
-  
-  Object.defineProperty(proto, name, {
-    get: function propGetter() {
-      if ( getter ) return getter.call(this);
-      
-      if ( ( hasDefaultValue || factory ) &&
-           ! this.instance_.hasOwnProperty(name) )
-      {
-        if ( hasDefaultValue ) return defaultValue;
-        
-        var value = factory.call(this);
-        this.instance_[name] = value;
-        return value;
-      }
-      
-      return this.instance_[name];
-    },
-    set: function propSetter(newValue) {
-      if ( setter ) {
-        setter.call(this, newValue);
-        return;
-      }
-      
-      // TODO: add logic to not trigger factory
-      var oldValue = this[name];
-      
-      if ( adapt )  newValue = adapt.call(this, oldValue, newValue);
-      
-      if ( preSet ) newValue = preSet.call(this, oldValue, newValue);
-      
-      this.instance_[name] = newValue;
-      
-      // TODO: fire property change event
-      
-      // TODO: call global setter
-      
-      if ( postSet ) postSet.call(this, oldValue, newValue);
-    },
-    configurable: true
-  });
-}
-
-
 var FProto = {
   // Parent of all generated Prototypes
   create: function(args) {
@@ -108,6 +38,21 @@ function MODEL(m) {
   var proto = Object.create(FProto);
   global[m.name] = proto;
   proto.model_ = m;
+
+  if ( m.axioms ) {
+    for ( var i = 0 ; i < m.axioms.length ; i++ ) {
+      var a = m.axioms[i];
+      a.install.call(a, proto);
+    }
+  }
+
+  if ( m.methods ) {
+    for ( var i = 0 ; i < m.methods.length ; i++ ) {
+      var meth = m.methods[i];
+      proto[meth.name] = meth.code;
+    }
+  }
+
   models.push(m);
 }
 
@@ -200,7 +145,7 @@ MODEL({
         if ( m.properties ) {
           for ( var j = 0 ; j < m.properties.length ; j++ ) {
             var p = m.properties[j];
-            propertyInstall.call(p, proto);
+            Property.install.call(p, proto);
           }
         }
 
@@ -239,8 +184,76 @@ MODEL({
   methods: [
     {
       name: 'install',
-      // TODO: can this be installed with axioms:
-      code: propertyInstall
+      code: function(proto) {
+        /*
+          Install a property onto a prototype from a Property definition.
+          (Property is 'this').
+        */
+        proto[constantize(this.name)] = this;
+
+        var name            = this.name;
+        var adapt           = this.adapt
+        var preSet          = this.preSet;
+        var postSet         = this.postSet;
+        var getter          = this.getter;
+        var setter          = this.setter;
+        var factory         = this.factory;
+        var hasDefaultValue = this.hasOwnProperty('defaultValue');
+        var defaultValue    = this.defaultValue;
+        
+        /* Future: needs events and slot support first.
+           var slotName        = name + '$';
+           Object.defineProperty(proto, slotName, {
+           get: function propSlotGetter() {
+           return this.getSlot(name);
+           },
+           set: function propSlotSetter(value) {
+           value.link.link(this.getSlot(name));
+           },
+           configurable: true
+           });
+        */
+        
+        Object.defineProperty(proto, name, {
+          get: function propGetter() {
+            if ( getter ) return getter.call(this);
+            
+            if ( ( hasDefaultValue || factory ) &&
+                 ! this.instance_.hasOwnProperty(name) )
+            {
+              if ( hasDefaultValue ) return defaultValue;
+              
+              var value = factory.call(this);
+              this.instance_[name] = value;
+              return value;
+            }
+            
+            return this.instance_[name];
+          },
+          set: function propSetter(newValue) {
+            if ( setter ) {
+              setter.call(this, newValue);
+              return;
+            }
+            
+            // TODO: add logic to not trigger factory
+            var oldValue = this[name];
+            
+            if ( adapt )  newValue = adapt.call(this, oldValue, newValue);
+            
+            if ( preSet ) newValue = preSet.call(this, oldValue, newValue);
+            
+            this.instance_[name] = newValue;
+            
+            // TODO: fire property change event
+            
+            // TODO: call global setter
+            
+            if ( postSet ) postSet.call(this, oldValue, newValue);
+          },
+          configurable: true
+        });
+      }
     }
   ]
 });
@@ -362,34 +375,10 @@ for ( var i = 0 ; i < models.length ; i++ ) {
   var m = models[i];
   var proto = global[m.name];
 
-  if ( m.axioms ) {
-    for ( var i = 0 ; j < m.axioms.length ; j++ ) {
-      var a = m.axioms[j];
-      a.install.call(a, proto);
-    }
-  }
-}
-
-for ( var i = 0 ; i < models.length.length ; i++ ) {
-  var m = models[i];
-  var proto = global[m.name];
-
-  if ( m.methods ) {
-    for ( var j = 0 ; i < m.methods ; j++ ) {
-      var meth = m.methods[j];
-      proto[meth.name] = meth.code;
-    }
-  }
-}
-
-for ( var i = 0 ; i < models.length ; i++ ) {
-  var m = models[i];
-  var proto = global[m.name];
-
   if ( m.properties ) {
     for ( var j = 0 ; j < m.properties.length ; j++ ) {
       var p = m.properties[j];
-      propertyInstall.call(p, proto);
+      Property.install.call(p, proto);
     }
   }
 }
