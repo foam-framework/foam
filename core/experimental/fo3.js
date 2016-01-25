@@ -164,19 +164,23 @@ MODEL({
       name: 'proto',
       factory: function() {
         var proto = this.extends ? Object.create(global[this.extends]) : {};
+        var m     = this;
 
         proto.model_ = this;
 
         if ( m.axioms ) {
-          for ( var i = 0 ; j < m.axioms.length ; j++ ) {
+          for ( var j = 0 ; j < m.axioms.length ; j++ ) {
             var a = m.axioms[j];
             a.install.call(a, proto);
           }
         }
-        
+
+console.log('*** ', m.name);        
+debugger;
         if ( m.methods ) {
-          for ( var j = 0 ; i < m.methods.length ; j++ ) {
+          for ( var j = 0 ; j < m.methods.length ; j++ ) {
             var meth = m.methods[j];
+            console.log('*********************** Adding Method: ', meth.name);
             proto[meth.name] = meth.code;
           }
         }
@@ -191,9 +195,6 @@ MODEL({
         return proto;
       }
     }
-  ],
-
-  methods: [
   ]
 });
 
