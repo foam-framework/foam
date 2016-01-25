@@ -126,8 +126,71 @@ MODEL({
     },
     {
       name: 'installInProto',
-      function() {
-        // TODO:
+      function(proto) {
+        this.installInModel(proto);
+
+        var name            = prop.name;
+        var slotName        = name + '$';
+        var adapt           = this.adapt
+        var preSet          = this.preSet;
+        var postSet         = this.postSet;
+        var getter          = this.getter;
+        var setter          = this.setter;
+        var factory         = this.factory;
+        var hasDefaultValue = this.hasOwnProperty('defaultValue');
+        var defaultValue    = this.defaultValue;
+
+        /* Future
+        Object.defineProperty(proto, slotName, {
+          get: function propSlotGetter() {
+            return this.getSlot(name);
+          },
+          set: function propSlotSetter(value) {
+            value.link.link(this.getSlot(name));
+          },
+          configurable: true
+        });
+        */
+
+        Object.defineProperty(proto, name, {
+          get: function propGetter() {
+            if ( getter ) return getter.call(this);
+
+            if ( ( hasDefaultValue || factory ) &&
+                 ! this.instance_.hasOwnProperty(name) )
+            {
+              if ( hasDefaultValue ) return defaultValue;
+
+              var value = factory.call(this);
+              this.instance_[name] = value;
+              return value;
+            }
+
+            return this.instance_[name];
+          },
+          set: function propSetter(newValue) {
+            if ( setter ) {
+              setter.call(this, newValue);
+              return;
+            }
+
+            // TODO: add logic to not trigger factory
+            var oldValue = this[name];
+
+            if ( adapt )  newValue = adapt.call(this, oldValue, newValue);
+
+            if ( preSet ) newValue = preSet.call(this, oldValue, newValue);
+
+            this.instance_[name] = newValue;
+
+            // TODO: fire property change event
+
+            // TODO: call global setter
+
+            if ( postSet ) postSet.call(this, oldValue, newValue);
+          },
+          configurable: true
+        });
       }
     }
   ]
