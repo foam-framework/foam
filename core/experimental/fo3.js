@@ -121,13 +121,13 @@ MODEL({
   methods: [
     {
       name: 'installInModel',
-      function(model) {
+      code: function(model) {
         model[constantize(this.name)] = this;
       }
     },
     {
       name: 'installInProto',
-      function(proto) {
+      code: function(proto) {
         this.installInModel(proto);
 
         var name            = prop.name;
@@ -213,7 +213,7 @@ MODEL({
   methods: [
     {
       name: 'installInProto',
-      function(proto) {
+      code: function(proto) {
         proto[this.name] = this.code;
       }
     }
@@ -236,13 +236,13 @@ MODEL({
   methods: [
     {
       name: 'installInModel',
-      function(model) {
+      code: function(model) {
         model[constantize(this.name)] = this.value;
       }
     },
     {
       name: 'installInProto',
-      function(proto) {
+      code: function(proto) {
         this.installInModel(proto);
       }
     }
