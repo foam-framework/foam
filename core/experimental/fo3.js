@@ -14,39 +14,95 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var global = global || this;
 
-// Minimal Stdlib, to be replaced
+function propertyInstall(proto) {
+  proto[constantize(this.name)] = this;
 
-function memoize1(f) {
-  /** Faster version of memoize() when only dealing with one argument. **/
-  var cache = {};
-  var g = function(arg) {
-    var key = arg ? arg.toString() : '';
-    if ( ! cache.hasOwnProperty(key) ) cache[key] = f.call(this, arg);
-    return cache[key];
-  };
-  g.name = f.name;
-  return g;
+  var name            = this.name;
+  var slotName        = name + '$';
+  var adapt           = this.adapt
+  var preSet          = this.preSet;
+  var postSet         = this.postSet;
+  var getter          = this.getter;
+  var setter          = this.setter;
+  var factory         = this.factory;
+  var hasDefaultValue = this.hasOwnProperty('defaultValue');
+  var defaultValue    = this.defaultValue;
+  
+  /* Future
+     Object.defineProperty(proto, slotName, {
+     get: function propSlotGetter() {
+     return this.getSlot(name);
+     },
+     set: function propSlotSetter(value) {
+     value.link.link(this.getSlot(name));
+     },
+     configurable: true
+     });
+  */
+  
+  console.log('Defining Property ', proto.model_.name, name);
+  Object.defineProperty(proto, name, {
+    get: function propGetter() {
+      if ( getter ) return getter.call(this);
+      
+      if ( ( hasDefaultValue || factory ) &&
+           ! this.instance_.hasOwnProperty(name) )
+      {
+        if ( hasDefaultValue ) return defaultValue;
+        
+        var value = factory.call(this);
+        this.instance_[name] = value;
+        return value;
+      }
+      
+      return this.instance_[name];
+    },
+    set: function propSetter(newValue) {
+      if ( setter ) {
+        setter.call(this, newValue);
+        return;
+      }
+      
+      // TODO: add logic to not trigger factory
+      var oldValue = this[name];
+      
+      if ( adapt )  newValue = adapt.call(this, oldValue, newValue);
+      
+      if ( preSet ) newValue = preSet.call(this, oldValue, newValue);
+      
+      this.instance_[name] = newValue;
+      
+      // TODO: fire property change event
+      
+      // TODO: call global setter
+      
+      if ( postSet ) postSet.call(this, oldValue, newValue);
+    },
+    configurable: true
+  });
 }
 
-var constantize = memoize1(function(str) {
-  // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
-  // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X and this.Y.
-  if ( str === 'x' ) return 'X_';
-  if ( str === 'y' ) return 'Y_';
-  if ( str === '$' ) return '$_';
-  return str.replace(/[a-z][^0-9a-z_]/g, function(a) {
-    return a.substring(0,1) + '_' + a.substring(1,2);
-  }).toUpperCase();
-});
 
-// End of Stdlib
+var FProto = {
+  create: function(args) {
+    var obj = Object.create(this);
+    obj.instance_ = {};
+
+    // TODO: lookup if valid method names
+    for ( var key in args ) obj[key] = args[key];
+
+    return obj;
+  }
+};
 
 
 var models = [];
 function MODEL(m) {
-  global[m.name] = {};
+console.log('PASS 0', m.name);
+  var proto = Object.create(FProto);
+  global[m.name] = proto;
+  proto.model_ = m;
   models.push(m);
 }
 
@@ -87,7 +143,10 @@ MODEL({
     {
       type: 'Array',
       subType: 'Property',
-      name: 'properties'
+      name: 'properties'/*,
+      adapt: function(_, ps) {
+        
+      }*/
     },
     {
       type: 'Array',
@@ -104,22 +163,37 @@ MODEL({
     {
       name: 'proto',
       factory: function() {
-        var p = this.extends ? Object.create(global[this.extends.proto]) : {};
-        p.model_ = this;
-        return p;
+        var proto = this.extends ? Object.create(global[this.extends]) : {};
+
+        proto.model_ = this;
+
+        if ( m.axioms ) {
+          for ( var i = 0 ; j < m.axioms.length ; j++ ) {
+            var a = m.axioms[j];
+            a.install.call(a, proto);
+          }
+        }
+        
+        if ( m.methods ) {
+          for ( var j = 0 ; i < m.methods.length ; j++ ) {
+            var meth = m.methods[j];
+            proto[meth.name] = meth.code;
+          }
+        }
+        
+        if ( m.properties ) {
+          for ( var j = 0 ; j < m.properties.length ; j++ ) {
+            var p = m.properties[j];
+            propertyInstall.call(p, proto);
+          }
+        }
+
+        return proto;
       }
     }
   ],
 
   methods: [
-    {
-      name: 'create',
-      code: function() {
-        var obj = Object.create(this);
-        obj.instance_ = {};
-        return obj;
-      }
-    }
   ]
 });
 
@@ -148,72 +222,7 @@ MODEL({
   methods: [
     {
       name: 'install',
-      code: function(proto) {
-        proto[constantize(this.name)] = this;
-
-        var name            = prop.name;
-        var slotName        = name + '$';
-        var adapt           = this.adapt
-        var preSet          = this.preSet;
-        var postSet         = this.postSet;
-        var getter          = this.getter;
-        var setter          = this.setter;
-        var factory         = this.factory;
-        var hasDefaultValue = this.hasOwnProperty('defaultValue');
-        var defaultValue    = this.defaultValue;
-
-        /* Future
-        Object.defineProperty(proto, slotName, {
-          get: function propSlotGetter() {
-            return this.getSlot(name);
-          },
-          set: function propSlotSetter(value) {
-            value.link.link(this.getSlot(name));
-          },
-          configurable: true
-        });
-        */
-
-        Object.defineProperty(proto, name, {
-          get: function propGetter() {
-            if ( getter ) return getter.call(this);
-
-            if ( ( hasDefaultValue || factory ) &&
-                 ! this.instance_.hasOwnProperty(name) )
-            {
-              if ( hasDefaultValue ) return defaultValue;
-
-              var value = factory.call(this);
-              this.instance_[name] = value;
-              return value;
-            }
-
-            return this.instance_[name];
-          },
-          set: function propSetter(newValue) {
-            if ( setter ) {
-              setter.call(this, newValue);
-              return;
-            }
-
-            // TODO: add logic to not trigger factory
-            var oldValue = this[name];
-
-            if ( adapt )  newValue = adapt.call(this, oldValue, newValue);
-
-            if ( preSet ) newValue = preSet.call(this, oldValue, newValue);
-
-            this.instance_[name] = newValue;
-
-            // TODO: fire property change event
-
-            // TODO: call global setter
-
-            if ( postSet ) postSet.call(this, oldValue, newValue);
-          },
-          configurable: true
-        });
-      }
+      code: propertyInstall
     }
   ]
 });
@@ -299,6 +308,7 @@ MODEL({
     {
       name: 'preSet',
       defaultValue: function(_, a) {
+        // TODO: loop for performance
         return a.map(function() { return global[this.subType].create(a); });
       }
     },
@@ -332,20 +342,25 @@ for ( var i = 0 ; i < models.length ; i++ ) {
   var m = models[i];
   var proto = global[m.name];
 
+console.log('PASS 1', i, m.name);
+
   if ( m.axioms ) {
-    for ( var i = 0 ; i < m.axioms ; i++ ) {
-      var a = m.axioms[i];
+    for ( var i = 0 ; j < m.axioms.length ; j++ ) {
+      var a = m.axioms[j];
       a.install.call(a, proto);
     }
   }
 }
 
-for ( var i = 0 ; i < models.length ; i++ ) {
+for ( var i = 0 ; i < models.length.length ; i++ ) {
   var m = models[i];
   var proto = global[m.name];
+
+console.log('PASS 2', i, m.name);
+
   if ( m.methods ) {
-    for ( var i = 0 ; i < m.methods ; i++ ) {
-      var meth = m.methods[i];
+    for ( var j = 0 ; i < m.methods ; j++ ) {
+      var meth = m.methods[j];
       proto[meth.name] = meth.code;
     }
   }
@@ -354,10 +369,45 @@ for ( var i = 0 ; i < models.length ; i++ ) {
 for ( var i = 0 ; i < models.length ; i++ ) {
   var m = models[i];
   var proto = global[m.name];
+
+console.log('PASS 3', i, m.name);
+
   if ( m.properties ) {
-    for ( var i = 0 ; i < m.properties ; i++ ) {
-      var p = m.properties[i];
-      Property.install.call(p, proto);
+    for ( var j = 0 ; j < m.properties.length ; j++ ) {
+      var p = m.properties[j];
+      propertyInstall.call(p, proto);
     }
   }
 }
+
+
+MODEL = function(m) {
+  var model = Model.create(m);
+  var proto = model.proto;
+  global[m.name] = proto;
+  return proto;
+}
+
+
+MODEL({
+  name: 'Person',
+
+  properties: [
+    {
+      name: 'name'
+    },
+    {
+      name: 'age'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'sayHello',
+      code: function() { console.log('Hello World!'); }
+    }      
+  ]
+});
+
+var p = Person.create({name: 'Adam', age: 0});
+console.log(p);
