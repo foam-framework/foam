@@ -16,7 +16,7 @@
  */
 
 var FProto = {
-  // Parent of all generated Prototypes
+  // Parent of all generated Prototypes.
   create: function(args) {
     var obj = Object.create(this);
     obj.instance_ = {};
@@ -177,7 +177,7 @@ MODEL({
     },
     {
       name: 'expression'
-      // TODO: not implemented
+      // TODO: implement
     }
   ],
 
@@ -393,6 +393,12 @@ MODEL = function(m) {
 
 var CLASS = MODEL;
 
+delete models;
+
+// End of Bootstrap
+
+
+// Test:
 
 CLASS({
   name: 'Person',
@@ -417,3 +423,4 @@ CLASS({
 var p = Person.create({name: 'Adam', age: 0});
 console.log(p.name, p.age);
 p.sayHello();
+
