@@ -15,28 +15,19 @@
  * limitations under the License.
  */
 
-var FProto = {
-  // Parent of all generated Prototypes.
-  create: function(args) {
-    var obj = Object.create(this);
-    obj.instance_ = {};
-
-    // TODO: lookup if valid method names
-    for ( var key in args ) obj[key] = args[key];
-
-    return obj;
-  }
-};
-
-
 // Temporary collection of models to be updated later.
 var models = [];
 
 // Bootstrap Model definition which just creates place-holder prototypes
 // which are then patched later.
 function MODEL(m) {
-  var proto = Object.create(FProto);
-  global[m.name] = proto;
+  var proto = global[m.name];
+
+  if ( ! proto ) {
+    proto = m.extends ? Object.create(global[m.extends]) : {};
+    global[m.name] = proto;
+  }
+
   proto.model_ = m;
 
   if ( m.axioms ) {
@@ -68,10 +59,22 @@ MODEL({
 
   methods: [
     {
+      name: 'create',
+      code: function(args) {
+        var obj = Object.create(this);
+        obj.instance_ = {};
+        
+        // TODO: lookup if valid method names
+        for ( var key in args ) obj[key] = args[key];
+        
+        return obj;
+      }
+    },
+    {
       name: 'toString',
       code: function() {
         // Distinguish between prototypes and instances.
-        return (this.instance_ ? 'FProto' : '') + this.model_.name;
+        return (this.instance_ ? 'FOAMProto' : '') + this.model_.name;
       }
     }
   ],
@@ -87,6 +90,7 @@ MODEL({
 
 MODEL({
   name: 'Model',
+  extends: 'FObject',
 
   documentation: 'Class/Prototype description.',
 
@@ -97,6 +101,14 @@ MODEL({
     {
       name: 'extends',
       defaultValue: 'FObject'
+    },
+    {
+      type: 'Array',
+      subType: 'Constant',
+      name: 'constants',
+      adapt: function(_, cs) {
+        // TODO:
+      }
     },
     {
       type: 'Array',
@@ -344,9 +356,6 @@ MODEL({
       }
     },
     {
-      name: 'adaptElement'
-    },
-    {
       name: 'adapt',
       defaultValue: function(a) {
         if ( ! a ) return [];
@@ -383,6 +392,30 @@ for ( var i = 0 ; i < models.length ; i++ ) {
   }
 }
 
+/*
+for ( var i = 0 ; i < models.length ; i++ ) {
+  var m = models[i];
+  var proto = global[m.name];
+
+  if ( m.properties ) {
+    for ( var j = 0 ; j < m.properties.length ; j++ ) {
+      var p = m.properties[j];
+      if ( p.type ) {
+        var propType = global[p.type + 'Property'];
+        if ( propType ) {
+          console.log('Updating: ', p.type);
+          propType.install.call(p, proto);
+        } else {
+          console.warn('Unknow Property type: ', p.type);
+        }
+      }
+    }
+  }
+}
+*/
+
+delete models;
+
 
 MODEL = function(m) {
   var model = Model.create(m);
@@ -393,8 +426,6 @@ MODEL = function(m) {
 
 var CLASS = MODEL;
 
-delete models;
-
 // End of Bootstrap
 
 
@@ -402,6 +433,13 @@ delete models;
 
 CLASS({
   name: 'Person',
+
+  constants: [
+    {
+      name: 'KEY',
+      value: 'value'
+    }
+  ],
 
   properties: [
     {
