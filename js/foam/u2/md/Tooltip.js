@@ -77,6 +77,7 @@ CLASS({
     function onTimeout() {
       if ( this.document.previousTooltip_ !== this ) return;
       if ( this.closed ) return;
+      if ( ! this.target || ! this.target.el() ) return;
 
       var oldTips = this.document.getElementsByClassName(this.myCls());
       for (var i = 0; i < oldTips.length; i++) {
