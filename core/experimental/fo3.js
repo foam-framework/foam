@@ -107,9 +107,7 @@ var Bootstrap = {
   },
 
   end: function() {
-    // Finish Bootstrap
     Bootstrap.updateModels();
-    delete Bootstrap;
 
     global.CLASS = global.MODEL = function(m) {
       var model = Model.create(m);
@@ -411,6 +409,7 @@ MODEL({
 });
 
 Bootstrap.end();
+Bootstrap = null;
 
 
 MODEL({
