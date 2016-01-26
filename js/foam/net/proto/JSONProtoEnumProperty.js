@@ -19,7 +19,17 @@ CLASS({
   name: 'JSONProtoEnumProperty',
   extends: 'IntProperty',
   traits: [
-    'foam.core.types.EnumPropertyTrait',
     'foam.net.proto.JSONProtoPropertyTrait',
   ],
+  properties: [
+    {
+      name: 'enum',
+    },
+    {
+      name: 'toPropertyE',
+      defaultValue: function(X) {
+        return X.lookup('foam.u2.EnumView').create(null, X);
+      }
+    },
+  ]
 });
