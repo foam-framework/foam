@@ -18,9 +18,8 @@
 // Temporary collection of models to be updated later.
 var models = [];
 
-// Bootstrap Model definition which just creates place-holder prototypes
-// which are then patched later.
-function MODEL(m) {
+function protoFactory(m) {
+  /* Create or Update a Prototype from a psedo-Model definition. */
   var proto = global[m.name];
 
   if ( ! proto ) {
@@ -53,6 +52,15 @@ function MODEL(m) {
     }
   }
 
+  return proto;
+}
+
+
+// Bootstrap Model definition which records incomplete models
+// so they can be patched at the end of the bootstrap process.
+function MODEL(m) {
+  console.log('Bootstrap: Creating Prototype: ', m.name);
+  protoFactory(m);
   models.push(m);
 }
 
@@ -91,9 +99,6 @@ MODEL({
   // TODO: insert core/FObject.js functionality
 
   // TODO: insert EventService and PropertyChangeSupport here
-
-  axioms: [
-  ]
 });
 
 
@@ -112,7 +117,7 @@ MODEL({
       defaultValue: 'FObject'
     },
     {
-      type: 'Array',
+      // type: 'Array',
       name: 'axioms',
       factory: function() { return []; }
     },
@@ -139,39 +144,7 @@ MODEL({
     },
     {
       name: 'proto',
-      factory: function() {
-        var proto = this.extends ? Object.create(global[this.extends]) : {};
-        var m     = this;
-
-        proto.model_ = this;
-
-        if ( m.axioms ) {
-          for ( var j = 0 ; j < m.axioms.length ; j++ ) {
-            var a = m.axioms[j];
-            a.install && a.install.call(a, proto);
-          }
-        }
-
-        // TODO: should be covered by .axioms above
-        if ( m.methods ) {
-          for ( var j = 0 ; j < m.methods.length ; j++ ) {
-            var meth = m.methods[j];
-            proto[meth.name] = meth.code;
-          }
-        }
-
-        // TODO: should be covered by .axioms above
-        if ( m.properties ) {
-          for ( var j = 0 ; j < m.properties.length ; j++ ) {
-            var p = m.properties[j];
-            var t = p.type ? global[p.type + 'Property'] : Property;
-            var prop = t.create(p);
-            prop.install(proto);
-          }
-        }
-
-        return proto;
-      }
+      factory: function() { return protoFactory(this); }
     }
   ]
 });
@@ -183,10 +156,10 @@ MODEL({
 
   properties: [
     {
-      name: 'type'
+      name: 'name'
     },
     {
-      name: 'name'
+      name: 'type'
     },
     {
       name: 'defaultValue'
@@ -195,7 +168,13 @@ MODEL({
       name: 'factory'
     },
     {
+      name: 'adapt'
+    },
+    {
       name: 'preSet'
+    },
+    {
+      name: 'postSet'
     },
     {
       name: 'expression'
@@ -298,31 +277,7 @@ MODEL({
   methods: [
     {
       name: 'install',
-      code: function(proto) {
-        proto[this.name] = this.code;
-      }
-    }
-  ]
-});
-
-
-MODEL({
-  name: 'Constant',
-  extends: 'FObject', // This line shouldn't be needed.
-
-  properties: [
-    {
-      name: 'name'
-    },
-    {
-      name: 'value'
-    }
-  ],
-
-  methods: [
-    {
-      name: 'install',
-      code: function(proto) { proto[constantize(this.name)] = this.value; }
+      code: function(proto) { proto[this.name] = this.code; }
     }
   ]
 });
@@ -444,6 +399,37 @@ for ( var i = 0 ; i < models.length ; i++ ) {
 
 delete models;
 
+var CLASS = MODEL = function(m) {
+  var model = Model.create(m);
+  var proto = model.proto;
+  global[m.name] = proto;
+  return proto;
+}
+
+
+// End of Bootstrap
+
+MODEL({
+  name: 'Constant',
+  extends: 'FObject', // This line shouldn't be needed.
+
+  properties: [
+    {
+      name: 'name'
+    },
+    {
+      name: 'value'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'install',
+      code: function(proto) { proto[constantize(this.name)] = this.value; }
+    }
+  ]
+});
+
 MODEL({
   name: 'Model',
 
@@ -456,18 +442,6 @@ MODEL({
   ]
 });
 
-
-var CLASS = MODEL = function(m) {
-  var model = Model.create(m);
-  var proto = model.proto;
-  global[m.name] = proto;
-  return proto;
-}
-
-// End of Bootstrap
-
-
-console.timeEnd('b0');
 
 // Test:
 
