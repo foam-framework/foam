@@ -127,9 +127,6 @@ MODEL({
 
   documentation: 'Base model for model hierarchy.',
 
-  properties: [
-  ],
-
   methods: [
     {
       name: 'create',
@@ -147,7 +144,7 @@ MODEL({
       name: 'toString',
       code: function() {
         // Distinguish between prototypes and instances.
-        return this.model_.name + (this.instance_ ? 'Obj' : 'Proto')
+        return this.model_.name + (this.instance_ ? '' : 'Proto')
       }
     }
   ],
@@ -190,9 +187,13 @@ MODEL({
       type: 'Array',
       subType: 'Method',
       name: 'methods',
+      // TODO: this shouldn't be needed
+      adapt: function(_, a, prop) {
+        if ( ! a ) return [];
+        return a.map(prop.adaptArrayElement.bind(prop));
+      },
       adaptArrayElement: function(e) {
         if ( typeof e === 'function' ) {
-          debugger;
           console.assert(e.name, 'Method must be named');
           return Method.create({name: e.name, code: e});
         }
@@ -472,14 +473,14 @@ CLASS({
       name: 'sayHello',
       code: function() { console.log('Hello World!'); }
     },
-    function sayGoodbye() { console.log('Goodbye from ', this.name); }
+    function sayGoodbye() { console.log('Goodbye from ' + this.name); }
   ]
 });
 
 var p = Person.create({name: 'Adam', age: 0});
 console.log(p.name, p.age, p.KEY);
 p.sayHello();
-//p.sayGoodbye();
+p.sayGoodbye();
 
 
 /*
