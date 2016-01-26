@@ -28,7 +28,7 @@ function MODEL(m) {
     global[m.name] = proto;
   }
 
-  proto.model_ = m;
+  if ( ! proto.model_ ) proto.model_ = m;
 
   if ( m.axioms ) {
     for ( var i = 0 ; i < m.axioms.length ; i++ ) {
@@ -41,6 +41,13 @@ function MODEL(m) {
     for ( var i = 0 ; i < m.methods.length ; i++ ) {
       var meth = m.methods[i];
       proto[meth.name] = meth.code;
+    }
+  }
+
+  if ( global.Property && m.properties ) {
+    for ( var i = 0 ; i < m.properties.length ; i++ ) {
+      var p = m.properties[i];
+      Property.install.call(p, proto);
     }
   }
 
@@ -74,7 +81,7 @@ MODEL({
       name: 'toString',
       code: function() {
         // Distinguish between prototypes and instances.
-        return (this.instance_ ? 'FOAMProto' : '') + this.model_.name;
+        return this.model_.name + (this.instance_ ? 'Obj' : 'Proto')
       }
     }
   ],
@@ -104,11 +111,8 @@ MODEL({
     },
     {
       type: 'Array',
-      subType: 'Constant',
-      name: 'constants',
-      adapt: function(_, cs) {
-        // TODO:
-      }
+      name: 'axioms',
+      factory: function() { return []; }
     },
     {
       type: 'Array',
@@ -296,6 +300,7 @@ MODEL({
 
 MODEL({
   name: 'Constant',
+  extends: 'FObject', // This line shouldn't be needed.
 
   properties: [
     {
@@ -351,8 +356,11 @@ MODEL({
     {
       name: 'preSet',
       defaultValue: function(_, a) {
+        var proto = global[this.subType];
         // TODO: loop for performance
-        return a.map(function() { return global[this.subType].create(a); });
+        return a.map(function(p) {
+          console.log('*** Updating: ', p);
+return proto.create(p); });
       }
     },
     {
@@ -392,7 +400,6 @@ for ( var i = 0 ; i < models.length ; i++ ) {
   }
 }
 
-/*
 for ( var i = 0 ; i < models.length ; i++ ) {
   var m = models[i];
   var proto = global[m.name];
@@ -403,7 +410,7 @@ for ( var i = 0 ; i < models.length ; i++ ) {
       if ( p.type ) {
         var propType = global[p.type + 'Property'];
         if ( propType ) {
-          console.log('Updating: ', p.type);
+          console.log('Updating: ', i, m.name, p.name, p.type);
           propType.install.call(p, proto);
         } else {
           console.warn('Unknow Property type: ', p.type);
@@ -412,9 +419,27 @@ for ( var i = 0 ; i < models.length ; i++ ) {
     }
   }
 }
-*/
 
 delete models;
+
+
+MODEL({
+  name: 'Model',
+
+  properties: [
+    {
+      type: 'Array', // TODO: Make a AxiomArray type
+      subType: 'Constant',
+      name: 'constants',
+      adapt: function(_, a) {
+        return a.map(function(c) { return Constant.create(c); });
+      },
+      postSet: function(_, a) {
+        this.axioms.push.apply(this.axioms, a);
+      }
+    }
+  ]
+});
 
 
 MODEL = function(m) {
