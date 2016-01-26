@@ -63,10 +63,10 @@ MODEL({
       code: function(args) {
         var obj = Object.create(this);
         obj.instance_ = {};
-        
+
         // TODO: lookup if valid method names
         for ( var key in args ) obj[key] = args[key];
-        
+
         return obj;
       }
     },
@@ -90,7 +90,7 @@ MODEL({
 
 MODEL({
   name: 'Model',
-  extends: 'FObject',
+  extends: 'FObject', // Don't remove, isn't the default yet.
 
   documentation: 'Class/Prototype description.',
 
@@ -115,7 +115,7 @@ MODEL({
       subType: 'Property',
       name: 'properties'/*,
       adapt: function(_, ps) {
-        
+
       }*/
     },
     {
@@ -145,15 +145,15 @@ MODEL({
           }
         }
 
-        // TODO: should be covered by .axions above
+        // TODO: should be covered by .axioms above
         if ( m.methods ) {
           for ( var j = 0 ; j < m.methods.length ; j++ ) {
             var meth = m.methods[j];
             proto[meth.name] = meth.code;
           }
         }
-        
-        // TODO: should be covered by .axions above
+
+        // TODO: should be covered by .axioms above
         if ( m.properties ) {
           for ( var j = 0 ; j < m.properties.length ; j++ ) {
             var p = m.properties[j];
@@ -212,7 +212,7 @@ MODEL({
         var factory         = this.factory;
         var hasDefaultValue = this.hasOwnProperty('defaultValue');
         var defaultValue    = this.defaultValue;
-        
+
         /* Future: needs events and slot support first.
            var slotName        = name + '$';
            Object.defineProperty(proto, slotName, {
@@ -225,21 +225,21 @@ MODEL({
            configurable: true
            });
         */
-        
+
         Object.defineProperty(proto, name, {
           get: function propGetter() {
             if ( getter ) return getter.call(this);
-            
+
             if ( ( hasDefaultValue || factory ) &&
                  ! this.instance_.hasOwnProperty(name) )
             {
               if ( hasDefaultValue ) return defaultValue;
-              
+
               var value = factory.call(this);
               this.instance_[name] = value;
               return value;
             }
-            
+
             return this.instance_[name];
           },
           set: function propSetter(newValue) {
@@ -247,20 +247,20 @@ MODEL({
               setter.call(this, newValue);
               return;
             }
-            
+
             // TODO: add logic to not trigger factory
             var oldValue = this[name];
-            
+
             if ( adapt )  newValue = adapt.call(this, oldValue, newValue);
-            
+
             if ( preSet ) newValue = preSet.call(this, oldValue, newValue);
-            
+
             this.instance_[name] = newValue;
-            
+
             // TODO: fire property change event
-            
+
             // TODO: call global setter
-            
+
             if ( postSet ) postSet.call(this, oldValue, newValue);
           },
           configurable: true
@@ -454,11 +454,10 @@ CLASS({
     {
       name: 'sayHello',
       code: function() { console.log('Hello World!'); }
-    }      
+    }
   ]
 });
 
 var p = Person.create({name: 'Adam', age: 0});
 console.log(p.name, p.age);
 p.sayHello();
-
