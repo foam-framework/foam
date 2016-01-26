@@ -168,6 +168,7 @@ GLOBAL.Property = {
     {
       name: 'javaType',
       type: 'String',
+      labels: ['compiletime', 'java'],
       required: false,
       defaultValueFn: function() { return this.type; },
       help: 'The java type that represents the type of this property.',
@@ -177,6 +178,7 @@ GLOBAL.Property = {
     {
       name: 'javascriptType',
       type: 'String',
+      labels: ['compiletime', 'javascript'],
       required: false,
       defaultValueFn: function() { return this.type; },
       help: 'The javascript type that represents the type of this property.',
@@ -187,7 +189,7 @@ GLOBAL.Property = {
       name: 'swiftType',
       type: 'String',
       required: false,
-      labels: ['swift'],
+      labels: ['compiletime', 'swift'],
       defaultValue: 'AnyObject?',
       help: 'The Swift type that represents this type of property.',
     },
@@ -400,7 +402,7 @@ GLOBAL.Property = {
     {
       name: 'swiftView',
       type: 'String',
-      labels: ['swift'],
+      labels: ['compiletime', 'swift'],
       defaultValueFn: function() { return this.view.substring(this.view.lastIndexOf('.')+1); },
       help: 'The default view name for this property in swift.'
     },
@@ -430,6 +432,7 @@ GLOBAL.Property = {
       name: 'defaultValue',
       type: 'String',
       required: false,
+      labels: ['javascript'],
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
@@ -552,6 +555,23 @@ GLOBAL.Property = {
         of this object. They will be passed in when the validate() function is
         run. Return an error string if validation fails.
       */}
+    },
+    {
+      name: 'swiftValidate',
+      swiftType: 'FoamFunction?',
+      labels: ['swift'],
+      preSet: function(_, f) {
+        if (typeof f !== "function") return f;
+        var str = f.toString();
+        var deps = str.
+          match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+          split(',').
+          map(function(name) { return name.trim(); });
+        return {
+          code: multiline(f),
+          deps: deps,
+        };
+      },
     },
     {
       name: 'javaAdapt',
@@ -747,6 +767,11 @@ GLOBAL.Property = {
           This $$DOC{ref:'.help'} text informs end users how to use the $$DOC{ref:'Property'},
           through field labels or tooltips.
         */}
+    },
+    {
+      name: 'helpTranslationHint',
+      type: 'String',
+      help: 'The translation hint for the help property.',
     },
     DocumentationBootstrap,
     {
