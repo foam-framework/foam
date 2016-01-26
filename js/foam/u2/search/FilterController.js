@@ -446,8 +446,6 @@ CLASS({
           }
           ^header {
             align-items: center;
-            background-color: #DB4437;
-            color: #fff;
             display: flex;
             flex-shrink: 0;
             font-size: 16px;
@@ -483,6 +481,8 @@ CLASS({
           this.cls(this.myCls()).cls(this.myCls('container'));
           this.start('div')
               .cls(this.myCls('header'))
+              // The standard MD header colours class, so the toolbar matches.
+              .cls('foam-u2-md-toolbar-colors')
               .start()
                   .cls(this.myCls('label'))
                   .add(this.prop.label)

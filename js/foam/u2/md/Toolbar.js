@@ -71,7 +71,7 @@ CLASS({
 
   templates: [
     function initE() {/*#U2
-      <toolbar class="^">
+      <toolbar class="^ .foam-u2-md-toolbar-colors">
         <actions class="^actions ^left">{{this.leftActionButtons_$}}</actions>
         <header class="^title">{{this.title$}}</header>
         <actions class="^actions ^right">{{this.rightActionButtons_$}}</actions>
@@ -80,8 +80,6 @@ CLASS({
     function CSS() {/*
       ^ {
         align-items: center;
-        background-color: #3e50b4;
-        color: #fff;
         display: flex;
         flex-shrink: 0;
         flex-grow: 0;

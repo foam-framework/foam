@@ -312,6 +312,34 @@ function INTERFACE(imodel) {
   NONMODEL_INSTANCES[id] = true;
 }
 
+// For non-CLASS modeled things, like Enums.
+function __DATA(obj) {
+  var package = obj.package ?
+      obj.package :
+      obj.id.substring(0, obj.id.lastIndexOf('.'));
+
+  var name = obj.name ?
+      obj.name :
+      obj.id.substring(obj.id.lastIndexOf('.') + 1);
+
+  var path = packagePath(X, package);
+
+  var triggered  = false;
+
+  Object.defineProperty(path, name, {
+    get: function triggerDataLatch() {
+      if ( triggered ) return null;
+      triggered = true;
+
+      var object = JSONUtil.mapToObj(X, obj);
+
+      X.registerModel(object);
+
+      return object;
+    },
+    configurable: true
+  });
+}
 
 /** Called when a Model is registered. **/
 function onRegisterModel(m) {

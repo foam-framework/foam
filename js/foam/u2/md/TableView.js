@@ -22,6 +22,7 @@ CLASS({
     'foam.u2.md.ActionButton',
     'foam.u2.md.EditColumnsView',
     'foam.u2.md.OverlayDropdown',
+    'foam.u2.md.Tooltip',
     // TODO(braden): Port Icon to U2.
     'foam.ui.Icon',
   ],
@@ -146,6 +147,25 @@ CLASS({
 
       this.SUPER();
       this.cls(this.myCls('md'));
+    },
+
+    function makeHeadCell(prop, i) {
+      var e = this.SUPER(prop, i);
+      if (prop.help) {
+        var tooltip;
+        e.on('mouseenter', function() {
+          tooltip = this.Tooltip.create({ text: prop.help, target: e });
+        }.bind(this));
+        e.on('mouseleave', function() {
+          tooltip && tooltip.close();
+          tooltip = null;
+        });
+        this.on('unload', function() {
+          tooltip && tooltip.remove();
+          tooltip = null;
+        });
+      }
+      return e;
     },
   ],
 

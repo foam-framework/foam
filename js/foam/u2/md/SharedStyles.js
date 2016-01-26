@@ -68,6 +68,11 @@ CLASS({
         -ms-user-select: none;
         user-select: none;
       }
+
+      .foam-u2-md-toolbar-colors {
+        background-color: #3e50b4;
+        color: #fff;
+      }
     */},
   ]
 });

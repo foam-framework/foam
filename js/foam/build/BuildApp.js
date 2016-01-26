@@ -380,7 +380,9 @@ CLASS({
           models[model.id] = model;
         }
 
-        model.getAllRequires().forEach(add);
+        // Only CLASS models have requires. Other types (eg. Enums) don't have
+        // requires to process.
+        if (model.getAllRequires) model.getAllRequires().forEach(add);
       };
       add(this.controller);
       if ( this.defaultView ) add(this.defaultView);
@@ -401,25 +403,34 @@ CLASS({
 
       for ( var i = 0; i < ids.length; i++ ) {
         var model = models[ids[i]];
-        if ( this.precompileTemplates ) {
+        if (model.model_.id === 'Model') {
+          // Special case for full CLASS models.
+          if ( this.precompileTemplates ) {
 
-          function precompile(model) {
-            for ( var j = 0 ; j < model.templates.length ; j++ ) {
-              var t = model.templates[j];
-              // It's safe to remove leading and trailing whitespace from CSS.
-              if ( t.name === 'CSS' ) t.template = t.template.split('\n').map(function(s) { return s.trim(); }).join('\n');
-              t.code = TemplateUtil.compile(t, model);
-              t.clearProperty('template');
+            function precompile(model) {
+              for ( var j = 0 ; j < model.templates.length ; j++ ) {
+                var t = model.templates[j];
+                // It's safe to remove leading and trailing whitespace from CSS.
+                if ( t.name === 'CSS' ) t.template = t.template.split('\n').map(function(s) { return s.trim(); }).join('\n');
+                t.code = TemplateUtil.compile(t, model);
+                t.clearProperty('template');
+              }
+              model.models.forEach(precompile)
             }
-            model.models.forEach(precompile)
-          }
 
-          precompile(model);
+            precompile(model);
+          }
+          contents += 'CLASS(';
+          var formatter = this.precompileTemplates ? this.formatter : JSONUtil.compact;
+          contents += formatter.where(NOT_TRANSIENT).stringifyObject(models[ids[i]], 'Model');
+          contents += ')\n';
+        } else {
+          // Simple case for other kinds of models (eg. Enums).
+          console.log('Outputting ' + model.id + ' which is of model ' + model.model_.id);
+          contents += '__DATA(';
+          contents += JSONUtil.compact.where(NOT_TRANSIENT).stringifyObject(model);
+          contents += ')\n';
         }
-        contents += 'CLASS(';
-        var formatter = this.precompileTemplates ? this.formatter : JSONUtil.compact;
-        contents += formatter.where(NOT_TRANSIENT).stringifyObject(models[ids[i]], 'Model');
-        contents += ')\n';
       }
 
       ret(contents);
