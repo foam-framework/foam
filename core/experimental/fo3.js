@@ -322,9 +322,7 @@ MODEL({
   methods: [
     {
       name: 'install',
-      code: function(proto) {
-        proto[constantize(this.name)] = this.value;
-      }
+      code: function(proto) { proto[constantize(this.name)] = this.value; }
     }
   ]
 });
@@ -459,17 +457,17 @@ MODEL({
 });
 
 
-MODEL = function(m) {
+var CLASS = MODEL = function(m) {
   var model = Model.create(m);
   var proto = model.proto;
   global[m.name] = proto;
   return proto;
 }
 
-var CLASS = MODEL;
-
 // End of Bootstrap
 
+
+console.timeEnd('b0');
 
 // Test:
 
@@ -503,3 +501,20 @@ CLASS({
 var p = Person.create({name: 'Adam', age: 0});
 console.log(p.name, p.age, p.KEY);
 p.sayHello();
+
+
+
+/*
+// 3058ms, Jan 26, 2016, X1 Carbon
+console.time('b1');
+for ( var i = 0 ; i < 10000000 ; i++ )
+  p.age++;
+console.timeEnd('b1');
+
+
+// 1251ms, Jan 26, 2016, X1 Carbon
+console.time('b2');
+for ( var i = 0 ; i < 1000000 ; i++ )
+  Person.create({name: 'john', age: i});
+console.timeEnd('b2');
+*/
