@@ -386,6 +386,18 @@ MODEL({
 });
 
 
+MODEL({
+  name: 'AxiomArrayProperty',
+  extends: 'ArrayProperty',
+
+  properties: [
+    {
+      name: 'postSet',
+      defaultValue: function(_, a) { this.axioms.push.apply(this.axioms, a); }
+    }
+  ]
+});
+
 
 /*
   create: create object then update
@@ -439,13 +451,9 @@ MODEL({
 
   properties: [
     {
-      type: 'Array', // TODO: Make a AxiomArray type
+      type: 'AxiomArray',
       subType: 'Constant',
-      name: 'constants',
-      // This should be done by AxiomArray
-      postSet: function(_, a) {
-        this.axioms.push.apply(this.axioms, a);
-      }
+      name: 'constants'
     }
   ]
 });
