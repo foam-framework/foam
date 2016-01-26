@@ -31,6 +31,7 @@ CLASS({
     'hardSelection$',
     'setTimeout',
     'softSelection$',
+    'sortOrder$',
     'window'
   ],
 
