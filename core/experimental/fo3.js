@@ -115,6 +115,8 @@ var Bootstrap = {
       global[m.name] = proto;
       return proto;
     }
+
+    global.Bootstrap = null;
   }
 };
 
@@ -396,7 +398,7 @@ MODEL({
   ]
 });
 
-
+// TODO: Why does this need to be in the Bootstrap?
 MODEL({
   name: 'AxiomArrayProperty',
   extends: 'ArrayProperty',
@@ -410,7 +412,6 @@ MODEL({
 });
 
 Bootstrap.end();
-Bootstrap = null;
 
 
 MODEL({
