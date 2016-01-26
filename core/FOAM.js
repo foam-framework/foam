@@ -312,6 +312,12 @@ function INTERFACE(imodel) {
   NONMODEL_INSTANCES[id] = true;
 }
 
+// For non-CLASS modeled things, like Enums.
+function __DATA(obj) {
+  JSONUtil.amapToObj(function(m) {
+    X.registerModel(m, m.id);
+  }, X, obj);
+}
 
 /** Called when a Model is registered. **/
 function onRegisterModel(m) {
