@@ -71,7 +71,7 @@ CLASS({
 
   templates: [
     function initE() {/*#U2
-      <toolbar class="^ .foam-u2-md-toolbar-colors">
+      <toolbar class="^ foam-u2-md-toolbar-colors">
         <actions class="^actions ^left">{{this.leftActionButtons_$}}</actions>
         <header class="^title">{{this.title$}}</header>
         <actions class="^actions ^right">{{this.rightActionButtons_$}}</actions>
