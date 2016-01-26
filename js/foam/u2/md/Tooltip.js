@@ -50,6 +50,11 @@ CLASS({
       name: 'opened',
       defaultValue: false
     },
+    {
+      type: 'Boolean',
+      name: 'closed',
+      defaultValue: false
+    },
   ],
 
   methods: [
@@ -63,6 +68,7 @@ CLASS({
 
   listeners: [
     function close() {
+      this.closed = true;
       if ( this.opened ) {
         this.remove();
         this.opened = false;
@@ -70,6 +76,8 @@ CLASS({
     },
     function onTimeout() {
       if ( this.document.previousTooltip_ !== this ) return;
+      if ( this.closed ) return;
+      if ( ! this.target || ! this.target.el() ) return;
 
       var oldTips = this.document.getElementsByClassName(this.myCls());
       for (var i = 0; i < oldTips.length; i++) {
