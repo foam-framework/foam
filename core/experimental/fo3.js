@@ -352,17 +352,6 @@ MODEL({
 });
 
 
-/*
-  create: create object then update
-  remote create from regular objects or remove from prototypes
-  acreate or afromJSON
-
-  TODO:
-  - property overriding
-
-*/
-
-
 // Bootstrap Prototypes
 
 for ( var i = 0 ; i < models.length ; i++ ) {
@@ -491,4 +480,15 @@ console.time('b2');
 for ( var i = 0 ; i < 1000000 ; i++ )
   Person.create({name: 'john', age: i});
 console.timeEnd('b2');
+*/
+
+
+/*
+  Notes:
+
+  remove create from regular objects
+  acreate or afromJSON
+
+  TODO:
+  - property overriding
 */
