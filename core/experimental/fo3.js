@@ -15,55 +15,113 @@
  * limitations under the License.
  */
 
-// Temporary collection of models to be updated later.
-var models = [];
+// Bootstrap Support, discarded after use
+var Bootstrap = {
 
-function protoFactory(m) {
-  /* Create or Update a Prototype from a psedo-Model definition. */
-  var proto = global[m.name];
+  // Temporary collection of models to be updated later.
+  models: [],
 
-  if ( ! proto ) {
-    proto = m.extends ? Object.create(global[m.extends]) : {};
-    global[m.name] = proto;
-  }
+  start: function() {
+    global.MODEL = Bootstrap.MODEL.bind(Bootstrap);
+  },
 
-  if ( ! proto.model_ ) proto.model_ = m;
+  protoFactory: function() {
+    var m = this;
+    /* Create or Update a Prototype from a psedo-Model definition. */
+    var proto = global[m.name];
 
-  if ( m.axioms ) {
-    for ( var i = 0 ; i < m.axioms.length ; i++ ) {
-      var a = m.axioms[i];
-      a.install && a.install.call(a, proto);
+    if ( ! proto ) {
+      proto = m.extends ? Object.create(global[m.extends]) : {};
+      global[m.name] = proto;
+    }
+
+    if ( ! proto.model_ ) proto.model_ = m;
+
+    if ( m.axioms ) {
+      for ( var i = 0 ; i < m.axioms.length ; i++ ) {
+        var a = m.axioms[i];
+        a.install && a.install.call(a, proto);
+      }
+    }
+
+    if ( m.methods ) {
+      for ( var i = 0 ; i < m.methods.length ; i++ ) {
+        var meth = m.methods[i];
+        proto[meth.name] = meth.code;
+      }
+    }
+
+    if ( global.Property && m.properties ) {
+      for ( var i = 0 ; i < m.properties.length ; i++ ) {
+        var p = m.properties[i];
+        var t = p.type ? global[p.type + 'Property'] : Property;
+        var prop = t.create(p);
+        prop.install(proto);
+      }
+    }
+
+    return proto;
+  },
+
+  // Bootstrap Model definition which records incomplete models
+  // so they can be patched at the end of the bootstrap process.
+  MODEL: function(m) {
+    this.protoFactory.call(m);
+    this.models.push(m);
+  },
+
+  updateModels: function() {
+    var models = this.models;
+
+    for ( var i = 0 ; i < models.length ; i++ ) {
+      var m = models[i];
+      var proto = global[m.name];
+
+      if ( m.properties ) {
+        for ( var j = 0 ; j < m.properties.length ; j++ ) {
+          var p = m.properties[j];
+          Property.install.call(p, proto);
+        }
+      }
+    }
+
+    for ( var i = 0 ; i < models.length ; i++ ) {
+      var m = models[i];
+      var proto = global[m.name];
+
+      if ( m.properties ) {
+        for ( var j = 0 ; j < m.properties.length ; j++ ) {
+          var p = m.properties[j];
+          if ( p.type ) {
+            var propType = global[p.type + 'Property'];
+            if ( propType ) {
+              console.log('Updating: ', i, m.name, p.name, p.type);
+              propType.install.call(p, proto);
+            } else {
+              console.warn('Unknown Property type: ', p.type);
+            }
+          }
+        }
+      }
+    }
+  },
+
+  end: function() {
+    // Finish Bootstrap
+    Bootstrap.updateModels();
+    delete Bootstrap;
+
+    global.CLASS = global.MODEL = function(m) {
+      var model = Model.create(m);
+      var proto = model.proto;
+      global[m.name] = proto;
+      return proto;
     }
   }
-
-  if ( m.methods ) {
-    for ( var i = 0 ; i < m.methods.length ; i++ ) {
-      var meth = m.methods[i];
-      proto[meth.name] = meth.code;
-    }
-  }
-
-  if ( global.Property && m.properties ) {
-    for ( var i = 0 ; i < m.properties.length ; i++ ) {
-      var p = m.properties[i];
-      var t = p.type ? global[p.type + 'Property'] : Property;
-      var prop = t.create(p);
-      prop.install(proto);
-    }
-  }
-
-  return proto;
-}
+};
 
 
-// Bootstrap Model definition which records incomplete models
-// so they can be patched at the end of the bootstrap process.
-function MODEL(m) {
-  console.log('Bootstrap: Creating Prototype: ', m.name);
-  protoFactory(m);
-  models.push(m);
-}
-
+Bootstrap.start();
 
 MODEL({
   name: 'FObject',
@@ -136,6 +194,7 @@ MODEL({
       name: 'methods',
       adaptArrayElement: function(e) {
         if ( typeof e === 'function' ) {
+          debugger;
           console.assert(e.name, 'Method must be named');
           return Method.create({name: e.name, code: e});
         }
@@ -144,7 +203,7 @@ MODEL({
     },
     {
       name: 'proto',
-      factory: function() { return protoFactory(this); }
+      factory: Bootstrap.protoFactory
     }
   ]
 });
@@ -351,52 +410,8 @@ MODEL({
   ]
 });
 
+Bootstrap.end();
 
-// Bootstrap Prototypes
-
-for ( var i = 0 ; i < models.length ; i++ ) {
-  var m = models[i];
-  var proto = global[m.name];
-
-  if ( m.properties ) {
-    for ( var j = 0 ; j < m.properties.length ; j++ ) {
-      var p = m.properties[j];
-      Property.install.call(p, proto);
-    }
-  }
-}
-
-for ( var i = 0 ; i < models.length ; i++ ) {
-  var m = models[i];
-  var proto = global[m.name];
-
-  if ( m.properties ) {
-    for ( var j = 0 ; j < m.properties.length ; j++ ) {
-      var p = m.properties[j];
-      if ( p.type ) {
-        var propType = global[p.type + 'Property'];
-        if ( propType ) {
-          console.log('Updating: ', i, m.name, p.name, p.type);
-          propType.install.call(p, proto);
-        } else {
-          console.warn('Unknown Property type: ', p.type);
-        }
-      }
-    }
-  }
-}
-
-delete models;
-
-var CLASS = MODEL = function(m) {
-  var model = Model.create(m);
-  var proto = model.proto;
-  global[m.name] = proto;
-  return proto;
-}
-
-
-// End of Bootstrap
 
 MODEL({
   name: 'Constant',
@@ -432,7 +447,7 @@ MODEL({
 });
 
 
-// Test:
+// Tests:
 
 CLASS({
   name: 'Person',
@@ -457,14 +472,15 @@ CLASS({
     {
       name: 'sayHello',
       code: function() { console.log('Hello World!'); }
-    }
+    },
+    function sayGoodbye() { console.log('Goodbye from ', this.name); }
   ]
 });
 
 var p = Person.create({name: 'Adam', age: 0});
 console.log(p.name, p.age, p.KEY);
 p.sayHello();
-
+//p.sayGoodbye();
 
 
 /*
