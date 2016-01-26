@@ -1207,7 +1207,7 @@ CLASS({
         if ( Array.isArray(e) ) {
           for ( var i = 0 ; i < e.length ; i++ ) e[i].remove();
         } else {
-          e.remove();
+          if (e.state === e.LOADED) e.remove();
         }
         e = e2;
       };
