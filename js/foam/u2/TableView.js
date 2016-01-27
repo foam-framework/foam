@@ -27,6 +27,8 @@ CLASS({
   ],
 
   imports: [
+    'allProperties',
+    'columnProperties',
     'document',
     'hardSelection$',
     'minimumFlexColumnWidth',
@@ -59,8 +61,20 @@ CLASS({
         return this.X.model;
       },
       postSet: function(_, model) {
-        if ( ! this.columnProperties )
+        if ( ! this.columnProperties ) {
           this.columnProperties_ = this.getColumnProperties_();
+        } else {
+          this.columnProperties_ = this.columnProperties.map(function(name) {
+            return model.getFeature(name);
+          });
+        }
+
+        if (this.allProperties) {
+          this.allProperties_ = this.allProperties.map(function(name) {
+            return model.getFeature(name);
+          });
+          return;
+        }
 
         var allProps = [];
         var columnProps = {};
@@ -87,15 +101,29 @@ CLASS({
     {
       type: 'Array',
       name: 'columnProperties',
-      documentation: 'An array of Property objects for all selected ' +
+      documentation: 'An array of Property names for all selected ' +
           'properties. If this is set, this is exactly the set of properties ' +
           'that will be displayed. Otherwise the model\'s tableProperties, ' +
           'if defined, will be displayed. Finally, all non-hidden properties ' +
           'will be displayed.',
       factory: function() { return null; },
       postSet: function(_, ps) {
-        this.columnProperties_ = ps;
+        if ( ! ps || ! this.model ) return;
+        this.columnProperties_ = ps.map(function(name) {
+          return this.model.getFeature(name);
+        }.bind(this));
       }
+    },
+    {
+      type: 'Array',
+      name: 'allProperties',
+      factory: function() { return null; },
+      postSet: function(old, nu) {
+        if ( ! nu || ! this.model ) return;
+        this.allProperties_ = nu.map(function(name) {
+          return this.model.getFeature(name);
+        }.bind(this));
+      },
     },
     {
       type: 'Array',
