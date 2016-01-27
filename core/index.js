@@ -591,7 +591,7 @@ var TreeIndex = {
          undefined;
          */
         if ( sortRequired ) {
-          var a = [];
+          var a = [].sink;
           index.selectCount++;
           index.select(s, a, {query: options.query});
           index.selectCount--;

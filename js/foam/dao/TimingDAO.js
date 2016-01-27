@@ -47,33 +47,34 @@ CLASS({
     },
 
     function endSink(act, sink) {
+      var self = this;
       return {
-        put:    function() { end(act); sink && sink.put    && sink.put.apply(sink, arguments); },
-        remove: function() { end(act); sink && sink.remove && sink.remove.apply(sink, arguments); },
-        error:  function() { end(act); sink && sink.error  && sink.error.apply(sink, arguments); },
-        eof:    function() { end(act); sink && sink.eof    && sink.eof.apply(sink, arguments); }
+        put:    function() { self.end(act); sink && sink.put    && sink.put.apply(sink, arguments); },
+        remove: function() { self.end(act); sink && sink.remove && sink.remove.apply(sink, arguments); },
+        error:  function() { self.end(act); sink && sink.error  && sink.error.apply(sink, arguments); },
+        eof:    function() { self.end(act); sink && sink.eof    && sink.eof.apply(sink, arguments); }
       };
     },
 
     function put(obj, sink) {
-      var act = start('put');
-      this.SUPER(obj, endSink(act, sink));
+      var act = this.start('put');
+      this.SUPER(obj, this.endSink(act, sink));
     },
     function remove(query, sink) {
-      var act = start('remove');
-      this.SUPER(query, endSink(act, sink));
+      var act = this.start('remove');
+      this.SUPER(query, this.endSink(act, sink));
     },
     function find(key, sink) {
-      var act = start('find');
-      this.SUPER(key, endSink(act, sink));
+      var act = this.start('find');
+      this.SUPER(key, this.endSink(act, sink));
     },
     function select(sink, options) {
-      var act = start('select');
+      var act = this.start('select');
       var fut = afuture();
       this.SUPER(sink, options)(function(s) {
-        end(act);
+        this.end(act);
         fut.set(s);
-      });
+      }.bind(this));
       return fut.get;
     }
   ]
