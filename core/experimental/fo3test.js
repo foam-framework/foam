@@ -34,6 +34,27 @@ p.sayHello();
 p.sayGoodbye();
 
 
+CLASS({
+  name: 'Employee',
+  extends: 'Person',
+  
+  properties: [
+    {
+      name: 'salary'
+    }
+  ],
+
+  methods: [
+    function toString() {
+      return this.model_.name + '(' + this.name + ', ' + this.age + ', ' + this.salary + ')';
+    }
+  ]
+});
+
+var e = Employee.create({name: 'Jane', age: 30, salary: 50000});
+console.log(e.toString());
+e.sayGoodbye();
+
 /*
 // 3058ms, Jan 26, 2016, X1 Carbon
 console.time('b1');
