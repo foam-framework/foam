@@ -326,7 +326,7 @@ CLASS({
           // Something to load.
           var self = this;
           var updateNumber = ++this.daoUpdateNumber;
-          this.dao.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select()(function(a) {
+          this.dao.skip(toLoadTop).limit(toLoadBottom - toLoadTop + 1).select([].sink)(function(a) {
             if ( updateNumber !== self.daoUpdateNumber ) return;
             if ( ! a || ! a.length ) return;
 
