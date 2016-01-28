@@ -16,6 +16,47 @@
  */
 // Tests:
 
+CLASS({ name: 'FactoryTest', properties: [
+  {
+    name: 'a',
+    factory: function() { return 42; }
+  } ]
+ });
+var ft = FactoryTest.create({});
+console.assert(ft.a == 42, 'Factories don\'t work.');
+ft.a = 84;
+console.assert(ft.a == 84, 'Factories don\'t update.');
+
+
+CLASS({ name: 'DefaultValue', properties: [
+  {
+    name: 'a',
+    defaultValue: 42
+  } ]
+ });
+var dv = DefaultValue.create({});
+console.assert(dv.a == 42, 'DefaultValues don\'t work.');
+dv.a = 84;
+console.assert(dv.a == 84, 'DefaultValues don\'t update.');
+
+
+var ap = ArrayProperty.create({});
+console.assert(ap.preSet, 'ArrayProperty.preSet missing.');
+
+// ArrayProperty Test
+CLASS({ name: 'A', properties: [ { name: 'a' } ] });
+debugger;
+CLASS({ name: 'B', properties: [
+  {
+    type: 'Array',
+    subType: 'A',
+    name: 'as'
+  }
+] });
+
+var b = B.create({as: [{a: 'abc'}]});
+console.log(b.as);
+
 debugger;
 
 CLASS({
@@ -30,7 +71,8 @@ CLASS({
 });
 
 var t1 = ConstantTest.create({});
-console.log(p.KEY);
+console.assert(t1,KEY, 'Constants don\'t work.');
+console.log(t1.KEY);
 
 
 CLASS({
