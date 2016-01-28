@@ -27,8 +27,11 @@ CLASS({
   ],
 
   imports: [
+    'allProperties',
+    'columnProperties',
     'document',
     'hardSelection$',
+    'minimumFlexColumnWidth',
     'setTimeout',
     'softSelection$',
     'sortOrder$',
@@ -58,8 +61,20 @@ CLASS({
         return this.X.model;
       },
       postSet: function(_, model) {
-        if ( ! this.columnProperties )
+        if ( ! this.columnProperties ) {
           this.columnProperties_ = this.getColumnProperties_();
+        } else {
+          this.columnProperties_ = this.columnProperties.map(function(name) {
+            return model.getFeature(name);
+          });
+        }
+
+        if (this.allProperties) {
+          this.allProperties_ = this.allProperties.map(function(name) {
+            return model.getFeature(name);
+          });
+          return;
+        }
 
         var allProps = [];
         var columnProps = {};
@@ -86,15 +101,29 @@ CLASS({
     {
       type: 'Array',
       name: 'columnProperties',
-      documentation: 'An array of Property objects for all selected ' +
+      documentation: 'An array of Property names for all selected ' +
           'properties. If this is set, this is exactly the set of properties ' +
           'that will be displayed. Otherwise the model\'s tableProperties, ' +
           'if defined, will be displayed. Finally, all non-hidden properties ' +
           'will be displayed.',
       factory: function() { return null; },
       postSet: function(_, ps) {
-        this.columnProperties_ = ps;
+        if ( ! ps || ! this.model ) return;
+        this.columnProperties_ = ps.map(function(name) {
+          return this.model.getFeature(name);
+        }.bind(this));
       }
+    },
+    {
+      type: 'Array',
+      name: 'allProperties',
+      factory: function() { return null; },
+      postSet: function(old, nu) {
+        if ( ! nu || ! this.model ) return;
+        this.allProperties_ = nu.map(function(name) {
+          return this.model.getFeature(name);
+        }.bind(this));
+      },
     },
     {
       type: 'Array',
@@ -157,13 +186,27 @@ CLASS({
       type: 'Boolean',
       name: 'isResizing',
       defaultValue: false
-    }
+    },
+    {
+      name: 'minimumFlexColumnWidth',
+      documentation: 'Minimum width of a (flexible) column in pixels. If ' +
+          'there isn\'t room for all the columns, the table will switch to ' +
+          'allowing horizontal scrolling.',
+      defaultValue: 120
+    },
+    {
+      name: 'tableWidth_',
+    },
+    {
+      name: 'loadComplete_',
+    },
   ],
 
   methods: [
     function load() {
       this.SUPER();
       this.window.addEventListener('resize', this.onResize);
+      this.loadComplete_ = true;
       this.onResize();
     },
 
@@ -193,8 +236,13 @@ CLASS({
       var cells = this.headRowE.children;
       var columnProperties = this.columnProperties_;
 
+      var totalFixedWidth = 0;
+      var fixedColumns = 0;
       for ( var i = 0 ; i < cells.length ; i++ ) {
         if ( columnProperties[i].tableWidth ) {
+          totalFixedWidth += columnProperties[i].tableWidth;
+          fixedColumns++;
+
           cells[i].style({
             width: columnProperties[i].tableWidth + 'px',
             'flex-grow': null
@@ -206,6 +254,33 @@ CLASS({
           });
         }
       }
+
+      // Now that the styles are set, measure the row's total width.
+      // If the demanded fixed sizes don't leave enough for the flexible
+      // columns, we switch to horizontal scrolling mode.
+      var flexWidth = this.el().offsetWidth;
+      var flexColumns = columnProperties.length - fixedColumns;
+      if ( totalFixedWidth > flexWidth || flexColumns === 0 ||
+          (flexWidth - totalFixedWidth) / flexColumns < this.minimumFlexColumnWidth ) {
+        // Switch to horizontal scrolling mode.
+        // Add twice the average fixed-column size for each flex column.
+        var avgFixedWidth = fixedColumns === 0 ? 0 : totalFixedWidth / fixedColumns;
+        var flexColumnWidth = Math.max(2 * avgFixedWidth, this.minimumFlexColumnWidth);
+        this.tableWidth_ = totalFixedWidth + (flexColumnWidth * flexColumns);
+      } else {
+        this.tableWidth_ = undefined;
+      }
+
+      if ( this.tableWidth_ ) {
+        this.style({ 'overflow-x': 'auto' });
+        this.headE.style({ width: this.tableWidth_ + 'px' });
+        this.bodyE.style({ width: this.tableWidth_ + 'px' });
+      } else {
+        this.style({ 'overflow-x': 'hidden' });
+        this.headE.style({ width: '100%' });
+        this.bodyE.style({ width: '100%' });
+      }
+
       this.measureColWidths(cells);
       for ( var i = 0 ; i < cells.length ; i++ ) {
         cells[i].style({
@@ -368,10 +443,14 @@ CLASS({
       return this.rowView(map, Y);
     },
     function onResize() {
-      if (this.headRowE && this.headRowE.state === this.headRowE.LOADED) {
-        this.computeColWidths();
-      } else {
+      // Don't resize before the onResize() call in load().
+      if ( ! this.loadComplete_ ) return;
+
+      // Also don't resize just yet if we're re-rendering the headRowE.
+      if ( this.headRowE.state !== this.headRowE.LOADED ) {
         this.headRowE.on('load', this.computeColWidths.bind(this));
+      } else {
+        this.computeColWidths();
       }
     }
   ],
@@ -402,7 +481,7 @@ CLASS({
       ^body {
         display: flex;
         flex-direction: column;
-        flex-grow: 1
+        flex-grow: 1;
         flex-shrink: 1;
         overflow-x: hidden;
         overflow-y: auto;

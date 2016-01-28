@@ -86,6 +86,11 @@ CLASS({
 
       this.target.on('mousedown', this.close);
       this.target.on('touchstart', this.close);
+      this.target.on('unload', this.close);
+      this.on('unload', function() {
+        this.opened = false;
+        this.closed = true;
+      });
 
       this.cls(this.myCls());
       this.add(this.text);

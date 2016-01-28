@@ -29,7 +29,7 @@ CLASS({
       factory: function() {
         return this.Select.create({
           label: this.label,
-          floatingLabel: this.floatingLabel,
+          inline: this.inline,
           size: this.size,
         });
       }
@@ -45,7 +45,7 @@ CLASS({
       defaultValue: 17
     },
     {
-      name:  'data',
+      name:  'dao',
       label: 'DAO',
       required: true,
       factory: function() { return []; },
@@ -82,8 +82,8 @@ CLASS({
       defaultValueFn: function() { return this.property.label; }
     },
     {
-      name: 'floatingLabel',
-      defaultValue: true
+      name: 'inline',
+      defaultValue: false
     }
   ],
 
@@ -92,16 +92,13 @@ CLASS({
       this.view.data = '';
     },
     function initE() {
-      if (this.floatingLabel) {
-        this.add(this.view);
-        return;
-      }
-
       this.cls(this.myCls());
-      this.start('div').cls(this.myCls('label')).add(this.label$).end();
+      if ( ! this.inline ) {
+        this.start('div').cls(this.myCls('label')).add(this.label$).end();
+      }
       this.add(this.view);
 
-      this.data.listen(this.updateDAO);
+      this.dao.listen(this.updateDAO);
       this.propertyValue('filter').addListener(this.updateDAO);
       this.view.data$.addListener(this.updatePredicate);
     },
@@ -114,7 +111,7 @@ CLASS({
       code: function() {
         var self = this;
 
-        this.data.where(this.filter).select(GROUP_BY(this.property, COUNT()))(function(groups) {
+        this.dao.where(this.filter).select(GROUP_BY(this.property, COUNT()))(function(groups) {
           var options = [];
           var selected;
           var sortedKeys = groups.sortedKeys();
