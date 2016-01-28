@@ -158,7 +158,7 @@ CLASS({
               var model = BooleanProperty.isInstance(prop) ?
                   this.GroupBySearchView : this.TextSearchView;
               var options = {
-                floatingLabel: false,
+                inline: true,
                 name: nu[i]
               };
               if (prop.tableSeparator) {
@@ -183,7 +183,7 @@ CLASS({
         var Y = this.Y.sub();
         Y.registerModel(this.TextField.xbind({
           placeholder: '',
-          floatingLabel: false
+          inline: true
         }), 'foam.u2.TextField');
         return Y;
       }
