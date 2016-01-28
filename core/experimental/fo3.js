@@ -295,7 +295,6 @@ CLASS({
 
         Object.defineProperty(proto, name, {
           get: function propGetter() {
-            if ( name === 'a' ) debugger;
             if ( getter ) return getter.call(this);
 
             if ( ( hasDefaultValue || factory ) &&
@@ -395,7 +394,6 @@ CLASS({
     {
       name: 'preSet',
       defaultValue: function(_, a, prop) {
-        debugger;
         var cls = global[prop.subType];
         // TODO: loop for performance
         return a.map(function(p) { return cls.create(p); });
@@ -426,7 +424,6 @@ CLASS({
     {
       name: 'postSet',
       defaultValue: function(_, a) {
-debugger;
         (this.axioms || (this.axioms = [])).push.apply(this.axioms, a); }
     }
   ]
@@ -451,9 +448,7 @@ CLASS({
   methods: [
     {
       name: 'installInClass',
-      code: function(cls) { 
-debugger;
-cls[constantize(this.name)] = this.value; }
+      code: function(cls) { cls[constantize(this.name)] = this.value; }
     },
     {
       name: 'installInProto',
