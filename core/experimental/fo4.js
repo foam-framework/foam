@@ -25,14 +25,14 @@ var Bootstrap = {
     global.CLASS = Bootstrap.CLASS.bind(Bootstrap);
   },
 
-  classFactory: (function() {
+  getClass: (function() {
     /*
       Create or Update a Prototype from a psedo-Model definition.
       'this' is a Model.
     */
 
     var AbstractClass = {
-      proto: null,
+      proto: {},
       create: function(args) {
         var obj = Object.create(this.proto);
         obj.instance_ = {};
@@ -43,8 +43,8 @@ var Bootstrap = {
         return obj;
       },
       installAxiom: function(a) {
-        a.installOnClass && a.installOnClass(this);
-        a.installOnProto && a.installOnProto(this.proto);
+        a.installInClass && a.installInClass(this);
+        a.installInProto && a.installInProto(this.proto);
       }
     };
 
@@ -55,6 +55,7 @@ var Bootstrap = {
         var parent = this.extends ? global[this.extends] : AbstractClass ;
         cls = Object.create(parent);
         cls.proto = Object.create(parent.proto);
+        cls.proto.cls_ = cls;
         cls.name   = this.name;
         cls.model_ = this;
         global[cls.name] = cls;
@@ -76,8 +77,9 @@ var Bootstrap = {
       if ( global.Property && this.properties ) {
         for ( var i = 0 ; i < this.properties.length ; i++ ) {
           var p    = this.properties[i];
-          var cls  = p.type ? global[p.type + 'Property'] : Property;
-          cls.installAxiom(cls.create(p));
+          var type = global[(p.type || '') + 'Property'] || Property;
+          var axiom = type.create(p);
+          cls.installAxiom(axiom);
         }
       }
 
@@ -88,12 +90,13 @@ var Bootstrap = {
   // Bootstrap Model definition which records incomplete models
   // so they can be patched at the end of the bootstrap process.
   CLASS: function(m) {
-    this.classes.push(this.classFactory.call(m));
+    this.classes.push(this.getClass.call(m));
   },
 
   updateModels: function() {
     var classes = this.classes;
 
+      /*
     for ( var i = 0 ; i < classes.length ; i++ ) {
       var cls = classes[i];
       var m   = cls.model_;
@@ -102,6 +105,7 @@ var Bootstrap = {
         for ( var j = 0 ; j < m.properties.length ; j++ )
           cls.installAxiom(m.properties[j]);
     }
+    */
 
     for ( var i = 0 ; i < classes.length ; i++ ) {
       var cls = classes[i];
@@ -110,12 +114,14 @@ var Bootstrap = {
       if ( m.properties ) {
         for ( var j = 0 ; j < m.properties.length ; j++ ) {
           var p = m.properties[j];
-          var propType = p.type ? global[p.type + 'Property'] : Property;
-          if ( propType ) {
-            console.log('Updating: ', i, m.name, p.name, p.type);
-            cls.installAxiom(m.properties[i] = propType.create(p));
-          } else {
-            console.warn('Unknown Property type: ', p.type);
+          if ( p.type ) {
+            var propType = global[p.type + 'Property'];
+            if ( propType ) {
+              console.log('Updating: ', i, m.name, p.name, p.type);
+              cls.installAxiom(m.properties[j] = propType.create(p));
+            } else {
+              console.warn('Unknown Property type: ', p.type);
+            }
           }
         }
       }
@@ -126,7 +132,7 @@ var Bootstrap = {
     Bootstrap.updateModels();
 
     global.CLASS = function(m) {
-      return Model.create(m).createClass();
+      return Model.create(m).getClass();
     }
 
     global.Bootstrap = null;
@@ -159,7 +165,7 @@ CLASS({
 
 CLASS({
   name: 'Model',
-  extends: 'FObject', // Don't remove, isn't the default yet.
+  extends: 'FObject', // Isn't the default yet.
 
   documentation: 'Class/Prototype description.',
 
@@ -206,8 +212,8 @@ CLASS({
 
   methods: [
     {
-      name: 'createClass',
-      code: Bootstrap.classFactory
+      name: 'getClass',
+      code: Bootstrap.getClass
     }
   ]
 });
@@ -241,22 +247,18 @@ CLASS({
     },
     {
       name: 'expression'
-      // TODO: implement
     }
   ],
 
   methods: [
     {
       name: 'installInClass',
-      code: function(c) {
-        console.log('installInClass.Property', this.name);
-        c[constantize(this.name)] = this;
+      code: function(c) { c[constantize(this.name)] = this;
       }
     },
     {
       name: 'installInProto',
       code: function(proto) {
-        console.log('installInProto.Property', this.name);
         /*
           Install a property onto a prototype from a Property definition.
           (Property is 'this').
@@ -284,6 +286,8 @@ CLASS({
            configurable: true
            });
         */
+
+        // TODO: implement 'expression'
 
         Object.defineProperty(proto, name, {
           get: function propGetter() {
@@ -407,7 +411,6 @@ CLASS({
   ]
 });
 
-// TODO: Why does this need to be in the Bootstrap?
 CLASS({
   name: 'AxiomArrayProperty',
   extends: 'ArrayProperty',
@@ -415,11 +418,15 @@ CLASS({
   properties: [
     {
       name: 'postSet',
-      defaultValue: function(_, a) { this.axioms.push.apply(this.axioms, a); }
+      defaultValue: function(_, a) {
+debugger;
+ this.axioms.push.apply(this.axioms, a); }
     }
   ]
 });
 
+
+// TODO: Why does this need to be in the Bootstrap?
 Bootstrap.end();
 
 
@@ -439,7 +446,9 @@ CLASS({
   methods: [
     {
       name: 'installInClass',
-      code: function(cls) { cls[constantize(this.name)] = this.value; }
+      code: function(cls) { 
+debugger;
+cls[constantize(this.name)] = this.value; }
     },
     {
       name: 'installInProto',
@@ -448,7 +457,6 @@ CLASS({
   ]
 });
 
-debugger;
 
 CLASS({
   name: 'Model',
