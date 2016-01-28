@@ -1,12 +1,29 @@
 // Tests:
 
+debugger;
+
+CLASS({
+  name: 'ConstantTest',
+
+  constants: [
+    {
+      name: 'KEY',
+      value: 'If you can see this, Constants are working!'
+    }
+  ]
+});
+
+var t1 = ConstantTest.create({});
+console.log(p.KEY);
+
+
 CLASS({
   name: 'Person',
 
   constants: [
     {
       name: 'KEY',
-      value: 'value'
+      value: 'If you can see this, Constants are working!'
     }
   ],
 
@@ -46,7 +63,7 @@ CLASS({
 
   methods: [
     function toString() {
-      return this.model_.name + '(' + this.name + ', ' + this.age + ', ' + this.salary + ')';
+      return this.cls_.name + '(' + this.name + ', ' + this.age + ', ' + this.salary + ')';
     }
   ]
 });
