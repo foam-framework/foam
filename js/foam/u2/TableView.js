@@ -164,7 +164,7 @@ CLASS({
       documentation: 'Minimum width of a (flexible) column in pixels. If ' +
           'there isn\'t room for all the columns, the table will switch to ' +
           'allowing horizontal scrolling.',
-      defaultValue: 300
+      defaultValue: 120
     },
     {
       name: 'tableWidth_',
@@ -236,7 +236,7 @@ CLASS({
           (flexWidth - totalFixedWidth) / flexColumns < this.minimumFlexColumnWidth ) {
         // Switch to horizontal scrolling mode.
         // Add twice the average fixed-column size for each flex column.
-        var avgFixedWidth = flexColumns === 0 ? 0 : totalFixedWidth / flexColumns;
+        var avgFixedWidth = fixedColumns === 0 ? 0 : totalFixedWidth / fixedColumns;
         var flexColumnWidth = Math.max(2 * avgFixedWidth, this.minimumFlexColumnWidth);
         this.tableWidth_ = totalFixedWidth + (flexColumnWidth * flexColumns);
       } else {
