@@ -29,6 +29,7 @@ CLASS({
   imports: [
     'document',
     'hardSelection$',
+    'minimumFlexColumnWidth',
     'setTimeout',
     'softSelection$',
     'sortOrder$',
@@ -157,13 +158,27 @@ CLASS({
       type: 'Boolean',
       name: 'isResizing',
       defaultValue: false
-    }
+    },
+    {
+      name: 'minimumFlexColumnWidth',
+      documentation: 'Minimum width of a (flexible) column in pixels. If ' +
+          'there isn\'t room for all the columns, the table will switch to ' +
+          'allowing horizontal scrolling.',
+      defaultValue: 300
+    },
+    {
+      name: 'tableWidth_',
+    },
+    {
+      name: 'loadComplete_',
+    },
   ],
 
   methods: [
     function load() {
       this.SUPER();
       this.window.addEventListener('resize', this.onResize);
+      this.loadComplete_ = true;
       this.onResize();
     },
 
@@ -193,8 +208,13 @@ CLASS({
       var cells = this.headRowE.children;
       var columnProperties = this.columnProperties_;
 
+      var totalFixedWidth = 0;
+      var fixedColumns = 0;
       for ( var i = 0 ; i < cells.length ; i++ ) {
         if ( columnProperties[i].tableWidth ) {
+          totalFixedWidth += columnProperties[i].tableWidth;
+          fixedColumns++;
+
           cells[i].style({
             width: columnProperties[i].tableWidth + 'px',
             'flex-grow': null
@@ -206,6 +226,33 @@ CLASS({
           });
         }
       }
+
+      // Now that the styles are set, measure the row's total width.
+      // If the demanded fixed sizes don't leave enough for the flexible
+      // columns, we switch to horizontal scrolling mode.
+      var flexWidth = this.el().offsetWidth;
+      var flexColumns = columnProperties.length - fixedColumns;
+      if ( totalFixedWidth > flexWidth || flexColumns === 0 ||
+          (flexWidth - totalFixedWidth) / flexColumns < this.minimumFlexColumnWidth ) {
+        // Switch to horizontal scrolling mode.
+        // Add twice the average fixed-column size for each flex column.
+        var avgFixedWidth = flexColumns === 0 ? 0 : totalFixedWidth / flexColumns;
+        var flexColumnWidth = Math.max(2 * avgFixedWidth, this.minimumFlexColumnWidth);
+        this.tableWidth_ = totalFixedWidth + (flexColumnWidth * flexColumns);
+      } else {
+        this.tableWidth_ = undefined;
+      }
+
+      if ( this.tableWidth_ ) {
+        this.style({ 'overflow-x': 'auto' });
+        this.headE.style({ width: this.tableWidth_ + 'px' });
+        this.bodyE.style({ width: this.tableWidth_ + 'px' });
+      } else {
+        this.style({ 'overflow-x': 'hidden' });
+        this.headE.style({ width: '100%' });
+        this.bodyE.style({ width: '100%' });
+      }
+
       this.measureColWidths(cells);
       for ( var i = 0 ; i < cells.length ; i++ ) {
         cells[i].style({
@@ -368,10 +415,14 @@ CLASS({
       return this.rowView(map, Y);
     },
     function onResize() {
-      if (this.headRowE && this.headRowE.state === this.headRowE.LOADED) {
-        this.computeColWidths();
-      } else {
+      // Don't resize before the onResize() call in load().
+      if ( ! this.loadComplete_ ) return;
+
+      // Also don't resize just yet if we're re-rendering the headRowE.
+      if ( this.headRowE.state !== this.headRowE.LOADED ) {
         this.headRowE.on('load', this.computeColWidths.bind(this));
+      } else {
+        this.computeColWidths();
       }
     }
   ],
