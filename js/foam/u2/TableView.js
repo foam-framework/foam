@@ -402,7 +402,7 @@ CLASS({
       ^body {
         display: flex;
         flex-direction: column;
-        flex-grow: 1
+        flex-grow: 1;
         flex-shrink: 1;
         overflow-x: hidden;
         overflow-y: auto;
