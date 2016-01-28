@@ -32,9 +32,15 @@ var Bootstrap = {
     */
 
     var AbstractClass = {
-      proto: {},
-      create: function() {
-        return this.proto.create.apply(this.proto, arguments);
+      proto: null,
+      create: function(args) {
+        var obj = Object.create(this.proto);
+        obj.instance_ = {};
+
+        // TODO: lookup if valid method names
+        for ( var key in args ) obj[key] = args[key];
+
+        return obj;
       },
       installAxiom: function(a) {
         a.installOnClass && a.installOnClass(this);
@@ -46,18 +52,12 @@ var Bootstrap = {
       var cls = global[this.name];
 
       if ( ! cls ) {
-        if ( this.extends ) {
-          var parent = global[this.extends];
-          cls = Object.create(parent);
-          cls.proto = Object.create(parent.proto);
-        } else {
-          cls = Object.create(AbstractClass);
-        }
-        
+        var parent = this.extends ? global[this.extends] : AbstractClass ;
+        cls = Object.create(parent);
+        cls.proto = Object.create(parent.proto);
         cls.name   = this.name;
         cls.model_ = this;
-        
-        global[this.name] = cls;
+        global[cls.name] = cls;
       }
       
       var proto = cls.proto;
@@ -110,14 +110,12 @@ var Bootstrap = {
       if ( m.properties ) {
         for ( var j = 0 ; j < m.properties.length ; j++ ) {
           var p = m.properties[j];
-          if ( p.type ) {
-            var propType = global[p.type + 'Property'];
-            if ( propType ) {
-              console.log('Updating: ', i, m.name, p.name, p.type);
-              cls.installAxiom(propType.create(p));
-            } else {
-              console.warn('Unknown Property type: ', p.type);
-            }
+          var propType = p.type ? global[p.type + 'Property'] : Property;
+          if ( propType ) {
+            console.log('Updating: ', i, m.name, p.name, p.type);
+            cls.installAxiom(m.properties[i] = propType.create(p));
+          } else {
+            console.warn('Unknown Property type: ', p.type);
           }
         }
       }
@@ -128,10 +126,7 @@ var Bootstrap = {
     Bootstrap.updateModels();
 
     global.CLASS = function(m) {
-      var model = Model.create(m);
-      var cls   = model.createClass();
-      global[m.name] = cls;
-      return cls;
+      return Model.create(m).createClass();
     }
 
     global.Bootstrap = null;
@@ -149,18 +144,6 @@ CLASS({
 
   methods: [
     {
-      name: 'create',
-      code: function(args) {
-        var obj = Object.create(this);
-        obj.instance_ = {};
-
-        // TODO: lookup if valid method names
-        for ( var key in args ) obj[key] = args[key];
-
-        return obj;
-      }
-    },
-    {
       name: 'toString',
       code: function() {
         // Distinguish between prototypes and instances.
@@ -173,7 +156,6 @@ CLASS({
 
   // TODO: insert EventService and PropertyChangeSupport here
 });
-
 
 CLASS({
   name: 'Model',
@@ -199,8 +181,8 @@ CLASS({
       subType: 'Property',
       name: 'properties',
       adaptArrayElement: function(o) {
-        var t = this.type ? global[this.type + 'Property'] : Property;
-        return t.create(o);
+        var cls = this.type ? global[this.type + 'Property'] : Property;
+        return cls.create(o);
       }
     },
     {
@@ -266,13 +248,15 @@ CLASS({
   methods: [
     {
       name: 'installInClass',
-      code: function(proto) {
-        proto[constantize(this.name)] = this;
+      code: function(c) {
+        console.log('installInClass.Property', this.name);
+        c[constantize(this.name)] = this;
       }
     },
     {
       name: 'installInProto',
       code: function(proto) {
+        console.log('installInProto.Property', this.name);
         /*
           Install a property onto a prototype from a Property definition.
           (Property is 'this').
@@ -463,6 +447,8 @@ CLASS({
     }
   ]
 });
+
+debugger;
 
 CLASS({
   name: 'Model',
