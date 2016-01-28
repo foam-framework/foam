@@ -17,7 +17,7 @@ CLASS({
   properties: [
     {
       name: 'responseType',
-      type: 'StringEnum',
+      type: 'foam.core.types.StringEnum',
       defaultValue: 'text',
       choices: [
         [ 'text', 'Text (String)' ],
@@ -27,7 +27,7 @@ CLASS({
     },
     {
       name: 'encoding',
-      type: 'StringEnum',
+      type: 'foam.core.types.StringEnum',
       defaultValue: 'utf8',
       choices: [
         [ 'utf8', 'UTF-8' ],

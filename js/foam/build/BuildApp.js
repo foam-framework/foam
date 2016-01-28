@@ -382,7 +382,8 @@ CLASS({
 
         // Only CLASS models have requires. Other types (eg. Enums) don't have
         // requires to process.
-        if (model.getAllRequires) model.getAllRequires().forEach(add);
+        if ( model.getAllRequires ) model.getAllRequires().forEach(add);
+        else if ( model.model_ ) add(model.model_);
       };
       add(this.controller);
       if ( this.defaultView ) add(this.defaultView);

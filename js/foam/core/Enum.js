@@ -57,7 +57,12 @@ CLASS({
         this[value.name] = value.value;
       }
     },
-      ],
+    function getValue(x) {
+      for (var i = 0; i < this.values.length; i++) {
+        if (this.values[i].value === x) return this.values[i];
+      }
+    },
+  ],
   templates: [
     {
       name: 'swiftSource',
