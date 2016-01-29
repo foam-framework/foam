@@ -115,9 +115,12 @@ CLASS({
   methods: [
     {
       name: 'hasOwnProperty',
-      code: function(name) {
-        return this.instance_.hasOwnProperty(name);
-      }
+      code: function(name) { return this.instance_.hasOwnProperty(name); }
+    },
+    {
+      // TODO: not essential to be in bootstrap, move out
+      name: 'clearProperty',
+      code: function(name) { delete this.instance_[name]; }
     },
     {
       name: 'toString',
