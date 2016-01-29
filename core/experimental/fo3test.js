@@ -51,6 +51,7 @@ console.assert(ft.a == 84, 'Factories don\'t update.');
 
 CLASS({
   name: 'DefaultValue',
+  extends: 'FObject',
   properties: [
     {
       name: 'a',

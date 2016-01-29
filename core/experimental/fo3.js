@@ -32,9 +32,9 @@ var Bootstrap = {
     */
 
     var AbstractClass = {
-      proto: {},
+      prototype: {},
       create: function(args) {
-        var obj = Object.create(this.proto);
+        var obj = Object.create(this.prototype);
         obj.instance_ = {};
 
         // TODO: lookup if valid method names
@@ -44,7 +44,7 @@ var Bootstrap = {
       },
       installAxiom: function(a) {
         a.installInClass && a.installInClass(this);
-        a.installInProto && a.installInProto(this.proto);
+        a.installInProto && a.installInProto(this.prototype);
       }
     };
 
@@ -54,14 +54,16 @@ var Bootstrap = {
       if ( ! cls ) {
         var parent = this.extends ? global[this.extends] : AbstractClass ;
         cls = Object.create(parent);
-        cls.proto = Object.create(parent.proto);
-        cls.proto.cls_ = cls;
+        cls.prototype = Object.create(parent.prototype);
+        cls.prototype.cls_ = cls;
+        cls.ID___  = this.name + 'Class';
+        cls.prototype.ID___  = this.name + 'Prototype';
         cls.name   = this.name;
         cls.model_ = this;
         global[cls.name] = cls;
       }
 
-      var proto = cls.proto;
+      var prototype = cls.prototype;
 
       if ( this.axioms )
         for ( var i = 0 ; i < this.axioms.length ; i++ )
@@ -71,7 +73,7 @@ var Bootstrap = {
       if ( this.methods ) {
         for ( var i = 0 ; i < this.methods.length ; i++ ) {
           var meth = this.methods[i];
-          proto[meth.name] = meth.code;
+          prototype[meth.name] = meth.code;
         }
       }
 
@@ -172,12 +174,6 @@ CLASS({
   ],
 
   methods: [
-    {
-      name: 'installAxioms',
-      code: function(cls, proto) {
-
-      }
-    },
     {
       name: 'getClass',
       code: Bootstrap.getClass
