@@ -609,9 +609,7 @@ CLASS({
     {
       name: 'value',
       compareProperty: function() { return 0; },
-      getter: function() {
-        return this.min;
-      }
+      getter: function() { return this.min; }
     }
   ],
 
@@ -620,7 +618,7 @@ CLASS({
       return o1.compareTo(o2) > 0 ? o2 : o1;
     },
     reduce: function(other) {
-      return MinExpr.create({max: this.mininum(this.min, other.min)});
+      return MinExpr.create({min: this.mininum(this.min, other.min)});
     },
     reduceI: function(other) {
       this.min = this.minimum(this.min, other.min);
@@ -628,7 +626,7 @@ CLASS({
     pipe: function(sink) { sink.put(this); },
     put: function(obj) {
       var v = this.arg1.f(obj);
-      this.min = this.min === undefined ? v : this.minimum(this.min, v);
+      this.min = this.hasOwnProperty('min') ? this.minimum(this.min, v) : v ;
     },
     remove: function(obj) { },
     toString: function() { return this.min; }

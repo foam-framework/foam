@@ -23,9 +23,12 @@ CLASS({
   properties: [
     {
       name:  'max',
-      type:  'int',
-      help:  'Maximum value.',
-      defaultValue: undefined
+      help:  'Maximum value.'
+    },
+    {
+      name: 'value',
+      compareProperty: function() { return 0; },
+      getter: function() { return this.max; }
     }
   ],
 
@@ -42,7 +45,7 @@ CLASS({
     pipe: function(sink) { sink.put(this); },
     put: function(obj) {
       var v = this.arg1.f(obj);
-      this.max = this.max === undefined ? v : this.maximum(this.max, v);
+      this.max = this.hasOwnProperty('max') ? this.maximum(this.max, v) : v ;
     },
     remove: function(obj) { },
     toString: function() { return this.max; }
