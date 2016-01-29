@@ -21,19 +21,20 @@ CLASS({
   properties: [
     {
       type: 'String',
-      name: 'name'
+      name: 'name',
+      defaultValueFn: function() { return constantize(this.label); }
     },
     {
       type: 'String',
       name: 'description',
     },
     {
-      name: 'value'
+      name: 'index'
     },
     {
-      name: 'swiftValue',
-      labels: ['swift'],
-      defaultValueFn: function() { return this.value },
+      name: 'value',
+      getter: function() { return this.index; },
+      setter: function(v) { this.index = v; }
     },
     {
       type: 'String',

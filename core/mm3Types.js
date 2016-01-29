@@ -141,7 +141,7 @@ CLASS({
     {
       name: 'swiftAdapt',
       defaultValue: function() {/*
-        if let strValue = newValue as? String { return strValue }
+        if newValue != nil { return String(newValue!) }
         return ""
       */},
     },
