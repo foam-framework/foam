@@ -382,6 +382,9 @@ CLASS({
 });
 
 
+Bootstrap.end();
+
+
 CLASS({
   name: 'AxiomArrayProperty',
   extends: 'ArrayProperty',
@@ -395,12 +398,9 @@ CLASS({
   ]
 });
 
-// TODO: Why does this need to be in the Bootstrap?
-Bootstrap.end();
 
 CLASS({
   name: 'Constant',
-  extends: 'FObject', // This line shouldn't be needed.
 
   properties: [
     {
