@@ -16,39 +16,48 @@
  */
 // Tests:
 
-CLASS({ name: 'GetterSetterTest', properties: [
-  {
-    name: 'b'
-  },
-  {
-    name: 'a',
-    getter: function() { console.log('getter'); return this.b; },
-    setter: function(a) { console.log('setter'); this.b = a; }
-  } ]
- });
+CLASS({
+  name: 'GetterSetterTest',
+  properties: [
+    {
+      name: 'b'
+    },
+    {
+      name: 'a',
+      getter: function()  { console.log('getter'); return this.b; },
+      setter: function(a) { console.log('setter'); this.b = a; }
+    }
+  ]
+});
 var t = GetterSetterTest.create({});
 t.a = 42;
 console.assert(t.a == 42, 'Getter/setter doesn\'t work.');
 
 
-CLASS({ name: 'FactoryTest', properties: [
-  {
-    name: 'a',
-    factory: function() { return 42; }
-  } ]
- });
+CLASS({
+  name: 'FactoryTest',
+  properties: [
+    {
+      name: 'a',
+      factory: function() { return 42; }
+    }
+  ]
+});
 var ft = FactoryTest.create({});
 console.assert(ft.a == 42, 'Factories don\'t work.');
 ft.a = 84;
 console.assert(ft.a == 84, 'Factories don\'t update.');
 
 
-CLASS({ name: 'DefaultValue', properties: [
-  {
-    name: 'a',
-    defaultValue: 42
-  } ]
- });
+CLASS({
+  name: 'DefaultValue',
+  properties: [
+    {
+      name: 'a',
+      defaultValue: 42
+    }
+  ]
+});
 var dv = DefaultValue.create({});
 console.assert(dv.a == 42, 'DefaultValues don\'t work.');
 dv.a = 84;
@@ -61,13 +70,16 @@ console.assert(ap.preSet, 'ArrayProperty.preSet missing.');
 
 // ArrayProperty Test
 CLASS({ name: 'A', properties: [ { name: 'a' } ] });
-CLASS({ name: 'B', properties: [
-  {
-    type: 'Array',
-    subType: 'A',
-    name: 'as'
-  }
-] });
+CLASS({
+  name: 'B',
+  properties: [
+    {
+      type: 'Array',
+      subType: 'A',
+      name: 'as'
+    }
+  ]
+});
 
 var b = B.create({as: [{a: 'abc'}]});
 console.log(b.as);
