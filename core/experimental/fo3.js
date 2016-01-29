@@ -93,47 +93,11 @@ var Bootstrap = {
     this.classes.push(this.getClass.call(m));
   },
 
-  updateModels: function() {
-    var classes = this.classes;
-
-    /*
-    for ( var i = 0 ; i < classes.length ; i++ ) {
-      var cls = classes[i];
-      var m   = cls.model_;
-
-      if ( m.properties )
-        for ( var j = 0 ; j < m.properties.length ; j++ )
-          cls.installAxiom(m.properties[j]);
-    }
-    */
-
-    for ( var i = 0 ; i < classes.length ; i++ ) {
-      var cls = classes[i];
-      var m   = cls.model_;
-
-      if ( m.properties ) {
-        for ( var j = 0 ; j < m.properties.length ; j++ ) {
-          var p = m.properties[j];
-          if ( p.type ) {
-            var propType = global[p.type + 'Property'];
-            if ( propType ) {
-              // console.log('Updating: ', i, m.name, p.name, p.type);
-              cls.installAxiom(m.properties[j] = propType.create(p));
-            } else {
-              console.warn('Unknown Property type: ', p.type);
-            }
-          }
-        }
-      }
-    }
-  },
-
   end: function() {
-    Bootstrap.updateModels();
+    global.CLASS = function(m) { return Model.create(m).getClass(); };
 
-    global.CLASS = function(m) {
-      return Model.create(m).getClass();
-    }
+    for ( var i = 0 ; i < this.classes.length ; i++ )
+      CLASS(this.classes[i].model_);
 
     global.Bootstrap = null;
   }
