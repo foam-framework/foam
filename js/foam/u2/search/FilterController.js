@@ -28,6 +28,7 @@ CLASS({
     'foam.u2.md.Select',
     'foam.u2.md.TableView',
     'foam.u2.md.TextField',
+    'foam.u2.search.GroupAutocompleteSearchView',
     'foam.u2.search.GroupBySearchView',
     'foam.u2.search.SearchMgr',
     'foam.u2.search.TextSearchView'
@@ -68,11 +69,6 @@ CLASS({
       type: 'foam.core.types.DAO',
       name: 'filteredDAO',
       required: true,
-      toPropertyE: function(X) {
-        return X.lookup('foam.u2.md.TableView').create({
-          editColumnsEnabled: true,
-        }, X);
-      }
     },
     {
       name: 'filterChoice',
@@ -156,9 +152,9 @@ CLASS({
               var split = this.splitName(nu[i]);
               var prop = this.model.getFeature(split.name);
               var model = BooleanProperty.isInstance(prop) ?
-                  this.GroupBySearchView : this.TextSearchView;
+                  this.GroupBySearchView : this.GroupAutocompleteSearchView;
               var options = {
-                floatingLabel: false,
+                inline: true,
                 name: nu[i]
               };
               if (prop.tableSeparator) {
@@ -183,7 +179,7 @@ CLASS({
         var Y = this.Y.sub();
         Y.registerModel(this.TextField.xbind({
           placeholder: '',
-          floatingLabel: false
+          inline: true
         }), 'foam.u2.TextField');
         return Y;
       }
@@ -226,7 +222,8 @@ CLASS({
         prop: prop
       }).add(view);
       var card = this.Card.create({ padding: false }).style({
-        'margin-bottom': '0'
+        'margin-bottom': '0',
+        overflow: 'visible',
       }).add(filterView);
 
       this.searchViews[view.name] = card;
