@@ -110,14 +110,15 @@ Bootstrap.start();
 
 CLASS({
   name: 'FObject',
-  extends: null,
 
   documentation: 'Base model for model hierarchy.',
 
-  methods: [
+  axioms: [
     {
       name: 'hasOwnProperty',
-      code: function(name) { return this.instance_.hasOwnProperty(name); }
+      installInProto: function(proto) {
+        proto[this.name] = function(name) { return this.instance_.hasOwnProperty(name); }
+      }
     }
   ]
 });
