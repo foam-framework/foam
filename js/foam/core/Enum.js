@@ -72,7 +72,11 @@ class <%= this.name %>: FoamEnum {
 <% for (var i = 0, value; value = this.values[i]; i++) { %>
     [
       <%= this.name %>.<%= value.name %>,
+  <% if (value.label) { %>
       NSLocalizedString("<%= value.label %>", comment: "<%= value.description %>"),
+  <% } else { %>
+      "<%= value.name %>",
+  <% } %>
     ],
 <% } %>
   ]
