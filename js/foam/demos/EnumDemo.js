@@ -30,15 +30,22 @@ CLASS({
       enum: 'foam.demos.SomeEnum',
       postSet: function(_, v) {
         console.log("enum set to", v);
-      }
+      },
+      javaPostSet: 'System.out.println("Enum set to " + newValue);'
     }
   ],
   methods: [
-    function init() {
-      this.enumProperty = this.SomeEnum.FOO;
+    {
+      name: 'main',
+      labels: ['java'],
+      javaCode: 'this.setEnumProperty(SomeEnum.FOO);'
     },
-    function toE(X) {
-      return this.DetailView.create({ data: this }, X);
+    {
+      name: 'toE',
+      labels: ['javascript'],
+      code: function toE(X) {
+        return this.DetailView.create({ data: this }, X);
+      }
     }
   ]
 });

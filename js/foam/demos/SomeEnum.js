@@ -17,16 +17,21 @@
 __DATA({
   model_: 'foam.core.Enum',
   id: 'foam.demos.SomeEnum',
+  startIndex: 10,
+  step: 100,
   values: [
     {
       name: 'FOO',
-      label: 'Foo',
-      value: 1
+      label: 'Foo'
     },
     {
-      name: 'BAR',
-      label: 'Bar',
-      value: 2
+      label: 'FooBar',
+      index: 204
+    },
+    'Bar',
+    {
+      label: 'wat',
+      value: 10
     }
   ]
 });
