@@ -78,7 +78,7 @@ CLASS({
     { name: 'id' },
     { name: 'name' },
     { name: 'sex', defaultValue: 'M' },
-    { model_: 'IntProperty', name: 'age' },
+    { type: 'Int', name: 'age' },
     { name: 'hobby', defaultValue: null },
   ]
 });
@@ -197,13 +197,13 @@ dao.limit(2).select(console.log.json);
 dao.skip(1).limit(2).select(console.log.json);
 
 // Where, Less-Than
-dao.where(LT(Person.AGE, 18)).select(console.log.json);
+dao.where(LT(Person.AGE, 19)).select(console.log.json);
 
 // Where, Less-Than-or-Equal
-dao.where(LTE(Person.AGE, 18)).select(console.log.json);
+dao.where(LTE(Person.AGE, 19)).select(console.log.json);
 
 // Where, with AND
-dao.where(AND(GTE(Person.AGE, 18), LTE(Person.AGE, 20))).select(console.log.json);
+dao.where(AND(GTE(Person.AGE, 19), LTE(Person.AGE, 20))).select(console.log.json);
 
 // Accumulators
 
@@ -401,7 +401,7 @@ var OrderItemDAO = [
   OrderItem.create({id: 4, orderId: 2, title: 'Item 2', amount: 999.99}),
   OrderItem.create({id: 5, orderId: 2, title: 'Item 3', amount: 62.45})
 ].dao;
-X.OrderItemDAO = OrderItemDAO;
+X.orderItemDAO = OrderItemDAO;
 
 OrderHeaderDAO.select(function(header) {
   console.log(header.id, ' ', header.title);
