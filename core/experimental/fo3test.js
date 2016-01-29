@@ -45,7 +45,6 @@ console.assert(ap.preSet, 'ArrayProperty.preSet missing.');
 
 // ArrayProperty Test
 CLASS({ name: 'A', properties: [ { name: 'a' } ] });
-debugger;
 CLASS({ name: 'B', properties: [
   {
     type: 'Array',
@@ -57,7 +56,6 @@ CLASS({ name: 'B', properties: [
 var b = B.create({as: [{a: 'abc'}]});
 console.log(b.as);
 
-debugger;
 
 CLASS({
   name: 'ConstantTest',
@@ -71,7 +69,7 @@ CLASS({
 });
 
 var t1 = ConstantTest.create({});
-console.assert(t1,KEY, 'Constants don\'t work.');
+console.assert(t1.KEY, 'Constants don\'t work.');
 console.log(t1.KEY);
 
 
@@ -112,7 +110,7 @@ p.sayGoodbye();
 CLASS({
   name: 'Employee',
   extends: 'Person',
-  
+
   properties: [
     {
       name: 'salary'
