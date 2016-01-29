@@ -15,91 +15,118 @@
  * limitations under the License.
  */
 
-// Temporary collection of models to be updated later.
-var models = [];
+// Bootstrap Support, discarded after use
+var Bootstrap = {
 
-// Bootstrap Model definition which just creates place-holder prototypes
-// which are then patched later.
-function MODEL(m) {
-  var proto = global[m.name];
+  // Temporary collection of classes to be updated later.
+  classes: [],
 
-  if ( ! proto ) {
-    proto = m.extends ? Object.create(global[m.extends]) : {};
-    global[m.name] = proto;
-  }
+  start: function() {
+    global.CLASS = Bootstrap.CLASS.bind(Bootstrap);
+  },
 
-  if ( ! proto.model_ ) proto.model_ = m;
+  getClass: (function() {
+    /*
+      Create or Update a Prototype from a psedo-Model definition.
+      (Model is 'this').
+    */
 
-  if ( m.axioms ) {
-    for ( var i = 0 ; i < m.axioms.length ; i++ ) {
-      var a = m.axioms[i];
-      a.install && a.install.call(a, proto);
-    }
-  }
-
-  if ( m.methods ) {
-    for ( var i = 0 ; i < m.methods.length ; i++ ) {
-      var meth = m.methods[i];
-      proto[meth.name] = meth.code;
-    }
-  }
-
-  if ( global.Property && m.properties ) {
-    for ( var i = 0 ; i < m.properties.length ; i++ ) {
-      var p = m.properties[i];
-      var t = p.type ? global[p.type + 'Property'] : Property;
-      var prop = t.create(p);
-      prop.install(proto);
-    }
-  }
-
-  models.push(m);
-}
-
-
-MODEL({
-  name: 'FObject',
-  extends: null,
-
-  documentation: 'Base model for model hierarchy.',
-
-  properties: [
-  ],
-
-  methods: [
-    {
-      name: 'create',
-      code: function(args) {
-        var obj = Object.create(this);
+    var AbstractClass = {
+      proto: {},
+      create: function(args) {
+        var obj = Object.create(this.proto);
         obj.instance_ = {};
 
         // TODO: lookup if valid method names
         for ( var key in args ) obj[key] = args[key];
 
         return obj;
+      },
+      installAxiom: function(a) {
+        a.installInClass && a.installInClass(this);
+        a.installInProto && a.installInProto(this.proto);
       }
-    },
-    {
-      name: 'toString',
-      code: function() {
-        // Distinguish between prototypes and instances.
-        return this.model_.name + (this.instance_ ? 'Obj' : 'Proto')
+    };
+
+    return function() {
+      var cls = global[this.name];
+
+      if ( ! cls ) {
+        var parent = this.extends ? global[this.extends] : AbstractClass ;
+        cls = Object.create(parent);
+        cls.proto = Object.create(parent.proto);
+        cls.proto.cls_ = cls;
+        cls.name   = this.name;
+        cls.model_ = this;
+        global[cls.name] = cls;
       }
-    }
-  ],
 
-  // TODO: insert core/FObject.js functionality
+      var proto = cls.proto;
 
-  // TODO: insert EventService and PropertyChangeSupport here
+      if ( this.axioms )
+        for ( var i = 0 ; i < this.axioms.length ; i++ )
+          cls.installAxiom(this.axioms[i]);
+
+      // TODO: combine with axioms
+      if ( this.methods ) {
+        for ( var i = 0 ; i < this.methods.length ; i++ ) {
+          var meth = this.methods[i];
+          proto[meth.name] = meth.code;
+        }
+      }
+
+      // TODO: combine with axioms
+      if ( global.Property && this.properties ) {
+        for ( var i = 0 ; i < this.properties.length ; i++ ) {
+          var p    = this.properties[i];
+          var type = global[(p.type || '') + 'Property'] || Property;
+          var axiom = type.create(p);
+          cls.installAxiom(axiom);
+        }
+      }
+
+      return cls;
+    };
+  })(),
+
+  // Bootstrap Model definition which records incomplete models
+  // so they can be patched at the end of the bootstrap process.
+  CLASS: function(m) {
+    this.classes.push(this.getClass.call(m));
+  },
+
+  end: function() {
+    global.CLASS = function(m) { return Model.create(m).getClass(); };
+
+    for ( var i = 0 ; i < this.classes.length ; i++ )
+      CLASS(this.classes[i].model_);
+
+    global.Bootstrap = null;
+  }
+};
+
+
+Bootstrap.start();
+
+CLASS({
+  name: 'FObject',
+
+  documentation: 'Base model for model hierarchy.',
 
   axioms: [
+    {
+      name: 'hasOwnProperty',
+      installInProto: function(proto) {
+        proto[this.name] = function(name) { return this.instance_.hasOwnProperty(name); }
+      }
+    }
   ]
 });
 
 
-MODEL({
+CLASS({
   name: 'Model',
-  extends: 'FObject', // Don't remove, isn't the default yet.
+  extends: 'FObject', // Isn't the default yet.
 
   documentation: 'Class/Prototype description.',
 
@@ -112,7 +139,7 @@ MODEL({
       defaultValue: 'FObject'
     },
     {
-      type: 'Array',
+      // type: 'Array',
       name: 'axioms',
       factory: function() { return []; }
     },
@@ -121,14 +148,19 @@ MODEL({
       subType: 'Property',
       name: 'properties',
       adaptArrayElement: function(o) {
-        var t = this.type ? global[this.type + 'Property'] : Property;
-        return t.create(o);
+        var cls = this.type ? global[this.type + 'Property'] : Property;
+        return cls.create(o);
       }
     },
     {
       type: 'Array',
       subType: 'Method',
       name: 'methods',
+      // TODO: this shouldn't be needed
+      adapt: function(_, a, prop) {
+        if ( ! a ) return [];
+        return a.map(prop.adaptArrayElement.bind(prop));
+      },
       adaptArrayElement: function(e) {
         if ( typeof e === 'function' ) {
           console.assert(e.name, 'Method must be named');
@@ -136,57 +168,34 @@ MODEL({
         }
         return e;
       }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'installAxioms',
+      code: function(cls, proto) {
+
+      }
     },
     {
-      name: 'proto',
-      factory: function() {
-        var proto = this.extends ? Object.create(global[this.extends]) : {};
-        var m     = this;
-
-        proto.model_ = this;
-
-        if ( m.axioms ) {
-          for ( var j = 0 ; j < m.axioms.length ; j++ ) {
-            var a = m.axioms[j];
-            a.install && a.install.call(a, proto);
-          }
-        }
-
-        // TODO: should be covered by .axioms above
-        if ( m.methods ) {
-          for ( var j = 0 ; j < m.methods.length ; j++ ) {
-            var meth = m.methods[j];
-            proto[meth.name] = meth.code;
-          }
-        }
-
-        // TODO: should be covered by .axioms above
-        if ( m.properties ) {
-          for ( var j = 0 ; j < m.properties.length ; j++ ) {
-            var p = m.properties[j];
-            var t = p.type ? global[p.type + 'Property'] : Property;
-            var prop = t.create(p);
-            prop.install(proto);
-          }
-        }
-
-        return proto;
-      }
+      name: 'getClass',
+      code: Bootstrap.getClass
     }
   ]
 });
 
 
-MODEL({
+CLASS({
   name: 'Property',
   extends: 'FObject',
 
   properties: [
     {
-      name: 'type'
+      name: 'name'
     },
     {
-      name: 'name'
+      name: 'type'
     },
     {
       name: 'defaultValue'
@@ -195,31 +204,37 @@ MODEL({
       name: 'factory'
     },
     {
+      name: 'adapt'
+    },
+    {
       name: 'preSet'
     },
     {
+      name: 'postSet'
+    },
+    {
       name: 'expression'
-      // TODO: implement
     }
   ],
 
   methods: [
     {
-      name: 'install',
+      name: 'installInClass',
+      code: function(c) { c[constantize(this.name)] = this;
+      }
+    },
+    {
+      name: 'installInProto',
       code: function(proto) {
         /*
           Install a property onto a prototype from a Property definition.
           (Property is 'this').
         */
-        proto[constantize(this.name)] = this;
-
         var prop            = this;
         var name            = this.name;
         var adapt           = this.adapt
         var preSet          = this.preSet;
         var postSet         = this.postSet;
-        var getter          = this.getter;
-        var setter          = this.setter;
         var factory         = this.factory;
         var hasDefaultValue = this.hasOwnProperty('defaultValue');
         var defaultValue    = this.defaultValue;
@@ -237,10 +252,10 @@ MODEL({
            });
         */
 
-        Object.defineProperty(proto, name, {
-          get: function propGetter() {
-            if ( getter ) return getter.call(this);
+        // TODO: implement 'expression'
 
+        Object.defineProperty(proto, name, {
+          get: prop.getter || function propGetter() {
             if ( ( hasDefaultValue || factory ) &&
                  ! this.instance_.hasOwnProperty(name) )
             {
@@ -253,12 +268,7 @@ MODEL({
 
             return this.instance_[name];
           },
-          set: function propSetter(newValue) {
-            if ( setter ) {
-              setter.call(this, newValue);
-              return;
-            }
-
+          set: prop.setter || function propSetter(newValue) {
             // TODO: add logic to not trigger factory
             var oldValue = this[name];
 
@@ -282,7 +292,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'Method',
   extends: 'FObject',
 
@@ -297,40 +307,14 @@ MODEL({
 
   methods: [
     {
-      name: 'install',
-      code: function(proto) {
-        proto[this.name] = this.code;
-      }
+      name: 'installInProto',
+      code: function(proto) { proto[this.name] = this.code; }
     }
   ]
 });
 
 
-MODEL({
-  name: 'Constant',
-  extends: 'FObject', // This line shouldn't be needed.
-
-  properties: [
-    {
-      name: 'name'
-    },
-    {
-      name: 'value'
-    }
-  ],
-
-  methods: [
-    {
-      name: 'install',
-      code: function(proto) {
-        proto[constantize(this.name)] = this.value;
-      }
-    }
-  ]
-});
-
-
-MODEL({
+CLASS({
   name: 'StringProperty',
   extends: 'Property',
 
@@ -349,7 +333,7 @@ MODEL({
 });
 
 
-MODEL({
+CLASS({
   name: 'ArrayProperty',
   extends: 'Property',
 
@@ -364,9 +348,9 @@ MODEL({
     {
       name: 'preSet',
       defaultValue: function(_, a, prop) {
-        var proto = global[prop.subType];
+        var cls = global[prop.subType];
         // TODO: loop for performance
-        return a.map(function(p) { return proto.create(p); });
+        return a.map(function(p) { return cls.create(p); });
       }
     },
     {
@@ -386,67 +370,73 @@ MODEL({
 });
 
 
-MODEL({
+Bootstrap.end();
+
+
+CLASS({
+  name: 'FObject',
+
+  methods: [
+    {
+      // TODO: not essential to be in bootstrap, move out
+      name: 'clearProperty',
+      code: function(name) { delete this.instance_[name]; }
+    },
+    {
+      name: 'toString',
+      code: function() {
+        // Distinguish between prototypes and instances.
+        return this.model_.name + (this.instance_ ? '' : 'Proto')
+      }
+    }
+  ],
+
+  // TODO: insert core/FObject.js functionality
+
+  // TODO: insert EventService and PropertyChangeSupport here
+});
+
+
+CLASS({
   name: 'AxiomArrayProperty',
   extends: 'ArrayProperty',
 
   properties: [
     {
       name: 'postSet',
-      defaultValue: function(_, a) { this.axioms.push.apply(this.axioms, a); }
+      defaultValue: function(_, a) {
+        (this.axioms || (this.axioms = [])).push.apply(this.axioms, a); }
     }
   ]
 });
 
 
-/*
-  create: create object then update
-  remote create from regular objects or remove from prototypes
-  acreate or afromJSON
+CLASS({
+  name: 'Constant',
 
-  TODO:
-  - property overriding
-
-*/
-
-
-// Bootstrap Prototypes
-
-for ( var i = 0 ; i < models.length ; i++ ) {
-  var m = models[i];
-  var proto = global[m.name];
-
-  if ( m.properties ) {
-    for ( var j = 0 ; j < m.properties.length ; j++ ) {
-      var p = m.properties[j];
-      Property.install.call(p, proto);
+  properties: [
+    {
+      name: 'name'
+    },
+    {
+      name: 'value'
     }
-  }
-}
+  ],
 
-for ( var i = 0 ; i < models.length ; i++ ) {
-  var m = models[i];
-  var proto = global[m.name];
-
-  if ( m.properties ) {
-    for ( var j = 0 ; j < m.properties.length ; j++ ) {
-      var p = m.properties[j];
-      if ( p.type ) {
-        var propType = global[p.type + 'Property'];
-        if ( propType ) {
-          console.log('Updating: ', i, m.name, p.name, p.type);
-          propType.install.call(p, proto);
-        } else {
-          console.warn('Unknown Property type: ', p.type);
-        }
-      }
+  methods: [
+    {
+      name: 'installInClass',
+      code: function(cls) { cls[constantize(this.name)] = this.value; }
+    },
+    {
+      name: 'installInProto',
+      code: function(proto) { proto[constantize(this.name)] = this.value; }
     }
-  }
-}
+  ]
+});
 
-delete models;
 
-MODEL({
+CLASS({
   name: 'Model',
 
   properties: [
@@ -459,47 +449,12 @@ MODEL({
 });
 
 
-MODEL = function(m) {
-  var model = Model.create(m);
-  var proto = model.proto;
-  global[m.name] = proto;
-  return proto;
-}
+/*
+  Notes:
 
-var CLASS = MODEL;
+  remove create from regular objects
+  acreate or afromJSON
 
-// End of Bootstrap
-
-
-// Test:
-
-CLASS({
-  name: 'Person',
-
-  constants: [
-    {
-      name: 'KEY',
-      value: 'value'
-    }
-  ],
-
-  properties: [
-    {
-      name: 'name'
-    },
-    {
-      name: 'age'
-    }
-  ],
-
-  methods: [
-    {
-      name: 'sayHello',
-      code: function() { console.log('Hello World!'); }
-    }
-  ]
-});
-
-var p = Person.create({name: 'Adam', age: 0});
-console.log(p.name, p.age, p.KEY);
-p.sayHello();
+  TODO:
+  - property overriding
+*/
