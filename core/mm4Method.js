@@ -849,6 +849,11 @@ CLASS({
       labels: ['swift'],
     },
     {
+      type: 'String',
+      name: 'javaCode',
+      labels: ['java']
+    },
+    {
       model_: 'TemplateProperty',
       name: 'swiftSource',
       labels: ['swift'],
@@ -922,10 +927,13 @@ if ( i != args.length - 1 ) { %>, <% }
       name: 'javaSource',
       labels: ['java'],
       defaultValue: function() {/*
-    <%= this.returnType || "void" %> <%= this.name %>(<%
+<% if ( ! this.javaCode ) return; %>
+  <%= this.returnType || "void" %> <%= this.name %>(<%
  for ( var i = 0 ; this.args && i < this.args.length ; i++ ) { var arg = this.args[i];
 %><%= arg.javaSource() %><% if ( i < this.args.length-1 ) out(", ");
-%><% } %>) {}\n*/}
+%><% } %>) {
+    <%= this.javaCode %>
+  }\n*/}
     }
   ],
 
