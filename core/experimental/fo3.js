@@ -28,7 +28,7 @@ var Bootstrap = {
   getClass: (function() {
     /*
       Create or Update a Prototype from a psedo-Model definition.
-      'this' is a Model.
+      (Model is 'this').
     */
 
     var AbstractClass = {
