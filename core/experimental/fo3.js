@@ -112,12 +112,10 @@ CLASS({
 
   documentation: 'Base model for model hierarchy.',
 
-  axioms: [
+  methods: [
     {
       name: 'hasOwnProperty',
-      installInProto: function(proto) {
-        proto[this.name] = function(name) { return this.instance_.hasOwnProperty(name); }
-      }
+      code: function(name) { return this.instance_.hasOwnProperty(name); }
     }
   ]
 });
