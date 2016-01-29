@@ -18,7 +18,7 @@
 // Bootstrap Support, discarded after use
 var Bootstrap = {
 
-  // Temporary collection of models to be updated later.
+  // Temporary collection of classes to be updated later.
   classes: [],
 
   start: function() {
@@ -135,6 +135,7 @@ CLASS({
 
   // TODO: insert EventService and PropertyChangeSupport here
 });
+
 
 CLASS({
   name: 'Model',
