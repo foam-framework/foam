@@ -60,20 +60,20 @@ var Bootstrap = {
         cls.model_ = this;
         global[cls.name] = cls;
       }
-      
+
       var proto = cls.proto;
-      
+
       if ( this.axioms )
         for ( var i = 0 ; i < this.axioms.length ; i++ )
           cls.installAxiom(this.axioms[i]);
-      
+
       if ( this.methods ) {
         for ( var i = 0 ; i < this.methods.length ; i++ ) {
           var meth = this.methods[i];
           proto[meth.name] = meth.code;
         }
       }
-      
+
       if ( global.Property && this.properties ) {
         for ( var i = 0 ; i < this.properties.length ; i++ ) {
           var p    = this.properties[i];
@@ -96,6 +96,7 @@ var Bootstrap = {
   updateModels: function() {
     var classes = this.classes;
 
+    /*
     for ( var i = 0 ; i < classes.length ; i++ ) {
       var cls = classes[i];
       var m   = cls.model_;
@@ -104,6 +105,7 @@ var Bootstrap = {
         for ( var j = 0 ; j < m.properties.length ; j++ )
           cls.installAxiom(m.properties[j]);
     }
+    */
 
     for ( var i = 0 ; i < classes.length ; i++ ) {
       var cls = classes[i];
@@ -115,7 +117,7 @@ var Bootstrap = {
           if ( p.type ) {
             var propType = global[p.type + 'Property'];
             if ( propType ) {
-              console.log('Updating: ', i, m.name, p.name, p.type);
+              // console.log('Updating: ', i, m.name, p.name, p.type);
               cls.installAxiom(m.properties[j] = propType.create(p));
             } else {
               console.warn('Unknown Property type: ', p.type);
