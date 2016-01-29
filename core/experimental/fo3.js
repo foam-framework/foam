@@ -42,6 +42,25 @@ var Bootstrap = {
 
         return obj;
       },
+      installModel: function(m) {
+        if ( m.axioms )
+          for ( var i = 0 ; i < m.axioms.length ; i++ )
+            this.installAxiom(m.axioms[i]);
+        
+        if ( m.methods )
+          for ( var i = 0 ; i < m.methods.length ; i++ ) {
+            var meth = m.methods[i];
+            this.prototype[meth.name] = meth.code;
+          }
+        
+        if ( global.Property && m.properties )
+          for ( var i = 0 ; i < m.properties.length ; i++ ) {
+            var p    = m.properties[i];
+            var type = global[(p.type || '') + 'Property'] || Property;
+            var axiom = type.create(p);
+            this.installAxiom(axiom);
+          }
+      },
       installAxiom: function(a) {
         a.installInClass && a.installInClass(this);
         a.installInProto && a.installInProto(this.prototype);
@@ -63,29 +82,7 @@ var Bootstrap = {
         global[cls.name] = cls;
       }
 
-      var prototype = cls.prototype;
-
-      if ( this.axioms )
-        for ( var i = 0 ; i < this.axioms.length ; i++ )
-          cls.installAxiom(this.axioms[i]);
-
-      // TODO: combine with axioms
-      if ( this.methods ) {
-        for ( var i = 0 ; i < this.methods.length ; i++ ) {
-          var meth = this.methods[i];
-          prototype[meth.name] = meth.code;
-        }
-      }
-
-      // TODO: combine with axioms
-      if ( global.Property && this.properties ) {
-        for ( var i = 0 ; i < this.properties.length ; i++ ) {
-          var p    = this.properties[i];
-          var type = global[(p.type || '') + 'Property'] || Property;
-          var axiom = type.create(p);
-          cls.installAxiom(axiom);
-        }
-      }
+      cls.installModel(this);
 
       return cls;
     };
