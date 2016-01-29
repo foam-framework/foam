@@ -16,6 +16,21 @@
  */
 // Tests:
 
+CLASS({ name: 'GetterSetterTest', properties: [
+  {
+    name: 'b'
+  },
+  {
+    name: 'a',
+    getter: function() { console.log('getter'); return this.b; },
+    setter: function(a) { console.log('setter'); this.b = a; }
+  } ]
+ });
+var t = GetterSetterTest.create({});
+t.a = 42;
+console.assert(t.a == 42, 'Getter/setter doesn\'t work.');
+
+
 CLASS({ name: 'FactoryTest', properties: [
   {
     name: 'a',

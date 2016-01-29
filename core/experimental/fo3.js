@@ -67,6 +67,7 @@ var Bootstrap = {
         for ( var i = 0 ; i < this.axioms.length ; i++ )
           cls.installAxiom(this.axioms[i]);
 
+      // TODO: combine with axioms
       if ( this.methods ) {
         for ( var i = 0 ; i < this.methods.length ; i++ ) {
           var meth = this.methods[i];
@@ -74,6 +75,7 @@ var Bootstrap = {
         }
       }
 
+      // TODO: combine with axioms
       if ( global.Property && this.properties ) {
         for ( var i = 0 ; i < this.properties.length ; i++ ) {
           var p    = this.properties[i];
@@ -242,8 +244,6 @@ CLASS({
         var adapt           = this.adapt
         var preSet          = this.preSet;
         var postSet         = this.postSet;
-        var getter          = this.getter;
-        var setter          = this.setter;
         var factory         = this.factory;
         var hasDefaultValue = this.hasOwnProperty('defaultValue');
         var defaultValue    = this.defaultValue;
@@ -264,9 +264,7 @@ CLASS({
         // TODO: implement 'expression'
 
         Object.defineProperty(proto, name, {
-          get: function propGetter() {
-            if ( getter ) return getter.call(this);
-
+          get: prop.getter || function propGetter() {
             if ( ( hasDefaultValue || factory ) &&
                  ! this.instance_.hasOwnProperty(name) )
             {
@@ -279,12 +277,7 @@ CLASS({
 
             return this.instance_[name];
           },
-          set: function propSetter(newValue) {
-            if ( setter ) {
-              setter.call(this, newValue);
-              return;
-            }
-
+          set: prop.setter || function propSetter(newValue) {
             // TODO: add logic to not trigger factory
             var oldValue = this[name];
 
