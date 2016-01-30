@@ -34,10 +34,9 @@ function memoize1(f) {
 
 var constantize = memoize1(function(str) {
   // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
-  // TODO: add property to specify constantization. For now catch special case to avoid conflict with context this.X and this.Y.
-  if ( str === 'x' ) return 'X_';
-  if ( str === 'y' ) return 'Y_';
+  // TODO: add property to specify constantization. For now catch special case to avoid conflict with $ and _.
   if ( str === '$' ) return '$_';
+  if ( str === '_' ) return '__';
   return str.replace(/[a-z][^0-9a-z_]/g, function(a) {
     return a.substring(0,1) + '_' + a.substring(1,2);
   }).toUpperCase();
