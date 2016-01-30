@@ -35,10 +35,15 @@ var Bootstrap = {
       prototype: {},
       create: function(args) {
         var obj = Object.create(this.prototype);
-        obj.instance_ = {};
+        obj.instance_ = Object.create(null);
 
         // TODO: lookup if valid method names
-        for ( var key in args ) obj[key] = args[key];
+        for ( var key in args ) {
+//          if ( key.indexOf('_') == -1 )
+            obj[key] = args[key];
+//          else
+//            console.log('skipping: ', key);
+        }
 
         return obj;
       },
@@ -46,13 +51,13 @@ var Bootstrap = {
         if ( m.axioms )
           for ( var i = 0 ; i < m.axioms.length ; i++ )
             this.installAxiom(m.axioms[i]);
-        
+
         if ( m.methods )
           for ( var i = 0 ; i < m.methods.length ; i++ ) {
             var meth = m.methods[i];
             this.prototype[meth.name] = meth.code;
           }
-        
+
         if ( global.Property && m.properties )
           for ( var i = 0 ; i < m.properties.length ; i++ ) {
             var p    = m.properties[i];
@@ -115,7 +120,9 @@ CLASS({
   methods: [
     {
       name: 'hasOwnProperty',
-      code: function(name) { return this.instance_.hasOwnProperty(name); }
+      code: function(name) {
+        return Object.hasOwnProperty.call(this.instance_, name);
+      }
     }
   ]
 });
@@ -248,7 +255,7 @@ CLASS({
         Object.defineProperty(proto, name, {
           get: prop.getter || function propGetter() {
             if ( ( hasDefaultValue || factory ) &&
-                 ! this.instance_.hasOwnProperty(name) )
+                 ! this.hasOwnProperty(name) )
             {
               if ( hasDefaultValue ) return defaultValue;
 
