@@ -103,11 +103,23 @@ var Bootstrap = {
     this.classes.push(this.getClass.call(m));
   },
 
-  end: function() {
+  endPhase1: function() {
+    // Upgrade to final CLASS() definition.
     global.CLASS = function(m) { return Model.create(m).getClass(); };
 
+    // Upgrade existing classes to real classes.
     for ( var i = 0 ; i < this.classes.length ; i++ )
       CLASS(this.classes[i].model_);
+  },
+
+  end: function() {
+    // Substitute Bootstrap installModel() with
+    // simpler axiom-only version.
+    FObject.__proto__.installModel = function installModel(m) {
+      if ( m.axioms )
+        for ( var i = 0 ; i < m.axioms.length ; i++ )
+          this.installAxiom(m.axioms[i]);
+    };
 
     global.Bootstrap = null;
   }
@@ -355,8 +367,7 @@ CLASS({
   ]
 });
 
-
-Bootstrap.end();
+Bootstrap.endPhase1();
 
 
 CLASS({
@@ -417,9 +428,29 @@ CLASS({
       type: 'AxiomArray',
       subType: 'Constant',
       name: 'constants'
+    },
+    {
+      type: 'AxiomArray',
+      subType: 'Property',
+      name: 'properties'
+    },
+    {
+      type: 'AxiomArray',
+      subType: 'Method',
+      name: 'methods',
+      // TODO: shouldn't be needed when property inheritance is implemented.
+      adaptArrayElement: function(e) {
+        if ( typeof e === 'function' ) {
+          console.assert(e.name, 'Method must be named');
+          return Method.create({name: e.name, code: e});
+        }
+        return e;
+      }
     }
   ]
 });
+
+Bootstrap.end();
 
 
 /*
