@@ -403,6 +403,14 @@ return JSONUtil.arrayToObjArray(X, [
     image: 'Robot.png'
   },
   {
+    name: 'FOAM Presentation',
+    model: 'foam.demos.empire.Preso3',
+    description: 'Presentation on FOAM written in FOAM. Press the + button to see all 25 slides run at once (which includes 50k objects, 20k one and two-way data bindings, and 7k animated objects).',
+    src: '../js/foam/demos/empire/Preso3_toHTML.ft',
+    keywords: [ 'animation', 'graphics', 'game', 'presentation', 'DAO', 'database', 'search' ],
+    image: 'Preso3.png'
+  },
+  {
     name: 'FOAM Demo Catalog',
     path: 'DemoCat.html',
     description: 'A FOAM Demo browser.  The demo you\'re currently running.',
