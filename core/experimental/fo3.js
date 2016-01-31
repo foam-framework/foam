@@ -37,12 +37,14 @@ var Bootstrap = {
         var obj = Object.create(this.prototype);
         obj.instance_ = Object.create(null);
 
-        // TODO: lookup if valid method names
-        for ( var key in args ) {
-//          if ( key.indexOf('_') == -1 )
-            obj[key] = args[key];
-//          else
-//            console.log('skipping: ', key);
+        if ( args ) {
+          for ( var key in args )
+            if ( key.indexOf('_') == -1 )
+              obj[key] = args[key];
+
+          if ( args.instance_ )
+            for ( var key in args.instance_ )
+              obj[key] = args.instance_[key];
         }
 
         return obj;
