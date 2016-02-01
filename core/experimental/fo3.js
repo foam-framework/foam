@@ -85,6 +85,9 @@ var Bootstrap = {
       },
       axiomsByClass: function axiomsByClass(cls) {
 
+      },
+      toString: function() {
+        return this.name + 'Class';
       }
     };
 
@@ -400,7 +403,7 @@ CLASS({
     function clearProperty(name) { delete this.instance_[name]; },
     function toString() {
       // Distinguish between prototypes and instances.
-      return this.model_.name + (this.instance_ ? '' : 'Proto')
+      return this.cls_.name + (this.instance_ ? '' : 'Proto')
     }
   ],
 

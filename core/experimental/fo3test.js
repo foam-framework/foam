@@ -135,6 +135,10 @@ console.log(p.name, p.age, p.KEY);
 p.sayHello();
 p.sayGoodbye();
 
+console.assert(p.toString() === 'Person', 'Instance toString() incorrect.');
+console.assert(Person.toString() === 'PersonClass', 'Instance toString() incorrect.');
+console.assert(Person.prototype.toString() === 'PersonProto', 'Instance toString() incorrect.');
+
 
 CLASS({
   name: 'Employee',
