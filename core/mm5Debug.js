@@ -162,6 +162,12 @@ CLASS({
     'log',
     'jlog',
     'assert',
+    'assertDefined',
+    'assertUndefined',
+    'assertEquals',
+    'assertNotEquals',
+    'assertTruthy',
+    'assertFalsy',
     'fail',
     'ok',
     'append'
@@ -340,6 +346,40 @@ CLASS({
       if ( condition ) this.passed++; else this.failed++;
       this.log((condition ? 'PASS' : 'FAIL') + ': ' +
           (comment ? comment : '(no message)'));
+    },
+    massageComment_: function(opt_comment) {
+      return opt_comment ? ': ' + opt_comment : '';
+    },
+    massageArgument_: function(value) {
+      return typeof value === 'string' ? '"' + value + '"' : value;
+    },
+    assertDefined: function(value, opt_comment) {
+      this.assert(typeof value !== 'undefined', 'Expected ' +
+          this.massageArgument_(value) + ' to be defined' +
+          this.massageComment_(opt_comment));
+    },
+    assertUndefined: function(value, opt_comment) {
+      this.assert(typeof value === 'undefined', 'Expected ' +
+          this.massageArgument_(value) + ' to be undefined' +
+          this.massageComment_(opt_comment));
+    },
+    assertEquals: function(v1, v2, opt_comment) {
+      this.assert(v1 === v2, 'Expected ' + this.massageArgument_(v1) +
+          ' to equal ' + this.massageArgument_(v2) +
+          this.massageComment_(opt_comment));
+    },
+    assertNotEquals: function(v1, v2, opt_comment) {
+      this.assert(v1 !== v2, 'Expected ' + this.massageArgument_(v1) +
+          ' not to equal ' + this.massageArgument_(v2) +
+          this.massageComment_(opt_comment));
+    },
+    assertTruthy: function(value, opt_comment) {
+      this.assert(!!value, 'Expected ' + this.massageArgument_(value) +
+          ' to be truthy' + this.massageComment_(opt_comment));
+    },
+    assertFalsy: function(value, opt_comment) {
+      this.assert(!value, 'Expected ' + this.massageArgument_(value) +
+          ' to be falsy' + this.massageComment_(opt_comment));
     },
     fail: function(comment) {
       this.assert(false, comment);
