@@ -33,19 +33,11 @@ var Bootstrap = {
 
     var AbstractClass = {
       prototype: {},
-      create: function(args) {
+      create: function create(args) {
         var obj = Object.create(this.prototype);
         obj.instance_ = Object.create(null);
 
-        if ( args ) {
-          for ( var key in args )
-            if ( key.indexOf('_') == -1 )
-              obj[key] = args[key];
-
-          if ( args.instance_ )
-            for ( var key in args.instance_ )
-              obj[key] = args.instance_[key];
-        }
+        obj.initArgs(args);
 
         return obj;
       },
@@ -134,6 +126,17 @@ CLASS({
   documentation: 'Base model for model hierarchy.',
 
   methods: [
+    function initArgs(args) {
+      if ( ! args ) return;
+      
+      for ( var key in args )
+        if ( key.indexOf('_') == -1 )
+          this[key] = args[key];
+      
+      if ( args.instance_ )
+        for ( var key in args.instance_ )
+          this[key] = args.instance_[key];
+    },
     function hasOwnProperty(name) {
       return Object.hasOwnProperty.call(this.instance_, name);
     }
