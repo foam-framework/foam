@@ -31,7 +31,7 @@ foam.boot = {
       (Model is 'this').
     */
     var AbstractClass = {
-      prototype: {},
+      prototype: Object.prototype,
       create: function create(args) {
         var obj = Object.create(this.prototype);
         obj.instance_ = Object.create(null);
