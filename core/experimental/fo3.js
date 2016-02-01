@@ -128,12 +128,10 @@ foam.boot = {
   },
 
   end: function() {
-    // Substitute Bootstrap installModel() with
-    // simpler axiom-only version.
+    // Substitute AbstractClass.installModel() with simpler axiom-only version.
     FObject.__proto__.installModel = function installModel(m) {
-      if ( m.axioms )
-        for ( var i = 0 ; i < m.axioms.length ; i++ )
-          this.installAxiom(m.axioms[i]);
+      for ( var i = 0 ; i < m.axioms.length ; i++ )
+        this.installAxiom(m.axioms[i]);
     };
 
     delete foam['boot'];
