@@ -58,6 +58,10 @@ CLASS({
           '$$DOC{ref:"foam.u2.md.CitationView"}.',
       defaultValue: 'foam.u2.md.CitationView',
     },
+    {
+      name: 'hidden_',
+      defaultValue: false
+    },
   ],
 
   methods: [
@@ -74,6 +78,7 @@ CLASS({
       } else if ( e.keyCode === 13 /* enter */ ) {
         // If the index isn't on a list item, return and let the normal Enter
         // flow take over.
+        this.hidden_ = true;
         if (this.index < 0) {
           this.rows_ = [];
           return;
@@ -82,12 +87,16 @@ CLASS({
         this.data = this.rows_[this.index];
         this.index = -1;
         e.preventDefault();
+      } else {
+        // Another key was typed, so reappear.
+        this.hidden_ = false;
       }
     },
     function initE() {
-      this.cls(this.myCls());
-      this.add(this.dynamic(function(rows) {
+      this.cls(this.myCls()).enableCls(this.myCls('hidden'), this.hidden_$);
+      this.add(this.dynamic(function(rows, hidden) {
         var e = this.X.E('div').cls(this.myCls('rows'));
+        if (hidden) return e;
         for (var i = 0; i < rows.length; i++) {
           var inner = this.rowView({ data: rows[i] }, this.Y);
           inner.enableCls(this.myCls('selected'), this.dynamic(function(i, index) {
@@ -97,7 +106,7 @@ CLASS({
           e.add(inner);
         }
         return e;
-      }.bind(this), this.rows_$));
+      }.bind(this), this.rows_$, this.hidden_$));
     },
     function onDAOUpdate() {
       this.dao.limit(20).select([].sink)(function(a) {
