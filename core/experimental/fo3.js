@@ -73,17 +73,19 @@ foam.boot = {
         if ( ! o ) return false;
         var subClasses_;
 
-        if ( ! this.hasOwnProperty('subClasses_') )
-          this.subClasses_ = subClasses_ = {};
-        else
-          subClasses_ = this.subClasses_;
+        subClasses_ = this.hasOwnProperty('subClasses_') ?
+          this.subClasses_ :
+          this.subClasses_ = {} ;
 
         if ( ! subClasses_.hasOwnProperty(o.name) )
           subClasses_[o.name] = ( o === this ) || this.isSubClass(o.__proto__);
 
         return subClasses_[o.name];
       },
-      axiomsByClass: function axiomsByClass(cls) {
+      findAxiom: function(name) {
+
+      },
+      selectAxioms: function(sink, opt_cls, opt_predicate) {
 
       },
       toString: function() {
