@@ -92,6 +92,15 @@ CLASS({
           this[value.name] = value.value;
         }
       }
+    },
+    {
+      name: 'getValue',
+      labels: ['javascript'],
+      code: function getValue(index) {
+        for (var i = 0; i < this.values.length; i++) {
+          if (this.values[i].index === index) return this.values[i];
+        }
+      }
     }
   ],
   templates: [
