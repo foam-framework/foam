@@ -370,14 +370,6 @@ CLASS({
       name: 'subType'
     },
     {
-      name: 'preSet',
-      defaultValue: function(_, a, prop) {
-        var cls = global[prop.subType];
-        // TODO: loop for performance
-        return a.map(function(p) { return cls.create(p); });
-      }
-    },
-    {
       name: 'adapt',
       defaultValue: function(_, a, prop) {
         if ( ! a ) return [];
@@ -464,13 +456,12 @@ CLASS({
       type: 'AxiomArray',
       subType: 'Method',
       name: 'methods',
-      // TODO: shouldn't be needed when property inheritance is implemented.
-      adaptArrayElement: function(e) {
-        if ( typeof e === 'function' ) {
-          console.assert(e.name, 'Method must be named');
-          return Method.create({name: e.name, code: e});
+      adaptArrayElement: function(o) {
+        if ( typeof o === 'function' ) {
+          console.assert(o.name, 'Method must be named');
+          return Method.create({name: o.name, code: o});
         }
-        return e;
+        return global[this.subType].create(o);
       }
     }
   ]

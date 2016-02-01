@@ -66,9 +66,6 @@ console.assert(dv.a == 84, 'DefaultValues don\'t update.');
 dv.clearProperty('a');
 console.assert(dv.a == 42, 'clearProperty doesn\'t work.');
 
-var ap = ArrayProperty.create({});
-console.assert(ap.preSet, 'ArrayProperty.preSet missing.');
-
 // ArrayProperty Test
 CLASS({ name: 'A', properties: [ { name: 'a' } ] });
 CLASS({
