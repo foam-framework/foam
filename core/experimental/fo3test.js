@@ -158,9 +158,11 @@ console.log(e.toString());
 e.sayGoodbye();
 
 console.assert(Person.isSubClass(Employee), 'isSubClass false negative.');
+console.assert(!Employee.isSubClass(Person), 'isSubClass false positive.');
 console.assert(! Person.isSubClass(ConstantTest), 'isSubClass false positive.');
 
 console.assert(Person.isInstance(p), 'isInstance false negative.');
+console.assert(!Employee.isInstance(p), 'isInstance false positive.');
 console.assert(Person.isInstance(e), 'isInstance false negative.');
 console.assert(! Person.isInstance(t1), 'isInstance false positive.');
 

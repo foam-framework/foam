@@ -72,7 +72,12 @@ var Bootstrap = {
       isSubClass: function isSubClass(o) {
         // TODO: switch from 'name' to 'id' when available
         if ( ! o ) return false;
-        var subClasses_ = this.subClasses_ || ( this.subClasses_ = {} );
+        var subClasses_;
+        if ( ! this.hasOwnProperty('subClasses_') ) {
+          this.subClasses_ = subClasses_ = {};
+        } else {
+          subClasses_ = this.subClasses_;
+        }
         if ( ! subClasses_.hasOwnProperty(o.name) ) {
           subClasses_[o.name] = ( o === this ) || this.isSubClass(o.__proto__);
         }
