@@ -96,14 +96,16 @@ foam.boot = {
 
       if ( ! cls ) {
         var parent = this.extends ? global[this.extends] : AbstractClass ;
-        cls = Object.create(parent);
-        cls.prototype = Object.create(parent.prototype);
-        cls.prototype.cls_ = cls;
-        cls.ID___  = this.name + 'Class';
-        cls.prototype.ID___  = this.name + 'Prototype';
-        cls.name   = this.name;
-        cls.model_ = this;
-        global[cls.name] = cls;
+        // TODO: make some of these values non-inermurable
+        cls                  = Object.create(parent);
+        cls.prototype        = Object.create(parent.prototype);
+        cls.prototype.cls_   = cls;
+        cls.prototype.model_ = this;
+        cls.prototype.ID__   = this.name + 'Prototype';
+        cls.ID__             = this.name + 'Class';
+        cls.name             = this.name;
+        cls.model_           = this;
+        global[cls.name]     = cls;
       }
 
       cls.installModel(this);
