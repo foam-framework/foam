@@ -20,6 +20,7 @@ CLASS({
   extends: 'foam.u2.search.Autocompleter',
   requires: [
     'MDAO',
+    'foam.dao.ProxyDAO',
     'foam.mlang.CannedQuery',
   ],
 
@@ -31,7 +32,7 @@ CLASS({
     {
       name: 'dao',
       factory: function() {
-        return this.MDAO.create({ model: this.CannedQuery });
+        return this.ProxyDAO.create();
       }
     },
   ],
@@ -42,7 +43,7 @@ CLASS({
       this.groups$.addListener(this.onDAOUpdate.bind(this));
     },
     function onDAOUpdate() {
-      var dao = this.dao;
+      var dao = this.MDAO.create({ model: this.CannedQuery });
       for (var i = 0; i < this.groups.length; i++) {
         var str = '' + this.groups[i];
         if (!str) continue;
@@ -52,6 +53,7 @@ CLASS({
           expression: this.groups[i]
         }));
       }
+      this.dao.delegate = dao;
       this.onUpdate();
     },
 
