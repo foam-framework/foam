@@ -199,11 +199,6 @@ CLASS({
       type: 'Array',
       subType: 'Method',
       name: 'methods',
-      // TODO: this shouldn't be needed
-      adapt: function(_, a, prop) {
-        if ( ! a ) return [];
-        return a.map(prop.adaptArrayElement.bind(prop));
-      },
       adaptArrayElement: function(e) {
         if ( typeof e === 'function' ) {
           console.assert(e.name, 'Method must be named');
