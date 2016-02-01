@@ -476,11 +476,11 @@ foam.boot.end();
 
 
 /*
-  Notes:
-
-  remove create from regular objects
-  acreate or afromJSON
-
   TODO:
-  - property overriding
+  - Implement Property Overriding
+  - replace initArgs() in boot.end()
+  - SUPER support
+  - Axiom query support
+  - Add package and id to Model and Class
+  - Proxy id, name, package, label, plural from Class to Model
 */
