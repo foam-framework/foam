@@ -71,9 +71,8 @@ foam.boot = {
       isSubClass: function isSubClass(o) {
         // TODO: switch from 'name' to 'id' when available
         if ( ! o ) return false;
-        var subClasses_;
 
-        subClasses_ = this.hasOwnProperty('subClasses_') ?
+        var subClasses_ = this.hasOwnProperty('subClasses_') ?
           this.subClasses_ :
           this.subClasses_ = {} ;
 
