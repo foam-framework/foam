@@ -440,7 +440,17 @@ CLASS({
     {
       type: 'AxiomArray',
       subType: 'Constant',
-      name: 'constants'
+      name: 'constants',
+      adapt: function(_, a, prop) {
+        if ( ! a ) return [];
+        if ( ! Array.isArray(a) ) {
+          var cs = [];
+          for ( var key in a )
+            cs.push(Constant.create({name: key, value: a[key]}));
+          return cs;
+        }
+        return a.map(prop.adaptArrayElement.bind(prop));
+      }
     },
     {
       type: 'AxiomArray',

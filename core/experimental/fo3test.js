@@ -98,6 +98,20 @@ var t1 = ConstantTest.create({});
 console.assert(t1.KEY, 'Constants don\'t work.');
 console.log(t1.KEY);
 
+CLASS({
+  name: 'ConstantTest2',
+
+  constants: {
+    KEY:  'If you can see this, short-syntax Constants are working!',
+    KEY2: 'And again'
+  }
+});
+
+var t2 = ConstantTest2.create({});
+console.assert(t2.KEY, 'Constants don\'t work with map syntax.');
+console.assert(t2.KEY2, 'Constants don\'t work with map syntax.');
+console.log(t2.KEY, t2.KEY2);
+
 
 CLASS({
   name: 'Person',
