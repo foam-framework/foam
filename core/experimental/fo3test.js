@@ -26,12 +26,15 @@ CLASS({
       name: 'a',
       getter: function()  { console.log('getter'); return this.b; },
       setter: function(a) { console.log('setter'); this.b = a; }
-    }
+    },
+    'c'
   ]
 });
 var t = GetterSetterTest.create({});
 t.a = 42;
 console.assert(t.a == 42, 'Getter/setter doesn\'t work.');
+t.c = 88;
+console.assert(t.c == 88, 'Short-form property doesn\'t work.');
 
 
 CLASS({

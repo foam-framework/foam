@@ -218,30 +218,7 @@ CLASS({
   extends: 'FObject',
 
   properties: [
-    {
-      name: 'name'
-    },
-    {
-      name: 'type'
-    },
-    {
-      name: 'defaultValue'
-    },
-    {
-      name: 'factory'
-    },
-    {
-      name: 'adapt'
-    },
-    {
-      name: 'preSet'
-    },
-    {
-      name: 'postSet'
-    },
-    {
-      name: 'expression'
-    }
+    'name', 'type', 'defaultValue', 'factory', 'adapt', 'preSet', 'postSet', 'expression'
   ],
 
   methods: [
@@ -316,14 +293,7 @@ CLASS({
   name: 'Method',
   extends: 'FObject',
 
-  properties: [
-    {
-      name: 'name'
-    },
-    {
-      name: 'code'
-    }
-  ],
+  properties: [ 'name', 'code' ],
 
   methods: [
     function installInProto(proto) { proto[this.name] = this.code; }
@@ -355,12 +325,10 @@ CLASS({
   extends: 'Property',
 
   properties: [
+    'subType',
     {
       name: 'factory',
       defaultValue: function() { return []; }
-    },
-    {
-      name: 'subType'
     },
     {
       name: 'adapt',
@@ -453,7 +421,12 @@ CLASS({
     {
       type: 'AxiomArray',
       subType: 'Property',
-      name: 'properties'
+      name: 'properties',
+      adaptArrayElement: function(o) {
+        return typeof o === 'string' ?
+          Property.create({name: o})   :
+          global[this.subType].create(o) ;
+      }
     },
     {
       type: 'AxiomArray',
