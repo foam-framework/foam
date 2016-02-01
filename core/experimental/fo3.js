@@ -65,6 +65,21 @@ var Bootstrap = {
       installAxiom: function(a) {
         a.installInClass && a.installInClass(this);
         a.installInProto && a.installInProto(this.prototype);
+      },
+      isInstance: function isInstance(o) {
+        return o.cls_ && this.isSubClass(o.cls_);
+      },
+      isSubClass: function isSubClass(o) {
+        // TODO: switch from 'name' to 'id' when available
+        if ( ! o ) return false;
+        var subClasses_ = this.subClasses_ || ( this.subClasses_ = {} );
+        if ( ! subClasses_.hasOwnProperty(o.name) ) {
+          subClasses_[o.name] = ( o === this ) || this.isSubClass(o.__proto__);
+        }
+        return subClasses_[o.name];
+      },
+      axiomsByClass: function axiomsByClass(cls) {
+
       }
     };
 

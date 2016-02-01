@@ -157,6 +157,15 @@ var e = Employee.create({name: 'Jane', age: 30, salary: 50000});
 console.log(e.toString());
 e.sayGoodbye();
 
+console.assert(Person.isSubClass(Employee), 'isSubClass false negative.');
+console.assert(! Person.isSubClass(ConstantTest), 'isSubClass false positive.');
+
+console.assert(Person.isInstance(p), 'isInstance false negative.');
+console.assert(Person.isInstance(e), 'isInstance false negative.');
+console.assert(! Person.isInstance(t1), 'isInstance false positive.');
+
+
+
 /*
 // 3058ms, Jan 26, 2016, X1 Carbon
 console.time('b1');
