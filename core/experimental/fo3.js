@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-// Bootstrap Support, discarded after use
+// Bootstrap support, discarded after use
 foam.boot = {
 
   // Temporary collection of classes to be updated later.
@@ -30,7 +30,6 @@ foam.boot = {
       Create or Update a Prototype from a psedo-Model definition.
       (Model is 'this').
     */
-
     var AbstractClass = {
       prototype: {},
       create: function create(args) {
@@ -73,14 +72,15 @@ foam.boot = {
         // TODO: switch from 'name' to 'id' when available
         if ( ! o ) return false;
         var subClasses_;
-        if ( ! this.hasOwnProperty('subClasses_') ) {
+
+        if ( ! this.hasOwnProperty('subClasses_') )
           this.subClasses_ = subClasses_ = {};
-        } else {
+        else
           subClasses_ = this.subClasses_;
-        }
-        if ( ! subClasses_.hasOwnProperty(o.name) ) {
+
+        if ( ! subClasses_.hasOwnProperty(o.name) )
           subClasses_[o.name] = ( o === this ) || this.isSubClass(o.__proto__);
-        }
+
         return subClasses_[o.name];
       },
       axiomsByClass: function axiomsByClass(cls) {
@@ -96,7 +96,7 @@ foam.boot = {
 
       if ( ! cls ) {
         var parent = this.extends ? global[this.extends] : AbstractClass ;
-        // TODO: make some of these values non-inermurable
+        // TODO: make some of these values non-innumerable
         cls                  = Object.create(parent);
         cls.prototype        = Object.create(parent.prototype);
         cls.prototype.cls_   = cls;
@@ -174,9 +174,7 @@ CLASS({
   documentation: 'Class/Prototype description.',
 
   properties: [
-    {
-      name: 'name'
-    },
+    'name',
     {
       name: 'extends',
       defaultValue: 'FObject'
@@ -209,9 +207,7 @@ CLASS({
     }
   ],
 
-  methods: [
-    foam.boot.getClass
-  ]
+  methods: [ foam.boot.getClass ]
 });
 
 
@@ -314,9 +310,7 @@ CLASS({
     },
     {
       name: 'preSet',
-      defaultValue: function(_, a) {
-        return a ? a.toString() : '';
-      }
+      defaultValue: function(_, a) { return a ? a.toString() : ''; }
     }
   ]
 });
@@ -395,7 +389,7 @@ CLASS({
   ],
 
   methods: [
-    function installInClass(cls) { cls[constantize(this.name)] = this.value; },
+    function installInClass(cls)   { cls[constantize(this.name)]   = this.value; },
     function installInProto(proto) { proto[constantize(this.name)] = this.value; }
   ]
 });
@@ -425,8 +419,8 @@ CLASS({
       subType: 'Property',
       name: 'properties',
       adaptArrayElement: function(o) {
-        return typeof o === 'string' ?
-          Property.create({name: o})   :
+        return typeof o === 'string'     ?
+          Property.create({name: o})     :
           global[this.subType].create(o) ;
       }
     },
