@@ -16,13 +16,13 @@
  */
 
 // Bootstrap Support, discarded after use
-var Bootstrap = {
+foam.boot = {
 
   // Temporary collection of classes to be updated later.
   classes: [],
 
   start: function() {
-    global.CLASS = Bootstrap.CLASS.bind(Bootstrap);
+    global.CLASS = this.CLASS.bind(this);
   },
 
   getClass: (function() {
@@ -136,12 +136,12 @@ var Bootstrap = {
           this.installAxiom(m.axioms[i]);
     };
 
-    global.Bootstrap = null;
+    delete foam['boot'];
   }
 };
 
 
-Bootstrap.start();
+foam.boot.start();
 
 CLASS({
   name: 'FObject',
@@ -210,7 +210,7 @@ CLASS({
   ],
 
   methods: [
-    Bootstrap.getClass
+    foam.boot.getClass
   ]
 });
 
@@ -380,7 +380,7 @@ CLASS({
   ]
 });
 
-Bootstrap.endPhase1();
+foam.boot.endPhase1();
 
 
 CLASS({
@@ -472,7 +472,7 @@ CLASS({
   ]
 });
 
-Bootstrap.end();
+foam.boot.end();
 
 
 /*

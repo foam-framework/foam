@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
+var foam   = {};
 var global = global || this;
-
 
 // Minimal Stdlib, to be replaced
 
