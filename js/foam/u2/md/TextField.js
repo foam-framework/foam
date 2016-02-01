@@ -233,10 +233,12 @@ CLASS({
             left: 8px;
             right: 8px;
             max-height: 300px;
+            opacity: 1;
             overflow-x: hidden;
             overflow-y: auto;
             position: absolute;
             top: 32px;
+            z-index: 5;
           }
         */},
       ]
