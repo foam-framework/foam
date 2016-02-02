@@ -152,11 +152,11 @@ CLASS({
   methods: [
     function initArgs(args) {
       if ( ! args ) return;
-      
+
       for ( var key in args )
         if ( key.indexOf('_') == -1 )
           this[key] = args[key];
-      
+
       if ( args.instance_ )
         for ( var key in args.instance_ )
           this[key] = args.instance_[key];
@@ -435,6 +435,24 @@ CLASS({
           return Method.create({name: o.name, code: o});
         }
         return global[this.subType].create(o);
+      }
+    }
+  ],
+
+  methods: [
+    function initArgs(args) {
+      if ( ! args ) return;
+
+      if ( args.__proto__ === Object.prototype ) {
+        for ( var key in args )
+          this[key] = args[key];
+      } else if ( args.instance_ ) {
+        for ( var key in args.instance_ )
+          this[key] = args.instance_[key];
+      } else {
+        // TODO: walk Properties or initAgents?
+        for ( var key in args )
+          this[key] = args[key];
       }
     }
   ]

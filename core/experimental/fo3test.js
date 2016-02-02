@@ -188,13 +188,15 @@ console.assert(! Person.isInstance(t1), 'isInstance false positive.');
 
 /*
 // 3058ms, Jan 26, 2016, X1 Carbon
+// 2727ms, Feb  1, "     "
 console.time('b1');
 for ( var i = 0 ; i < 10000000 ; i++ )
   p.age++;
 console.timeEnd('b1');
 
-
 // 1251ms, Jan 26, 2016, X1 Carbon
+// 2700ms, Feb  1, "     "
+// 1735ms, Feb  1, "     "
 console.time('b2');
 for ( var i = 0 ; i < 1000000 ; i++ )
   Person.create({name: 'john', age: i});
