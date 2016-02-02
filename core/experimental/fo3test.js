@@ -184,6 +184,10 @@ console.assert(!Employee.isInstance(p), 'isInstance false positive.');
 console.assert(Person.isInstance(e), 'isInstance false negative.');
 console.assert(! Person.isInstance(t1), 'isInstance false positive.');
 
+console.assert(Person.getAxiomByName('age') === Person.AGE, 'Class.getAxiomByName() doesn\'t work.');
+
+var axs = Person.getAxiomsByClass(Property);
+console.assert(axs.length == 2 && axs[0] === Person.NAME && axs[1] === Person.AGE, 'Class.getAxiomsByClass() doesn\'t work.');
 
 
 /*

@@ -32,6 +32,7 @@ foam.boot = {
     */
     var AbstractClass = {
       prototype: Object.prototype,
+      axiomMap_: null,
       create: function create(args) {
         var obj = Object.create(this.prototype);
         obj.instance_ = Object.create(null);
@@ -62,6 +63,8 @@ foam.boot = {
           }
       },
       installAxiom: function(a) {
+        this.axiomMap_[a.name] = a;
+        this.axiomCache_ = {};
         a.installInClass && a.installInClass(this);
         a.installInProto && a.installInProto(this.prototype);
       },
@@ -81,11 +84,24 @@ foam.boot = {
 
         return subClasses_[o.name];
       },
-      findAxiom: function(name) {
-
+      getAxiomByName: function(name) {
+        return this.axiomMap_[name];
       },
-      selectAxioms: function(sink, opt_cls, opt_predicate) {
-
+      // The Following method will eventually change.
+      // Would like to have efficient support for:
+      //    .where() .orderBy() groupBy
+      getAxiomsByClass: function(cls) {
+        var as = this.axiomCache_[cls];
+        if ( ! as ) {
+          as = [];
+          for ( var key in this.axiomMap_ ) {
+            var a = this.axiomMap_[key];
+            if ( cls.isInstance(a) )
+              as.push(a);
+          }
+          this.axiomCache_[cls] = as;
+        }
+        return as;
       },
       toString: function() {
         return this.name + 'Class';
@@ -104,6 +120,8 @@ foam.boot = {
         cls.prototype.model_ = this;
         cls.prototype.ID__   = this.name + 'Prototype';
         cls.ID__             = this.name + 'Class';
+        cls.axiomMap_        = Object.create(parent.axiomMap_);
+        cls.axiomCache_      = {};
         cls.name             = this.name;
         cls.model_           = this;
         global[cls.name]     = cls;
