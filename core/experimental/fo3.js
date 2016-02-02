@@ -381,6 +381,16 @@ CLASS({
     function toString() {
       // Distinguish between prototypes and instances.
       return this.cls_.name + (this.instance_ ? '' : 'Proto')
+    },
+    function describe(opt_name) {
+      console.log('Object');
+      console.log('Class:', this.cls_.name);
+      console.log('--------------------------------------------------');
+      var ps = this.cls_.getAxiomsByClass(Property);
+      for ( var i = 0 ; i < ps.length ; i++ ) {
+        var p = ps[i];
+        console.log(foam.string.rightPad(p.cls_.name, 14), foam.string.rightPad(p.name, 12), this[p.name]);
+      }
     }
   ],
 
