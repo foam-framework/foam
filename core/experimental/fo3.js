@@ -85,9 +85,12 @@ foam.boot = {
         return subClasses_[o.name];
       },
       describe: function(opt_name) {
+        console.log('CLASS:        ', this.name);
+        console.log('extends:      ', this.model_.extends);
+        console.log('----------------------------');
         for ( var key in this.axiomMap_ ) {
           var a = this.axiomMap_[key];
-          console.log(a.cls_.name, '\t', a.name);
+          console.log(foam.string.rightPad(a.cls_.name, 14), a.name);
         }
       },
       getAxiomByName: function(name) {
