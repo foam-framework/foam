@@ -144,7 +144,7 @@ CLASS({
   ]
 });
 
-var p = Person.create({name: 'Adam', age: 0});
+var p = Person.create({name: 'Adam', age: 18});
 console.log(p.name, p.age, p.KEY);
 p.sayHello();
 p.sayGoodbye();
@@ -188,7 +188,7 @@ console.assert(Person.getAxiomByName('age') === Person.AGE, 'Class.getAxiomByNam
 
 var axs = Person.getAxiomsByClass(Property);
 console.assert(axs.length == 2 && axs[0] === Person.NAME && axs[1] === Person.AGE, 'Class.getAxiomsByClass() doesn\'t work.');
-
+console.assert(Person.getAxioms().length === 6, 'Missing axiom from getAxioms().');
 
 /*
 // 3058ms, Jan 26, 2016, X1 Carbon

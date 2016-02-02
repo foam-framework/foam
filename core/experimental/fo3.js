@@ -100,7 +100,7 @@ foam.boot = {
       // Would like to have efficient support for:
       //    .where() .orderBy() groupBy
       getAxiomsByClass: function(cls) {
-        var as = this.axiomCache_[cls];
+        var as = this.axiomCache_[cls.name];
         if ( ! as ) {
           as = [];
           for ( var key in this.axiomMap_ ) {
@@ -108,7 +108,18 @@ foam.boot = {
             if ( cls.isInstance(a) )
               as.push(a);
           }
-          this.axiomCache_[cls] = as;
+          this.axiomCache_[cls.name] = as;
+        }
+
+        return as;
+      },
+      getAxioms: function() {
+        var as = this.axiomCache_[''];
+        if ( ! as ) {
+          as = [];
+          for ( var key in this.axiomMap_ )
+            as.push(this.axiomMap_[key]);
+          this.axiomCache_[''] = as;
         }
         return as;
       },
@@ -469,8 +480,11 @@ CLASS({
         return global[this.subType].create(o);
       }
     }
-  ],
+  ]
+});
 
+CLASS({
+  name: 'FObject',
   methods: [
     function initArgs(args) {
       if ( ! args ) return;
@@ -482,9 +496,13 @@ CLASS({
         for ( var key in args.instance_ )
           this[key] = args.instance_[key];
       } else {
-        // TODO: walk Properties or initAgents?
-        for ( var key in args )
-          this[key] = args[key];
+        // TODO: should walk through Axioms with initAgents instead
+        var a = this.getAxiomsByClass(Property);
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var name = a[i].name;
+          if ( args.hasOwnProperty(name) )
+            this[name] = args[name];
+        }
       }
     }
   ]
