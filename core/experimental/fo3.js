@@ -221,7 +221,7 @@ CLASS({
   ],
 
   methods: [
-    function installInClass(c) { c[constantize(this.name)] = this; },
+    function installInClass(c) { c[foam.string.constantize(this.name)] = this; },
     function installInProto(proto) {
       /*
         Install a property onto a prototype from a Property definition.
@@ -381,17 +381,13 @@ CLASS({
   name: 'Constant',
 
   properties: [
-    {
-      name: 'name'
-    },
-    {
-      name: 'value'
-    }
+    { name: 'name'  },
+    { name: 'value' }
   ],
 
   methods: [
-    function installInClass(cls)   { cls[constantize(this.name)]   = this.value; },
-    function installInProto(proto) { proto[constantize(this.name)] = this.value; }
+    function installInClass(cls)   { cls[foam.string.constantize(this.name)]   = this.value; },
+    function installInProto(proto) { proto[foam.string.constantize(this.name)] = this.value; }
   ]
 });
 
