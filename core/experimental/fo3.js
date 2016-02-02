@@ -84,6 +84,12 @@ foam.boot = {
 
         return subClasses_[o.name];
       },
+      describe: function(opt_name) {
+        for ( var key in this.axiomMap_ ) {
+          var a = this.axiomMap_[key];
+          console.log(a.cls_.name, '\t', a.name);
+        }
+      },
       getAxiomByName: function(name) {
         return this.axiomMap_[name];
       },
