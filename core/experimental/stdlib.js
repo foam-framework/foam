@@ -30,7 +30,7 @@ foam.fn.memoize1 = function memoize1(f) {
     if ( ! cache.hasOwnProperty(key) ) cache[key] = f.call(this, arg);
     return cache[key];
   };
-  foam.fn.setName(g, f.name);
+  foam.fn.setName(g, 'memoize1(' + f.name + ')');
   return g;
 };
 
