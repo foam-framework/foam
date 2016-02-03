@@ -1476,6 +1476,10 @@ CLASS({
       swiftType: 'FoamEnum.Type',
     },
     {
+      name: 'javaType',
+      defaultValueFn: function() { return this.enum; },
+    },
+    {
       name: 'toPropertyE',
       defaultValue: function(X) { return X.lookup('foam.u2.EnumView').create(null, X); }
     }
