@@ -241,7 +241,7 @@ CLASS({
       var fixedColumns = 0;
       for ( var i = 0 ; i < cells.length ; i++ ) {
         if ( columnProperties[i].tableWidth ) {
-          totalFixedWidth += columnProperties[i].tableWidth;
+          totalFixedWidth += +columnProperties[i].tableWidth;
           fixedColumns++;
 
           cells[i].style({

@@ -15,31 +15,41 @@
  * limitations under the License.
  */
 
+// Setup nodejs-like 'global' on web
 var global = global || this;
 
+// Top-Level of foam package
+var foam = { array: {}, fn: {}, string: {}, util: {} };
 
-// Minimal Stdlib, to be replaced
 
-function memoize1(f) {
-  /** Faster version of memoize() when only dealing with one argument. **/
+foam.fn.memoize1 = function memoize1(f) {
+  // Faster version of memoize() when only dealing with one argument.
   var cache = {};
   var g = function(arg) {
+    console.assert(arguments.length == 1, "Memoize1'ed functions must take exactly one argument.");
     var key = arg ? arg.toString() : '';
     if ( ! cache.hasOwnProperty(key) ) cache[key] = f.call(this, arg);
     return cache[key];
   };
-  g.name = f.name;
+  foam.fn.setName(g, 'memoize1(' + f.name + ')');
   return g;
-}
+};
 
-var constantize = memoize1(function(str) {
+
+foam.fn.setName = function setName(f, name) {
+  // Set a function's name for improved debugging and profiling
+  Object.defineProperty(f, 'name', {value: name, configurable: true});
+};
+
+
+foam.string.constantize = foam.fn.memoize1(function(str) {
   // switchFromCamelCaseToConstantFormat to SWITCH_FROM_CAMEL_CASE_TO_CONSTANT_FORMAT
-  // TODO: add property to specify constantization. For now catch special case to avoid conflict with $ and _.
-  if ( str === '$' ) return '$_';
-  if ( str === '_' ) return '__';
   return str.replace(/[a-z][^0-9a-z_]/g, function(a) {
     return a.substring(0,1) + '_' + a.substring(1,2);
   }).toUpperCase();
 });
 
-// End of Stdlib
+
+foam.string.rightPad = function(str, size) {
+  return (str + new Array(size).join(' ')).substring(0, size);
+};
