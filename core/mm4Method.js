@@ -666,10 +666,6 @@ CLASS({
   name: 'Method',
   plural: 'Methods',
 
-  requires: [
-    'Arg',
-  ],
-
   tableProperties: [
     'name',
     'description'
@@ -825,7 +821,7 @@ CLASS({
       labels: ['debug'],
       adapt: function(_, n) {
         n.forEach(function(arg, i) {
-          n[i] = this.Arg.create(arg);
+          n[i] = Arg.create(arg);
         }.bind(this));
         return n;
       },
