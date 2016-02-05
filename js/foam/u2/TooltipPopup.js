@@ -70,8 +70,8 @@ CLASS({
   templates: [
     function CSS() {/*
       ^ {
-        display: none;
         position: fixed;
+        visibility: hidden;
         z-index: 2000;
         -webkit-transform: translate3d(0, 0, 2px);
       }
@@ -117,12 +117,29 @@ CLASS({
     function reposition() {
       // Find the target element's viewport-relative position and size, and
       // then position the tooltip relative to it.
-      var rect = this.target.el().getBoundingClientRect();
-      this.style({
-        display: 'block',
-        top: (rect.top + rect.height) + 'px',
-        left: (rect.left + rect.width) + 'px',
-      });
+      // But we cap these values such that the popup does not overflow the edges
+      // of the screen.
+      var style = { visibility: 'visible' };
+
+      // Remember that setting style.right sets the distance from the right edge
+      // of the element to the right edge of the screen, but
+      // getBoundingClientRect().right is the distance from the left edge of the
+      // screen to the right edge of the element (ie. right == left + width).
+      var myRect = this.el().getBoundingClientRect();
+      var targetRect = this.target.el().getBoundingClientRect();
+
+      if (targetRect.right + myRect.width > this.document.body.clientWidth)
+        style.right = '0px';
+      else
+        style.left = targetRect.right + 'px';
+
+      if (targetRect.bottom + myRect.height > this.document.body.clientHeight)
+        style.bottom = '0px';
+      else
+        style.top = targetRect.bottom + 'px';
+
+
+      this.style(style);
     },
     function onMouseMove(e) {
       // If the cursor is over either the target or popup, we can skip the rest.
