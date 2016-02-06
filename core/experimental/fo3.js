@@ -85,9 +85,12 @@ foam.boot = {
         return subClasses_[o.name];
       },
       describe: function(opt_name) {
+        console.log('CLASS:        ', this.name);
+        console.log('extends:      ', this.model_.extends);
+        console.log('----------------------------');
         for ( var key in this.axiomMap_ ) {
           var a = this.axiomMap_[key];
-          console.log(a.cls_.name, '\t', a.name);
+          console.log(foam.string.rightPad(a.cls_.name, 14), a.name);
         }
       },
       getAxiomByName: function(name) {
@@ -97,7 +100,7 @@ foam.boot = {
       // Would like to have efficient support for:
       //    .where() .orderBy() groupBy
       getAxiomsByClass: function(cls) {
-        var as = this.axiomCache_[cls];
+        var as = this.axiomCache_[cls.name];
         if ( ! as ) {
           as = [];
           for ( var key in this.axiomMap_ ) {
@@ -105,7 +108,18 @@ foam.boot = {
             if ( cls.isInstance(a) )
               as.push(a);
           }
-          this.axiomCache_[cls] = as;
+          this.axiomCache_[cls.name] = as;
+        }
+
+        return as;
+      },
+      getAxioms: function() {
+        var as = this.axiomCache_[''];
+        if ( ! as ) {
+          as = [];
+          for ( var key in this.axiomMap_ )
+            as.push(this.axiomMap_[key]);
+          this.axiomCache_[''] = as;
         }
         return as;
       },
@@ -378,6 +392,15 @@ CLASS({
     function toString() {
       // Distinguish between prototypes and instances.
       return this.cls_.name + (this.instance_ ? '' : 'Proto')
+    },
+    function describe(opt_name) {
+      console.log('Instance of', this.cls_.name);
+      console.log('--------------------------------------------------');
+      var ps = this.cls_.getAxiomsByClass(Property);
+      for ( var i = 0 ; i < ps.length ; i++ ) {
+        var p = ps[i];
+        console.log(foam.string.rightPad(p.cls_.name, 20), foam.string.rightPad(p.name, 12), this[p.name]);
+      }
     }
   ],
 
@@ -457,8 +480,11 @@ CLASS({
         return global[this.subType].create(o);
       }
     }
-  ],
+  ]
+});
 
+CLASS({
+  name: 'FObject',
   methods: [
     function initArgs(args) {
       if ( ! args ) return;
@@ -470,9 +496,13 @@ CLASS({
         for ( var key in args.instance_ )
           this[key] = args.instance_[key];
       } else {
-        // TODO: walk Properties or initAgents?
-        for ( var key in args )
-          this[key] = args[key];
+        // TODO: should walk through Axioms with initAgents instead
+        var a = this.getAxiomsByClass(Property);
+        for ( var i = 0 ; i < a.length ; i++ ) {
+          var name = a[i].name;
+          if ( args.hasOwnProperty(name) )
+            this[name] = args[name];
+        }
       }
     }
   ]
@@ -489,4 +519,7 @@ foam.boot.end();
   - Axiom query support
   - Add package and id to Model and Class
   - Proxy id, name, package, label, plural from Class to Model
+  - Make Properties be adapter functions.
+  - Make Properties be comparator functions.
+  - Have Axioms know which class/model they belong to.
 */

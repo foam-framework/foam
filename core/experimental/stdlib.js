@@ -21,6 +21,7 @@ var global = global || this;
 // Top-Level of foam package
 var foam = { array: {}, fn: {}, string: {}, util: {} };
 
+
 foam.fn.memoize1 = function memoize1(f) {
   // Faster version of memoize() when only dealing with one argument.
   var cache = {};
@@ -47,3 +48,8 @@ foam.string.constantize = foam.fn.memoize1(function(str) {
     return a.substring(0,1) + '_' + a.substring(1,2);
   }).toUpperCase();
 });
+
+
+foam.string.rightPad = function(str, size) {
+  return (str + new Array(size).join(' ')).substring(0, size);
+};

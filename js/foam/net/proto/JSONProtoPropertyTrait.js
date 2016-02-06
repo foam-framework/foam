@@ -25,7 +25,7 @@ CLASS({
           'nested proto, this can be an array of field names.',
       defaultValue: undefined,
       adapt: function(old, nu) {
-        return typeof nu === 'string' ? [nu] : nu;
+        return typeof nu === 'object' ? nu : [nu];
       }
     },
     {

@@ -217,6 +217,10 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
       }
       extraText += '  public void initChoices_() { choices_ = Arrays.asList(' + choices.join(', ') + '); }\u000a  ';
       extraText += '  public int getType() { return Property.TYPE_STRING; }\u000a  ';
+    } else if (EnumProperty.isInstance(prop)) {
+      wrapperType = toWrapperClass(rawType);
+      genericPropertyType = 'Property<' + wrapperType + '>';
+      baseClass = 'AbstractEnumProperty<' + wrapperType + '>';
     } else {
       wrapperType = toWrapperClass(rawType);
       genericPropertyType = 'Property<' + wrapperType + '>';
@@ -234,6 +238,18 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
     public <%= wrapperType %> get(Object o) { return ((<%= this.name %>) o).get<%= prop.name.capitalize() %>(); }
     public void set(Object o, <%= wrapperType %> v) { ((<%= this.name %>) o).set<%= prop.name.capitalize() %>(v); }
     public int compare(Object o1, Object o2) { return compareValues(((<%= this.name%>)o1).<%= prop.name %>_, ((<%= this.name%>)o2).<%= prop.name %>_); }
+<% if (prop.type == 'Enum') {
+     var values = this.X.lookup(prop.enum).values;
+     var choices = [];
+     values.forEach(function(value) {
+       choices.push('new LabeledItem<' + wrapperType + '>("' +
+           value.label + '", ' + wrapperType + '.' + value.name + ')');
+     });
+%>
+    protected void initChoices_() {
+      choices_ = Arrays.asList(<%= choices.join(',') %>);
+    }
+<% } %>
 <%= extraText %>};
 
   protected <%= rawType %> <%= prop.name %>_;
