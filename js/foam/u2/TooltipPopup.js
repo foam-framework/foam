@@ -46,7 +46,21 @@ CLASS({
     {
       name: 'target',
       required: true,
-      documentation: 'The tooltip will be positioned relative to this element.',
+      documentation: 'The tooltip will be positioned relative to this ' +
+          'element. Alternatively, you can supply $$DOC{ref:".targetX"} and ' +
+          '$$DOC{ref:".targetY"}.',
+    },
+    {
+      type: 'Int',
+      name: 'targetX',
+      documentation: 'You can supply either $$DOC{ref:".target"}, or targetX ' +
+          'and targetY.',
+    },
+    {
+      type: 'Int',
+      name: 'targetY',
+      documentation: 'You can supply either $$DOC{ref:".target"}, or targetX ' +
+          'and targetY.',
     },
     {
       type: 'Boolean',
@@ -106,6 +120,13 @@ CLASS({
       this.opened = false;
     },
     function open() {
+      if (!this.target && !(typeof this.targetX === 'number' &&
+          typeof this.targetY === 'number')){
+        console.error('You must provide TooltipPopup with a target element, ' +
+            'or targetX and targetY coordinates.');
+        return;
+      }
+
       this.opened = true;
       this.hovered = false;
       this.document.body.insertAdjacentHTML('beforeend', this.outerHTML);
@@ -126,18 +147,25 @@ CLASS({
       // getBoundingClientRect().right is the distance from the left edge of the
       // screen to the right edge of the element (ie. right == left + width).
       var myRect = this.el().getBoundingClientRect();
-      var targetRect = this.target.el().getBoundingClientRect();
+      var x, y;
+      if (this.target) {
+        var targetRect = this.target.el().getBoundingClientRect();
+        x = targetRect.right;
+        y = targetRect.bottom;
+      } else {
+        x = this.targetX;
+        y = this.targetY;
+      }
 
-      if (targetRect.right + myRect.width > this.document.body.clientWidth)
+      if (x + myRect.width > this.document.body.clientWidth)
         style.right = '0px';
       else
-        style.left = targetRect.right + 'px';
+        style.left = x + 'px';
 
-      if (targetRect.bottom + myRect.height > this.document.body.clientHeight)
+      if (y + myRect.height > this.document.body.clientHeight)
         style.bottom = '0px';
       else
-        style.top = targetRect.bottom + 'px';
-
+        style.top = y + 'px';
 
       this.style(style);
     },
