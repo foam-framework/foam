@@ -45,7 +45,7 @@ CLASS({
         });
 
         if ( ! this.clientMode ) {
-          axhr('js/com/google/watlobby/topics.json')(function(topics) {
+          axhr('/js/com/google/watlobby/topics.json')(function(topics) {
             JSONUtil.arrayToObjArray(this.X, topics, this.Topic).select(dao);
           }.bind(this));
         }
