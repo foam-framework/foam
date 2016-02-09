@@ -213,6 +213,13 @@ return JSONUtil.arrayToObjArray(X, [
     image: 'Complements2a.png'
   },
   {
+    name: 'Complements2b',
+    model: 'foam.demos.graphics.Complements2b',
+    description: 'Mesmerizing animation with shadowBlur.',
+    keywords: ['animation'],
+    image: 'Complements2b.png'
+  },
+  {
     name: 'Spin',
     model: 'foam.demos.graphics.Spin',
     description: 'Concentric spinng arcs.',
