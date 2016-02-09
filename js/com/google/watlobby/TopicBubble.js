@@ -36,7 +36,7 @@ CLASS({
       name: 'image',
       preSet: function(_, i) {
         return i.startsWith('data:') ? i :
-          i.startsWith('http') ? i : ('/js/com/google/watlobby/' + i);
+          i.startsWith('http') ? i : ('js/com/google/watlobby/' + i);
       },
       postSet: function(_, i) {
         this.img.src = i;
@@ -57,7 +57,7 @@ CLASS({
     {
       name: 'img',
       factory: function() {
-        return this.ImageCView.create({ src: '/js/com/google/watlobby/' + this.image });
+        return this.ImageCView.create({ src: 'js/com/google/watlobby/' + this.image });
       }
     },
   ],
