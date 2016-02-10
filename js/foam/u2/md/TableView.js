@@ -93,6 +93,14 @@ CLASS({
         return this.OverlayDropdown.create().add(editor);
       }
     },
+    {
+      name: 'captionE',
+      lazyFactory: function() {
+        return this.dynamic(function(title, model) {
+          return title || model.plural;
+        }, this.title$, this.model$);
+      }
+    },
   ],
 
   actions: [
@@ -132,9 +140,7 @@ CLASS({
       this.start('flex-table-title-bar').cls(this.myCls('title-bar'))
           .start('table-caption')
               .cls(this.myCls('caption'))
-              .add(this.dynamic(function(title, model) {
-                return title || model.plural;
-              }, this.title$, this.model$))
+              .add(this.captionE)
               .end()
           .add(this.dynamic(function(hardSelection) {
             var actions = hardSelection ? this.gatherActions(hardSelection.model_) : [];
