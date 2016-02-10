@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ CLASS({
     methods: [
       function paintSelf(c) {
         c.shadowColor = this.border;
-        c.shadowBlur  = 35;
+        c.shadowBlur  = 40;
         this.SUPER(c);
       }
     ]
@@ -41,7 +41,6 @@ CLASS({
   properties: [
     [ 'width', 1000 ],
     [ 'height', 1000 ],
-    [ 'background', 'black' ],
     {
       name: 'timer',
       factory: function() { return this.Timer.create(); }
