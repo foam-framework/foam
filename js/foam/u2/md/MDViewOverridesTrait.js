@@ -30,11 +30,11 @@ CLASS({
 
   methods: [
     function init() {
-      this.Y.registerModel(this.ActionButton, 'foam.u2.ActionButton');
-      this.Y.registerModel(this.Checkbox, 'foam.u2.tag.Checkbox');
-      this.Y.registerModel(this.TextField, 'foam.u2.TextField');
-      this.Y.registerModel(this.MultiLineTextField, 'foam.u2.MultiLineTextField');
-      this.Y.registerModel(this.Select, 'foam.u2.tag.Select');
+      this.X.registerModel(this.ActionButton, 'foam.u2.ActionButton');
+      this.X.registerModel(this.Checkbox, 'foam.u2.tag.Checkbox');
+      this.X.registerModel(this.TextField, 'foam.u2.TextField');
+      this.X.registerModel(this.MultiLineTextField, 'foam.u2.MultiLineTextField');
+      this.X.registerModel(this.Select, 'foam.u2.tag.Select');
       this.SUPER();
     },
   ]
