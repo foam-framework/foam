@@ -32,7 +32,7 @@ CLASS({
     methods: [
       function paintSelf(c) {
         c.shadowColor = this.border;
-        c.shadowBlur  = 50;
+        c.shadowBlur  = 35;
         this.SUPER(c);
       }
     ]
@@ -65,7 +65,7 @@ CLASS({
       for ( var a = 0 ; a < 2*Math.PI ; a += 2*Math.PI/40 ) {
         var circle = this.GlowingCircle.create({
           color: 'white',
-          borderWidth: 12,
+          borderWidth: 6,
 	  border: 'hsl(' + 180*a/Math.PI + ',100%,50%)'
         });
 
