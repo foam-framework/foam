@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.demos.graphics',
-  name:  'Dragon',
+  name: 'Dragon',
   extends: 'foam.graphics.CView',
 
   traits: [ 'foam.ui.Colors' ],
