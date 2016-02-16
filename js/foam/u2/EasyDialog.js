@@ -102,12 +102,20 @@ CLASS({
       }
     },
     {
+      type: 'Boolean',
+      name: 'padding',
+      documentation: 'Controls the padding inside the dialog.',
+      attribute: true,
+      defaultValue: true
+    },
+    {
       name: 'dialog_',
       factory: function() {
         return this.Dialog.create({
           title: this.title,
           body: this.body,
-          buttons: this.buttons
+          buttons: this.buttons,
+          padding: this.padding
         });
       }
     },
