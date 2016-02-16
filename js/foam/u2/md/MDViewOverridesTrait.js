@@ -21,6 +21,7 @@ CLASS({
     'foam.u2.md.ActionButton',
     'foam.u2.md.Checkbox',
     'foam.u2.md.DateField',
+    'foam.u2.md.DateTimeField',
     'foam.u2.md.TextField',
     'foam.u2.md.MultiLineTextField',
     'foam.u2.md.Select'
@@ -35,6 +36,7 @@ CLASS({
       this.X.registerModel(this.Checkbox, 'foam.u2.tag.Checkbox');
       this.X.registerModel(this.TextField, 'foam.u2.TextField');
       this.X.registerModel(this.DateField, 'foam.u2.DateView');
+      this.X.registerModel(this.DateTimeField, 'foam.u2.DateTimeView');
       this.X.registerModel(this.MultiLineTextField, 'foam.u2.MultiLineTextField');
       this.X.registerModel(this.Select, 'foam.u2.tag.Select');
       this.SUPER();
