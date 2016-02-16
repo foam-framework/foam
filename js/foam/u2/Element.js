@@ -28,8 +28,6 @@ CLASS({
   ],
 
   imports: [
-    'dynamic',
-    'dynamicFn',
     'framed',
     'elementValidator'
   ],
@@ -544,6 +542,20 @@ CLASS({
       this.publish(this.PSEDO_EVENTS.destroy);
     },
 
+    //
+    // Dynamic Listeners
+    //
+    function dynamic() {
+      var ret = this.X.dynamic.apply(this.X, arguments);
+      this.on('unload', ret.destroy.bind(ret));
+      return ret;
+    },
+
+    function dynamicFn() {
+      var ret = this.X.dynamicFn.apply(this.X, arguments);
+      this.on('unload', ret.destroy.bind(ret));
+      return ret;
+    },
 
     //
     // State
