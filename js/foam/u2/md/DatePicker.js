@@ -443,13 +443,11 @@ CLASS({
       ^hidden {
         display: none !important;
       }
-      ^ {
-        cursor: pointer;
-      }
 
       ^header {
         background-color: #3e50b4;
         color: #fff;
+        cursor: pointer;
         font-size: 16px;
         padding: 12px 16px;
       }
@@ -468,6 +466,8 @@ CLASS({
       }
 
       ^body {
+        cursor: pointer;
+        font-size: 16px;
         height: 310px;
         overflow: hidden;
         position: relative;

@@ -94,7 +94,7 @@ CLASS({
       var self = this;
       var input = this.start('span')
           .cls(this.myCls('inner'))
-          .on('click', this.onClick);
+          .on('click', this.onDateClick);
 
       input.add(this.dynamic(function(data, placeholder, showLabel) {
         return data ? data.toLocaleDateString() :
@@ -111,8 +111,9 @@ CLASS({
   ],
 
   listeners: [
-    function onClick() {
+    function onDateClick() {
       // Make sure to blur the active element, whatever it is.
+      // Hides the keyboard on mobile.
       var active = this.document.activeElement;
       if (active) active.blur();
       this.datePicker_ = this.DatePicker.create({ data$: this.realData$ });
