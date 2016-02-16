@@ -18,6 +18,7 @@ CLASS({
   package: 'foam.ui.md',
   name: 'CannedQueryCitationView',
   extends: 'foam.ui.View',
+
   properties: [
     {
       name: 'className',
@@ -25,7 +26,7 @@ CLASS({
         return 'canned-query-citation' +
             (this.data.iconUrl ? ' canned-query-icon' : '');
       }
-    },
+    }
   ],
   templates: [
     function CSS() {/*
@@ -59,6 +60,6 @@ CLASS({
         <% } %>
         $$label{ mode: 'read-only', floatingLabel: false, extraClassName: 'canned-query-label' }
       </div>
-    */},
+    */}
   ]
 });

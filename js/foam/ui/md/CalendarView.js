@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.ui.md',
   name: 'CalendarView',
   extends: 'foam.ui.View',
+
   imports: [
     'MONTH_NAMES',
-    'document',
+    'document'
   ],
 
   documentation: 'A view for a calendar month. Not intended to be used ' +
@@ -73,7 +75,7 @@ CLASS({
     {
       name: 'preferredWidth',
       defaultValue: 300
-    },
+    }
   ],
 
   listeners: [
@@ -87,7 +89,7 @@ CLASS({
           this.data = new Date(this.year, this.month, newDay, this.hour, this.minute);
         }
       }
-    },
+    }
   ],
 
   methods: [
@@ -102,7 +104,7 @@ CLASS({
       return this.month === this.data.getMonth() &&
           this.year === this.data.getFullYear() &&
           day === this.data.getDate();
-    },
+    }
   ],
 
   templates: [
@@ -185,6 +187,6 @@ CLASS({
         </table>
         <% this.on('click', this.onClick, this.id + '-table'); %>
       </div>
-    */},
+    */}
   ]
 });
