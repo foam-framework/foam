@@ -47,6 +47,13 @@ CLASS({
         return [[function() { this.overlay.close(); }.bind(this), 'OK']];
       }
     },
+    {
+      type: 'Boolean',
+      name: 'padding',
+      documetation: 'Controls the padding inside the dialog.',
+      attribute: true,
+      defaultValue: true,
+    },
   ],
 
   methods: [
@@ -55,9 +62,17 @@ CLASS({
 
       this.cls(this.myCls());
       if (this.title) {
-        this.start().cls(this.myCls('header')).add(this.title).end();
+        this.start()
+            .cls(this.myCls('header'))
+            .enableCls(this.myCls('padding'), this.padding$)
+            .add(this.title)
+            .end();
       }
-      this.start().cls(this.myCls('body')).add(this.body).end();
+      this.start()
+          .cls(this.myCls('body'))
+          .enableCls(this.myCls('padding'), this.padding$)
+          .add(this.body)
+          .end();
 
       this.x({ data: this });
       this.start().cls(this.myCls('buttons')).add(this.buttons.map(function(b) {
@@ -77,9 +92,8 @@ CLASS({
       ^header {
         font-size: 20px;
         font-weight: 500;
-        margin: 24px;
       }
-      ^body {
+      ^padding {
         margin: 24px;
       }
       ^buttons {

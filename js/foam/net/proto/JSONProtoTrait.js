@@ -31,7 +31,10 @@ CLASS({
       for (var i = 0; i < props.length; i++) {
         var p = props[i];
         if (p.fromProto) {
-          this[p.name] = p.fromProto(obj);
+          var v = p.fromProto(obj);
+          if (typeof v !== 'undefined') {
+            this[p.name] = v;
+          }
         }
       }
     },

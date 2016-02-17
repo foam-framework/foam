@@ -213,6 +213,13 @@ return JSONUtil.arrayToObjArray(X, [
     image: 'Complements2a.png'
   },
   {
+    name: 'Complements2b',
+    model: 'foam.demos.graphics.Complements2b',
+    description: 'Mesmerizing animation with shadowBlur.',
+    keywords: ['animation'],
+    image: 'Complements2b.png'
+  },
+  {
     name: 'Spin',
     model: 'foam.demos.graphics.Spin',
     description: 'Concentric spinng arcs.',
@@ -396,7 +403,7 @@ return JSONUtil.arrayToObjArray(X, [
   {
     name: 'Robot',
     xxxmodel: 'foam.demos.supersnake.Robot',
-    path: '/index.html?model=foam.demos.supersnake.Robot&x=200&y=200&scaleX=3&scaleY=3&width=1000&height=10000',
+    path: '../index.html?model=foam.demos.supersnake.Robot&x=200&y=200&scaleX=3&scaleY=3&width=1000&height=10000',
     src: '../js/foam/demos/supersnake/Robot.js',
     description: 'Simple animated robot written by an eleven year old.',
     keywords: [ 'graphics', 'animation' ],

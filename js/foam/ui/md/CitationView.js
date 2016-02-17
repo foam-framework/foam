@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.ui.md',
   name: 'CitationView',
   extends: 'foam.ui.md.DetailView',
-  requires: [
-  ],
 
   properties: [
     {
@@ -31,7 +30,7 @@ CLASS({
     {
       name: 'className',
       defaultValue: 'md-citation-view'
-    },
+    }
   ],
 
   methods: [
@@ -74,6 +73,6 @@ CLASS({
       <div id="<%= this.id %>" <%= this.cssClassAttr() %>>
         <%= this.createTemplateView(this.pickNameProperty().name, { mode: 'read-only', floatingLabel: false }) %>
       </div>
-    */},
+    */}
   ]
 });
