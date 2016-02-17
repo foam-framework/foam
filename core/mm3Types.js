@@ -1485,3 +1485,29 @@ CLASS({
     }
   ]
 });
+
+CLASS({
+  name:  'FObjectProperty',
+  extends: 'Property',
+
+  help:  'Describes a properties of type FObject.',
+  label: 'FObject',
+
+  properties: [
+    {
+      name: 'javaType',
+      defaultValueFn: function() {
+        return this.subType || 'FObject';
+      },
+    },
+    {
+      name: 'swiftType',
+      defaultValueFn: function() {
+        if (this.subType) {
+          return this.subType.split('.').pop();
+        }
+        return 'FObject';
+      },
+    },
+  ]
+});

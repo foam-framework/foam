@@ -17,8 +17,9 @@
 
 package foam.core;
 
-public abstract class AbstractObjectProperty extends AbstractProperty<Object> {
-  public int compareValues(Object o1, Object o2) {
+public abstract class AbstractObjectProperty<T> extends AbstractProperty<T> {
+  @Override
+  public int compareValues(T o1, T o2) {
     return ComparisonHelpers.compareObjects(o1, o2);
   }
   @Override

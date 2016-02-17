@@ -221,6 +221,10 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
       wrapperType = toWrapperClass(rawType);
       genericPropertyType = 'Property<' + wrapperType + '>';
       baseClass = 'AbstractEnumProperty<' + wrapperType + '>';
+    } else if (FObjectProperty.isInstance(prop)) {
+      wrapperType = toWrapperClass(rawType);
+      genericPropertyType = 'Property<' + wrapperType + '>';
+      baseClass = 'AbstractObjectProperty<' + wrapperType + '>';
     } else {
       wrapperType = toWrapperClass(rawType);
       genericPropertyType = 'Property<' + wrapperType + '>';
