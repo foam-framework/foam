@@ -380,7 +380,14 @@ CLASS({
   label: 'Date and time',
 
   properties: [
-    [ 'view', 'foam.ui.DateTimeFieldView' ]
+    [ 'view', 'foam.ui.DateTimeFieldView' ],
+    {
+      name: 'toPropertyE',
+      labels: ['javascript'],
+      defaultValue: function(X) {
+        return X.lookup('foam.u2.DateTimeView').create(null, X);
+      }
+    },
   ]
 });
 

@@ -28,8 +28,6 @@ CLASS({
   ],
 
   imports: [
-    'dynamic',
-    'dynamicFn',
     'framed',
     'elementValidator'
   ],
@@ -544,6 +542,20 @@ CLASS({
       this.publish(this.PSEDO_EVENTS.destroy);
     },
 
+    //
+    // Dynamic Listeners
+    //
+    function dynamic() {
+      var ret = this.X.dynamic.apply(this.X, arguments);
+      this.on('unload', ret.destroy.bind(ret));
+      return ret;
+    },
+
+    function dynamicFn() {
+      var ret = this.X.dynamicFn.apply(this.X, arguments);
+      this.on('unload', ret.destroy.bind(ret));
+      return ret;
+    },
 
     //
     // State
@@ -725,10 +737,8 @@ CLASS({
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === oldE ) {
           this.childNodes[i] = newE;
-          oldE.state = this.UNLOADED;
-          oldE.visitChildren('unload');
           this.state.onReplaceChild.call(this, oldE, newE);
-          newE.load && newE.load();
+          oldE.unload && oldE.unload();
           return;
         }
       }
