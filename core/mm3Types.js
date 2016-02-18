@@ -827,7 +827,7 @@ CLASS({
       help: 'The Java type of this property.'
     },
     {
-      name: 'javaFactory',
+      name: 'javaLazyFactory',
       defaultValueFn: function(p) {
         return 'return new java.util.ArrayList<' + this.subType + '>();';
       },
