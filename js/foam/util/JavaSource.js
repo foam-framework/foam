@@ -126,19 +126,6 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
     return hash;
   }
 
-  public int compareTo(Object obj) {
-    if ( obj == this ) return 0;
-    if ( obj == null ) return 1;
-
-    <%= this.name %> other = (<%= this.name %>) obj;
-
-    int cmp;
-<% for (var i = 0; i < allProps.length; i++) { var prop = allProps[i]; %>
-    if ( ( cmp = compare(get<%= prop.name.capitalize() %>(), other.get<%= prop.name.capitalize() %>()) ) != 0 ) return cmp;<% } %>
-
-    return 0;
-  }
-
   public StringBuilder append(StringBuilder b) {
     return b<% for (var i = 0; i < allProps.length; i++) { var prop = allProps[i]; %>
         .append("<%= prop.name %>=").append(get<%= prop.name.capitalize() %>())<%= i < allProps.length - 1 ? '.append(", ")' : '' %><% } %>;

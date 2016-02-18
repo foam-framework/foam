@@ -52,6 +52,7 @@ public class ComparisonHelpers {
     if (type == Property.TYPE_FLOAT) return compareFloats((Float) o1, (Float) o2);
     if (type == Property.TYPE_OBJECT) return compareObjects((Object) o1, (Object) o2);
     if (type == Property.TYPE_LONG) return compareLongs((Long) o1, (Long) o2);
+    if (type == Property.TYPE_ENUM) return compareObjects((Object) o1, (Object) o2);
     return 1;
   }
 }
