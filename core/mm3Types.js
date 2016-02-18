@@ -821,8 +821,16 @@ CLASS({
     {
       name: 'javaType',
       displayWidth: 10,
-      defaultValueFn: function(p) { return this.subType + '[]'; },
+      defaultValueFn: function(p) {
+        return 'java.util.List<' + this.subType + '>';
+      },
       help: 'The Java type of this property.'
+    },
+    {
+      name: 'javaFactory',
+      defaultValueFn: function(p) {
+        return 'return new java.util.ArrayList<' + this.subType + '>();';
+      },
     },
     {
       name: 'view',
