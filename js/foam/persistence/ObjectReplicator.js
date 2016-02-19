@@ -28,7 +28,9 @@ CLASS({
         self.obj = nil
         self.set("dao", value: self.dao)
 
-        self.future = Future()
+        if self.future.set {
+          self.future = Future()
+        }
         self.dao.find(newValue, sink: ClosureSink(args: [
           "putFn": FoamFunction(fn: { (args) -> AnyObject? in
             self.future.set(args[0])
@@ -105,6 +107,7 @@ CLASS({
         return fut;
       },
       swiftType: 'Future',
+      swiftFactory: 'return Future()',
     },
     {
       name: 'daoListener',
