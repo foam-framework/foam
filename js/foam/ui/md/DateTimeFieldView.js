@@ -14,13 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.ui.md',
   name: 'DateTimeFieldView',
   extends: 'foam.ui.md.DateFieldView',
+
   requires: [
-    'foam.ui.md.TimePickerView',
+    'foam.ui.md.TimePickerView'
   ],
+
   listeners: [
     {
       name: 'onTimeClick',
@@ -54,6 +57,6 @@ CLASS({
       </div>
       <% this.on('click', this.onClick, this.id+'-date'); %>
       <% this.on('click', this.onTimeClick, this.id+'-time'); %>
-    */},
+    */}
   ]
 });

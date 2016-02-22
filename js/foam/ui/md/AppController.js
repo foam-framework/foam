@@ -18,6 +18,7 @@
 CLASS({
   package: 'foam.ui.md',
   name: 'AppController',
+
   traits: ['foam.ui.CSSLoaderTrait'],
 
   requires: [

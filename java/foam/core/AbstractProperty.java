@@ -17,35 +17,47 @@
 package foam.core;
 
 public abstract class AbstractProperty<T> implements Property<T> {
+  @Override
   public T f(Object o) { return get(o); }
 
+  @Override
   public Expression<T> partialEval() {
     return this;
   }
 
+  @Override
   public Value<T> createValue(FObject obj) {
     return new PropertyValue<T>(obj, this);
   }
 
+  @Override
   public void addListener(PropertyChangeSupport obj, PubSubListener<ValueChangeEvent<T>> listener) {
     obj.addPropertyChangeListener(this, listener);
   }
 
+  @Override
   public void removeListener(PropertyChangeSupport obj, PubSubListener<ValueChangeEvent<T>> listener) {
     obj.removePropertyChangeListener(this, listener);
   }
 
+  @Override
   public boolean isHidden() {
     return false;
   }
+
+  @Override
   public boolean isTransient() {
     return false;
   }
+
+  @Override
   public String getHelp() {
     return null;
   }
 
   private String[] topic;
+
+  @Override
   public String[] getPropertyTopic() {
     if (topic == null) topic = new String[] { "property", getName() };
     return topic;
@@ -59,5 +71,10 @@ public abstract class AbstractProperty<T> implements Property<T> {
   @Override
   public boolean isArray() {
     return (getType() & Property.TYPE_ARRAY) != 0;
+  }
+
+  @Override
+  public int compare(Object o1, Object o2) {
+    return compareValues(get(o1), get(o2));
   }
 }

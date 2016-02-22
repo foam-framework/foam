@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 CLASS({
-  package: 'foam.ui.md',
-  name: 'CalendarView',
-  extends: 'foam.ui.View',
+  package: 'foam.u2.md',
+  name: 'Calendar',
+  extends: 'foam.u2.View',
 
   imports: [
     'MONTH_NAMES',
@@ -26,7 +25,7 @@ CLASS({
   ],
 
   documentation: 'A view for a calendar month. Not intended to be used ' +
-      'directly! This is a subcomponent of DateFieldView and DatePickerView. ' +
+      'directly! This is a subcomponent of DateField and DatePicker. ' +
       'Expects as its $$DOC{ref:".data"} a Javascript Date object for the ' +
       'currently selected day. Uses local time, not UTC.',
 
@@ -69,10 +68,6 @@ CLASS({
       }
     },
     {
-      name: 'className',
-      defaultValue: 'calendar',
-    },
-    {
       name: 'preferredWidth',
       defaultValue: 300
     }
@@ -104,16 +99,72 @@ CLASS({
       return this.month === this.data.getMonth() &&
           this.year === this.data.getFullYear() &&
           day === this.data.getDate();
-    }
+    },
+    function initE() {
+      this.cls(this.myCls());
+
+      this.start()
+          .cls(this.myCls('heading'))
+          .start('span')
+              .cls(this.myCls('heading-month'))
+              .add(this.MONTH_NAMES[this.month] + ' ' + this.year)
+              .end()
+          .end();
+
+      var table = this.start()
+          .cls(this.myCls('body'))
+          .start('table');
+
+      table.cls(this.myCls('table'));
+      table.start('tr')
+          .start('th').add('S').end()
+          .start('th').add('M').end()
+          .start('th').add('T').end()
+          .start('th').add('W').end()
+          .start('th').add('T').end()
+          .start('th').add('F').end()
+          .start('th').add('S').end()
+          .end();
+
+      var firstDay = new Date(this.year, this.month, 1).getDay();
+      for ( var row = 0 ; row < 6 ; row++ ) {
+        var tr = table.start('tr');
+        for ( var col = 0 ; col < 7 ; col++ ) {
+          if ( row === 0 && col < firstDay ) {
+            tr.start('td').end();
+          } else {
+            var day = row * 7 + (col - firstDay) + 1;
+            var testDate = new Date(this.year, this.month, day, this.hour, this.minute);
+            if ( testDate.getMonth() != this.month ) {
+              tr.start('td').end();
+            } else {
+              tr.start('td')
+                  .cls(this.dynamic(function(day) {
+                    return this.isSelected(day) ? this.myCls('selected') :
+                        this.isToday(day) ? this.myCls('today') : '';
+                  }.bind(this, day), this.data$))
+                  .add(day)
+                  .end();
+            }
+          }
+        }
+        tr.end();
+      }
+
+      table.on('click', this.onClick);
+
+      // End the table and the containing body.
+      table.end().end();
+    },
   ],
 
   templates: [
     function CSS() {/*
-      .calendar {
+      ^ {
         height: 310px;
         width: 300px;
       }
-      .calendar-heading {
+      ^heading {
         align-items: center;
         display: flex;
         font-size: 14px;
@@ -121,72 +172,34 @@ CLASS({
         justify-content: center;
       }
 
-      .calendar-body {
+      ^body {
         display: flex;
         justify-content: center;
       }
 
-      .calendar-table {
+      ^table {
         font-size: 12px;
       }
-      .calendar-table th {
+      ^table th {
         color: #999;
         font-weight: normal;
         text-align: center;
       }
-      .calendar-table td {
+      ^table td {
         height: 40px;
         text-align: center;
         width: 38px;
       }
 
-      .calendar-selected {
+      ^selected {
         background-color: #4285f4;
         border-radius: 50%;
         color: #fff;
       }
-      .calendar-today {
+      ^today {
         color: #4285f4;
         font-weight: bolder;
       }
     */},
-    function toInnerHTML() {/*
-      <div class="calendar-heading">
-        <span class="calendar-heading-month">
-          <%= this.MONTH_NAMES[this.month] %> <%= this.year %>
-        </span>
-      </div>
-
-      <div class="calendar-body">
-        <table id="<%= this.id %>-table" class="calendar-table">
-          <tr><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr>
-          <%
-            var firstDay = new Date(this.year, this.month, 1).getDay();
-            for (var row = 0; row < 6; row++) {
-              %> <tr> <%
-              for (var col = 0; col < 7; col++) {
-                if (row === 0 && col < firstDay) {
-                  %> <td></td> <%
-                } else {
-                  var day = row * 7 + (col - firstDay) + 1;
-                  var testDate = new Date(this.year, this.month, day, this.hour, this.minute);
-                  if (testDate.getMonth() != this.month) {
-                    %> <td></td> <%
-                  } else {
-                    var css = this.isSelected(day) ? 'calendar-selected' :
-                        this.isToday(day) ? 'calendar-today' : '';
-                    %> <td <%= css ? 'class="' + css + '"' : '' %>>
-                      <%= day %>
-                    </td> <%
-                  }
-                }
-              }
-              %> </tr> <%
-            }
-          %>
-        </table>
-        <% this.on('click', this.onClick, this.id + '-table'); %>
-      </div>
-    */}
   ]
 });

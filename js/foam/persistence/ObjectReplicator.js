@@ -24,11 +24,6 @@ CLASS({
       swiftType: 'String',
       swiftDefaultValue: '""',
       swiftPostSet: function() {/*
-        // Re-set the dao so it listens for the new id.
-        self.obj = nil
-        self.set("dao", value: self.dao)
-
-        self.future = Future()
         self.dao.find(newValue, sink: ClosureSink(args: [
           "putFn": FoamFunction(fn: { (args) -> AnyObject? in
             self.future.set(args[0])
@@ -37,6 +32,7 @@ CLASS({
         ]))
         self.future.get { o in
           self.obj = o as? FObject
+          self.attach();
         }
       */},
     },
@@ -46,12 +42,6 @@ CLASS({
     {
       name: 'dao',
       swiftType: 'AbstractDAO',
-      swiftPostSet: function() {/*
-        if let o = oldValue as? AbstractDAO {
-          o.unlisten(self.daoListener)
-        }
-        newValue.`where`(EQ(self.pk, arg2: self.id)).listen(self.daoListener)
-      */},
     },
     {
       type: 'Boolean',
@@ -60,24 +50,8 @@ CLASS({
       swiftDefaultValue: 'false',
     },
     {
-      name: 'objectListener',
-      swiftType: 'PropertyChangeListener',
-      swiftFactory: function() {/*
-        return PropertyChangeListener(callback: {
-            obj, prop, oldValue, newValue in
-          self.objChanged()
-        })
-      */},
-    },
-    {
       name: 'obj',
       swiftType: 'FObject?',
-      swiftPostSet: function() {/*
-        if let o = oldValue as? FObject {
-          o.removeListener(self.objectListener)
-        }
-        newValue?.addListener(self.objectListener)
-      */},
     },
     {
       name: 'pk',
@@ -91,6 +65,8 @@ CLASS({
     {
       name: 'future',
       lazyFactory: function() {
+        // TODO: Move this into the postSet of ID to match swift's behavior and
+        // enable the ability to set the ID after the future has been accessed.
         var self = this;
         var fut = afuture();
         this.dao.find(self.id, {
@@ -105,6 +81,7 @@ CLASS({
         return fut;
       },
       swiftType: 'Future',
+      swiftFactory: 'return Future()',
     },
     {
       name: 'daoListener',
@@ -137,16 +114,20 @@ CLASS({
         this.dao.unlisten(this.daoListener);
       },
       swiftCode: function() {/*
-        self.obj?.removeListener(self.objectListener)
+        self.obj?.removeListener(self.objChangedListener_)
         self.dao.unlisten(self.daoListener)
       */},
     },
     {
       name: 'attach',
-      code: function attach() {
+      code: function() {
         this.obj.addListener(this.objChanged);
         this.dao.where(EQ(this.pk, this.obj.id)).listen(this.daoListener)
       },
+      swiftCode: function() {/*
+        self.obj!.addListener(self.objChangedListener_)
+        self.dao.`where`(EQ(self.pk, arg2: self.id)).listen(self.daoListener)
+      */},
     },
   ],
   listeners: [
