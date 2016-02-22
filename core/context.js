@@ -33,6 +33,11 @@ function lookup(key) {
 
   var ret = cache[key];
 
+  // Special case for unregistered global models.
+  if ( ret === undefined && key.indexOf('.') == -1 ) {
+    ret = GLOBAL[key];
+  }
+
   if ( ret === undefined ) {
     var path = key.split('.');
     for ( var i = 0 ; root && i < path.length ; i++ ) root = root[path[i]];
@@ -113,7 +118,15 @@ function subWindow(w, opt_name, isBackground) {
   return foam.ui.Window.create({window: w, name: opt_name, isBackground: isBackground}, this).Y;
 }
 
-var X = sub({});
+var X = {
+  lookupCache_: GLOBAL.lookupCache_,
+  sub: sub,
+  subWindow: subWindow,
+  set: set,
+  lookup: lookup,
+  setValue: setValue,
+  GLOBAL: GLOBAL
+};
 
 var foam = X.foam = {};
 

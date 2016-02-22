@@ -167,6 +167,8 @@ CLASS({
 // the model for that feature type ("Method", "Documentation", etc.) being
 // missing previously. This time the preSet for each should be fully operational.
 function recopyModelFeatures(m) {
+  GLOBAL[m.name] = X[m.name] = m;
+
   m.model_ = Model;
 
   // the preSet for each of these does the work

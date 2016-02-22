@@ -212,6 +212,13 @@ function registerModel(model, opt_name, fastMode) {
       path[name] = model;
     else
       Object.defineProperty(path, name, { value: model, configurable: true });
+    if ( path === GLOBAL ) {
+      path = X;
+      if ( fastMode )
+        path[name] = model;
+      else
+        Object.defineProperty(path, name, { value: model, configurable: true });
+    }
   }
 
   if ( ! Object.hasOwnProperty.call(this, 'lookupCache_') ) {
@@ -343,5 +350,13 @@ function __DATA(obj) {
 
 /** Called when a Model is registered. **/
 function onRegisterModel(m) {
-  // NOP
+  if ( ! m.package ) {
+    GLOBAL[m.name] = m;
+  }
 }
+
+X.$ = $;
+X.$$ =$$;
+X.registerModel = registerModel;
+X.arequire = arequire;
+X.onRegisterModel = onRegisterModel;
