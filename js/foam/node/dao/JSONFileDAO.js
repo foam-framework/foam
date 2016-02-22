@@ -60,8 +60,6 @@ CLASS({
         this.loadFile(this.filename);
       }
 
-      if ( Array.isArray(this.filename) ) this.fileName = this.fileName[0] || '';
-
       this.addRawIndex({
         execute: function() {},
         bulkLoad: function() {},
@@ -75,7 +73,7 @@ CLASS({
     },
     loadFile: function(filename) {
       var path = this.path.normalize(filename).split(this.path.sep);
-      var s = '';
+      var s = path[0];
       for ( var i = 1 ; i < path.length - 1 ; i++ ) {
         try {
           s += this.path.sep + path[i];
