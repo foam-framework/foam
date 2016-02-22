@@ -19,6 +19,7 @@ CLASS({
   name: 'CheckboxView',
   package: 'foam.ui.md',
   extends: 'foam.ui.SimpleView',
+
   requires: ['foam.ui.md.HaloView'],
   traits: ['foam.ui.md.MDStyleTrait'],
 

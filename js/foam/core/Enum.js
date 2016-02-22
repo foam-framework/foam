@@ -48,6 +48,11 @@ CLASS({
       name: 'id',
     },
     {
+      name: 'javaValueType',
+      labels: ['java', 'compiletime'],
+      defaultValue: 'Object',
+    },
+    {
       name: 'values',
       adapt: function(_, a) {
         // TODO: this should be a custom Property.fromJson implementation
@@ -90,6 +95,15 @@ CLASS({
         for ( var i = 0 ; i < this.values.length ; i++ ) {
           var value = this.values[i];
           this[value.name] = value.value;
+        }
+      }
+    },
+    {
+      name: 'getValue',
+      labels: ['javascript'],
+      code: function getValue(index) {
+        for (var i = 0; i < this.values.length; i++) {
+          if (this.values[i].index === index) return this.values[i];
         }
       }
     }
@@ -139,7 +153,7 @@ public enum <%= this.name %> {
     var value = this.values[i];
     if ( value.javaSource ) { value.javaSource(out); }
     else {
-%>  <%= value.name %>(<%= value.index %>)<%
+%>  <%= value.name %>(<%= value.index %>, <%= value.value %>)<%
     }
     if ( i == this.values.length - 1 ) {%>;<%}
     else {%>,<%}
@@ -147,12 +161,40 @@ public enum <%= this.name %> {
 %>
 
   private final int index_;
-  <%= this.name %>(int index) {
+  private final <%= this.javaValueType %> value_;
+  <%= this.name %>(int index, <%= this.javaValueType %> value) {
     index_ = index;
+    value_ = value;
   }
 
   public int getIndex() {
     return index_;
+  }
+
+  public <%= this.javaValueType %> getValue() {
+    return value_;
+  }
+
+  public static <%= this.name %> forIndex(int index) {
+    for (<%= this.name %> e : <%= this.name %>.values()) {
+      if (index == e.getIndex()) {
+        return e;
+      }
+    }
+    return null;
+  }
+
+  public static <%= this.name %> forValue(<%= this.javaValueType %> value) {
+    for (<%= this.name %> e : <%= this.name %>.values()) {
+    <% if (this.javaValueType == 'int' || this.javaValueType == 'long') { %>
+      if (value == e.getValue()) {
+    <% } else { %>
+      if (value.equals(e.getValue())) {
+    <% } %>
+        return e;
+      }
+    }
+    return null;
   }
 }
 */}

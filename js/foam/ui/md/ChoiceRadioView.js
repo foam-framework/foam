@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-
 CLASS({
   name: 'ChoiceRadioView',
   package: 'foam.ui.md',
-
   extends: 'foam.ui.AbstractChoiceView',
 
   requires: ['foam.ui.md.RadioOptionView',
@@ -75,7 +73,7 @@ CLASS({
     {
       name: 'innerTagName',
       defaultValue: 'div'
-    },
+    }
   ],
 
   methods: {
@@ -166,5 +164,3 @@ CLASS({
 }*/}
   ]
 });
-
-

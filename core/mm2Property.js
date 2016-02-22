@@ -158,6 +158,10 @@ GLOBAL.Property = {
       labels: ['swift', 'compiletime'],
     },
     {
+      name: 'javaDefaultValue',
+      labels: ['java', 'compiletime'],
+    },
+    {
       name: 'protobufType',
       type: 'String',
       required: false,
@@ -593,6 +597,24 @@ GLOBAL.Property = {
     },
     {
       name: 'javaPostSet',
+      type: 'String',
+      labels: ['compiletime', 'java'],
+      adapt: function(_, n) {
+        if ( typeof n == "function" ) return multiline(n);
+        return n;
+      }
+    },
+    {
+      name: 'javaFactory',
+      type: 'String',
+      labels: ['compiletime', 'java'],
+      adapt: function(_, n) {
+        if ( typeof n == "function" ) return multiline(n);
+        return n;
+      }
+    },
+    {
+      name: 'javaLazyFactory',
       type: 'String',
       labels: ['compiletime', 'java'],
       adapt: function(_, n) {

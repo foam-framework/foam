@@ -52,6 +52,7 @@ public interface Property<T> extends Feature<T>, Comparator<Object>, Expression<
   int TYPE_OBJECT = 5;
   int TYPE_BOOLEAN = 6;
   int TYPE_LONG = 7;
+  int TYPE_ENUM = 8;
   int TYPE_ARRAY = 16384;
 
   int getType();

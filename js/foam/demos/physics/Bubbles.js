@@ -36,9 +36,6 @@ CLASS({
     [ 'background', '#ccf' ],
     { name: 'collider',   factory: function() {
       return this.Collider.create();
-    }},
-    { name: 'anchor',     factory: function() {
-      return this.PhysicalCircle.create({r: 9, x: 1400, y: 400});
     }}
   ],
 
@@ -50,8 +47,6 @@ CLASS({
         this.timer = this.Timer.create();
         this.timer.start();
       }
-
-      this.addChild(this.anchor);
 
       var N = this.n;
 

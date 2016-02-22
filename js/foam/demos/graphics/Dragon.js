@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.demos.graphics',
-  name:  'Dragon',
+  name: 'Dragon',
   extends: 'foam.graphics.CView',
 
   traits: [ 'foam.ui.Colors' ],
@@ -70,7 +70,7 @@ CLASS({
       }
 
       this.timer.time$.addListener(function() {
-        this.y = 350-30*Math.sin(Math.PI*2*this.timer.time/4000);
+        this.y = 350-30*Math.sin(-Math.PI/2 + Math.PI*2*this.timer.time/4000);
         this.view.resize = function() {};
         this.view.paint();
       }.bind(this));
@@ -139,6 +139,8 @@ CLASS({
       }
       c.restore();
 
+      if ( ! this.blowBubbles ) return;
+
       if ( Math.random() > .2 ) return;
 
       var circle = this.Circle.create({
@@ -149,8 +151,6 @@ CLASS({
         border: this.COLORS[Math.floor(Math.random() * this.COLORS.length)]});
 
       this.addChild(circle);
-
-      if ( ! this.blowBubbles ) return;
 
       var M = Movement;
 

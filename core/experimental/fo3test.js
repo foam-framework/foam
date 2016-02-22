@@ -26,12 +26,15 @@ CLASS({
       name: 'a',
       getter: function()  { console.log('getter'); return this.b; },
       setter: function(a) { console.log('setter'); this.b = a; }
-    }
+    },
+    'c'
   ]
 });
 var t = GetterSetterTest.create({});
 t.a = 42;
 console.assert(t.a == 42, 'Getter/setter doesn\'t work.');
+t.c = 88;
+console.assert(t.c == 88, 'Short-form property doesn\'t work.');
 
 
 CLASS({
@@ -66,9 +69,6 @@ console.assert(dv.a == 84, 'DefaultValues don\'t update.');
 dv.clearProperty('a');
 console.assert(dv.a == 42, 'clearProperty doesn\'t work.');
 
-var ap = ArrayProperty.create({});
-console.assert(ap.preSet, 'ArrayProperty.preSet missing.');
-
 // ArrayProperty Test
 CLASS({ name: 'A', properties: [ { name: 'a' } ] });
 CLASS({
@@ -101,6 +101,20 @@ var t1 = ConstantTest.create({});
 console.assert(t1.KEY, 'Constants don\'t work.');
 console.log(t1.KEY);
 
+CLASS({
+  name: 'ConstantTest2',
+
+  constants: {
+    KEY:  'If you can see this, short-syntax Constants are working!',
+    KEY2: 'And again'
+  }
+});
+
+var t2 = ConstantTest2.create({});
+console.assert(t2.KEY, 'Constants don\'t work with map syntax.');
+console.assert(t2.KEY2, 'Constants don\'t work with map syntax.');
+console.log(t2.KEY, t2.KEY2);
+
 
 CLASS({
   name: 'Person',
@@ -130,10 +144,14 @@ CLASS({
   ]
 });
 
-var p = Person.create({name: 'Adam', age: 0});
+var p = Person.create({name: 'Adam', age: 18});
 console.log(p.name, p.age, p.KEY);
 p.sayHello();
 p.sayGoodbye();
+
+console.assert(p.toString() === 'Person', 'Instance toString() incorrect.');
+console.assert(Person.toString() === 'PersonClass', 'Instance toString() incorrect.');
+console.assert(Person.prototype.toString() === 'PersonProto', 'Instance toString() incorrect.');
 
 
 CLASS({
@@ -157,15 +175,32 @@ var e = Employee.create({name: 'Jane', age: 30, salary: 50000});
 console.log(e.toString());
 e.sayGoodbye();
 
+console.assert(Person.isSubClass(Employee), 'isSubClass false negative.');
+console.assert(!Employee.isSubClass(Person), 'isSubClass false positive.');
+console.assert(! Person.isSubClass(ConstantTest), 'isSubClass false positive.');
+
+console.assert(Person.isInstance(p), 'isInstance false negative.');
+console.assert(!Employee.isInstance(p), 'isInstance false positive.');
+console.assert(Person.isInstance(e), 'isInstance false negative.');
+console.assert(! Person.isInstance(t1), 'isInstance false positive.');
+
+console.assert(Person.getAxiomByName('age') === Person.AGE, 'Class.getAxiomByName() doesn\'t work.');
+
+var axs = Person.getAxiomsByClass(Property);
+console.assert(axs.length == 2 && axs[0] === Person.NAME && axs[1] === Person.AGE, 'Class.getAxiomsByClass() doesn\'t work.');
+console.assert(Person.getAxioms().length === 6, 'Missing axiom from getAxioms().');
+
 /*
 // 3058ms, Jan 26, 2016, X1 Carbon
+// 2727ms, Feb  1, "     "
 console.time('b1');
 for ( var i = 0 ; i < 10000000 ; i++ )
   p.age++;
 console.timeEnd('b1');
 
-
 // 1251ms, Jan 26, 2016, X1 Carbon
+// 2700ms, Feb  1, "     "
+// 1735ms, Feb  1, "     "
 console.time('b2');
 for ( var i = 0 ; i < 1000000 ; i++ )
   Person.create({name: 'john', age: i});

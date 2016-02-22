@@ -9,6 +9,7 @@ public abstract class AbstractEnumProperty<T> extends AbstractProperty<T> implem
   protected List<LabeledItem<T>> choices_ = null;
   protected abstract void initChoices_();
 
+  @Override
   public List<LabeledItem<T>> getChoices() {
     if (choices_ == null) initChoices_();
     return choices_;
@@ -17,5 +18,10 @@ public abstract class AbstractEnumProperty<T> extends AbstractProperty<T> implem
   @Override
   public int compareValues(T o1, T o2) {
     return ComparisonHelpers.compareGeneric(this, o1, o2);
+  }
+
+  @Override
+  public int getType() {
+    return Property.TYPE_ENUM;
   }
 }

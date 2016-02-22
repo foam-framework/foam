@@ -143,6 +143,7 @@ CLASS({
     'softSelection',
     'headE',
     'bodyE',
+    'horizontalScrollerE',
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'filteredDAO',
@@ -240,7 +241,7 @@ CLASS({
       var fixedColumns = 0;
       for ( var i = 0 ; i < cells.length ; i++ ) {
         if ( columnProperties[i].tableWidth ) {
-          totalFixedWidth += columnProperties[i].tableWidth;
+          totalFixedWidth += +columnProperties[i].tableWidth;
           fixedColumns++;
 
           cells[i].style({
@@ -272,11 +273,11 @@ CLASS({
       }
 
       if ( this.tableWidth_ ) {
-        this.style({ 'overflow-x': 'auto' });
+        this.horizontalScrollerE.style({ 'overflow-x': 'auto' });
         this.headE.style({ width: this.tableWidth_ + 'px' });
         this.bodyE.style({ width: this.tableWidth_ + 'px' });
       } else {
-        this.style({ 'overflow-x': 'hidden' });
+        this.horizontalScrollerE.style({ 'overflow-x': 'hidden' });
         this.headE.style({ width: '100%' });
         this.bodyE.style({ width: '100%' });
       }
@@ -360,10 +361,13 @@ CLASS({
       // each column based on the current sort order property.
 
       this.cls(this.myCls());
-      this.headE = this.start('flex-table-head').cls(this.myCls('head'));
+      var scroller = this.start().cls(this.myCls('horizontal-scroller'));
+      this.headE = scroller.start('flex-table-head').cls(this.myCls('head'));
       this.headE.end();
-      this.bodyE = this.start('flex-table-body').cls(this.myCls('body'));
+      this.bodyE = scroller.start('flex-table-body').cls(this.myCls('body'));
       this.bodyE.end();
+      scroller.end();
+      this.horizontalScrollerE = scroller;
 
       // Populate the header. The whole header is wrapped in a dynamic().
       // It would be slightly better if only the children were, but dynamically
@@ -476,6 +480,16 @@ CLASS({
         flex-direction: column;
         flex-grow: 0;
         flex-shrink: 0;
+      }
+
+      ^horizontal-scroller {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        flex-shrink: 1;
+        overflow-x: hidden;
+        overflow-y: auto;
+        width: 100%;
       }
 
       ^body {

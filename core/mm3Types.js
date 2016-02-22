@@ -379,7 +379,14 @@ CLASS({
   label: 'Date and time',
 
   properties: [
-    [ 'view', 'foam.ui.DateTimeFieldView' ]
+    [ 'view', 'foam.ui.DateTimeFieldView' ],
+    {
+      name: 'toPropertyE',
+      labels: ['javascript'],
+      defaultValue: function(X) {
+        return X.lookup('foam.u2.DateTimeView').create(null, X);
+      }
+    },
   ]
 });
 
@@ -813,8 +820,16 @@ CLASS({
     {
       name: 'javaType',
       displayWidth: 10,
-      defaultValueFn: function(p) { return this.subType + '[]'; },
+      defaultValueFn: function(p) {
+        return 'java.util.List<' + this.subType + '>';
+      },
       help: 'The Java type of this property.'
+    },
+    {
+      name: 'javaLazyFactory',
+      defaultValueFn: function(p) {
+        return 'return new java.util.ArrayList<' + this.subType + '>();';
+      },
     },
     {
       name: 'view',
@@ -1475,8 +1490,38 @@ CLASS({
       swiftType: 'FoamEnum.Type',
     },
     {
+      name: 'javaType',
+      defaultValueFn: function() { return this.enum; },
+    },
+    {
       name: 'toPropertyE',
       defaultValue: function(X) { return X.lookup('foam.u2.EnumView').create(null, X); }
     }
+  ]
+});
+
+CLASS({
+  name:  'FObjectProperty',
+  extends: 'Property',
+
+  help:  'Describes a properties of type FObject.',
+  label: 'FObject',
+
+  properties: [
+    {
+      name: 'javaType',
+      defaultValueFn: function() {
+        return this.subType || 'FObject';
+      },
+    },
+    {
+      name: 'swiftType',
+      defaultValueFn: function() {
+        if (this.subType) {
+          return this.subType.split('.').pop();
+        }
+        return 'FObject';
+      },
+    },
   ]
 });

@@ -126,19 +126,6 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
     return hash;
   }
 
-  public int compareTo(Object obj) {
-    if ( obj == this ) return 0;
-    if ( obj == null ) return 1;
-
-    <%= this.name %> other = (<%= this.name %>) obj;
-
-    int cmp;
-<% for (var i = 0; i < allProps.length; i++) { var prop = allProps[i]; %>
-    if ( ( cmp = compare(get<%= prop.name.capitalize() %>(), other.get<%= prop.name.capitalize() %>()) ) != 0 ) return cmp;<% } %>
-
-    return 0;
-  }
-
   public StringBuilder append(StringBuilder b) {
     return b<% for (var i = 0; i < allProps.length; i++) { var prop = allProps[i]; %>
         .append("<%= prop.name %>=").append(get<%= prop.name.capitalize() %>())<%= i < allProps.length - 1 ? '.append(", ")' : '' %><% } %>;
@@ -149,6 +136,19 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
 <% for (var i = 0; i < allProps.length; i++) { var prop = allProps[i]; %>
     c.set<%= prop.name.capitalize() %>(get<%= prop.name.capitalize() %>());<% } %>
     return c;
+  }
+
+  public <%= className %>() {
+<%
+for (var i = 0; i < allProps.length; i++) {
+  var prop = allProps[i];
+  if (prop.javaFactory) {
+%>
+    get<%= prop.name.capitalize() %>();
+<%
+  }
+}
+%>
   }
 <%
   function feature(f) {
@@ -217,6 +217,14 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
       }
       extraText += '  public void initChoices_() { choices_ = Arrays.asList(' + choices.join(', ') + '); }\u000a  ';
       extraText += '  public int getType() { return Property.TYPE_STRING; }\u000a  ';
+    } else if (EnumProperty.isInstance(prop)) {
+      wrapperType = toWrapperClass(rawType);
+      genericPropertyType = 'Property<' + wrapperType + '>';
+      baseClass = 'AbstractEnumProperty<' + wrapperType + '>';
+    } else if (FObjectProperty.isInstance(prop)) {
+      wrapperType = toWrapperClass(rawType);
+      genericPropertyType = 'Property<' + wrapperType + '>';
+      baseClass = 'AbstractObjectProperty<' + wrapperType + '>';
     } else {
       wrapperType = toWrapperClass(rawType);
       genericPropertyType = 'Property<' + wrapperType + '>';
@@ -233,23 +241,53 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
     public String getLabel() { return "<%= prop.label %>"; }
     public <%= wrapperType %> get(Object o) { return ((<%= this.name %>) o).get<%= prop.name.capitalize() %>(); }
     public void set(Object o, <%= wrapperType %> v) { ((<%= this.name %>) o).set<%= prop.name.capitalize() %>(v); }
-    public int compare(Object o1, Object o2) { return compareValues(((<%= this.name%>)o1).<%= prop.name %>_, ((<%= this.name%>)o2).<%= prop.name %>_); }
+<% if (prop.type == 'Enum') {
+     var values = this.X.lookup(prop.enum).values;
+     var choices = [];
+     values.forEach(function(value) {
+       choices.push('new LabeledItem<' + wrapperType + '>("' +
+           value.label + '", ' + wrapperType + '.' + value.name + ')');
+     });
+%>
+    protected void initChoices_() {
+      choices_ = Arrays.asList(<%= choices.join(',') %>);
+    }
+<% } %>
 <%= extraText %>};
 
+<% var propName = prop.name.capitalize() %>
+<% var propFactory = prop.javaFactory || prop.javaLazyFactory %>
+
+  protected boolean _<%= prop.name %>_inited_ = false;
   protected <%= rawType %> <%= prop.name %>_;
 
-  public <%= rawType %> get<%= prop.name.capitalize() %>() {
+  public <%= rawType %> get<%= propName %>() {
+    if (_<%= prop.name %>_inited_) {
+      return <%= prop.name %>_;
+    }
+
+<% if (prop.javaDefaultValue) { %>
+    return <%= prop.javaDefaultValue %>;
+<% } else if (propFactory) { %>
+    set<%= propName %>(_<%= propName %>_factory());
     return <%= prop.name %>_;
+<% } else { %>
+    return <%= prop.name %>_;
+<% } %>
   }
+
+<% if (propFactory) { %>
+  private <%= rawType %> _<%= propName %>_factory() { <%= propFactory %> }
+<% } %>
+
 <% if (asDAO) { %>
   DAO <%= prop.name %>DAO_;
-  public DAO get<%= prop.name.capitalize() %>AsDAO() {
+  public DAO get<%= propName %>AsDAO() {
     if (<%= prop.name %>DAO_ == null) <%= prop.name %>DAO_ = new ArrayDAO(<%= prop.subType %>.MODEL(), <%= prop.name %>_);
     return <%= prop.name %>DAO_;
   }
 <% } %>
 
-<% var propName = prop.name.capitalize() %>
   private <%= rawType %> _<%= propName %>_adapt_(<%= rawType %> oldValue, <%= rawType %> newValue) {
 <% if ( prop.javaAdapt ) { %><%= prop.javaAdapt %><% } else { %>    return newValue; <% } %>
   }
@@ -272,10 +310,11 @@ final static Model model__ = new AbstractModel(<%= parentModel %>new Property[] 
 <% } %>    _<%= propName %>_postSet_(oldValue, newValue);
   }
 
-  public void set<%= prop.name.capitalize() %>(<%= rawType, ' ', prop.name %>) {
+  public void set<%= propName %>(<%= rawType, ' ', prop.name %>) {
     if (isFrozen()) throw new FrozenObjectModificationException();
     <%= rawType %> oldValue = <%= prop.name %>_;
     <%= prop.name %>_ = <%= propName %>_adapt(oldValue, <%= propName %>_preSet(oldValue, <%= prop.name %>));
+    _<%= prop.name %>_inited_ = true;
     if (<%= constantize(prop.name) %>.compareValues(oldValue, <%= prop.name %>) != 0) {
       firePropertyChange(<%= constantize(prop.name) %>, oldValue, <%= prop.name %>);
     }

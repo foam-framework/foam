@@ -213,6 +213,13 @@ return JSONUtil.arrayToObjArray(X, [
     image: 'Complements2a.png'
   },
   {
+    name: 'Complements2b',
+    model: 'foam.demos.graphics.Complements2b',
+    description: 'Mesmerizing animation with shadowBlur.',
+    keywords: ['animation'],
+    image: 'Complements2b.png'
+  },
+  {
     name: 'Spin',
     model: 'foam.demos.graphics.Spin',
     description: 'Concentric spinng arcs.',
@@ -396,11 +403,19 @@ return JSONUtil.arrayToObjArray(X, [
   {
     name: 'Robot',
     xxxmodel: 'foam.demos.supersnake.Robot',
-    path: '/index.html?model=foam.demos.supersnake.Robot&x=200&y=200&scaleX=3&scaleY=3&width=1000&height=10000',
+    path: '../index.html?model=foam.demos.supersnake.Robot&x=200&y=200&scaleX=3&scaleY=3&width=1000&height=10000',
     src: '../js/foam/demos/supersnake/Robot.js',
     description: 'Simple animated robot written by an eleven year old.',
     keywords: [ 'graphics', 'animation' ],
     image: 'Robot.png'
+  },
+  {
+    name: 'FOAM Presentation',
+    model: 'foam.demos.empire.Preso3',
+    description: 'Presentation on FOAM written in FOAM. Press the + button to see all 25 slides run at once (which includes 50k objects, 20k one and two-way data bindings, and 7k animated objects).',
+    src: '../js/foam/demos/empire/Preso3_toHTML.ft',
+    keywords: [ 'animation', 'graphics', 'game', 'presentation', 'DAO', 'database', 'search' ],
+    image: 'Preso3.png'
   },
   {
     name: 'FOAM Demo Catalog',

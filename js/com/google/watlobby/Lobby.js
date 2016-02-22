@@ -161,7 +161,7 @@ CLASS({
 
       if ( t.model === 'Background' ) {
         var src = ( t.image.startsWith('data:') || t.image.startsWith('http') ) ? t.image :
-            ('/js/com/google/watlobby/' + t.image);
+            ('js/com/google/watlobby/' + t.image);
         this.$.style.backgroundRepeat = 'no-repeat';
         this.$.style.backgroundPosition = 'center center';
         this.$.style.backgroundImage = 'url(' + src + ')';
@@ -241,7 +241,7 @@ CLASS({
       document.body.addEventListener('click', this.onClick);
 
       if ( this.showFOAMPowered ) {
-        var foam = this.ImageCView.create({x: 5, y: this.height-5-269/4, width: 837/4, height: 269/4, src: '/js/com/google/watlobby/img/foampowered_red.png'});
+        var foam = this.ImageCView.create({x: 5, y: this.height-5-269/4, width: 837/4, height: 269/4, src: 'js/com/google/watlobby/img/foampowered_red.png'});
         this.addChild(foam);
       }
 

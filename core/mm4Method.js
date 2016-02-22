@@ -446,7 +446,7 @@ CLASS({
 
       name: 'javaSource',
       description: 'Java Source',
-      template: '<%= this.type %> <%= this.name %>',
+      template: '<%= this.javaType %> <%= this.name %>',
       labels: ['debug'],
     },
     {
@@ -789,6 +789,11 @@ CLASS({
       labels: ['debug']
     },
     {
+      name:  'javaReturnType',
+      labels: ['java'],
+      defaultValue: 'void',
+    },
+    {
       name: 'swiftReturnType',
       labels: ['swift'],
       defaultValue: 'Void',
@@ -813,7 +818,13 @@ CLASS({
       documentation: function() { /*
           The $$DOC{ref:'Arg',text:'Arguments'} for the method.
         */},
-      labels: ['debug']
+      labels: ['debug'],
+      adapt: function(_, n) {
+        n.forEach(function(arg, i) {
+          n[i] = Arg.create(arg);
+        }.bind(this));
+        return n;
+      },
     },
     {
       name: 'whenIdle',
@@ -926,11 +937,37 @@ if ( i != args.length - 1 ) { %>, <% }
       model_: 'TemplateProperty',
       name: 'javaSource',
       labels: ['java'],
-      defaultValue: function() {/*
-<% if ( ! this.javaCode ) return; %>
-  <%= this.returnType || "void" %> <%= this.name %>(<%
- for ( var i = 0 ; this.args && i < this.args.length ; i++ ) { var arg = this.args[i];
-%><%= arg.javaSource() %><% if ( i < this.args.length-1 ) out(", ");
+      defaultValue: function() {/*<%
+if ( !this.javaCode ) return;
+
+var model = arguments[1];
+var extendsModel = model && model.extends;
+var self = this;
+var filter = function(m) {
+  if ( m.name === self.name) {
+    return true;
+  }
+};
+var name = this.name;
+
+var override = '';
+var args = this.args;
+var returnType = this.javaReturnType;
+while (extendsModel) {
+  extendsModel = model.X.lookup(extendsModel);
+  var method = extendsModel.methods.filter(filter).concat(
+      extendsModel.listeners.filter(filter));
+  method = method.length > 0 && method[0];
+  override = override || method ? '@Override' : '';
+  args = method && method.args || args;
+  returnType = method && method.javaReturnType || returnType;
+  extendsModel = extendsModel.extends
+}
+%>
+  <%= override %>
+  public <%= returnType %> <%= this.name %>(<%
+ for ( var i = 0 ; args && i < args.length ; i++ ) { var arg = args[i];
+%><%= arg.javaSource() %><% if ( i < args.length-1 ) out(", ");
 %><% } %>) {
     <%= this.javaCode %>
   }\n*/}

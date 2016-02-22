@@ -34,6 +34,7 @@ CLASS({
         font-size: 16px;
         height: 42px;
         line-height: 42px;
+        overflow: hidden;
         padding: 8px 16px;
       }
       ^ img {
@@ -46,6 +47,11 @@ CLASS({
       }
       ^label {
         flex-grow: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      ^ span {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

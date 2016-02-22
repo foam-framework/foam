@@ -48,9 +48,15 @@ this.Relationship = null;
  * Override a method, making calling the overridden method possible by
  * calling this.SUPER();
  **/
-
+var CCC = 0;
 function override(cls, methodName, method) {
   var super_ = cls[methodName];
+
+  // No need to decorate if SUPER not called
+  if ( method.toString().indexOf('SUPER') == -1 ) {
+    cls[methodName] = method;
+    return;
+  }
 
   var SUPER = function() { return super_.apply(this, arguments); };
 

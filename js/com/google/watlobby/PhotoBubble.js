@@ -34,7 +34,7 @@ CLASS({
       name: 'image',
       preSet: function(_, i) {
         return i.startsWith('data:') ? i :
-          i.startsWith('http') ? i : ('/js/com/google/watlobby/' + i);
+          i.startsWith('http') ? i : ('js/com/google/watlobby/' + i);
       }
     },
     'topic', 'roundImage', [ 'zoom', 0 ]

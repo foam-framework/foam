@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,26 @@
 
 CLASS({
   package: 'foam.demos.graphics',
-  name: 'Complements2a',
+  name: 'Complements2b',
 
   extends: 'foam.graphics.CView',
 
-  requires: [
-    'foam.util.Timer',
-    'foam.graphics.Circle'
-  ],
+  requires: [ 'foam.util.Timer' ],
 
   imports: [ 'timer' ],
+
+  models: [{
+    name: 'GlowingCircle',
+    extends: 'foam.graphics.Circle',
+
+    methods: [
+      function paintSelf(c) {
+        c.shadowColor = this.border;
+        c.shadowBlur  = 40;
+        this.SUPER(c);
+      }
+    ]
+  }],
 
   properties: [
     [ 'width', 1000 ],
@@ -52,10 +62,10 @@ CLASS({
       var timer = this.timer;
 
       for ( var a = 0 ; a < 2*Math.PI ; a += 2*Math.PI/40 ) {
-        var circle = this.Circle.create({
+        var circle = this.GlowingCircle.create({
           color: 'white',
-          borderWidth: 16,
-          border: 'hsl(' + 180*a/Math.PI + ', 90%, 60%)'
+          borderWidth: 6,
+	  border: 'hsl(' + 180*a/Math.PI + ',100%,50%)'
         });
 
         Events.dynamicFn((function (circle, a) {

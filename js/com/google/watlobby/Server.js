@@ -36,7 +36,7 @@ CLASS({
       factory: function() {
 	var dao = foam.dao.EasyDAO.create({
 	  daoType: this.JSONFileDAO.xbind({
-            filename: global.FOAM_BOOT_DIR + '/../js/com/google/watlobby/topics_dao.json'
+            filename: global.FOAM_BOOT_DIR + '/..js/com/google/watlobby/topics_dao.json'
           }),
 	  model:     this.Topic,
 	  guid:      true,
@@ -48,7 +48,7 @@ CLASS({
         dao.select(COUNT())(function(c) {
           if ( c.count ) return;
 
-	  var result = this.fs.readFileSync(global.FOAM_BOOT_DIR + '/../js/com/google/watlobby/topics.json');
+	  var result = this.fs.readFileSync(global.FOAM_BOOT_DIR + '/..js/com/google/watlobby/topics.json');
           if ( result ) JSONUtil.arrayToObjArray(this.X, eval('(' + result + ')'), this.Topic).select(dao);
         }.bind(this));
 

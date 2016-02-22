@@ -98,7 +98,7 @@ CLASS({
       c.fillRect(0, 0, this.width, this.height);
 
       c.font = this.font;
-      c.fillStyle = 'rgba(0,0,0,1)';
+      c.fillStyle = 'rgba(255,255,255,1)';
       c.strokeStyle = 'white';
 
       c.lineWidth = 3;

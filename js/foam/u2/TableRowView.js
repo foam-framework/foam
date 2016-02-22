@@ -22,6 +22,7 @@ CLASS({
 
   imports: [
     'hardSelection$',
+    'rowClick',
     'tableView'
   ],
 
@@ -75,6 +76,7 @@ CLASS({
   listeners: [
     function onClick() {
       this.hardSelection = this.data;
+      if (this.rowClick) this.rowClick(this.data, this, this.tableView);
     }
   ]
 });
