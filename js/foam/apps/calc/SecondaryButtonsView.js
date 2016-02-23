@@ -23,7 +23,7 @@ CLASS({
             background: 'rgb(52, 153, 128)',
             width:  61,
             height: 61,
-            font:   '300 20px RobotoDraft'
+            font:   '300 20px Roboto'
           }), 'foam.ui.ActionButton');
           %>
           <div id="%%id" class="buttons button-row secondaryButtons">

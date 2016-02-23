@@ -51,7 +51,7 @@ CLASS({
       name: 'installFonts_',
       hidden: true,
       factory: function() {
-        return this.document.head.querySelector('link[rel=stylesheet][href*=RobotoDraft]') ?
+        return this.document.head.querySelector('link[rel=stylesheet][href*=Roboto]') ?
             '' : this.Fonts.create();
       }
     },
@@ -139,7 +139,7 @@ CLASS({
     .CalcView {
       -webkit-user-select: none;
       -webkit-font-smoothing: antialiased;
-      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      font-family: Roboto, 'Helvetica Neue', Helvetica, Arial;
       font-size: 30px;
       font-weight: 300;
       height: 100%;
