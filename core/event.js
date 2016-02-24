@@ -145,7 +145,7 @@ MODEL({
         };
 
         if ( DEBUG ) f.toString = function() {
-          return 'ANIMATE(' + listener.$UID + ', ' + listener + ')';
+          return 'FRAMED(' + listener.$UID + ', ' + listener + ')';
         };
 
         return f;
