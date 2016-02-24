@@ -74,7 +74,13 @@ CLASS({
     },
     {
       type: 'Image',
-      name: 'image'
+      name: 'image',
+      preSet: function(_, i) {
+        return i.startsWith('data:') ? i :
+          i.startsWith('http') ? i :
+          i.startsWith('js/com/google/watlobby') ? i :
+          ('js/com/google/watlobby/' + i);
+      }
     },
     {
       type: 'Boolean',

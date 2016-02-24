@@ -299,8 +299,7 @@ CLASS({
       labels: ['javascript'],
       defaultValue: function(s) {
         var txt = s.trim();
-        return
-          txt.equalsIC('y')    ||
+        return txt.equalsIC('y')    ||
           txt.equalsIC('yes')  ||
           txt.equalsIC('true') ||
           txt.equalsIC('t');

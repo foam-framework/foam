@@ -85,6 +85,10 @@ CLASS({
 
         return a;
       }
+    },
+    {
+      name: 'byIndex_',
+      factory: function() { return {}; }
     }
   ],
   methods: [
@@ -95,6 +99,7 @@ CLASS({
         for ( var i = 0 ; i < this.values.length ; i++ ) {
           var value = this.values[i];
           this[value.name] = value.value;
+          this.byIndex_[value.index] = value;
         }
       }
     },
@@ -102,9 +107,7 @@ CLASS({
       name: 'getValue',
       labels: ['javascript'],
       code: function getValue(index) {
-        for (var i = 0; i < this.values.length; i++) {
-          if (this.values[i].index === index) return this.values[i];
-        }
+        return this.byIndex_[index];
       }
     }
   ],

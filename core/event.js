@@ -152,7 +152,7 @@ MODEL({
       }();
     },
 
-    /** Decroate a listener so that the event is delivered asynchronously. **/
+    /** Decorate a listener so that the event is delivered asynchronously. **/
     async: function(listener, opt_X) {
       return this.delay(0, listener, opt_X);
     },

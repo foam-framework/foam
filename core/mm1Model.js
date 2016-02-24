@@ -121,7 +121,6 @@ var Model = {
     },
     {
       name:  'abstract',
-      type: 'boolean',
       defaultValue: false,
       help: 'If the java class is abstract.',
       documentation: function() { /* When running FOAM in a Java environment, specifies whether the
@@ -241,7 +240,6 @@ var Model = {
     },
     {
       name: 'version',
-      type: 'int',
       defaultValue: 1,
       help: 'Version number of model.',
       documentation: function() { /* For backwards compatibility, major changes should be marked by
@@ -450,7 +448,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
 
           if ( ! p.model_ ) {
             // The mapping from type to model_ is also done in JSONUtil,
-            // but that doesn't handle Bootstrap models. 
+            // but that doesn't handle Bootstrap models.
             if ( p.type && this.X.lookup(p.type + 'Property') ) {
               p.model_ = p.type + 'Property';
               p.type = undefined;
