@@ -168,10 +168,21 @@ CLASS({
       name: 'toChromeMessage',
       todo: 'Transform placeholder format to work with chrome.getMessage',
       code: function() {
-        return {
+        ret = {
           message: this.value,
           description: this.description
         };
+        if ( this.placeholders && this.placeholders.length ) {
+          console.log(this.value, "PH: ",this.placeholders);
+          var phs = this.placeholders;
+          ret.placeholders = {};
+          for ( k = 0; k < phs.length; ++k ) {
+            var ph = ret.placeholders[phs[k].name] = {};
+            ph.content = ( phs[k].content ) ? phs[k].content : "$"+(k+1);
+            if ( phs[k].example ) ph.example = phs[k].example;
+          }
+        }
+        return ret;
       }
     },
     {
