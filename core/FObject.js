@@ -46,7 +46,20 @@ var FObject = {
 
       var replacementModel = X.lookup(replacementName);
 
-      if ( replacementModel ) return replacementModel;
+      if ( replacementModel ) {
+        return replacementModel;
+      } else { 
+        // Also try looking up the replacment in the same package as
+        // the specifier, in case the user has control over it:
+        // i.e. foam.u2.View + model:my.package.Email ==> my.package.EmailView
+        replacementName =                                 
+          ( dataModel.package   ? dataModel.package + '.' : '' ) +
+          ( dataModel.name ? dataModel.name     : dataModel ) +
+          feature.name;
+
+        var replacementModel = X.lookup(replacementName);
+        if ( replacementModel ) return replacementModel;
+      }
 
       dataModel = X.lookup(dataModel.extends);
     }
