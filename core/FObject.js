@@ -39,10 +39,10 @@ var FObject = {
       //  vs foo.ReplacementThing -> foo.Thing
       // This means you must put your model-for-models in the same package
       // as the primary model-to-be-replaced.
-      var replacementName =                                 // want: package.otherPrimaryModel
-        ( dataModel.package   ? dataModel.package + '.' : '' ) +          // package.
-        ( dataModel.name ? dataModel.name     : dataModel ) +  // other
-        feature.name ;                                              // PrimaryModel
+      var replacementName =                                 
+        ( feature.package   ? feature.package + '.' : '' ) +
+        ( dataModel.name ? dataModel.name     : dataModel ) +
+        feature.name;
 
       var replacementModel = X.lookup(replacementName);
 
