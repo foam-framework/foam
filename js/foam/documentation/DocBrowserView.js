@@ -120,7 +120,6 @@ CLASS({
         margin-bottom: 60px;
         width: 100%;
         flex-grow: 1;
- //       height: 83%;
       }
       .inner-container {
         background-color: #fff;
