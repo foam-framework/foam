@@ -33,33 +33,17 @@ var FObject = {
 
   replaceModel_: function(feature, dataModel, X) {
     while ( dataModel ) {
-      // this name mangling has to use the primary model's package, otherwise
-      // it's ambiguous which model a replacement is intended for:
-      //     ReplacementThing -> package.Thing or foo.Thing or bar.Thing...
-      //  vs foo.ReplacementThing -> foo.Thing
-      // This means you must put your model-for-models in the same package
-      // as the primary model-to-be-replaced.
-      var replacementName =                                 
-        ( feature.package   ? feature.package + '.' : '' ) +
+      // Try looking up the replacment in the same package as
+      // the specifier:
+      // i.e. [foam.u2].View + model:my.package.Email ==> my.package.EmailView
+      // (Note: this will replace anything named View, as the to-be-replaced package is ignored)
+      replacementName =                                 
+        ( dataModel.package   ? dataModel.package + '.' : '' ) +
         ( dataModel.name ? dataModel.name     : dataModel ) +
         feature.name;
 
       var replacementModel = X.lookup(replacementName);
-
-      if ( replacementModel ) {
-        return replacementModel;
-      } else { 
-        // Also try looking up the replacment in the same package as
-        // the specifier, in case the user has control over it:
-        // i.e. foam.u2.View + model:my.package.Email ==> my.package.EmailView
-        replacementName =                                 
-          ( dataModel.package   ? dataModel.package + '.' : '' ) +
-          ( dataModel.name ? dataModel.name     : dataModel ) +
-          feature.name;
-
-        var replacementModel = X.lookup(replacementName);
-        if ( replacementModel ) return replacementModel;
-      }
+      if ( replacementModel ) return replacementModel;
 
       dataModel = X.lookup(dataModel.extends);
     }
