@@ -30,7 +30,6 @@ CLASS({
     [ 'n',          7 ],
     [ 'width',      1500 ],
     [ 'height',     1000 ],
-    [ 'background', 'white' ],
     { name: 'mouse',      lazyFactory: function() { return this.Mouse.create(); } },
     { name: 'collider',   factory: function() {
       return this.Collider.create();
@@ -66,7 +65,6 @@ CLASS({
           Movement.spring(this.anchor, c, (x-(N-1)/2)*90-800, (y-(N-1)/2)*90);
           Movement.inertia(c);
           Movement.friction(c, 0.98);
-          this.bounceOnWalls(c, this.width, this.height);
           this.collider.add(c);
         }
       }
@@ -87,15 +85,6 @@ CLASS({
       Movement.strut(this.mouse, bumper, 0, 0);
       this.collider.add(bumper);
       this.collider.start();
-    },
-
-    bounceOnWalls: function (c, w, h) {
-      Events.dynamicFn(function() { c.x; c.y; }, function() {
-        if ( c.x < c.r ) c.vx = Math.abs(c.vx);
-        if ( c.x > w - c.r ) c.vx = -Math.abs(c.vx);
-        if ( c.y < c.r ) c.vy = Math.abs(c.vy);
-        if ( c.y > h - c.r ) c.vy = -Math.abs(c.vy);
-      });
     },
 
     destroy: function() {

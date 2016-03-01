@@ -53,6 +53,37 @@ CLASS({
     DocumentationBook, or other thing.
   */},
 
+  methods: [
+    function init() {
+      this.SUPER();
+
+      // Hack to make model-for-model work, since the target package is the root
+      // (Model, Properties, etc, have no package)
+      GLOBAL.registerModel(this.FullPageDocView, "FullPageDocView");
+      GLOBAL.registerModel(this.ModelFullPageDocView, "ModelFullPageDocView");
+      GLOBAL.registerModel(this.InterfaceFullPageDocView, "InterfaceFullPageDocView");
+      GLOBAL.registerModel(this.DocumentationBookFullPageDocView, "DocumentationBookFullPageDocView");
+      
+      GLOBAL.registerModel(this.PropertyRowDocView, "PropertyRowDocView");
+      GLOBAL.registerModel(this.MethodRowDocView, "MethodRowDocView");
+      GLOBAL.registerModel(this.ActionRowDocView, "ActionRowDocView");
+      GLOBAL.registerModel(this.RelationshipRowDocView, "RelationshipRowDocView");
+      GLOBAL.registerModel(this.IssueRowDocView, "IssueRowDocView");
+      GLOBAL.registerModel(this.TemplateRowDocView, "TemplateRowDocView");
+      GLOBAL.registerModel(this.ModelRowDocView, "ModelRowDocView");
+
+      GLOBAL.registerModel(this.MethodSimpleRowDocView, "MethodSimpleRowDocView");
+
+      GLOBAL.registerModel(this.ModelSummaryDocView, "ModelSummaryDocView");
+      GLOBAL.registerModel(this.InterfaceSummaryDocView, "InterfaceSummaryDocView");
+      GLOBAL.registerModel(this.DocumentationBookSummaryDocView, "DocumentationBookSummaryDocView");
+      GLOBAL.registerModel(this.DocChaptersView, "DocChaptersView");
+
+      GLOBAL.registerModel(this.SubModelOptionalView, "SubModelOptionalView");
+      GLOBAL.registerModel(this.TraitUsersOptionalView, "TraitUsersOptionalView");
+    }
+  ],
+
   templates: [
     function toInnerHTML() {/*
       <% this.destroy();
