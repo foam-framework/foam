@@ -268,7 +268,7 @@ CLASS({
           this.rows = rows;
           this.scrollbar.extent = rows;
           this.scrollbar.height = containerHeight - headHeight - 10;
-          this.scrollbar.paint();
+          this.scrollbar.view.paint();
         } else {
           if (this.scrollbar.size > 0) {
             // If the scrollbar.size is nonzero, there are rows to show but none
@@ -379,8 +379,6 @@ CLASS({
       this.$table.onmousemove = this.onMouseMove;
 
       if ( this.scrollEnabled ) {
-        this.scrollbar.toView_().initHTML();
-
         (this.window || window).addEventListener('resize', this.onResize, false);
 
         var sb = this.scrollbar;
@@ -720,9 +718,9 @@ CLASS({
         <span id="%%id" style="flex:1 1 100%;-webkit-flex:1 1 100%;overflow-x:auto;overflow-y:hidden;">
           <% this.tableToHTML(out); %>
         </span>
-        <%= this.scrollEnabled ?
-            ('<span style="margin-left:2px;margin-right:2px;width:20px;flex:none;-webkit-flex:none;overflow:hidden;padding-top:48px;" class="scrollbar">' +
-            this.scrollbar.toView_().toHTML() + '</span>') : '' %>
+        <% if ( this.scrollEnabled ) {%>
+          <span style="margin-left:2px;margin-right:2px;width:20px;flex:none;-webkit-flex:none;overflow:hidden;padding-top:48px;" class="scrollbar"><%= this.scrollbar %></span>
+        <% } %>
       </div>
     */},
     function CSS() {/*
