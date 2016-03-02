@@ -84,7 +84,7 @@ CLASS({
     initHTML: function() {
       this.SUPER();
 
-      this.$parent.addEventListener('paste', this.onPaste);
+      this.document.addEventListener('paste', this.onPaste);
 
       // This block causes the calc-display to scroll when updated.
       // To remove this feature replace the .inner-calc-display 'transition:' and
