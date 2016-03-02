@@ -1490,6 +1490,19 @@ CLASS({
       swiftType: 'FoamEnum.Type',
     },
     {
+      name: 'swiftType',
+      defaultValueFn: function() { return this.enum.split('.').pop(); },
+    },
+    {
+      name: 'swiftAdapt',
+      defaultValue: function() {/*
+        if let newValue = newValue as? <%= this.swiftType %> {
+          return newValue
+        }
+        return <%= this.swiftType %>.enumForValue(newValue!) as! <%= this.swiftType %>
+      */},
+    },
+    {
       name: 'javaType',
       defaultValueFn: function() { return this.enum; },
     },
