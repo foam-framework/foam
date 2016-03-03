@@ -165,6 +165,11 @@ CLASS({
       defaultValue: 'foam.ui.TextFieldView',
     },
     {
+      name: 'swiftView',
+      labels: ['swift', 'compiletime'],
+      defaultValue: 'TextFieldView',
+    },
+    {
       name: 'pattern',
       help: 'Regex pattern for property.'
     },
@@ -274,6 +279,11 @@ CLASS({
       name: 'view',
       labels: ['javascript'],
       defaultValue: 'foam.ui.BooleanView',
+    },
+    {
+      name: 'swiftView',
+      labels: ['swift', 'compiletime'],
+      defaultValue: 'BooleanView',
     },
     {
       name: 'toPropertyE',
@@ -516,6 +526,11 @@ CLASS({
       name: 'view',
       labels: ['javascript'],
       defaultValue: 'foam.ui.IntFieldView',
+    },
+    {
+      name: 'swiftView',
+      labels: ['swift', 'compiletime'],
+      defaultValue: 'IntFieldView',
     },
     {
       name: 'adapt',
@@ -1509,7 +1524,11 @@ CLASS({
     {
       name: 'toPropertyE',
       defaultValue: function(X) { return X.lookup('foam.u2.EnumView').create(null, X); }
-    }
+    },
+    {
+      name: 'swiftView',
+      defaultValue: 'PickerFieldView',
+    },
   ]
 });
 
