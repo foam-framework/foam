@@ -166,7 +166,6 @@ CLASS({
     },
     {
       name: 'swiftView',
-      labels: ['swift', 'compiletime'],
       defaultValue: 'TextFieldView',
     },
     {
@@ -282,7 +281,6 @@ CLASS({
     },
     {
       name: 'swiftView',
-      labels: ['swift', 'compiletime'],
       defaultValue: 'BooleanView',
     },
     {
@@ -529,7 +527,6 @@ CLASS({
     },
     {
       name: 'swiftView',
-      labels: ['swift', 'compiletime'],
       defaultValue: 'IntFieldView',
     },
     {
