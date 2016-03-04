@@ -35,6 +35,29 @@ CLASS({
       }
     },
     {
+      /* Not ready to be used yet. For it to work, we need to change the way the
+       * build happens and bundle the generated files as part of the android
+       * project instead of as their own library to avoid a circular dependency.
+       */
+      name: 'androidResource',
+    },
+    {
+      name: 'messages',
+      defaultValueFn: function() {
+        var labels = [];
+        for ( var i = 0 ; i < this.values.length ; i++ ) {
+          var value = this.values[i];
+          var object = {
+            name: this.name + "_" + value.name,
+            value: value.label ? value.label : value.name,
+            translationHint: value.description,
+          };
+          labels.push(object);
+        }
+        return labels;
+      }
+    },
+    {
       name: 'startIndex',
       defaultValue: 0,
       type: 'Int'
@@ -183,7 +206,12 @@ public enum <%= this.name %> {
     var value = this.values[i];
     if ( value.javaSource ) { value.javaSource(out); }
     else {
-%>  <%= value.name %>(<%= value.index %>, <%= value.value %>)<%
+      if (this.androidResource) {
+        var label = this.androidResource + "." + this.name + "_" + value.name
+      } else {
+        var label = value.label ? value.label : value.name
+      }
+%>  <%= value.name %>(<%= value.index %>, <%= value.value %>, "<%= label %>") <%
     }
     if ( i == this.values.length - 1 ) {%>;<%}
     else {%>,<%}
@@ -192,7 +220,9 @@ public enum <%= this.name %> {
 
   private final int index_;
   private final <%= this.javaValueType %> value_;
-  <%= this.name %>(int index, <%= this.javaValueType %> value) {
+  private final String label_;
+  <%= this.name %>(int index, <%= this.javaValueType %> value, String label) {
+    label_ = label;
     index_ = index;
     value_ = value;
   }
@@ -203,6 +233,10 @@ public enum <%= this.name %> {
 
   public <%= this.javaValueType %> getValue() {
     return value_;
+  }
+
+  public String getLabel() {
+    return label_;
   }
 
   public static <%= this.name %> forIndex(int index) {
@@ -225,6 +259,14 @@ public enum <%= this.name %> {
       }
     }
     return null;
+  }
+
+  public static String[] labels() {
+    return new String[] {
+<% for (var i = 0, value; value = this.values[i]; i++) { %>
+      "<%= value.label ? value.label : value.name %>",
+<% } %>
+    };
   }
 }
 */}
