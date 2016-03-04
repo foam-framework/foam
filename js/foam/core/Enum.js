@@ -43,13 +43,13 @@ CLASS({
     },
     {
       name: 'messages',
-      defaultValueFn: function() {
+      lazyFactory: function() {
         var labels = [];
         for ( var i = 0 ; i < this.values.length ; i++ ) {
           var value = this.values[i];
           var object = {
             name: this.name + "_" + value.name,
-            value: value.label ? value.label : value.name,
+            value: value.label,
             translationHint: value.description,
           };
           labels.push(object);
@@ -209,7 +209,7 @@ public enum <%= this.name %> {
       if (this.androidResource) {
         var label = this.androidResource + "." + this.name + "_" + value.name
       } else {
-        var label = value.label ? value.label : value.name
+        var label = value.label
       }
 %>  <%= value.name %>(<%= value.index %>, <%= value.value %>, "<%= label %>") <%
     }
@@ -264,7 +264,7 @@ public enum <%= this.name %> {
   public static String[] labels() {
     return new String[] {
 <% for (var i = 0, value; value = this.values[i]; i++) { %>
-      "<%= value.label ? value.label : value.name %>",
+      "<%= value.label %>",
 <% } %>
     };
   }
