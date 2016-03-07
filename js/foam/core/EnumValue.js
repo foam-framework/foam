@@ -38,7 +38,8 @@ CLASS({
     },
     {
       type: 'String',
-      name: 'label'
+      name: 'label',
+      defaultValueFn: function() { return this.name; },
     }
   ]
 });

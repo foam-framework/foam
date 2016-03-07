@@ -23,7 +23,8 @@ CLASS({
 
   requires: [
     'Property',
-    'foam.u2.TextField'
+    'foam.u2.TextField',
+    'foam.u2.DateView'
   ],
 
   imports: [

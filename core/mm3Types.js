@@ -165,6 +165,10 @@ CLASS({
       defaultValue: 'foam.ui.TextFieldView',
     },
     {
+      name: 'swiftView',
+      defaultValue: 'TextFieldView',
+    },
+    {
       name: 'pattern',
       help: 'Regex pattern for property.'
     },
@@ -276,6 +280,10 @@ CLASS({
       defaultValue: 'foam.ui.BooleanView',
     },
     {
+      name: 'swiftView',
+      defaultValue: 'BooleanView',
+    },
+    {
       name: 'toPropertyE',
       labels: ['javascript'],
       defaultValue: function(X) {
@@ -299,8 +307,7 @@ CLASS({
       labels: ['javascript'],
       defaultValue: function(s) {
         var txt = s.trim();
-        return
-          txt.equalsIC('y')    ||
+        return txt.equalsIC('y')    ||
           txt.equalsIC('yes')  ||
           txt.equalsIC('true') ||
           txt.equalsIC('t');
@@ -517,6 +524,10 @@ CLASS({
       name: 'view',
       labels: ['javascript'],
       defaultValue: 'foam.ui.IntFieldView',
+    },
+    {
+      name: 'swiftView',
+      defaultValue: 'IntFieldView',
     },
     {
       name: 'adapt',
@@ -1491,13 +1502,30 @@ CLASS({
       swiftType: 'FoamEnum.Type',
     },
     {
+      name: 'swiftType',
+      defaultValueFn: function() { return this.enum.split('.').pop(); },
+    },
+    {
+      name: 'swiftAdapt',
+      defaultValue: function() {/*
+        if let newValue = newValue as? <%= this.swiftType %> {
+          return newValue
+        }
+        return <%= this.swiftType %>.enumForValue(newValue!) as! <%= this.swiftType %>
+      */},
+    },
+    {
       name: 'javaType',
       defaultValueFn: function() { return this.enum; },
     },
     {
       name: 'toPropertyE',
       defaultValue: function(X) { return X.lookup('foam.u2.EnumView').create(null, X); }
-    }
+    },
+    {
+      name: 'swiftView',
+      defaultValue: 'PickerFieldView',
+    },
   ]
 });
 

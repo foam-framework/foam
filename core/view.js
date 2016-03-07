@@ -216,6 +216,8 @@ var __element_map__ = {
   SELECT:   'foam.u2.tag.Select'
 };
 
+X.__element_map__ = __element_map__;
+
 function elementForName(nodeName) {
   nodeName = nodeName ? nodeName : 'div' ;
   var modelName = this.__element_map__[nodeName.toUpperCase()];
@@ -232,12 +234,14 @@ function elementForName(nodeName) {
 
   return null;
 }
+X.elementForName = elementForName;
 
 function elementForFeature(objName, featureName) {
   var data = this[objName || 'data'];
   var X    = objName ? this.sub({data: this[objName]}) : this;
   return data.model_.getFeature(featureName).toE(X);
 }
+X.elementForFeature = elementForFeature;
 
 function registerE(name, model) {
   var m = { __proto__: this.__element_map__ };
@@ -245,6 +249,7 @@ function registerE(name, model) {
   this.set('__element_map__', m);
   return this;
 }
+X.registerE = registerE;
 
 // Utility function for creating U2 elements in a short format. Expects to be
 // run on a conteXt object.
@@ -261,7 +266,9 @@ function E(opt_nodeName) {
 
   return e;
 }
+X.E = E;
 
 function start(opt_nodeName) {
   return this.E(opt_nodeName);
 }
+X.start = start;

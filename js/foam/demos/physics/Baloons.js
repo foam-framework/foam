@@ -34,7 +34,6 @@ CLASS({
     [ 'n',          6 ],
     [ 'width',      1500 ],
     [ 'height',     1000 ],
-    [ 'background', 'white' ],
     { name: 'mouse',    lazyFactory: function() { return this.Mouse.create(); } },
     { name: 'collider', factory: function() { return this.Collider.create(); } },
     { name: 'anchor',   factory: function() {

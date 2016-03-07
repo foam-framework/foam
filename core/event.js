@@ -145,14 +145,14 @@ MODEL({
         };
 
         if ( DEBUG ) f.toString = function() {
-          return 'ANIMATE(' + listener.$UID + ', ' + listener + ')';
+          return 'FRAMED(' + listener.$UID + ', ' + listener + ')';
         };
 
         return f;
       }();
     },
 
-    /** Decroate a listener so that the event is delivered asynchronously. **/
+    /** Decorate a listener so that the event is delivered asynchronously. **/
     async: function(listener, opt_X) {
       return this.delay(0, listener, opt_X);
     },

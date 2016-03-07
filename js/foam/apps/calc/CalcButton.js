@@ -32,7 +32,7 @@ CLASS({
     },
     {
       name: 'font',
-      defaultValue: '300 28px RobotoDraft'
+      defaultValue: '300 28px Roboto'
     },
     {
       name: 'role',

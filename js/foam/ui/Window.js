@@ -21,6 +21,7 @@ CLASS({
   name: 'Window',
 
   exports: [
+    'performance',
     '$$',
     '$',
     'addStyle',
@@ -67,11 +68,15 @@ CLASS({
 
         w.X = this.Y;
         this.document = w.document;
+        this.performance = w.performance;
       }
     },
     {
       name: 'document'
       // postSet to reset installedModels?
+    },
+    {
+      name: 'performance'
     },
     {
       name: 'installedModels',

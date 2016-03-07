@@ -407,7 +407,6 @@ GLOBAL.Property = {
       name: 'swiftView',
       type: 'String',
       labels: ['compiletime', 'swift'],
-      defaultValueFn: function() { return this.view.substring(this.view.lastIndexOf('.')+1); },
       help: 'The default view name for this property in swift.'
     },
     {
