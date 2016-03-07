@@ -24,6 +24,12 @@ CLASS({
   properties: [
     {
       name: 'vertices',
+      preSet: function(old, nu) {
+        if ( Array.isArray(nu) ) {
+          return new Float32Array(nu);
+        }
+        return nu;
+      },
       postSet: function(old,nu) {
         if ( ! equals(old, nu) ) {
           this.destroy();
@@ -69,7 +75,7 @@ CLASS({
       this.instance_.buffer = this.gl.createBuffer();
       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.instance_.buffer);
       // dump this.vertices into gl object this.instance_.buffer, static mode (write once, read many)
-      this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.vertices), this.gl.STATIC_DRAW);
+      this.gl.bufferData(this.gl.ARRAY_BUFFER, this.vertices, this.gl.STATIC_DRAW);
     },
 
     function destroy() {

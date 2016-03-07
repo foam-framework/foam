@@ -75,7 +75,7 @@ CLASS({
         if ( ! this.gl ) return;
         if ( ! this.uniform_ ) this.updateUniform();
         this.program.use();
-        this.gl.uniformMatrix4fv(this.uniform_, false, new Float32Array(this.matrix.flat));
+        this.gl.uniformMatrix4fv(this.uniform_, false, this.matrix.flat);
       }
     },
     {

@@ -65,7 +65,7 @@ CLASS({
           of this matrix.  */
       this.instance_.flat = this.makeOrtho(this.left, this.left+this.width, (this.top+this.height), this.top, this.znear, this.zfar);
     },
-    
+
     //
     // glOrtho
     //
@@ -77,10 +77,11 @@ CLASS({
         var ty = -(top+bottom)/(top-bottom);
         var tz = -(zfar+znear)/(zfar-znear);
 
-        return  [ 2/(right-left), 0,              0,               0,
+        return  new Float32Array(
+                [ 2/(right-left), 0,              0,               0,
                   0,              2/(top-bottom), 0,               0,
                   0,              0,              -2/(zfar-znear), 0,
-                  tx,             ty,             tz,              1];
+                  tx,             ty,             tz,              1]);
     },
 
   ]

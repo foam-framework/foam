@@ -47,7 +47,7 @@ CLASS({
     },
     {
       name: 'temp_',
-      lazyFactory: function() { return [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]; }
+      lazyFactory: function() { return new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]); }
     },
   ],
 
