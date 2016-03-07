@@ -206,7 +206,7 @@ MODEL({
             margin-left: 2px;
             outline: none;
           }
-          .cellView                 { outline: 1px solid white; }
+          .cellView                 { outline: none; }
           .cellView.formula         { outline: 1px solid blue; }
           .cellView.formula > input { display: inherit; }
           .cellView.formula > span  { display: none; }
