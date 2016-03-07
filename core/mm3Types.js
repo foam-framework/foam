@@ -385,9 +385,9 @@ CLASS({
       name: 'toPropertyE',
       labels: ['javascript'],
       defaultValue: function(X) {
-        return X.lookup('foam.u2.DateTimeView').create(null, X);
+        return X.lookup('foam.u2.md.DateTimeField').create(null, X);
       }
-    },
+    }
   ]
 });
 
