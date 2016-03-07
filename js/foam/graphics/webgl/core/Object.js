@@ -210,9 +210,9 @@ CLASS({
       this.gl.enableVertexAttribArray(vertexPositionAttribute);
 
       // color
-      if ( this.color && Array.isArray(this.color) ) {
+      if ( this.color ) {//Array.isArray(this.color) ) {
         var colorUniform = this.gl.getUniformLocation(this.program.program, "color");
-        this.gl.uniform4fv(colorUniform, new Float32Array(this.color));
+        this.gl.uniform4fv(colorUniform, this.color);
       }
 //console.log("Object ", this.$UID, this.name_, " ", this.projectionMatrix.flat, this.parent.positionMatrix.flat, this.relativePosition.flat, this.meshMatrix.flat)
 //console.log("Object ", this.$UID, this.name_, " ", this.x, this.y);

@@ -59,7 +59,7 @@ CLASS({
           of this matrix.  */
       this.instance_.flat = this.makePerspective(this.fov, this.width/this.height, this.znear, this.zfar);
     },
-    
+
     //
     // gluPerspective
     //
@@ -87,10 +87,11 @@ CLASS({
         var C = -(zfar+znear)/(zfar-znear);
         var D = -2*zfar*znear/(zfar-znear);
 
-        return   [X, 0,  0, 0,
+        return  new Float32Array(
+                 [X, 0,  0, 0,
                   0, Y,  0, 0,
                   A, B,  C, -1,
-                  0, 0,  D, 0];
+                  0, 0,  D, 0]);
     },
   ]
 
