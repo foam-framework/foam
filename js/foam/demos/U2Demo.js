@@ -26,6 +26,8 @@ CLASS({
     'foam.u2.MultiLineTextField',
     'foam.u2.FunctionView',
     'foam.u2.md.DetailView as MDDetailView',
+    'foam.u2.TableView',
+    'foam.u2.DateTimeView',
     'foam.u2.DateView'
   ],
 
@@ -616,6 +618,9 @@ e.write();
 
 console.log(p.model_.templates[0].template.toString().length, p.toE.toString().length);
 // 1238 861 -> 811 (tag) -> 790 (div br defaults) -> 742 (remove empty strings "")
+
+var dao = [ p, p2 ].dao;
+foam.u2.TableView.create({model: PersonWithTemplate, data: dao}).write();
 
     }
   ]
