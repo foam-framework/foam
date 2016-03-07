@@ -22,6 +22,7 @@ CLASS({
 
   requires: [
     'SimpleValue',
+    'foam.u2.Entity',
     'foam.u2.ScrollView',
     'foam.u2.TableRowView'
   ],
@@ -46,8 +47,14 @@ CLASS({
 
   properties: [
     ['nodeName', 'flex-table'],
-    ['ascIcon', '&#9650;'],
-    ['descIcon', '&#9660;'],
+    {
+      name: 'ascIcon',
+      lazyFactory: function() { return this.Entity.create({name:'#9650'}); }
+    },
+    {
+      name: 'descIcon',
+      lazyFactory: function() { return this.Entity.create({name:'#9660'}); }
+    },
     {
       name: 'data',
       postSet: function(_, data) {
