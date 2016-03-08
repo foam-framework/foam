@@ -51,12 +51,12 @@ CLASS({
   methods: [
     function init() {
       this.instance_.dirty = true;
-      if (!this.instance_.flat) this.instance_.flat = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+      if (!this.instance_.flat) this.instance_.flat = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
     },
 
     function flatten() {
       /* convenience for backward compatibility */
-      return this.flat.slice();
+      return new Float32Array(Array.prototype.slice.call(this.flat));
     },
 
     function reset_() {
@@ -76,7 +76,7 @@ CLASS({
           of this matrix.  */
       // Identity
       this.identity = true;
-      this.instance_.flat = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+      this.instance_.flat = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
     },
 
     function elementsFromFlat_(flat) {
@@ -93,7 +93,7 @@ CLASS({
     },
 
     function flatFromElements_(els) {
-      var flat = [];
+      var flat = new Float32Array(16);
 
       for (var j=0; j < 4; ++j) {
         for (var i=0; i < 4; ++i) {

@@ -34,7 +34,7 @@ CLASS({
   properties: [
     {
       name: 'color',
-      defaultValueFn: function() { return [1.0, 1.0, 1.0, 1.0]; }, // white
+      defaultValueFn: function() { return new Float32Array([1.0, 1.0, 1.0, 1.0]); }, // white
       postSet: function() {
         // auto-set translucent rendering mode
         this.translucent = this.color[3] < 1.0;
@@ -74,16 +74,16 @@ CLASS({
       postSet: function(old,nu) {
         Events.unfollow(this.r$, this.segments$);
         if (nu > 0) {
-          Events.map(this.r$, this.segments$, function(r) { 
+          Events.map(this.r$, this.segments$, function(r) {
             var n = Math.max(Math.ceil(Math.log( r / nu )), 1);
-            n = Math.pow(2,n) * 8;         
+            n = Math.pow(2,n) * 8;
             return n;
           });
-          
+
         }
-        
+
       }
-      
+
     }
   ],
 

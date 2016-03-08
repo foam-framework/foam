@@ -34,7 +34,7 @@ CLASS({
   properties: [
     {
       name: 'color',
-      defaultValueFn: function() { return [1.0, 1.0, 1.0, 1.0]; }, // white
+      defaultValueFn: function() { return new Float32Array([1.0, 1.0, 1.0, 1.0]); }, // white
       postSet: function() {
         // auto-set translucent rendering mode
         this.translucent = this.color[3] < 1.0;
