@@ -89,6 +89,7 @@ CLASS({
       this.SUPER();
 
       this.document.addEventListener('paste', this.onPaste);
+      this.document.addEventListener('copy',  this.onCopy);
 
       // This block causes the calc-display to scroll when updated.
       // To remove this feature replace the .inner-calc-display 'transition:' and
@@ -128,6 +129,15 @@ CLASS({
           var cmd = CMD[c];
           if ( cmd ) this.data[cmd]();
         }
+      }
+    },
+    {
+      name: 'onCopy',
+      code: function(evt) {
+        // Unless the user has done a ctrl-A to "select all", change the selection
+        // to just row1.
+        if ( evt.target.className !== 'history' )
+	  document.getSelection().selectAllChildren(this.row1FormattedView.$);
       }
     }
   ],
