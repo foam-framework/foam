@@ -418,6 +418,14 @@ return JSONUtil.arrayToObjArray(X, [
     image: 'Preso3.png'
   },
   {
+    name: 'Seven GUIs',
+    path: '../js/foam/demos/sevenguis/',
+    description: 'FOAM implementation of the <a href="https://github.com/eugenkiss/7guis/wiki">7GUIs</a> usability benchmark.',
+    keywords: ['demo'],
+    src: 'https://github.com/foam-framework/foam/tree/master/js/foam/demos/sevenguis',
+    image: 'Cells.png'
+  },
+  {
     name: 'FOAM Demo Catalog',
     path: 'DemoCat.html',
     description: 'A FOAM Demo browser.  The demo you\'re currently running.',
