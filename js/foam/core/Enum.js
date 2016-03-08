@@ -108,10 +108,6 @@ CLASS({
 
         return a;
       }
-    },
-    {
-      name: 'byIndex_',
-      factory: function() { return {}; }
     }
   ],
   methods: [
@@ -121,16 +117,9 @@ CLASS({
       code: function init() {
         for ( var i = 0 ; i < this.values.length ; i++ ) {
           var value = this.values[i];
-          this[value.name] = value;
-          this.byIndex_[value.index] = value;
+          this[value.name] = value.index;
+          this[value.index] = value;
         }
-      }
-    },
-    {
-      name: 'getValue',
-      labels: ['javascript'],
-      code: function getValue(index) {
-        return this.byIndex_[index];
       }
     }
   ],
