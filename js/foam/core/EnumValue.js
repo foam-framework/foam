@@ -29,17 +29,51 @@ CLASS({
       name: 'description',
     },
     {
+      type: 'Int',
       name: 'index'
     },
     {
       name: 'value',
-      getter: function() { return this.index; },
-      setter: function(v) { this.index = v; }
+    },
+    {
+      name: 'javaValue',
+      defaultValueFn: function() {
+        if (typeof this.value == 'string') {
+          return '"' + this.value + '"';
+        }
+        return this.value;
+      },
+    },
+    {
+      name: 'swiftValue',
+      defaultValueFn: function() {
+        if (typeof this.value == 'string') {
+          return '"' + this.value + '"';
+        }
+        return this.value;
+      },
     },
     {
       type: 'String',
       name: 'label',
-      defaultValueFn: function() { return this.name; },
-    }
+    },
+    {
+      name: 'javaLabel',
+      defaultValueFn: function() {
+        var label = this.label || this.name;
+        return '"' + label + '"';
+      },
+    },
+    {
+      name: 'swiftLabel',
+      defaultValueFn: function() {
+        if (this.label) {
+          return 'NSLocalizedString("' + this.label + '", ' +
+              'comment: "' + this.description + '")';
+        } else {
+          return '"' + this.name + '"';
+        }
+      },
+    },
   ]
 });
