@@ -36,8 +36,8 @@ CLASS({
       type: 'String',
       name: 'row1Formatted',
       view: 'foam.ui.animated.Label',
-      preSet: function(_,nu) {
-        return this.numberFormatter.i18nNumber(nu);
+      preSet: function(_, n) {
+        return this.numberFormatter.i18nNumber(n);
       }
     },
     {
@@ -144,7 +144,6 @@ CLASS({
       box-sizing: border-box;
       outline: none;
     }
-
 
     .CalcView {
       -webkit-user-select: none;
