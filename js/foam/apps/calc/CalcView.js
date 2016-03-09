@@ -40,8 +40,8 @@ CLASS({
       model_: 'StringProperty',
       name: 'row1Formatted',
       view: 'foam.ui.animated.Label',
-      preSet: function(_,nu) {
-        return this.numberFormatter.i18nNumber(nu);
+      preSet: function(_, n) {
+        return this.numberFormatter.i18nNumber(n);
       }
     },
     {
