@@ -81,7 +81,7 @@ CLASS({
         f1$.innerHTML = data;
         f2$.innerHTML = data;
 
-        f1$.style.left = f2$.offsetLeft;
+        f1$.style.left = f2$.offsetLeft + 'px';
         // Don't animate to the empty string, or prefix changes
         var animate = this.data.length && ( oldValue.startsWith(newValue) || newValue.startsWith(oldValue) );
         DOM.setClass(this.$.querySelector('.f1'), 'animated', animate);
