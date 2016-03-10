@@ -399,8 +399,6 @@ CLASS({
 });
 
 
-
-
 CLASS({
   name:  'NumericProperty_',
   extends: 'Property',
@@ -733,6 +731,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'TemplateProperty',
   extends: 'FunctionProperty',
@@ -770,6 +769,7 @@ CLASS({
     }
   ]
 });
+
 
 CLASS({
   name: 'ArrayProperty',
@@ -1368,6 +1368,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'EMailProperty',
   extends: 'StringProperty',
@@ -1377,6 +1378,7 @@ CLASS({
     [ 'pattern', '^.+\@.+$' ]
   ]
 });
+
 
 CLASS({
   name: 'ImageProperty',
@@ -1391,11 +1393,13 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'URLProperty',
   extends: 'StringProperty',
   label: 'Web link (URL or internet address)',
 });
+
 
 CLASS({
   name: 'ColorProperty',
@@ -1405,6 +1409,7 @@ CLASS({
     [ 'view', 'foam.ui.md.ColorFieldView' ]
   ]
 });
+
 
 CLASS({
   name: 'PasswordProperty',
@@ -1417,6 +1422,7 @@ CLASS({
     },
   ],
 });
+
 
 CLASS({
   name: 'PhoneNumberProperty',
@@ -1484,6 +1490,7 @@ if ( DEBUG ) CLASS({
   ]
 });
 
+
 CLASS({
   name: 'ImportedProperty',
   extends: 'Property',
@@ -1503,6 +1510,7 @@ CLASS({
     },
   ]
 });
+
 
 CLASS({
   name: 'EnumProperty',
@@ -1539,6 +1547,7 @@ CLASS({
     },
   ]
 });
+
 
 CLASS({
   name:  'FObjectProperty',
