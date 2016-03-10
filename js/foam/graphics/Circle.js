@@ -32,6 +32,7 @@ CLASS({
       defaultValue: 1
     },
     {
+      type: 'Float',
       name: 'r',
       label: 'Radius',
       defaultValue: 20
@@ -60,7 +61,7 @@ CLASS({
 
       if ( ! this.r ) return;
 
-      if ( this.color) {
+      if ( this.color ) {
         c.beginPath();
         c.moveTo(0,0);
         c.arc(0, 0, this.r, -this.endAngle, -this.startAngle, false);
@@ -77,7 +78,7 @@ CLASS({
         c.lineWidth = this.borderWidth;
 
         c.beginPath();
-        c.arc(0, 0, this.r+this.borderWidth/2-1, -this.endAngle, -this.startAngle, false);
+        c.arc(0, 0, this.r + this.borderWidth/2 - 1, this.startAngle, this.endAngle);
         c.closePath();
 
         c.strokeStyle = this.border;
