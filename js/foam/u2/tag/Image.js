@@ -30,7 +30,7 @@ CLASS({
 
   methods: [
     function initE() {
-      this.attr({ src: this.data$ });
+      this.attrs({ src: this.data$ });
       this.style({
         height: this.displayHeight$,
         width: this.displayWidth$,
