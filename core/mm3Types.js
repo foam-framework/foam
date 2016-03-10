@@ -443,8 +443,19 @@ CLASS({
     },
     {
       name: 'compareProperty',
-      labels: ['javascript'],
       defaultValue: function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; },
+      swiftDefaultValue: function() {/*
+        FoamFunction(fn: { (args) -> AnyObject? in
+          let o1 = self.f(args[0])
+          let o2 = self.f(args[1])
+          if o1 === o2 { return 0 }
+          if let o1 = o1 as? NSNumber {
+            if let o2 = o2 as? NSNumber { return o1.compare(o2).rawValue }
+            return 1
+          }
+          return -1
+        })
+      */},
     },
     {
       name: 'validate',
