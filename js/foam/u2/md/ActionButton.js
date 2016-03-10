@@ -15,8 +15,8 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.u2.Icon',
     'foam.ui.Color',
-    'foam.ui.Icon',
     'foam.ui.md.HaloView',
   ],
   imports: [

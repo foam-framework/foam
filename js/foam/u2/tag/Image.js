@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,27 @@
  * limitations under the License.
  */
 CLASS({
-  package: 'foam.u2',
+  package: 'foam.u2.tag',
   name: 'Image',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
+  requires: [
+  ],
+
+  properties: [
+    'displayWidth',
+    'displayHeight',
+    ['alpha', 1.0],
+    ['nodeName', 'img'],
+  ],
+
+  methods: [
+    function initE() {
+      this.attr({ src: this.data$ });
+      this.style({
+        height: this.displayHeight$,
+        width: this.displayWidth$,
+        opacity: this.alpha$
+      });
+    },
+  ]
 });
