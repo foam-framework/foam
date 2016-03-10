@@ -36,8 +36,8 @@ CLASS({
       type: 'String',
       name: 'row1Formatted',
       view: 'foam.ui.animated.Label',
-      preSet: function(_,nu) {
-        return this.numberFormatter.i18nNumber(nu);
+      preSet: function(_, n) {
+        return this.numberFormatter.i18nNumber(n);
       }
     },
     {
@@ -85,6 +85,7 @@ CLASS({
       this.SUPER();
 
       this.document.addEventListener('paste', this.onPaste);
+      this.document.addEventListener('copy',  this.onCopy);
 
       // This block causes the calc-display to scroll when updated.
       // To remove this feature replace the .inner-calc-display 'transition:' and
@@ -125,6 +126,15 @@ CLASS({
           if ( cmd ) this.data[cmd]();
         }
       }
+    },
+    {
+      name: 'onCopy',
+      code: function(evt) {
+        // Unless the user has done a ctrl-A to "select all", change the selection
+        // to just row1.
+        if ( evt.target.className !== 'history' )
+	  document.getSelection().selectAllChildren(this.row1FormattedView.$);
+      }
     }
   ],
 
@@ -134,7 +144,6 @@ CLASS({
       box-sizing: border-box;
       outline: none;
     }
-
 
     .CalcView {
       -webkit-user-select: none;

@@ -399,8 +399,6 @@ CLASS({
 });
 
 
-
-
 CLASS({
   name:  'NumericProperty_',
   extends: 'Property',
@@ -443,8 +441,19 @@ CLASS({
     },
     {
       name: 'compareProperty',
-      labels: ['javascript'],
       defaultValue: function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; },
+      swiftDefaultValue: function() {/*
+        FoamFunction(fn: { (args) -> AnyObject? in
+          let o1 = self.f(args[0])
+          let o2 = self.f(args[1])
+          if o1 === o2 { return 0 }
+          if let o1 = o1 as? NSNumber {
+            if let o2 = o2 as? NSNumber { return o1.compare(o2).rawValue }
+            return 1
+          }
+          return -1
+        })
+      */},
     },
     {
       name: 'validate',
@@ -722,6 +731,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'TemplateProperty',
   extends: 'FunctionProperty',
@@ -759,6 +769,7 @@ CLASS({
     }
   ]
 });
+
 
 CLASS({
   name: 'ArrayProperty',
@@ -1357,6 +1368,7 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'EMailProperty',
   extends: 'StringProperty',
@@ -1366,6 +1378,7 @@ CLASS({
     [ 'pattern', '^.+\@.+$' ]
   ]
 });
+
 
 CLASS({
   name: 'ImageProperty',
@@ -1380,11 +1393,13 @@ CLASS({
   ]
 });
 
+
 CLASS({
   name: 'URLProperty',
   extends: 'StringProperty',
   label: 'Web link (URL or internet address)',
 });
+
 
 CLASS({
   name: 'ColorProperty',
@@ -1394,6 +1409,7 @@ CLASS({
     [ 'view', 'foam.ui.md.ColorFieldView' ]
   ]
 });
+
 
 CLASS({
   name: 'PasswordProperty',
@@ -1406,6 +1422,7 @@ CLASS({
     },
   ],
 });
+
 
 CLASS({
   name: 'PhoneNumberProperty',
@@ -1473,6 +1490,7 @@ if ( DEBUG ) CLASS({
   ]
 });
 
+
 CLASS({
   name: 'ImportedProperty',
   extends: 'Property',
@@ -1492,6 +1510,7 @@ CLASS({
     },
   ]
 });
+
 
 CLASS({
   name: 'EnumProperty',
@@ -1556,6 +1575,7 @@ CLASS({
     },
   ]
 });
+
 
 CLASS({
   name:  'FObjectProperty',

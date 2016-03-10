@@ -15,8 +15,8 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.u2.Icon',
     'foam.ui.Color',
-    'foam.ui.Icon',
     'foam.ui.md.HaloView',
   ],
   imports: [
@@ -88,21 +88,28 @@ CLASS({
           return this.setColor(this.color);
       }
     },
+    {
+      name: 'available_',
+    },
   ],
 
   methods: [
     function initE() {
       var self = this;
+
+      this.on('unload', this.X.dynamicFn(
+          this.action.isAvailable.bind(this.data, this.action),
+          function() {
+            self.available_ = self.action.isAvailable.call(self.data, self.action);
+          }
+      ));
+
       this.cls(this.myCls())
           .style({
             color: this.color_$,
             opacity: this.alpha$,
           })
-          .cls(this.dynamic(function(data, action) {
-            return action &&
-                action.isAvailable.call(data, action) ?
-                    self.myCls('available') : '';
-          }, this.data$, this.action$))
+          .enableCls(this.myCls('available'), this.available_$)
           .cls(this.myCls(this.TYPE_CLASSES[this.type]))
           .cls('noselect')
           .on('click', this.onClick)

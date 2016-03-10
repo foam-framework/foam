@@ -151,7 +151,7 @@ CLASS({
             if (!old || old.indexOf(nu[i]) < 0) {
               var split = this.splitName(nu[i]);
               var prop = this.model.getFeature(split.name);
-              var model = BooleanProperty.isInstance(prop) ?
+              var model = (EnumProperty.isInstance(prop) || BooleanProperty.isInstance(prop)) ?
                   this.GroupBySearchView : this.GroupAutocompleteSearchView;
               var options = {
                 inline: true,
