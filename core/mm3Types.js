@@ -1515,6 +1515,34 @@ CLASS({
       */},
     },
     {
+      name: 'defaultValue',
+      adapt: function(_, v) {
+        if ( typeof v == "string" && X.lookup(this.enum) ) {
+          var e = X.lookup(this.enum);
+          return e[e[v]];
+        }
+        return v;
+      }
+    },
+    {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() {
+        if ( typeof this.defaultValue == 'string' )
+          this.defaultValue = this.defaultValue;
+        if ( this.defaultValue && this.defaultValue.name )
+          return this.enum.split('.').pop() + '.' + this.defaultValue.name;
+      },
+    },
+    {
+      name: 'javaDefaultValue',
+      defaultValueFn: function() {
+        if ( typeof this.defaultValue == 'string' )
+          this.defaultValue = this.defaultValue;
+        if ( this.defaultValue && this.defaultValue.name )
+          return this.enum + '.' + this.defaultValue.name;
+      },
+    },
+    {
       name: 'javaType',
       defaultValueFn: function() { return this.enum; },
     },
