@@ -106,7 +106,7 @@ CLASS({
   listeners: [
     {
       name: 'onMessage',
-      code: function(_, _, msg) {
+      code: function(_, __, msg) {
         // TODO: unsafe parse
         JSONUtil.aparse(function(data) {
           if ( this.pending[data.msgid] ) {

@@ -108,7 +108,7 @@ CLASS({
             data: this.X[daoize(dest.name)]
           }, this.Y);
 
-          view.subscribe(view.ROW_CLICK, this.oneTime(function(_, _, obj) {
+          view.subscribe(view.ROW_CLICK, this.oneTime(function(_, __, obj) {
             var r = this.model.create(null, this.Y);
             r[this.relationship.destinationProperty] = obj.id;
             this.relatedDAO.put(r, {
