@@ -21,9 +21,10 @@ CLASS({
   extends: 'foam.u2.tag.Select',
   methods: [
     function fromProperty(p) {
+      this.label = p.label;
       this.X.arequire(p.enum)(function(e) {
         this.choices = e.values.map(function(m) {
-          return [m.value, m.label];
+          return [m.index, m.label];
         });
       }.bind(this));
     }
