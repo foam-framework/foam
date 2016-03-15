@@ -113,7 +113,9 @@ CLASS({
       }
     },
     function forceClose() {
-      this.remove();
+      if ( this.state !== this.UNLOADED ) {
+        this.remove();
+      }
     },
     // Call this when eg. the mouse moves away from your tooltip target.
     function close() {
@@ -157,12 +159,12 @@ CLASS({
         y = this.targetY;
       }
 
-      if (x + myRect.width > this.document.body.clientWidth)
+      if (x + myRect.width > this.window.innerWidth)
         style.right = '0px';
       else
         style.left = x + 'px';
 
-      if (y + myRect.height > this.document.body.clientHeight)
+      if (y + myRect.height > this.window.innerHeight)
         style.bottom = '0px';
       else
         style.top = y + 'px';

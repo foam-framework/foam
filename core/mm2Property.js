@@ -156,6 +156,7 @@ GLOBAL.Property = {
     {
       name: 'swiftDefaultValue',
       labels: ['swift', 'compiletime'],
+      adapt: function(_, n) { return multiline(n); },
     },
     {
       name: 'javaDefaultValue',
@@ -820,7 +821,8 @@ GLOBAL.Property = {
     {
       name: 'compareProperty',
       type: 'Function',
-      labels: ['javascript'],
+      swiftType: 'FoamFunction',
+      labels: ['javascript', 'swift'],
       view: 'foam.ui.FunctionView',
       displayWidth: 70,
       displayHeight: 5,
@@ -833,6 +835,18 @@ GLOBAL.Property = {
         if ( o1.compareTo ) return o1.compareTo(o2);
         return o1.$UID.compareTo(o2.$UID);
       },
+      swiftDefaultValue: function() {/*
+        FoamFunction(fn: { (args) -> AnyObject? in
+          let o1 = self.f(args[0])
+          let o2 = self.f(args[1])
+          if o1 === o2 { return 0 }
+          if o1 == nil && o2 == nil { return 0 }
+          if o1 == nil { return -1 }
+          if o2 == nil { return 1 }
+          if o1!.isEqual(o2) { return 0 }
+          return o1?.hashValue > o2?.hashValue ? 1 : -1
+        })
+      */},
       help: 'Comparator function.',
       documentation: "A comparator function two compare two instances of this $$DOC{ref:'Property'}."
     },
@@ -952,25 +966,16 @@ GLOBAL.Property = {
       args: [
         {
           name: 'o1',
-          swiftIsMutable: true,
           swiftType: 'AnyObject?',
         },
         {
           name: 'o2',
-          swiftIsMutable: true,
           swiftType: 'AnyObject?',
         },
       ],
       swiftReturnType: 'Int',
       swiftCode: function() {/*
-        o1 = self.f(o1)
-        o2 = self.f(o2)
-        if o1 === o2 { return 0 }
-        if o1 == nil && o2 == nil { return 0 }
-        if o1 == nil { return -1 }
-        if o2 == nil { return 1 }
-        if o1!.isEqual(o2) { return 0 }
-        return o1?.hashValue > o2?.hashValue ? 1 : -1
+        return compareProperty.call(o1, o2) as! Int
       */}
     },
     function readResolve() {

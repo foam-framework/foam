@@ -121,7 +121,9 @@ CLASS({
             if (key === '') continue;
             var count    = ('(' + groups.groups[key] + ')').intern();
             var subKey   = ('' + key).substring(0, self.width-count.length-3);
-            var cleanKey = subKey.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            var cleanKey = EnumProperty.isInstance(self.property) ?
+                X.lookup(self.property.enum)[key].label :
+                subKey.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
             if (self.memento && self.memento === '' + key) {
               selected = key;
             }

@@ -118,9 +118,7 @@ CLASS({
           terms.push(AndExpr.create({ args: subterms }));
         }
       }
-      var ret = OrExpr.create({ args: terms }).partialEval();
-      console.log(this.toMQL(),' normalize-> ', ret.toMQL());
-      return ret;
+      return OrExpr.create({ args: terms }).partialEval();
     },
     function pipe(sink) {
       /* Returns a $$DOC{ref: "Sink"} which applies this expression to every value <tt>put</tt> or <tt>remove</tt>d, calling the provided <tt>sink</tt> only for those values which match the expression. */
@@ -609,7 +607,6 @@ CLASS({
         for ( var j = i+1 ; j < newArgs.length ; j++ ) {
           var a = this.partialAnd(newArgs[i], newArgs[j]);
           if ( a ) {
-            console.log('***************** ', newArgs[i].toMQL(), ' <PartialAnd> ', newArgs[j].toMQL(), ' -> ', a.toMQL());
             if ( a === FALSE ) return FALSE;
             newArgs[i] = a;
             newArgs.splice(j, 1);

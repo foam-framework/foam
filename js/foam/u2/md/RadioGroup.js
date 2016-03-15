@@ -59,6 +59,11 @@ CLASS({
             return self.myCls(self.orientation);
           }, this.orientation$));
 
+      this.add(this.dynamic(function(showLabel) {
+        return showLabel ?
+            this.E().cls(this.myCls('label')).add(this.label) : null;
+      }.bind(this), this.showLabel$));
+
       for (var i = 0; i < this.choices.length; i++) {
         this.choiceElement(i);
       }

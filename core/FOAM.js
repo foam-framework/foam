@@ -321,7 +321,7 @@ function INTERFACE(imodel) {
 
 // For non-CLASS modeled things, like Enums.
 function __DATA(obj) {
-  var package = obj.package ?
+  var pkg = obj.package ?
       obj.package :
       obj.id.substring(0, obj.id.lastIndexOf('.'));
 
@@ -329,7 +329,7 @@ function __DATA(obj) {
       obj.name :
       obj.id.substring(obj.id.lastIndexOf('.') + 1);
 
-  var path = packagePath(X, package);
+  var path = packagePath(X, pkg);
 
   var triggered  = false;
 

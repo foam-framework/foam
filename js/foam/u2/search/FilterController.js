@@ -151,7 +151,7 @@ CLASS({
             if (!old || old.indexOf(nu[i]) < 0) {
               var split = this.splitName(nu[i]);
               var prop = this.model.getFeature(split.name);
-              var model = BooleanProperty.isInstance(prop) ?
+              var model = (EnumProperty.isInstance(prop) || BooleanProperty.isInstance(prop)) ?
                   this.GroupBySearchView : this.GroupAutocompleteSearchView;
               var options = {
                 inline: true,
@@ -254,7 +254,13 @@ CLASS({
         // correct answer should be to supply this value in the context to the
         // inner TextSearchView or similar. That ran into problems with putting
         // the FilterView in the context of the action in its element.
-        this.searchViews[key].children[0].bodyE.children[0].view.data = opt_value;
+        if ( this.state === this.LOADED ) {
+          this.searchViews[key].children[0].bodyE.children[0].view.data = opt_value;
+        } else {
+          this.on('load', function() {
+            this.searchViews[key].children[0].bodyE.children[0].view.data = opt_value;
+          }.bind(this));
+        }
       }
     },
     function removeFilter(key) {

@@ -67,7 +67,7 @@ CLASS({
 
       var Dragon = foam.demos.graphics.Dragon;
       Dragon.methods.forEach(function(meth) {
-        if ( meth.name === 'paintSelf' || meth.name === 'wing' || meth.name === 'feather' ) meth.code$.addListener(function() {
+        if ( meth.name === 'paintSelf' || meth.name === 'wing' ) meth.code$.addListener(function() {
           // console.log(meth.name, typeof meth.code);
           try {
             Dragon.getPrototype()[meth.name] = meth.code;
@@ -96,7 +96,7 @@ CLASS({
       <div style="display:flex;display:-webkit-flex;width:100%;flex: 1 1 1px;">
         <div style="width:45%">
           <table><tr><td>$$timer{showActions: true}</td><td><%= this.data.turntable %></td></tr></table>
-          <%= foam.ui.DAOListView.create({mode: 'read-only', dao: foam.demos.graphics.Dragon.methods.where({f:function(m) { return m.name === 'paintSelf' || m.name === 'wing' || m.name === 'feather'; }})}) %>
+          <%= foam.ui.DAOListView.create({mode: 'read-only', dao: foam.demos.graphics.Dragon.methods.where({f:function(m) { return m.name === 'paintSelf' || m.name === 'wing' }})}) %>
         </div>
         <div style="width:55%;margin-top:500px;">
           %%dragon

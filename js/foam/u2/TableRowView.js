@@ -21,7 +21,6 @@ CLASS({
   extends: 'foam.u2.View',
 
   imports: [
-    'hardSelection$',
     'rowClick',
     'tableView'
   ],
@@ -58,9 +57,6 @@ CLASS({
 
       this.on('click', this.onClick);
       this.cls(this.tableView.myCls('row'));
-      this.cls(this.dynamic(function(sel, data) {
-        return sel === data ? this.tableView.myCls('row-selected') : '';
-      }.bind(this), this.hardSelection$, this.data$));
     },
 
     function makeBodyCell(prop, i) {
