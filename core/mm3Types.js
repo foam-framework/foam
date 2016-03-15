@@ -293,9 +293,7 @@ CLASS({
     [ 'defaultValue', false ],
     {
       name: 'adapt',
-      defaultValue: function (_, v) {
-        return (typeof v === 'string' && v.toLowerCase() === 'false') ? false : !!v;
-      },
+      defaultValue: function (_, v) { return !!v; },
       labels: ['javascript'],
     },
     {
