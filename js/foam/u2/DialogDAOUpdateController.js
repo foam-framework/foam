@@ -66,7 +66,7 @@ CLASS({
     {
       name: 'title',
       factory: function() {
-        return 'Edit ' + this.model.name;
+        return 'Edit ' + this.model.label;
       }
     },
     {
