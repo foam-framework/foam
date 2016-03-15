@@ -75,8 +75,8 @@ CLASS({
     },
     function open() {
       if (this.opened) return;
-      this.height = -1;
       this.opened = true;
+      this.height = -1;
       this.animationComplete = false;
     },
     function close() {
@@ -91,16 +91,16 @@ CLASS({
 
       var border = 0;
       ['border-top', 'border-bottom'].forEach(function(name) {
-        var math = myStyle[name].match(/^([0-9]+)px/);
+        var match = myStyle[name].match(/^([0-9]+)px/);
         if (match) border += parseInt(match[1]);
       });
 
-      var last = this.dropdownE_.children[this.dropdownE_.children.length - 1];
-      var margin = parseInt(this.window.getComputedStyle(last.el())['margin-bottom']);
+      var last = this.dropdownE_.children[this.dropdownE_.children.length - 1].el();
+      var margin = parseInt(this.window.getComputedStyle(last))['margin-bottom']);
       if (Number.isNaN(margin)) margin = 0;
 
       return Math.min(border + last.offsetTop + last.offsetHeight + margin,
-          this.document.body.clientHeight - this.dropdownE_.el().getBoundingClientRect().top);
+          this.window.innerHeight - this.dropdownE_.el().getBoundingClientRect().top);
     },
     function initE() {
       this.addToSelf_ = true;
@@ -130,17 +130,11 @@ CLASS({
           .cls(this.dynamic(function(open, complete) {
             return open && complete ? this.myCls('open') : '';
           }.bind(this), this.opened$, this.animationComplete$))
-          .style({
-            height: this.dynamic(function(height) {
-              // TODO(braden): Should be able to remove this check; height NaN
-              // shouldn't happen.
-              console.assert(!Number.isNaN(height), 'Height should not be NaN.');
-              return (height < 0 ? this.getFullHeight() : height) + 'px';
-            })
-          })
           .on('transitionend', this.onTransitionEnd)
           .on('mouseleave', this.onMouseLeave)
           .on('click', this.onClick);
+
+      this.dropdownE_.dynamic(this.onHeightChange, this.height$);
 
       this.add(this.dropdownE_);
 
@@ -199,6 +193,10 @@ CLASS({
       // Prevent clicks inside the dropdown from closing it.
       // Block them before they reach the overlay.
       e.stopPropagation();
+    },
+    function onHeightChange() {
+      var height = this.height < 0 ? this.getFullHeight() : this.height;
+      this.dropdownE_.style({ height: height + 'px' });
     },
   ]
 });
