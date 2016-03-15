@@ -113,7 +113,9 @@ CLASS({
       }
     },
     function forceClose() {
-      this.remove();
+      if ( this.state !== this.UNLOADED ) {
+        this.remove();
+      }
     },
     // Call this when eg. the mouse moves away from your tooltip target.
     function close() {
