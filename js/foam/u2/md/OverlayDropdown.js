@@ -96,7 +96,7 @@ CLASS({
       });
 
       var last = this.dropdownE_.children[this.dropdownE_.children.length - 1].el();
-      var margin = parseInt(this.window.getComputedStyle(last))['margin-bottom']);
+      var margin = parseInt(this.window.getComputedStyle(last)['margin-bottom']);
       if (Number.isNaN(margin)) margin = 0;
 
       return Math.min(border + last.offsetTop + last.offsetHeight + margin,
