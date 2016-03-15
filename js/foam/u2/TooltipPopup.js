@@ -159,12 +159,12 @@ CLASS({
         y = this.targetY;
       }
 
-      if (x + myRect.width > this.document.body.clientWidth)
+      if (x + myRect.width > this.window.innerWidth)
         style.right = '0px';
       else
         style.left = x + 'px';
 
-      if (y + myRect.height > this.document.body.clientHeight)
+      if (y + myRect.height > this.window.innerHeight)
         style.bottom = '0px';
       else
         style.top = y + 'px';
