@@ -260,10 +260,10 @@ CLASS({
                   return this.index === i ? 'selected' : '';
                 }.bind(this, i), this.index$))
                 .style({
-                  height: this.itemHeight,
-                  width: this.itemWidth,
-                  'margin-left': this.hMargin,
-                  'margin-right': this.hMargin
+                  height: this.itemHeight + 'px',
+                  width: this.itemWidth + 'px',
+                  'margin-left': this.hMargin + 'px',
+                  'margin-right': this.hMargi + 'px',
                 })
                 .on('click', this.onClick.bind(this, i))
                 .add(this.choices[i][1])
