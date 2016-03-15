@@ -102,7 +102,7 @@ CLASS({
           function() {
             self.available_ = self.action.isAvailable.call(self.data, self.action);
           }
-      ));
+      ).destroy);
 
       this.cls(this.myCls())
           .style({
