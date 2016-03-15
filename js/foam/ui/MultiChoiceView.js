@@ -30,7 +30,6 @@ CLASS({
     },
     {
       name:  'choices',
-      type:  'Array[StringField]',
       documentation: 'Array of [value, text] choices.  Simple String values will be upgraded to [value, value]. Can also be a map, in which case this becomes a [key, value] map in enumeration order.',
       factory: function() { return []; },
       preSet: function(_, a) {
@@ -89,7 +88,7 @@ CLASS({
     },
     {
       name: 'size',
-      type: 'int',
+      type: 'Int',
       defaultValue: 1
     }
   ],
