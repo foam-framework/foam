@@ -149,10 +149,7 @@ CLASS({
     {
       model_: 'foam.core.types.DAOProperty',
       name: 'dao',
-      onDAOUpdate: 'onDAOUpdate',
-      postSet: function(old, nu) {
-        this.onDAOUpdate();
-      }
+      onDAOUpdate: 'onDAOUpdate'
     },
     {
       name: 'data',
