@@ -30,6 +30,11 @@ CLASS({
     {
       name: 'selectedProperties',
     },
+    {
+      type: 'Boolean',
+      name: 'displaySorted',
+      defaultValue: false,
+    },
   ],
 
   methods: [
@@ -42,12 +47,20 @@ CLASS({
     },
     function initE() {
       var selected = this.selectedMap();
-      for (var i = 0; i < this.properties.length; i++) {
-        var cb = this.Checkbox.create({
-          label: this.properties[i].label,
-          data: selected[this.properties[i].name]
+      var props = this.properties;
+      if ( this.displaySorted ) {
+        props = this.properties.slice();
+        props.sort(function(a, b) {
+          return a.label.toLowerCase().compareTo(b.label.toLowerCase());
         });
-        cb.data$.addListener(this.onPropChange.bind(this, this.properties[i]));
+      }
+
+      for (var i = 0; i < props.length; i++) {
+        var cb = this.Checkbox.create({
+          label: props[i].label,
+          data: selected[props[i].name]
+        });
+        cb.data$.addListener(this.onPropChange.bind(this, props[i]));
         this.add(cb);
       }
     },
