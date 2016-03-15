@@ -147,8 +147,6 @@ CLASS({
         if ( e2.model_.name == RULES[i][0] && e1.model_.name == RULES[i][1] ) return RULES[i][2](e2, e1);
       }
 
-      console.log('************** Unknown partialOr combination: ', e1.name_, e2.name_);
-
       return null;
     },
 
@@ -181,7 +179,6 @@ CLASS({
         for ( var j = i+1 ; j < newArgs.length ; j++ ) {
           var a = this.partialOr(newArgs[i], newArgs[j]);
           if ( a ) {
-            console.log('***************** ', newArgs[i].toMQL(), ' <PartialOr> ', newArgs[j].toMQL(), ' -> ', a.toMQL());
             if ( a === TRUE ) return TRUE;
             newArgs[i] = a;
             newArgs.splice(j, 1);
