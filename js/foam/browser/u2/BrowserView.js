@@ -20,8 +20,10 @@ CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.browser.u2.BrowserDAOCreateController',
+    'foam.browser.u2.BrowserDAOUpdateController',
     'foam.u2.DAOController',
-    'foam.u2.DAOCreateController',
+    'foam.u2.DAOUpdateController',
     'foam.u2.PropertyView',
     'foam.u2.SearchBorder',
     'foam.u2.md.ActionButton',
@@ -71,7 +73,9 @@ CLASS({
       documentation: 'The inner $$DOC{ref:"foam.u2.DAOController"}. Will ' +
           'create a default one, if one is not provided.',
       lazyFactory: function() {
-        return this.DAOController.create();
+        var Y = this.Y.sub();
+        Y.registerModel(this.BrowserDAOUpdateController, 'foam.u2.DAOUpdateController');
+        return this.DAOController.create(null, Y);
       }
     },
     {
@@ -171,7 +175,7 @@ CLASS({
       ligature: 'add',
       isAvailable: function() { return this.showAdd; },
       code: function() {
-        this.stack.pushView(this.DAOCreateController.create({ model: this.data.model }));
+        this.stack.pushView(this.BrowserDAOCreateController.create({ model: this.data.model }));
       }
     }
   ],

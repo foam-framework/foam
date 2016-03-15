@@ -21,12 +21,6 @@ CLASS({
   documentation: 'Expects $$DOC{ref:".model"} to be set. This will construct ' +
       'a new instance of the model, and render a DetailView for it.',
 
-  requires: [
-    //'foam.u2.md.DetailView', Circular dependency
-    'foam.u2.md.Toolbar',
-    'foam.u2.md.ToolbarAction',
-  ],
-
   imports: [
     'document',
     'stack',
@@ -58,19 +52,6 @@ CLASS({
                 data$: this.data$,
               }, this.Y)
             );
-      }
-    },
-    {
-      name: 'toolbar_',
-      factory: function() {
-        var t = this.Toolbar.create({ title$: this.title$ });
-        t.addLeftActions([
-          this.ToolbarAction.create({ data: this, action: this.CANCEL })
-        ]);
-        t.addRightActions([
-          this.ToolbarAction.create({ data: this, action: this.SAVE })
-        ]);
-        return t;
       }
     },
     {
@@ -121,7 +102,7 @@ CLASS({
 
   methods: [
     function initE() {
-      this.cls(this.myCls()).add(this.toolbar_).add(this.body_);
+      this.cls(this.myCls()).add(this.body_);
     },
   ],
 

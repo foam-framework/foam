@@ -77,11 +77,12 @@ CLASS({
       name: 'rowClick',
       code: function(_, _, obj) {
         var Y = this.Y.sub({ data: obj });
-        this.stack.pushView(
-          this.DAOUpdateController.create({
-            model: this.model,
-            data: obj
-          }, Y));
+        debugger;
+        var v = this.DAOUpdateController.create({
+          model: this.model,
+          data: obj
+        }, Y);
+        this.stack.pushView(v);
       }
     }
   ],
