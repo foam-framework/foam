@@ -313,6 +313,14 @@ CLASS({
           txt.equalsIC('t');
       },
       help: 'Function to extract value from a String.'
+    },
+    {
+      name: 'fromMemento',
+      labels: ['javascript'],
+      defaultValue: function(mem) {
+        if (mem && (mem.toLowerCase() === 'false' || mem === '0')) return false;
+        return !!mem;
+      }
     }
   ]
 });
