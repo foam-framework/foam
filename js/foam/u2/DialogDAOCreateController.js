@@ -50,7 +50,7 @@ CLASS({
     {
       name: 'title',
       factory: function() {
-        return 'New ' + this.model.name;
+        return 'New ' + this.model.label;
       }
     },
     {

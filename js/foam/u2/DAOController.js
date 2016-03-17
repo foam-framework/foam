@@ -75,7 +75,7 @@ CLASS({
   listeners: [
     {
       name: 'rowClick',
-      code: function(_, _, obj) {
+      code: function(_, __, obj) {
         var Y = this.Y.sub({ data: obj });
         this.stack.pushView(this.DAOUpdateController.create({
           model: this.model,
