@@ -36,7 +36,6 @@ CLASS({
       },
     },
     {
-      type: 'foam.util.Queue',
       name: 'q',
       lazyFactory: function() {
         return this.Queue.create();
