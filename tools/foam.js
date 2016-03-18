@@ -69,7 +69,11 @@ var FOAMargs = process.argv.slice(2);
     }
   }
 
-  arequire(FOAMargs[0])(function(model) {
+  aseq(arequire('foam.node.Context'), arequire(FOAMargs[0]))(function(model) {
+    var context = foam.node.Context.create({
+      process: process
+    });
+
     if ( ! model ) {
       console.log('ERRROR: Could not find model', FOAMargs[0]);
       process.exit(1);
@@ -105,6 +109,6 @@ var FOAMargs = process.argv.slice(2);
       args[key] = value;
     }
 
-    model.create(args).execute();
+    model.create(args, context.Y).execute();
   });
 })();
