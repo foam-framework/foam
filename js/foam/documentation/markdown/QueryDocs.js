@@ -64,7 +64,7 @@ CLASS({
         });
       }
 
-      apar.apply(null, this.models.map(arequire))(function() {
+      apar.apply(null, this.models.map(arequire.bind(this.X)))(function() {
         var output = [];
         for (var i = 0; i < arguments.length; i++) {
           output.push(this.toMarkdown(undefined, arguments[i]));
