@@ -126,7 +126,7 @@ CLASS({
     },
     execute_: function() {
       if ( this.delegate ) {
-        arequire(this.delegate)(function(DelegateModel) {
+        this.X.arequire(this.delegate)(function(DelegateModel) {
           DelegateModel.create({ builder: this }).buildApp();
         }.bind(this));
       } else {
@@ -147,7 +147,7 @@ CLASS({
 
       var seq = [anop];
       for ( var i = 0; i < this.models.length ; i++ ) {
-        seq.push(arequire(this.models[i]));
+        seq.push(this.X.arequire(this.models[i]));
       }
 
       aseq.apply(null, seq)(this.buildModel.bind(this));
