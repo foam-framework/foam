@@ -569,7 +569,7 @@ function defineTTLProperty(obj, name, ttl, f) {
     var value = undefined;
     this.__defineGetter__(name, function() {
       function scheduleTimer() {
-        setTimeout(function() {
+        var ref = setTimeout(function() {
           if ( accessed ) {
             scheduleTimer();
           } else {
@@ -577,6 +577,7 @@ function defineTTLProperty(obj, name, ttl, f) {
           }
           accessed = false;
         }, ttl);
+        if ( ref && ref.unref ) ref.unref();
       }
       if ( ! value ) {
         accessed = false;
