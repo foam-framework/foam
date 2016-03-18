@@ -89,6 +89,11 @@ CLASS({
       }
 
       this.inputE();
+
+      if ( this.showValidation ) {
+        this.enableCls(this.myCls('invalid'), this.validationError_$);
+        this.start().cls(this.myCls('validation-error')).add(this.validationError_$).end();
+      }
     },
     function inputE() {
       var self = this;
@@ -134,8 +139,9 @@ CLASS({
   templates: [
     function CSS() {/*
       ^ {
-        align-items: center;
+        align-items: stretch;
         display: flex;
+        flex-direction: column;
         margin: 8px;
         padding: 32px 8px 8px 8px;
         position: relative;
@@ -171,6 +177,15 @@ CLASS({
         padding: 0 0 7px 0;
         resize: none;
         z-index: 1;
+      }
+
+      ^invalid ^inner {
+        border-bottom: 2px solid #db4437;
+        color: #db4437;
+        margin-bottom: 4px;
+      }
+      ^validation-error {
+        color: #db4437;
       }
     */}
   ]
