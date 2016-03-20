@@ -56,6 +56,7 @@ CLASS({
     {
       name: 'child_',
     },
+    'validator_',
     [ 'nodeName', 'span' ]
   ],
 
@@ -84,6 +85,14 @@ CLASS({
       if ( ! this.child_ ) return;
       if ( old ) Events.unlink(old.propertyValue(this.prop.name), this.child_.data$);
       if ( nu  ) Events.link(nu.propertyValue(this.prop.name), this.child_.data$);
+
+      // Attach property validation if it's enabled and available.
+      if ( this.validator_ ) this.validator_();
+      if ( this.child_.showValidation && this.prop.validate ) {
+        this.validator_ = this.X.dynamic3(this.data, this.prop.validate, function(err) {
+          this.child_.validationError_ = err;
+        }.bind(this));
+      }
     }
   ]
 });
