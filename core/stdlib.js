@@ -150,6 +150,8 @@ MODEL({
       if ( a === b ) return true;
       if ( ! a || ! b ) return false;
       if ( a.equals ) return a.equals(b);
+      if ( a.compareTo ) return a.compareTo(b) === 0;
+      if ( b.compareTo ) return b.compareTo(a) === 0;
       return a == b;
     },
 
