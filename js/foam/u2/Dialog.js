@@ -39,12 +39,26 @@ CLASS({
     {
       type: 'Array',
       name: 'buttons',
-      documentation: 'An array of buttons. Each is a [function, label] pair. ' +
-          'These will be displayed in <em>reverse</em> order as MD buttons ' +
-          'at the bottom of the dialog. The default is a single "OK" button ' +
-          'that closes the dialog.',
+      documentation: 'An array of buttons. Each is a [function, label] pair ' +
+          'or an Action. These will be displayed in <em>reverse</em> order ' +
+          'as MD buttons at the bottom of the dialog. The default is a ' +
+          'single "OK" button that closes the dialog.',
       factory: function() {
         return [[function() { this.overlay.close(); }.bind(this), 'OK']];
+      },
+      adapt: function(old, nu) {
+        if (nu) {
+          for ( var i = 0 ; i < nu.length ; i++ ) {
+            if ( ! this.Action.isInstance(nu[i]) ) {
+              nu[i] = this.Action.create({
+                name: nu[i][1],
+                label: nu[i][1],
+                code: nu[i][0]
+              });
+            }
+          }
+        }
+        return nu;
       }
     },
     {
@@ -74,10 +88,7 @@ CLASS({
           .add(this.body)
           .end();
 
-      this.x({ data: this });
-      this.start().cls(this.myCls('buttons')).add(this.buttons.map(function(b) {
-        return this.Action.create({ name: b[1], label: b[1], code: b[0] });
-      }.bind(this))).end();
+      this.start().cls(this.myCls('buttons')).add(this.buttons).end();
     },
   ],
 
