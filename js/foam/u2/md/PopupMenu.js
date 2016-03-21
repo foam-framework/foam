@@ -215,11 +215,17 @@ CLASS({
       this.animateToHidden();
       this.removeTimeout = this.setTimeout(function() {
         this.delegate_.remove();
+        this.delegate_ = null;
       }.bind(this), 500);
     },
 
     function unload() {
       if ( this.removeTimeout ) this.clearTimeout(this.removeTimeout);
+      if ( this.delegate_ ) {
+        if ( this.delegate_.state === this.delegate_.LOADED )
+          this.delegate_.unload();
+        this.delegate_ = null;
+      }
       this.SUPER();
     },
 
