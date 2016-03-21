@@ -1221,7 +1221,9 @@ CLASS({
         }
         e = e2;
       };
-      value.addListener(this.framed(l));
+      var fl = this.framed(l);
+      value.addListener(fl);
+      this.on('unload', function() { value.removeListener(fl); });
       return e;
     },
 
