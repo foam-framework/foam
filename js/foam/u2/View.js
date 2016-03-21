@@ -43,6 +43,19 @@ CLASS({
         return 'view' === this.controllerMode ? 'ro' : 'rw';
       },
       attribute: true
+    },
+    {
+      type: 'Boolean',
+      name: 'showValidation',
+      documentation: 'Set to false if you want to ignore any ' +
+          '$$DOC{ref:"Property.validate"} calls. On by default.',
+      defaultValue: true
+    },
+    {
+      type: 'String',
+      name: 'validationError_',
+      documentation: 'The actual error message. Null or the empty string ' +
+          'when there is no error.',
     }
   ],
 

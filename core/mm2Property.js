@@ -199,6 +199,20 @@ GLOBAL.Property = {
       help: 'The Swift type that represents this type of property.',
     },
     {
+      name: 'swiftNSCoderEncode',
+      type: 'String',
+      required: false,
+      labels: ['compiletime', 'swift'],
+      defaultValue: '// <%= this.name %> is unsupported for coding.',
+    },
+    {
+      name: 'swiftNSCoderDecode',
+      type: 'String',
+      required: false,
+      labels: ['compiletime', 'swift'],
+      defaultValue: '// <%= this.name %> is unsupported for coding.',
+    },
+    {
       name: 'shortName',
       type: 'String',
       required: true,

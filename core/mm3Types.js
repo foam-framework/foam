@@ -156,6 +156,16 @@ CLASS({
       defaultValue: 'String',
     },
     {
+      name: 'swiftNSCoderEncode',
+      defaultValue:
+          'aCoder.encodeObject(`<%= this.name %>`, forKey: "<%= this.name %>")',
+    },
+    {
+      name: 'swiftNSCoderDecode',
+      defaultValue: 'set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
+    },
+    {
       name: 'swiftDefaultValue',
       defaultValue: '""',
     },
@@ -262,6 +272,16 @@ CLASS({
       type: 'String',
       displayWidth: 70,
       defaultValue: 'Bool'
+    },
+    {
+      name: 'swiftNSCoderEncode',
+      defaultValue:
+          'aCoder.encodeBool(`<%= this.name %>`, forKey: "<%= this.name %>")',
+    },
+    {
+      name: 'swiftNSCoderDecode',
+      defaultValue: 'set("<%= this.name %>", ' +
+          'value: aDecoder.decodeBoolForKey("<%= this.name %>"))',
     },
     {
       name: 'swiftDefaultValue',
@@ -522,6 +542,16 @@ CLASS({
       defaultValue: 'Int',
     },
     {
+      name: 'swiftNSCoderEncode',
+      defaultValue: 'aCoder.encodeInteger(`<%= this.name %>`, ' +
+          'forKey: "<%= this.name %>")',
+    },
+    {
+      name: 'swiftNSCoderDecode',
+      defaultValue: 'set("<%= this.name %>", ' +
+          'value: aDecoder.decodeIntegerForKey("<%= this.name %>"))',
+    },
+    {
       name: 'swiftAdapt',
       defaultValue: function() {/*
         // If it's already an int, use it.
@@ -592,6 +622,16 @@ CLASS({
       name: 'swiftType',
       labels: ['compiletime', 'swift'],
       defaultValue: 'NSNumber',
+    },
+    {
+      name: 'swiftNSCoderEncode',
+      defaultValue:
+          'aCoder.encodeObject(`<%= this.name %>`, forKey: "<%= this.name %>")',
+    },
+    {
+      name: 'swiftNSCoderDecode',
+      defaultValue: 'set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
     },
     {
       name: 'swiftAdapt',
@@ -1531,6 +1571,16 @@ CLASS({
     {
       name: 'swiftType',
       defaultValueFn: function() { return this.enum.split('.').pop(); },
+    },
+    {
+      name: 'swiftNSCoderEncode',
+      defaultValue: 'aCoder.encodeObject(`<%= this.name %>`.value, ' +
+          'forKey: "<%= this.name %>")',
+    },
+    {
+      name: 'swiftNSCoderDecode',
+      defaultValue: 'set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
     },
     {
       name: 'swiftAdapt',
