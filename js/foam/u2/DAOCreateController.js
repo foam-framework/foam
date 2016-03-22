@@ -34,7 +34,7 @@ CLASS({
     'model',
     {
       name: 'title',
-      factory: function() { return 'New ' + this.model.name; }
+      factory: function() { return 'New ' + this.model.label; }
     },
     {
       name: 'data',
