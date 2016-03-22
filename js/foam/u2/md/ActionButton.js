@@ -21,6 +21,7 @@ CLASS({
   ],
   imports: [
     'dynamic',
+    'framed',
     'window'
   ],
 
@@ -45,14 +46,18 @@ CLASS({
     {
       name: 'halo',
       lazyFactory: function() {
-        return this.HaloView.create({
+        var halo = this.HaloView.create({
           className: 'halo',
-          color$: this.color_$,
+          color: this.color_,
           recentering: false,
           pressedAlpha: 0.2,
           startAlpha: 0.2,
           finishAlpha: 0
         }, this.Y);
+        this.color_$.addListener(this.framed(function(_, __, ___, c) {
+          halo.color = c;
+        }));
+        return halo;
       }
     },
     {
