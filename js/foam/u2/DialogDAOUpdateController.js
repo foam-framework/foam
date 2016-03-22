@@ -27,6 +27,8 @@ CLASS({
 
   exports: [
     'myControllerMode as controllerMode',
+    'as daoController',
+    'as data',
   ],
 
   properties: [
@@ -35,6 +37,11 @@ CLASS({
     {
       name: 'model',
       lazyFactory: function() { return this.dao.model; }
+    },
+    {
+      type: 'Boolean',
+      name: 'valid',
+      defaultValue: true,
     },
     {
       name: 'data',
@@ -82,24 +89,32 @@ CLASS({
           title: this.title,
           body: this.body_,
           buttons: [
-            [this.onSave, 'Save'],
-            [this.onCancel, 'Cancel'],
+            this.SAVE,
+            this.CANCEL,
           ],
         });
       }
     },
   ],
 
-  listeners: [
-    function onCancel() {
-      this.dialog_.remove();
-      this.remove();
+  actions: [
+    {
+      name: 'save',
+      isEnabled: function() {
+        return this.valid;
+      },
+      code: function() {
+        this.dao.put(this.data_, {
+          put: this.close.bind(this),
+          error: this.close.bind(this),
+        });        
+      },
     },
-    function onSave() {
-      this.dao.put(this.data_, {
-        put: this.onCancel,
-        error: this.onCancel
-      });
+    {
+      name: 'cancel',
+      code: function() {
+        this.close();
+      },
     },
   ],
 
@@ -109,6 +124,10 @@ CLASS({
     },
     function open() {
       this.dialog_.open();
+    },
+    function close() {
+      this.dialog_.remove();
+      this.remove();
     },
   ],
   templates: [
