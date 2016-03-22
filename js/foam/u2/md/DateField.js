@@ -67,6 +67,13 @@ CLASS({
           'as an inline placeholder when it\'s false.',
       defaultValueFn: function() { return this.label; }
     },
+    {
+      type: 'Function',
+      name: 'dateFormatter',
+      defaultValue: function(date) {
+        return date.toLocaleDateString();
+      },
+    },
     'dialog_',
     'datePicker_',
   ],
@@ -102,7 +109,7 @@ CLASS({
           .on('click', this.onDateClick);
 
       input.add(this.dynamic(function(data, placeholder, showLabel) {
-        return data ? data.toLocaleDateString() :
+        return data ? this.dateFormatter(data) :
             (placeholder && !showLabel ?
                 placeholder : this.Entity.create({ name: 'nbsp' }));
       }.bind(this), this.realData$, this.placeholder$, this.showLabel$));
