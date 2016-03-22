@@ -1069,6 +1069,10 @@ CLASS({
       defaultValue: 'return []'
     },
     {
+      name: 'javaLazyFactory',
+      defaultValue: 'return new java.util.ArrayList<String>();',
+    },
+    {
       name: 'singular',
       displayWidth: 70,
       defaultValueFn: function() { return this.name.replace(/s$/, ''); },
