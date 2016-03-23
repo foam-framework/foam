@@ -50,6 +50,12 @@ CLASS({
       },
     },
     {
+      type: 'Function',
+      name: 'objToString',
+      documentation: 'When the user has selected an object from the DAO, we need to turn it back into a string for the text field we\'re autocompleteing.',
+      required: true,
+    },
+    {
       type: 'foam.core.types.DAO',
       name: 'filteredDAO',
       documentation: 'The filtered set of autocomplete results. Usually ' +

@@ -70,8 +70,9 @@ CLASS({
           }, this.Y);
           this.autocompleteView_.data$.addListener(function(_, __, old, nu) {
             if ( nu ) {
-              this.data = nu.expression;
-              this.autocompleter.partial = nu.expression;
+              var str = this.autocompleter.objToString(nu);
+              this.data = str;
+              this.autocompleter.partial = str;
             }
           }.bind(this));
           this.autocompletePopup_ = this.AutocompletePopup.create(null, this.Y);
