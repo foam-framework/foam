@@ -726,7 +726,11 @@ CLASS({
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === c ) {
           this.childNodes.splice(i, 1);
-          c.remove();
+          if (typeof c === 'string') {
+            this.el().childNodes[i].remove();
+          } else {
+            c.remove();
+          }
           return;
         }
       }
