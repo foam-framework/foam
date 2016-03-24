@@ -75,7 +75,7 @@ CLASS({
         this.index = Math.min(this.rows_.length - 1, this.index + 1);
         e.preventDefault();
         this.scrollToSelection();
-      } else if ( e.keyCode === 13 /* enter */ ) {
+      } else if ( e.keyCode === 13 /* enter */ || e.keyCode === 9 /* tab */ ) {
         // If the index isn't on a list item, return and let the normal Enter
         // flow take over.
         this.hidden_ = true;
