@@ -58,6 +58,11 @@ CLASS({
           label.start().cls(this.myCls('step-label-optional')).add('Optional').end();
         }
         step.add(label);
+
+        // Add spacers unless this is the last step.
+        if ( i + 1 < this.steps.length ) {
+          this.start().cls(this.myCls('spacer')).end();
+        }
       }
     },
   ],
@@ -74,10 +79,12 @@ CLASS({
         align-items: center;
         background-color: #fff;
         display: flex;
+        padding: 0 16px;
       }
       ^step {
         align-items: center;
         display: flex;
+        flex-shrink: 0;
         height: 72px;
       }
       ^step-circle {
@@ -87,7 +94,7 @@ CLASS({
         font-size: 12px;
         justify-content: space-around;
         height: 24px;
-        margin: 24px 0 24px 24px;
+        margin: 8px 0 8px 8px;
         width: 24px;
       }
       ^step:not(^enabled) ^step-circle {
@@ -109,6 +116,11 @@ CLASS({
       }
       ^enabled ^step-label {
         font-weight: bold;
+      }
+      ^spacer {
+        background-color: #e0e0e0;
+        flex-grow: 1;
+        height: 1px;
       }
     */},
   ]
