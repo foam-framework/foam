@@ -162,6 +162,7 @@ CLASS({
 
       if (this.autocompleter) {
         Events.follow(input.attrValue(null, 'input'), this.autocompleter.partial$);
+        Events.follow(this.data$, this.autocompleter.partial$);
         input.on('keydown', function(e) {
           this.autocompleteView_ && this.autocompleteView_.onKeyDown(e);
         }.bind(this));
