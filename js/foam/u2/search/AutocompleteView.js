@@ -133,7 +133,13 @@ CLASS({
       }
       parent = parent || this.X.window;
 
-      // Can't use scrollIntoView; it scrolls more containers than it should.
+      // First, scroll my whole container into view, in case there's nested
+      // scrolling.
+      this.el().scrollIntoView();
+      // But we don't want to use scrollIntoView inside the container, it's too
+      // aggressive and scrolls the target always to the top, if possible.
+      // This logic is much gentler and scrolls just enough to reveal the
+      // target.
       if ( e.offsetTop < parent.scrollTop ) { // Scroll up
         parent.scrollTop = e.offsetTop;
       } else if ( e.offsetTop + e.offsetHeight >=
