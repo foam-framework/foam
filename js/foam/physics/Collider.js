@@ -48,6 +48,7 @@ CLASS({
     },
     // TODO: this should be done much more efficiently (quad-tree, k-d tree, or similar).
     function detectCollisions() {
+//      var st = Date.now();
       var cs = this.children;
       for ( var i = 0 ; i < cs.length ; i++ ) {
         var c1 = cs[i];
@@ -55,6 +56,70 @@ CLASS({
         for ( var j = i+1 ; j < cs.length ; j++ ) {
           var c2 = cs[j];
           if ( c1.intersects(c2) ) this.collide(c1, c2);
+        }
+      }
+//      console.log(Date.now()-st);
+    },
+    function detectCollisions___() {
+      /* Experimental k-d-tree-like implementation. */
+      var st = Date.now();
+      this.detectCollisions_(0, this.children.length-1, 'x', '');
+      console.log(Date.now()-st);
+    },
+    function detectCollisions__(start, end) {
+      var cs = this.children;
+      for ( var i = start ; i <= end ; i++ ) {
+        var c1 = cs[i];
+        this.updateChild(c1);
+        for ( var j = i+1 ; j <= end ; j++ ) {
+          var c2 = cs[j];
+          if ( c1.intersects(c2) ) this.collide(c1, c2);
+        }
+      }
+    },
+    function detectCollisions_(start, end, axis, prefix) {
+      if ( end - start < 6 ) { this.detectCollisions__(start, end); return; }
+
+      var cs = this.children;
+      var pivot = (cs[start][axis] + cs[start+1][axis] +cs[start+Math.floor((end-start)/2)][axis] + cs[end-1][axis] + cs[end][axis])/5;
+      //console.log(prefix, 'axis: ', axis, ' pivot: ', pivot, 'range: ', start, end);
+      //prefix += ' ';
+
+      var p = start-1;
+      for ( var i = start ; i <= end ; i++ ) {
+        var c = cs[i];
+        if ( c[axis] - c.r < pivot ) {
+          p++;
+          var t = cs[p];
+          cs[p] = c;
+          cs[i] = t;
+        }
+      }
+      if ( p !== start-1 ) {
+        if ( p === end ) {
+          this.detectCollisions__(start, end);
+          return;
+        } else {
+          this.detectCollisions_(start, p, axis === 'x' ? 'y' : 'x', prefix);
+        }
+      }
+
+      p = start-1;
+      for ( var i = start ; i <= end ; i++ ) {
+        var c = cs[i];
+        if ( c[axis] + c.r > pivot ) {
+          p++;
+          var t = cs[p];
+          cs[p] = c;
+          cs[i] = t;
+        }
+      }
+      if ( p !== start-1 ) {
+        if ( p === end ) {
+          this.detectCollisions__(start, end);
+          return;
+        } else {
+          this.detectCollisions_(start, p, axis === 'x' ? 'y' : 'x', prefix);
         }
       }
     },
