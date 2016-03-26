@@ -217,7 +217,7 @@ var p = this.Person.create({
         { name: 'Postgres' },
         { name: 'Cloud Store' },
         { name: 'Firebase' },
-        { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" height="55%" style="margin-left: 100px;border:1px solid;max-height:510px" src="./demos/democat/GMail.png">'; }, initHTML: function() { }}; } },
+        { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" height="55%" style="margin-left: 100px;border:1px solid;max-height:510px" src="./demos/democat/TodoBrowser.png">'; }, initHTML: function() { }}; } },
         { name: 'UML', factory: function() { return self.DocDiagramView.create({data:self.Person}); }},
 //        { name: 'Docs', factory: function() { return self.DocViewPicker.create({data:self.Person}); }},
         { name: '...' }
