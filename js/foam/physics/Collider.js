@@ -60,11 +60,16 @@ CLASS({
       }
 //      console.log(Date.now()-st);
     },
-    function detectCollisions___() {
+    function NOTdetectCollisions() {
       /* Experimental k-d-tree-like implementation. */
-      var st = Date.now();
-      this.detectCollisions_(0, this.children.length-1, 'x', '');
-      console.log(Date.now()-st);
+//      var st = Date.now();
+      this.detectCollisions_(0, this.children.length-1, 'x', false, '');
+      /*
+      var d = Date.now()-st;
+      if ( ! this.__avg__ ) this.__avg__ = d;
+      this.__avg__ = this.__avg__ * 0.99 + 0.01 * d;
+      console.log(Date.now()-st, this.__avg__);
+      */
     },
     function detectCollisions__(start, end) {
       var cs = this.children;
@@ -77,68 +82,50 @@ CLASS({
         }
       }
     },
-    function detectCollisions_(start, end, axis, prefix) {
-      if ( end - start < 6 ) { this.detectCollisions__(start, end); return; }
+    function choosePivot(start, end, axis) {
+      var p = 0, cs = this.children, n = end-start;
+      for ( var i = start ; i <= end ; i++ ) p += cs[i][axis] / n;
+      return p;
+    },
+    function detectCollisions_(start, end, axis, oneD) {
+      if ( start >= end ) return;
 
       var cs = this.children;
-      var pivot = (cs[start][axis] + cs[start+1][axis] +cs[start+Math.floor((end-start)/2)][axis] + cs[end-1][axis] + cs[end][axis])/5;
-      //console.log(prefix, 'axis: ', axis, ' pivot: ', pivot, 'range: ', start, end);
-      //prefix += ' ';
+      var pivot = this.choosePivot(start, end, axis);
+      var nextAxis = oneD ? axis : axis === 'x' ? 'y' : 'x' ;
 
-      var p = start-1;
+      var p = start;
       for ( var i = start ; i <= end ; i++ ) {
         var c = cs[i];
         if ( c[axis] - c.r < pivot ) {
-          p++;
           var t = cs[p];
           cs[p] = c;
           cs[i] = t;
-        }
-      }
-      if ( p !== start-1 ) {
-        if ( p === end ) {
-          this.detectCollisions__(start, end);
-          return;
-        } else {
-          this.detectCollisions_(start, p, axis === 'x' ? 'y' : 'x', prefix);
-        }
-      }
-
-      p = start-1;
-      for ( var i = start ; i <= end ; i++ ) {
-        var c = cs[i];
-        if ( c[axis] + c.r > pivot ) {
           p++;
-          var t = cs[p];
-          cs[p] = c;
-          cs[i] = t;
         }
       }
-      if ( p !== start-1 ) {
-        if ( p === end ) {
-          this.detectCollisions__(start, end);
-          return;
-        } else {
-          this.detectCollisions_(start, p, axis === 'x' ? 'y' : 'x', prefix);
-        }
-      }
-    },
-    /*
-    function backup(c1, c2) {
-      for ( var i = 0.01 ; ; i += 0.1 ) {
-        var x1 = c1.x - c1.vx * i;
-        var y1 = c1.y - c1.vy * i;
-        var x2 = c2.x - c2.vx * i;
-        var y2 = c2.y - c2.vy * i;
 
-        if ( Movement.distance(x1-x2, y1-y2) > c1.r + c2.r || i >= 1 ) {
-          c1.x = x1; c1.y = y1;
-          c2.x = x2; c2.y = y2;
-          return;
+      if ( p === start || p === end + 1 ) {
+        if ( oneD ) {
+          this.detectCollisions__(start, end);
+        } else {
+          this.detectCollisions_(start, end, nextAxis, true);
         }
+      } else {
+        this.detectCollisions_(start, p-1, nextAxis, oneD);
+  
+        for ( var i = p-1 ; i >= start ; i-- ) {
+          var c = cs[i];
+          if ( c[axis] + c.r > pivot ) {
+            var t = cs[p];
+            cs[p] = c;
+            cs[i] = t;
+            p--;
+          }
+        }
+        this.detectCollisions_(p+1, end, nextAxis, oneD);
       }
     },
-    */
     function collide(c1, c2) {
       // this.backup(c1, c2);  // backup to the point of collision
 
