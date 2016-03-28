@@ -78,7 +78,7 @@ CLASS({
 
       var count = 0;
       this.timer.i$.addListener(function() {
-        if ( this.timer.i % 10 ) return;
+//        if ( this.timer.i % 10 ) return;
         if ( count++ == 100 ) throw EventService.UNSUBSCRIBE_EXCEPTION;
 
         var b = this.PhysicalCircle.create({
