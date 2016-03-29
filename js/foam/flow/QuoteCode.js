@@ -46,7 +46,7 @@ CLASS({
       defaultValue: false
     },
     {
-      // type: 'foam.flow.CodeSnippet',
+      subType: 'foam.flow.CodeSnippet',
       name: 'codeSnippet',
       view: 'foam.flow.CodeSnippetView',
       lazyFactory: function() {
@@ -58,7 +58,7 @@ CLASS({
       }
     },
     {
-      // type: 'foam.flow.SourceCode',
+      subType: 'foam.flow.SourceCode',
       name: 'sourceCode',
       view: {
         factory_: 'foam.flow.CodeView',

@@ -874,11 +874,11 @@ GLOBAL.Property = {
       name: 'fromElement',
       labels: ['javascript'],
       defaultValue: function propertyFromElement(e, p) {
-        if ( ! p.type || ! this.X.lookup || p.type === 'String' ) {
+        if ( ! p.subType || ! this.X.lookup || p.subType === 'String' ) {
           this[p.name] = p.fromString(e.innerHTML);
           return;
         }
-        var model = this.X.lookup(p.type);
+        var model = this.X.lookup(p.subType);
         if ( ! model ) {
           this[p.name] = p.fromString(e.innerHTML);
           return;

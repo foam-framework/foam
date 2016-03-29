@@ -60,7 +60,7 @@ CLASS({
     },
     {
       name: 'output',
-      // type: 'foam.flow.CodeSampleOutput',
+      subType: 'foam.flow.CodeSampleOutput',
       factory: function() {
         return this.CodeSampleOutput.create();
       },
