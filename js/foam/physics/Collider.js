@@ -46,31 +46,12 @@ CLASS({
     },
     function updateChild(child) {
     },
-    // TODO: this should be done much more efficiently (quad-tree, k-d tree, or similar).
     function detectCollisions() {
-//      var st = Date.now();
-      var cs = this.children;
-      for ( var i = 0 ; i < cs.length ; i++ ) {
-        var c1 = cs[i];
-        this.updateChild(c1);
-        for ( var j = i+1 ; j < cs.length ; j++ ) {
-          var c2 = cs[j];
-          if ( c1.intersects(c2) ) this.collide(c1, c2);
-        }
-      }
-//      console.log(Date.now()-st);
-    },
-    function NOTdetectCollisions() {
-      /* Experimental k-d-tree-like implementation. */
-      var st = Date.now();
+      /* k-d-tree-like divide-and-conquer algorithm */
       this.detectCollisions_(0, this.children.length-1, 'x', false, '');
-      var d = Date.now()-st;
-      if ( ! this.__avg__ ) { this.__i__ = 0; this.__avg__ = d; }
-      this.__avg__ = this.__avg__ * 0.99 + 0.01 * d;
-      if ( this.__i__++ % 120 == 0 )
-        console.log(Date.now()-st, this.__avg__);
     },
     function detectCollisions__(start, end) {
+      /* Simple O(n^2) algorithm, used by more complex algorithm once data is partitioned. */
       var cs = this.children;
       for ( var i = start ; i <= end ; i++ ) {
         var c1 = cs[i];
