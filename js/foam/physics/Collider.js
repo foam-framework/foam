@@ -62,14 +62,13 @@ CLASS({
     },
     function NOTdetectCollisions() {
       /* Experimental k-d-tree-like implementation. */
-//      var st = Date.now();
+      var st = Date.now();
       this.detectCollisions_(0, this.children.length-1, 'x', false, '');
-      /*
       var d = Date.now()-st;
-      if ( ! this.__avg__ ) this.__avg__ = d;
+      if ( ! this.__avg__ ) { this.__i__ = 0; this.__avg__ = d; }
       this.__avg__ = this.__avg__ * 0.99 + 0.01 * d;
-      console.log(Date.now()-st, this.__avg__);
-      */
+      if ( this.__i__++ % 120 == 0 )
+        console.log(Date.now()-st, this.__avg__);
     },
     function detectCollisions__(start, end) {
       var cs = this.children;
@@ -105,7 +104,7 @@ CLASS({
         }
       }
 
-      if ( p === start || p === end + 1 ) {
+      if ( p === end + 1 ) {
         if ( oneD ) {
           this.detectCollisions__(start, end);
         } else {
@@ -113,8 +112,9 @@ CLASS({
         }
       } else {
         this.detectCollisions_(start, p-1, nextAxis, oneD);
-  
-        for ( var i = p-1 ; i >= start ; i-- ) {
+
+        p--;
+        for ( var i = p ; i >= start ; i-- ) {
           var c = cs[i];
           if ( c[axis] + c.r > pivot ) {
             var t = cs[p];
@@ -123,7 +123,15 @@ CLASS({
             p--;
           }
         }
-        this.detectCollisions_(p+1, end, nextAxis, oneD);
+        if ( p === start-1 ) {
+          if ( oneD ) {
+            this.detectCollisions__(start, end);
+          } else {
+            this.detectCollisions_(start, end, nextAxis, true);
+          }
+        } else {
+          this.detectCollisions_(p+1, end, nextAxis, oneD);
+        }
       }
     },
     function collide(c1, c2) {
