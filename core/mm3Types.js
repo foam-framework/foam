@@ -1662,7 +1662,7 @@ CLASS({
     },
     {
       name: 'swiftView',
-      defaultValue: 'PickerFieldView',
+      defaultValue: 'PickerEnumFieldView',
     },
   ]
 });
