@@ -99,11 +99,11 @@ CLASS({
       var targetE = this.target.el();
       var s = this.window.getComputedStyle(this.el());
       var pos = findViewportXY(targetE);
-      var screenHeight = this.document.body.clientHeight;
+      var screenHeight = this.window.innerHeight;
       var scrollY = this.window.scrollY;
       var above = pos[1] - scrollY > screenHeight / 2;
       var left = pos[0] + ( targetE.clientWidth - toNum(s.width) ) / 2;
-      var maxLeft = this.document.body.clientWidth + this.window.scrollX - 15 - this.el().clientWidth;
+      var maxLeft = this.window.innerWidth + this.window.scrollX - 15 - this.el().clientWidth;
       var targetHeight = targetE.clientHeight || targetE.offsetHeight;
 
       this.opened = true;
