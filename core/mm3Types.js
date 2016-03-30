@@ -838,7 +838,26 @@ CLASS({
     */
     {
       name: 'swiftType',
-      defaultValue: '[AnyObject]'
+      defaultValueFn: function() {
+        return '[' + this.swiftSubType + ']';
+      }
+    },
+    {
+      name: 'swiftSubType',
+      defaultValueFn: function() {
+        var type = this.subType || 'AnyObject';
+        return type.split('.').pop();
+      }
+    },
+    {
+      name: 'swiftNSCoderEncode',
+      defaultValue:
+          'aCoder.encodeObject(`<%= this.name %>`, forKey: "<%= this.name %>")',
+    },
+    {
+      name: 'swiftNSCoderDecode',
+      defaultValue: 'set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
     },
     {
       name: 'swiftFactory',
