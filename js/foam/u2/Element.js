@@ -85,6 +85,7 @@ CLASS({
       onAddChildren: function() { },
       onInsertChildren: function() { },
       onReplaceChild: function() { },
+      onRemoveChild: function() { },
       toString:      function() { return 'INITIAL'; }
     },
 
@@ -152,6 +153,9 @@ CLASS({
         throw "Mutations not allowed in OUTPUT state.";
       },
       onReplaceChild: function() {
+        throw "Mutations not allowed in OUTPUT state.";
+      },
+      onRemoveChild: function() {
         throw "Mutations not allowed in OUTPUT state.";
       },
       toString: function() { return 'OUTPUT'; }
@@ -247,6 +251,13 @@ CLASS({
         e.replaceChild(n.firstChild, oldE.el());
         newE.load && newE.load();
       },
+      onRemoveChild: function(child, index) {
+        if (typeof child === 'string') {
+          this.el().childNodes[i].remove();
+        } else {
+          child.remove();
+        }
+      },
       toString: function() { return 'LOADED'; }
     },
 
@@ -271,6 +282,7 @@ CLASS({
       onAddChildren:  function() { },
       onInsertChildren: function() { },
       onReplaceChild: function() { },
+      onRemoveChild: function() { },
       toString:       function() { return 'UNLOADED'; }
     },
 
@@ -726,11 +738,7 @@ CLASS({
       for ( var i = 0 ; i < this.childNodes.length ; ++i ) {
         if ( this.childNodes[i] === c ) {
           this.childNodes.splice(i, 1);
-          if (typeof c === 'string') {
-            this.el().childNodes[i].remove();
-          } else {
-            c.remove();
-          }
+          this.state.onRemoveChild.call(this, c, i);
           return;
         }
       }
