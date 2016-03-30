@@ -174,7 +174,9 @@ CLASS({
       name: 'titleE',
       documentation: 'Element for the header portion, used by the Dialog.',
       factory: function() {
-        var header = this.X.E().cls(this.myCls('header'));
+        var header = this.X.E()
+            .cls(this.myCls('header'))
+            .cls('foam-u2-md-toolbar-colors');
         header.start()
             .cls(this.myCls('header-year'))
             .enableCls(this.myCls('selected'), this.showYears_$)
@@ -445,8 +447,6 @@ CLASS({
       }
 
       ^header {
-        background-color: #3e50b4;
-        color: #fff;
         cursor: pointer;
         font-size: 16px;
         padding: 12px 16px;

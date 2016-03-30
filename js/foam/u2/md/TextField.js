@@ -70,11 +70,14 @@ CLASS({
           }, this.Y);
           this.autocompleteView_.data$.addListener(function(_, __, old, nu) {
             if ( nu ) {
-              this.data = nu.expression;
-              this.autocompleter.partial = nu.expression;
+              var str = this.autocompleter.objToString(nu);
+              this.data = str;
+              this.autocompleter.partial = str;
             }
           }.bind(this));
-          this.autocompletePopup_ = this.AutocompletePopup.create(null, this.Y);
+          this.autocompletePopup_ = this.AutocompletePopup.create({
+            inline: this.inline
+          }, this.Y);
           this.autocompletePopup_.add(this.autocompleteView_);
           this.add(this.autocompletePopup_);
         } else if ( old && !nu && this.autocompleteView_ ) {
@@ -159,6 +162,7 @@ CLASS({
 
       if (this.autocompleter) {
         Events.follow(input.attrValue(null, 'input'), this.autocompleter.partial$);
+        Events.follow(this.data$, this.autocompleter.partial$);
         input.on('keydown', function(e) {
           this.autocompleteView_ && this.autocompleteView_.onKeyDown(e);
         }.bind(this));
@@ -240,9 +244,12 @@ CLASS({
       extends: 'foam.u2.Element',
       documentation: 'Exactly what it says on the tin. This is an MD-spec ' +
           'popup for autocomplete that appears right below the text field.',
+      properties: [
+        'inline',
+      ],
       methods: [
         function initE() {
-          this.cls(this.myCls());
+          this.cls(this.myCls()).enableCls(this.myCls('inline'), this.inline$);
         },
       ],
       templates: [
@@ -255,8 +262,11 @@ CLASS({
             overflow-x: hidden;
             overflow-y: auto;
             position: absolute;
-            top: 32px;
+            top: 56px;
             z-index: 5;
+          }
+          ^inline {
+            top: 32px;
           }
         */},
       ]

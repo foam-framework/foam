@@ -73,6 +73,10 @@ CLASS({
         background-color: #3e50b4;
         color: #fff;
       }
+      .foam-u2-md-colors-bright-bg {
+        background-color: #4285f4;
+        color: #fff;
+      }
     */},
   ]
 });

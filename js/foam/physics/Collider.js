@@ -46,34 +46,75 @@ CLASS({
     },
     function updateChild(child) {
     },
-    // TODO: this should be done much more efficiently (quad-tree, k-d tree, or similar).
     function detectCollisions() {
+      /* k-d-tree-like divide-and-conquer algorithm */
+      this.detectCollisions_(0, this.children.length-1, 'x', false, '');
+    },
+    function detectCollisions__(start, end) {
+      /* Simple O(n^2) algorithm, used by more complex algorithm once data is partitioned. */
       var cs = this.children;
-      for ( var i = 0 ; i < cs.length ; i++ ) {
+      for ( var i = start ; i <= end ; i++ ) {
         var c1 = cs[i];
         this.updateChild(c1);
-        for ( var j = i+1 ; j < cs.length ; j++ ) {
+        for ( var j = i+1 ; j <= end ; j++ ) {
           var c2 = cs[j];
           if ( c1.intersects(c2) ) this.collide(c1, c2);
         }
       }
     },
-    /*
-    function backup(c1, c2) {
-      for ( var i = 0.01 ; ; i += 0.1 ) {
-        var x1 = c1.x - c1.vx * i;
-        var y1 = c1.y - c1.vy * i;
-        var x2 = c2.x - c2.vx * i;
-        var y2 = c2.y - c2.vy * i;
+    function choosePivot(start, end, axis) {
+      var p = 0, cs = this.children, n = end-start;
+      for ( var i = start ; i <= end ; i++ ) p += cs[i][axis] / n;
+      return p;
+    },
+    function detectCollisions_(start, end, axis, oneD) {
+      if ( start >= end ) return;
 
-        if ( Movement.distance(x1-x2, y1-y2) > c1.r + c2.r || i >= 1 ) {
-          c1.x = x1; c1.y = y1;
-          c2.x = x2; c2.y = y2;
-          return;
+      var cs = this.children;
+      var pivot = this.choosePivot(start, end, axis);
+      var nextAxis = oneD ? axis : axis === 'x' ? 'y' : 'x' ;
+
+      var p = start;
+      for ( var i = start ; i <= end ; i++ ) {
+        var c = cs[i];
+        if ( c[axis] - c.r < pivot ) {
+          var t = cs[p];
+          cs[p] = c;
+          cs[i] = t;
+          p++;
+        }
+      }
+
+      if ( p === end + 1 ) {
+        if ( oneD ) {
+          this.detectCollisions__(start, end);
+        } else {
+          this.detectCollisions_(start, end, nextAxis, true);
+        }
+      } else {
+        this.detectCollisions_(start, p-1, nextAxis, oneD);
+
+        p--;
+        for ( var i = p ; i >= start ; i-- ) {
+          var c = cs[i];
+          if ( c[axis] + c.r > pivot ) {
+            var t = cs[p];
+            cs[p] = c;
+            cs[i] = t;
+            p--;
+          }
+        }
+        if ( p === start-1 ) {
+          if ( oneD ) {
+            this.detectCollisions__(start, end);
+          } else {
+            this.detectCollisions_(start, end, nextAxis, true);
+          }
+        } else {
+          this.detectCollisions_(p+1, end, nextAxis, oneD);
         }
       }
     },
-    */
     function collide(c1, c2) {
       // this.backup(c1, c2);  // backup to the point of collision
 

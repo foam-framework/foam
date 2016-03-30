@@ -33,6 +33,12 @@ CLASS({
       documentation: 'The field on which to split each group.',
     },
     'mdao',
+    {
+      name: 'objToString',
+      defaultValue: function(cannedQuery) {
+        return cannedQuery.expression;
+      }
+    },
   ],
 
   methods: [

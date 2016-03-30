@@ -188,7 +188,6 @@ CLASS({
 
       ^invalid ^inner {
         border-bottom: 2px solid #db4437;
-        color: #db4437;
         margin-bottom: 4px;
       }
       ^validation-error {

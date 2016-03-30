@@ -49,6 +49,8 @@ CLASS({
       ],
     },
     ['showLabel', false],
+    ['noChangeHaloColor', '#5a5a5a'],
+    ['changeHaloColor', '#4285f4'],
   ],
 
   methods: [
@@ -78,8 +80,8 @@ CLASS({
         finishAlpha: 0
       });
       Events.map(this.index$, h.color$, function(i) {
-        return index === i ? '#5a5a5a' : '#4285f4';
-      });
+        return index === i ? this.noChangeHaloColor : this.changeHaloColor;
+      }.bind(this));
       return h;
     },
 

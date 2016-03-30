@@ -26,7 +26,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-//      type: 'foam.flow.SourceCode',
+      subType: 'foam.flow.SourceCode',
       factory: function() {
         return this.SourceCode.create();
       }

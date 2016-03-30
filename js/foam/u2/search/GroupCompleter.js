@@ -35,6 +35,12 @@ CLASS({
         return this.ProxyDAO.create();
       }
     },
+    {
+      name: 'objToString',
+      defaultValue: function(cannedQuery) {
+        return cannedQuery.expression;
+      }
+    },
   ],
 
   methods: [

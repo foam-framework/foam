@@ -139,6 +139,9 @@ CLASS({
               tr.start('td').end();
             } else {
               tr.start('td')
+                  // HACK: We put the toolbar colors on every td, then hide it
+                  // on most. See the CSS rules for ^selected.
+                  .cls('foam-u2-md-toolbar-colors')
                   .cls(this.dynamic(function(day) {
                     return this.isSelected(day) ? this.myCls('selected') :
                         this.isToday(day) ? this.myCls('today') : '';
@@ -191,11 +194,14 @@ CLASS({
         width: 38px;
       }
 
-      ^selected {
-        background-color: #4285f4;
+      ^ td^selected {
         border-radius: 50%;
-        color: #fff;
       }
+      ^ td:not(^selected) {
+        background-color: inherit;
+        color: inherit;
+      }
+
       ^today {
         color: #4285f4;
         font-weight: bolder;

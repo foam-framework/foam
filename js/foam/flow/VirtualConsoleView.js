@@ -21,7 +21,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      // type: 'foam.flow.VirtualConsole',
+      subType: 'foam.flow.VirtualConsole',
       required: true
     },
     {
@@ -52,7 +52,7 @@ CLASS({
   listeners: [
     function setScrollableCSS_() {
       if ( ! this.$ ) return;
-      
+
       var style = this.$.style;
       if ( this.scrollable ) {
         style.overflow = 'auto';

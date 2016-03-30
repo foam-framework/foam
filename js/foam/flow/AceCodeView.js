@@ -26,7 +26,7 @@ CLASS({
   properties: [
     {
       name: 'data',
-      type: 'foam.flow.SourceCode',
+      //model_: 'foam.flow.SourceCode',
       factory: function() {
         return this.SourceCode.create({
           data: 'console.log("Hello world!");'

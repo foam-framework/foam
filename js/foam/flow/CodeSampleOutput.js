@@ -23,13 +23,13 @@ CLASS({
   properties: [
     {
       name: 'viewOutput',
-      // type: 'foam.flow.CodeSampleViewOutput',
+      subType: 'foam.flow.CodeSampleViewOutput',
       factory: function() { return this.CodeSampleViewOutput.create(); },
       view: 'foam.flow.CodeSampleViewOutputView'
     },
     {
       name: 'virtualConsole',
-      // type: 'foam.flow.VirtualConsole',
+      subType: 'foam.flow.VirtualConsole',
       factory: function() { return this.VirtualConsole.create(); },
       view: 'foam.flow.VirtualConsoleView'
     }
