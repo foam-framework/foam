@@ -311,12 +311,7 @@ X.arequire('foam.sandbox.Person')(function(Person) {
       name: 'children',
       // Tell FOAM to use a suitable list view -- "foam.ui.DAOListView" -- to
       // for the default view of the "children" property.
-      view: 'foam.ui.DAOListView',
-      // Format table cells that contain children: List first names.
-      tableFormatter: function(children) {
-        if ( ! children ) return '';
-        return children.map(function(c) { return c.firstName; }).join(', ');
-      }
+      view: 'foam.ui.DAOListView'
     }
   ]
 });</code>
