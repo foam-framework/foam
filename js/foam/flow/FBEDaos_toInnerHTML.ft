@@ -23,9 +23,8 @@
                   <code>apar(
   X.arequire('foam.sandbox.Person'),
   X.arequire('foam.dao.EasyDAO'),
-  X.arequire('MDAO'),
   X.arequire('foam.ui.DAOListView')
-)(function(Person, EasyDAO, MDAO, DAOListView) {
+)(function(Person, EasyDAO, DAOListView) {
   // Create an IndexedDB table with caching.
   var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, seqNo: true, daoType: 'MDAO'}, X);
 
@@ -69,9 +68,8 @@
                   <code>apar(
   X.arequire('foam.sandbox.Person'),
   X.arequire('foam.dao.EasyDAO'),
-  X.arequire('MDAO'),
   X.arequire('foam.ui.DAOListView')
-)(function(Person, EasyDAO, MDAO, DAOListView) {
+)(function(Person, EasyDAO, DAOListView) {
   // Create an IndexedDB table with caching.
   var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, daoType: 'MDAO'}, X);
 
@@ -115,9 +113,8 @@
                   <code>apar(
   X.arequire('foam.sandbox.Person'),
   X.arequire('foam.dao.EasyDAO'),
-  X.arequire('MDAO'),
   X.arequire('foam.ui.DAOListView')
-)(function(Person, EasyDAO, MDAO, DAOListView) {
+)(function(Person, EasyDAO, DAOListView) {
   // Create an IndexedDB table with caching.
   var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, daoType: 'MDAO'}, X);
 
@@ -161,9 +158,8 @@
                   <code>apar(
   X.arequire('foam.sandbox.Person'),
   X.arequire('foam.dao.EasyDAO'),
-  X.arequire('MDAO'),
   X.arequire('foam.ui.DAOListView')
-)(function(Person, EasyDAO, MDAO, DAOListView) {
+)(function(Person, EasyDAO, DAOListView) {
   // Create an IndexedDB table with caching.
   var dao = X.lookup('foam.dao.EasyDAO').create({model: Person, daoType: 'MDAO'}, X);
 
