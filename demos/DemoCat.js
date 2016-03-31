@@ -339,6 +339,13 @@ return JSONUtil.arrayToObjArray(X, [
     src: 'apps/docs/',
     image: '../../apps/docs/images/Model_runtime2.png'
   },
+  {
+    name: 'FOAM By Example',
+    model: 'foam.flow.FOAMByExample',
+    description: 'FOAM Examples.',
+    keywords: ['docs'],
+    image: 'Overflow.png'
+  },
   /*
   {
     name: 'DAO Sync',
