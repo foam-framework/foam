@@ -463,7 +463,7 @@ var FObject = {
         continue;
       }
 
-      if ( property.f(this).compareTo(property.f(other)) !== 0) {
+      if ( property.compare(this, other) !== 0 ) {
         diff[property.name] = property.f(other);
       }
     }

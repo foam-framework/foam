@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.u2.Icon',
+    'foam.u2.md.Tooltip',
     'foam.ui.Color',
     'foam.ui.md.HaloView',
   ],
@@ -134,6 +135,21 @@ CLASS({
                 .add(this.icon)
                 .end()
             .end();
+      }
+
+      if (this.action.help) {
+        var tooltip;
+        this.on('mouseenter', function() {
+          tooltip = this.Tooltip.create({ text: this.action.help, target: this });
+        }.bind(this));
+        this.on('mouseleave', function() {
+          tooltip && tooltip.close();
+          tooltip = null;
+        });
+        this.on('unload', function() {
+          tooltip && tooltip.remove();
+          tooltip = null;
+        });
       }
     },
     function setColor(c) {
