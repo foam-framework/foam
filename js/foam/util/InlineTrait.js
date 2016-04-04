@@ -58,6 +58,7 @@ CLASS({
       }
       model.methods = methods;
       model.properties = properties;
+      model.traits = [];
 
       return model;
     }
