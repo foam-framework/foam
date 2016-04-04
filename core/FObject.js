@@ -32,7 +32,13 @@ var FObject = {
   },
 
   replaceModel_: function(feature, dataModel, X) {
-    while ( dataModel ) {
+    // Removed the loop here because there are cases where following
+    // registrations on the superclasses of my model is useful, and cases where
+    // it is not. The key difference is that if this code is not recursive, I
+    // can easily add registrations for eg. MySpecialEmail uses EmailDetailView.
+    // When this code is recursive, there's no good way to stop it from doing
+    // the replacement, if that's what I want.
+    // while ( dataModel ) {
       // Try looking up the replacment in the same package as
       // the specifier:
       // i.e. [foam.u2].View + model:my.package.Email ==> my.package.EmailView
@@ -45,8 +51,8 @@ var FObject = {
       var replacementModel = X.lookup(replacementName);
       if ( replacementModel ) return replacementModel;
 
-      dataModel = X.lookup(dataModel.extends);
-    }
+      //dataModel = X.lookup(dataModel.extends);
+    //}
 
     return undefined;
   },
@@ -463,7 +469,7 @@ var FObject = {
         continue;
       }
 
-      if ( property.f(this).compareTo(property.f(other)) !== 0) {
+      if ( property.compare(this, other) !== 0 ) {
         diff[property.name] = property.f(other);
       }
     }

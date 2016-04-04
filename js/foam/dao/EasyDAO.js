@@ -202,7 +202,7 @@ CLASS({
       }
 
       var daoType  = typeof this.daoType === 'string' ? this.ALIASES[this.daoType] || this.daoType : this.daoType;
-      var daoModel = typeof daoType === 'string' ? this.X.lookup(daoType) : daoType;
+      var daoModel = typeof daoType === 'string' ? this.X.lookup(daoType) || GLOBAL[daoType] : daoType;
       var params   = { model: this.model, autoIndex: this.autoIndex };
 
       if ( ! daoModel ) {

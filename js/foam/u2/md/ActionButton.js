@@ -16,6 +16,7 @@ CLASS({
 
   requires: [
     'foam.u2.Icon',
+    'foam.u2.md.Tooltip',
     'foam.ui.Color',
     'foam.ui.md.HaloView',
   ],
@@ -29,6 +30,7 @@ CLASS({
     TYPE_CLASSES: {
       label: 'label-only',
       icon: 'icon-only',
+      both: 'both',
       floating: 'floating-action-button'
     }
   },
@@ -38,7 +40,7 @@ CLASS({
     'action',
     {
       name: 'type',
-      choices: ['label', 'icon', 'floating'],
+      choices: ['label', 'icon', 'both', 'floating'],
       defaultValueFn: function() {
         return this.action.ligature || this.action.iconUrl ? 'icon' : 'label';
       }
@@ -122,18 +124,34 @@ CLASS({
           // u2.
           .add(this.halo.toView_());
 
-      if (this.type === 'label') {
-        this.start('span').cls(this.myCls('label'))
-            .add(this.dynamic(function(action) {
-              return action ? action.label : '';
-            }, this.action$))
-            .end();
-      } else {
+      if (this.type !== 'label') {
         this.start().cls(this.myCls('icon-container'))
-            .start().cls(this.myCls('icon'))
-                .add(this.icon)
-                .end()
-            .end();
+        .start().cls(this.myCls('icon'))
+            .add(this.icon)
+            .end()
+        .end();
+      }
+      if (this.type === 'label' || this.type === 'both') {
+        this.start('span').cls(this.myCls('label'))
+        .add(this.dynamic(function(action) {
+          return action ? action.label : '';
+        }, this.action$))
+        .end();
+      }
+
+      if (this.action.help) {
+        var tooltip;
+        this.on('mouseenter', function() {
+          tooltip = this.Tooltip.create({ text: this.action.help, target: this });
+        }.bind(this));
+        this.on('mouseleave', function() {
+          tooltip && tooltip.close();
+          tooltip = null;
+        });
+        this.on('unload', function() {
+          tooltip && tooltip.remove();
+          tooltip = null;
+        });
       }
     },
     function setColor(c) {
@@ -183,6 +201,16 @@ CLASS({
         width: 40px;
       }
 
+      ^both {
+        flex-shrink: 0;
+        transform: unset;
+        transition-delay: 249ms, 0ms, 0ms, 0ms;
+        transition: transform 250ms ease, width 249ms ease, margin 249ms ease, padding 249ms ease;
+        color: inherit;
+        text-transform: uppercase;
+        align-items: center;
+      }
+
       ^ .halo {
         border-radius: inherit;
         left: 0;
@@ -200,6 +228,9 @@ CLASS({
         height: 24px;
         position: relative;
         width: 24px;
+      }
+      ^both ^icon-container {
+        margin-right: 15px;
       }
       ^icon {
         position: absolute;
