@@ -369,7 +369,41 @@ CLASS({
             actions to make visible by $$DOC{ref:'.priority'}, then sort them by
             $$DOC{ref:'.order'}.
         */}
-    }
+    },
+    {
+      type: 'String',
+      name: 'swiftCode',
+      labels: ['swift'],
+    },
+    {
+      model_: 'TemplateProperty',
+      name: 'swiftSource',
+      labels: ['swift'],
+      defaultValue: function() {/*
+<%
+var model = arguments[1];
+var extendsModel = model && model.extends;
+var self = this;
+var filter = function(m) {
+  if ( m.name === self.name) {
+    return true;
+  }
+};
+
+var override = '';
+while (extendsModel) {
+  extendsModel = model.X.lookup(extendsModel);
+  var method = extendsModel.actions.filter(filter);
+  method = method.length > 0 && method[0];
+  override = override || method ? 'override' : '';
+  extendsModel = extendsModel.extends
+}
+%>
+<%=override%> func `<%= this.name %>`() {
+  <%= this.swiftCode %>
+}
+      */},
+    },
   ],
   methods: [
     function toE(X) {
