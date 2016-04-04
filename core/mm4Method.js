@@ -519,6 +519,7 @@ CLASS({
     {
       name:  'description',
       type:  'String',
+      labels: ['javascript'],
       required: true,
       displayWidth: 70,
       displayHeight: 1,
@@ -722,6 +723,7 @@ CLASS({
     {
       name: 'description',
       type: 'String',
+      labels: ['javascript'],
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',
