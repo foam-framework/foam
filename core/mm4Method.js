@@ -19,6 +19,130 @@
 // delete BootstrapModel;
 
 CLASS({
+  name: 'Template',
+
+  tableProperties: [
+    'name', 'description'
+  ],
+
+  documentation: function() {/*
+    <p>A $$DOC{ref:'.'} is processed to create a method that generates content for a $$DOC{ref:'foam.ui.View'}.
+    Sub-views can be created from inside the
+    $$DOC{ref:'Template'} using special tags. The content is lazily processed, so the first time you ask for
+    a $$DOC{ref:'Template'}
+    the content is compiled, tags expanded and sub-views created. Generally a template is included in a
+    $$DOC{ref:'foam.ui.View'}, since after compilation a method is created and attached to the $$DOC{ref:'foam.ui.View'}
+    containing the template.
+    </p>
+    <p>For convenience, $$DOC{ref:'Template',usePlural:true} can be specified as a function with a block
+    comment inside to avoid line wrapping problems:
+    <code>templates: [ myTemplate: function() { \/\* my template content \*\/ }]</code>
+    </p>
+    <p>HTML $$DOC{ref:'Template',usePlural:true} can include the following JSP-style tags:
+    </p>
+    <ul>
+       <li><code>&lt;% code %&gt;</code>: code inserted into template, but nothing implicitly output</li>
+       <li><code>&lt;%= comma-separated-values %&gt;</code>: all values are appended to template output</li>
+       <li><code>&lt;%# expression %&gt;</code>: dynamic (auto-updating) expression is output</li>
+       <li><code>\\&lt;new-line&gt;</code>: ignored</li>
+       <li><code>$$DOC{ref:'Template',text:'%%value'}(&lt;whitespace&gt;|{parameters})</code>: output a single value to the template output</li>
+       <li><code>$$DOC{ref:'Template',text:'$$feature'}(&lt;whitespace&gt;|{parameters})</code>: output the View or Action for the current Value</li>
+       <li><code>&lt;!-- comment --&gt;</code> comments are stripped from $$DOC{ref:'Template',usePlural:true}.</li>
+    </ul>
+  */},
+
+  properties: [
+    {
+      name:  'name',
+      type:  'String',
+      required: true,
+      displayWidth: 30,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The template\'s unique name.',
+      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
+        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
+        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
+      */}
+    },
+    {
+      name:  'description',
+      type:  'String',
+      labels: ['javascript'],
+      required: true,
+      displayWidth: 70,
+      displayHeight: 1,
+      defaultValue: '',
+      help: 'The template\'s description.',
+      documentation: "A human readable description of the $$DOC{ref:'.'}."
+    },
+    {
+      type: 'Array',
+      name: 'args',
+      type: 'Array[Arg]',
+      subType: 'Arg',
+      view: 'foam.ui.ArrayView',
+      factory: function() { return []; },
+      help: 'Method arguments.',
+      documentation: function() { /*
+          The $$DOC{ref:'Arg',text:'Arguments'} for the $$DOC{ref:'Template'}.
+        */}
+    },
+    {
+      name: 'template',
+      type: 'String',
+      displayWidth: 180,
+      displayHeight: 30,
+      defaultValue: '',
+      view: 'foam.ui.TextAreaView',
+      // Doesn't work because of bootstrapping issues.
+      // preSet: function(_, t) { return typeof t === 'function' ? multiline(t) : t ; },
+      help: 'Template text. <%= expr %> or <% out(...); %>',
+      documentation: "The string content of the uncompiled $$DOC{ref:'Template'} body."
+    },
+    {
+      name: 'path'
+    },
+    {
+      name: 'futureTemplate',
+      transient: true
+    },
+    {
+      name: 'code',
+      transient: true
+    },
+    /*
+       {
+       name: 'templates',
+       type: 'Array[Template]',
+       subType: 'Template',
+       view: 'foam.ui.ArrayView',
+       // defaultValue: [],
+       help: 'Sub-templates of this template.'
+       },*/
+    {
+      type: 'Documentation',
+      name: 'documentation',
+      labels: ['debug'],
+    },
+    {
+      name: 'language',
+      type: 'String',
+      lazyFactory: function() {
+        return this.name === 'CSS' ? 'css' : 'html';
+      }
+    },
+    {
+      name: 'labels'
+    }
+  ],
+  methods: [
+    function toE(X) { return X.data[this.name](); }
+  ]
+});
+
+
+CLASS({
   name: 'Action',
   plural: 'Actions',
 
@@ -245,7 +369,41 @@ CLASS({
             actions to make visible by $$DOC{ref:'.priority'}, then sort them by
             $$DOC{ref:'.order'}.
         */}
-    }
+    },
+    {
+      type: 'String',
+      name: 'swiftCode',
+      labels: ['swift'],
+    },
+    {
+      model_: 'TemplateProperty',
+      name: 'swiftSource',
+      labels: ['swift'],
+      defaultValue: function() {/*
+<%
+var model = arguments[1];
+var extendsModel = model && model.extends;
+var self = this;
+var filter = function(m) {
+  if ( m.name === self.name) {
+    return true;
+  }
+};
+
+var override = '';
+while (extendsModel) {
+  extendsModel = model.X.lookup(extendsModel);
+  var method = extendsModel.actions.filter(filter);
+  method = method.length > 0 && method[0];
+  override = override || method ? 'override' : '';
+  extendsModel = extendsModel.extends
+}
+%>
+<%=override%> func `<%= this.name %>`() {
+  <%= this.swiftCode %>
+}
+      */},
+    },
   ],
   methods: [
     function toE(X) {
@@ -470,129 +628,6 @@ CLASS({
 
 
 CLASS({
-  name: 'Template',
-
-  tableProperties: [
-    'name', 'description'
-  ],
-
-  documentation: function() {/*
-    <p>A $$DOC{ref:'.'} is processed to create a method that generates content for a $$DOC{ref:'foam.ui.View'}.
-    Sub-views can be created from inside the
-    $$DOC{ref:'Template'} using special tags. The content is lazily processed, so the first time you ask for
-    a $$DOC{ref:'Template'}
-    the content is compiled, tags expanded and sub-views created. Generally a template is included in a
-    $$DOC{ref:'foam.ui.View'}, since after compilation a method is created and attached to the $$DOC{ref:'foam.ui.View'}
-    containing the template.
-    </p>
-    <p>For convenience, $$DOC{ref:'Template',usePlural:true} can be specified as a function with a block
-    comment inside to avoid line wrapping problems:
-    <code>templates: [ myTemplate: function() { \/\* my template content \*\/ }]</code>
-    </p>
-    <p>HTML $$DOC{ref:'Template',usePlural:true} can include the following JSP-style tags:
-    </p>
-    <ul>
-       <li><code>&lt;% code %&gt;</code>: code inserted into template, but nothing implicitly output</li>
-       <li><code>&lt;%= comma-separated-values %&gt;</code>: all values are appended to template output</li>
-       <li><code>&lt;%# expression %&gt;</code>: dynamic (auto-updating) expression is output</li>
-       <li><code>\\&lt;new-line&gt;</code>: ignored</li>
-       <li><code>$$DOC{ref:'Template',text:'%%value'}(&lt;whitespace&gt;|{parameters})</code>: output a single value to the template output</li>
-       <li><code>$$DOC{ref:'Template',text:'$$feature'}(&lt;whitespace&gt;|{parameters})</code>: output the View or Action for the current Value</li>
-       <li><code>&lt;!-- comment --&gt;</code> comments are stripped from $$DOC{ref:'Template',usePlural:true}.</li>
-    </ul>
-  */},
-
-  properties: [
-    {
-      name:  'name',
-      type:  'String',
-      required: true,
-      displayWidth: 30,
-      displayHeight: 1,
-      defaultValue: '',
-      help: 'The template\'s unique name.',
-      documentation: function() { /* The identifier used in code to represent this $$DOC{ref:'.'}.
-        $$DOC{ref:'.name'} should generally only contain identifier-safe characters.
-        $$DOC{ref:'.'} names should use camelCase staring with a lower case letter.
-      */}
-    },
-    {
-      name:  'description',
-      type:  'String',
-      required: true,
-      displayWidth: 70,
-      displayHeight: 1,
-      defaultValue: '',
-      help: 'The template\'s description.',
-      documentation: "A human readable description of the $$DOC{ref:'.'}."
-    },
-    {
-      type: 'Array',
-      name: 'args',
-      type: 'Array[Arg]',
-      subType: 'Arg',
-      view: 'foam.ui.ArrayView',
-      factory: function() { return []; },
-      help: 'Method arguments.',
-      documentation: function() { /*
-          The $$DOC{ref:'Arg',text:'Arguments'} for the $$DOC{ref:'Template'}.
-        */}
-    },
-    {
-      name: 'template',
-      type: 'String',
-      displayWidth: 180,
-      displayHeight: 30,
-      defaultValue: '',
-      view: 'foam.ui.TextAreaView',
-      // Doesn't work because of bootstrapping issues.
-      // preSet: function(_, t) { return typeof t === 'function' ? multiline(t) : t ; },
-      help: 'Template text. <%= expr %> or <% out(...); %>',
-      documentation: "The string content of the uncompiled $$DOC{ref:'Template'} body."
-    },
-    {
-      name: 'path'
-    },
-    {
-      name: 'futureTemplate',
-      transient: true
-    },
-    {
-      name: 'code',
-      transient: true
-    },
-    /*
-       {
-       name: 'templates',
-       type: 'Array[Template]',
-       subType: 'Template',
-       view: 'foam.ui.ArrayView',
-       // defaultValue: [],
-       help: 'Sub-templates of this template.'
-       },*/
-    {
-      type: 'Documentation',
-      name: 'documentation',
-      labels: ['debug'],
-    },
-    {
-      name: 'language',
-      type: 'String',
-      lazyFactory: function() {
-        return this.name === 'CSS' ? 'css' : 'html';
-      }
-    },
-    {
-      name: 'labels'
-    }
-  ],
-  methods: [
-    function toE(X) { return X.data[this.name](); }
-  ]
-});
-
-
-CLASS({
   name: 'Constant',
   plural: 'constants',
 
@@ -722,6 +757,7 @@ CLASS({
     {
       name: 'description',
       type: 'String',
+      labels: ['javascript'],
       displayWidth: 70,
       displayHeight: 1,
       defaultValue: '',

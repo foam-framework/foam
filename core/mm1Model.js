@@ -370,13 +370,21 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
     {
       name: 'swiftImplements',
       type: 'Array[String]',
-      view: 'foam.ui.StringArrayView',
+      labels: ['swift'],
       defaultValueFn: function() { return this.implements; },
       help: 'Swift interfaces implemented by this Model.',
     },
     {
+      name: 'swiftClassImports',
+      type: 'Array[String]',
+      labels: ['swift'],
+      defaultValueFn: function() { return []; },
+      help: 'Imports to add at the top of the generated swift class.',
+    },
+    {
       name: 'swiftCode',
       type: 'String',
+      labels: ['swift'],
       defaultValue: '',
       help: 'Swift code to drop in when generating the swift class for this model.',
     },
