@@ -37,7 +37,7 @@ CLASS({
     },
     {
       name: 'height',
-      defaultValue: 200
+      defaultValue: 300
     },
     {
       name: 'cssHeight',

@@ -93,7 +93,6 @@ CLASS({
     function toInnerHTML() {/*<% if ( this.inner ) { %>{{this.inner()}}<% } else { %>{{this.data.code}}<% } %>*/},
     function CSS() {/*
       code-view {
-        display: block;
         position: relative;
         min-height: 10em;
         max-height: 20em;
