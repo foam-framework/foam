@@ -1622,6 +1622,11 @@ CLASS({
       swiftType: 'FoamEnum.Type',
     },
     {
+      name: 'view',
+      labels: ['javascript'],
+      defaultValue: 'foam.ui.EnumFieldView',
+    },
+    {
       name: 'swiftType',
       defaultValueFn: function() { return this.enum.split('.').pop(); },
     },
