@@ -689,6 +689,10 @@ CLASS({
       defaultValue: 'Float',
     },
     {
+      name: 'swiftView',
+      defaultValue: 'FoamFloatUITextField',
+    },
+    {
       name: 'displayWidth',
       defaultValue: 15
     },
