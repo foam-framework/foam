@@ -78,7 +78,7 @@ CLASS({
       swiftCode: function() {/*
         data = textToValue(textField.text!)
       */},
-    }, 
+    },
     {
       name: 'textFieldShouldReturn',
       args: [
@@ -92,6 +92,6 @@ CLASS({
         textField.resignFirstResponder()
         return true
       */},
-    }, 
+    },
   ],
 });
