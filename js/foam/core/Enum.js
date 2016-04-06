@@ -121,7 +121,16 @@ CLASS({
           this[value.index] = value;
         }
       }
-    }
+    },
+    {
+      name: 'valueForIndex',
+      labels: ['javascript'],
+      code: function(index) {
+        for (var i = 0, value; value = this.values[i]; i++) {
+          if (value.index == index) return value;
+        }
+      }
+    },
   ],
   templates: [
     {
