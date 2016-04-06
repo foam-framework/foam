@@ -15,48 +15,36 @@
 		10C9A76A1CB4075300C6CCED /* FOAMSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C9A7631CB4075300C6CCED /* FOAMSupport.swift */; };
 		10C9A76B1CB4075300C6CCED /* Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C9A7641CB4075300C6CCED /* Interval.swift */; };
 		10C9A76C1CB4075300C6CCED /* MLang.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C9A7651CB4075300C6CCED /* MLang.swift */; };
-		10CCBD3D1CB56166001829C3 /* AbstractDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD131CB56166001829C3 /* AbstractDAO.swift */; };
-		10CCBD3E1CB56166001829C3 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD141CB56166001829C3 /* Action.swift */; };
-		10CCBD3F1CB56166001829C3 /* AndExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD151CB56166001829C3 /* AndExpr.swift */; };
-		10CCBD401CB56166001829C3 /* ArrayProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD161CB56166001829C3 /* ArrayProperty.swift */; };
-		10CCBD411CB56166001829C3 /* ArraySink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD171CB56166001829C3 /* ArraySink.swift */; };
-		10CCBD421CB56166001829C3 /* BINARY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD181CB56166001829C3 /* BINARY.swift */; };
-		10CCBD431CB56166001829C3 /* BooleanProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD191CB56166001829C3 /* BooleanProperty.swift */; };
-		10CCBD441CB56166001829C3 /* ClosureSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD1A1CB56166001829C3 /* ClosureSink.swift */; };
-		10CCBD451CB56166001829C3 /* ConstantExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD1B1CB56166001829C3 /* ConstantExpr.swift */; };
-		10CCBD461CB56166001829C3 /* DAOQueryOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD1C1CB56166001829C3 /* DAOQueryOptions.swift */; };
-		10CCBD471CB56166001829C3 /* EnumProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD1D1CB56166001829C3 /* EnumProperty.swift */; };
-		10CCBD481CB56166001829C3 /* EqExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD1E1CB56166001829C3 /* EqExpr.swift */; };
-		10CCBD491CB56166001829C3 /* Expr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD1F1CB56166001829C3 /* Expr.swift */; };
-		10CCBD4A1CB56166001829C3 /* FalseExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD201CB56166001829C3 /* FalseExpr.swift */; };
-		10CCBD4B1CB56166001829C3 /* FilteredDAO_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD211CB56166001829C3 /* FilteredDAO_.swift */; };
-		10CCBD4C1CB56166001829C3 /* FloatProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD221CB56166001829C3 /* FloatProperty.swift */; };
-		10CCBD4D1CB56166001829C3 /* FoamEnumUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD231CB56166001829C3 /* FoamEnumUILabel.swift */; };
-		10CCBD4E1CB56166001829C3 /* FoamFloatUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD241CB56166001829C3 /* FoamFloatUITextField.swift */; };
-		10CCBD4F1CB56166001829C3 /* FoamUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD251CB56166001829C3 /* FoamUILabel.swift */; };
-		10CCBD501CB56166001829C3 /* FoamUISwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD261CB56166001829C3 /* FoamUISwitch.swift */; };
-		10CCBD511CB56166001829C3 /* FoamUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD271CB56166001829C3 /* FoamUITextField.swift */; };
-		10CCBD521CB56166001829C3 /* FunctionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD281CB56166001829C3 /* FunctionProperty.swift */; };
-		10CCBD531CB56166001829C3 /* ImportedProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD291CB56166001829C3 /* ImportedProperty.swift */; };
-		10CCBD541CB56166001829C3 /* IntProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD2A1CB56166001829C3 /* IntProperty.swift */; };
-		10CCBD551CB56166001829C3 /* ModelProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD2B1CB56166001829C3 /* ModelProperty.swift */; };
-		10CCBD561CB56166001829C3 /* NARY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD2C1CB56166001829C3 /* NARY.swift */; };
-		10CCBD571CB56166001829C3 /* NullDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD2D1CB56166001829C3 /* NullDAO.swift */; };
-		10CCBD581CB56166001829C3 /* NumericProperty_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD2E1CB56166001829C3 /* NumericProperty_.swift */; };
-		10CCBD591CB56166001829C3 /* PredicatedSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD2F1CB56166001829C3 /* PredicatedSink.swift */; };
-		10CCBD5A1CB56166001829C3 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD301CB56166001829C3 /* Property.swift */; };
-		10CCBD5B1CB56166001829C3 /* ProxyDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD311CB56166001829C3 /* ProxyDAO.swift */; };
-		10CCBD5C1CB56166001829C3 /* ProxySink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD321CB56166001829C3 /* ProxySink.swift */; };
-		10CCBD5D1CB56166001829C3 /* RelaySink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD331CB56166001829C3 /* RelaySink.swift */; };
-		10CCBD5E1CB56166001829C3 /* Sink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD341CB56166001829C3 /* Sink.swift */; };
-		10CCBD5F1CB56166001829C3 /* StandingDeskTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD351CB56166001829C3 /* StandingDeskTimer.swift */; };
-		10CCBD601CB56166001829C3 /* StandingDeskTimerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD361CB56166001829C3 /* StandingDeskTimerDetailView.swift */; };
-		10CCBD611CB56166001829C3 /* StandingDeskTimerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD371CB56166001829C3 /* StandingDeskTimerEnum.swift */; };
-		10CCBD621CB56166001829C3 /* StringArrayProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD381CB56166001829C3 /* StringArrayProperty.swift */; };
-		10CCBD631CB56166001829C3 /* StringProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD391CB56166001829C3 /* StringProperty.swift */; };
-		10CCBD641CB56166001829C3 /* TemplateProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD3A1CB56166001829C3 /* TemplateProperty.swift */; };
-		10CCBD651CB56166001829C3 /* TrueExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD3B1CB56166001829C3 /* TrueExpr.swift */; };
-		10CCBD661CB56166001829C3 /* UNARY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBD3C1CB56166001829C3 /* UNARY.swift */; };
+		10CCBDF61CB573F6001829C3 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDD81CB573F6001829C3 /* Action.swift */; };
+		10CCBDF71CB573F6001829C3 /* AndExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDD91CB573F6001829C3 /* AndExpr.swift */; };
+		10CCBDF81CB573F6001829C3 /* ArrayProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDA1CB573F6001829C3 /* ArrayProperty.swift */; };
+		10CCBDF91CB573F6001829C3 /* BINARY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDB1CB573F6001829C3 /* BINARY.swift */; };
+		10CCBDFA1CB573F6001829C3 /* BooleanProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDC1CB573F6001829C3 /* BooleanProperty.swift */; };
+		10CCBDFB1CB573F6001829C3 /* ConstantExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDD1CB573F6001829C3 /* ConstantExpr.swift */; };
+		10CCBDFC1CB573F6001829C3 /* EnumProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDE1CB573F6001829C3 /* EnumProperty.swift */; };
+		10CCBDFD1CB573F6001829C3 /* EqExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDF1CB573F6001829C3 /* EqExpr.swift */; };
+		10CCBDFE1CB573F6001829C3 /* Expr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE01CB573F6001829C3 /* Expr.swift */; };
+		10CCBDFF1CB573F6001829C3 /* FalseExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE11CB573F6001829C3 /* FalseExpr.swift */; };
+		10CCBE001CB573F6001829C3 /* FloatProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE21CB573F6001829C3 /* FloatProperty.swift */; };
+		10CCBE011CB573F6001829C3 /* FoamEnumUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE31CB573F6001829C3 /* FoamEnumUILabel.swift */; };
+		10CCBE021CB573F6001829C3 /* FoamFloatUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE41CB573F6001829C3 /* FoamFloatUITextField.swift */; };
+		10CCBE031CB573F6001829C3 /* FoamUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE51CB573F6001829C3 /* FoamUILabel.swift */; };
+		10CCBE041CB573F6001829C3 /* FoamUISwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE61CB573F6001829C3 /* FoamUISwitch.swift */; };
+		10CCBE051CB573F6001829C3 /* FoamUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE71CB573F6001829C3 /* FoamUITextField.swift */; };
+		10CCBE061CB573F6001829C3 /* FunctionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE81CB573F6001829C3 /* FunctionProperty.swift */; };
+		10CCBE071CB573F6001829C3 /* ImportedProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE91CB573F6001829C3 /* ImportedProperty.swift */; };
+		10CCBE081CB573F6001829C3 /* IntProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDEA1CB573F6001829C3 /* IntProperty.swift */; };
+		10CCBE091CB573F6001829C3 /* NARY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDEB1CB573F6001829C3 /* NARY.swift */; };
+		10CCBE0A1CB573F6001829C3 /* NumericProperty_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDEC1CB573F6001829C3 /* NumericProperty_.swift */; };
+		10CCBE0B1CB573F6001829C3 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDED1CB573F6001829C3 /* Property.swift */; };
+		10CCBE0C1CB573F6001829C3 /* StandingDeskTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDEE1CB573F6001829C3 /* StandingDeskTimer.swift */; };
+		10CCBE0D1CB573F6001829C3 /* StandingDeskTimerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDEF1CB573F6001829C3 /* StandingDeskTimerDetailView.swift */; };
+		10CCBE0E1CB573F6001829C3 /* StandingDeskTimerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF01CB573F6001829C3 /* StandingDeskTimerEnum.swift */; };
+		10CCBE0F1CB573F6001829C3 /* StringArrayProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF11CB573F6001829C3 /* StringArrayProperty.swift */; };
+		10CCBE101CB573F6001829C3 /* StringProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF21CB573F6001829C3 /* StringProperty.swift */; };
+		10CCBE111CB573F6001829C3 /* TemplateProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF31CB573F6001829C3 /* TemplateProperty.swift */; };
+		10CCBE121CB573F6001829C3 /* TrueExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF41CB573F6001829C3 /* TrueExpr.swift */; };
+		10CCBE131CB573F6001829C3 /* UNARY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF51CB573F6001829C3 /* UNARY.swift */; };
 		10D88BD51CB1757B002E3A51 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D88BD41CB1757B002E3A51 /* AppDelegate.swift */; };
 		10D88BD71CB1757B002E3A51 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D88BD61CB1757B002E3A51 /* ViewController.swift */; };
 		10D88BDC1CB1757B002E3A51 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10D88BDB1CB1757B002E3A51 /* Assets.xcassets */; };
@@ -72,48 +60,36 @@
 		10C9A7631CB4075300C6CCED /* FOAMSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FOAMSupport.swift; sourceTree = "<group>"; };
 		10C9A7641CB4075300C6CCED /* Interval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interval.swift; sourceTree = "<group>"; };
 		10C9A7651CB4075300C6CCED /* MLang.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MLang.swift; sourceTree = "<group>"; };
-		10CCBD131CB56166001829C3 /* AbstractDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractDAO.swift; sourceTree = "<group>"; };
-		10CCBD141CB56166001829C3 /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
-		10CCBD151CB56166001829C3 /* AndExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AndExpr.swift; sourceTree = "<group>"; };
-		10CCBD161CB56166001829C3 /* ArrayProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayProperty.swift; sourceTree = "<group>"; };
-		10CCBD171CB56166001829C3 /* ArraySink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArraySink.swift; sourceTree = "<group>"; };
-		10CCBD181CB56166001829C3 /* BINARY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BINARY.swift; sourceTree = "<group>"; };
-		10CCBD191CB56166001829C3 /* BooleanProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BooleanProperty.swift; sourceTree = "<group>"; };
-		10CCBD1A1CB56166001829C3 /* ClosureSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureSink.swift; sourceTree = "<group>"; };
-		10CCBD1B1CB56166001829C3 /* ConstantExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantExpr.swift; sourceTree = "<group>"; };
-		10CCBD1C1CB56166001829C3 /* DAOQueryOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DAOQueryOptions.swift; sourceTree = "<group>"; };
-		10CCBD1D1CB56166001829C3 /* EnumProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumProperty.swift; sourceTree = "<group>"; };
-		10CCBD1E1CB56166001829C3 /* EqExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EqExpr.swift; sourceTree = "<group>"; };
-		10CCBD1F1CB56166001829C3 /* Expr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Expr.swift; sourceTree = "<group>"; };
-		10CCBD201CB56166001829C3 /* FalseExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FalseExpr.swift; sourceTree = "<group>"; };
-		10CCBD211CB56166001829C3 /* FilteredDAO_.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilteredDAO_.swift; sourceTree = "<group>"; };
-		10CCBD221CB56166001829C3 /* FloatProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatProperty.swift; sourceTree = "<group>"; };
-		10CCBD231CB56166001829C3 /* FoamEnumUILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamEnumUILabel.swift; sourceTree = "<group>"; };
-		10CCBD241CB56166001829C3 /* FoamFloatUITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamFloatUITextField.swift; sourceTree = "<group>"; };
-		10CCBD251CB56166001829C3 /* FoamUILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamUILabel.swift; sourceTree = "<group>"; };
-		10CCBD261CB56166001829C3 /* FoamUISwitch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamUISwitch.swift; sourceTree = "<group>"; };
-		10CCBD271CB56166001829C3 /* FoamUITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamUITextField.swift; sourceTree = "<group>"; };
-		10CCBD281CB56166001829C3 /* FunctionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionProperty.swift; sourceTree = "<group>"; };
-		10CCBD291CB56166001829C3 /* ImportedProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportedProperty.swift; sourceTree = "<group>"; };
-		10CCBD2A1CB56166001829C3 /* IntProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntProperty.swift; sourceTree = "<group>"; };
-		10CCBD2B1CB56166001829C3 /* ModelProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelProperty.swift; sourceTree = "<group>"; };
-		10CCBD2C1CB56166001829C3 /* NARY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NARY.swift; sourceTree = "<group>"; };
-		10CCBD2D1CB56166001829C3 /* NullDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NullDAO.swift; sourceTree = "<group>"; };
-		10CCBD2E1CB56166001829C3 /* NumericProperty_.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumericProperty_.swift; sourceTree = "<group>"; };
-		10CCBD2F1CB56166001829C3 /* PredicatedSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredicatedSink.swift; sourceTree = "<group>"; };
-		10CCBD301CB56166001829C3 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
-		10CCBD311CB56166001829C3 /* ProxyDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyDAO.swift; sourceTree = "<group>"; };
-		10CCBD321CB56166001829C3 /* ProxySink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxySink.swift; sourceTree = "<group>"; };
-		10CCBD331CB56166001829C3 /* RelaySink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RelaySink.swift; sourceTree = "<group>"; };
-		10CCBD341CB56166001829C3 /* Sink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sink.swift; sourceTree = "<group>"; };
-		10CCBD351CB56166001829C3 /* StandingDeskTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingDeskTimer.swift; sourceTree = "<group>"; };
-		10CCBD361CB56166001829C3 /* StandingDeskTimerDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingDeskTimerDetailView.swift; sourceTree = "<group>"; };
-		10CCBD371CB56166001829C3 /* StandingDeskTimerEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingDeskTimerEnum.swift; sourceTree = "<group>"; };
-		10CCBD381CB56166001829C3 /* StringArrayProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringArrayProperty.swift; sourceTree = "<group>"; };
-		10CCBD391CB56166001829C3 /* StringProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringProperty.swift; sourceTree = "<group>"; };
-		10CCBD3A1CB56166001829C3 /* TemplateProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateProperty.swift; sourceTree = "<group>"; };
-		10CCBD3B1CB56166001829C3 /* TrueExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrueExpr.swift; sourceTree = "<group>"; };
-		10CCBD3C1CB56166001829C3 /* UNARY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UNARY.swift; sourceTree = "<group>"; };
+		10CCBDD81CB573F6001829C3 /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
+		10CCBDD91CB573F6001829C3 /* AndExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AndExpr.swift; sourceTree = "<group>"; };
+		10CCBDDA1CB573F6001829C3 /* ArrayProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayProperty.swift; sourceTree = "<group>"; };
+		10CCBDDB1CB573F6001829C3 /* BINARY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BINARY.swift; sourceTree = "<group>"; };
+		10CCBDDC1CB573F6001829C3 /* BooleanProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BooleanProperty.swift; sourceTree = "<group>"; };
+		10CCBDDD1CB573F6001829C3 /* ConstantExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantExpr.swift; sourceTree = "<group>"; };
+		10CCBDDE1CB573F6001829C3 /* EnumProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumProperty.swift; sourceTree = "<group>"; };
+		10CCBDDF1CB573F6001829C3 /* EqExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EqExpr.swift; sourceTree = "<group>"; };
+		10CCBDE01CB573F6001829C3 /* Expr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Expr.swift; sourceTree = "<group>"; };
+		10CCBDE11CB573F6001829C3 /* FalseExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FalseExpr.swift; sourceTree = "<group>"; };
+		10CCBDE21CB573F6001829C3 /* FloatProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatProperty.swift; sourceTree = "<group>"; };
+		10CCBDE31CB573F6001829C3 /* FoamEnumUILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamEnumUILabel.swift; sourceTree = "<group>"; };
+		10CCBDE41CB573F6001829C3 /* FoamFloatUITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamFloatUITextField.swift; sourceTree = "<group>"; };
+		10CCBDE51CB573F6001829C3 /* FoamUILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamUILabel.swift; sourceTree = "<group>"; };
+		10CCBDE61CB573F6001829C3 /* FoamUISwitch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamUISwitch.swift; sourceTree = "<group>"; };
+		10CCBDE71CB573F6001829C3 /* FoamUITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamUITextField.swift; sourceTree = "<group>"; };
+		10CCBDE81CB573F6001829C3 /* FunctionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionProperty.swift; sourceTree = "<group>"; };
+		10CCBDE91CB573F6001829C3 /* ImportedProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportedProperty.swift; sourceTree = "<group>"; };
+		10CCBDEA1CB573F6001829C3 /* IntProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntProperty.swift; sourceTree = "<group>"; };
+		10CCBDEB1CB573F6001829C3 /* NARY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NARY.swift; sourceTree = "<group>"; };
+		10CCBDEC1CB573F6001829C3 /* NumericProperty_.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumericProperty_.swift; sourceTree = "<group>"; };
+		10CCBDED1CB573F6001829C3 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
+		10CCBDEE1CB573F6001829C3 /* StandingDeskTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingDeskTimer.swift; sourceTree = "<group>"; };
+		10CCBDEF1CB573F6001829C3 /* StandingDeskTimerDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingDeskTimerDetailView.swift; sourceTree = "<group>"; };
+		10CCBDF01CB573F6001829C3 /* StandingDeskTimerEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingDeskTimerEnum.swift; sourceTree = "<group>"; };
+		10CCBDF11CB573F6001829C3 /* StringArrayProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringArrayProperty.swift; sourceTree = "<group>"; };
+		10CCBDF21CB573F6001829C3 /* StringProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringProperty.swift; sourceTree = "<group>"; };
+		10CCBDF31CB573F6001829C3 /* TemplateProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateProperty.swift; sourceTree = "<group>"; };
+		10CCBDF41CB573F6001829C3 /* TrueExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrueExpr.swift; sourceTree = "<group>"; };
+		10CCBDF51CB573F6001829C3 /* UNARY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UNARY.swift; sourceTree = "<group>"; };
 		10D88BD11CB1757B002E3A51 /* StandingTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StandingTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10D88BD41CB1757B002E3A51 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		10D88BD61CB1757B002E3A51 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -148,51 +124,39 @@
 			path = ../../../../foam;
 			sourceTree = "<group>";
 		};
-		10CCBD121CB56166001829C3 /* Generated */ = {
+		10CCBDD71CB573F6001829C3 /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				10CCBD131CB56166001829C3 /* AbstractDAO.swift */,
-				10CCBD141CB56166001829C3 /* Action.swift */,
-				10CCBD151CB56166001829C3 /* AndExpr.swift */,
-				10CCBD161CB56166001829C3 /* ArrayProperty.swift */,
-				10CCBD171CB56166001829C3 /* ArraySink.swift */,
-				10CCBD181CB56166001829C3 /* BINARY.swift */,
-				10CCBD191CB56166001829C3 /* BooleanProperty.swift */,
-				10CCBD1A1CB56166001829C3 /* ClosureSink.swift */,
-				10CCBD1B1CB56166001829C3 /* ConstantExpr.swift */,
-				10CCBD1C1CB56166001829C3 /* DAOQueryOptions.swift */,
-				10CCBD1D1CB56166001829C3 /* EnumProperty.swift */,
-				10CCBD1E1CB56166001829C3 /* EqExpr.swift */,
-				10CCBD1F1CB56166001829C3 /* Expr.swift */,
-				10CCBD201CB56166001829C3 /* FalseExpr.swift */,
-				10CCBD211CB56166001829C3 /* FilteredDAO_.swift */,
-				10CCBD221CB56166001829C3 /* FloatProperty.swift */,
-				10CCBD231CB56166001829C3 /* FoamEnumUILabel.swift */,
-				10CCBD241CB56166001829C3 /* FoamFloatUITextField.swift */,
-				10CCBD251CB56166001829C3 /* FoamUILabel.swift */,
-				10CCBD261CB56166001829C3 /* FoamUISwitch.swift */,
-				10CCBD271CB56166001829C3 /* FoamUITextField.swift */,
-				10CCBD281CB56166001829C3 /* FunctionProperty.swift */,
-				10CCBD291CB56166001829C3 /* ImportedProperty.swift */,
-				10CCBD2A1CB56166001829C3 /* IntProperty.swift */,
-				10CCBD2B1CB56166001829C3 /* ModelProperty.swift */,
-				10CCBD2C1CB56166001829C3 /* NARY.swift */,
-				10CCBD2D1CB56166001829C3 /* NullDAO.swift */,
-				10CCBD2E1CB56166001829C3 /* NumericProperty_.swift */,
-				10CCBD2F1CB56166001829C3 /* PredicatedSink.swift */,
-				10CCBD301CB56166001829C3 /* Property.swift */,
-				10CCBD311CB56166001829C3 /* ProxyDAO.swift */,
-				10CCBD321CB56166001829C3 /* ProxySink.swift */,
-				10CCBD331CB56166001829C3 /* RelaySink.swift */,
-				10CCBD341CB56166001829C3 /* Sink.swift */,
-				10CCBD351CB56166001829C3 /* StandingDeskTimer.swift */,
-				10CCBD361CB56166001829C3 /* StandingDeskTimerDetailView.swift */,
-				10CCBD371CB56166001829C3 /* StandingDeskTimerEnum.swift */,
-				10CCBD381CB56166001829C3 /* StringArrayProperty.swift */,
-				10CCBD391CB56166001829C3 /* StringProperty.swift */,
-				10CCBD3A1CB56166001829C3 /* TemplateProperty.swift */,
-				10CCBD3B1CB56166001829C3 /* TrueExpr.swift */,
-				10CCBD3C1CB56166001829C3 /* UNARY.swift */,
+				10CCBDD81CB573F6001829C3 /* Action.swift */,
+				10CCBDD91CB573F6001829C3 /* AndExpr.swift */,
+				10CCBDDA1CB573F6001829C3 /* ArrayProperty.swift */,
+				10CCBDDB1CB573F6001829C3 /* BINARY.swift */,
+				10CCBDDC1CB573F6001829C3 /* BooleanProperty.swift */,
+				10CCBDDD1CB573F6001829C3 /* ConstantExpr.swift */,
+				10CCBDDE1CB573F6001829C3 /* EnumProperty.swift */,
+				10CCBDDF1CB573F6001829C3 /* EqExpr.swift */,
+				10CCBDE01CB573F6001829C3 /* Expr.swift */,
+				10CCBDE11CB573F6001829C3 /* FalseExpr.swift */,
+				10CCBDE21CB573F6001829C3 /* FloatProperty.swift */,
+				10CCBDE31CB573F6001829C3 /* FoamEnumUILabel.swift */,
+				10CCBDE41CB573F6001829C3 /* FoamFloatUITextField.swift */,
+				10CCBDE51CB573F6001829C3 /* FoamUILabel.swift */,
+				10CCBDE61CB573F6001829C3 /* FoamUISwitch.swift */,
+				10CCBDE71CB573F6001829C3 /* FoamUITextField.swift */,
+				10CCBDE81CB573F6001829C3 /* FunctionProperty.swift */,
+				10CCBDE91CB573F6001829C3 /* ImportedProperty.swift */,
+				10CCBDEA1CB573F6001829C3 /* IntProperty.swift */,
+				10CCBDEB1CB573F6001829C3 /* NARY.swift */,
+				10CCBDEC1CB573F6001829C3 /* NumericProperty_.swift */,
+				10CCBDED1CB573F6001829C3 /* Property.swift */,
+				10CCBDEE1CB573F6001829C3 /* StandingDeskTimer.swift */,
+				10CCBDEF1CB573F6001829C3 /* StandingDeskTimerDetailView.swift */,
+				10CCBDF01CB573F6001829C3 /* StandingDeskTimerEnum.swift */,
+				10CCBDF11CB573F6001829C3 /* StringArrayProperty.swift */,
+				10CCBDF21CB573F6001829C3 /* StringProperty.swift */,
+				10CCBDF31CB573F6001829C3 /* TemplateProperty.swift */,
+				10CCBDF41CB573F6001829C3 /* TrueExpr.swift */,
+				10CCBDF51CB573F6001829C3 /* UNARY.swift */,
 			);
 			name = Generated;
 			path = ../../Generated;
@@ -223,7 +187,7 @@
 				10D88BDB1CB1757B002E3A51 /* Assets.xcassets */,
 				10C611771CB468AF00A1C822 /* CustomTimerView.xib */,
 				10C9A75E1CB4075300C6CCED /* foam */,
-				10CCBD121CB56166001829C3 /* Generated */,
+				10CCBDD71CB573F6001829C3 /* Generated */,
 				10D88BDD1CB1757B002E3A51 /* LaunchScreen.storyboard */,
 			);
 			path = StandingTimer;
@@ -300,57 +264,45 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10CCBD411CB56166001829C3 /* ArraySink.swift in Sources */,
-				10CCBD541CB56166001829C3 /* IntProperty.swift in Sources */,
-				10CCBD5D1CB56166001829C3 /* RelaySink.swift in Sources */,
-				10CCBD3D1CB56166001829C3 /* AbstractDAO.swift in Sources */,
-				10CCBD511CB56166001829C3 /* FoamUITextField.swift in Sources */,
-				10CCBD561CB56166001829C3 /* NARY.swift in Sources */,
-				10CCBD521CB56166001829C3 /* FunctionProperty.swift in Sources */,
-				10CCBD5A1CB56166001829C3 /* Property.swift in Sources */,
-				10CCBD4C1CB56166001829C3 /* FloatProperty.swift in Sources */,
-				10CCBD4A1CB56166001829C3 /* FalseExpr.swift in Sources */,
-				10CCBD421CB56166001829C3 /* BINARY.swift in Sources */,
-				10CCBD3E1CB56166001829C3 /* Action.swift in Sources */,
-				10CCBD641CB56166001829C3 /* TemplateProperty.swift in Sources */,
-				10CCBD481CB56166001829C3 /* EqExpr.swift in Sources */,
-				10CCBD3F1CB56166001829C3 /* AndExpr.swift in Sources */,
-				10CCBD431CB56166001829C3 /* BooleanProperty.swift in Sources */,
-				10CCBD451CB56166001829C3 /* ConstantExpr.swift in Sources */,
-				10CCBD5B1CB56166001829C3 /* ProxyDAO.swift in Sources */,
+				10CCBE041CB573F6001829C3 /* FoamUISwitch.swift in Sources */,
 				10C9A7671CB4075300C6CCED /* Events.swift in Sources */,
-				10CCBD551CB56166001829C3 /* ModelProperty.swift in Sources */,
-				10CCBD501CB56166001829C3 /* FoamUISwitch.swift in Sources */,
 				10C9A76A1CB4075300C6CCED /* FOAMSupport.swift in Sources */,
+				10CCBE101CB573F6001829C3 /* StringProperty.swift in Sources */,
+				10CCBE121CB573F6001829C3 /* TrueExpr.swift in Sources */,
+				10CCBDF81CB573F6001829C3 /* ArrayProperty.swift in Sources */,
 				10C9A76B1CB4075300C6CCED /* Interval.swift in Sources */,
-				10CCBD601CB56166001829C3 /* StandingDeskTimerDetailView.swift in Sources */,
+				10CCBE031CB573F6001829C3 /* FoamUILabel.swift in Sources */,
+				10CCBE091CB573F6001829C3 /* NARY.swift in Sources */,
+				10CCBE061CB573F6001829C3 /* FunctionProperty.swift in Sources */,
+				10CCBDF61CB573F6001829C3 /* Action.swift in Sources */,
 				10C9A7681CB4075300C6CCED /* FoamEnum.swift in Sources */,
+				10CCBE111CB573F6001829C3 /* TemplateProperty.swift in Sources */,
+				10CCBDFB1CB573F6001829C3 /* ConstantExpr.swift in Sources */,
+				10CCBDFC1CB573F6001829C3 /* EnumProperty.swift in Sources */,
+				10CCBE071CB573F6001829C3 /* ImportedProperty.swift in Sources */,
+				10CCBE0B1CB573F6001829C3 /* Property.swift in Sources */,
+				10CCBE0F1CB573F6001829C3 /* StringArrayProperty.swift in Sources */,
 				10C9A7661CB4075300C6CCED /* Async.swift in Sources */,
-				10CCBD401CB56166001829C3 /* ArrayProperty.swift in Sources */,
-				10CCBD5E1CB56166001829C3 /* Sink.swift in Sources */,
-				10CCBD631CB56166001829C3 /* StringProperty.swift in Sources */,
-				10CCBD4E1CB56166001829C3 /* FoamFloatUITextField.swift in Sources */,
-				10CCBD571CB56166001829C3 /* NullDAO.swift in Sources */,
-				10CCBD581CB56166001829C3 /* NumericProperty_.swift in Sources */,
-				10CCBD461CB56166001829C3 /* DAOQueryOptions.swift in Sources */,
-				10CCBD611CB56166001829C3 /* StandingDeskTimerEnum.swift in Sources */,
-				10CCBD5F1CB56166001829C3 /* StandingDeskTimer.swift in Sources */,
-				10CCBD661CB56166001829C3 /* UNARY.swift in Sources */,
+				10CCBDFA1CB573F6001829C3 /* BooleanProperty.swift in Sources */,
+				10CCBE131CB573F6001829C3 /* UNARY.swift in Sources */,
+				10CCBE051CB573F6001829C3 /* FoamUITextField.swift in Sources */,
+				10CCBDF91CB573F6001829C3 /* BINARY.swift in Sources */,
+				10CCBE0C1CB573F6001829C3 /* StandingDeskTimer.swift in Sources */,
+				10CCBDF71CB573F6001829C3 /* AndExpr.swift in Sources */,
 				10D88BD71CB1757B002E3A51 /* ViewController.swift in Sources */,
-				10CCBD591CB56166001829C3 /* PredicatedSink.swift in Sources */,
-				10CCBD4D1CB56166001829C3 /* FoamEnumUILabel.swift in Sources */,
-				10CCBD651CB56166001829C3 /* TrueExpr.swift in Sources */,
-				10CCBD491CB56166001829C3 /* Expr.swift in Sources */,
-				10CCBD5C1CB56166001829C3 /* ProxySink.swift in Sources */,
-				10CCBD471CB56166001829C3 /* EnumProperty.swift in Sources */,
+				10CCBDFD1CB573F6001829C3 /* EqExpr.swift in Sources */,
 				10D88BD51CB1757B002E3A51 /* AppDelegate.swift in Sources */,
-				10CCBD621CB56166001829C3 /* StringArrayProperty.swift in Sources */,
-				10CCBD531CB56166001829C3 /* ImportedProperty.swift in Sources */,
+				10CCBE081CB573F6001829C3 /* IntProperty.swift in Sources */,
+				10CCBE0A1CB573F6001829C3 /* NumericProperty_.swift in Sources */,
+				10CCBE0E1CB573F6001829C3 /* StandingDeskTimerEnum.swift in Sources */,
+				10CCBE021CB573F6001829C3 /* FoamFloatUITextField.swift in Sources */,
 				10C9A76C1CB4075300C6CCED /* MLang.swift in Sources */,
-				10CCBD441CB56166001829C3 /* ClosureSink.swift in Sources */,
-				10CCBD4F1CB56166001829C3 /* FoamUILabel.swift in Sources */,
+				10CCBE011CB573F6001829C3 /* FoamEnumUILabel.swift in Sources */,
+				10CCBE0D1CB573F6001829C3 /* StandingDeskTimerDetailView.swift in Sources */,
+				10CCBDFE1CB573F6001829C3 /* Expr.swift in Sources */,
+				10CCBE001CB573F6001829C3 /* FloatProperty.swift in Sources */,
+				10CCBDFF1CB573F6001829C3 /* FalseExpr.swift in Sources */,
 				10C9A7691CB4075300C6CCED /* FoamFunction.swift in Sources */,
-				10CCBD4B1CB56166001829C3 /* FilteredDAO_.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
