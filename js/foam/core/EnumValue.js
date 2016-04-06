@@ -34,6 +34,7 @@ CLASS({
     },
     {
       name: 'value',
+      defaultValueFn: function() { return undefined; },
     },
     {
       name: 'javaValue',
@@ -47,6 +48,7 @@ CLASS({
     {
       name: 'swiftValue',
       defaultValueFn: function() {
+        if (this.value === undefined) return this.index;
         if (typeof this.value == 'string') {
           return '"' + this.value + '"';
         }

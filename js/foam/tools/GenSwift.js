@@ -25,17 +25,22 @@ CLASS({
     {
       name: 'name',
       help: 'ID of the model to serialize',
-      required: true
+    },
+    {
+      name: 'names',
+      help: 'space separated list of files.',
+    },
+    {
+      name: 'blacklist',
+      help: 'space separated list of files to not include (which can happen ' +
+          'when adding dependencies).',
     },
     {
       name: 'modelFile',
     },
     {
-      name: 'outfile',
+      name: 'outfolder',
       require: true
-    },
-    {
-      name: 'viewfile'
     },
     {
       name: 'fs',
@@ -44,51 +49,109 @@ CLASS({
   ],
   methods: {
     execute: function() {
-      if ( ! this.outfile ) {
-        console.log("ERROR: outfile not specified");
+      if ( ! this.outfolder) {
+        console.log("ERROR: outfolder not specified");
         process.exit(1);
       }
 
-      aseq(
-        aif(!!this.modelFile,
-            function(ret) {
-              console.log("Reading model from", this.modelFile);
-              var data = this.fs.readFileSync(this.modelFile).toString();
-              var work = [anop];
-              var model = JSONUtil.parse(this.X, data, work);
+      var blacklist = this.blacklist && this.blacklist.split(' ') || [];
+      var names = this.names && this.names.split(' ') || [];
+      names = names.concat([
+        // MLangs required by MLang.swift.
+        'AndExpr',
+        'BINARY',
+        'ConstantExpr',
+        'EqExpr',
+        'Expr',
+        'FalseExpr',
+        'NARY',
+        'TrueExpr',
+        'UNARY',
+        // Required if a property is imported.
+        'ImportedProperty',
+      ]);
+      this.name && names.push(this.name);
+      names = names.filter(function(n) { return n; });
+      var i = 0;
+      awhile(function() { return i < names.length },
+        aseq(
+          aif(!!this.modelFile,
+              function(ret) {
+                console.log("Reading model from", this.modelFile);
+                var data = this.fs.readFileSync(this.modelFile).toString();
+                var work = [anop];
+                var model = JSONUtil.parse(this.X, data, work);
 
-              if ( work.length > 1 ) {
-                work.push(aconstant(model));
-                aseq.apply(null, work)(ret);
-                return;
-              }
-              ret(model);
-            }.bind(this),
-            function(ret) {
-              console.log("Loading", this.name);
-              this.X.arequire(this.name)(ret)
-            }.bind(this)),
-        function(ret, m) {
-          if ( !m ) {
-            console.log("ERROR: Could not load model");
-            process.exit(1);
-          }
-          
-          var template = this.SwiftSource.create()
-          console.log("Writing", m.id, "swift source to", this.outfile);
-          this.fs.writeFileSync(
-            this.outfile,
-            template.generate(m));
+                if ( work.length > 1 ) {
+                  work.push(aconstant(model));
+                  aseq.apply(null, work)(ret);
+                  return;
+                }
+                ret(model);
+              }.bind(this),
+              function(ret) {
+                var name = names[i];
+                console.log("Loading", name);
+                this.X.arequire(name)(ret)
+              }.bind(this)),
+          function(ret, m) {
+            if (m.getPrototype) m = m.getPrototype().model_
+            if ( !m ) {
+              console.log("ERROR: Could not load model");
+              process.exit(1);
+            }
 
-          if ( this.viewfile ) {
-            console.log("Writing", m.name, "DetailView source to", this.viewfile);
+            var template = this.SwiftSource.create()
+            var destination = this.outfolder + '/' + m.name + '.swift';
+            console.log("Writing", m.id, "swift source to", destination);
             this.fs.writeFileSync(
-              this.viewfile,
-              template.genDetailView(m));
-          }
-          
+              destination,
+              template.generate(m));
+
+            var requires = [];
+            if (m.getAllRequires) {
+              m = template.prepModel(m);
+              if (m.getAllRequires) {
+                requires = requires.concat(m.getAllRequires());
+              }
+            }
+
+            if (m.model_.id == 'foam.swift.ui.DetailView') {
+              requires = requires.concat([
+                'foam.swift.ui.FoamUILabel',
+                'foam.swift.ui.FoamEnumUILabel',
+                'foam.swift.ui.FoamUISwitch',
+                'foam.swift.ui.FoamUITextField',
+                'foam.swift.ui.FoamFloatUITextField',
+              ]);
+            }
+
+            if (m.id == 'AbstractDAO') {
+              // Required for DAO support and not required by AbstractDAO.
+              requires = requires.concat([
+                'FilteredDAO_',
+                'foam.dao.swift.ArraySink',
+                'foam.dao.swift.ClosureSink',
+                'foam.dao.swift.DAOQueryOptions',
+                'foam.dao.swift.PredicatedSink',
+                'foam.dao.swift.RelaySink',
+              ]);
+            }
+
+            requires.forEach(function(dep) {
+              if (dep && names.indexOf(dep) == -1 &&
+                  blacklist.indexOf(dep) == -1) {
+                console.log('Adding dependency', dep);
+                names.push(dep);
+              }
+            });
+
+            i++;
+            ret();
+          }.bind(this))
+        )(function(){
           process.exit(0);
-        }.bind(this))(function(){});
+        });
     }
   }
 });

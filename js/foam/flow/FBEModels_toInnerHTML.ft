@@ -89,7 +89,6 @@ X.arequire('foam.sandbox.Person')(function(Person) {
 });</code>
               </src>
             </code-snippet>
-            <code-snippet ref="Person" title="Person Model" />
           </source>
         </code-sample>
       </aside>

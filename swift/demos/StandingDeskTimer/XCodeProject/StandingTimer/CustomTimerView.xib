@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="StandingDeskTimerDetailView" customModule="StandingTimer" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" text="Time Remaining" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QUl-Rq-5he">
+                    <rect key="frame" x="239" y="267" width="123" height="65"/>
+                    <color key="backgroundColor" red="1" green="0.0" blue="0.046319447734534336" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="65" id="EXi-Rs-A1e"/>
+                        <constraint firstAttribute="width" constant="123" id="EeP-W4-gNX"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="17"/>
+                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Custom View!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PZp-BB-PQg">
+                    <rect key="frame" x="233" y="238" width="134" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DOB-DB-uoc">
+                    <rect key="frame" x="200" y="340" width="200" height="75"/>
+                    <color key="backgroundColor" red="1" green="0.84099409438760531" blue="0.11699501593931816" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="200" id="CH0-Tb-AGX"/>
+                        <constraint firstAttribute="height" constant="75" id="nyF-OV-2M6"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                    <state key="normal" title="Start!!!"/>
+                    <connections>
+                        <action selector="startFn" destination="iN0-l3-epB" eventType="touchUpInside" id="OIt-wY-78k"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.52818828844421861" green="1" blue="0.50553303390492066" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="DOB-DB-uoc" firstAttribute="top" secondItem="QUl-Rq-5he" secondAttribute="bottom" constant="8" symbolic="YES" id="5bp-nu-cxR"/>
+                <constraint firstItem="PZp-BB-PQg" firstAttribute="centerX" secondItem="QUl-Rq-5he" secondAttribute="centerX" id="5nF-8B-MvK"/>
+                <constraint firstItem="QUl-Rq-5he" firstAttribute="top" secondItem="PZp-BB-PQg" secondAttribute="bottom" constant="8" id="aSd-mb-aDB"/>
+                <constraint firstItem="DOB-DB-uoc" firstAttribute="centerX" secondItem="QUl-Rq-5he" secondAttribute="centerX" id="cgq-EG-Wsr"/>
+                <constraint firstItem="QUl-Rq-5he" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="osa-te-2FP"/>
+                <constraint firstItem="QUl-Rq-5he" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="pFy-zG-uAw"/>
+            </constraints>
+            <connections>
+                <outlet property="clockOutlet" destination="QUl-Rq-5he" id="6D1-sf-nY9"/>
+                <outlet property="startButton" destination="DOB-DB-uoc" id="Mai-tp-mKR"/>
+            </connections>
+        </view>
+    </objects>
+</document>

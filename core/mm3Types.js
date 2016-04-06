@@ -167,7 +167,10 @@ CLASS({
     },
     {
       name: 'swiftDefaultValue',
-      defaultValue: '""',
+      defaultValueFn: function() {
+        var defaultValue = this.defaultValue || '';
+        return '"' + defaultValue + '"';
+      },
     },
     {
       name: 'view',
@@ -672,6 +675,10 @@ CLASS({
       defaultValue: 0.0
     },
     {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() { return '' + this.defaultValue; },
+    },
+    {
       name: 'javaType',
       displayWidth: 10,
       defaultValue: 'double',
@@ -694,6 +701,19 @@ CLASS({
       defaultValue: function (_, v) {
         return typeof v === 'number' ? v : v ? parseFloat(v) : 0.0 ;
       }
+    },
+    {
+      name: 'swiftAdapt',
+      defaultValue: function() {/*
+        var n: Float?
+        switch newValue {
+          case let newValue as String: n = Float(newValue)
+          case let newValue as NSNumber: n = Float(newValue)
+          default: break
+        }
+        if n != nil { return n! }
+        return 0
+      */},
     },
     {
       name: 'prototag',
@@ -1600,6 +1620,11 @@ CLASS({
     {
       name: 'enum',
       swiftType: 'FoamEnum.Type',
+    },
+    {
+      name: 'view',
+      labels: ['javascript'],
+      defaultValue: 'foam.ui.EnumFieldView',
     },
     {
       name: 'swiftType',

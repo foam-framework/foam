@@ -1,0 +1,454 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		10C611781CB468AF00A1C822 /* CustomTimerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10C611771CB468AF00A1C822 /* CustomTimerView.xib */; };
+		10C9A7661CB4075300C6CCED /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C9A75F1CB4075300C6CCED /* Async.swift */; };
+		10C9A7671CB4075300C6CCED /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C9A7601CB4075300C6CCED /* Events.swift */; };
+		10C9A7681CB4075300C6CCED /* FoamEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C9A7611CB4075300C6CCED /* FoamEnum.swift */; };
+		10C9A7691CB4075300C6CCED /* FoamFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C9A7621CB4075300C6CCED /* FoamFunction.swift */; };
+		10C9A76A1CB4075300C6CCED /* FOAMSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C9A7631CB4075300C6CCED /* FOAMSupport.swift */; };
+		10C9A76B1CB4075300C6CCED /* Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C9A7641CB4075300C6CCED /* Interval.swift */; };
+		10C9A76C1CB4075300C6CCED /* MLang.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C9A7651CB4075300C6CCED /* MLang.swift */; };
+		10CCBDF61CB573F6001829C3 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDD81CB573F6001829C3 /* Action.swift */; };
+		10CCBDF71CB573F6001829C3 /* AndExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDD91CB573F6001829C3 /* AndExpr.swift */; };
+		10CCBDF81CB573F6001829C3 /* ArrayProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDA1CB573F6001829C3 /* ArrayProperty.swift */; };
+		10CCBDF91CB573F6001829C3 /* BINARY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDB1CB573F6001829C3 /* BINARY.swift */; };
+		10CCBDFA1CB573F6001829C3 /* BooleanProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDC1CB573F6001829C3 /* BooleanProperty.swift */; };
+		10CCBDFB1CB573F6001829C3 /* ConstantExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDD1CB573F6001829C3 /* ConstantExpr.swift */; };
+		10CCBDFC1CB573F6001829C3 /* EnumProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDE1CB573F6001829C3 /* EnumProperty.swift */; };
+		10CCBDFD1CB573F6001829C3 /* EqExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDDF1CB573F6001829C3 /* EqExpr.swift */; };
+		10CCBDFE1CB573F6001829C3 /* Expr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE01CB573F6001829C3 /* Expr.swift */; };
+		10CCBDFF1CB573F6001829C3 /* FalseExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE11CB573F6001829C3 /* FalseExpr.swift */; };
+		10CCBE001CB573F6001829C3 /* FloatProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE21CB573F6001829C3 /* FloatProperty.swift */; };
+		10CCBE011CB573F6001829C3 /* FoamEnumUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE31CB573F6001829C3 /* FoamEnumUILabel.swift */; };
+		10CCBE021CB573F6001829C3 /* FoamFloatUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE41CB573F6001829C3 /* FoamFloatUITextField.swift */; };
+		10CCBE031CB573F6001829C3 /* FoamUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE51CB573F6001829C3 /* FoamUILabel.swift */; };
+		10CCBE041CB573F6001829C3 /* FoamUISwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE61CB573F6001829C3 /* FoamUISwitch.swift */; };
+		10CCBE051CB573F6001829C3 /* FoamUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE71CB573F6001829C3 /* FoamUITextField.swift */; };
+		10CCBE061CB573F6001829C3 /* FunctionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE81CB573F6001829C3 /* FunctionProperty.swift */; };
+		10CCBE071CB573F6001829C3 /* ImportedProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDE91CB573F6001829C3 /* ImportedProperty.swift */; };
+		10CCBE081CB573F6001829C3 /* IntProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDEA1CB573F6001829C3 /* IntProperty.swift */; };
+		10CCBE091CB573F6001829C3 /* NARY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDEB1CB573F6001829C3 /* NARY.swift */; };
+		10CCBE0A1CB573F6001829C3 /* NumericProperty_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDEC1CB573F6001829C3 /* NumericProperty_.swift */; };
+		10CCBE0B1CB573F6001829C3 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDED1CB573F6001829C3 /* Property.swift */; };
+		10CCBE0C1CB573F6001829C3 /* StandingDeskTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDEE1CB573F6001829C3 /* StandingDeskTimer.swift */; };
+		10CCBE0D1CB573F6001829C3 /* StandingDeskTimerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDEF1CB573F6001829C3 /* StandingDeskTimerDetailView.swift */; };
+		10CCBE0E1CB573F6001829C3 /* StandingDeskTimerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF01CB573F6001829C3 /* StandingDeskTimerEnum.swift */; };
+		10CCBE0F1CB573F6001829C3 /* StringArrayProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF11CB573F6001829C3 /* StringArrayProperty.swift */; };
+		10CCBE101CB573F6001829C3 /* StringProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF21CB573F6001829C3 /* StringProperty.swift */; };
+		10CCBE111CB573F6001829C3 /* TemplateProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF31CB573F6001829C3 /* TemplateProperty.swift */; };
+		10CCBE121CB573F6001829C3 /* TrueExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF41CB573F6001829C3 /* TrueExpr.swift */; };
+		10CCBE131CB573F6001829C3 /* UNARY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CCBDF51CB573F6001829C3 /* UNARY.swift */; };
+		10D88BD51CB1757B002E3A51 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D88BD41CB1757B002E3A51 /* AppDelegate.swift */; };
+		10D88BD71CB1757B002E3A51 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D88BD61CB1757B002E3A51 /* ViewController.swift */; };
+		10D88BDC1CB1757B002E3A51 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10D88BDB1CB1757B002E3A51 /* Assets.xcassets */; };
+		10D88BDF1CB1757B002E3A51 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 10D88BDD1CB1757B002E3A51 /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		10C611771CB468AF00A1C822 /* CustomTimerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomTimerView.xib; sourceTree = "<group>"; };
+		10C9A75F1CB4075300C6CCED /* Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Async.swift; sourceTree = "<group>"; };
+		10C9A7601CB4075300C6CCED /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
+		10C9A7611CB4075300C6CCED /* FoamEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamEnum.swift; sourceTree = "<group>"; };
+		10C9A7621CB4075300C6CCED /* FoamFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamFunction.swift; sourceTree = "<group>"; };
+		10C9A7631CB4075300C6CCED /* FOAMSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FOAMSupport.swift; sourceTree = "<group>"; };
+		10C9A7641CB4075300C6CCED /* Interval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interval.swift; sourceTree = "<group>"; };
+		10C9A7651CB4075300C6CCED /* MLang.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MLang.swift; sourceTree = "<group>"; };
+		10CCBDD81CB573F6001829C3 /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
+		10CCBDD91CB573F6001829C3 /* AndExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AndExpr.swift; sourceTree = "<group>"; };
+		10CCBDDA1CB573F6001829C3 /* ArrayProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayProperty.swift; sourceTree = "<group>"; };
+		10CCBDDB1CB573F6001829C3 /* BINARY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BINARY.swift; sourceTree = "<group>"; };
+		10CCBDDC1CB573F6001829C3 /* BooleanProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BooleanProperty.swift; sourceTree = "<group>"; };
+		10CCBDDD1CB573F6001829C3 /* ConstantExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantExpr.swift; sourceTree = "<group>"; };
+		10CCBDDE1CB573F6001829C3 /* EnumProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumProperty.swift; sourceTree = "<group>"; };
+		10CCBDDF1CB573F6001829C3 /* EqExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EqExpr.swift; sourceTree = "<group>"; };
+		10CCBDE01CB573F6001829C3 /* Expr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Expr.swift; sourceTree = "<group>"; };
+		10CCBDE11CB573F6001829C3 /* FalseExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FalseExpr.swift; sourceTree = "<group>"; };
+		10CCBDE21CB573F6001829C3 /* FloatProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatProperty.swift; sourceTree = "<group>"; };
+		10CCBDE31CB573F6001829C3 /* FoamEnumUILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamEnumUILabel.swift; sourceTree = "<group>"; };
+		10CCBDE41CB573F6001829C3 /* FoamFloatUITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamFloatUITextField.swift; sourceTree = "<group>"; };
+		10CCBDE51CB573F6001829C3 /* FoamUILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamUILabel.swift; sourceTree = "<group>"; };
+		10CCBDE61CB573F6001829C3 /* FoamUISwitch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamUISwitch.swift; sourceTree = "<group>"; };
+		10CCBDE71CB573F6001829C3 /* FoamUITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoamUITextField.swift; sourceTree = "<group>"; };
+		10CCBDE81CB573F6001829C3 /* FunctionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionProperty.swift; sourceTree = "<group>"; };
+		10CCBDE91CB573F6001829C3 /* ImportedProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportedProperty.swift; sourceTree = "<group>"; };
+		10CCBDEA1CB573F6001829C3 /* IntProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntProperty.swift; sourceTree = "<group>"; };
+		10CCBDEB1CB573F6001829C3 /* NARY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NARY.swift; sourceTree = "<group>"; };
+		10CCBDEC1CB573F6001829C3 /* NumericProperty_.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumericProperty_.swift; sourceTree = "<group>"; };
+		10CCBDED1CB573F6001829C3 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
+		10CCBDEE1CB573F6001829C3 /* StandingDeskTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingDeskTimer.swift; sourceTree = "<group>"; };
+		10CCBDEF1CB573F6001829C3 /* StandingDeskTimerDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingDeskTimerDetailView.swift; sourceTree = "<group>"; };
+		10CCBDF01CB573F6001829C3 /* StandingDeskTimerEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingDeskTimerEnum.swift; sourceTree = "<group>"; };
+		10CCBDF11CB573F6001829C3 /* StringArrayProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringArrayProperty.swift; sourceTree = "<group>"; };
+		10CCBDF21CB573F6001829C3 /* StringProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringProperty.swift; sourceTree = "<group>"; };
+		10CCBDF31CB573F6001829C3 /* TemplateProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateProperty.swift; sourceTree = "<group>"; };
+		10CCBDF41CB573F6001829C3 /* TrueExpr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrueExpr.swift; sourceTree = "<group>"; };
+		10CCBDF51CB573F6001829C3 /* UNARY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UNARY.swift; sourceTree = "<group>"; };
+		10D88BD11CB1757B002E3A51 /* StandingTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StandingTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		10D88BD41CB1757B002E3A51 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		10D88BD61CB1757B002E3A51 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		10D88BDB1CB1757B002E3A51 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		10D88BDE1CB1757B002E3A51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		10D88BE01CB1757B002E3A51 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		10D88BCE1CB1757B002E3A51 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		10C9A75E1CB4075300C6CCED /* foam */ = {
+			isa = PBXGroup;
+			children = (
+				10C9A75F1CB4075300C6CCED /* Async.swift */,
+				10C9A7601CB4075300C6CCED /* Events.swift */,
+				10C9A7611CB4075300C6CCED /* FoamEnum.swift */,
+				10C9A7621CB4075300C6CCED /* FoamFunction.swift */,
+				10C9A7631CB4075300C6CCED /* FOAMSupport.swift */,
+				10C9A7641CB4075300C6CCED /* Interval.swift */,
+				10C9A7651CB4075300C6CCED /* MLang.swift */,
+			);
+			name = foam;
+			path = ../../../../foam;
+			sourceTree = "<group>";
+		};
+		10CCBDD71CB573F6001829C3 /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				10CCBDD81CB573F6001829C3 /* Action.swift */,
+				10CCBDD91CB573F6001829C3 /* AndExpr.swift */,
+				10CCBDDA1CB573F6001829C3 /* ArrayProperty.swift */,
+				10CCBDDB1CB573F6001829C3 /* BINARY.swift */,
+				10CCBDDC1CB573F6001829C3 /* BooleanProperty.swift */,
+				10CCBDDD1CB573F6001829C3 /* ConstantExpr.swift */,
+				10CCBDDE1CB573F6001829C3 /* EnumProperty.swift */,
+				10CCBDDF1CB573F6001829C3 /* EqExpr.swift */,
+				10CCBDE01CB573F6001829C3 /* Expr.swift */,
+				10CCBDE11CB573F6001829C3 /* FalseExpr.swift */,
+				10CCBDE21CB573F6001829C3 /* FloatProperty.swift */,
+				10CCBDE31CB573F6001829C3 /* FoamEnumUILabel.swift */,
+				10CCBDE41CB573F6001829C3 /* FoamFloatUITextField.swift */,
+				10CCBDE51CB573F6001829C3 /* FoamUILabel.swift */,
+				10CCBDE61CB573F6001829C3 /* FoamUISwitch.swift */,
+				10CCBDE71CB573F6001829C3 /* FoamUITextField.swift */,
+				10CCBDE81CB573F6001829C3 /* FunctionProperty.swift */,
+				10CCBDE91CB573F6001829C3 /* ImportedProperty.swift */,
+				10CCBDEA1CB573F6001829C3 /* IntProperty.swift */,
+				10CCBDEB1CB573F6001829C3 /* NARY.swift */,
+				10CCBDEC1CB573F6001829C3 /* NumericProperty_.swift */,
+				10CCBDED1CB573F6001829C3 /* Property.swift */,
+				10CCBDEE1CB573F6001829C3 /* StandingDeskTimer.swift */,
+				10CCBDEF1CB573F6001829C3 /* StandingDeskTimerDetailView.swift */,
+				10CCBDF01CB573F6001829C3 /* StandingDeskTimerEnum.swift */,
+				10CCBDF11CB573F6001829C3 /* StringArrayProperty.swift */,
+				10CCBDF21CB573F6001829C3 /* StringProperty.swift */,
+				10CCBDF31CB573F6001829C3 /* TemplateProperty.swift */,
+				10CCBDF41CB573F6001829C3 /* TrueExpr.swift */,
+				10CCBDF51CB573F6001829C3 /* UNARY.swift */,
+			);
+			name = Generated;
+			path = ../../Generated;
+			sourceTree = "<group>";
+		};
+		10D88BC81CB1757B002E3A51 = {
+			isa = PBXGroup;
+			children = (
+				10D88BD31CB1757B002E3A51 /* StandingTimer */,
+				10D88BD21CB1757B002E3A51 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		10D88BD21CB1757B002E3A51 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				10D88BD11CB1757B002E3A51 /* StandingTimer.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		10D88BD31CB1757B002E3A51 /* StandingTimer */ = {
+			isa = PBXGroup;
+			children = (
+				10D88BE01CB1757B002E3A51 /* Info.plist */,
+				10D88BD41CB1757B002E3A51 /* AppDelegate.swift */,
+				10D88BD61CB1757B002E3A51 /* ViewController.swift */,
+				10D88BDB1CB1757B002E3A51 /* Assets.xcassets */,
+				10C611771CB468AF00A1C822 /* CustomTimerView.xib */,
+				10C9A75E1CB4075300C6CCED /* foam */,
+				10CCBDD71CB573F6001829C3 /* Generated */,
+				10D88BDD1CB1757B002E3A51 /* LaunchScreen.storyboard */,
+			);
+			path = StandingTimer;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		10D88BD01CB1757B002E3A51 /* StandingTimer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10D88BF91CB1757B002E3A51 /* Build configuration list for PBXNativeTarget "StandingTimer" */;
+			buildPhases = (
+				10D88BCD1CB1757B002E3A51 /* Sources */,
+				10D88BCE1CB1757B002E3A51 /* Frameworks */,
+				10D88BCF1CB1757B002E3A51 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StandingTimer;
+			productName = StandingTimer;
+			productReference = 10D88BD11CB1757B002E3A51 /* StandingTimer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		10D88BC91CB1757B002E3A51 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = FOAM;
+				TargetAttributes = {
+					10D88BD01CB1757B002E3A51 = {
+						CreatedOnToolsVersion = 7.3;
+					};
+				};
+			};
+			buildConfigurationList = 10D88BCC1CB1757B002E3A51 /* Build configuration list for PBXProject "StandingTimer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 10D88BC81CB1757B002E3A51;
+			productRefGroup = 10D88BD21CB1757B002E3A51 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				10D88BD01CB1757B002E3A51 /* StandingTimer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		10D88BCF1CB1757B002E3A51 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10D88BDF1CB1757B002E3A51 /* LaunchScreen.storyboard in Resources */,
+				10C611781CB468AF00A1C822 /* CustomTimerView.xib in Resources */,
+				10D88BDC1CB1757B002E3A51 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		10D88BCD1CB1757B002E3A51 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10CCBE041CB573F6001829C3 /* FoamUISwitch.swift in Sources */,
+				10C9A7671CB4075300C6CCED /* Events.swift in Sources */,
+				10C9A76A1CB4075300C6CCED /* FOAMSupport.swift in Sources */,
+				10CCBE101CB573F6001829C3 /* StringProperty.swift in Sources */,
+				10CCBE121CB573F6001829C3 /* TrueExpr.swift in Sources */,
+				10CCBDF81CB573F6001829C3 /* ArrayProperty.swift in Sources */,
+				10C9A76B1CB4075300C6CCED /* Interval.swift in Sources */,
+				10CCBE031CB573F6001829C3 /* FoamUILabel.swift in Sources */,
+				10CCBE091CB573F6001829C3 /* NARY.swift in Sources */,
+				10CCBE061CB573F6001829C3 /* FunctionProperty.swift in Sources */,
+				10CCBDF61CB573F6001829C3 /* Action.swift in Sources */,
+				10C9A7681CB4075300C6CCED /* FoamEnum.swift in Sources */,
+				10CCBE111CB573F6001829C3 /* TemplateProperty.swift in Sources */,
+				10CCBDFB1CB573F6001829C3 /* ConstantExpr.swift in Sources */,
+				10CCBDFC1CB573F6001829C3 /* EnumProperty.swift in Sources */,
+				10CCBE071CB573F6001829C3 /* ImportedProperty.swift in Sources */,
+				10CCBE0B1CB573F6001829C3 /* Property.swift in Sources */,
+				10CCBE0F1CB573F6001829C3 /* StringArrayProperty.swift in Sources */,
+				10C9A7661CB4075300C6CCED /* Async.swift in Sources */,
+				10CCBDFA1CB573F6001829C3 /* BooleanProperty.swift in Sources */,
+				10CCBE131CB573F6001829C3 /* UNARY.swift in Sources */,
+				10CCBE051CB573F6001829C3 /* FoamUITextField.swift in Sources */,
+				10CCBDF91CB573F6001829C3 /* BINARY.swift in Sources */,
+				10CCBE0C1CB573F6001829C3 /* StandingDeskTimer.swift in Sources */,
+				10CCBDF71CB573F6001829C3 /* AndExpr.swift in Sources */,
+				10D88BD71CB1757B002E3A51 /* ViewController.swift in Sources */,
+				10CCBDFD1CB573F6001829C3 /* EqExpr.swift in Sources */,
+				10D88BD51CB1757B002E3A51 /* AppDelegate.swift in Sources */,
+				10CCBE081CB573F6001829C3 /* IntProperty.swift in Sources */,
+				10CCBE0A1CB573F6001829C3 /* NumericProperty_.swift in Sources */,
+				10CCBE0E1CB573F6001829C3 /* StandingDeskTimerEnum.swift in Sources */,
+				10CCBE021CB573F6001829C3 /* FoamFloatUITextField.swift in Sources */,
+				10C9A76C1CB4075300C6CCED /* MLang.swift in Sources */,
+				10CCBE011CB573F6001829C3 /* FoamEnumUILabel.swift in Sources */,
+				10CCBE0D1CB573F6001829C3 /* StandingDeskTimerDetailView.swift in Sources */,
+				10CCBDFE1CB573F6001829C3 /* Expr.swift in Sources */,
+				10CCBE001CB573F6001829C3 /* FloatProperty.swift in Sources */,
+				10CCBDFF1CB573F6001829C3 /* FalseExpr.swift in Sources */,
+				10C9A7691CB4075300C6CCED /* FoamFunction.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		10D88BDD1CB1757B002E3A51 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				10D88BDE1CB1757B002E3A51 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		10D88BF71CB1757B002E3A51 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		10D88BF81CB1757B002E3A51 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		10D88BFA1CB1757B002E3A51 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = StandingTimer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = foam.demos.StandingTimer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		10D88BFB1CB1757B002E3A51 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = StandingTimer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = foam.demos.StandingTimer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		10D88BCC1CB1757B002E3A51 /* Build configuration list for PBXProject "StandingTimer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10D88BF71CB1757B002E3A51 /* Debug */,
+				10D88BF81CB1757B002E3A51 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		10D88BF91CB1757B002E3A51 /* Build configuration list for PBXNativeTarget "StandingTimer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10D88BFA1CB1757B002E3A51 /* Debug */,
+				10D88BFB1CB1757B002E3A51 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 10D88BC91CB1757B002E3A51 /* Project object */;
+}
