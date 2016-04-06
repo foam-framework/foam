@@ -33,12 +33,10 @@ CLASS({
     {
       type: 'Float',
       name: 'standingTime',
-      swiftView: 'FoamFloatUITextField',
       defaultValue: 15,
     },
     {
       type: 'Float',
-      swiftView: 'FoamFloatUITextField',
       name: 'sittingTime',
       defaultValue: 60,
     },
@@ -78,7 +76,6 @@ CLASS({
     {
       type: 'Enum',
       enum: 'foam.demos.StandingDeskTimerEnum',
-      swiftView: 'FoamEnumUILabel',
       label: 'What do I do?',
       name: 'whatToDo',
       defaultValue: 'STAND',
@@ -97,7 +94,6 @@ CLASS({
     },
     {
       type: 'Boolean',
-      swiftView: 'FoamUISwitch',
       name: 'started',
       postSet: function(o, n) {
         if (o == n) return;
