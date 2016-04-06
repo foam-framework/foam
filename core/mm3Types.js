@@ -176,7 +176,7 @@ CLASS({
     },
     {
       name: 'swiftView',
-      defaultValue: 'TextFieldView',
+      defaultValue: 'FoamUITextField',
     },
     {
       name: 'pattern',
@@ -301,7 +301,7 @@ CLASS({
     },
     {
       name: 'swiftView',
-      defaultValue: 'BooleanView',
+      defaultValue: 'FoamUISwitch',
     },
     {
       name: 'toPropertyE',
@@ -574,7 +574,7 @@ CLASS({
     },
     {
       name: 'swiftView',
-      defaultValue: 'IntFieldView',
+      defaultValue: 'FoamIntUITextField',
     },
     {
       name: 'adapt',
@@ -1499,7 +1499,7 @@ CLASS({
   properties: [
     {
       name: 'swiftView',
-      defaultValue: 'PasswordFieldView',
+      defaultValue: 'FoamPasswordUITextField',
     },
   ],
 });
@@ -1662,7 +1662,7 @@ CLASS({
     },
     {
       name: 'swiftView',
-      defaultValue: 'PickerEnumFieldView',
+      defaultValue: 'FoamEnumUILabel',
     },
   ]
 });
