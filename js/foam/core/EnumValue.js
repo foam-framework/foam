@@ -48,7 +48,6 @@ CLASS({
     {
       name: 'swiftValue',
       defaultValueFn: function() {
-        console.log(this.value);
         if (this.value === undefined) return this.index;
         if (typeof this.value == 'string') {
           return '"' + this.value + '"';
