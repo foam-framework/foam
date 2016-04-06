@@ -39,6 +39,7 @@ CLASS({
     {
       name: 'javaValue',
       defaultValueFn: function() {
+        if (this.value === undefined) return this.index;
         if (typeof this.value == 'string') {
           return '"' + this.value + '"';
         }
