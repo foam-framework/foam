@@ -19,6 +19,8 @@ node --harmony ../../../tools/foam.js \
       names=" \
         foam.demos.StandingDeskTimer \
         foam.swift.ui.FoamUILabel \
+        foam.swift.ui.FoamEnumUILabel \
+        foam.swift.ui.FoamUISwitch \
         foam.swift.ui.FoamUITextField \
         foam.swift.ui.FoamFloatUITextField \
         StandingDeskTimerDetailView \

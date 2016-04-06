@@ -22,6 +22,9 @@ CLASS({
     'setInterval',
     'clearInterval',
   ],
+  requires: [
+    'foam.demos.StandingDeskTimerEnum',
+  ],
   documentation: function() {/*
     An app for reminding you when to stand or sit when working at a standing
     desk.
@@ -51,10 +54,8 @@ CLASS({
         this.clock = min + ':' + sec;
 
         if (n <= 0) {
-          this.shouldStand = !this.shouldStand;
-          var newTime = this.shouldStand ? this.standingTime : this.sittingTime;
-          this.timeRemaining = newTime * 60 * 1000;
-          alert(this.whatToDo);
+          this.whatToDo = this.whatToDo == this.StandingDeskTimerEnum.SIT ?
+              this.StandingDeskTimerEnum.STAND : this.StandingDeskTimerEnum.SIT
         }
       },
       swiftPostSet: function() {/*
@@ -63,10 +64,8 @@ CLASS({
         self.clock = String(format: "%i:%02i", min, sec)
 
         if newValue <= 0 {
-          self.shouldStand = !self.shouldStand
-          let newTime = self.shouldStand ? self.standingTime : self.sittingTime
-          self.timeRemaining = newTime * 60
-          NSLog(self.whatToDo)
+          self.whatToDo = self.whatToDo == StandingDeskTimerEnum.SIT ?
+              StandingDeskTimerEnum.STAND : StandingDeskTimerEnum.SIT
         }
       */},
     },
@@ -77,23 +76,69 @@ CLASS({
       name: 'clock',
     },
     {
-      type: 'Boolean',
-      hidden: true,
-      name: 'shouldStand',
-      defaultValue: false,
+      type: 'Enum',
+      enum: 'foam.demos.StandingDeskTimerEnum',
+      swiftView: 'FoamEnumUILabel',
+      label: 'What do I do?',
+      name: 'whatToDo',
+      defaultValue: 'STAND',
       postSet: function(_, n) {
-        this.whatToDo = n ? 'Stand' : 'Sit';
+        var newTime = n == this.StandingDeskTimerEnum.STAND ?
+            this.standingTime : this.sittingTime;
+        this.timeRemaining = newTime * 60 * 1000;
+        alert(this.StandingDeskTimerEnum.valueForIndex(n).label);
       },
       swiftPostSet: function() {/*
-        self.whatToDo = newValue ? "Stand" : "Sit";
+        let newTime = newValue == StandingDeskTimerEnum.STAND ?
+            self.standingTime : self.sittingTime;
+        self.timeRemaining = newTime * 60
+        NSLog(newValue.label)
       */},
     },
     {
-      type: 'String',
-      swiftView: 'FoamUILabel',
-      mode: 'read-only',
-      label: 'What do I do?',
-      name: 'whatToDo',
+      type: 'Boolean',
+      swiftView: 'FoamUISwitch',
+      name: 'started',
+      postSet: function(o, n) {
+        if (o == n) return;
+        if (n) {
+          var getNow = function() { return new Date().getTime(); };
+          var lastTime = getNow();
+          this.timer =  this.setInterval(function() {
+            var now = getNow();
+            var diff = now - lastTime;
+            lastTime = now;
+            this.timeRemaining -= diff;
+          }.bind(this), 50);
+          window.onbeforeunload = function() {
+            return 'You sure you want to close this?';
+          };
+        } else {
+          this.clearInterval(this.timer);
+          window.onbeforeunload = undefined;
+        }
+      },
+      swiftPostSet: function() {/*
+        if let oldValue = oldValue as? Bool {
+          if oldValue == newValue { return }
+        }
+        if newValue {
+          let getNow: () -> NSTimeInterval = { () in
+            return NSDate().timeIntervalSince1970
+          }
+          var lastTime = getNow()
+          self.timer = Interval.set({ () in
+            let now = getNow()
+            let diff = now - lastTime
+            lastTime = now
+            self.timeRemaining -= Float(diff)
+          }, interval: 0.05)
+        } else {
+          if self.timer != nil {
+            Interval.clear(self.timer!)
+          }
+        }
+      */},
     },
     {
       name: 'timer',
@@ -106,63 +151,37 @@ CLASS({
     {
       name: 'start',
       code: function() {
-        var getNow = function() { return new Date().getTime(); };
-        var lastTime = getNow();
-        this.timer =  this.setInterval(function() {
-          var now = getNow();
-          var diff = now - lastTime;
-          lastTime = now;
-          this.timeRemaining -= diff;
-        }.bind(this), 50);
-        window.onbeforeunload = function() {
-          return 'You sure you want to close this?';
-        };
+        this.started = true;
       },
       swiftCode: function() {/*
-        let getNow: () -> NSTimeInterval = { () in
-          return NSDate().timeIntervalSince1970
-        }
-        var lastTime = getNow()
-        self.timer = Interval.set({ () in
-          let now = getNow()
-          let diff = now - lastTime
-          lastTime = now
-          self.timeRemaining -= Float(diff)
-        }, interval: 0.05)
+        started = true
       */},
     },
     {
       name: 'stop',
       code: function() {
-        this.clearInterval(this.timer);
-        window.onbeforeunload = undefined;
+        this.started = false;
       },
       swiftCode: function() {/*
-        if timer != nil {
-          Interval.clear(timer!)
-        }
+        started = false
       */},
     },
     {
       name: 'sit',
       code: function() {
-        this.shouldStand = true;
-        this.timeRemaining = 0;
+        this.whatToDo = this.StandingDeskTimerEnum.SIT;
       },
       swiftCode: function() {/*
-        shouldStand = true;
-        timeRemaining = 0;
+        whatToDo = .SIT
       */},
     },
     {
       name: 'stand',
       code: function() {
-        this.shouldStand = false;
-        this.timeRemaining = 0;
+        this.whatToDo = this.StandingDeskTimerEnum.STAND;
       },
       swiftCode: function() {/*
-        shouldStand = false;
-        timeRemaining = 0;
+        whatToDo = .STAND
       */},
     },
   ],
