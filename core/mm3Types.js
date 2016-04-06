@@ -703,6 +703,19 @@ CLASS({
       }
     },
     {
+      name: 'swiftAdapt',
+      defaultValue: function() {/*
+        var n: Float?
+        switch newValue {
+          case let newValue as String: n = Float(newValue)
+          case let newValue as NSNumber: n = Float(newValue)
+          default: break
+        }
+        if n != nil { return n! }
+        return 0
+      */},
+    },
+    {
       name: 'prototag',
       label: 'Protobuf tag',
       required: false,
