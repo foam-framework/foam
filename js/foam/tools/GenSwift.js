@@ -69,13 +69,6 @@ CLASS({
         'UNARY',
         // Required if a property is imported.
         'ImportedProperty',
-        // Required for DAO support and not required by AbstractDAO.
-        'FilteredDAO_',
-        'foam.dao.swift.ArraySink',
-        'foam.dao.swift.ClosureSink',
-        'foam.dao.swift.DAOQueryOptions',
-        'foam.dao.swift.PredicatedSink',
-        'foam.dao.swift.RelaySink',
       ]);
       this.name && names.push(this.name);
       names = names.filter(function(n) { return n; });
@@ -115,16 +108,43 @@ CLASS({
               destination,
               template.generate(m));
 
+            var requires = [];
             if (m.getAllRequires) {
               m = template.prepModel(m);
-              m.getAllRequires && m.getAllRequires().forEach(function(dep) {
-                if (dep && names.indexOf(dep) == -1 &&
-                    blacklist.indexOf(dep) == -1) {
-                  console.log('Adding dependency', dep);
-                  names.push(dep);
-                }
-              });
+              if (m.getAllRequires) {
+                requires = requires.concat(m.getAllRequires());
+              }
             }
+
+            if (m.model_.id == 'foam.swift.ui.DetailView') {
+              requires = requires.concat([
+                'foam.swift.ui.FoamUILabel',
+                'foam.swift.ui.FoamEnumUILabel',
+                'foam.swift.ui.FoamUISwitch',
+                'foam.swift.ui.FoamUITextField',
+                'foam.swift.ui.FoamFloatUITextField',
+              ]);
+            }
+
+            if (m.id == 'AbstractDAO') {
+              // Required for DAO support and not required by AbstractDAO.
+              requires = requires.concat([
+                'FilteredDAO_',
+                'foam.dao.swift.ArraySink',
+                'foam.dao.swift.ClosureSink',
+                'foam.dao.swift.DAOQueryOptions',
+                'foam.dao.swift.PredicatedSink',
+                'foam.dao.swift.RelaySink',
+              ]);
+            }
+
+            requires.forEach(function(dep) {
+              if (dep && names.indexOf(dep) == -1 &&
+                  blacklist.indexOf(dep) == -1) {
+                console.log('Adding dependency', dep);
+                names.push(dep);
+              }
+            });
 
             i++;
             ret();
