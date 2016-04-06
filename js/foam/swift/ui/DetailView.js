@@ -96,7 +96,7 @@ class <%= this.name %>: UIView {
   lazy var <%= p.name %>Button: UIButton = {
     let v = UIButton()
     v.addTarget(self,
-        action: #selector(<%= this.name %>.<%= p.name %>Fn),
+        action: "<%= p.name %>Fn",
         forControlEvents: UIControlEvents.TouchUpInside)
     v.setTitleColor(UIColor.blackColor(), forState: .Normal)
     v.setTitleColor(UIColor.grayColor(), forState: .Highlighted)
