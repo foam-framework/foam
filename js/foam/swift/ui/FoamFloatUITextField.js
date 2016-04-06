@@ -19,6 +19,17 @@ CLASS({
   package: 'foam.swift.ui',
   name: 'FoamFloatUITextField',
   extends: 'foam.swift.ui.FoamUITextField',
+  swiftClassImports: ['UIKit'],
+  properties: [
+    {
+      name: 'view',
+      swiftFactory: function() {/*
+        let v = UITextField()
+        v.keyboardType = .DecimalPad
+        return v
+      */},
+    },
+  ],
   methods: [
     {
       name: 'textToValue',
