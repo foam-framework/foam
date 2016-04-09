@@ -82,6 +82,7 @@ CLASS({
     {
       // TODO(kgr): rename this because it conflicts with X.$.
       name:   '$',
+      labels: ['javascript'],
       hidden: true,
       mode:   "read-only",
       setter: function() { debugger; },
@@ -204,6 +205,7 @@ CLASS({
     },
     {
       name: '$parent',
+      labels: ['javascript'],
       getter: function() {
         return this.$ ? this.$.parentElement : null;
       }
