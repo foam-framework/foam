@@ -511,7 +511,11 @@ CLASS({
         }
         return ret;
       }
-    }
+    },
+    {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() { return '' + this.defaultValue; },
+    },
   ]
 });
 
@@ -565,10 +569,6 @@ CLASS({
         }
         return 0
       */},
-    },
-    {
-      name: 'swiftDefaultValue',
-      defaultValue: '0',
     },
     {
       name: 'view',
@@ -673,10 +673,6 @@ CLASS({
     {
       name: 'defaultValue',
       defaultValue: 0.0
-    },
-    {
-      name: 'swiftDefaultValue',
-      defaultValueFn: function() { return '' + this.defaultValue; },
     },
     {
       name: 'javaType',
