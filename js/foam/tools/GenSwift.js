@@ -118,11 +118,12 @@ CLASS({
 
             if (m.model_.id == 'foam.swift.ui.DetailView') {
               requires = requires.concat([
-                'foam.swift.ui.FoamUILabel',
                 'foam.swift.ui.FoamEnumUILabel',
+                'foam.swift.ui.FoamFloatUITextField',
+                'foam.swift.ui.FoamIntUITextField',
+                'foam.swift.ui.FoamUILabel',
                 'foam.swift.ui.FoamUISwitch',
                 'foam.swift.ui.FoamUITextField',
-                'foam.swift.ui.FoamFloatUITextField',
               ]);
             }
 
