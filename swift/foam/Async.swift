@@ -52,7 +52,7 @@ func Par(funcs: [AFunc]) -> AFunc {
         if let data = data as AnyObject! {
           returnValues.replaceObjectAtIndex(i, withObject: data)
         }
-        numCompleted++
+        numCompleted += 1
         if numCompleted == funcs.count {
           ret(returnValues)
         }
@@ -68,7 +68,7 @@ func Seq(funcs: [AFunc]) -> AFunc {
     next = { d in
       let f = funcs[i]
       f({ d2 in
-        i++
+        i += 1
         if i == funcs.count {
           ret(d2)
         } else {
