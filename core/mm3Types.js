@@ -173,6 +173,13 @@ CLASS({
       },
     },
     {
+      name: 'javaDefaultValue',
+      defaultValueFn: function() {
+        var defaultValue = this.defaultValue || '';
+        return '"' + defaultValue + '"';
+      },
+    },
+    {
       name: 'view',
       labels: ['javascript'],
       defaultValue: 'foam.ui.TextFieldView',
@@ -288,7 +295,15 @@ CLASS({
     },
     {
       name: 'swiftDefaultValue',
-      defaultValue: 'false',
+      defaultValueFn: function() {
+        return this.defaultValue + '';
+      },
+    },
+    {
+      name: 'javaDefaultValue',
+      defaultValueFn: function() {
+        return this.defaultValue + '';
+      },
     },
     {
       name: 'javaType',
@@ -571,6 +586,18 @@ CLASS({
       */},
     },
     {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() {
+        return this.defaultValue + '';
+      },
+    },
+    {
+      name: 'javaDefaultValue',
+      defaultValueFn: function() {
+        return this.defaultValue + '';
+      },
+    },
+    {
       name: 'view',
       labels: ['javascript'],
       defaultValue: 'foam.ui.IntFieldView',
@@ -673,6 +700,14 @@ CLASS({
     {
       name: 'defaultValue',
       defaultValue: 0.0
+    },
+    {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() { return '' + this.defaultValue; },
+    },
+    {
+      name: 'javaDefaultValue',
+      defaultValueFn: function() { return '' + this.defaultValue; },
     },
     {
       name: 'javaType',
