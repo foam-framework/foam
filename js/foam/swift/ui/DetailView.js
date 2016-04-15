@@ -87,7 +87,7 @@ class <%= this.name %>: UIView {
 
   lazy var <%= p.name %>Label: UILabel = {
     let v = UILabel()
-    v.text = "<%= p.label %>"
+    v.text = "<%= p.label %>:"
     return v
   }()
 <% } %>
@@ -134,8 +134,10 @@ class <%= this.name %>: UIView {
 <% for (var i = 0, p; p = genProperties[i]; i++) { %>
     addSubview(<%= p.name %>View.view)
     <%= p.name %>View.view.translatesAutoresizingMaskIntoConstraints = false
+    <%= p.name %>View.view.setContentCompressionResistancePriority(UILayoutPriorityDefaultHigh, forAxis: .Horizontal)
     addSubview(<%= p.name %>Label)
     <%= p.name %>Label.translatesAutoresizingMaskIntoConstraints = false
+    <%= p.name %>Label.setContentHuggingPriority(UILayoutPriorityDefaultHigh, forAxis: .Horizontal)
 <% } %>
 
 <% for (var i = 0, p; p = model.actions[i]; i++) { %>
@@ -159,29 +161,22 @@ var layoutVertically = function(view) {
 %>
     addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "V:|-[<%= view.join(']-[') %>]",
-      options: .AlignAllLeft,
+      options: NSLayoutFormatOptions.init(rawValue: 0),
       metrics: nil,
       views: views))
 <%
 };
-layoutVertically(genProperties.map(function(p) { return p.name + 'Label'; }));
+var labels = genProperties.map(function(p) { return p.name + 'Label'; });
+var actions = model.actions.map(function(a) { return a.name + 'Button'; }).slice(0,1);
+layoutVertically(labels.concat(actions));
 layoutVertically(genProperties.map(function(p) { return p.name + 'View'; }));
 %>
 
     // Horizontal constraints of views.
 <% for (var i = 0, p; p = genProperties[i]; i++) { %>
     addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:|-[<%= p.name %>Label]-[<%= p.name %>View]-(>=0)-|",
+      "H:|-[<%= p.name %>Label]-[<%= p.name %>View]-|",
       options: .AlignAllCenterY,
-      metrics: nil,
-      views: views))
-<% } %>
-
-    // Vertical constraints of actions.
-<% for (var i = 0, p; p = model.actions[i]; i++) { %>
-    addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "V:[<%= p.name %>Button]-|",
-      options: NSLayoutFormatOptions.init(rawValue: 0),
       metrics: nil,
       views: views))
 <% } %>
@@ -192,7 +187,7 @@ var actionButtonNameMap = function(o) { return o.name + 'Button'; };
 %>
     addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "H:|-[<%= model.actions.map(actionButtonNameMap).join(']-[') %>]",
-      options: NSLayoutFormatOptions.init(rawValue: 0),
+      options: .AlignAllCenterY,
       metrics: nil,
       views: views))
   }

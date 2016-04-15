@@ -526,7 +526,11 @@ CLASS({
         }
         return ret;
       }
-    }
+    },
+    {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() { return '' + this.defaultValue; },
+    },
   ]
 });
 
@@ -1746,6 +1750,16 @@ CLASS({
         }
         return 'FObject';
       },
+    },
+    {
+      name: 'swiftNSCoderEncode',
+      defaultValue:
+          'aCoder.encodeObject(`<%= this.name %>`, forKey: "<%= this.name %>")',
+    },
+    {
+      name: 'swiftNSCoderDecode',
+      defaultValue: 'set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
     },
   ]
 });

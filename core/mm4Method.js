@@ -510,12 +510,6 @@ CLASS({
       defaultValueFn: function() { return this.type; },
     },
     {
-      name: 'swiftIsMutable',
-      type: 'Boolean',
-      labels: ['swift'],
-      defaultValue: false,
-    },
-    {
       name:  'name',
       type:  'String',
       required: true,
@@ -996,7 +990,7 @@ while (extendsModel) {
 <% } else if ( this.swiftCode ) { %>
   <%=override%> func `<%= name %>`(<%
 for ( var i = 0 ; i < args.length ; i++ ) {
-%><%= args[i].swiftIsMutable ? ' var ' : '' %><%= args[i].name %>: <%= args[i].swiftType %><%
+%><%= args[i].name %>: <%= args[i].swiftType %><%
 if ( i != args.length - 1 ) { %>, <% }
 }
 %>) -> <%= swiftReturnType %> {
