@@ -656,11 +656,53 @@ CLASS({
     },
     {
       type: 'String',
-      name: 'swiftType',
+      name: 'units',
     },
     {
       type: 'String',
+      labels: ['swift'],
+      name: 'swiftType',
+      defaultValueFn: function() {
+        var type = window[this.type + 'Property'];
+        if (!type) return;
+        return type.create().swiftType;
+      },
+    },
+    {
+      type: 'String',
+      labels: ['swift'],
       name: 'swiftValue',
+      defaultValueFn: function() {
+        if (!this.type) return;
+        var type = window[this.type + 'Property'];
+        if (!type) return;
+        type = type.create();
+        type.defaultValue = this.value;
+        return type.swiftDefaultValue;
+      },
+    },
+    {
+      type: 'String',
+      labels: ['java'],
+      name: 'javaType',
+      defaultValueFn: function() {
+        var type = window[this.type + 'Property'];
+        if (!type) return;
+        return type.create().javaType;
+      },
+    },
+    {
+      type: 'String',
+      labels: ['java'],
+      name: 'javaValue',
+      defaultValueFn: function() {
+        if (!this.type) return;
+        var type = window[this.type + 'Property'];
+        if (!type) return;
+        type = type.create();
+        type.defaultValue = this.value;
+        return type.javaDefaultValue;
+      },
     },
     {
       name: 'description',
@@ -680,7 +722,7 @@ CLASS({
     },
     {
       name: 'value',
-      help: 'The value of the constant..'
+      help: 'The value of the constant.'
     },
     {
       name:  'type',
