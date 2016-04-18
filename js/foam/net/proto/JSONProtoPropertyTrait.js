@@ -35,6 +35,12 @@ CLASS({
           'a repeated field, each element in the array becomes an instance ' +
           'of this model.',
     },
+    {
+      type: 'Boolean',
+      name: 'forceWrite',
+      documentation: 'If set, toProto will write back the property value ' +
+          'even if it unset.'
+    },
   ],
 
   methods: [
