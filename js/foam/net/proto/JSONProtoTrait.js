@@ -44,7 +44,7 @@ CLASS({
       var props = this.model_.getRuntimeProperties();
       for (var i = 0; i < props.length; i++) {
         var p = props[i];
-        if (p.toProto && this.hasOwnProperty(p.name)) {
+        if (p.toProto && (this.hasOwnProperty(p.name) || p.forceWrite)) {
           p.toProto(obj, this[p.name]);
         }
       }

@@ -71,12 +71,22 @@ CLASS({
       var selected = this.selectedMap();
       var out = [];
 
-      for (var i = 0; i < this.properties.length; i++) {
-        var p = this.properties[i];
-        // Push under two conditions: selected and not just removed,
-        // or not selected but just added.
-        if ((p === prop && nu) || (selected[p.name] && (p !== prop || nu))) {
-          out.push(p);
+      if (this.displaySorted) {
+        out = this.selectedProperties.slice();
+        if (nu && !selected[prop.name]) {
+          out.push(prop);
+        }
+        if (!nu && selected[prop.name]) {
+          out.splice(out.indexOf(prop), 1);
+        }
+      } else {
+        for (var i = 0; i < this.properties.length; i++) {
+          var p = this.properties[i];
+          // Push under two conditions: selected and not just removed,
+          // or not selected but just added.
+          if ((p === prop && nu) || (selected[p.name] && (p !== prop || nu))) {
+            out.push(p);
+          }
         }
       }
 

@@ -71,6 +71,7 @@ CLASS({
       this.space.addChild(this.clock1);
       if ( this.stage >= 1 ) this.space.addChild(this.clock2);
 
+      this.timer.i$.addListener(this.space.view.paint);
       this.timer.start();
     }
   }
