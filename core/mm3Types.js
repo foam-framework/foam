@@ -1186,7 +1186,7 @@ CLASS({
     {
       name: 'javaType',
       displayWidth: 10,
-      defaultValue: 'String[]',
+      defaultValue: 'java.util.ArrayList<String>',
       help: 'The Java type of this property.'
     },
     {

@@ -175,7 +175,7 @@ GLOBAL.Property = {
       type: 'String',
       labels: ['compiletime', 'java'],
       required: false,
-      defaultValueFn: function() { return this.type; },
+      defaultValue: 'Object',
       help: 'The java type that represents the type of this property.',
       documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
         or class to use. */}
@@ -595,28 +595,28 @@ GLOBAL.Property = {
       name: 'javaAdapt',
       type: 'String',
       labels: ['compiletime', 'java'],
-      adapt: function(_, n) {
-        if ( typeof n == "function" ) return multiline(n);
-        return n;
-      }
+      defaultValue: function() {/*
+        return (<%= this.javaType %>) newValue;
+      */},
     },
     {
       name: 'javaPreSet',
       type: 'String',
       labels: ['compiletime', 'java'],
-      adapt: function(_, n) {
-        if ( typeof n == "function" ) return multiline(n);
-        return n;
-      }
+      defaultValue: function() {/*
+        return newValue;
+      */},
     },
     {
       name: 'javaPostSet',
       type: 'String',
       labels: ['compiletime', 'java'],
-      adapt: function(_, n) {
-        if ( typeof n == "function" ) return multiline(n);
-        return n;
-      }
+      defaultValue: '//javaPostSet goes here.',
+    },
+    {
+      name: 'javaGetter',
+      type: 'String',
+      labels: ['compiletime', 'java'],
     },
     {
       name: 'javaFactory',
