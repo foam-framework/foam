@@ -155,7 +155,9 @@ var QueryParserFactory = function(model, opt_enableKeyword) {
       // YYYY-MM
       seq(sym('number'), '-', sym('number')),
       // YY/MM/DD
-      seq(sym('number'), '/', sym('number'), '/', sym('number'))),
+      seq(sym('number'), '/', sym('number'), '/', sym('number')),
+      // YY/MM
+      seq(sym('number'), '/', sym('number'))),
 
     'relative date': seq(literal_ic('today'), optional(seq('-', sym('number')))),
 
@@ -331,7 +333,7 @@ var QueryParserFactory = function(model, opt_enableKeyword) {
     // open-ended ranges (date>2014-01-01) can be computed higher up.
 
     // Date formats:
-    // YYYY-MM-DDTHH:MM, YYYY-MM-DDTHH, YYYY-MM-DD, YYYY-MM, YY/MM/DD, YYYY
+    // YYYY-MM-DDTHH:MM, YYYY-MM-DDTHH, YYYY-MM-DD, YYYY-MM, YY/MM/DD, YY/MM,  YYYY
     'literal date': function(v) {
       var start, end, interval;
 
