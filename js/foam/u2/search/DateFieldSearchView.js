@@ -100,8 +100,6 @@ CLASS({
 
       var q = this.parser.parseString(this.property.name + ':' + value);
       if ( ! q ) q = this.parser.parseString(this.property.name + value);
-      if ( ! q ) console.warn('Could not parse: "' + value + '"');
-      if ( q ) console.log('"' + value + '" -> ' + q.toMQL());
       this.predicate = q || TRUE;
     },
   ]
