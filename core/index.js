@@ -575,15 +575,14 @@ var TreeIndex = {
           index.selectCount++;
 
           if ( reverseSort ) {
-            var size = index.size(s);
-            if ( endPos   !== undefined ) options.skip = (options.skip || 0) + size - endPos;
+            if ( endPos   !== undefined ) options.skip  = (options.skip || 0) + endPos;
             if ( startPos !== undefined ) {
               var range = startPos - (endPos || 0);
               options.limit = 'limit' in options ? Math.min(options.limit, range) : range;
             }
             index.selectReverse(s, sink, options);
           } else {
-            if ( startPos !== undefined ) options.skip = (options.skip || 0) + startPos;
+            if ( startPos !== undefined ) options.skip  = (options.skip || 0) + startPos;
             if ( endPos   !== undefined ) {
               var range = endPos - (startPos || 0);
               options.limit = 'limit' in options ? Math.min(options.limit, range) : range;
