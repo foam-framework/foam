@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// TODO: remove range queries when converted to positions
 /*
  * Index Interface:
  *   put(state, value) -> new state
@@ -391,7 +392,9 @@ var TreeIndex = {
   },
 
   plan: function(s, sink, options) {
-    var query = options && options.query;
+    options = this.cloneOptions(options);
+
+    var query = options.query;
 
     if ( query === FALSE ) return NOT_FOUND;
 
@@ -405,7 +408,7 @@ var TreeIndex = {
       };
     }
 
-//    if ( options && options.limit != null && options.skip != null && options.skip + options.limit > this.size(s) ) return NO_PLAN;
+//    if ( options.limit != null && options.skip != null && options.skip + options.limit > this.size(s) ) return NO_PLAN;
 
     var prop = this.prop;
 
@@ -453,17 +456,11 @@ var TreeIndex = {
       var results  = [];
       var cost = 1;
 
-      var newOptions = {};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = options.limit;
-      if ( 'skip'  in options ) newOptions.skip  = options.skip;
-      if ( 'order' in options ) newOptions.order = options.order;
-
       for ( var i = 0 ; i < keys.length ; i++) {
         var result = this.get(s, keys[i]);
 
         if ( result ) {
-          var subPlan = this.tail.plan(result, sink, newOptions);
+          var subPlan = this.tail.plan(result, sink, options);
 
           cost += subPlan.cost;
           subPlans.push(subPlan);
@@ -475,10 +472,10 @@ var TreeIndex = {
 
       return {
         cost: 1 + cost,
-        execute: function(s2, sink, options) {
+        execute: function(s2, sink, _) {
           var pars = [];
           for ( var i = 0 ; i < subPlans.length ; i++ ) {
-            pars.push(subPlans[i].execute(results[i], sink, newOptions));
+            pars.push(subPlans[i].execute(results[i], sink, options));
           }
           return apar.apply(null, pars);
         },
@@ -488,26 +485,21 @@ var TreeIndex = {
       };
     }
 
+    var startPos, endPos;
+
     arg2 = isExprMatch(GLOBAL.EqExpr);
     if ( arg2 != undefined ) {
-      var key = arg2.f();
+      var key    = arg2.f();
       var result = this.get(s, key);
 
       if ( ! result ) return NOT_FOUND;
 
-      //        var newOptions = {__proto__: options, query: query};
-      var newOptions = {};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = options.limit;
-      if ( 'skip' in options ) newOptions.skip = options.skip;
-      if ( 'order' in options ) newOptions.order = options.order;
-
-      var subPlan = this.tail.plan(result, sink, newOptions);
+      var subPlan = this.tail.plan(result, sink, options);
 
       return {
         cost: 1 + subPlan.cost,
-        execute: function(s2, sink, options) {
-          return subPlan.execute(result, sink, newOptions);
+        execute: function(s2, sink, _) {
+          return subPlan.execute(result, sink, options);
         },
         toString: function() {
           return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString();
@@ -518,54 +510,32 @@ var TreeIndex = {
     arg2 = isExprMatch(GLOBAL.GtExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
-      var pos = this.findPos(s, key, false);
-      var newOptions = {skip: ((options && options.skip) || 0) + pos};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = options.limit;
-      if ( 'order' in options ) newOptions.order = options.order;
-      options = newOptions;
+      startPos = this.findPos(s, key, false);
     }
 
     arg2 = isExprMatch(GLOBAL.GteExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
-      var pos = this.findPos(s, key, true);
-      var newOptions = {skip: ((options && options.skip) || 0) + pos};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = options.limit;
-      if ( 'order' in options ) newOptions.order = options.order;
-      options = newOptions;
+      startPos = this.findPos(s, key, true);
     }
 
     arg2 = isExprMatch(GLOBAL.LtExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
-      var pos = this.findPos(s, key, true);
-      var newOptions = {limit: (pos - (options && options.skip) || 0)};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = Math.min(options.limit, newOptions.limit);
-      if ( 'skip' in options ) newOptions.skip = options.skip;
-      if ( 'order' in options ) newOptions.order = options.order;
-      options = newOptions;
+      lastPos = this.findPos(s, key, true);
     }
 
     arg2 = isExprMatch(GLOBAL.LteExpr);
     if ( arg2 != undefined ) {
       var key = arg2.f();
-      var pos = this.findPos(s, key, false);
-      var newOptions = {limit: (pos - (options && options.skip) || 0)};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = Math.min(options.limit, newOptions.limit);
-      if ( 'skip' in options ) newOptions.skip = options.skip;
-      if ( 'order' in options ) newOptions.order = options.order;
-      options = newOptions;
+      lastPos = this.findPos(s, key, false);
     }
 
     var cost = this.size(s);
     var sortRequired = false;
     var reverseSort = false;
 
-    if ( options && options.order ) {
+    if ( options.order ) {
       if ( options.order === prop ) {
         // sort not required
       } else if ( GLOBAL.DescExpr && DescExpr.isInstance(options.order) && options.order.arg1 === prop ) {
@@ -577,19 +547,14 @@ var TreeIndex = {
       }
     }
 
-    if ( options && ! sortRequired ) {
-      if ( options.skip ) cost -= options.skip;
+    if ( ! sortRequired ) {
+      if ( options.skip  ) cost -= options.skip;
       if ( options.limit ) cost = Math.min(cost, options.limit);
     }
 
     return {
       cost: cost,
       execute: function() {
-        /*
-         var o = options && (options.skip || options.limit) ?
-         {skip: options.skip || 0, limit: options.limit || Number.MAX_VALUE} :
-         undefined;
-         */
         if ( sortRequired ) {
           var a = [].sink;
           index.selectCount++;
@@ -605,17 +570,23 @@ var TreeIndex = {
           for ( var i = skip; i < limit; i++ )
             sink.put(a[i]);
         } else {
-// What did this do?  It appears to break sorting in saturn mail
-/*          if ( reverseSort && options && options.skip )
-            // TODO: temporary fix, should include range in select and selectReverse calls instead.
-            options = {
-              __proto__: options,
-              skip: index.size(s) - options.skip - (options.limit || index.size(s)-options.skip)
-            };*/
           index.selectCount++;
-          reverseSort ?
-            index.selectReverse(s, sink, options) :
+
+          if ( reverseSort ) {
+            index.selectReverse(s, sink, options);
+          } else {
+//            console.log(startPos,endPos,options);
+/*
+            if ( startPos !== undefined ) options.skip  = (options.skip || 0) + startPos;
+            if ( endPos   !== undefined ) {
+              var range = endPos - (startPos || 0);
+              options.limit = 'limit' in options ? Math.min(options.limit, range) : range;
+            }
+*/
+//            console.log(index.toString(), 'after', options);
             index.select(s, sink, options) ;
+          }
+
           index.selectCount--;
         }
 
@@ -623,6 +594,17 @@ var TreeIndex = {
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
     };
+  },
+
+  cloneOptions: function(options) {
+    var c = {};
+    if ( options ) {
+      if ( options.query    ) c.query = options.query;
+      if ( options.skip     ) c.skip  = options.skip;
+      if ( options.order    ) c.order = options.order;
+      if ( 'limit' in options ) c.limit = options.limit;
+    }
+    return c;
   },
 
   toString: function() {
