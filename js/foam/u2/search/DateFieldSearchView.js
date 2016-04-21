@@ -96,7 +96,10 @@ CLASS({
 
       // Strip all whitespace, inside and on the ends.
       value = value.replace(/\s+/g, '');
-      if ( ! value ) return TRUE;
+      if ( ! value ) {
+        this.predicate = TRUE;
+        return;
+      }
 
       var q = this.parser.parseString(this.property.name + ':' + value);
       if ( ! q ) q = this.parser.parseString(this.property.name + value);
