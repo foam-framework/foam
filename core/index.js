@@ -361,7 +361,7 @@ var TreeIndex = {
       if ( 'limit' in options && options.limit <= 0 ) return;
 
       var size = this.size(s);
-      if ( options.skip >= size ) {
+      if ( options.skip >= size && ! options.query ) {
         options.skip -= size;
         return;
       }
@@ -419,7 +419,7 @@ var TreeIndex = {
 
         if ( model.isInstance(query) && query.arg1 === prop ) {
           var arg2 = query.arg2;
-          query = undefined;
+          options.query = query = undefined;
           return arg2;
         }
 
@@ -429,8 +429,10 @@ var TreeIndex = {
             if ( model.isInstance(q) && q.arg1 === prop ) {
               query = query.clone();
               query.args[i] = TRUE;
-              query = query.partialEval();
-              if ( query === TRUE ) query = null;
+              options.query = query = query.partialEval();
+              if ( query === TRUE ) {
+                options.query = query = undefined;
+              }
               return q.arg2;
             }
           }
@@ -573,17 +575,18 @@ var TreeIndex = {
           index.selectCount++;
 
           if ( reverseSort ) {
+            if ( endPos   !== undefined ) options.skip  = (options.skip || 0) + endPos;
+            if ( startPos !== undefined ) {
+              var range = startPos - (endPos || 0);
+              options.limit = 'limit' in options ? Math.min(options.limit, range) : range;
+            }
             index.selectReverse(s, sink, options);
           } else {
-//            console.log(startPos,endPos,options);
-/*
             if ( startPos !== undefined ) options.skip  = (options.skip || 0) + startPos;
             if ( endPos   !== undefined ) {
               var range = endPos - (startPos || 0);
               options.limit = 'limit' in options ? Math.min(options.limit, range) : range;
             }
-*/
-//            console.log(index.toString(), 'after', options);
             index.select(s, sink, options) ;
           }
 
@@ -999,7 +1002,7 @@ var AltIndex = {
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       var plan = this.delegates[i].plan(s[i], sink, options);
 
-      // console.log('  plan ' + i + ': ' + plan);
+      //      console.log('  plan ' + i + ': ' + plan);
       if ( plan.cost <= AltIndex.GOOD_ENOUGH_PLAN ) {
         bestPlanI = i;
         bestPlan = plan;
@@ -1012,7 +1015,7 @@ var AltIndex = {
       }
     }
 
-    //    console.log('Best Plan: ' + bestPlan);
+    // console.log('Best Plan: ' + bestPlan);
 
     if ( bestPlan == undefined || bestPlan == NO_PLAN ) return NO_PLAN;
 
@@ -1311,6 +1314,11 @@ var MDAO = Model.create({
         sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
         sink && sink.eof && sink.eof();
         return aconstant(sink);
+      }
+
+      if ( options && options.query ) {
+        var query = options.query.partialEval();
+        options.query = query === TRUE ? undefined : query;
       }
 
       var plan = this.index.plan(this.root, sink, options);
