@@ -72,7 +72,7 @@ var ValueIndex = {
     if ( options ) {
       if ( options.query && ! options.query.f(value) ) return;
       if ( 'skip' in options && options.skip-- > 0 ) return;
-      if ( 'limit' in options && options.limit-- < 1 ) return;
+      if ( 'limit' in options && options.limit-- <= 0 ) return;
     }
     sink.put(value);
   },
@@ -361,7 +361,8 @@ var TreeIndex = {
       if ( 'limit' in options && options.limit <= 0 ) return;
 
       var size = this.size(s);
-      if ( options.skip >= size ) {
+      if ( options.skip >= size && ! options.query ) {
+        console.log('reverse skipping: ', s[KEY]);
         options.skip -= size;
         return;
       }
@@ -372,17 +373,102 @@ var TreeIndex = {
     this.selectReverse(s[LEFT], sink, options);
   },
 
-  findPos: function(s, key, incl) {
-    if ( ! s ) return 0;
-    var r = this.compare(s[KEY], key);
-    if ( r === 0 ) {
-      return incl ?
-        this.size(s[LEFT]) :
-        this.size(s) - this.size(s[RIGHT]);
+  gt: function(s, key) {
+    if ( ! s ) return s;
+    var r = this.compare(key, s[KEY]);
+
+    if ( r < 0 ) {
+      var l = this.gt(s[LEFT], key);
+      return [
+        s[KEY],
+        s[VALUE],
+        this.size(s) - this.size(s[LEFT]) + this.size(l),
+        s[LEVEL],
+        l,
+        s[RIGHT]
+      ];
     }
-    return r > 0 ?
-      this.findPos(s[LEFT], key, incl) :
-      this.findPos(s[RIGHT], key, incl) + this.size(s) - this.size(s[RIGHT]);
+
+    if ( r > 0 ) return this.gt(s[RIGHT], key);
+
+    return s[RIGHT];
+  },
+
+  gte: function(s, key) {
+    if ( ! s ) return s;
+    var r = this.compare(key, s[KEY]);
+
+    if ( r < 0 ) {
+      var l = this.gte(s[LEFT], key);
+      return [
+        s[KEY],
+        s[VALUE],
+        this.size(s) - this.size(s[LEFT]) + this.size(l),
+        s[LEVEL],
+        l,
+        s[RIGHT]
+      ];
+    }
+
+    if ( r > 0 ) return this.gte(s[RIGHT], key);
+
+    return [
+      s[KEY],
+      s[VALUE],
+      this.size(s) - this.size(s[LEFT]),
+      s[LEVEL],
+      null,
+      s[RIGHT]
+    ];
+  },
+
+  lt: function(s, key) {
+    if ( ! s ) return s;
+    var r = this.compare(key, s[KEY]);
+
+    if ( r > 0 ) {
+      var r = this.lt(s[RIGHT], key);
+      return [
+        s[KEY],
+        s[VALUE],
+        this.size(s) - this.size(s[RIGHT]) + this.size(r),
+        s[LEVEL],
+        s[LEFT],
+        r
+      ];
+    }
+
+    if ( r < 0 ) return this.lt(s[LEFT], key);
+
+    return s[LEFT];
+  },
+
+  lte: function(s, key) {
+    if ( ! s ) return s;
+    var r = this.compare(key, s[KEY]);
+
+    if ( r > 0 ) {
+      var r = this.lte(s[RIGHT], key);
+      return [
+        s[KEY],
+        s[VALUE],
+        this.size(s) - this.size(s[RIGHT]) + this.size(r),
+        s[LEVEL],
+        s[LEFT],
+        r
+      ];
+    }
+
+    if ( r < 0 ) return this.lte(s[RIGHT], key);
+
+    return [
+      s[KEY],
+      s[VALUE],
+      this.size(s) - this.size(s[RIGHT]),
+      s[LEVEL],
+      s[LEFT],
+      null
+    ];
   },
 
   size: function(s) { return s ? s[SIZE] : 0; },
@@ -419,7 +505,7 @@ var TreeIndex = {
 
         if ( model.isInstance(query) && query.arg1 === prop ) {
           var arg2 = query.arg2;
-          query = undefined;
+          options.query = query = undefined;
           return arg2;
         }
 
@@ -429,8 +515,10 @@ var TreeIndex = {
             if ( model.isInstance(q) && q.arg1 === prop ) {
               query = query.clone();
               query.args[i] = TRUE;
-              query = query.partialEval();
-              if ( query === TRUE ) query = null;
+              options.query = query = query.partialEval();
+              if ( query === TRUE ) {
+                options.query = query = undefined;
+              }
               return q.arg2;
             }
           }
@@ -485,8 +573,6 @@ var TreeIndex = {
       };
     }
 
-    var startPos, endPos;
-
     arg2 = isExprMatch(GLOBAL.EqExpr);
     if ( arg2 != undefined ) {
       var key    = arg2.f();
@@ -508,28 +594,16 @@ var TreeIndex = {
     }
 
     arg2 = isExprMatch(GLOBAL.GtExpr);
-    if ( arg2 != undefined ) {
-      var key = arg2.f();
-      startPos = this.findPos(s, key, false);
-    }
+    if ( arg2 ) s = this.gt(s, arg2.f());
 
     arg2 = isExprMatch(GLOBAL.GteExpr);
-    if ( arg2 != undefined ) {
-      var key = arg2.f();
-      startPos = this.findPos(s, key, true);
-    }
+    if ( arg2 ) s = this.gte(s, arg2.f());
 
     arg2 = isExprMatch(GLOBAL.LtExpr);
-    if ( arg2 != undefined ) {
-      var key = arg2.f();
-      lastPos = this.findPos(s, key, true);
-    }
+    if ( arg2 ) s = this.lt(s, arg2.f());
 
     arg2 = isExprMatch(GLOBAL.LteExpr);
-    if ( arg2 != undefined ) {
-      var key = arg2.f();
-      lastPos = this.findPos(s, key, false);
-    }
+    if ( arg2 ) s = this.lte(s, arg2.f());
 
     var cost = this.size(s);
     var sortRequired = false;
@@ -575,16 +649,7 @@ var TreeIndex = {
           if ( reverseSort ) {
             index.selectReverse(s, sink, options);
           } else {
-//            console.log(startPos,endPos,options);
-/*
-            if ( startPos !== undefined ) options.skip  = (options.skip || 0) + startPos;
-            if ( endPos   !== undefined ) {
-              var range = endPos - (startPos || 0);
-              options.limit = 'limit' in options ? Math.min(options.limit, range) : range;
-            }
-*/
-//            console.log(index.toString(), 'after', options);
-            index.select(s, sink, options) ;
+            index.select(s, sink, options);
           }
 
           index.selectCount--;
@@ -999,7 +1064,7 @@ var AltIndex = {
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       var plan = this.delegates[i].plan(s[i], sink, options);
 
-      // console.log('  plan ' + i + ': ' + plan);
+      //      console.log('  plan ' + i + ': ' + plan);
       if ( plan.cost <= AltIndex.GOOD_ENOUGH_PLAN ) {
         bestPlanI = i;
         bestPlan = plan;
@@ -1012,7 +1077,7 @@ var AltIndex = {
       }
     }
 
-    //    console.log('Best Plan: ' + bestPlan);
+    // console.log('Best Plan: ' + bestPlan);
 
     if ( bestPlan == undefined || bestPlan == NO_PLAN ) return NO_PLAN;
 
@@ -1311,6 +1376,11 @@ var MDAO = Model.create({
         sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
         sink && sink.eof && sink.eof();
         return aconstant(sink);
+      }
+
+      if ( options && options.query ) {
+        var query = options.query.partialEval();
+        options.query = query === TRUE ? undefined : query;
       }
 
       var plan = this.index.plan(this.root, sink, options);
