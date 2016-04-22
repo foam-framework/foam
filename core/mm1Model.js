@@ -185,6 +185,13 @@ var Model = {
         Java class to be built from this $$DOC{ref:'Model'}.*/}
     },
     {
+      name: 'javaClassImports',
+      type: 'Array[String]',
+      labels: ['java'],
+      defaultValueFn: function() { return []; },
+      help: 'Imports to add at the top of the generated java class.',
+    },
+    {
       name: 'swiftClassName',
       type: 'String',
       labels: ['swift'],
@@ -387,6 +394,13 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       labels: ['swift'],
       defaultValue: '',
       help: 'Swift code to drop in when generating the swift class for this model.',
+    },
+    {
+      name: 'javaCode',
+      type: 'String',
+      labels: ['java'],
+      defaultValue: '',
+      help: 'Java code to drop in when generating the java class for this model.',
     },
     {
       name: 'onLoad',

@@ -88,6 +88,11 @@ CLASS({
         var value = this.data;
 
         // Update current choice when choices update.
+        if (this.hasOwnProperty('index') && !this.hasOwnProperty('data') &&
+                this.index >= 0 && this.index < nu.length) {
+          this.choice = nu[this.index];
+          return;
+        }
         for ( var i = 0 ; i < nu.length ; i++ ) {
           var choice = nu[i];
           if ( value === choice[0] ) {
@@ -119,6 +124,7 @@ CLASS({
       transient: true,
       defaultValue: -1,
       preSet: function(old, nu) {
+        if (this.choices.length === 0 && this.dao) return nu;
         if (nu < 0 || this.choices.length === 0) return 0;
         if (nu >= this.choices.length) return this.choices.length - 1;
         return nu;

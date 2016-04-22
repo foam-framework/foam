@@ -29,7 +29,7 @@ CLASS({
     'foam.core.dao.OrDAO',
     'node.dao.ModelFileDAO',
     'foam.build.JavaApplication',
-    'foam.util.JavaSource',
+    'foam.util.JavaSource2 as JavaSource',
   ],
   properties: [
     {

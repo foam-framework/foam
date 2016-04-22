@@ -28,6 +28,7 @@ CLASS({
     'foam.u2.md.Select',
     'foam.u2.md.TableView',
     'foam.u2.md.TextField',
+    'foam.u2.search.DateFieldSearchView',
     'foam.u2.search.GroupAutocompleteSearchView',
     'foam.u2.search.GroupBySearchView',
     'foam.u2.search.SearchMgr',
@@ -151,8 +152,15 @@ CLASS({
             if (!old || old.indexOf(nu[i]) < 0) {
               var split = this.splitName(nu[i]);
               var prop = this.model.getFeature(split.name);
-              var model = (EnumProperty.isInstance(prop) || BooleanProperty.isInstance(prop)) ?
-                  this.GroupBySearchView : this.GroupAutocompleteSearchView;
+              var model;
+              if ( DateProperty.isInstance(prop) || DateTimeProperty.isInstance(prop) ) {
+                model = this.DateFieldSearchView;
+              } else if ( EnumProperty.isInstance(prop) || BooleanProperty.isInstance(prop) ) {
+                model = this.GroupBySearchView;
+              } else {
+                model = this.GroupAutocompleteSearchView;
+              }
+
               var options = {
                 inline: true,
                 name: nu[i]

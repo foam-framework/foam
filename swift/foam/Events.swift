@@ -37,7 +37,7 @@ class Events {
     listener.callback(obj: from.obj, prop: from.prop, oldValue: nil, newValue: from.get())
   }
   class func unfollow(from: PropertyValue, to: PropertyValue) {
-    for var i = 0; i < listeners.count; i++ {
+    for i in 0 ..< listeners.count {
       let listener = listeners[i]
       if equals(listener.from, b: from) && equals(listener.to, b: to) {
         from.removeListener(listener.listener)

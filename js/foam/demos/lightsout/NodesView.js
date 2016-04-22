@@ -55,8 +55,8 @@ CLASS({
           }
         }
         var html = '';
-        for (var x = 0; x < this.data.length; x++) {
-          for (var y = 0; y < this.data[x].length; y++) {
+        for (var y = 0; y < this.data[0].length; y++) {
+          for (var x = 0; x < this.data.length; x++) {
             html += views[x][y].toHTML();
           }
           html += '<br/>';
