@@ -267,6 +267,16 @@ CLASS({
                 */}
     },
     {
+      type: 'Function',
+      name: 'iconUrlFn',
+      label: 'Label Function',
+      defaultValue: function(action) { return action.iconUrl; },
+      help: "Function to determine iconUrl. Defaults to 'this.iconUrl'.",
+      documentation: function() { /*
+            A function used to determine the label. Defaults to $$DOC{ref:'.label'}.
+        */}
+    },
+    {
       name: 'ligature',
       type: 'String',
       defaultValue: undefined,
