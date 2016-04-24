@@ -39,21 +39,24 @@ CLASS({
       name: 'save',
       code: function() {
         this.data.put(this.selection.clone());
-        this.selection = this.data.model.create();
+        this.resetSelection();
       },
     },
     {
       name: 'deleteSelected',
+      isEnabled: function() {
+        return this.selection.id;
+      },
       code: function() {
         this.data.remove(this.selection);
-        this.selection = this.data.model.create();
+        this.resetSelection();
       },
     },
     {
       name: 'deleteAll',
       code: function() {
         this.data.removeAll();
-        this.selection = this.data.model.create();
+        this.resetSelection();
       },
     },
   ],
@@ -61,7 +64,16 @@ CLASS({
     {
       name: 'onHardSelection',
       code: function() {
-        this.selection = this.daoView.hardSelection.clone();
+        if (this.daoView.hardSelection) {
+          this.selection = this.daoView.hardSelection.clone();
+        }
+      },
+    },
+    {
+      name: 'resetSelection',
+      code: function() {
+        this.selection = this.data.model.create();
+        this.daoView.hardSelection = undefined;
       },
     },
   ],
