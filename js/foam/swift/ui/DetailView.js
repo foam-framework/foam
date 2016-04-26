@@ -118,10 +118,10 @@ class <%= this.name %>: UIView {
 <% for (var i = 0, p; p = genProperties[i]; i++) { %>
       if <%= p.name  %>Inited {
         if let pv = data_.getPropertyValue("<%= p.name %>") {
-          Events.unlink(self.<%= p.name %>View.data$, b: pv)
+          Events.unlink(pv, b: self.<%= p.name %>View.data$)
         }
         if let pv = value.getPropertyValue("<%= p.name %>") {
-          Events.link(self.<%= p.name %>View.data$, b: pv)
+          Events.link(pv, b: self.<%= p.name %>View.data$)
         }
       }
 <% } %>
@@ -180,16 +180,15 @@ layoutVertically(genProperties.map(function(p) { return p.name + 'View'; }));
       metrics: nil,
       views: views))
 <% } %>
-
+<% if (model.actions.length) { %>
+  <% var actionButtonNameMap = function(o) { return o.name + 'Button'; }; %>
     // Horizontal constraints of actions.
-<%
-var actionButtonNameMap = function(o) { return o.name + 'Button'; };
-%>
     addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "H:|-[<%= model.actions.map(actionButtonNameMap).join(']-[') %>]",
       options: .AlignAllCenterY,
       metrics: nil,
       views: views))
+<% } %>
   }
 }
       */}
