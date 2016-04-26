@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// TODO: remove range queries when converted to positions
 /*
  * Index Interface:
  *   put(state, value) -> new state
@@ -71,7 +72,7 @@ var ValueIndex = {
     if ( options ) {
       if ( options.query && ! options.query.f(value) ) return;
       if ( 'skip' in options && options.skip-- > 0 ) return;
-      if ( 'limit' in options && options.limit-- < 1 ) return;
+      if ( 'limit' in options && options.limit-- <= 0 ) return;
     }
     sink.put(value);
   },
@@ -360,7 +361,8 @@ var TreeIndex = {
       if ( 'limit' in options && options.limit <= 0 ) return;
 
       var size = this.size(s);
-      if ( options.skip >= size ) {
+      if ( options.skip >= size && ! options.query ) {
+        console.log('reverse skipping: ', s[KEY]);
         options.skip -= size;
         return;
       }
@@ -371,17 +373,102 @@ var TreeIndex = {
     this.selectReverse(s[LEFT], sink, options);
   },
 
-  findPos: function(s, key, incl) {
-    if ( ! s ) return 0;
-    var r = this.compare(s[KEY], key);
-    if ( r === 0 ) {
-      return incl ?
-        this.size(s[LEFT]) :
-        this.size(s) - this.size(s[RIGHT]);
+  gt: function(s, key) {
+    if ( ! s ) return s;
+    var r = this.compare(key, s[KEY]);
+
+    if ( r < 0 ) {
+      var l = this.gt(s[LEFT], key);
+      return [
+        s[KEY],
+        s[VALUE],
+        this.size(s) - this.size(s[LEFT]) + this.size(l),
+        s[LEVEL],
+        l,
+        s[RIGHT]
+      ];
     }
-    return r > 0 ?
-      this.findPos(s[LEFT], key, incl) :
-      this.findPos(s[RIGHT], key, incl) + this.size(s) - this.size(s[RIGHT]);
+
+    if ( r > 0 ) return this.gt(s[RIGHT], key);
+
+    return s[RIGHT];
+  },
+
+  gte: function(s, key) {
+    if ( ! s ) return s;
+    var r = this.compare(key, s[KEY]);
+
+    if ( r < 0 ) {
+      var l = this.gte(s[LEFT], key);
+      return [
+        s[KEY],
+        s[VALUE],
+        this.size(s) - this.size(s[LEFT]) + this.size(l),
+        s[LEVEL],
+        l,
+        s[RIGHT]
+      ];
+    }
+
+    if ( r > 0 ) return this.gte(s[RIGHT], key);
+
+    return [
+      s[KEY],
+      s[VALUE],
+      this.size(s) - this.size(s[LEFT]),
+      s[LEVEL],
+      null,
+      s[RIGHT]
+    ];
+  },
+
+  lt: function(s, key) {
+    if ( ! s ) return s;
+    var r = this.compare(key, s[KEY]);
+
+    if ( r > 0 ) {
+      var r = this.lt(s[RIGHT], key);
+      return [
+        s[KEY],
+        s[VALUE],
+        this.size(s) - this.size(s[RIGHT]) + this.size(r),
+        s[LEVEL],
+        s[LEFT],
+        r
+      ];
+    }
+
+    if ( r < 0 ) return this.lt(s[LEFT], key);
+
+    return s[LEFT];
+  },
+
+  lte: function(s, key) {
+    if ( ! s ) return s;
+    var r = this.compare(key, s[KEY]);
+
+    if ( r > 0 ) {
+      var r = this.lte(s[RIGHT], key);
+      return [
+        s[KEY],
+        s[VALUE],
+        this.size(s) - this.size(s[RIGHT]) + this.size(r),
+        s[LEVEL],
+        s[LEFT],
+        r
+      ];
+    }
+
+    if ( r < 0 ) return this.lte(s[RIGHT], key);
+
+    return [
+      s[KEY],
+      s[VALUE],
+      this.size(s) - this.size(s[RIGHT]),
+      s[LEVEL],
+      s[LEFT],
+      null
+    ];
   },
 
   size: function(s) { return s ? s[SIZE] : 0; },
@@ -391,7 +478,9 @@ var TreeIndex = {
   },
 
   plan: function(s, sink, options) {
-    var query = options && options.query;
+    options = this.cloneOptions(options);
+
+    var query = options.query;
 
     if ( query === FALSE ) return NOT_FOUND;
 
@@ -405,7 +494,7 @@ var TreeIndex = {
       };
     }
 
-//    if ( options && options.limit != null && options.skip != null && options.skip + options.limit > this.size(s) ) return NO_PLAN;
+//    if ( options.limit != null && options.skip != null && options.skip + options.limit > this.size(s) ) return NO_PLAN;
 
     var prop = this.prop;
 
@@ -416,7 +505,7 @@ var TreeIndex = {
 
         if ( model.isInstance(query) && query.arg1 === prop ) {
           var arg2 = query.arg2;
-          query = undefined;
+          options.query = query = undefined;
           return arg2;
         }
 
@@ -426,8 +515,10 @@ var TreeIndex = {
             if ( model.isInstance(q) && q.arg1 === prop ) {
               query = query.clone();
               query.args[i] = TRUE;
-              query = query.partialEval();
-              if ( query === TRUE ) query = null;
+              options.query = query = query.partialEval();
+              if ( query === TRUE ) {
+                options.query = query = undefined;
+              }
               return q.arg2;
             }
           }
@@ -453,17 +544,11 @@ var TreeIndex = {
       var results  = [];
       var cost = 1;
 
-      var newOptions = {};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = options.limit;
-      if ( 'skip'  in options ) newOptions.skip  = options.skip;
-      if ( 'order' in options ) newOptions.order = options.order;
-
       for ( var i = 0 ; i < keys.length ; i++) {
         var result = this.get(s, keys[i]);
 
         if ( result ) {
-          var subPlan = this.tail.plan(result, sink, newOptions);
+          var subPlan = this.tail.plan(result, sink, options);
 
           cost += subPlan.cost;
           subPlans.push(subPlan);
@@ -475,10 +560,10 @@ var TreeIndex = {
 
       return {
         cost: 1 + cost,
-        execute: function(s2, sink, options) {
+        execute: function(s2, sink, _) {
           var pars = [];
           for ( var i = 0 ; i < subPlans.length ; i++ ) {
-            pars.push(subPlans[i].execute(results[i], sink, newOptions));
+            pars.push(subPlans[i].execute(results[i], sink, options));
           }
           return apar.apply(null, pars);
         },
@@ -490,24 +575,17 @@ var TreeIndex = {
 
     arg2 = isExprMatch(GLOBAL.EqExpr);
     if ( arg2 != undefined ) {
-      var key = arg2.f();
+      var key    = arg2.f();
       var result = this.get(s, key);
 
       if ( ! result ) return NOT_FOUND;
 
-      //        var newOptions = {__proto__: options, query: query};
-      var newOptions = {};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = options.limit;
-      if ( 'skip' in options ) newOptions.skip = options.skip;
-      if ( 'order' in options ) newOptions.order = options.order;
-
-      var subPlan = this.tail.plan(result, sink, newOptions);
+      var subPlan = this.tail.plan(result, sink, options);
 
       return {
         cost: 1 + subPlan.cost,
-        execute: function(s2, sink, options) {
-          return subPlan.execute(result, sink, newOptions);
+        execute: function(s2, sink, _) {
+          return subPlan.execute(result, sink, options);
         },
         toString: function() {
           return 'lookup(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ') ' + subPlan.toString();
@@ -516,56 +594,22 @@ var TreeIndex = {
     }
 
     arg2 = isExprMatch(GLOBAL.GtExpr);
-    if ( arg2 != undefined ) {
-      var key = arg2.f();
-      var pos = this.findPos(s, key, false);
-      var newOptions = {skip: ((options && options.skip) || 0) + pos};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = options.limit;
-      if ( 'order' in options ) newOptions.order = options.order;
-      options = newOptions;
-    }
+    if ( arg2 ) s = this.gt(s, arg2.f());
 
     arg2 = isExprMatch(GLOBAL.GteExpr);
-    if ( arg2 != undefined ) {
-      var key = arg2.f();
-      var pos = this.findPos(s, key, true);
-      var newOptions = {skip: ((options && options.skip) || 0) + pos};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = options.limit;
-      if ( 'order' in options ) newOptions.order = options.order;
-      options = newOptions;
-    }
+    if ( arg2 ) s = this.gte(s, arg2.f());
 
     arg2 = isExprMatch(GLOBAL.LtExpr);
-    if ( arg2 != undefined ) {
-      var key = arg2.f();
-      var pos = this.findPos(s, key, true);
-      var newOptions = {limit: (pos - (options && options.skip) || 0)};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = Math.min(options.limit, newOptions.limit);
-      if ( 'skip' in options ) newOptions.skip = options.skip;
-      if ( 'order' in options ) newOptions.order = options.order;
-      options = newOptions;
-    }
+    if ( arg2 ) s = this.lt(s, arg2.f());
 
     arg2 = isExprMatch(GLOBAL.LteExpr);
-    if ( arg2 != undefined ) {
-      var key = arg2.f();
-      var pos = this.findPos(s, key, false);
-      var newOptions = {limit: (pos - (options && options.skip) || 0)};
-      if ( query ) newOptions.query = query;
-      if ( 'limit' in options ) newOptions.limit = Math.min(options.limit, newOptions.limit);
-      if ( 'skip' in options ) newOptions.skip = options.skip;
-      if ( 'order' in options ) newOptions.order = options.order;
-      options = newOptions;
-    }
+    if ( arg2 ) s = this.lte(s, arg2.f());
 
     var cost = this.size(s);
     var sortRequired = false;
     var reverseSort = false;
 
-    if ( options && options.order ) {
+    if ( options.order ) {
       if ( options.order === prop ) {
         // sort not required
       } else if ( GLOBAL.DescExpr && DescExpr.isInstance(options.order) && options.order.arg1 === prop ) {
@@ -577,19 +621,14 @@ var TreeIndex = {
       }
     }
 
-    if ( options && ! sortRequired ) {
-      if ( options.skip ) cost -= options.skip;
+    if ( ! sortRequired ) {
+      if ( options.skip  ) cost -= options.skip;
       if ( options.limit ) cost = Math.min(cost, options.limit);
     }
 
     return {
       cost: cost,
       execute: function() {
-        /*
-         var o = options && (options.skip || options.limit) ?
-         {skip: options.skip || 0, limit: options.limit || Number.MAX_VALUE} :
-         undefined;
-         */
         if ( sortRequired ) {
           var a = [].sink;
           index.selectCount++;
@@ -605,17 +644,14 @@ var TreeIndex = {
           for ( var i = skip; i < limit; i++ )
             sink.put(a[i]);
         } else {
-// What did this do?  It appears to break sorting in saturn mail
-/*          if ( reverseSort && options && options.skip )
-            // TODO: temporary fix, should include range in select and selectReverse calls instead.
-            options = {
-              __proto__: options,
-              skip: index.size(s) - options.skip - (options.limit || index.size(s)-options.skip)
-            };*/
           index.selectCount++;
-          reverseSort ?
-            index.selectReverse(s, sink, options) :
-            index.select(s, sink, options) ;
+
+          if ( reverseSort ) {
+            index.selectReverse(s, sink, options);
+          } else {
+            index.select(s, sink, options);
+          }
+
           index.selectCount--;
         }
 
@@ -623,6 +659,17 @@ var TreeIndex = {
       },
       toString: function() { return 'scan(key=' + prop.name + ', cost=' + this.cost + (query && query.toSQL ? ', query: ' + query.toSQL() : '') + ')'; }
     };
+  },
+
+  cloneOptions: function(options) {
+    var c = {};
+    if ( options ) {
+      if ( options.query    ) c.query = options.query;
+      if ( options.skip     ) c.skip  = options.skip;
+      if ( options.order    ) c.order = options.order;
+      if ( 'limit' in options ) c.limit = options.limit;
+    }
+    return c;
   },
 
   toString: function() {
@@ -1017,7 +1064,7 @@ var AltIndex = {
     for ( var i = 0 ; i < this.delegates.length ; i++ ) {
       var plan = this.delegates[i].plan(s[i], sink, options);
 
-      // console.log('  plan ' + i + ': ' + plan);
+      //      console.log('  plan ' + i + ': ' + plan);
       if ( plan.cost <= AltIndex.GOOD_ENOUGH_PLAN ) {
         bestPlanI = i;
         bestPlan = plan;
@@ -1030,7 +1077,7 @@ var AltIndex = {
       }
     }
 
-    //    console.log('Best Plan: ' + bestPlan);
+    // console.log('Best Plan: ' + bestPlan);
 
     if ( bestPlan == undefined || bestPlan == NO_PLAN ) return NO_PLAN;
 
@@ -1329,6 +1376,11 @@ var MDAO = Model.create({
         sink.plan = 'cost: ' + plan.cost + ', ' + plan.toString();
         sink && sink.eof && sink.eof();
         return aconstant(sink);
+      }
+
+      if ( options && options.query ) {
+        var query = options.query.partialEval();
+        options.query = query === TRUE ? undefined : query;
       }
 
       var plan = this.index.plan(this.root, sink, options);
