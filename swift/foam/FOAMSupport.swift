@@ -109,8 +109,14 @@ class FObject: PropertyChangeSupport, NSCoding {
     if let fobj = data as? FObject {
       for fobjProp in fobj.getModel().properties {
         let v: AnyObject? = fobj.get(fobjProp.name)
-        if v is FObject && deep {
+        if (v is FObject) && deep {
           self.set(fobjProp.name, value: v!.deepClone())
+        } else if (v is [FObject]) && deep {
+          var clonedArray: [FObject] = []
+          for portForward in v as! [FObject] {
+            clonedArray.append(portForward.deepClone())
+          }
+          self.set(fobjProp.name, value: clonedArray)
         } else {
           self.set(fobjProp.name, value: v)
         }

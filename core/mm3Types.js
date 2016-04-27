@@ -1033,7 +1033,47 @@ CLASS({
       label: 'Protobuf tag',
       required: false,
       help: 'The protobuf tag number for this field.'
-    }
+    },
+    {
+      name: 'compareProperty',
+      swiftDefaultValue: function() {/*
+        FoamFunction(fn: { (args) -> AnyObject? in
+          let o1Raw = self.f(args[0])
+          let o2Raw = self.f(args[1])
+          if o1Raw === o2Raw { return 0 }
+
+          // TODO: Arrays of things other than FObjects should also be handled.
+
+          let o1 = o1Raw as? [FObject]
+          let o2 = o2Raw as? [FObject]
+          if (o1 == nil) && (o2 == nil) {
+            return 0
+          }
+          if o1 == nil {
+            return -1
+          }
+          if o2 == nil {
+            return 1
+          }
+
+          if o1!.count != o2!.count {
+            return (o1!.count > o2!.count ? -1 : 1)
+          }
+
+          for i in 0 ..< o1!.count {
+            let o1Current = o1![i]
+            let o2Current = o2![i]
+
+            let result = o1Current.compareTo(o2Current)
+            if result != 0 {
+              return result
+            }
+          }
+
+          return 0
+        })
+      */},
+    },
   ]
 });
 
