@@ -497,7 +497,11 @@ CLASS({
       name: 'javaType',
       type: 'String',
       required: false,
-      defaultValueFn: function() { return this.type; },
+      defaultValueFn: function() {
+        var type = window[this.type + 'Property'];
+        if (!type) return;
+        return type.create().javaType;
+      },
       help: 'The java type that represents the type of this property.',
       labels: ['debug'],
       documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
@@ -517,7 +521,11 @@ CLASS({
       name: 'swiftType',
       type: 'String',
       labels: ['swift'],
-      defaultValueFn: function() { return this.type; },
+      defaultValueFn: function() {
+        var type = window[this.type + 'Property'];
+        if (!type) return;
+        return type.create().swiftType;
+      },
     },
     {
       name:  'name',
@@ -873,12 +881,22 @@ CLASS({
     {
       name:  'javaReturnType',
       labels: ['java'],
-      defaultValue: 'void',
+      defaultValueFn: function() {
+        if (!this.returnType) return 'void';
+        var type = window[this.returnType + 'Property'];
+        if (!type) return;
+        return type.create().javaType;
+      },
     },
     {
       name: 'swiftReturnType',
       labels: ['swift'],
-      defaultValue: 'Void',
+      defaultValueFn: function() {
+        if (!this.returnType) return 'Void';
+        var type = window[this.returnType + 'Property'];
+        if (!type) return;
+        return type.create().swiftType;
+      },
     },
     {
       type: 'Boolean',
