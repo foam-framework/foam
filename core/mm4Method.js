@@ -498,8 +498,8 @@ CLASS({
       type: 'String',
       required: false,
       defaultValueFn: function() {
-        var type = window[this.type + 'Property'];
-        if (!type) return;
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
         return type.create().javaType;
       },
       help: 'The java type that represents the type of this property.',
@@ -522,8 +522,8 @@ CLASS({
       type: 'String',
       labels: ['swift'],
       defaultValueFn: function() {
-        var type = window[this.type + 'Property'];
-        if (!type) return;
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
         return type.create().swiftType;
       },
     },
@@ -675,8 +675,8 @@ CLASS({
       labels: ['swift'],
       name: 'swiftType',
       defaultValueFn: function() {
-        var type = window[this.type + 'Property'];
-        if (!type) return;
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
         return type.create().swiftType;
       },
     },
@@ -686,8 +686,8 @@ CLASS({
       name: 'swiftValue',
       defaultValueFn: function() {
         if (!this.type) return;
-        var type = window[this.type + 'Property'];
-        if (!type) return;
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
         type = type.create();
         type.defaultValue = this.value;
         return type.swiftDefaultValue;
@@ -698,8 +698,8 @@ CLASS({
       labels: ['java'],
       name: 'javaType',
       defaultValueFn: function() {
-        var type = window[this.type + 'Property'];
-        if (!type) return;
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
         return type.create().javaType;
       },
     },
@@ -709,8 +709,8 @@ CLASS({
       name: 'javaValue',
       defaultValueFn: function() {
         if (!this.type) return;
-        var type = window[this.type + 'Property'];
-        if (!type) return;
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
         type = type.create();
         type.defaultValue = this.value;
         return type.javaDefaultValue;
@@ -883,8 +883,8 @@ CLASS({
       labels: ['java'],
       defaultValueFn: function() {
         if (!this.returnType) return 'void';
-        var type = window[this.returnType + 'Property'];
-        if (!type) return;
+        var type = X.lookup(this.returnType + 'Property');
+        if ( !type ) return;
         return type.create().javaType;
       },
     },
@@ -893,8 +893,8 @@ CLASS({
       labels: ['swift'],
       defaultValueFn: function() {
         if (!this.returnType) return 'Void';
-        var type = window[this.returnType + 'Property'];
-        if (!type) return;
+        var type = X.lookup(this.returnType + 'Property');
+        if ( !type ) return;
         return type.create().swiftType;
       },
     },
