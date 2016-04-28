@@ -94,11 +94,12 @@ if (!idName) {
 package <%= this.package %>;
 <% } %>
 
+import foam.core2.FObject;
 <% this.javaClassImports.forEach(function(i) { %>
 import <%= i %>;
 <% }); %>
 
-public class <%= this.javaClassName %> extends <%= parent && parent.javaClassName || 'Object' %> {
+public class <%= this.javaClassName %> extends <%= parent && parent.javaClassName || 'FObject' %> {
 
 <% for ( var i = 0, message; message = this.messages[i]; i++) { %>
   static String <%= message.name %> = "<%= message.value %>";
@@ -147,8 +148,6 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   private <%= type %> _<%= name %>_factory() { <%= propFactory %> }
   <% } %>
 
-
-
   private <%= type %> <%= name %>_adapt_(Object oldValue, Object newValue) {
     <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.javaAdapt)).bind(prop)() %>
   }
@@ -182,14 +181,11 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   }
 
   public void set<%= name.capitalize() %>(<%= type %> value) {
-    <%= type %> oldValue = <%= name %>_;
-    <%= name %>_ = <%= name %>_preSet(oldValue, <%= name %>_adapt(oldValue, value));
-    <%= name %>Inited_ = true;
-    <%= name %>_postSet(oldValue, <%= name %>_);
+    set("<%= name %>", value);
   }
 <% } %>
 
-  // TODO(mcarcaso): Equals and fclone shouldn't need to be generated. We should
+  // TODO(mcarcaso): Equals and clone shouldn't need to be generated. We should
   // be able to walk the properties at runtime.
   public boolean equals(Object o) {
     if (!(o instanceof <%= this.javaClassName %>)) {
@@ -223,12 +219,29 @@ var primitives = [
     return true;
   }
 
-  public <%= this.javaClassName %> fclone() {
+  public <%= this.javaClassName %> clone() {
     <%= this.javaClassName %> c = new <%= this.javaClassName %>();
 <% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
     c.set<%= prop.name.capitalize() %>(get<%= prop.name.capitalize() %>());
 <% } %>
     return c;
+  }
+
+  public void set(String key, Object value) {
+    switch (key) {
+<% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
+  <% var name = prop.name, type = prop.javaType %>
+      case "<%= name %>":
+        <%= type %> <%=name%>Old = <%= name %>_;
+        <%= name %>_ = <%= name %>_preSet(<%=name%>Old, <%= name %>_adapt(<%=name%>Old, value));
+        <%= name %>Inited_ = true;
+        <%= name %>_postSet(<%=name%>Old, <%= name %>_);
+        break;
+<% } %>
+      default:
+        super.set(key, value);
+        break;
+    }
   }
 
 
