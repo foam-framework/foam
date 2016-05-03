@@ -171,10 +171,23 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     if (prop.swiftValidate) { %>
     p.swiftValidate = FoamFunction(fn: { (args) -> AnyObject? in
       let data = args[0] as! <%= this.swiftClassName %>
-      <% prop.swiftValidate.deps.forEach(function(dep) { %>
+      <% if (prop.swiftValidate.deps) { %>
+        <%
+        // This happens when swiftValidate is overridden by the model we're
+        // generating so we automatically fill in the deps and drop the code in.
+        // deps to generate code that fetches the dependencies of an object.
+        %>
+        <% prop.swiftValidate.deps.forEach(function(dep) { %>
       let <%= dep %> = data.<%= dep %>
-      <% }) %>
-      <%= prop.swiftValidate.code %>
+        <% }) %>
+        <%= prop.swiftValidate.code %>
+      <% } else { %>
+        <%
+        // This happens when swiftValidate is implemented by the property so
+        // simply call the property's swiftValidate.
+        %>
+      return p.swiftValidate(data)
+      <% } %>
     })<%
     } %>
     return p
