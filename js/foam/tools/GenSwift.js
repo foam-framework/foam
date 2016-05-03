@@ -18,7 +18,7 @@
 CLASS({
   package: 'foam.tools',
   name: 'GenSwift',
-  extends: 'foam.tools.GenNative',
+  extends: 'foam.tools.GenCode',
   requires: [
     'foam.util.swift.SwiftSource',
   ],
