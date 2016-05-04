@@ -47,6 +47,7 @@ GLOBAL.Property = {
     {
       name: 'name',
       swiftType: 'String',
+      javaType: 'String',
       required: true,
       displayWidth: 30,
       displayHeight: 1,
@@ -161,6 +162,7 @@ GLOBAL.Property = {
     {
       name: 'javaDefaultValue',
       labels: ['java', 'compiletime'],
+      adapt: function(_, n) { return multiline(n); },
     },
     {
       name: 'protobufType',
@@ -578,6 +580,23 @@ GLOBAL.Property = {
       name: 'swiftValidate',
       swiftType: 'FoamFunction?',
       labels: ['swift'],
+      preSet: function(_, f) {
+        if (typeof f !== "function") return f;
+        var str = f.toString();
+        var deps = str.
+          match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
+          split(',').
+          map(function(name) { return name.trim(); });
+        return {
+          code: multiline(f),
+          deps: deps,
+        };
+      },
+    },
+    {
+      name: 'javaValidate',
+      javaType: 'FoamFunction<String>',
+      labels: ['java'],
       preSet: function(_, f) {
         if (typeof f !== "function") return f;
         var str = f.toString();
