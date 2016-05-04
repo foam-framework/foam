@@ -780,7 +780,7 @@ CLASS({
     {
       name: 'javaType',
       displayWidth: 10,
-      defaultValue: 'Function',
+      defaultValue: 'FoamFunction',
       help: 'The Java type of this property.'
     },
     {
