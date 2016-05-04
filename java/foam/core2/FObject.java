@@ -19,4 +19,5 @@ package foam.core2;
 
 public abstract class FObject implements Cloneable {
   public void set(String key, Object value) {}
+  public Object get(String key) { return null; }
 }
