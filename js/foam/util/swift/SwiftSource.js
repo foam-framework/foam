@@ -107,7 +107,7 @@ import Foundation
 <% this.swiftClassImports.forEach(function(swiftImport) { %>
 import <%= swiftImport %>
 <% }) %>
-class <%= this.swiftClassName %>: <%= parent && parent.swiftClassName || 'FObject' %><%
+public class <%= this.swiftClassName %>: <%= parent && parent.swiftClassName || 'FObject' %><%
 if ( this.swiftImplements.length > 0 ) {
   %>, <% for ( var i = 0; i < this.swiftImplements.length - 1; i++ ) { %><%= this.swiftImplements[i] %>, <% } %><%= this.swiftImplements[i] %>
 <% } %> {<%
@@ -169,29 +169,19 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       }
     }
     if (prop.swiftValidate) { %>
-    p.swiftValidate = FoamFunction(fn: { (args) -> AnyObject? in
+    p.validate = FoamFunction(fn: { (args) -> AnyObject? in
       let data = args[0] as! <%= this.swiftClassName %>
-      <% if (prop.swiftValidate.deps) { %>
-        <%
-        // This happens when swiftValidate is overridden by the model we're
-        // generating so we automatically fill in the deps and drop the code in.
-        // deps to generate code that fetches the dependencies of an object.
-        %>
-        <% prop.swiftValidate.deps.forEach(function(dep) { %>
-      let <%= dep %> = data.<%= dep %>
-        <% }) %>
-        <%= prop.swiftValidate.code %>
-      <% } else { %>
-        <%
-        // This happens when swiftValidate is implemented by the property so
-        // simply call the property's swiftValidate.
-        %>
-      return p.swiftValidate(data)
-      <% } %>
+      return data.validate_<%= name %>()
     })<%
     } %>
     return p
   }()
+  <% if (prop.swiftValidate) { %>
+  <%= override %> func validate_<%= name %>() -> String? {
+    let value = <%= name %>
+    <%= multiline(prop.swiftValidate) %>
+  }
+  <% } %>
   <%= override %> class var <%= constant %>: <%= propertyModel %> {
     get {
       return <%= this.swiftClassName %>_<%= constant %>
@@ -359,7 +349,7 @@ for ( var i = 0, prop; prop = allProperties[i]; i++ ) {
 } %>
   }
 
-  override func encodeWithCoder(aCoder: NSCoder) {
+  override public func encodeWithCoder(aCoder: NSCoder) {
 <%
 for (var i = 0, prop; prop = modelProperties[i]; i++) {
   if (!prop.transient) {
@@ -372,7 +362,7 @@ for (var i = 0, prop; prop = modelProperties[i]; i++) {
     super.encodeWithCoder(aCoder)
   }
 
-  required init(coder aDecoder: NSCoder) {
+  required public init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
 <%
 for (var i = 0, prop; prop = modelProperties[i]; i++) {

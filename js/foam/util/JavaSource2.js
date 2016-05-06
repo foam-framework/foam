@@ -148,9 +148,24 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     <%= propertyModel %> p = new <%= propertyModel %>();
     p.setName("<%= name %>");
     p.setLabel("<%= prop.label %>");
+  <% if (prop.javaValidate) { %>
+    p.setValidate(new FoamFunction<String>() {
+      @Override public String call(Object... args) {
+        <%= this.javaClassName %> fobj = (<%= this.javaClassName %>) args[0];
+        return fobj.validate_<%= name %>();
+      }
+    });
+  <% } %>
     <%= propertyModel %> <%= this.javaClassName %>_<%= constant %>_ = p;
     return p;
   }
+
+  <% if (prop.javaValidate) { %>
+  public String validate_<%= name %>() {
+    <%= type %> value = get<%= name.capitalize() %>();
+    <%= multiline(prop.javaValidate) %>
+  }
+  <% } %>
 
   public <%= type %> get<%= name.capitalize() %>() {
   <% if (prop.javaGetter) { %>

@@ -540,7 +540,8 @@ GLOBAL.Property = {
     {
       name: 'validate',
       type: 'Function',
-      labels: ['javascript'],
+      swiftType: 'FoamFunction?',
+      javaType: 'FoamFunction<String>',
       required: false,
       view: 'foam.ui.FunctionView',
       help: 'Function for validating property value.',
@@ -578,37 +579,11 @@ GLOBAL.Property = {
     },
     {
       name: 'swiftValidate',
-      swiftType: 'FoamFunction?',
-      labels: ['swift'],
-      preSet: function(_, f) {
-        if (typeof f !== "function") return f;
-        var str = f.toString();
-        var deps = str.
-          match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-          split(',').
-          map(function(name) { return name.trim(); });
-        return {
-          code: multiline(f),
-          deps: deps,
-        };
-      },
+      labels: ['swift', 'compiletime'],
     },
     {
       name: 'javaValidate',
-      javaType: 'FoamFunction<String>',
-      labels: ['java'],
-      preSet: function(_, f) {
-        if (typeof f !== "function") return f;
-        var str = f.toString();
-        var deps = str.
-          match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-          split(',').
-          map(function(name) { return name.trim(); });
-        return {
-          code: multiline(f),
-          deps: deps,
-        };
-      },
+      labels: ['java', 'compiletime'],
     },
     {
       name: 'javaAdapt',
