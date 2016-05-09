@@ -281,6 +281,19 @@ var primitives = [
     return super.get(key);
   }
 
+  public foam.core.Property getProperty(String key) {
+    switch (key) {
+<% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
+  <% var name = prop.name, type = prop.javaType %>
+      case "<%= name %>":
+        return <%= this.javaClassName %>_<%= constantize(name) %>();
+<% } %>
+      default:
+        break;
+    }
+    return super.getProperty(key);
+  }
+
   public void set(String key, Object value) {
     switch (key) {
 <% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
