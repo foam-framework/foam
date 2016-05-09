@@ -17,8 +17,8 @@
 
 import Foundation
 
-let TRUE = TrueExpr()
-let FALSE = FalseExpr()
+public let TRUE = TrueExpr()
+public let FALSE = FalseExpr()
 
 func compile_(a: AnyObject?) -> ExprProtocol {
   if let a = a as? ExprProtocol { return a }
@@ -29,7 +29,7 @@ func compile_(a: AnyObject?) -> ExprProtocol {
   return c
 }
 
-func EQ(arg1: AnyObject?, arg2: AnyObject?) -> ExprProtocol {
+public func EQ(arg1: AnyObject?, arg2: AnyObject?) -> ExprProtocol {
   let eq = EqExpr()
   eq.arg1 = compile_(arg1)
   eq.arg2 = compile_(arg2)
@@ -44,12 +44,12 @@ func compileArray_(args: [AnyObject?]) -> NSArray {
   return compiledArray
 }
 
-func AND(args: AnyObject? ...) -> AndExpr {
+public func AND(args: AnyObject? ...) -> AndExpr {
   let andExpr = AndExpr()
   andExpr.args = compileArray_(args)
   return andExpr
 }
 
-protocol ExprProtocol : class {
+public protocol ExprProtocol : class {
   func f(obj: AnyObject?) -> AnyObject?
 }

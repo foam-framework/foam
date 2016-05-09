@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-protocol FoamEnum: class {
+public protocol FoamEnum: class {
   var value: AnyObject { get }
   var label: String { get }
   static var choices: [FoamEnum] { get }

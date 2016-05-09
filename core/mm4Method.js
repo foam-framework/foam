@@ -409,7 +409,7 @@ while (extendsModel) {
   extendsModel = extendsModel.extends
 }
 %>
-<%=override%> func `<%= this.name %>`() {
+<%=override%> public func `<%= this.name %>`() {
   <%= this.swiftCode %>
 }
       */},
@@ -996,7 +996,7 @@ while (extendsModel) {
 
 %><% if ( this.isMerged || this.isFramed ) {
 %>  var <%= name %>_fired_: Bool = false
-  <%=override%> func <%= name %>() {
+  <%=override%> public func <%= name %>() {
     if <%= name %>_fired_ {
       return
     }
@@ -1016,7 +1016,7 @@ while (extendsModel) {
 <%= this.swiftCode %>
   }
 <% } else if ( this.swiftCode ) { %>
-  <%=override%> func `<%= name %>`(<%
+  <%=override%> public func `<%= name %>`(<%
 for ( var i = 0 ; i < args.length ; i++ ) {
 %><%= args[i].name %>: <%= args[i].swiftType %><%
 if ( i != args.length - 1 ) { %>, <% }
