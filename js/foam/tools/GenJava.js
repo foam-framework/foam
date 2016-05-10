@@ -31,5 +31,11 @@ CLASS({
       name: 'fileExtension',
       defaultValue: 'java',
     },
+    {
+      name: 'requiredDeps',
+      defaultValue: [
+        'Model',
+      ],
+    },
   ],
 });

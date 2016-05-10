@@ -17,9 +17,13 @@
 
 package foam.core2;
 
+import foam.core.Property;
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class FObject implements Cloneable {
   public void set(String key, Object value) {}
   public Object get(String key) { return null; }
-  public foam.core.Property getProperty(String key) { return null; }
-  public abstract Model getModel();
+  public Property getProperty(String key) { return null; }
+  public abstract foam.core.Model getModel();
 }
