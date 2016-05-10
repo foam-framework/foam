@@ -26,4 +26,16 @@ public abstract class FObject implements Cloneable {
   public Object get(String key) { return null; }
   public Property getProperty(String key) { return null; }
   public abstract foam.core.Model getModel();
+  public List<String> validateObject() {
+    List<String> errors = new ArrayList<String>();
+    for (Property p : getModel().getProperties()) {
+      if (p.getValidate() != null) {
+        String error = p.getValidate().call(this);
+        if (error != null) {
+          errors.add(error);
+        }
+      }
+    }
+    return errors.size() == 0 ? null : errors;
+  }
 }
