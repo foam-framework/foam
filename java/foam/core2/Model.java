@@ -17,9 +17,19 @@
 
 package foam.core2;
 
-public abstract class FObject implements Cloneable {
-  public void set(String key, Object value) {}
-  public Object get(String key) { return null; }
-  public foam.core.Property getProperty(String key) { return null; }
-  public abstract Model getModel();
+import foam.core.Property;
+import java.util.List;
+
+public class Model {
+  public String name;
+  public List<Property> properties;
+  public FoamFunction factory;
+  public Model(String name, List<Property> properties, FoamFunction factory) {
+    this.name = name;
+    this.properties = properties;
+    this.factory = factory;
+  }
+  public FObject createInstance() {
+    return (FObject) factory.call();
+  }
 }

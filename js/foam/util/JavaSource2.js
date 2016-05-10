@@ -311,6 +311,35 @@ var primitives = [
     }
   }
 
+<%
+var staticModelName = this.javaClassName + 'Model_';
+var staticModelProperties = modelProperties.map(function(prop) {
+  return this.javaClassName + '_' + constantize(prop.name) + '()';
+}.bind(this));
+%>
+private static foam.core2.Model <%=staticModelName%>;
+public static foam.core2.Model <%=this.javaClassName%>Model() {
+  if (<%=this.javaClassName%>Model_ == null) {
+    java.util.List<foam.core.Property> properties =
+        java.util.Arrays.asList(<%=staticModelProperties.join(',')%>);
+<% if (parent) { %>
+    properties.addAll(
+        <%=parent.id%>.<%=parent.javaClassName%>Model().properties);
+<% } %>
+    <%=this.javaClassName%>Model_ = new foam.core2.Model(
+        "<%= this.javaClassName %>",
+        properties,
+        new FoamFunction<FObject>() {
+          @Override public FObject call(Object... args) {
+            return new <%= this.javaClassName %>();
+          }
+        });
+  }
+  return <%=this.javaClassName%>Model_;
+}
+public foam.core2.Model getModel() {
+  return <%= this.javaClassName %>Model();
+}
 
 <%
   function javaSource(f) {
