@@ -43,7 +43,6 @@ CLASS({
       getter: function() { return this.toChunk().size(); },
     },
     {
-      type: 'foam.util.zip.CRC32',
       name: 'crc32',
       factory: function() {
         return this.CRC32.create({}, this.Y);
@@ -79,7 +78,6 @@ CLASS({
       name: 'files',
     },
     {
-      type: 'foam.util.zip.EndOfCentralDirectoryRecord',
       name: 'endOfCentralDirectoryRecord',
       lazyFactory: function() {
         return this.EndOfCentralDirectoryRecord.create({}, this.Y);

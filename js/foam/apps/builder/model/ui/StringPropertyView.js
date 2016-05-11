@@ -33,12 +33,10 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-flex-row-baseline">
-          $$minChars $$maxChars
-        </div>
-        $$pattern{ model_: 'foam.apps.builder.model.regex.RegexPickerView' }
+        $$data
       </div>
     */},
   ]
-
 });
+
+

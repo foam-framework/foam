@@ -135,7 +135,12 @@ CLASS({
 
 .md-choice-radio-view.vertical {
   padding: 0;
+  flex-direction: column;
 }
+.md-choice-radio-view.md-style-trait-standard.vertical {
+  align-items: flex-start;
+}
+
 .md-choice-radio-view.vertical .choice {
   display: block;
 }

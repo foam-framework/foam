@@ -17,9 +17,9 @@
 
 
 CLASS({
-  name: 'FloatPropertyEditView',
+  name: 'FloatPropertyView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.IntPropertyEditView',
+  extends: 'foam.apps.builder.model.ui.IntPropertyView',
 
   requires: [
   ],

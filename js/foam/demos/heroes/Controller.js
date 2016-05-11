@@ -34,29 +34,29 @@ CLASS({
   properties: [
     {
       // model_: 'foam.core.types.DAOProperty',
-      // type: 'DAO',
+      type: 'foam.core.types.DAO',
       name: 'heroDAO',
       toPropertyE: function(X) {
         return X.lookup('foam.u2.DAOListView').create({rowView: 'foam.demos.heroes.CitationView'}, X);
       },
       factory: function() {
         return JSONUtil.arrayToObjArray(this.X, [
-	  { id: 11, name: "Mr. Nice"},
-	  { id: 12, name: "Narco",     starred: true},
-	  { id: 13, name: "Bombasto",  starred: true},
-	  { id: 14, name: "Celeritas", starred: true},
-	  { id: 15, name: "Magneta",   starred: true},
-	  { id: 16, name: "RubberMan"},
-	  { id: 17, name: "Dynama"},
-	  { id: 18, name: "Dr IQ"},
-	  { id: 19, name: "Magma"},
-	  { id: 20, name: "Tornado"}
+          { id: 11, name: "Mr. Nice"},
+          { id: 12, name: "Narco",     starred: true},
+          { id: 13, name: "Bombasto",  starred: true},
+          { id: 14, name: "Celeritas", starred: true},
+          { id: 15, name: "Magneta",   starred: true},
+          { id: 16, name: "RubberMan"},
+          { id: 17, name: "Dynama"},
+          { id: 18, name: "Dr IQ"},
+          { id: 19, name: "Magma"},
+          { id: 20, name: "Tornado"}
         ], this.Hero);
       }
     },
     {
       // model_: 'foam.core.types.DAOProperty',
-      // type: 'DAO',
+      type: 'foam.core.types.DAO',
       name: 'starredHeroDAO',
       toPropertyE: function(X) {
         return X.lookup('foam.u2.DAOListView').create({rowView: 'foam.demos.heroes.DashboardCitationView'}, X);

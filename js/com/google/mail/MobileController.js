@@ -116,7 +116,7 @@ CLASS({
     },
     {
       name: 'labelDao',
-      type: 'DAO',
+      type: 'foam.core.types.DAO',
       factory: function() {
         return this.CachingDAO.create({
           src: this.GMailRestDAO.create({ model: this.FOAMGMailLabel, modelName: 'labels' }),

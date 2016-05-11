@@ -125,7 +125,6 @@ CLASS({
       name: 'diskNumber',
     },
     {
-      type: 'foam.util.zip.FileAttributes',
       name: 'fileAttrs',
       lazyFactory: function() {
         return this.FileAttributes.create({}, this.Y);
@@ -166,19 +165,16 @@ CLASS({
       ],
     },
     {
-      type: 'foam.util.zip.Chunk',
       name: 'fileContents',
       lazyFactory: function() { return this.Chunk.create({}, this.Y); },
     },
     {
-      type: 'foam.util.zip.LocalFileHeader',
       name: 'localHeader',
       lazyFactory: function() {
         return this.LocalFileHeader.create({}, this.Y);
       },
     },
     {
-      type: 'foam.util.zip.CentralFileHeader',
       name: 'centralHeader',
       lazyFactory: function() {
         return this.CentralFileHeader.create({}, this.Y);

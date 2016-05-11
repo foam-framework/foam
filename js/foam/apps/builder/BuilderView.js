@@ -17,6 +17,7 @@ CLASS({
   requires: [
     'foam.browser.ui.BrowserView',
     'foam.ui.FutureView',
+    'foam.apps.builder.model.ui.Loader',
   ],
   imports: [
     'setTimeout'
@@ -24,6 +25,13 @@ CLASS({
   exports: [
     'appSelection as selection',
     'appSelection',
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      this.Loader.create();
+    }
   ],
 
   properties: [
