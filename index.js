@@ -59,6 +59,10 @@
   else
     delete params.model;
 
+  if ( params.flags_ )
+    delete params.flags_;
+
+
   var viewName = params.view;
   if ( viewName ) {
     models.push(X.arequire(viewName));
