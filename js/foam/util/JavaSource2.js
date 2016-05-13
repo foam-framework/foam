@@ -163,6 +163,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   <% if (prop.javaValidate) { %>
   public String validate_<%= name %>() {
     <%= type %> value = get<%= name.capitalize() %>();
+    <%= propertyModel %> property = <%= this.javaClassName %>_<%= constant %>();
     <%= multiline(prop.javaValidate) %>
   }
   <% } %>
