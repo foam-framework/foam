@@ -952,6 +952,11 @@ CLASS({
         */}
     },
     {
+      type: 'Boolean',
+      name: 'isStatic',
+      labels: ['java', 'swift']
+    },
+    {
       name: 'labels'
     },
     {
@@ -992,7 +997,7 @@ while (extendsModel) {
   swiftReturnType = method && method.swiftReturnType || swiftReturnType;
   extendsModel = extendsModel.extends
 }
-
+var static = this.isStatic ? 'static' : '';
 
 %><% if ( this.isMerged || this.isFramed ) {
 %>  var <%= name %>_fired_: Bool = false
@@ -1016,7 +1021,7 @@ while (extendsModel) {
 <%= this.swiftCode %>
   }
 <% } else if ( this.swiftCode ) { %>
-  <%=override%> public func `<%= name %>`(<%
+  <%=override%> public <%= static %> func `<%= name %>`(<%
 for ( var i = 0 ; i < args.length ; i++ ) {
 %><%= args[i].name %>: <%= args[i].swiftType %><%
 if ( i != args.length - 1 ) { %>, <% }
@@ -1063,9 +1068,10 @@ while (extendsModel) {
   returnType = method && method.javaReturnType || returnType;
   extendsModel = extendsModel.extends
 }
+var static = this.isStatic ? 'static' : '';
 %>
   <%= override %>
-  public <%= returnType %> <%= this.name %>(<%
+  public <%= static %> <%= returnType %> <%= this.name %>(<%
  for ( var i = 0 ; args && i < args.length ; i++ ) { var arg = args[i];
 %><%= arg.javaSource() %><% if ( i < args.length-1 ) out(", ");
 %><% } %>) {
