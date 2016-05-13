@@ -77,7 +77,6 @@ CLASS({
       },
     },
     {
-      type: 'foam.ui.md.PopupView',
       name: 'tosView',
       lazyFactory: function() {
         return this.PopupView.create({
