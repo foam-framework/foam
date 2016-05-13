@@ -68,6 +68,7 @@ GLOBAL.Property = {
     {
       name: 'label',
       swiftType: 'String',
+      javaType: 'String',
       required: false,
       displayWidth: 70,
       displayHeight: 1,
