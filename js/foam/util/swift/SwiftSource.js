@@ -179,6 +179,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   <% if (prop.swiftValidate) { %>
   <%= override %> func validate_<%= name %>() -> String? {
     let value = <%= name %>
+    let property = <%= constant %>
     <%= multiline(prop.swiftValidate) %>
   }
   <% } %>
