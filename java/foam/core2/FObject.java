@@ -21,7 +21,7 @@ import foam.core.Property;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FObject implements Cloneable {
+public abstract class FObject implements Cloneable, java.io.Serializable {
   public void set(String key, Object value) {}
   public Object get(String key) { return null; }
   public Property getProperty(String key) { return null; }
