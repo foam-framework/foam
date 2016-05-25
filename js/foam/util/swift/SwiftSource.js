@@ -358,7 +358,9 @@ for ( var i = 0, prop; prop = allProperties[i]; i++ ) {
 for (var i = 0, prop; prop = modelProperties[i]; i++) {
   if (!prop.transient) {
 %>
-    <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftNSCoderEncode)).bind(prop)() %>
+    if <%= prop.name %>Inited_ {
+      <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftNSCoderEncode)).bind(prop)() %>
+    }
 <%
   }
 }
