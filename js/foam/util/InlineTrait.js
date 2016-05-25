@@ -23,41 +23,45 @@ CLASS({
     function inlineTraits(model) {
       model = model.deepClone();
 
-      var properties = model.properties;
-      var methods = model.methods;
-      for ( var i = 0; i < model.traits.length; i++ ) {
-        var trait = this.X.lookup(model.traits[i]);
+      var mergeTraits = function(propName) {
+        var properties = model[propName];
+        for ( var i = 0; i < model.traits.length; i++ ) {
+          var trait = this.X.lookup(model.traits[i]);
+          for ( var j = 0; j < trait[propName].length; j++ ) {
+            var traitProp = trait[propName][j];
 
-        for ( var j = 0; j < trait.properties.length; j++ ) {
-          var traitProp = trait.properties[j];
-
-          for ( var k = 0; k < properties.length; k++ ) {
-            var prop = properties[k];
-            if ( prop.name === traitProp.name ) {
-              properties[k] = traitProp.deepClone().copyFrom(prop);
-              break;
+            for ( var k = 0; k < properties.length; k++ ) {
+              var prop = properties[k];
+              if ( prop.name === traitProp.name ) {
+                properties[k] = traitProp.deepClone().copyFrom(prop);
+                break;
+              }
+            }
+            if ( k === properties.length ) {
+              properties.push(traitProp);
             }
           }
-          if ( k === properties.length ) {
-            properties.push(traitProp);
-          }
         }
-        for ( var j = 0; j < trait.methods.length; j++ ) {
-          var traitMethod = trait.methods[j];
-          for ( var k = 0; k < methods.length; k++ ) {
-            var method = methods[k];
-            if ( method.name === traitMethod.name ) {
-              methods[k] = traitMethod.deepClone().copyFrom(method);
-              break;
-            }
-          }
-          if ( k === methods.length ) {
-            methods.push(traitMethod);
-          }
+        model[propName] = properties;
+      }.bind(this);
+
+      mergeTraits('properties');
+      mergeTraits('methods');
+      mergeTraits('constants');
+      mergeTraits('messages');
+
+      if (model.javaClassImports) {
+        var javaClassImports = model.javaClassImports;
+        for ( var i = 0; i < model.traits.length; i++ ) {
+          var trait = this.X.lookup(model.traits[i]);
+          javaClassImports = javaClassImports.concat(trait.javaClassImports);
         }
+        model.javaClassImports = javaClassImports.filter(function(v, i) {
+          // Remove duplicates.
+          return javaClassImports.indexOf(v) == i;
+        });
       }
-      model.methods = methods;
-      model.properties = properties;
+
       model.traits = [];
 
       return model;
