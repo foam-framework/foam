@@ -208,6 +208,8 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       }()
       self.set("<%= name %>", value: factoryValue)
       return <%= name %>_!
+    <% } else if (prop.swiftDefaultValueFn) { %>
+      <%= prop.swiftDefaultValueFn %>
     <% } else if (prop.swiftDefaultValue) { %>
       return <%= prop.swiftDefaultValue %>
     <% } else if (prop.swiftType.slice(-1).match(/[?!]/)) { %>

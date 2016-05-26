@@ -175,7 +175,9 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     if (<%= name %>Inited_) {
       return <%= name %>_;
     }
-    <% if (prop.javaDefaultValue) { %>
+    <% if (prop.javaDefaultValueFn) { %>
+    <%= prop.javaDefaultValueFn %>
+    <% } else if (prop.javaDefaultValue) { %>
     return <%= prop.javaDefaultValue %>;
     <% } else if (propFactory) { %>
     set<%= name.capitalize() %>(_<%= name %>_factory());

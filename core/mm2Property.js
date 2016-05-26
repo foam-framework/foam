@@ -161,7 +161,17 @@ GLOBAL.Property = {
       adapt: function(_, n) { return multiline(n); },
     },
     {
+      name: 'swiftDefaultValueFn',
+      labels: ['swift', 'compiletime'],
+      adapt: function(_, n) { return multiline(n); },
+    },
+    {
       name: 'javaDefaultValue',
+      labels: ['java', 'compiletime'],
+      adapt: function(_, n) { return multiline(n); },
+    },
+    {
+      name: 'javaDefaultValueFn',
       labels: ['java', 'compiletime'],
       adapt: function(_, n) { return multiline(n); },
     },
