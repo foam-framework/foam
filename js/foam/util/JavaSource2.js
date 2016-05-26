@@ -314,6 +314,21 @@ var primitives = [
     }
   }
 
+  public void clearProperty(String key) {
+    switch (key) {
+<% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
+  <% var name = prop.name %>
+      case "<%= name %>":
+        <%= name %>_ = null;
+        <%= name %>Inited_ = false;
+        break;
+<% } %>
+      default:
+        super.clearProperty(key);
+        break;
+    }
+  }
+
 <%
 var staticModelName = this.javaClassName + 'Model_';
 var staticModelProperties = modelProperties.map(function(prop) {
