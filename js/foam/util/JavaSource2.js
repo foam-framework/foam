@@ -51,6 +51,17 @@ CLASS({
 
   templates: [
     function javaSource(_, util) {/*<%
+var primitives = [
+  'byte',
+  'char',
+  'short',
+  'int',
+  'long',
+  'float',
+  'double',
+  'boolean',
+];
+
 var propertyMap = {}
 var toPropertyMap = function(f) {
   propertyMap[f.name] = f;
@@ -236,18 +247,6 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       return false;
     }
     <%= this.javaClassName %> castedO = (<%= this.javaClassName %>) o;
-<%
-var primitives = [
-  'byte',
-  'char',
-  'short',
-  'int',
-  'long',
-  'float',
-  'double',
-  'boolean',
-];
-%>
 <% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
   <% var get = 'get' + prop.name.capitalize() + '()'; %>
   <% if (primitives.indexOf(prop.javaType) == -1) { %>
@@ -319,7 +318,9 @@ var primitives = [
 <% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
   <% var name = prop.name %>
       case "<%= name %>":
+  <% if (primitives.indexOf(prop.javaType) == -1) { %>
         <%= name %>_ = null;
+  <% } %>
         <%= name %>Inited_ = false;
         break;
 <% } %>
