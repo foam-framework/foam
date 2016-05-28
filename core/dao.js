@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-
-
 var ObjectToJSON = {
   __proto__: Visitor.create(),
 
@@ -251,7 +249,7 @@ CLASS({
         return AND(NEQ(this.relatedProperty, ''),
             EQ(this.relatedProperty, this.relativeID));
       }
-    },
+    }
   ],
 
   methods: [
