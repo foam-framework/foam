@@ -38,7 +38,7 @@ CLASS({
 
   properties: [
     { name: 'storageName' },
-    { name: 'store', required: true, type: 'DAO',
+    { name: 'store', required: true, type: 'foam.core.types.DAO',
       factory: function() {
         // TODO(markdittmer): There should be an easier way to ensure that the
         // IDBDAO can correctly deserialize inner models.

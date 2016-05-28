@@ -18,77 +18,61 @@
 CLASS({
   package: 'foam.tools',
   name: 'GenSwift',
+  extends: 'foam.tools.GenCode',
   requires: [
     'foam.util.swift.SwiftSource',
   ],
   properties: [
     {
-      name: 'name',
-      help: 'ID of the model to serialize',
-      required: true
+      name: 'template',
+      factory: function() { return this.SwiftSource.create(); },
     },
     {
-      name: 'modelFile',
+      name: 'fileExtension',
+      defaultValue: 'swift',
     },
     {
-      name: 'outfile',
-      require: true
+      name: 'requiredDeps',
+      defaultValue: [
+        // MLangs required by MLang.swift.
+        'AndExpr',
+        'BINARY',
+        'ConstantExpr',
+        'EqExpr',
+        'Expr',
+        'FalseExpr',
+        'NARY',
+        'TrueExpr',
+        'UNARY',
+      ],
     },
-    {
-      name: 'viewfile'
-    },
-    {
-      name: 'fs',
-      factory: function() { return require('fs'); }
-    }
   ],
-  methods: {
-    execute: function() {
-      if ( ! this.outfile ) {
-        console.log("ERROR: outfile not specified");
-        process.exit(1);
+  methods: [
+    function getExtraRequires(m) {
+      var requires = [];
+      if (m.model_.id == 'foam.swift.ui.DetailView') {
+        requires = requires.concat([
+          'foam.swift.ui.FoamEnumUILabel',
+          'foam.swift.ui.FoamFloatUITextField',
+          'foam.swift.ui.FoamIntUITextField',
+          'foam.swift.ui.FoamUILabel',
+          'foam.swift.ui.FoamUISwitch',
+          'foam.swift.ui.FoamUITextField',
+        ]);
       }
 
-      aseq(
-        aif(!!this.modelFile,
-            function(ret) {
-              console.log("Reading model from", this.modelFile);
-              var data = this.fs.readFileSync(this.modelFile).toString();
-              var work = [anop];
-              var model = JSONUtil.parse(this.X, data, work);
-
-              if ( work.length > 1 ) {
-                work.push(aconstant(model));
-                aseq.apply(null, work)(ret);
-                return;
-              }
-              ret(model);
-            }.bind(this),
-            function(ret) {
-              console.log("Loading", this.name);
-              this.X.arequire(this.name)(ret)
-            }.bind(this)),
-        function(ret, m) {
-          if ( !m ) {
-            console.log("ERROR: Could not load model");
-            process.exit(1);
-          }
-          
-          var template = this.SwiftSource.create()
-          console.log("Writing", m.id, "swift source to", this.outfile);
-          this.fs.writeFileSync(
-            this.outfile,
-            template.generate(m));
-
-          if ( this.viewfile ) {
-            console.log("Writing", m.name, "DetailView source to", this.viewfile);
-            this.fs.writeFileSync(
-              this.viewfile,
-              template.genDetailView(m));
-          }
-          
-          process.exit(0);
-        }.bind(this))(function(){});
-    }
-  }
+      if (m.id == 'AbstractDAO') {
+        // Required for DAO support and not required by AbstractDAO.
+        requires = requires.concat([
+          'FilteredDAO_',
+          'foam.dao.swift.ArraySink',
+          'foam.dao.swift.ClosureSink',
+          'foam.dao.swift.DAOQueryOptions',
+          'foam.dao.swift.PredicatedSink',
+          'foam.dao.swift.RelaySink',
+        ]);
+      }
+      return requires;
+    },
+  ],
 });

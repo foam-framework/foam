@@ -167,7 +167,17 @@ CLASS({
     },
     {
       name: 'swiftDefaultValue',
-      defaultValue: '""',
+      defaultValueFn: function() {
+        var defaultValue = this.defaultValue || '';
+        return '"' + defaultValue + '"';
+      },
+    },
+    {
+      name: 'javaDefaultValue',
+      defaultValueFn: function() {
+        var defaultValue = this.defaultValue || '';
+        return '"' + defaultValue + '"';
+      },
     },
     {
       name: 'view',
@@ -176,7 +186,7 @@ CLASS({
     },
     {
       name: 'swiftView',
-      defaultValue: 'TextFieldView',
+      defaultValue: 'FoamUITextField',
     },
     {
       name: 'pattern',
@@ -285,7 +295,15 @@ CLASS({
     },
     {
       name: 'swiftDefaultValue',
-      defaultValue: 'false',
+      defaultValueFn: function() {
+        return this.defaultValue + '';
+      },
+    },
+    {
+      name: 'javaDefaultValue',
+      defaultValueFn: function() {
+        return this.defaultValue + '';
+      },
     },
     {
       name: 'javaType',
@@ -301,7 +319,7 @@ CLASS({
     },
     {
       name: 'swiftView',
-      defaultValue: 'BooleanView',
+      defaultValue: 'FoamUISwitch',
     },
     {
       name: 'toPropertyE',
@@ -508,7 +526,11 @@ CLASS({
         }
         return ret;
       }
-    }
+    },
+    {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() { return '' + this.defaultValue; },
+    },
   ]
 });
 
@@ -565,7 +587,15 @@ CLASS({
     },
     {
       name: 'swiftDefaultValue',
-      defaultValue: '0',
+      defaultValueFn: function() {
+        return this.defaultValue + '';
+      },
+    },
+    {
+      name: 'javaDefaultValue',
+      defaultValueFn: function() {
+        return this.defaultValue + '';
+      },
     },
     {
       name: 'view',
@@ -574,7 +604,7 @@ CLASS({
     },
     {
       name: 'swiftView',
-      defaultValue: 'IntFieldView',
+      defaultValue: 'FoamIntUITextField',
     },
     {
       name: 'adapt',
@@ -672,6 +702,14 @@ CLASS({
       defaultValue: 0.0
     },
     {
+      name: 'swiftDefaultValue',
+      defaultValueFn: function() { return '' + this.defaultValue; },
+    },
+    {
+      name: 'javaDefaultValue',
+      defaultValueFn: function() { return '' + this.defaultValue; },
+    },
+    {
       name: 'javaType',
       displayWidth: 10,
       defaultValue: 'double',
@@ -680,6 +718,10 @@ CLASS({
     {
       name: 'swiftType',
       defaultValue: 'Float',
+    },
+    {
+      name: 'swiftView',
+      defaultValue: 'FoamFloatUITextField',
     },
     {
       name: 'displayWidth',
@@ -694,6 +736,19 @@ CLASS({
       defaultValue: function (_, v) {
         return typeof v === 'number' ? v : v ? parseFloat(v) : 0.0 ;
       }
+    },
+    {
+      name: 'swiftAdapt',
+      defaultValue: function() {/*
+        var n: Float?
+        switch newValue {
+          case let newValue as String: n = Float(newValue)
+          case let newValue as NSNumber: n = Float(newValue)
+          default: break
+        }
+        if n != nil { return n! }
+        return 0
+      */},
     },
     {
       name: 'prototag',
@@ -725,7 +780,7 @@ CLASS({
     {
       name: 'javaType',
       displayWidth: 10,
-      defaultValue: 'Function',
+      defaultValue: 'FoamFunction',
       help: 'The Java type of this property.'
     },
     {
@@ -978,7 +1033,47 @@ CLASS({
       label: 'Protobuf tag',
       required: false,
       help: 'The protobuf tag number for this field.'
-    }
+    },
+    {
+      name: 'compareProperty',
+      swiftDefaultValue: function() {/*
+        FoamFunction(fn: { (args) -> AnyObject? in
+          let o1Raw = self.f(args[0])
+          let o2Raw = self.f(args[1])
+          if o1Raw === o2Raw { return 0 }
+
+          // TODO: Arrays of things other than FObjects should also be handled.
+
+          let o1 = o1Raw as? [FObject]
+          let o2 = o2Raw as? [FObject]
+          if (o1 == nil) && (o2 == nil) {
+            return 0
+          }
+          if o1 == nil {
+            return -1
+          }
+          if o2 == nil {
+            return 1
+          }
+
+          if o1!.count != o2!.count {
+            return (o1!.count > o2!.count ? -1 : 1)
+          }
+
+          for i in 0 ..< o1!.count {
+            let o1Current = o1![i]
+            let o2Current = o2![i]
+
+            let result = o1Current.compareTo(o2Current)
+            if result != 0 {
+              return result
+            }
+          }
+
+          return 0
+        })
+      */},
+    },
   ]
 });
 
@@ -1131,7 +1226,7 @@ CLASS({
     {
       name: 'javaType',
       displayWidth: 10,
-      defaultValue: 'String[]',
+      defaultValue: 'java.util.List<String>',
       help: 'The Java type of this property.'
     },
     {
@@ -1175,6 +1270,24 @@ CLASS({
       defaultValue: function(s, p) {
         return s ? s.split(',').map(function(x) { return x.replace(/&#44;/g, ','); }) : undefined;
       }
+    },
+    {
+      name: 'compareProperty',
+      swiftDefaultValue: function() {/*
+        FoamFunction(fn: { (args) -> AnyObject? in
+          let o1 = self.f(args[0])
+          let o2 = self.f(args[1])
+          if o1 === o2 { return 0 }
+          if let o1 = o1 as? [String] {
+            if let o2 = o2 as? [String] {
+              return String(o1).compare(String(o2)).rawValue
+            } else {
+              return 1
+            }
+          }
+          return -1
+        })
+      */},
     },
   ]
 });
@@ -1499,7 +1612,7 @@ CLASS({
   properties: [
     {
       name: 'swiftView',
-      defaultValue: 'PasswordFieldView',
+      defaultValue: 'FoamPasswordUITextField',
     },
   ],
 });
@@ -1602,6 +1715,11 @@ CLASS({
       swiftType: 'FoamEnum.Type',
     },
     {
+      name: 'view',
+      labels: ['javascript'],
+      defaultValue: 'foam.ui.EnumFieldView',
+    },
+    {
       name: 'swiftType',
       defaultValueFn: function() { return this.enum.split('.').pop(); },
     },
@@ -1662,7 +1780,7 @@ CLASS({
     },
     {
       name: 'swiftView',
-      defaultValue: 'PickerEnumFieldView',
+      defaultValue: 'FoamEnumUILabel',
     },
   ]
 });
@@ -1690,6 +1808,34 @@ CLASS({
         }
         return 'FObject';
       },
+    },
+    {
+      name: 'swiftNSCoderEncode',
+      defaultValue:
+          'aCoder.encodeObject(`<%= this.name %>`, forKey: "<%= this.name %>")',
+    },
+    {
+      name: 'swiftNSCoderDecode',
+      defaultValue: 'set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
+    },
+    {
+      name: 'compareProperty',
+      swiftDefaultValue: function() {/*
+        FoamFunction(fn: { (args) -> AnyObject? in
+          let o1 = self.f(args[0])
+          let o2 = self.f(args[1])
+          if o1 === o2 { return 0 }
+          if let o1 = o1 as? FObject {
+            if let o2 = o2 as? FObject {
+              return o1.compareTo(o2)
+            } else {
+              return 1
+            }
+          }
+          return -1
+        })
+      */},
     },
   ]
 });

@@ -267,6 +267,16 @@ CLASS({
                 */}
     },
     {
+      type: 'Function',
+      name: 'iconUrlFn',
+      label: 'Label Function',
+      defaultValue: function(action) { return action.iconUrl; },
+      help: "Function to determine iconUrl. Defaults to 'this.iconUrl'.",
+      documentation: function() { /*
+            A function used to determine the label. Defaults to $$DOC{ref:'.label'}.
+        */}
+    },
+    {
       name: 'ligature',
       type: 'String',
       defaultValue: undefined,
@@ -399,7 +409,7 @@ while (extendsModel) {
   extendsModel = extendsModel.extends
 }
 %>
-<%=override%> func `<%= this.name %>`() {
+<%=override%> public func `<%= this.name %>`() {
   <%= this.swiftCode %>
 }
       */},
@@ -487,7 +497,11 @@ CLASS({
       name: 'javaType',
       type: 'String',
       required: false,
-      defaultValueFn: function() { return this.type; },
+      defaultValueFn: function() {
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
+        return type.create().javaType;
+      },
       help: 'The java type that represents the type of this property.',
       labels: ['debug'],
       documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
@@ -507,13 +521,11 @@ CLASS({
       name: 'swiftType',
       type: 'String',
       labels: ['swift'],
-      defaultValueFn: function() { return this.type; },
-    },
-    {
-      name: 'swiftIsMutable',
-      type: 'Boolean',
-      labels: ['swift'],
-      defaultValue: false,
+      defaultValueFn: function() {
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
+        return type.create().swiftType;
+      },
     },
     {
       name:  'name',
@@ -656,11 +668,53 @@ CLASS({
     },
     {
       type: 'String',
-      name: 'swiftType',
+      name: 'units',
     },
     {
       type: 'String',
+      labels: ['swift'],
+      name: 'swiftType',
+      defaultValueFn: function() {
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
+        return type.create().swiftType;
+      },
+    },
+    {
+      type: 'String',
+      labels: ['swift'],
       name: 'swiftValue',
+      defaultValueFn: function() {
+        if (!this.type) return;
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
+        type = type.create();
+        type.defaultValue = this.value;
+        return type.swiftDefaultValue;
+      },
+    },
+    {
+      type: 'String',
+      labels: ['java'],
+      name: 'javaType',
+      defaultValueFn: function() {
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
+        return type.create().javaType;
+      },
+    },
+    {
+      type: 'String',
+      labels: ['java'],
+      name: 'javaValue',
+      defaultValueFn: function() {
+        if (!this.type) return;
+        var type = X.lookup(this.type + 'Property');
+        if ( !type ) return;
+        type = type.create();
+        type.defaultValue = this.value;
+        return type.javaDefaultValue;
+      },
     },
     {
       name: 'description',
@@ -680,7 +734,7 @@ CLASS({
     },
     {
       name: 'value',
-      help: 'The value of the constant..'
+      help: 'The value of the constant.'
     },
     {
       name:  'type',
@@ -827,12 +881,22 @@ CLASS({
     {
       name:  'javaReturnType',
       labels: ['java'],
-      defaultValue: 'void',
+      defaultValueFn: function() {
+        if (!this.returnType) return 'void';
+        var type = X.lookup(this.returnType + 'Property');
+        if ( !type ) return;
+        return type.create().javaType;
+      },
     },
     {
       name: 'swiftReturnType',
       labels: ['swift'],
-      defaultValue: 'Void',
+      defaultValueFn: function() {
+        if (!this.returnType) return 'Void';
+        var type = X.lookup(this.returnType + 'Property');
+        if ( !type ) return;
+        return type.create().swiftType;
+      },
     },
     {
       type: 'Boolean',
@@ -888,6 +952,11 @@ CLASS({
         */}
     },
     {
+      type: 'Boolean',
+      name: 'isStatic',
+      labels: ['java', 'swift']
+    },
+    {
       name: 'labels'
     },
     {
@@ -928,11 +997,11 @@ while (extendsModel) {
   swiftReturnType = method && method.swiftReturnType || swiftReturnType;
   extendsModel = extendsModel.extends
 }
-
+var static = this.isStatic ? 'static' : '';
 
 %><% if ( this.isMerged || this.isFramed ) {
 %>  var <%= name %>_fired_: Bool = false
-  <%=override%> func <%= name %>() {
+  <%=override%> public func <%= name %>() {
     if <%= name %>_fired_ {
       return
     }
@@ -952,9 +1021,9 @@ while (extendsModel) {
 <%= this.swiftCode %>
   }
 <% } else if ( this.swiftCode ) { %>
-  <%=override%> func `<%= name %>`(<%
+  <%=override%> public <%= static %> func `<%= name %>`(<%
 for ( var i = 0 ; i < args.length ; i++ ) {
-%><%= args[i].swiftIsMutable ? ' var ' : '' %><%= args[i].name %>: <%= args[i].swiftType %><%
+%><%= args[i].name %>: <%= args[i].swiftType %><%
 if ( i != args.length - 1 ) { %>, <% }
 }
 %>) -> <%= swiftReturnType %> {
@@ -999,9 +1068,10 @@ while (extendsModel) {
   returnType = method && method.javaReturnType || returnType;
   extendsModel = extendsModel.extends
 }
+var static = this.isStatic ? 'static' : '';
 %>
   <%= override %>
-  public <%= returnType %> <%= this.name %>(<%
+  public <%= static %> <%= returnType %> <%= this.name %>(<%
  for ( var i = 0 ; args && i < args.length ; i++ ) { var arg = args[i];
 %><%= arg.javaSource() %><% if ( i < args.length-1 ) out(", ");
 %><% } %>) {

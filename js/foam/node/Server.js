@@ -84,7 +84,7 @@ CLASS({
     },
     {
       name: 'daoHandler_',
-      lazyFactory: function() { return this.DAOHandler.create({ path: '/api' }); },
+      factory: function() { return this.DAOHandler.create({ path: '/api' }); },
       postSet: function(old, handler) {
         if ( old ) {
           this.handlers.removeI(function(p) { return p === old; });

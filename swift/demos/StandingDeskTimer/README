@@ -1,0 +1,5 @@
+To run this demo you'll need a mac with the XCode and nodejs installed.
+
+Steps to running (assumes you're in the main foam directory):
+./swift/demos/StandingDeskTimer/gen_swift.sh
+open ./swift/demos/StandingDeskTimer/XCodeProject/StandingTimer.xcodeproj

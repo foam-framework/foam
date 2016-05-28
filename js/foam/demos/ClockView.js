@@ -129,7 +129,6 @@ CLASS({
           defaultValue: 100
         },
         {
-          type: 'Int',
           name: 'a',
           label: 'Rotation',
           defaultValue: 100

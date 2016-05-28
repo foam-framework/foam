@@ -93,7 +93,7 @@ CLASS({
     },
     {
       name: 'delegate',
-      type: 'DAO',
+      type: 'foam.core.types.DAO',
       factory: function() {
         return this.ContextualizingDAO.create({
           delegate: this.VersionNoDAO.create({

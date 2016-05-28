@@ -101,6 +101,15 @@ CLASS({
         }, this.title$, this.model$);
       }
     },
+    {
+      name: 'actionY',
+      factory: function() {
+        var y = this.Y.sub();
+        y.registerModel(this.ActionButton.xbind({ type: 'icon' }),
+            'foam.u2.ActionButton');
+        return y;
+      },
+    },
   ],
 
   actions: [
@@ -123,11 +132,6 @@ CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      this.Y.registerModel(this.ActionButton.xbind({ type: 'icon' }),
-          'foam.u2.ActionButton');
-    },
     function gatherActions(model) {
       if (!model) return [];
       // TODO(markdittmer): Should we be definign a getter for "actions_" so
@@ -145,7 +149,7 @@ CLASS({
           .add(this.dynamic(function(hardSelection) {
             var actions = hardSelection ? this.gatherActions(hardSelection.model_) : [];
             actions = actions.concat(this.gatherActions(this.model_));
-            var X = this.Y.sub({ data: this });
+            var X = this.actionY.sub({ data: this });
             return X.E('table-actions').cls(this.myCls('actions')).add(actions);
           }.bind(this), this.hardSelection$))
           .add(this.editColumnsEnabled ? this.columnSelectionE : null)

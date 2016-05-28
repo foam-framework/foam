@@ -89,7 +89,8 @@ CLASS({
     {
       name: 'size',
       type: 'Int',
-      defaultValue: 1
+      defaultValue: 1,
+      postSet: function(_, n) { if (this.$) this.$.size = n; },
     }
   ],
 

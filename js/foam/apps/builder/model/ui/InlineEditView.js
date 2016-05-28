@@ -154,6 +154,7 @@ CLASS({
         flex-grow: 1;
         background: white;
         border: 1px solid rgba(0,0,0,0.5);
+        padding: 1em;
       }
       .inline-edit-view toolbar {
         width: unset;

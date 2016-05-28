@@ -266,9 +266,11 @@ CLASS({
           var rowHeight = row.offsetHeight;
           var rows = Math.floor((containerHeight - headHeight) / rowHeight);
           this.rows = rows;
-          this.scrollbar.extent = rows;
-          this.scrollbar.height = containerHeight - headHeight - 10;
-          this.scrollbar.view.paint();
+          if ( this.scrollEnabled ) {
+            this.scrollbar.extent = rows;
+            this.scrollbar.height = containerHeight - headHeight - 10;
+            this.scrollbar.view.paint();
+          }
         } else {
           if (this.scrollbar.size > 0) {
             // If the scrollbar.size is nonzero, there are rows to show but none

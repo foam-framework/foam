@@ -21,7 +21,6 @@ CLASS({
 
   properties: [
     {
-      type: 'foam.util.zip.Archive',
       name: 'archive',
       lazyFactory: function() {
         return this.Archive.create({}, this.Y);

@@ -56,7 +56,11 @@ CLASS({
     },
     {
       name: 'iconUrl',
-      defaultValueFn: function() { return this.action.iconUrl; }
+      defaultValueFn: function() {
+        return this.data ?
+          this.action.iconUrlFn.call(this.data, this.action) :
+          this.action.iconUrl;
+      }
     },
     {
       name: 'tooltip',
@@ -94,6 +98,7 @@ CLASS({
       }, this.id);
 
       this.X.dynamicFn(function() { self.action.labelFn.call(self.data, self.action); self.updateHTML(); });
+      this.X.dynamicFn(function() { self.action.iconUrlFn.call(self.data, self.action); self.updateHTML(); });
 
       return superResult;
     },

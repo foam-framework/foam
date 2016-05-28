@@ -33,7 +33,6 @@ MODEL({
     },
     {
       name: 'rootChromeFile',
-      type: 'foam.dao.ChromeFile',
       defaultValue: null
     },
     {

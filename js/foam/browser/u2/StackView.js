@@ -176,7 +176,7 @@ CLASS({
       e.add(obj.content);
       e.start('div')
           .cls(this.myCls('edge'))
-          .cls(this.myCls('hidden'), this.noDecoration$)
+          .enableCls(this.myCls('hidden'), this.noDecoration$)
           .end();
       return e;
     },
