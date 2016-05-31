@@ -51,6 +51,17 @@ CLASS({
 
   templates: [
     function javaSource(_, util) {/*<%
+var primitives = [
+  'byte',
+  'char',
+  'short',
+  'int',
+  'long',
+  'float',
+  'double',
+  'boolean',
+];
+
 var propertyMap = {}
 var toPropertyMap = function(f) {
   propertyMap[f.name] = f;
@@ -175,7 +186,9 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     if (<%= name %>Inited_) {
       return <%= name %>_;
     }
-    <% if (prop.javaDefaultValue) { %>
+    <% if (prop.javaDefaultValueFn) { %>
+    <%= prop.javaDefaultValueFn %>
+    <% } else if (prop.javaDefaultValue) { %>
     return <%= prop.javaDefaultValue %>;
     <% } else if (propFactory) { %>
     set<%= name.capitalize() %>(_<%= name %>_factory());
@@ -234,18 +247,6 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       return false;
     }
     <%= this.javaClassName %> castedO = (<%= this.javaClassName %>) o;
-<%
-var primitives = [
-  'byte',
-  'char',
-  'short',
-  'int',
-  'long',
-  'float',
-  'double',
-  'boolean',
-];
-%>
 <% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
   <% var get = 'get' + prop.name.capitalize() + '()'; %>
   <% if (primitives.indexOf(prop.javaType) == -1) { %>
@@ -308,6 +309,23 @@ var primitives = [
 <% } %>
       default:
         super.set(key, value);
+        break;
+    }
+  }
+
+  public void clearProperty(String key) {
+    switch (key) {
+<% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
+  <% var name = prop.name %>
+      case "<%= name %>":
+  <% if (primitives.indexOf(prop.javaType) == -1) { %>
+        <%= name %>_ = null;
+  <% } %>
+        <%= name %>Inited_ = false;
+        break;
+<% } %>
+      default:
+        super.clearProperty(key);
         break;
     }
   }

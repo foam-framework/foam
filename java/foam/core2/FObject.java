@@ -23,6 +23,7 @@ import java.util.List;
 
 public abstract class FObject implements Cloneable, java.io.Serializable {
   public void set(String key, Object value) {}
+  public void clearProperty(String key) {}
   public Object get(String key) { return null; }
   public Property getProperty(String key) { return null; }
   public abstract foam.core.Model getModel();
