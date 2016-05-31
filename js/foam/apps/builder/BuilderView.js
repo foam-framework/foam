@@ -82,6 +82,9 @@ CLASS({
         flex-grow: 1;
         overflow: hidden;
       }
+      wizard .property-edit-view .md-text-field-container.md-style-trait-standard {
+        min-width: 200px;
+      }
     */},
   ],
 });
