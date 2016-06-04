@@ -18,7 +18,7 @@
 // TODO(kgr): add rotation to CView to complete demo
 CLASS({
   package: 'foam.demos.modeldiagram',
-  name: 'ModelDiagram',
+  name: 'ModelDiagramOTY',
   extends: 'foam.graphics.CView',
 
   requires: [
