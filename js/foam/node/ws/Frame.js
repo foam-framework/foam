@@ -29,14 +29,7 @@ CLASS({
     'buffer',
     ['bufferPos', 0],
     ['needed', 0],
-    {
-      name: 'headerState',
-      postSet: function(old, f) {
-        if ( typeof f !== 'function' ) {
-          console.log("Set from", old, "to", f);
-        }
-      }
-    },
+    'headerState',
     'state',
     ['length_', 0],
     {
@@ -52,9 +45,7 @@ CLASS({
   ],
   methods: [
     function init() {
-      console.log("Setting header state");
       this.headerState = this.frameHeader;
-      console.log("Set to", this.headerState);
       this.state = this.readHeader;
     },
     function toData() {
