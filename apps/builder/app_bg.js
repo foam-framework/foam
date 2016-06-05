@@ -4,12 +4,12 @@ var X = window.X;
 // Fetch config file via XHR.
 function agetConfig(ret) {
   var CONFIG_PATH = 'config.json';
-  X.XHR.create().asend(function(str, xhr, status) {
+  X.lookup('XHR').create().asend(function(str, xhr, status) {
     if ( ! status ) console.error('Failed to load app configuration from', CONFIG_PATH);
     // TODO(markdittmer): Shouldn't JSONUtil provide a Chrome App-friendly
     // API for this?
     aeval('(' + str + ')')(function(data) {
-      ret(X.JSONUtil.mapToObj(X, data));
+      ret(JSONUtil.mapToObj(X, data));
     });
   }, CONFIG_PATH);
 }

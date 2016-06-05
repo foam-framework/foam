@@ -216,14 +216,14 @@ CLASS({
     {
       name: 'openTooltip',
       code: function(e) {
-        console.assert(! this.tooltip_, 'Tooltip already defined');
-        this.X.arequire('foam.ui.Tooltip')(function(Tooltip) {
-          if (!Tooltip) return;
-          this.tooltip_ = Tooltip.create({
-            text:   this.tooltip,
-            target: this.$
-          }, this.Y);
-        }.bind(this));
+        // console.assert(! this.tooltip_, 'Tooltip already defined');
+        // this.X.arequire('foam.ui.Tooltip')(function(Tooltip) {
+        //   if (!Tooltip) return;
+        //   this.tooltip_ = Tooltip.create({
+        //     text:   this.tooltip,
+        //     target: this.$
+        //   }, this.Y);
+        // }.bind(this));
       }
     },
     {

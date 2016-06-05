@@ -28,7 +28,6 @@ CLASS({
       defaultValue: null,
     },
     {
-      type: 'foam.ui.md.Toolbar',
       name: 'toolbar',
     },
     {

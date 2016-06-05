@@ -38,7 +38,7 @@ CLASS({
     {
       name:  'color',
       type:  'String',
-      defaultValue: 'black'
+      defaultValue: '#555'
     },
     {
       name:  'devColor',
@@ -149,7 +149,7 @@ CLASS({
 
       this.parent.addChild(this);
 
-      this.l = Label.create({parent: this.parent, align: 'left', font:'18pt Arial', x:20, y:18});
+      this.l = Label.create({parent: this.parent, color: '#333', align: 'left', font:'18pt Arial', x:20, y:18});
 
       this.mouse.connect(this.parent.$);
 
@@ -327,16 +327,16 @@ CLASS({
       c.font = this.font;
       // draw feature labels along the top row
       for ( var i = 0 ; i <= fs ; i++ ) {
-        c.fillStyle = 'lightGray';
+        c.fillStyle = 'rgba(200,200,200,0.6)';
         c.fillRect(i*w/(fs+1),0,w/(fs+1),h/(es+1));
-        c.fillStyle = 'black';
+        c.fillStyle = '#555';
         if ( i > 0 ) c.fillText(this.features[i-1], i*w/(fs+1)+5 , h/(es+1)/2+11);
       }
       // draw entity labels along the left column
       for ( var i = 0 ; i <= es ; i++ ) {
-        c.fillStyle = 'lightGray';
+        c.fillStyle = 'rgba(200,200,200,0.6)';
         c.fillRect(0, i*h/(es+1),w/(fs+1),h/(es+1));
-        c.fillStyle = 'black';
+        c.fillStyle = '#555';
         if ( i > 0 ) c.fillText(this.entities[i-1], 8, (i+0.5)*h/(es+1)+11, w/(fs+1)-15);
       }
 
@@ -345,7 +345,7 @@ CLASS({
       for ( var i = 0 ; i < fs ; i++ )
         c.fillRect((1+i)*w/(fs+1),0,3,h);
       for ( var i = 0 ; i < es ; i++ )
-        c.fillRect(0,(1+i)*h/(es+1),w,3);
+        c.fillRect(0,(1+i)*h/(es+1),w+1,3);
 
       // draw individual cell contents
       c.fillStyle = '#55ee55';
@@ -455,7 +455,7 @@ CLASS({
       canvas.fillStyle = this.color;
 
       canvas.beginPath();
-      canvas.arc(this.x, this.y, 6, 0, Math.PI*2, true);
+      canvas.arc(this.x, this.y, 5, 0, Math.PI*2, true);
       canvas.closePath();
       canvas.fill();
     }

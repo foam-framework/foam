@@ -17,6 +17,7 @@ CLASS({
   requires: [
     'foam.browser.ui.BrowserView',
     'foam.ui.FutureView',
+    'foam.apps.builder.model.ui.Loader',
   ],
   imports: [
     'setTimeout'
@@ -24,6 +25,13 @@ CLASS({
   exports: [
     'appSelection as selection',
     'appSelection',
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      this.Loader.create();
+    }
   ],
 
   properties: [
@@ -73,6 +81,9 @@ CLASS({
         display: flex;
         flex-grow: 1;
         overflow: hidden;
+      }
+      wizard .property-edit-view .md-text-field-container.md-style-trait-standard {
+        min-width: 200px;
       }
     */},
   ],

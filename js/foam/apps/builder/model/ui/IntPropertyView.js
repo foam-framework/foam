@@ -17,9 +17,9 @@
 
 
 CLASS({
-  name: 'IntPropertyEditView',
+  name: 'IntPropertyView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyEditView',
+  extends: 'foam.apps.builder.model.ui.PropertyView',
 
   requires: [
   ],
@@ -32,11 +32,6 @@ CLASS({
   templates: [
     function toHTML() {/*
       <div id="%%id" <%= this.cssClassAttr() %>>
-        <div class="md-flex-row-baseline">
-          $$minValue
-          $$maxValue
-          $$defaultValue
-        </div>
 
       </div>
     */},

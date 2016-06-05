@@ -86,7 +86,6 @@ CLASS({
       ],
     },
     {
-      type: 'foam.ui.CSSTransitionSet',
       name: 'cssTransitions',
       lazyFactory: function() {
         return this.CSSTransitionSet.create({

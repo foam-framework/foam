@@ -179,6 +179,10 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   <% if (prop.swiftValidate) { %>
   <%= override %> func validate_<%= name %>() -> String? {
     let value = <%= name %>
+    let property = <%= constant %>
+    // No-ops to silence unused variable warning if they're not used in the valdation code.
+    value
+    property
     <%= multiline(prop.swiftValidate) %>
   }
   <% } %>
@@ -204,6 +208,8 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       }()
       self.set("<%= name %>", value: factoryValue)
       return <%= name %>_!
+    <% } else if (prop.swiftDefaultValueFn) { %>
+      <%= prop.swiftDefaultValueFn %>
     <% } else if (prop.swiftDefaultValue) { %>
       return <%= prop.swiftDefaultValue %>
     <% } else if (prop.swiftType.slice(-1).match(/[?!]/)) { %>
@@ -354,7 +360,9 @@ for ( var i = 0, prop; prop = allProperties[i]; i++ ) {
 for (var i = 0, prop; prop = modelProperties[i]; i++) {
   if (!prop.transient) {
 %>
-    <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftNSCoderEncode)).bind(prop)() %>
+    if <%= prop.name %>Inited_ {
+      <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftNSCoderEncode)).bind(prop)() %>
+    }
 <%
   }
 }
