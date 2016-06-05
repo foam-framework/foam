@@ -164,7 +164,7 @@ var p = this.Person.create({
    married: true
 });
         */}) },
-        { name: '.hashCode()', factory: multiline(function() {/*
+        { name: '.hashCode()', pause: false, factory: multiline(function() {/*
 > p.hashCode();
 < 343020328
 > p.firstName = 'Steve';
@@ -177,35 +177,15 @@ var p = this.Person.create({
         { name: '.equals()' },
         { name: '.compareTo()' },
         { name: 'Observer' },
-        { name: 'XML', factory: multiline(function() {/*
-> p.toXML();
-< "<foam>
-<object model="Person">
-  <property name="id">1</property>
-  <property name="firstName">John</property>
-  <property name="lastName">Smith</property>
-  <property name="age">42</property>
-  <property name="married">true</property>
-</object>
-</foam>"
-*/}) },
-        { name: 'JSON',  factory: multiline(function() {/*
-> p.toJSON();"
-< "{
-   model_: "foam.demos.modeldiagram.Person",
-   "id": 1,
-   "firstName": "John",
-   "lastName": "Smith",
-   "age": 42,
-   "married": true
-}"*/})  },
+        { name: 'XML' },
+        { name: 'JSON' },
         { name: 'ProtoBuf' },
         { name: 'Detail View', factory: function() { return self.DetailView.create({data:p, showActions:true}); } },
-        { name: 'MD View', factory: function() { return self.MDDetailView.create({data:p}); } },
-        { name: 'Table View', factory: function() { return self.TableView.create({model:self.Person, dao: people}); } },
+        { name: 'MD View',     factory: function() { return self.MDDetailView.create({data:p}); } },
+        { name: 'Table View',  factory: function() { return self.TableView.create({model:self.Person, dao: people}); } },
         { name: 'List View' },
-        { name: 'Help View', factory: function() { return self.HelpView.create({model:Model}); } },
-        { name: 'Grid View', factory: function() { return { toHTML: function() { return '<img class="shadow0515" style="border:1px solid;max-height:510px" width="35%" src="./js/foam/demos/modeldiagram/WarpedGrid.png">'; }, initHTML: function() { }}; } },
+        { name: 'Help View' },
+        { name: 'Grid View' },
         { name: 'Query' },
         { name: 'Local Store' },
         { name: 'ClientDAO' },
@@ -218,8 +198,7 @@ var p = this.Person.create({
         { name: 'Cloud Store' },
         { name: 'Firebase' },
         { name: 'Controller', factory: function() { return { toHTML: function() { return '<img class="shadow0515" height="55%" style="margin-left: 100px;border:1px solid;max-height:510px" src="./demos/democat/TodoBrowser.png">'; }, initHTML: function() { }}; } },
-        { name: 'UML', factory: function() { return self.DocDiagramView.create({data:self.Person}); }},
-//        { name: 'Docs', factory: function() { return self.DocViewPicker.create({data:self.Person}); }},
+        { name: 'UML' },
         { name: '...' }
       ];
 
@@ -268,7 +247,6 @@ var p = this.Person.create({
         }
       }]);
 
-
       anim.push([500, function() {
         var cs = self.children.clone();
         for ( var j = 1 ; j < cs.length ; j++ ) {
@@ -297,6 +275,7 @@ var p = this.Person.create({
       fnum = 0;
       fs.forEach(function(f) { feature(f, anim, 1800, 0, 0.15); });
 
+      /*
       // Unit Tests
       anim.push([0]);
       anim.push(function() {
@@ -318,6 +297,7 @@ var p = this.Person.create({
           if ( self.Box.isInstance(c) && c.text === 'Unit Test') c.alpha = 0.25;
         }
       }]);
+      */
 
       anim.push([0]);
       anim.push([1000, function() {
