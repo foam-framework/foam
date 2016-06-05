@@ -90,12 +90,14 @@ CLASS({
         function() {
           m0 = addImage(v, 'js/foam/demos/modeldiagram/PersonV0.png');
         },
+        /*
         [0],
         function() {
           m0.parent.removeChild(m0);
           m0 = addImage(v, 'js/foam/demos/modeldiagram/PersonV05.png');
           c1 = addImage(cls, 'js/foam/demos/modeldiagram/PersonJava.png');
         },
+        */
         [0],
         [500, function() {
           cls.x += 150;
