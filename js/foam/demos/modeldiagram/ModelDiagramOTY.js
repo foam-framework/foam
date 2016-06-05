@@ -166,14 +166,7 @@ var p = this.Person.create({
    married: true
 });
         */}) },
-        { name: '.hashCode()', pause: false, factory: multiline(function() {/*
-> p.hashCode();
-< 343020328
-> p.firstName = 'Steve';
-< "Steve"
-> p.hashCode();
-< 1609175968
-*/}) },
+        { name: '.hashCode()' },
         { name: '.copyFrom()' },
         { name: '.clone()' },
         { name: '.equals()' },
