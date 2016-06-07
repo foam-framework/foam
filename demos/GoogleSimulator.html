@@ -19,7 +19,7 @@
       arequire('foam.ui.View')
    )(function() {
     timer  = foam.util.Timer.create({interval:20});
-    var space  = Canvas.create({width: 1000, height: 750, background:'#fff'});
+    var space  = Canvas.create({width: 1200, height: 750, background:'#fff'});
 
 //    timer.write();
 
@@ -34,8 +34,9 @@
       devColor: 'google',
       numDev: 2,
       y:0,
-      features: ['search'],
-      entities: ['web pages'],
+//      width: 1200,
+      features: ['Search'],
+      entities: ['Web Pages'],
     })];
 
     sys[0].architecture = System.getPrototype().mixed;
@@ -150,12 +151,12 @@
        [1000], function() { s.entities.push('Calendar'); addPlatform('iPhone');},
        [1000], function() { s.entities.push('Groups'); },
        [1000], function() { s.entities.push('News'); },
-       [1000], function() { s.entities.push('ToDo'); addPlatform('Android');},
+       [1000], function() { s.entities.push('Tasks'); addPlatform('Android');},
        [1000], function() { s.entities.push('Photos'); },
        [1000], function() { s.entities.push('Video'); },
        [1000], function() { s.features.push('Rating'); },
-       [1000], function() { s.features.push('Discussion'); addPlatform('Chrome');},
-       [1000], function() { s.features.push('Translate'); },
+       [1000], function() { s.features.push('a11y'); addPlatform('Chrome');},
+       [1000], function() { s.features.push('i18n'); },
        [1000], function() { s.entities.push('Books'); },
        [1000], function() { s.entities.push('Docs'); s.features.push('Sort'); },
        [1000], function() { s.entities.push('Chat'); },
@@ -164,8 +165,8 @@
        [1000], function() { s.features.push('Offline'); },
        [1000], function() { s.features.push('Sync'); },
        [1000], function() { s.entities.push('Bookmarks'); },
-       [1000], function() { s.entities.push('Presentations'); },
-       [1000], function() { s.entities.push('Spreadsheets'); },
+       [1000], function() { s.entities.push('Slides'); },
+       [1000], function() { s.entities.push('Sheets'); },
        [1000], function() { s.entities.push('Blogs'); addPlatform("Glass"); },
        [1000], function() { s.entities.push('Sites'); },
        [1000], function() { s.features.push('Drive'); },
