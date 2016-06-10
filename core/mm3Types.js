@@ -576,13 +576,22 @@ CLASS({
     {
       name: 'swiftAdapt',
       defaultValue: function() {/*
-        // If it's already an int, use it.
         if let intVal = newValue as? Int { return intVal }
-        // If it's a string, convert it.
         if let strVal = newValue as? String, intVal = Int(strVal) as Int! {
           return intVal
         }
         return 0
+      */},
+    },
+    {
+      name: 'javaAdapt',
+      defaultValue: function() {/*
+        if (newValue instanceof Integer) { return (Integer) newValue; }
+        try {
+          return Integer.parseInt(newValue.toString());
+        } catch (Exception e) {
+          return 0;
+        }
       */},
     },
     {
