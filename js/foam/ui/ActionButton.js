@@ -52,6 +52,9 @@ CLASS({
         return this.data ?
             this.action.labelFn.call(this.data, this.action) :
             this.action.label;
+      },
+      postSet: function() {
+        this.updateHTML();
       }
     },
     {
