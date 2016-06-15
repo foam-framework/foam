@@ -316,7 +316,7 @@ for ( var i = 0 ; i < modelProperties.length ; i++ ) {
         <%= name %>_ = _<%= name %>PreSet_(oldValue, newValue: _<%= name %>Adapt_(oldValue, newValue: value))
         <%= name %>Inited_ = true
         _<%= name %>PostSet_(oldValue, newValue: <%= name %>_!)
-        self.firePropertyChangeEvent("<%= name %>", oldValue: oldValue, newValue: <%= name %>_!)
+        self.firePropertyChangeEvent("<%= name %>", oldValue: oldValue, newValue: self.`<%= name %>`)
 <% } %>
 <% if (idName) { %>
       case "id":
@@ -334,8 +334,10 @@ for ( var i = 0 ; i < modelProperties.length ; i++ ) {
   var name = prop.name;
 %>
       case "<%= name %>":
+        let oldValue: AnyObject? = <%= name %>Inited_ ? `<%= name %>` : nil
         <%= name %>_ = nil
         <%= name %>Inited_ = false
+        self.firePropertyChangeEvent("<%= name %>", oldValue: oldValue, newValue: self.`<%= name %>`)
 <% } %>
 <% if (idName) { %>
       case "id":
