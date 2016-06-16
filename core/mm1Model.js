@@ -448,6 +448,7 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
       name: 'properties',
       type: 'Array[Property]',
       subType: 'Property',
+      javaType: 'java.util.List<foam.core.Property>',
       view: 'foam.ui.ArrayView',
       factory: function() { return []; },
       help: 'Properties associated with the entity.',

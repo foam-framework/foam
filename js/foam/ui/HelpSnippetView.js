@@ -17,7 +17,6 @@ CLASS({
   properties: [
     'data',
     {
-      type: 'foam.ui.BaseView',
       name: 'target',
       required: true,
     },

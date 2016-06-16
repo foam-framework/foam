@@ -47,7 +47,6 @@ CLASS({
     },
     // {
     //   name: 'fileSystem',
-    //   type: 'foam.dao.ChromeFileSystem',
     //   defaultValue: null
     // },
     // Directory only:

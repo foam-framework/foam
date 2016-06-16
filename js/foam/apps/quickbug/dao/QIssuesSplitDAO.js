@@ -38,14 +38,14 @@ CLASS({
     },
     {
       name: 'local',
-      type: 'DAO',
+      type: 'foam.core.types.DAO',
       mode: "read-only",
       hidden: true,
       required: true
     },
     {
       name: 'remote',
-      type: 'DAO',
+      type: 'foam.core.types.DAO',
       mode: "read-only",
       hidden: true,
       required: true

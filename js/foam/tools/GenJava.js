@@ -15,27 +15,27 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'IntPropertyView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyView',
-
+  package: 'foam.tools',
+  name: 'GenJava',
+  extends: 'foam.tools.GenCode',
   requires: [
+    'foam.util.JavaSource2',
   ],
-
   properties: [
-    [ 'className', 'property-edit-view' ],
-    [ 'mode', 'read-write' ],
+    {
+      name: 'template',
+      factory: function() { return this.JavaSource2.create(); },
+    },
+    {
+      name: 'fileExtension',
+      defaultValue: 'java',
+    },
+    {
+      name: 'requiredDeps',
+      defaultValue: [
+        'Model',
+      ],
+    },
   ],
-
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-
-      </div>
-    */},
-
-  ]
-
 });

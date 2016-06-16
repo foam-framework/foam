@@ -17,7 +17,7 @@
 
 
 CLASS({
-  name: 'PropertyEditView',
+  name: 'PropertyView',
   package: 'foam.apps.builder.model.ui',
   extends: 'foam.ui.md.DetailView',
 
@@ -35,23 +35,6 @@ CLASS({
     [ 'mode', 'read-write' ],
   ],
 
-  actions: [
-    {
-      name: 'delete',
-      help: 'Delete this item.',
-      ligature: 'delete',
-      isAvailable: function() {
-        return (this.mode == 'read-write') &&
-          (this.dao && this.dao.remove);
-      },
-      code: function() {
-        if (this.dao && this.dao.remove) {
-          this.dao.remove(this.data);
-        }
-      }
-    }
-  ],
-
 
   templates: [
     function toHTML() {/*
@@ -66,6 +49,7 @@ CLASS({
         align-content: baseline;
         flex-grow: 1;
         background: white;
+        padding: 1em;
       }
     */},
 

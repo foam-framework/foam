@@ -47,6 +47,7 @@ GLOBAL.Property = {
     {
       name: 'name',
       swiftType: 'String',
+      javaType: 'String',
       required: true,
       displayWidth: 30,
       displayHeight: 1,
@@ -67,6 +68,7 @@ GLOBAL.Property = {
     {
       name: 'label',
       swiftType: 'String',
+      javaType: 'String',
       required: false,
       displayWidth: 70,
       displayHeight: 1,
@@ -159,8 +161,19 @@ GLOBAL.Property = {
       adapt: function(_, n) { return multiline(n); },
     },
     {
+      name: 'swiftDefaultValueFn',
+      labels: ['swift', 'compiletime'],
+      adapt: function(_, n) { return multiline(n); },
+    },
+    {
       name: 'javaDefaultValue',
       labels: ['java', 'compiletime'],
+      adapt: function(_, n) { return multiline(n); },
+    },
+    {
+      name: 'javaDefaultValueFn',
+      labels: ['java', 'compiletime'],
+      adapt: function(_, n) { return multiline(n); },
     },
     {
       name: 'protobufType',
@@ -538,7 +551,8 @@ GLOBAL.Property = {
     {
       name: 'validate',
       type: 'Function',
-      labels: ['javascript'],
+      swiftType: 'FoamFunction?',
+      javaType: 'FoamFunction<String>',
       required: false,
       view: 'foam.ui.FunctionView',
       help: 'Function for validating property value.',
@@ -576,20 +590,11 @@ GLOBAL.Property = {
     },
     {
       name: 'swiftValidate',
-      swiftType: 'FoamFunction?',
-      labels: ['swift'],
-      preSet: function(_, f) {
-        if (typeof f !== "function") return f;
-        var str = f.toString();
-        var deps = str.
-          match(/^function[ _$\w]*\(([ ,\w]*)/)[1].
-          split(',').
-          map(function(name) { return name.trim(); });
-        return {
-          code: multiline(f),
-          deps: deps,
-        };
-      },
+      labels: ['swift', 'compiletime'],
+    },
+    {
+      name: 'javaValidate',
+      labels: ['java', 'compiletime'],
     },
     {
       name: 'javaAdapt',

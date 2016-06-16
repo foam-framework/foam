@@ -34,7 +34,7 @@ class PropertyChangeListener {
   }
 }
 
-class PropertyChangeSupport: NSObject {
+public class PropertyChangeSupport: NSObject {
   var listeners: [String: [PropertyChangeListener]] = [:]
   var globalListeners: [PropertyChangeListener] = []
 
@@ -87,7 +87,7 @@ class Model {
   }
 }
 
-class FObject: PropertyChangeSupport, NSCoding {
+public class FObject: PropertyChangeSupport, NSCoding {
   init(args: [String:AnyObject?] = [:]) {
     super.init()
     for key in args.keys {
@@ -127,7 +127,7 @@ class FObject: PropertyChangeSupport, NSCoding {
   func validateObject() -> [String]? {
     var ret: [String]? = nil
     for p in getModel().properties {
-      let err = getProperty(p.name)?.swiftValidate?.call(self) as? String
+      let err = getProperty(p.name)?.validate?.call(self) as? String
       if err != nil {
         if ret == nil { ret = [] }
         ret!.append(err!)
@@ -147,7 +147,7 @@ class FObject: PropertyChangeSupport, NSCoding {
     }
     return 0
   }
-  override func isEqual(object: AnyObject?) -> Bool {
+  override public func isEqual(object: AnyObject?) -> Bool {
     if let fdata = object as? FObject {
       return self.compareTo(fdata) == 0
     }
@@ -165,8 +165,8 @@ class FObject: PropertyChangeSupport, NSCoding {
   }
   // MARK: NSCoding
   // Subclasses should override these.
-  func encodeWithCoder(aCoder: NSCoder) { }
-  required init(coder aDecoder: NSCoder) { }
+  public func encodeWithCoder(aCoder: NSCoder) { }
+  required public init(coder aDecoder: NSCoder) { }
 }
 
 protocol Value : class {
@@ -176,7 +176,7 @@ protocol Value : class {
   func removeListener(l: PropertyChangeListener?)
 }
 
-class PropertyValue: Value {
+public class PropertyValue: Value {
   var obj: FObject
   var prop: String
 

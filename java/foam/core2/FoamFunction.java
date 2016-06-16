@@ -15,27 +15,8 @@
  * limitations under the License.
  */
 
+package foam.core2;
 
-CLASS({
-  name: 'IntPropertyView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyView',
-
-  requires: [
-  ],
-
-  properties: [
-    [ 'className', 'property-edit-view' ],
-    [ 'mode', 'read-write' ],
-  ],
-
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-
-      </div>
-    */},
-
-  ]
-
-});
+public abstract class FoamFunction<T> {
+  public abstract T call(Object... args);
+}

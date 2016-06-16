@@ -1,7 +1,5 @@
 #!/bin/bash
-#
-# Generates Swift classes from FOAM models and builds the xcode file.
-# For local development, use this instead of rungyp.sh
+# Generates Swift classes from FOAM models.
 
 cd $(dirname $0) || exit 1
 

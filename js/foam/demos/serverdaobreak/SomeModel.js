@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,16 @@
  * limitations under the License.
  */
 
-
 CLASS({
-  name: 'IntPropertyView',
-  package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyView',
-
-  requires: [
+  name: 'SomeModel',
+  package: 'foam.demos.serverdaobreak',
+  traits: [
+    'foam.core.dao.SyncTrait',
   ],
-
   properties: [
-    [ 'className', 'property-edit-view' ],
-    [ 'mode', 'read-write' ],
+    'id',
+    'from',
+    'subject',
+    'body',
   ],
-
-  templates: [
-    function toHTML() {/*
-      <div id="%%id" <%= this.cssClassAttr() %>>
-
-      </div>
-    */},
-
-  ]
-
 });

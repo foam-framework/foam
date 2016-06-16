@@ -107,7 +107,7 @@ import Foundation
 <% this.swiftClassImports.forEach(function(swiftImport) { %>
 import <%= swiftImport %>
 <% }) %>
-class <%= this.swiftClassName %>: <%= parent && parent.swiftClassName || 'FObject' %><%
+public class <%= this.swiftClassName %>: <%= parent && parent.swiftClassName || 'FObject' %><%
 if ( this.swiftImplements.length > 0 ) {
   %>, <% for ( var i = 0; i < this.swiftImplements.length - 1; i++ ) { %><%= this.swiftImplements[i] %>, <% } %><%= this.swiftImplements[i] %>
 <% } %> {<%
@@ -169,16 +169,23 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       }
     }
     if (prop.swiftValidate) { %>
-    p.swiftValidate = FoamFunction(fn: { (args) -> AnyObject? in
+    p.validate = FoamFunction(fn: { (args) -> AnyObject? in
       let data = args[0] as! <%= this.swiftClassName %>
-      <% prop.swiftValidate.deps.forEach(function(dep) { %>
-      let <%= dep %> = data.<%= dep %>
-      <% }) %>
-      <%= prop.swiftValidate.code %>
+      return data.validate_<%= name %>()
     })<%
     } %>
     return p
   }()
+  <% if (prop.swiftValidate) { %>
+  <%= override %> func validate_<%= name %>() -> String? {
+    let value = <%= name %>
+    let property = <%= constant %>
+    // No-ops to silence unused variable warning if they're not used in the valdation code.
+    value
+    property
+    <%= multiline(prop.swiftValidate) %>
+  }
+  <% } %>
   <%= override %> class var <%= constant %>: <%= propertyModel %> {
     get {
       return <%= this.swiftClassName %>_<%= constant %>
@@ -201,6 +208,8 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       }()
       self.set("<%= name %>", value: factoryValue)
       return <%= name %>_!
+    <% } else if (prop.swiftDefaultValueFn) { %>
+      <%= prop.swiftDefaultValueFn %>
     <% } else if (prop.swiftDefaultValue) { %>
       return <%= prop.swiftDefaultValue %>
     <% } else if (prop.swiftType.slice(-1).match(/[?!]/)) { %>
@@ -307,7 +316,7 @@ for ( var i = 0 ; i < modelProperties.length ; i++ ) {
         <%= name %>_ = _<%= name %>PreSet_(oldValue, newValue: _<%= name %>Adapt_(oldValue, newValue: value))
         <%= name %>Inited_ = true
         _<%= name %>PostSet_(oldValue, newValue: <%= name %>_!)
-        self.firePropertyChangeEvent("<%= name %>", oldValue: oldValue, newValue: <%= name %>_!)
+        self.firePropertyChangeEvent("<%= name %>", oldValue: oldValue, newValue: self.`<%= name %>`)
 <% } %>
 <% if (idName) { %>
       case "id":
@@ -325,8 +334,10 @@ for ( var i = 0 ; i < modelProperties.length ; i++ ) {
   var name = prop.name;
 %>
       case "<%= name %>":
+        let oldValue: AnyObject? = <%= name %>Inited_ ? `<%= name %>` : nil
         <%= name %>_ = nil
         <%= name %>Inited_ = false
+        self.firePropertyChangeEvent("<%= name %>", oldValue: oldValue, newValue: self.`<%= name %>`)
 <% } %>
 <% if (idName) { %>
       case "id":
@@ -346,12 +357,14 @@ for ( var i = 0, prop; prop = allProperties[i]; i++ ) {
 } %>
   }
 
-  override func encodeWithCoder(aCoder: NSCoder) {
+  override public func encodeWithCoder(aCoder: NSCoder) {
 <%
 for (var i = 0, prop; prop = modelProperties[i]; i++) {
   if (!prop.transient) {
 %>
-    <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftNSCoderEncode)).bind(prop)() %>
+    if <%= prop.name %>Inited_ {
+      <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftNSCoderEncode)).bind(prop)() %>
+    }
 <%
   }
 }
@@ -359,7 +372,7 @@ for (var i = 0, prop; prop = modelProperties[i]; i++) {
     super.encodeWithCoder(aCoder)
   }
 
-  required init(coder aDecoder: NSCoder) {
+  required public init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
 <%
 for (var i = 0, prop; prop = modelProperties[i]; i++) {

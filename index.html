@@ -4,6 +4,20 @@
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <link rel="stylesheet" href="core/foam.css" />
     <link rel="stylesheet" href="fonts.css" />
+    <script>
+      (function() {
+      var flags = window.location.search.substring(1).split('&').find(function(p) {
+      return p.indexOf('flags_=') == 0;
+      });
+      if ( ! flags ) return;
+
+      flags = decodeURIComponent(flags.substring(7)).split(',');
+      window.FLAGS = {};
+      flags.forEach(function(f) {
+        window.FLAGS[f] = true;
+      });
+      })();
+    </script>
     <script src="core/bootFOAM.js"></script>
     <!-- TODO: remove demos when Preso2 runs without it. -->
     <script src="demos/demos.js"></script>

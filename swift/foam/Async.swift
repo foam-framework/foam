@@ -17,18 +17,18 @@
 
 import Foundation
 
-class Future {
+public class Future {
   var set: Bool = false
   var value: AnyObject?
   var waiters: Array<(AnyObject?) -> Void> = []
-  func get(callback: (AnyObject?) -> Void) {
+  public func get(callback: (AnyObject?) -> Void) {
     if set {
       callback(value)
     } else {
       waiters.append(callback)
     }
   }
-  func set(value: AnyObject?) -> Future {
+  public func set(value: AnyObject?) -> Future {
     self.value = value
     set = true
     for callback in waiters {
@@ -39,9 +39,9 @@ class Future {
   }
 }
 
-typealias AFunc = ((AnyObject?) -> Void, AnyObject?) -> Void
+public typealias AFunc = ((AnyObject?) -> Void, AnyObject?) -> Void
 
-func Par(funcs: [AFunc]) -> AFunc {
+public func Par(funcs: [AFunc]) -> AFunc {
   return { (ret: (AnyObject?) -> Void, args: AnyObject?) in
     var numCompleted = 0
     let returnValues: NSMutableArray = NSMutableArray(capacity: funcs.count)
@@ -61,7 +61,7 @@ func Par(funcs: [AFunc]) -> AFunc {
   }
 }
 
-func Seq(funcs: [AFunc]) -> AFunc {
+public func Seq(funcs: [AFunc]) -> AFunc {
   return { (ret: (AnyObject?) -> Void, args: AnyObject?) in
     var i = 0
     var next: ((AnyObject?) -> Void)!
@@ -80,7 +80,7 @@ func Seq(funcs: [AFunc]) -> AFunc {
   }
 }
 
-func While(cond: () -> Bool, afunc: AFunc) -> AFunc {
+public func While(cond: () -> Bool, afunc: AFunc) -> AFunc {
   return { (ret: (AnyObject?) -> Void, args: AnyObject?) in
     var next: ((AnyObject?) -> Void)!
     next = { d in
@@ -94,7 +94,7 @@ func While(cond: () -> Bool, afunc: AFunc) -> AFunc {
   }
 }
 
-func Delay(delay: NSTimeInterval,
+public func Delay(delay: NSTimeInterval,
     queue: dispatch_queue_t = dispatch_get_main_queue(),
     afunc: AFunc = { ret, _ in ret(nil) }) -> AFunc {
   return { (ret: (AnyObject?) -> Void, args: AnyObject?) in

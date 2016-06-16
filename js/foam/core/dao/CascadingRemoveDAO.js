@@ -26,7 +26,7 @@ package: 'foam.core.dao',
   properties: [
     {
       name: 'childDAO',
-      type: 'DAO',
+      type: 'foam.core.types.DAO',
       mode: "read-only",
       hidden: true,
       required: true,

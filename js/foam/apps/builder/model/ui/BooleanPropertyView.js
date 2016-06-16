@@ -17,9 +17,9 @@
 
 
 CLASS({
-  name: 'BooleanPropertyEditView',
+  name: 'BooleanPropertyView',
   package: 'foam.apps.builder.model.ui',
-  extends: 'foam.apps.builder.model.ui.PropertyEditView',
+  extends: 'foam.apps.builder.model.ui.PropertyView',
 
   requires: [
   ],

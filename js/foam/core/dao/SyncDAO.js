@@ -164,9 +164,15 @@ CLASS({
         }
       }.bind(this));
     },
-    function sync() {
-      this.syncToServer();
-      this.syncFromServer();
-    }
-  ]
+  ],
+  listeners: [
+    {
+      name: 'sync',
+      isMerged: 100,
+      code: function() {
+        this.syncToServer();
+        this.syncFromServer();
+      }
+    },
+  ],
 });
