@@ -589,7 +589,7 @@ CLASS({
       /**
        * Notify all listeners of update to DAO.
        * @param fName the name of the method in the listeners to call.
-       *        possible values: 'put', 'remove'
+       *        possible values: 'put', 'remove', 'eof', 'reset'.
        **/
       name: 'notify_',
       code: function(fName, args) {
@@ -639,6 +639,12 @@ CLASS({
             for l in self.daoListeners_ {
               let l = l as! Sink
               l.remove(fObj!)
+            }
+            break
+          case "eof":
+            for l in self.daoListeners_ {
+              let l = l as! Sink
+              l.eof()
             }
             break
           case "reset":

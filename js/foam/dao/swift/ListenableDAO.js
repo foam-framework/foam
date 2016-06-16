@@ -61,6 +61,7 @@ CLASS({
               self.notify_("remove", fObj: self.cache[id])
               self.cache.removeValueForKey(id)
             }
+            self.notify_("eof", fObj: nil)
             return nil
           }),
         ])
