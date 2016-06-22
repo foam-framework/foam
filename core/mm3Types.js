@@ -685,6 +685,17 @@ CLASS({
         return 0
       */},
     },
+    {
+      name: 'javaAdapt',
+      defaultValue: function() {/*
+        if (newValue instanceof Long) { return (Long) newValue; }
+        try {
+          return Long.parseLong(newValue.toString());
+        } catch (Exception e) {
+          return 0;
+        }
+      */},
+    },
   ]
 });
 
