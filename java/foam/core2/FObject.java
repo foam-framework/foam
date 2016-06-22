@@ -39,4 +39,39 @@ public abstract class FObject implements Cloneable, java.io.Serializable {
     }
     return errors.size() == 0 ? null : errors;
   }
+  public void copyFrom(Object data, boolean deep) {
+    if (data instanceof FObject) {
+      FObject fobj = (FObject) data;
+      for (Property fobjProp : fobj.getModel().getProperties()) {
+        Object v = fobj.get(fobjProp.getName());
+        if ((v instanceof FObject) && deep) {
+          set(fobjProp.getName(), ((FObject) v).deepClone());
+        } else if ((v instanceof List) && deep) {
+          List clonedArray = new java.util.ArrayList();
+          for (Object obj : (List) v) {
+            if (obj instanceof FObject) {
+              clonedArray.add(((FObject) obj).deepClone());
+            }
+          }
+          set(fobjProp.getName(), clonedArray);
+        } else {
+          set(fobjProp.getName(), v);
+        }
+      }
+    }
+  }
+  public void copyFrom(Object data) {
+    copyFrom(data, false);
+  }
+  public FObject deepClone() {
+    return clone(true);
+  }
+  public FObject clone() {
+    return clone(false);
+  }
+  public FObject clone(boolean deep) {
+    FObject fobj = getModel().createInstance();
+    fobj.copyFrom(this, deep);
+    return fobj;
+  }
 }
