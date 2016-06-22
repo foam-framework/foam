@@ -266,8 +266,10 @@ CLASS({
 
 
       // If the caller doesn't care to see the objects as they get removed,
-      // then just nuke them in one go.
-      if ( ! options && ! ( sink && sink.remove ) ) {
+      // and we have no listeners then just nuke them in one go.
+      if ( ! options &&
+           ! ( sink && sink.remove ) &&
+           ( ! this.daoListeners_ || this.daoListeners_.length == 0 ) ) {
         this.withStore('readwrite', function(store) {
           var req = store.clear();
           req.onsuccess = function() {
