@@ -51,6 +51,8 @@ public abstract class FObject implements Cloneable, java.io.Serializable {
           for (Object obj : (List) v) {
             if (obj instanceof FObject) {
               clonedArray.add(((FObject) obj).deepClone());
+            } else {
+              clonedArray.add(obj);
             }
           }
           set(fobjProp.getName(), clonedArray);
