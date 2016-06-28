@@ -87,7 +87,7 @@ class <%= this.name %>: UIView {
 
   lazy var <%= p.name %>Label: UILabel = {
     let v = UILabel()
-    v.text = "<%= p.label %>:"
+    v.text = <%= model.swiftClassName %>.<%= constantize(p.name) %>.label
     return v
   }()
 <% } %>
