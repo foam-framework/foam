@@ -150,6 +150,7 @@ var Model = {
     {
       name:  'name',
       type:  'String',
+      javaType: 'String',
       postSet: function(_, n) { return this.id = this.package ? this.package + '.' + n : n; },
       required: true,
       displayWidth: 30,

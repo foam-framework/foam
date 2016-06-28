@@ -897,6 +897,9 @@ CLASS({
 CLASS({
   name: 'ArrayProperty',
   extends: 'Property',
+  javaClassImports: [
+    'java.util.List',
+  ],
 
   help:  'Describes a property of type Array.',
   label: 'List of items',
@@ -1058,40 +1061,55 @@ CLASS({
       name: 'compareProperty',
       swiftDefaultValue: function() {/*
         FoamFunction(fn: { (args) -> AnyObject? in
-          let o1Raw = self.f(args[0])
-          let o2Raw = self.f(args[1])
-          if o1Raw === o2Raw { return 0 }
-
-          // TODO: Arrays of things other than FObjects should also be handled.
-
-          let o1 = o1Raw as? [FObject]
-          let o2 = o2Raw as? [FObject]
-          if (o1 == nil) && (o2 == nil) {
-            return 0
-          }
-          if o1 == nil {
-            return -1
-          }
-          if o2 == nil {
-            return 1
-          }
+          let o1 = self.f(args[0]) as? [AnyObject]
+          let o2 = self.f(args[1]) as? [AnyObject]
+          if (o1 == nil) && (o2 == nil) { return 0 }
+          if o1 == nil { return -1 }
+          if o2 == nil { return 1 }
 
           if o1!.count != o2!.count {
             return (o1!.count > o2!.count ? -1 : 1)
           }
 
           for i in 0 ..< o1!.count {
-            let o1Current = o1![i]
-            let o2Current = o2![i]
-
+            let o1Current = o1![i] as! FObject
+            let o2Current = o2![i] as! FObject
             let result = o1Current.compareTo(o2Current)
-            if result != 0 {
-              return result
-            }
+            if result != 0 { return result }
           }
 
           return 0
         })
+      */},
+      javaDefaultValue: function() {/*
+        new FoamFunction<Integer>() {
+          @Override public Integer call(Object... args) {
+            Object o1 = f(args[0]);
+            Object o2 = f(args[1]);
+            if (o1 == o2) return 0;
+
+            boolean o1List = o1 instanceof List;
+            boolean o2List = o2 instanceof List;
+            if (!o1List && !o2List) return 0;
+            if (!o1List) return -1;
+            if (!o2List) return 1;
+
+            List lo1 = (List) o1;
+            List lo2 = (List) o2;
+            if (lo1.size() != lo2.size()) {
+              return lo1.size() > lo2.size() ? -1 : 1;
+            }
+
+            for (int i = 0; i < lo1.size(); i++) {
+              FObject o1Current = (FObject) lo1.get(i);
+              FObject o2Current = (FObject) lo2.get(i);
+              int result = o1Current.compareTo(o2Current);
+              if (result != 0) return result;
+            }
+
+            return 0;
+          }
+        }
       */},
     },
   ]
@@ -1181,6 +1199,9 @@ CLASS({
 CLASS({
   name: 'StringArrayProperty',
   extends: 'Property',
+  javaClassImports: [
+    'java.util.List',
+  ],
 
   help: 'An array of String values.',
   label: 'List of text strings',
@@ -1295,18 +1316,55 @@ CLASS({
       name: 'compareProperty',
       swiftDefaultValue: function() {/*
         FoamFunction(fn: { (args) -> AnyObject? in
-          let o1 = self.f(args[0])
-          let o2 = self.f(args[1])
-          if o1 === o2 { return 0 }
-          if let o1 = o1 as? [String] {
-            if let o2 = o2 as? [String] {
-              return String(o1).compare(String(o2)).rawValue
-            } else {
-              return 1
-            }
+          let o1 = self.f(args[0]) as? [AnyObject]
+          let o2 = self.f(args[1]) as? [AnyObject]
+          if (o1 == nil) && (o2 == nil) { return 0 }
+          if o1 == nil { return -1 }
+          if o2 == nil { return 1 }
+
+          if o1!.count != o2!.count {
+            return (o1!.count > o2!.count ? -1 : 1)
           }
-          return -1
+
+          for i in 0 ..< o1!.count {
+            let o1Current = o1![i] as! String
+            let o2Current = o2![i] as! String
+            let result = o1Current.compare(o2Current).rawValue
+            if result != 0 { return result }
+          }
+
+          return 0
         })
+      */},
+      javaDefaultValue: function() {/*
+        new FoamFunction<Integer>() {
+          @Override public Integer call(Object... args) {
+            Object o1 = f(args[0]);
+            Object o2 = f(args[1]);
+            if (o1 == o2) return 0;
+
+            boolean o1List = o1 instanceof List;
+            boolean o2List = o2 instanceof List;
+            if (!o1List && !o2List) return 0;
+            if (!o1List) return -1;
+            if (!o2List) return 1;
+
+            List lo1 = (List) o1;
+            List lo2 = (List) o2;
+            if (lo1.size() != lo2.size()) {
+              return lo1.size() > lo2.size() ? -1 : 1;
+            }
+
+            for (int i = 0; i < lo1.size(); i++) {
+              String o1Current = (String) lo1.get(i);
+              String o2Current = (String) lo2.get(i);
+              int result = o1Current.compareTo(o2Current);
+              if (result != 0) return result;
+            }
+
+            return 0;
+          }
+        }
       */},
     },
   ]

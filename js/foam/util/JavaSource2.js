@@ -144,7 +144,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   var name = prop.name;
   var constant = constantize(name);
   var type = prop.javaType;
-  var propertyModel = prop.model_.id.split('.').pop();
+  var propertyModel = (prop.model_.id || prop.model_.name).split('.').pop();
   var propFactory = prop.javaFactory || prop.javaLazyFactory;
 %>
   <% if (!override) { %>
@@ -239,28 +239,6 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     set("<%= name %>", value);
   }
 <% } %>
-
-  // TODO(mcarcaso): Equals shouldn't need to be generated. We should
-  // be able to walk the properties at runtime.
-  public boolean equals(Object o) {
-    if (!(o instanceof <%= this.javaClassName %>)) {
-      return false;
-    }
-    <%= this.javaClassName %> castedO = (<%= this.javaClassName %>) o;
-<% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
-  <% var get = 'get' + prop.name.capitalize() + '()'; %>
-  <% if (primitives.indexOf(prop.javaType) == -1) { %>
-    if (<%= get %> != null) {
-      if (!<%= get %>.equals(castedO.<%= get %>)) return false;
-    } else if (castedO.<%= get %> != null) {
-      return false;
-    }
-  <% } else { %>
-    if (<%= get %> != castedO.<%= get %>) return false;
-  <% } %>
-<% } %>
-    return true;
-  }
 
   public Object get(String key) {
     switch (key) {

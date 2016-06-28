@@ -21,7 +21,7 @@ import foam.core.Property;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FObject implements Cloneable, java.io.Serializable {
+public abstract class FObject implements Cloneable, Comparable, java.io.Serializable {
   public void set(String key, Object value) {}
   public void clearProperty(String key) {}
   public Object get(String key) { return null; }
@@ -75,5 +75,24 @@ public abstract class FObject implements Cloneable, java.io.Serializable {
     FObject fobj = getModel().createInstance();
     fobj.copyFrom(this, deep);
     return fobj;
+  }
+  public boolean equals(Object data) {
+    return compareTo(data) == 0;
+  }
+  public int compareTo(Object data) {
+    if (this == data) return 0;
+    if (data == null) return 1;
+    if (!(data instanceof FObject)) return 1;
+    FObject fdata = (FObject) data;
+    if (getModel() != fdata.getModel()) {
+      return getModel().getName().compareTo(fdata.getModel().getName());
+    }
+    for (Property prop : getModel().getProperties()) {
+      int diff = prop.compare(this, fdata);
+      if (diff != 0) {
+        return diff;
+      }
+    }
+    return 0;
   }
 }

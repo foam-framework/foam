@@ -130,7 +130,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   var name = prop.name;
   var constant = constantize(name);
   var type = prop.swiftType;
-  var propertyModel = prop.model_.id.split('.').pop();
+  var propertyModel = (prop.model_.id || prop.model_.name).split('.').pop();
 %>
   <% if (!override) { %>
   var <%= name %>_: <%= type %>?
