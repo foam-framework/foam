@@ -144,7 +144,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   var name = prop.name;
   var constant = constantize(name);
   var type = prop.javaType;
-  var propertyModel = prop.model_.id.split('.').pop();
+  var propertyModel = (prop.model_.id || prop.model_.name).split('.').pop();
   var propFactory = prop.javaFactory || prop.javaLazyFactory;
 %>
   <% if (!override) { %>
@@ -240,36 +240,6 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   }
 <% } %>
 
-  // TODO(mcarcaso): Equals and clone shouldn't need to be generated. We should
-  // be able to walk the properties at runtime.
-  public boolean equals(Object o) {
-    if (!(o instanceof <%= this.javaClassName %>)) {
-      return false;
-    }
-    <%= this.javaClassName %> castedO = (<%= this.javaClassName %>) o;
-<% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
-  <% var get = 'get' + prop.name.capitalize() + '()'; %>
-  <% if (primitives.indexOf(prop.javaType) == -1) { %>
-    if (<%= get %> != null) {
-      if (!<%= get %>.equals(castedO.<%= get %>)) return false;
-    } else if (castedO.<%= get %> != null) {
-      return false;
-    }
-  <% } else { %>
-    if (<%= get %> != castedO.<%= get %>) return false;
-  <% } %>
-<% } %>
-    return true;
-  }
-
-  public <%= this.javaClassName %> clone() {
-    <%= this.javaClassName %> c = new <%= this.javaClassName %>();
-<% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
-    c.set<%= prop.name.capitalize() %>(get<%= prop.name.capitalize() %>());
-<% } %>
-    return c;
-  }
-
   public Object get(String key) {
     switch (key) {
 <% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
@@ -348,6 +318,11 @@ public static foam.core.Model <%=this.javaClassName%>Model() {
     <%=this.javaClassName%>Model_ = new foam.core.Model();
     <%=this.javaClassName%>Model_.setName("<%= this.javaClassName %>");
     <%=this.javaClassName%>Model_.setProperties(properties);
+    <%=this.javaClassName%>Model_.factory = new FoamFunction<FObject>() {
+      @Override public FObject call(Object... args) {
+        return new <%= this.javaClassName %>();
+      }
+    };
   }
   return <%=this.javaClassName%>Model_;
 }
@@ -366,6 +341,13 @@ public foam.core.Model getModel() {
 %>
 
   <%= multiline(this.javaCode) %>
+
+<% if (this.name == 'Model') { %>
+  public FoamFunction<FObject> factory;
+  public FObject createInstance() {
+    return factory.call();
+  }
+<% } %>
 }
     */},
   ],

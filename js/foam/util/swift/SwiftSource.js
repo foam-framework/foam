@@ -130,7 +130,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   var name = prop.name;
   var constant = constantize(name);
   var type = prop.swiftType;
-  var propertyModel = prop.model_.id.split('.').pop();
+  var propertyModel = (prop.model_.id || prop.model_.name).split('.').pop();
 %>
   <% if (!override) { %>
   var <%= name %>_: <%= type %>?
@@ -156,6 +156,14 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       %><%= createNsLocalizedString(prop.label, prop.translationHint) %><%
     } else {
       %>"<%= prop.label %>"<%
+    } %>
+    p.speechLabel = <%
+    if (prop.speechLabel == prop.label) {
+      %>p.label<%
+    } else if (prop.speechLabelTranslationHint) {
+      %><%= createNsLocalizedString(prop.speechLabel, prop.speechLabelTranslationHint) %><%
+    } else {
+      %>"<%= prop.speechLabel %>"<%
     }
     if (prop.enum) { %>
     p.`enum` = <%= prop.enum.split('.').pop() %>.self<%

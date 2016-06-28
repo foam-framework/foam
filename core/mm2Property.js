@@ -96,6 +96,13 @@ GLOBAL.Property = {
          */}
     },
     {
+      name: 'speechLabelTranslationHint',
+      type: 'String',
+      required: false,
+      documentation: 'Used to describe the speech label for translators.',
+      defaultValueFn: function() { return this.translationHint; },
+    },
+    {
       name: 'tableLabel',
       type: 'String',
       displayWidth: 70,
@@ -841,7 +848,7 @@ GLOBAL.Property = {
       name: 'compareProperty',
       type: 'Function',
       swiftType: 'FoamFunction',
-      labels: ['javascript', 'swift'],
+      javaType: 'FoamFunction<Integer>',
       view: 'foam.ui.FunctionView',
       displayWidth: 70,
       displayHeight: 5,
@@ -865,6 +872,23 @@ GLOBAL.Property = {
           if o1!.isEqual(o2) { return 0 }
           return o1?.hashValue > o2?.hashValue ? 1 : -1
         })
+      */},
+      javaDefaultValue: function() {/*
+        new FoamFunction<Integer>() {
+          @Override public Integer call(Object... args) {
+            Object o1 = f(args[0]);
+            Object o2 = f(args[1]);
+            if (o1 == o2) return 0;
+            if (o1 == null && o2 == null) return 0;
+            if (o1 == null) return -1;
+            if (o2 == null) return 1;
+            if (o1.equals(o2)) return 0;
+            if (o1 instanceof Comparable) {
+              return ((Comparable) o1).compareTo(o2);
+            }
+            return o1.hashCode() > o2.hashCode() ? 1 : -1;
+          }
+        }
       */},
       help: 'Comparator function.',
       documentation: "A comparator function two compare two instances of this $$DOC{ref:'Property'}."
@@ -966,15 +990,22 @@ GLOBAL.Property = {
         {
           name: 'obj',
           swiftType: 'AnyObject?',
+          javaType: 'Object',
         },
       ],
       swiftReturnType: 'AnyObject?',
+      javaReturnType: 'Object',
       swiftCode: function() {/*
-        if obj == nil { return nil }
         if let fobj = obj as? FObject {
           return fobj.get(self.name)
         }
         return nil
+      */},
+      javaCode: function() {/*
+        if (obj instanceof FObject) {
+          return ((FObject) obj).get(getName());
+        }
+        return null;
       */},
     },
     {
@@ -986,16 +1017,21 @@ GLOBAL.Property = {
         {
           name: 'o1',
           swiftType: 'AnyObject?',
+          javaType: 'Object',
         },
         {
           name: 'o2',
           swiftType: 'AnyObject?',
+          javaType: 'Object',
         },
       ],
-      swiftReturnType: 'Int',
+      returnType: 'Int',
       swiftCode: function() {/*
         return compareProperty.call(o1, o2) as! Int
-      */}
+      */},
+      javaCode: function() {/*
+        return getCompareProperty().call(o1, o2);
+      */},
     },
     function readResolve() {
       return this.modelId ?

@@ -21,7 +21,7 @@ import foam.core.Property;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FObject implements Cloneable, java.io.Serializable {
+public abstract class FObject implements Cloneable, Comparable, java.io.Serializable {
   public void set(String key, Object value) {}
   public void clearProperty(String key) {}
   public Object get(String key) { return null; }
@@ -38,5 +38,61 @@ public abstract class FObject implements Cloneable, java.io.Serializable {
       }
     }
     return errors.size() == 0 ? null : errors;
+  }
+  public void copyFrom(Object data, boolean deep) {
+    if (data instanceof FObject) {
+      FObject fobj = (FObject) data;
+      for (Property fobjProp : fobj.getModel().getProperties()) {
+        Object v = fobj.get(fobjProp.getName());
+        if ((v instanceof FObject) && deep) {
+          set(fobjProp.getName(), ((FObject) v).deepClone());
+        } else if ((v instanceof List) && deep) {
+          List clonedArray = new java.util.ArrayList();
+          for (Object obj : (List) v) {
+            if (obj instanceof FObject) {
+              clonedArray.add(((FObject) obj).deepClone());
+            } else {
+              clonedArray.add(obj);
+            }
+          }
+          set(fobjProp.getName(), clonedArray);
+        } else {
+          set(fobjProp.getName(), v);
+        }
+      }
+    }
+  }
+  public void copyFrom(Object data) {
+    copyFrom(data, false);
+  }
+  public FObject deepClone() {
+    return clone(true);
+  }
+  public FObject clone() {
+    return clone(false);
+  }
+  public FObject clone(boolean deep) {
+    FObject fobj = getModel().createInstance();
+    fobj.copyFrom(this, deep);
+    return fobj;
+  }
+  public boolean equals(Object data) {
+    return compareTo(data) == 0;
+  }
+  public int compareTo(Object data) {
+    if (this == data) return 0;
+    if (data == null) return 1;
+    if (!(data instanceof FObject)) return 1;
+    FObject fdata = (FObject) data;
+    if (getModel() != fdata.getModel()) {
+      return getModel().getName().compareTo(fdata.getModel().getName());
+    }
+    for (Property prop : getModel().getProperties()) {
+      int diff = prop.compare(this, fdata);
+      if (diff != 0) {
+        return diff;
+      }
+    }
+    return 0;
   }
 }
