@@ -156,6 +156,14 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       %><%= createNsLocalizedString(prop.label, prop.translationHint) %><%
     } else {
       %>"<%= prop.label %>"<%
+    } %>
+    p.speechLabel = <%
+    if (prop.speechLabel == prop.label) {
+      %>p.label<%
+    } else if (prop.speechLabelTranslationHint) {
+      %><%= createNsLocalizedString(prop.speechLabel, prop.speechLabelTranslationHint) %><%
+    } else {
+      %>"<%= prop.speechLabel %>"<%
     }
     if (prop.enum) { %>
     p.`enum` = <%= prop.enum.split('.').pop() %>.self<%

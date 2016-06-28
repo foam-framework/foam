@@ -96,6 +96,13 @@ GLOBAL.Property = {
          */}
     },
     {
+      name: 'speechLabelTranslationHint',
+      type: 'String',
+      required: false,
+      documentation: 'Used to describe the speech label for translators.',
+      defaultValueFn: function() { return this.translationHint; },
+    },
+    {
       name: 'tableLabel',
       type: 'String',
       displayWidth: 70,
