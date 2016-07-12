@@ -123,7 +123,8 @@ var QueryParserFactory = function(model, opt_enableKeyword) {
       repeat(sym('value'), alt(literal_ic(' and '), ' '), 1),
       ')'),
 
-    valueList: alt(sym('compoundValue'), repeat(sym('value'), ',', 1)),
+    valueList: alt(sym('compoundValue'),
+        repeat(sym('value'), seq(',', repeat0(' ')), 1)),
 
     keyword: (function() {
       var keyword_ = sym('keyword_');
