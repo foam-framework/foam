@@ -186,8 +186,8 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   }()
   <% if (prop.swiftValidate) { %>
   public <%= override %> func validate_<%= name %>() -> String? {
-    let value = <%= name %>
-    let property = <%= constant %>
+    let value = `<%= name %>`
+    let property = `<%= constant %>`
     // No-ops to silence unused variable warning if they're not used in the valdation code.
     value
     property
