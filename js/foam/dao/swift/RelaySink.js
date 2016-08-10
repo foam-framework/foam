@@ -35,5 +35,9 @@ CLASS({
       name: 'remove',
       swiftCode: 'relay?.notify_("remove", fObj: obj)',
     },
+    {
+      name: 'eof',
+      swiftCode: 'relay?.notify_("eof", fObj: nil)',
+    },
   ],
 });
