@@ -82,7 +82,7 @@ CLASS({
             if ( a.hasOwnProperty(key) )
               out.push([key, a[key]]);
           }
-          return out;
+            return this.addOptional(out);
         }
 
         a = a.clone();
@@ -90,7 +90,7 @@ CLASS({
         for ( var i = 0 ; i < a.length ; i++ )
           if ( ! Array.isArray(a[i]) )
             a[i] = [a[i], a[i]];
-        return a;
+          return this.addOptional(a);
       },
       postSet: function(oldValue, newValue) {
         var value = this.data;
@@ -180,6 +180,20 @@ CLASS({
         if ( nu && this.choices.length )
           console.warn('ChoiceView data set to invalid choice: ', nu);
       }
+    },
+    {
+      documentation: function() {/*When 'true', choice selection is optional. A optional or no-selection entry with text 'optionalText' and value 'optionalValue', will be placed at the top of the 'choices' list.*/},
+      model_: 'BooleanProperty',
+      name: 'optional',
+      defaultValue: false,
+    },
+    {
+      name: 'optionalText',
+      defaultValue: '--',
+    },
+    {
+      name: 'optionalValue',
+      defaultValue: undefined,
     }
   ],
 
@@ -214,6 +228,14 @@ CLASS({
     commit: function() {
       if ( this.useSelection && this.choices[this.index] )
         this.choice = this.choices[this.index];
-    }
+    },
+
+    addOptional: function(a) {
+      if (this.optional &&
+          a[0] && a[0][0] != this.optionalValue) {
+          a.unshift([this.optionalValue, this.optionalText]);
+      }
+      return a;
+    },
   }
 });
