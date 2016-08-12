@@ -36,7 +36,7 @@ var __DATA;
 
   // If this isn't FOAM's index.html
   // add an additional classpath for ./js/
-  if ( foamdir === '' || path.indexOf(foamdir) == -1 ) {
+  if ( path !== foamdir ) {
     X.ModelDAO = X.foam.core.bootstrap.OrDAO.create({
       delegate: X.foam.core.bootstrap.BrowserFileDAO.create({
         rootPath: path + '/js/'
