@@ -25,15 +25,15 @@ CLASS({
 
   properties: [
     {
-      name: 'properties',
+      name: 'properties'
     },
     {
-      name: 'selectedProperties',
+      name: 'selectedProperties'
     },
     {
       type: 'Boolean',
       name: 'displaySorted',
-      defaultValue: false,
+      defaultValue: false
     },
   ],
 
@@ -63,7 +63,7 @@ CLASS({
         cb.data$.addListener(this.onPropChange.bind(this, props[i]));
         this.add(cb);
       }
-    },
+    }
   ],
 
   listeners: [
@@ -71,12 +71,12 @@ CLASS({
       var selected = this.selectedMap();
       var out = [];
 
-      if (this.displaySorted) {
+      if ( this.displaySorted ) {
         out = this.selectedProperties.slice();
-        if (nu && !selected[prop.name]) {
+        if ( nu && !selected[prop.name] ) {
           out.push(prop);
         }
-        if (!nu && selected[prop.name]) {
+        if ( !nu && selected[prop.name] ) {
           out.splice(out.indexOf(prop), 1);
         }
       } else {
@@ -91,6 +91,6 @@ CLASS({
       }
 
       this.selectedProperties = out;
-    },
+    }
   ]
 });
