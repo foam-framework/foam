@@ -606,7 +606,7 @@ CLASS({
     </div>
     <div class="card flex flex-col flex-grow3">
       <center class="flex flex-col flex-grow" style="width:1100px">
-        <iframe class="flex-grow" style="height: inherit" src="./demos/GoogleSimulator.html"></iframe>
+        <iframe class="flex-grow" style="height:150%;width:150%" src="./demos/GoogleSimulator.html"></iframe>
       </center>
       <i><font size="+2" color="blue">Organize the world's information (y-axis) and make it universally accessible (z-axis) and useful (x-axis).</font></i>
     </div>
