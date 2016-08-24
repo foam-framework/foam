@@ -262,6 +262,23 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   }
 <% } %>
 
+  public override func hasOwnProperty(key: String) -> Bool {
+    switch key {<%
+for ( var i = 0 ; i < modelProperties.length; i++ ) {
+  var prop = modelProperties[i];
+%>
+      case "<%= prop.name %>":
+        return self.<%= prop.name %>Inited_<%
+} %>
+<% if (idName) { %>
+      case "id":
+        return hasOwnProperty("<%= idName %>")
+<% } %>
+      default:
+        return super.hasOwnProperty(key)
+    }
+  }
+
   public override func getProperty(key: String) -> Property? {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length; i++ ) {
