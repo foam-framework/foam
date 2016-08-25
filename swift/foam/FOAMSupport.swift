@@ -98,17 +98,19 @@ public class FObject: PropertyChangeSupport, NSCoding {
   public func set(key: String, value: AnyObject?) -> FObject { return self }
   public func getProperty(key: String) -> Property? { return nil }
   public func getPropertyValue(key: String) -> PropertyValue? { return nil }
+  public func hasOwnProperty(key: String) -> Bool { return false }
   public func clearProperty(key: String) -> FObject { return self }
   public func copyFrom(data: AnyObject?, deep: Bool = false) {
     if let fobj = data as? FObject {
       for fobjProp in fobj.getModel().properties {
+        if !fobj.hasOwnProperty(fobjProp.name) { continue }
         let v: AnyObject? = fobj.get(fobjProp.name)
         if (v is FObject) && deep {
           self.set(fobjProp.name, value: v!.deepClone())
         } else if (v is [FObject]) && deep {
           var clonedArray: [FObject] = []
-          for portForward in v as! [FObject] {
-            clonedArray.append(portForward.deepClone())
+          for fobjArrayValue in v as! [FObject] {
+            clonedArray.append(fobjArrayValue.deepClone())
           }
           self.set(fobjProp.name, value: clonedArray)
         } else {
