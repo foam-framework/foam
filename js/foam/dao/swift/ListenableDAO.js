@@ -92,8 +92,8 @@ CLASS({
     {
       name: 'remove',
       swiftCode: function() {/*
-        let puttingSink = ClosureSink(args: [
-          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+        let removingSink = ClosureSink(args: [
+          "removeFn": FoamFunction(fn: { (args) -> AnyObject? in
             let obj = args[0] as! FObject
             let id = obj.get("id") as! String
             self.cache.removeValueForKey(id)
@@ -101,7 +101,7 @@ CLASS({
           }),
         ])
 
-        let multiSink = MultiSink(args: ["sinks": [sink, puttingSink]])
+        let multiSink = MultiSink(args: ["sinks": [sink, removingSink]])
         self.delegate.remove(obj, sink: multiSink)
       */},
     },
