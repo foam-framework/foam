@@ -153,13 +153,27 @@ CLASS({
       */},
     },
 
-    function unlisten(sink) { /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
-      this.SUPER(sink);
+    {
+      name: 'unlisten',
+      /* Passthrough to delegate, using $$DOC{ref:'.relay'}. */
+      code: function unlisten(sink) {
+        this.SUPER(sink);
 
-      // Remove last listener, so unlisten to delegate
-      if ( this.daoListeners_.length === 0 && this.delegate ) {
-        this.delegate.unlisten(this.relay);
-      }
+        // Remove last listener, so unlisten to delegate
+        if ( this.daoListeners_.length === 0 && this.delegate ) {
+          this.delegate.unlisten(this.relay);
+        }
+      },
+      swiftCode: function() {/*
+        let success = super.unlisten(sink)
+
+        // Remove last listener, so unlisten to delegate
+        if self.daoListeners_.count == 0 {
+          self.delegate.unlisten(self.relay)
+        }
+
+        return success
+      */},
     },
 
     function toString() { /* String representation. */
