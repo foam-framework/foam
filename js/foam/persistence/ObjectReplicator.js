@@ -27,13 +27,14 @@ CLASS({
         self.dao.find(newValue, sink: ClosureSink(args: [
           "putFn": FoamFunction(fn: { (args) -> AnyObject? in
             self.future.set(args[0])
+            self.attach()
             return nil
-          })
+          }),
+          "errorFn": FoamFunction(fn: { (args) -> AnyObject? in
+            self.attach()
+            return nil
+          }),
         ]))
-        self.future.get { o in
-          self.obj = o as? FObject
-          self.attach();
-        }
       */},
     },
     {
@@ -52,6 +53,12 @@ CLASS({
     {
       name: 'obj',
       swiftType: 'FObject?',
+      swiftPostSet: function() {/*
+        if let oldValue = oldValue as? FObject {
+          oldValue.addListener(self.objChangedListener_);
+        }
+        newValue?.addListener(self.objChangedListener_);
+      */},
     },
     {
       name: 'pk',
@@ -59,8 +66,10 @@ CLASS({
         // TODO: Support multi part keys
         return this.model.getProperty(this.model.ids[0]);
       },
-      swiftType: 'String',
-      swiftDefaultValue: '"id"',
+      swiftType: 'Property',
+      swiftDefaultValueFn: function() {/*
+        return Property(args: ["name": "id"])
+      */},
     },
     {
       name: 'future',
@@ -82,6 +91,11 @@ CLASS({
       },
       swiftType: 'Future',
       swiftFactory: 'return Future()',
+      swiftPostSet: function() {/*
+        newValue.get { o in
+          self.obj = o as? FObject
+        }
+      */},
     },
     {
       name: 'daoListener',
@@ -125,7 +139,6 @@ CLASS({
         this.dao.where(EQ(this.pk, this.obj.id)).listen(this.daoListener)
       },
       swiftCode: function() {/*
-        self.obj!.addListener(self.objChangedListener_)
         self.dao.`where`(EQ(self.pk, arg2: self.id)).listen(self.daoListener)
       */},
     },
