@@ -58,7 +58,7 @@ CLASS({
       ^ {
         border: 1px solid gray;
         display: table-cell;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: bold;
         height: 26px;
         text-align: center;
