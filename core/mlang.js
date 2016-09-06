@@ -752,6 +752,7 @@ CLASS({
   properties: [
     { name: 'label_', defaultValue: 'UPPER' }
   ],
+
   methods: [
     function partialEval() {
       var newArg1 = this.arg1.partialEval();

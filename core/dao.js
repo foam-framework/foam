@@ -103,21 +103,41 @@ CLASS({
         return delegate.select(sink, options: options)
       */},
     },
-    function removeAll(sink, options, opt_X) {
-      return this.delegate.removeAll(sink, options ? {
-        __proto__: options,
-        query: options.query ?
-          AND(this.query, options.query) :
-          this.query
-      } : {query: this.query}, opt_X);
+    {
+      name: 'removeAll',
+      code: function(sink, options, opt_X) {
+        return this.delegate.removeAll(sink, options ? {
+          __proto__: options,
+          query: options.query ?
+            AND(this.query, options.query) :
+            this.query
+        } : {query: this.query}, opt_X);
+      },
+      swiftCode: function() {/*
+        let options2 = options.deepClone() as! DAOQueryOptions
+        options2.query = options2.query != nil ?
+          AND(self.query, options2.query) :
+          self.query
+        return self.delegate.removeAll(sink, options: options2)
+      */},
     },
-    function listen(sink, options) {
-      return this.SUPER(sink, options ? {
-        __proto__: options,
-        query: options.query ?
-          AND(this.query, options.query) :
-          this.query
-      } : {query: this.query});
+    {
+      name: 'listen',
+      code: function(sink, options) {
+        return this.SUPER(sink, options ? {
+          __proto__: options,
+          query: options.query ?
+            AND(this.query, options.query) :
+            this.query
+        } : {query: this.query});
+      },
+      swiftCode: function() {/*
+        let options2 = options.deepClone() as! DAOQueryOptions
+        options2.query = options2.query != nil ?
+          AND(self.query, options2.query) :
+          self.query
+        return super.listen(sink, options: options2)
+      */},
     },
     function toString() {
       return this.delegate + '.where(' + this.query + ')';

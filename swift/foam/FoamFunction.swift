@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-class FoamFunction {
+public class FoamFunction {
   var call: (AnyObject?...) -> AnyObject?
   init(fn: (AnyObject?...) -> AnyObject?) { call = fn }
 }

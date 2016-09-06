@@ -26,6 +26,7 @@ public abstract class FObject implements Cloneable, Comparable, java.io.Serializ
   public void clearProperty(String key) {}
   public Object get(String key) { return null; }
   public Property getProperty(String key) { return null; }
+  public boolean hasOwnProperty(String key) { return false; }
   public abstract foam.core.Model getModel();
   public List<String> validateObject() {
     List<String> errors = new ArrayList<String>();
@@ -43,6 +44,7 @@ public abstract class FObject implements Cloneable, Comparable, java.io.Serializ
     if (data instanceof FObject) {
       FObject fobj = (FObject) data;
       for (Property fobjProp : fobj.getModel().getProperties()) {
+        if (!fobj.hasOwnProperty(fobjProp.getName())) continue;
         Object v = fobj.get(fobjProp.getName());
         if ((v instanceof FObject) && deep) {
           set(fobjProp.getName(), ((FObject) v).deepClone());

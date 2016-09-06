@@ -185,26 +185,26 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     return p
   }()
   <% if (prop.swiftValidate) { %>
-  <%= override %> func validate_<%= name %>() -> String? {
-    let value = <%= name %>
-    let property = <%= constant %>
+  public <%= override %> func validate_<%= name %>() -> String? {
+    let value = `<%= name %>`
+    let property = `<%= constant %>`
     // No-ops to silence unused variable warning if they're not used in the valdation code.
     value
     property
     <%= multiline(prop.swiftValidate) %>
   }
   <% } %>
-  <%= override %> class var <%= constant %>: <%= propertyModel %> {
+  public <%= override %> class var <%= constant %>: <%= propertyModel %> {
     get {
       return <%= this.swiftClassName %>_<%= constant %>
     }
   }
-  <%= override %> var <%= constant %>: <%= propertyModel %> {
+  public <%= override %> var <%= constant %>: <%= propertyModel %> {
     get {
       return <%= this.swiftClassName %>.<%= constant %>
     }
   }
-  <%= override %> var `<%= name %>` : <%= type %> {
+  public <%= override %> var `<%= name %>` : <%= type %> {
     get {
   <% if (prop.swiftGetter) { %>
       <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftGetter)).bind(prop)() %>
@@ -231,7 +231,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       self.set("<%= name %>", value: value)
     }
   }
-  <%= override %> func _<%= name %>Adapt_(oldValue: AnyObject?, newValue: AnyObject?) -> <%= type %> {
+  public <%= override %> func _<%= name %>Adapt_(oldValue: AnyObject?, newValue: AnyObject?) -> <%= type %> {
     let closure = { (oldValue: AnyObject?, newValue: AnyObject?) -> <%= type %> in
       <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftAdapt)).bind(prop)() %>
     }
@@ -241,7 +241,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     return closure(oldValue, newValue)
     <% } %>
   }
-  <%= override %> func _<%= name %>PreSet_(oldValue: AnyObject?, newValue: <%= type %>) -> <%= type %> {
+  public <%= override %> func _<%= name %>PreSet_(oldValue: AnyObject?, newValue: <%= type %>) -> <%= type %> {
     let closure = { (oldValue: AnyObject?, newValue: <%= type %>) -> <%= type %> in
       <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftPreSet)).bind(prop)() %>
     }
@@ -251,7 +251,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     return closure(oldValue, newValue)
     <% } %>
   }
-  <%= override %> func _<%= name %>PostSet_(oldValue: AnyObject?, newValue: <%= type %>) {
+  public <%= override %> func _<%= name %>PostSet_(oldValue: AnyObject?, newValue: <%= type %>) {
     let closure = { (oldValue: AnyObject?, newValue: <%= type %>) in
       <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftPostSet)).bind(prop)() %>
     }
@@ -262,7 +262,24 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   }
 <% } %>
 
-  override func getProperty(key: String) -> Property? {
+  public override func hasOwnProperty(key: String) -> Bool {
+    switch key {<%
+for ( var i = 0 ; i < modelProperties.length; i++ ) {
+  var prop = modelProperties[i];
+%>
+      case "<%= prop.name %>":
+        return self.<%= prop.name %>Inited_<%
+} %>
+<% if (idName) { %>
+      case "id":
+        return hasOwnProperty("<%= idName %>")
+<% } %>
+      default:
+        return super.hasOwnProperty(key)
+    }
+  }
+
+  public override func getProperty(key: String) -> Property? {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length; i++ ) {
   var prop = modelProperties[i];
@@ -279,7 +296,7 @@ for ( var i = 0 ; i < modelProperties.length; i++ ) {
     }
   }
 
-  override func getPropertyValue(key: String) -> PropertyValue? {
+  public override func getPropertyValue(key: String) -> PropertyValue? {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length; i++ ) {
   var prop = modelProperties[i];
@@ -296,7 +313,7 @@ for ( var i = 0 ; i < modelProperties.length; i++ ) {
     }
   }
 
-  override func get(key: String) -> AnyObject? {
+  public override func get(key: String) -> AnyObject? {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length; i++ ) {
   var prop = modelProperties[i];
@@ -313,7 +330,7 @@ for ( var i = 0 ; i < modelProperties.length; i++ ) {
     }
   }
 
-  override func set(key: String, value: AnyObject?) -> FObject {
+  public override func set(key: String, value: AnyObject?) -> FObject {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length ; i++ ) {
   var prop = modelProperties[i];
@@ -335,7 +352,7 @@ for ( var i = 0 ; i < modelProperties.length ; i++ ) {
     return super.set(key, value: value)
   }
 
-  override func clearProperty(key: String) -> FObject {
+  public override func clearProperty(key: String) -> FObject {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length ; i++ ) {
   var prop = modelProperties[i];
@@ -356,7 +373,7 @@ for ( var i = 0 ; i < modelProperties.length ; i++ ) {
     return super.clearProperty(key)
   }
 
-  override init(args: [String:AnyObject?] = [:]) {
+  public override init(args: [String:AnyObject?] = [:]) {
     super.init(args: args)<%
 for ( var i = 0, prop; prop = allProperties[i]; i++ ) {
   if (prop.swiftFactory) {%>
@@ -395,7 +412,7 @@ for (var i = 0, prop; prop = modelProperties[i]; i++) {
 %>
   }
 
-  static var <%=this.swiftClassName%>Model_: Model = Model(name: "<%=this.swiftClassName%>",
+  public static var <%=this.swiftClassName%>Model_: Model = Model(name: "<%=this.swiftClassName%>",
       properties: [<%
   for ( var i = 0 ; i < modelProperties.length ; i++ ) {
     var prop = modelProperties[i]; %>
@@ -405,7 +422,7 @@ for (var i = 0, prop; prop = modelProperties[i]; i++) {
       factory: { return <%= this.swiftClassName %>() }
   )
 
-  override func getModel() -> Model {
+  public override func getModel() -> Model {
     return <%=this.swiftClassName%>.<%=this.swiftClassName%>Model_
   }
 <%

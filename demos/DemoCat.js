@@ -418,7 +418,8 @@ return JSONUtil.arrayToObjArray(X, [
   },
   {
     name: 'FOAM Presentation',
-    model: 'foam.demos.empire.Preso3',
+//    model: 'foam.demos.empire.Preso3',
+    path: '../index.html?model=foam.demos.empire.Preso3&flags_=swift,java,compiletime',
     description: 'Presentation on FOAM written in FOAM. Press the + button to see all 25 slides run at once (which includes 50k objects, 20k one and two-way data bindings, and 7k animated objects).',
     src: '../js/foam/demos/empire/Preso3_toHTML.ft',
     keywords: [ 'animation', 'graphics', 'game', 'presentation', 'DAO', 'database', 'search' ],

@@ -70,15 +70,17 @@ CLASS({
               self.notify_("put", fObj: obj)
             } else {
               sink.error()
-              self.notify_("error")
             }
             return nil
           }),
           "errorFn": FoamFunction(fn: { (args) -> AnyObject? in
             sink.error()
-            self.notify_("error")
             return nil
-          })
+          }),
+          "eofFn": FoamFunction(fn: { (args) -> AnyObject? in
+            sink.eof()
+            return nil
+          }),
         ])
         dao.put(obj, sink: closureSink)
       */},
@@ -88,21 +90,23 @@ CLASS({
       swiftCode: function() {/*
         let dao = getArrayDao()
         let closureSink = ClosureSink(args: [
-          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+          "removeFn": FoamFunction(fn: { (args) -> AnyObject? in
             if NSKeyedArchiver.archiveRootObject(dao.dao, toFile: self.path) {
-              sink.put(obj)
+              sink.remove(obj)
               self.notify_("remove", fObj: obj)
             } else {
               sink.error()
-              self.notify_("error")
             }
             return nil
           }),
           "errorFn": FoamFunction(fn: { (args) -> AnyObject? in
             sink.error()
-            self.notify_("error")
             return nil
-          })
+          }),
+          "eofFn": FoamFunction(fn: { (args) -> AnyObject? in
+            sink.eof()
+            return nil
+          }),
         ])
         dao.remove(obj, sink: closureSink)
       */},

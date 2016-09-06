@@ -253,6 +253,19 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     return super.get(key);
   }
 
+  public boolean hasOwnProperty(String key) {
+    switch (key) {
+<% for (var i = 0, prop; prop = allProperties[i]; i++) { %>
+  <% var name = prop.name, type = prop.javaType %>
+      case "<%= name %>":
+        return <%= name %>Inited_;
+<% } %>
+      default:
+        break;
+    }
+    return super.hasOwnProperty(key);
+  }
+
   public foam.core.Property getProperty(String key) {
     switch (key) {
 <% for (var i = 0, prop; prop = allProperties[i]; i++) { %>

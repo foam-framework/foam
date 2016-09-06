@@ -26,7 +26,7 @@ CLASS({
       swiftFactory: 'return UISwitch()',
       swiftPostSet: function() {/*
         newValue.addTarget(self,
-            action: "onTapChange",
+            action: #selector(FoamUISwitch.onTapChange),
             forControlEvents: .ValueChanged)
       */},
     },
