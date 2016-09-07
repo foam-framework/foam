@@ -86,10 +86,10 @@ CLASS({
                   }, this.Y.sub({ dao: this.data.dao })));
                 }.bind(this),
                 error: function() {
-                  this.selection = null;
+                  this.selection = "";
                 }.bind(this)
               });
-            } else {
+            } else if ( old != nu ) {
               this.stack.popChildViews();
             }
           }
@@ -206,7 +206,7 @@ CLASS({
           /* when dao items change, make sure we don't leave the view open */
           if ( this.selection && this.selection.id && this.selection.id == selection.id ) {
             //this.listView_ && this.listView_.stack && this.listView_.stack.popView();
-            this.selection = null;
+            this.selection = "";
           }
         },
       ],
@@ -261,8 +261,8 @@ CLASS({
           name: 'onMenuClosed',
           code: function(evt) {
             if ( evt.propertyName && ! this.menuOpen ) {
-              this.selection = null;
-              this.updateHTML();
+              this.selection = "";
+//              this.updateHTML();
             }
           },
         },
@@ -270,7 +270,7 @@ CLASS({
           name: 'onViewDestroyed',
           code: function(sender, topic, view) {
             if (view.data && this.selection && view.data.id == this.selection.id) {
-              this.selection = null;
+              this.selection = "";
             }
           }
         },
