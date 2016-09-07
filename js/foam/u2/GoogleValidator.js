@@ -43,7 +43,7 @@ CLASS({
 
   methods: [
     function validateNodeName(name) {
-      if ( this.disallowedNodeNames[name] ) return false;
+      return ! this.disallowedNodeNames[name];
     }
   ]
 });

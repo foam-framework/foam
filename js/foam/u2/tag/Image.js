@@ -14,28 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 CLASS({
   package: 'foam.u2.tag',
   name: 'Image',
   extends: 'foam.u2.View',
-  requires: [
-  ],
 
   properties: [
     'displayWidth',
     'displayHeight',
     ['alpha', 1.0],
-    ['nodeName', 'img'],
+    ['nodeName', 'img']
   ],
 
   methods: [
     function initE() {
       this.attrs({ src: this.data$ });
       this.style({
-        height: this.displayHeight$,
-        width: this.displayWidth$,
+        height:  this.displayHeight$,
+        width:   this.displayWidth$,
         opacity: this.alpha$
       });
-    },
+    }
   ]
 });

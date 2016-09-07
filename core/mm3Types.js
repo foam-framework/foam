@@ -383,6 +383,20 @@ CLASS({
     */
     [ 'displayWidth', 50 ],
     {
+      name: 'swiftType',
+      defaultValue: 'NSDate?',
+    },
+    {
+      name: 'swiftNSCoderEncode',
+      defaultValue: 'aCoder.encodeObject(`<%= this.name %>`, ' +
+          'forKey: "<%= this.name %>")',
+    },
+    {
+      name: 'swiftNSCoderDecode',
+      defaultValue: 'set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
+    },
+    {
       name: 'javaType',
       defaultValue: 'java.util.Date',
       help: 'The Java type of this property.'

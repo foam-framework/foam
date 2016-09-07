@@ -23,7 +23,7 @@ CLASS({
   documentation: function() {/*
     A sink that takes an array of sinks as a property and will execute all of
     the sink functions (put, remove, eof, etc.) on all of the sinks in the
-    array.
+    array in the order that they're given.
   */},
 
   properties: [
@@ -77,4 +77,3 @@ CLASS({
     },
   ],
 });
-

@@ -319,7 +319,7 @@ E('div').style({height: '30px'}).write();
  var e = E('div').add(
    E('span').add("hello "),
    E('span').add("!")).write();
- e.insertBefore(E('span').add('world'), e.children[1]);
+e.insertBefore(E('span').add('world'), e.children[1]);
 
 var e = E('div').add(
   E('span').add("hello "),
@@ -345,7 +345,7 @@ e.addBefore(e.children[1], E('span').add('there '), E('span').add('world'));
 e.write();
 
 var oldChild = E().add('First Child').style({color: 'red'});
-var newChild = E().add('Second Child').style({color: 'green'});
+var newChild = E().add('Second Child (replaces first)').style({color: 'green'});
 var e = E('div').tag('br').add(oldChild).tag('br').write();
 e.replaceChild(newChild, oldChild);
 

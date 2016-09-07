@@ -61,7 +61,7 @@ CLASS({
         let index = dao.indexOf(obj)
         if index != nil {
           dao.removeAtIndex(index!)
-          sink.put(obj)
+          sink.remove(obj)
           notify_("remove", fObj: obj)
         }
       */},
