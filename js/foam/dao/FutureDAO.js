@@ -56,7 +56,9 @@ CLASS({
           this.daoListeners_ = [];
           this.delegate = delegate;
           this.daoListeners_ = listeners;
-          this.delegate.listen(this.relay);
+          if ( this.daoListeners_.length ) {
+            this.delegate.listen(this.relay);
+          }
         }.bind(this));
       },
       swiftCode: function() {/*
@@ -68,7 +70,9 @@ CLASS({
           self.daoListeners_ = []
           self.delegate = delegate
           self.daoListeners_ = listeners
-          self.delegate.listen(self.relay);
+          if self.daoListeners_.count > 0 {
+            self.delegate.listen(self.relay);
+          }
         });
       */},
     },
