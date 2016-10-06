@@ -51,6 +51,10 @@ CLASS({
 
   templates: [
     function javaSource(_, util) {/*<%
+var escapeDoubleQuotes = function(s) {
+  return s.replace(/"/g, '\\"');
+};
+
 var primitives = [
   'byte',
   'char',
@@ -128,7 +132,7 @@ import <%= req %>;
 public class <%= this.javaClassName %> extends <%= parent && parent.javaClassName || 'FObject' %> {
 
 <% for ( var i = 0, message; message = this.messages[i]; i++) { %>
-  public static String <%= message.name %> = "<%= message.value %>";
+  public static String <%= message.name %> = "<%= escapeDoubleQuotes(message.value) %>";
 <% } %>
 
 <% for (var i = 0, constant; constant = this.constants[i]; i++) { %>
