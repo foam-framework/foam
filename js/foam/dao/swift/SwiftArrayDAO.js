@@ -42,17 +42,15 @@ CLASS({
     {
       name: 'put',
       swiftCode: function() {/*
+        var found = false
         for (index, fobj) in dao.enumerate() {
           if equals(fobj.get("id"), b: obj.get("id")) {
-            if (!obj.isEqual(dao[index])) {
-              dao[index] = obj
-              sink.put(obj)
-              notify_("put", fObj: obj)
-            }
-            return
+            dao[index] = obj
+            found = true
+            break
           }
         }
-        dao.append(obj)
+        if !found { dao.append(obj) }
         sink.put(obj)
         notify_("put", fObj: obj)
       */},
