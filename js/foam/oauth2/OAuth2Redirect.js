@@ -22,7 +22,6 @@ CLASS({
   help: 'OAuth2 strategy that uses the redirect.',
   imports: [
     'window',
-    'location',
     'setTimeout'
   ],
   properties: [
@@ -30,8 +29,8 @@ CLASS({
       name: 'redirectURL',
       transient: true,
       defaultValueFn: function() {
-        return this.location.protocol + '//' + this.location.host +
-          this.location.pathname + this.location.search;
+        return this.window.location.protocol + '//' + this.window.location.host +
+          this.window.location.pathname + this.window.location.search;
       }
     },
     {
@@ -60,16 +59,16 @@ CLASS({
       // Replacing the whole hash is heavy-handed, but any preexisting hash
       // values aren't preserved by the redirect anyway, so there's nothing
       // in the hash post-redirect but the OAuth details.
-      this.location.hash = '';
+      this.window.location.hash = '';
     },
     loadState_: function() {
-      var state = this.location.hash.match(/state=([^&]*)/);
+      var state = this.window.location.hash.match(/state=([^&]*)/);
       state = state && state[1];
       if ( state ) this.redirects = parseInt(state);
       return state;
     },
     loadToken_: function() {
-      var token = this.location.hash.match(/token=([^&]*)/);
+      var token = this.window.location.hash.match(/token=([^&]*)/);
       token = token && token[1];
       if ( token ) this.accessToken = token;
       return token;
