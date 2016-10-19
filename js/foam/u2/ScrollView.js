@@ -372,7 +372,7 @@ CLASS({
 
       if (this.rowHeight < 0) {
         var style = this.window.getComputedStyle(this.rowSizeTestE.children[0].el());
-        this.rowHeight = this.X.parseFloat(style.height);
+        this.rowHeight = parseFloat(style.height);
 
         this.rowSizeTestE.remove();
         this.rowSizeTestE = '';
