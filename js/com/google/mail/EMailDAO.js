@@ -123,7 +123,7 @@ CLASS({
             this.StripPropertiesDAO.create({
               delegate: this.remoteDao,
               propertyNames: ['serverVersion']
-            }).where(EQ(this.EMail.LABELS, 'INBOX')).limit(100).select(dao);
+            }).where(EQ(this.EMail.LABELS, 'INBOX')).limit(1).select(dao);
           }
         }.bind(this));
       }

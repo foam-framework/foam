@@ -26,6 +26,7 @@ CLASS({
     'MDAO',
     'XHR',
     'com.google.mail.ComposeView',
+    'com.google.mail.InnerComposeView',
     'com.google.mail.EMailCitationView',
     'com.google.mail.EMailDAO',
     'com.google.mail.EMailView',
@@ -214,16 +215,17 @@ CLASS({
           cannedQuery$: this.cannedQuery$,
           cannedQueryDAO$: this.cannedQueryDAO$,
           createView: function(args, X) {
-            return this.X.foam.ui.md.UpdateDetailView.create({
+            return this.X.com.google.mail.ComposeView.create({
               data: this.X.foam.lib.email.EMail.create({
                 id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),
                 labels: ['DRAFT']
               }, this.Y),
               exitOnSave: true,
               innerView: {
-                factory_: 'com.google.mail.ComposeView'
+                factory_: 'com.google.mail.InnerComposeView'
               }
             }, this.Y);
+
             return this.X.com.google.mail.ComposeView.create({
               data: this.X.foam.lib.email.EMail.create({
                 id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),

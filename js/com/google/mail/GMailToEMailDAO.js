@@ -98,7 +98,7 @@ CLASS({
       "name": "aToB",
       "code": function (obj) {
         var msg = this.FOAMGMailMessage.create({
-          id: obj.gmailId,
+          id: obj.gmailId || obj.id,
           emailId: obj.id,
           labelIds: obj.labels,
           isSent: obj.messageSent,
@@ -153,6 +153,7 @@ CLASS({
         else if ( plainBody ) body = '<pre>' + decode(plainBody.body.data) + '</pre>';
 
         var args = {
+          id: obj.id,
           gmailId: obj.id,
           convId: obj.threadId,
           labels: obj.labelIds,
