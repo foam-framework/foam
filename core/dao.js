@@ -139,17 +139,6 @@ CLASS({
         return super.listen(sink, options: options2)
       */},
     },
-    {
-      name: 'unlisten',
-      code: function(sink) {
-        return this.SUPER(this.decorateSink_(sink, {query: this.query}));
-      },
-      swiftCode: function() {/*
-        let options = DAOQueryOptions()
-        options.query = self.query
-        return super.unlisten(self.decorateSink_(sink, options: options))
-      */},
-    },
     function toString() {
       return this.delegate + '.where(' + this.query + ')';
     }
