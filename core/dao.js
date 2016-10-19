@@ -139,17 +139,6 @@ CLASS({
         return super.listen(sink, options: options2)
       */},
     },
-    {
-      name: 'unlisten',
-      code: function(sink) {
-        return this.SUPER(this.decorateSink_(sink, {query: this.query}));
-      },
-      swiftCode: function() {/*
-        let options = DAOQueryOptions()
-        options.query = self.query
-        return super.unlisten(self.decorateSink_(sink, options: options))
-      */},
-    },
     function toString() {
       return this.delegate + '.where(' + this.query + ')';
     }
@@ -465,13 +454,15 @@ CLASS({
       ],
       swiftReturnType: 'Sink',
       swiftCode: function() {/*
+        var decoratedSink = sink
         if options.query != nil {
-          return PredicatedSink(args: [
-            "delegate": sink,
+          decoratedSink = PredicatedSink(args: [
+            "delegate": decoratedSink,
             "expr": options.query!
           ])
+          decoratedSink.UID = sink.UID
         }
-        return sink
+        return decoratedSink
       */},
     },
 
@@ -554,12 +545,15 @@ CLASS({
       ],
       swiftReturnType: 'Bool',
       swiftCode: function() {/*
-        let index = daoListeners_.indexOfObject(sink)
-        if index == NSNotFound {
-          return false
+        for (i,listener) in daoListeners_.enumerate() {
+          guard let listener = listener as? Sink else { continue }
+          if listener.UID == sink.UID {
+            daoListeners_.removeObjectAtIndex(i)
+            return true
+          }
         }
-        daoListeners_.removeObjectAtIndex(index)
-        return true
+
+        return false
       */},
     },
 
