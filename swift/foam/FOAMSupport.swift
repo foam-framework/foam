@@ -83,6 +83,12 @@ public class Model {
 }
 
 public class FObject: PropertyChangeSupport, NSCoding {
+  static var nextId = 1
+  lazy var UID: Int = {
+    let id = nextId
+    nextId += 1
+    return id
+  }()
   public init(args: [String:AnyObject?] = [:]) {
     super.init()
     for key in args.keys {
