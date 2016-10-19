@@ -19,6 +19,9 @@ CLASS({
   name: 'ToolbarRichTextView',
   package: 'foam.ui.md',
   extends: 'foam.ui.RichTextView',
+  requires: [
+    'foam.graphics.ActionButtonCView'
+  ],
 
   templates: [
     function CSS() {/*
