@@ -159,7 +159,7 @@ CLASS({
           serverVersion: obj.historyId,
           // attachments: obj.attachments,
           body: body,
-          plainBody: decode(plainBody.body.data),
+          plainBody: plainBody ? decode(plainBody.body.data) : '',
           snippet: obj.snippet,
           deleted: obj.deleted
         };
