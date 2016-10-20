@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-html, body {
-  margin: 0px;
-  padding: 0px;
-}
+/* TODO: move all CSS to individual models. */
 
 body {
-  font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+  font-family: Roboto, Arial, "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, sans-serif;
   font-size: 12px;
 }
+
 p, h1, form, button {
   border: 0;
   margin: 0;
@@ -58,7 +56,8 @@ p, h1, form, button {
 
 .stackview-slidearea {
   background: white;
-  box-shadow: 0px 0px 30px black;
+  box-shadow: 0 0 30px black;
+  -webkit-box-shadow: 0 0 30px black;
   height: 100%;
   position: fixed;
   z-index: 4;
@@ -75,65 +74,6 @@ p, h1, form, button {
   transition: opacity 0.3s;
 }
 
-/* ----------- detailView ----------- */
-
-.detailView {
-  border: solid 2px #dddddd;
-  background: #fafafa;
-  width: 99%;
-}
-
-.detailView .heading {
-  float: left;
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.detailView .propertyLabel {
-  font-size: 14px;
-  display: block;
-  font-weight: bold;
-  text-align: right;
-  float: left;
-}
-
-.detailView input {
-  font-size: 12px;
-  padding: 4px 2px;
-  border: solid 1px #aacfe4;
-  margin: 2px 0 0px 10px;
-}
-
-.detailView textarea {
-  float: left;
-  font-size: 12px;
-  padding: 4px 2px;
-  border: solid 1px #aacfe4;
-  margin: 2px 0 0px 10px;
-  width: 98%;
-  overflow: auto;
-}
-
-.detailView select {
-  font-size: 12px;
-  padding: 4px 2px;
-  border: solid 1px #aacfe4;
-  margin: 2px 0 0px 10px;
-}
-
-.detailView .label {
-  vertical-align: top;
-}
-
-.detailArrayLabel {
-  font-size: medium;
-}
-
-.detailArrayLabel .foamTable {
-  margin: 1px;
-  width: 99%;
-}
 
 /* ----------- summaryView ----------- */
 
@@ -164,7 +104,7 @@ p, h1, form, button {
   float: left;
   font-size: 12px;
   padding-left: 8px;
-  margin: 2px 15px 2px 0px;
+  margin: 2px 15px 2px 0;
 }
 
 
@@ -200,7 +140,7 @@ option[selected]{
   width: 100%;
   font-size: 14px;
   padding-left: 8px;
-  margin: 2px 15px 2px 0px;
+  margin: 2px 15px 2px 0;
 }
 
 .actionBorder {
@@ -208,7 +148,8 @@ option[selected]{
 }
 
 .actionToolbar {
-  float: right;
+  float: left;
+  margin-top: 4px;
 }
 
 .actionBorderActions {
@@ -293,7 +234,7 @@ option[selected]{
 .foamTable {
   background: #fff;
   border-collapse: collapse;
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-family: Roboto, "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
   font-size: 12px;
   margin: 10px;
   table-layout:fixed;
@@ -334,13 +275,15 @@ option[selected]{
   background: #eee;
   border: 2px solid #f00;
 }
+.foamTable .numeric {
+  text-align: right;
+}
 
 button.actionButton {
   -webkit-box-shadow: inset 0 1px 0 0 #ffffff;
   box-shadow: inset 0 1px 0 0 #ffffff;
   background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
   background: -moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
   background-color: #ededed;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -353,12 +296,16 @@ button.actionButton {
   font-weight: bold;
   padding: 4px 16px;
   text-decoration: none;
+  visibility: hidden;
+}
+
+button.actionButton.available {
+  visibility: visible;
 }
 
 button.actionButton:hover {
   background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
   background: -moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
   background-color: #dfdfdf;
 }
 
@@ -411,10 +358,6 @@ select {
 
 .summaryView .label {
   width: 30%;
-}
-
-body {
-  font: 82% arial,sans-serif;
 }
 
 div.gridtile td div a {
@@ -566,7 +509,7 @@ div.gridViewControl select {
 .arrayTileView {
   margin: 0;
   width: 100%;
-  padding: 0px;
+  padding: 0;
   display: inline-block;
   border-bottom: 2px inset;
 }
@@ -597,7 +540,7 @@ div.gridViewControl select {
 .autocompleteListView {
   position: absolute;
   padding: 8px;
-  margin: 0px;
+  margin: 0;
   width: 300px;
   background: white;
   border-radius: 5px;
@@ -676,6 +619,7 @@ div.gridViewControl select {
   background: #4d90fe;
   border-radius: 3px;
   box-shadow: none;
+  -webkit-box-shadow: none;
   color: white;
   margin-left: 7px;
   padding: 10px 16px;
@@ -746,30 +690,6 @@ div.gridViewControl select {
 input.clickToEnableEdit:not(:focus) {
   border: none;
   background-color: inherit;
-}
-
-/* ChoiceListView */
-.foamChoiceListView {
-  list-style-type: none;
-}
-
-.foamChoiceListView .selected {
-  font-weight: bold;
-}
-
-.foamChoiceListView.vertical {
-  padding: 0;
-}
-.foamChoiceListView.vertical .choice {
-  margin: 4px;
-}
-
-.foamChoiceListView.horizontal {
-  padding: 0;
-}
-.foamChoiceListView.horizontal .choice {
-  display: inline;
-  margin: 12px;
 }
 
 .galleryView {
