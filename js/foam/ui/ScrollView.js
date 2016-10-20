@@ -529,7 +529,7 @@ CLASS({
         width: 100%;
         flex-grow: 1;
       }
-      .scrollView-inner {
+      .scrollview-inner {
         position: relative;
         transform: translate3d(0,0,0);
         width: 100%;
