@@ -26,6 +26,7 @@ CLASS({
     'MDAO',
     'XHR',
     'com.google.mail.ComposeView',
+    'com.google.mail.InnerComposeView',
     'com.google.mail.EMailCitationView',
     'com.google.mail.EMailDAO',
     'com.google.mail.EMailView',
@@ -46,7 +47,7 @@ CLASS({
     'foam.ui.DetailView',
     'foam.ui.ScrollView',
     'foam.util.busy.BusyFlagTracker',
-    'foam.util.busy.BusyStatus',
+    'foam.util.busy.BusyStatus'
   ],
 
   exports: [
@@ -54,6 +55,7 @@ CLASS({
     'contactDAO as ContactDAO',
     'labelDao as LabelDAO',
     'emailDao as EMailDAO',
+    'emailDao as eMailDAO',
     'profile$ as profile$',
     'openComposeView',
     'as controller'
@@ -211,19 +213,27 @@ CLASS({
             return this.model_.MENU_FACTORY.defaultValue.call(this);
           },
           cannedQuery$: this.cannedQuery$,
-          cannedQueryDAO$: this.cannedQueryDAO$
+          cannedQueryDAO$: this.cannedQueryDAO$,
+          createView: function(args, X) {
+            return this.X.com.google.mail.ComposeView.create({
+              data: this.X.foam.lib.email.EMail.create({
+                id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),
+                labels: ['DRAFT']
+              }, this.Y),
+              exitOnSave: true,
+              innerView: {
+                factory_: 'com.google.mail.InnerComposeView'
+              }
+            }, this.Y);
+
+            return this.X.com.google.mail.ComposeView.create({
+              data: this.X.foam.lib.email.EMail.create({
+                id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),
+                labels: ['DRAFT']
+              })
+            }, X)
+          }
         });
-      }
-    },
-    {
-      name: 'createView',
-      defaultValue: function(args, X) {
-        return this.X.com.google.mail.ComposeView.create({
-          data: this.X.foam.lib.email.EMail.create({
-            id: 'draft_' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16),
-            labels: ['DRAFT']
-          })
-        }, X);
       }
     },
     {
@@ -275,7 +285,7 @@ CLASS({
         this.controller.q = '';
         this.controller.name = 'All Mail';
       }
-      this.stack.back();
+      this.stack.popView();
     },
     */
   },

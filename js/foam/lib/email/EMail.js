@@ -154,7 +154,6 @@ CLASS({
       name: "attachments",
       label: "Attachments",
       tableLabel: "@",
-      type: "Array[Attachment]",
       subType: "Attachment",
       view: "ArrayView",
       factory: function () { return []; },

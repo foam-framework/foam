@@ -28,7 +28,7 @@ CLASS({
     {
       name: 'data',
       postSet: function(old, nu) {
-        this.updateHTML();      
+        this.updateHTML();
       }
     },
     {
@@ -59,6 +59,7 @@ CLASS({
       .monogram-string-view {
         -webkit-align-items: center;
         -webkit-flex-grow: 0;
+        -webkit-flex-shrink: 0;
         -webkit-justify-content: center;
         align-items: center;
         border-radius: 50%;
@@ -68,6 +69,7 @@ CLASS({
         display: -webkit-inline-flex;
         display: inline-flex;
         flex-grow: 0;
+        flex-shrink: 0;
         font-size: 20px;
         justify-content: center;
         margin-right: 16px;

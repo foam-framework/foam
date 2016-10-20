@@ -227,7 +227,7 @@ CLASS({
       if ( this.rowHeight < 0 ) {
         var outer = this.X.$(this.id + '-rowsize');
         var style = this.X.window.getComputedStyle(outer.children[0]);
-        this.rowHeight = this.X.parseFloat(style.height);
+        this.rowHeight = parseFloat(style.height);
 
         // Now destroy it properly.
         this.rowSizeView.destroy();

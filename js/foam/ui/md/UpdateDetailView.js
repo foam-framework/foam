@@ -27,7 +27,7 @@ CLASS({
   ],
 
   imports: [
-    'dao',
+    'dao as importDao',
     'stack',
     'controllerMode'
   ],
@@ -36,6 +36,12 @@ CLASS({
   ],
 
   properties: [
+    {
+      name: 'dao',
+      lazyFactory: function() {
+        return this.importDao || this.X[daoize(this.model.name)];
+      }
+    },
     {
       name: 'title',
       dynamicValue: function() {
