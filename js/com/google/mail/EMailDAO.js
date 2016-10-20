@@ -123,7 +123,7 @@ CLASS({
             this.StripPropertiesDAO.create({
               delegate: this.remoteDao,
               propertyNames: ['serverVersion']
-            }).where(EQ(this.EMail.LABELS, 'INBOX')).limit(1).select(dao);
+            }).where(EQ(this.EMail.LABELS, 'INBOX')).limit(100).select(dao);
           }
         }.bind(this));
       }
@@ -149,7 +149,7 @@ CLASS({
             localVersionProp: this.EMail.CLIENT_VERSION,
             remoteVersionProp: this.EMail.SERVER_VERSION,
             deletedProp: this.EMail.DELETED,
-            initialSyncWindow: 10
+            initialSyncWindow: 100
           });
 
           this.delegate.listen(this.doSync);
