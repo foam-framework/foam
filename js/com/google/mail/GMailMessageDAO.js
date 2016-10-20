@@ -291,6 +291,10 @@ CLASS({
     {
       name: "sendDraft_",
       code: function (ret, draftId, obj, sink) {
+        // TODO: Disabled until infinite loop is found and fixed.
+        ret();
+        return;
+
         var self = this;
         if ( obj.deleted ) {
           ret();
