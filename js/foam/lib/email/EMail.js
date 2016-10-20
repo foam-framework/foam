@@ -191,10 +191,12 @@ CLASS({
     },
     {
       model_: "foam.lib.email.EMailLabelProperty",
+      labelName: 'DRAFT',
       name: "isDraft"
     },
     {
       model_: "foam.lib.email.EMailLabelProperty",
+      labelName: 'INBOX',
       name: "inInbox"
     },
     {

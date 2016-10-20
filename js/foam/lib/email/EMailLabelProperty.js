@@ -21,6 +21,9 @@ CLASS({
   "extends": "BooleanProperty",
   "properties": [
     {
+      name: 'labelName'
+    },
+    {
       "name": "setter",
       "defaultValue": function (v, name) {
         var old = this.v;
