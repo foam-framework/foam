@@ -38,6 +38,7 @@ CLASS({
       model.properties = model.properties.filter(filter);
       model.methods = model.methods.filter(filter);
       model.listeners = model.listeners.filter(filter);
+      model.messages = model.messages.filter(filter);
 
       return model;
     },

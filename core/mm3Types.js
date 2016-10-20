@@ -46,6 +46,11 @@ CLASS({
       help: 'The message itself.'
     },
     {
+      name: 'labels',
+      type: 'StringArray',
+      labels: ['debug', 'javascript'],
+    },
+    {
       name: 'meaning',
       help: 'Linguistic clarification to resolve ambiguity.',
       documentation: function() {/* A human readable discussion of the
