@@ -98,8 +98,7 @@ CLASS({
       "name": "aToB",
       "code": function (obj) {
         var msg = this.FOAMGMailMessage.create({
-          id: obj.gmailId || obj.id,
-          emailId: obj.id,
+          id: obj.id,
           labelIds: obj.labels,
           isSent: obj.messageSent,
           clientVersion: obj.clientVersion,
@@ -154,7 +153,6 @@ CLASS({
 
         var args = {
           id: obj.id,
-          gmailId: obj.id,
           convId: obj.threadId,
           labels: obj.labelIds,
           serverVersion: obj.historyId,
@@ -164,9 +162,6 @@ CLASS({
           snippet: obj.snippet,
           deleted: obj.deleted
         };
-        if ( obj.emailId ) {
-          args.id = obj.emailId;
-        }
         this.readHeaders(obj.payload.headers || [], args);
 
         return this.EMail.create(args);
