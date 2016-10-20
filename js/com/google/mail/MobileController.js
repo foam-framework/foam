@@ -189,9 +189,15 @@ CLASS({
             factory_: 'foam.ui.ScrollView',
             rowView: 'com.google.mail.EMailCitationView'
           },
-          detailView: {
-            factory_: 'foam.ui.md.UpdateDetailView',
-            immutable: true
+          detailView: function(args, X) {
+            if ( args.data.isDraft ) {
+              return X.com.google.mail.ComposeView.create({
+                data: args.data,
+                innerView: { factory_: 'com.google.mail.InnerComposeView' }
+              }, X);
+            } else {
+              return X.foam.ui.md.UpdateDetailView.create({ immutable: true }, X).copyFrom(args);
+            }
           },
           innerDetailView: 'com.google.mail.EMailView',
           queryParser: this.QueryParser.create().parser,
