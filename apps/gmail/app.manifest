@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# version 1.1.5
+# version 1.1.6
 # hash: -1888255044
 
 CACHE:
@@ -7,6 +7,24 @@ foam.js
 main.html
 index.html
 foam.css
+images/archive.svg
+images/ic_add_24dp.png
+images/ic_arrow_back_24dp.png
+images/ic_arrow_drop_down_24dp.png
+images/ic_clear_24dp.png
+images/ic_done_24dp.png
+images/ic_filter_24dp.png
+images/ic_keep_24dp.png
+images/ic_menu_24dp.png
+images/ic_search_24dp.png
+images/ic_sort_24dp.png
+images/ic_star_24dp.png
+images/ic_star_outline_24dp.png
+images/ic_star_outline_white_24dp.png
+images/ic_star_white_24dp.png
+images/projectBackground.png
+images/send.png
+images/silhouette.png
 
 
 NETWORK:
