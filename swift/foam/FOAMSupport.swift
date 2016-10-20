@@ -85,9 +85,12 @@ public class Model {
 public class FObject: PropertyChangeSupport, NSCoding {
   static var nextId = 1
   lazy var UID: Int = {
-    let id = nextId
-    nextId += 1
-    return id
+    var id: Int?
+    dispatch_sync(dispatch_queue_create("FObjectUIDLock", nil)) {
+      id = nextId
+      nextId += 1
+    }
+    return id!
   }()
   public init(args: [String:AnyObject?] = [:]) {
     super.init()
