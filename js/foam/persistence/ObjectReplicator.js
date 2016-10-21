@@ -25,13 +25,13 @@ CLASS({
       swiftDefaultValue: '""',
       swiftPostSet: function() {/*
         self.dao.find(newValue, sink: ClosureSink(args: [
-          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
-            self.future.set(args[0])
-            self.attach()
+          "putFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+            self?.future.set(args[0])
+            self?.attach()
             return nil
           }),
-          "errorFn": FoamFunction(fn: { (args) -> AnyObject? in
-            self.attach()
+          "errorFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+            self?.attach()
             return nil
           }),
         ]))
@@ -42,6 +42,10 @@ CLASS({
     },
     {
       name: 'dao',
+      swiftType: 'AbstractDAO',
+    },
+    {
+      name: 'predicatedDao',
       swiftType: 'AbstractDAO',
     },
     {
@@ -92,8 +96,10 @@ CLASS({
       swiftType: 'Future',
       swiftFactory: 'return Future()',
       swiftPostSet: function() {/*
-        newValue.get { o in
-          self.obj = o as? FObject
+        newValue.get { [weak self] o in
+          if self != nil {
+            self!.obj = o as? FObject
+          }
         }
       */},
     },
@@ -108,12 +114,12 @@ CLASS({
       swiftType: 'Sink',
       swiftFactory: function() {/*
         return ClosureSink(args: [
-          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
-            self.onPut()
+          "putFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+            self?.onPut()
             return nil
           }),
-          "removeFn": FoamFunction(fn: { (args) -> AnyObject? in
-            self.onRemove()
+          "removeFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+            self?.onRemove()
             return nil
           })
         ])
@@ -125,21 +131,27 @@ CLASS({
       name: 'destroy',
       code: function() {
         this.obj.removeListener(this.objChanged);
-        this.dao.unlisten(this.daoListener);
+        if (this.hasOwnProperty('predicatedDao')) {
+          this.predicatedDao.unlisten(this.daoListener);
+        }
       },
       swiftCode: function() {/*
         self.obj?.removeListener(self.objChangedListener_)
-        self.dao.unlisten(self.daoListener)
+        if hasOwnProperty("predicatedDao") {
+          self.predicatedDao.unlisten(self.daoListener)
+        }
       */},
     },
     {
       name: 'attach',
       code: function() {
         this.obj.addListener(this.objChanged);
-        this.dao.where(EQ(this.pk, this.obj.id)).listen(this.daoListener)
+        this.predicatedDao = this.dao.where(EQ(this.pk, this.obj.id));
+        this.predicatedDao.listen(this.daoListener)
       },
       swiftCode: function() {/*
-        self.dao.`where`(EQ(self.pk, arg2: self.id)).listen(self.daoListener)
+        self.predicatedDao = self.dao.`where`(EQ(self.pk, arg2: self.id))
+        self.predicatedDao.listen(self.daoListener)
       */},
     },
   ],
@@ -163,11 +175,12 @@ CLASS({
         if feedback { return }
         let clone = obj!.deepClone();
         dao.put(clone, sink: ClosureSink(args: [
-          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+          "putFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+            if self == nil { return nil }
             let obj2 = args[0]
-            self.feedback = true;
-            self.obj!.copyFrom(obj2);
-            self.feedback = false;
+            self!.feedback = true;
+            self!.obj!.copyFrom(obj2);
+            self!.feedback = false;
             return nil
           })
         ]))
@@ -190,14 +203,15 @@ CLASS({
       },
       swiftCode: function() {/*
         dao.find(id, sink: ClosureSink(args: [
-          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+          "putFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+            if self == nil { return nil }
             let obj2 = args[0] as! FObject
-            if self.obj == nil {
-              self.future.set(obj2);
+            if self!.obj == nil {
+              self!.future.set(obj2);
             } else {
-              self.feedback = true;
-              self.obj!.copyFrom(obj2);
-              self.feedback = false;
+              self!.feedback = true;
+              self!.obj!.copyFrom(obj2);
+              self!.feedback = false;
             }
             return nil
           })
@@ -211,5 +225,5 @@ CLASS({
       },
       swiftCode: '// TODO',
     }
-  ]
+  ],
 });
