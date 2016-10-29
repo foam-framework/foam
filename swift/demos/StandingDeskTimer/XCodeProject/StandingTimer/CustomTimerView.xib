@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -54,6 +54,7 @@
             <connections>
                 <outlet property="clockOutlet" destination="QUl-Rq-5he" id="6D1-sf-nY9"/>
                 <outlet property="startButton" destination="DOB-DB-uoc" id="Mai-tp-mKR"/>
+                <outlet property="whatToDoOutlet" destination="PZp-BB-PQg" id="8YV-bf-OMY"/>
             </connections>
         </view>
     </objects>
