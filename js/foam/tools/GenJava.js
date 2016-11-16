@@ -38,4 +38,35 @@ CLASS({
       ],
     },
   ],
+  methods: [
+    function execute() {
+      var self = this;
+      this.genCode()(function(models) {
+        if (!models) process.exit(1);
+        self.fs.writeFileSync(
+          self.outfolder + '/FoamModelMap.java',
+          self.nameToModelMap.call(self, undefined, models, self));
+      });
+    },
+  ],
+  templates: [
+    function nameToModelMap(_, models, util) {/*
+package <%= util.template.defaultPackage %>;
+import java.util.HashMap;
+public class FoamModelMap {
+  public static Model get(String modelId) {
+    switch (modelId) {
+<% models.filter(function(m) { return !!m.javaClassName; }).forEach(function(m) { %>
+      case "<%= m.package %><%= m.package ? '.' : ''%><%= m.name%>":
+        return <%= m.package || util.template.defaultPackage  %>
+            .<%= m.javaClassName %>
+            .<%= m.javaClassName %>Model();
+<% }) %>
+      default:
+        return null;
+    }
+  }
+}
+    */},
+  ],
 });

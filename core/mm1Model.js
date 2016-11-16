@@ -130,6 +130,7 @@ var Model = {
       name: 'package',
       help: 'Package that this Model belongs to.',
       defaultValue: '',
+      javaType: 'String',
       postSet: function(_, p) { return this.id = p ? p + '.' + this.name : this.name; },
       documentation: function() { /*
         <p>The package (or namespace) in which the $$DOC{ref:'.'} belongs. The

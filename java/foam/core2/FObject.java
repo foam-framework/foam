@@ -18,6 +18,11 @@
 package foam.core2;
 
 import foam.core.Property;
+import foam.lib.json.FObjectParser;
+import foam.lib.json.Outputter;
+import foam.lib.parse.Parser;
+import foam.lib.parse.ParserContextImpl;
+import foam.lib.parse.StringPS;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +32,10 @@ public abstract class FObject implements Cloneable, Comparable, java.io.Serializ
   public Object get(String key) { return null; }
   public Property getProperty(String key) { return null; }
   public boolean hasOwnProperty(String key) { return false; }
-  public abstract foam.core.Model getModel();
+  public abstract foam.core.Model getModel_();
   public List<String> validateObject() {
     List<String> errors = new ArrayList<String>();
-    for (Property p : getModel().getProperties()) {
+    for (Property p : getModel_().getProperties()) {
       if (p.getValidate() != null) {
         String error = p.getValidate().call(this);
         if (error != null) {
@@ -43,7 +48,7 @@ public abstract class FObject implements Cloneable, Comparable, java.io.Serializ
   public void copyFrom(Object data, boolean deep) {
     if (data instanceof FObject) {
       FObject fobj = (FObject) data;
-      for (Property fobjProp : fobj.getModel().getProperties()) {
+      for (Property fobjProp : fobj.getModel_().getProperties()) {
         if (!fobj.hasOwnProperty(fobjProp.getName())) continue;
         Object v = fobj.get(fobjProp.getName());
         if ((v instanceof FObject) && deep) {
@@ -74,7 +79,7 @@ public abstract class FObject implements Cloneable, Comparable, java.io.Serializ
     return clone(false);
   }
   public FObject clone(boolean deep) {
-    FObject fobj = getModel().createInstance();
+    FObject fobj = getModel_().createInstance();
     fobj.copyFrom(this, deep);
     return fobj;
   }
@@ -86,15 +91,26 @@ public abstract class FObject implements Cloneable, Comparable, java.io.Serializ
     if (data == null) return 1;
     if (!(data instanceof FObject)) return 1;
     FObject fdata = (FObject) data;
-    if (getModel() != fdata.getModel()) {
-      return getModel().getName().compareTo(fdata.getModel().getName());
+    if (getModel_() != fdata.getModel_()) {
+      return getModel_().getName().compareTo(fdata.getModel_().getName());
     }
-    for (Property prop : getModel().getProperties()) {
+    for (Property prop : getModel_().getProperties()) {
       int diff = prop.compare(this, fdata);
       if (diff != 0) {
         return diff;
       }
     }
     return 0;
+  }
+  public void fromJson(String json) {
+    Parser parser = new FObjectParser();
+    StringPS stringStream = new StringPS();
+    stringStream.setString(json);
+    FObject parsedO = (FObject)parser.parse(stringStream, new ParserContextImpl()).value();
+    copyFrom(parsedO);
+  }
+  public String toJson() {
+    Outputter outputter = new Outputter();
+    return outputter.stringify(this);
   }
 }
