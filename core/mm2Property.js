@@ -20,7 +20,8 @@ GLOBAL.Property = {
   instance_: {},
 
   name:  'Property',
-  implements: ['ExprProtocol'],
+  swiftImplements: ['ExprProtocol'],
+  javaImplements: ['foam.core2.ExprInterface'],
   plural:'Properties',
   help:  'Describes a properties of a modelled entity.',
 
