@@ -28,6 +28,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FObject implements Cloneable, Comparable, java.io.Serializable {
+
+  private int UID_ = -1;
+  private static int nextUid_ = 1;
+  public int getUID() {
+    if (UID_ == -1) {
+      // TODO make thread safe.
+      setUID(nextUid_);
+      nextUid_++;
+    }
+    return UID_;
+  }
+  public void setUID(int UID) {
+    UID_ = UID;
+  }
+
   public void set(String key, Object value) {}
   public void clearProperty(String key) {}
   public Object get(String key) { return null; }
