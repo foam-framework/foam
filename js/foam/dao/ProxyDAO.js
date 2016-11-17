@@ -24,7 +24,7 @@ CLASS({
   requires: [ 'foam.dao.NullDAO' ],
 
   javaClassImports: [
-    'foam.dao.swift.RelaySink',
+    'foam.dao.nativesupport.RelaySink',
   ],
 
   documentation: function() {/*
@@ -46,7 +46,7 @@ CLASS({
         };
       },
       swiftType: 'Sink',
-      javaType: 'foam.dao.swift.Sink',
+      javaType: 'foam.dao.nativesupport.Sink',
       swiftFactory: function() {/*
         return RelaySink(args: ["relay": self])
       */},

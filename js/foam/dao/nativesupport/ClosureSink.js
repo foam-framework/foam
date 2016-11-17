@@ -16,42 +16,57 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'ProxySink',
-  extends: 'foam.dao.swift.Sink',
+  package: 'foam.dao.nativesupport',
+  name: 'ClosureSink',
+  extends: 'foam.dao.nativesupport.Sink',
 
   properties: [
     {
-      name: 'delegate',
-      swiftType: 'Sink?',
-      javaType: 'foam.dao.swift.Sink',
+      model_: 'FunctionProperty',
+      name: 'putFn',
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'removeFn',
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'errorFn',
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'eofFn',
+    },
+    {
+      model_: 'FunctionProperty',
+      name: 'resetFn',
     },
   ],
   methods: [
     {
       name: 'put',
-      swiftCode: 'delegate?.put(obj)',
-      javaCode: 'if (getDelegate() != null) getDelegate().put(obj);',
+      swiftCode: 'putFn.call(obj)',
+      javaCode: 'getPutFn().call(obj);',
     },
     {
       name: 'remove',
-      swiftCode: 'delegate?.remove(obj)',
-      javaCode: 'if (getDelegate() != null) getDelegate().remove(obj);',
+      swiftCode: 'removeFn.call(obj)',
+      javaCode: 'getRemoveFn().call(obj);',
     },
     {
       name: 'reset',
-      swiftCode: 'delegate?.reset()',
-      javaCode: 'if (getDelegate() != null) getDelegate().reset();',
+      swiftCode: 'resetFn.call()',
+      javaCode: 'getResetFn().call();',
     },
     {
       name: 'eof',
-      swiftCode: 'delegate?.eof()',
-      javaCode: 'if (getDelegate() != null) getDelegate().eof();',
+      swiftCode: 'eofFn.call()',
+      javaCode: 'getEofFn().call();',
     },
     {
       name: 'error',
-      swiftCode: 'delegate?.error()',
-      javaCode: 'if (getDelegate() != null) getDelegate().error();',
+      swiftCode: 'errorFn.call()',
+      swiftCode: 'getErrorFn().call();',
     },
   ],
 });

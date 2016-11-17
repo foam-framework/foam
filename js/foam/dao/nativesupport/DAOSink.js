@@ -16,42 +16,24 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'ArraySink',
-  extends: 'foam.dao.swift.Sink',
+  package: 'foam.dao.nativesupport',
+  name: 'DAOSink',
+  extends: 'foam.dao.nativesupport.Sink',
 
   properties: [
     {
-      name: 'array',
-      type: 'Array',
+      name: 'delegate',
+      swiftType: 'AbstractDAO?',
     },
   ],
-
   methods: [
     {
       name: 'put',
-      swiftCode: 'array.append(obj)',
-      javaCode: 'getArray().add(obj);',
+      swiftCode: 'delegate?.put(obj)',
     },
     {
       name: 'remove',
-      swiftCode: function() {/*
-        let index = array.indexOf(obj)
-        if index != nil {
-          array.removeAtIndex(index!)
-        }
-      */},
-      javaCode: function() {/*
-        int index = getArray().indexOf(obj);
-        if (index != -1) {
-          getArray().remove(index);
-        }
-      */},
-    },
-    {
-      name: 'reset',
-      swiftCode: 'array.removeAll()',
-      javaCode: 'getArray().clear();',
+      swiftCode: 'delegate?.remove(obj)',
     },
   ],
 });

@@ -16,15 +16,21 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'PredicatedSink',
-  extends: 'foam.dao.swift.ProxySink',
+  package: 'foam.dao.nativesupport',
+  name: 'MultiSink',
+  extends: 'foam.dao.nativesupport.Sink',
+
+  documentation: function() {/*
+    A sink that takes an array of sinks as a property and will execute all of
+    the sink functions (put, remove, eof, etc.) on all of the sinks in the
+    array in the order that they're given.
+  */},
 
   properties: [
     {
-      name: 'expr',
-      swiftType: 'ExprProtocol!',
-      javaType: 'foam.core2.ExprInterface',
+      name: 'sinks',
+      swiftType: '[Sink]',
+      swiftFactory: 'return []',
     },
   ],
 
@@ -32,30 +38,40 @@ CLASS({
     {
       name: 'put',
       swiftCode: function() {/*
-        let result = expr.f(obj) as! Bool
-        if result {
-          delegate?.put(obj)
-        }
-      */},
-      javaCode: function() {/*
-        Boolean result = (Boolean) getExpr().f(obj);
-        if (result.booleanValue()) {
-          getDelegate().put(obj);
+        for sink in sinks {
+          sink.put(obj)
         }
       */},
     },
     {
       name: 'remove',
       swiftCode: function() {/*
-        let result = expr.f(obj) as! Bool
-        if result {
-          delegate?.remove(obj)
+        for sink in sinks {
+          sink.remove(obj)
         }
       */},
+    },
+    {
+      name: 'reset',
       swiftCode: function() {/*
-        Boolean result = (Boolean) getExpr().f(obj);
-        if (result.booleanValue()) {
-          getDelegate().remove(obj);
+        for sink in sinks {
+          sink.reset()
+        }
+      */},
+    },
+    {
+      name: 'eof',
+      swiftCode: function() {/*
+        for sink in sinks {
+          sink.eof()
+        }
+      */},
+    },
+    {
+      name: 'error',
+      swiftCode: function() {/*
+        for sink in sinks {
+          sink.error()
         }
       */},
     },

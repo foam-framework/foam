@@ -16,10 +16,10 @@ node --harmony ../../../tools/foam.js \
       outfolder="Generated" \
       names=" \
         foam.dao.ProxyDAO \
-        foam.dao.swift.PredicatedSink \
-        foam.dao.swift.RelaySink \
-        foam.dao.swift.ClosureSink \
-        foam.dao.swift.DAOQueryOptions \
+        foam.dao.nativesupport.PredicatedSink \
+        foam.dao.nativesupport.RelaySink \
+        foam.dao.nativesupport.ClosureSink \
+        foam.dao.nativesupport.DAOQueryOptions \
         tests.TestModel \
       "
 

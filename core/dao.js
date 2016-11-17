@@ -323,10 +323,10 @@ function atxn(afunc) {
 CLASS({
   name: 'AbstractDAO',
   javaClassImports: [
-    'foam.dao.swift.ClosureSink',
-    'foam.dao.swift.DAOQueryOptions',
-    'foam.dao.swift.PredicatedSink',
-    'foam.dao.swift.Sink',
+    'foam.dao.nativesupport.ClosureSink',
+    'foam.dao.nativesupport.DAOQueryOptions',
+    'foam.dao.nativesupport.PredicatedSink',
+    'foam.dao.nativesupport.Sink',
     'java.util.concurrent.CompletableFuture',
   ],
 
@@ -344,8 +344,8 @@ CLASS({
       factory: function() { return []; },
       swiftType: 'NSMutableArray',
       swiftFactory: 'return NSMutableArray()',
-      javaType: 'java.util.List<foam.dao.swift.Sink>',
-      javaFactory: 'return new java.util.ArrayList<foam.dao.swift.Sink>();',
+      javaType: 'java.util.List<foam.dao.nativesupport.Sink>',
+      javaFactory: 'return new java.util.ArrayList<foam.dao.nativesupport.Sink>();',
       compareProperty: function() { return 0; },
     }
   ],
@@ -365,18 +365,18 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink = ArraySink()',
-          javaType: 'foam.dao.swift.Sink',
+          javaType: 'foam.dao.nativesupport.Sink',
         },
         {
           name: 'options',
           swiftType: 'DAOQueryOptions = DAOQueryOptions()',
-          javaType: 'foam.dao.swift.DAOQueryOptions',
-          javaDefaultValue: 'new foam.dao.swift.DAOQueryOptions()',
+          javaType: 'foam.dao.nativesupport.DAOQueryOptions',
+          javaDefaultValue: 'new foam.dao.nativesupport.DAOQueryOptions()',
         },
       ],
       swiftReturnType: 'Future',
       swiftCode: 'return Future().set(sink)',
-      javaReturnType: 'CompletableFuture<foam.dao.swift.Sink>',
+      javaReturnType: 'CompletableFuture<foam.dao.nativesupport.Sink>',
       javaCode: 'return null;',
     },
     {
@@ -390,8 +390,8 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink = ArraySink()',
-          javaType: 'foam.dao.swift.Sink',
-          javaDefaultValue: 'new foam.dao.swift.ArraySink()',
+          javaType: 'foam.dao.nativesupport.Sink',
+          javaDefaultValue: 'new foam.dao.nativesupport.ArraySink()',
         },
       ],
       swiftCode: '// Override',
@@ -411,8 +411,8 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink = ArraySink()',
-          javaType: 'foam.dao.swift.Sink',
-          javaDefaultValue: 'new foam.dao.swift.ArraySink()',
+          javaType: 'foam.dao.nativesupport.Sink',
+          javaDefaultValue: 'new foam.dao.nativesupport.ArraySink()',
         },
       ],
       swiftCode: '// Override',
@@ -431,7 +431,7 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink',
-          javaType: 'foam.dao.swift.Sink',
+          javaType: 'foam.dao.nativesupport.Sink',
         },
       ],
       swiftCode: '// Override',
@@ -493,16 +493,16 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink',
-          javaType: 'foam.dao.swift.Sink',
+          javaType: 'foam.dao.nativesupport.Sink',
         },
         {
           name: 'options',
           swiftType: 'DAOQueryOptions',
-          javaType: 'foam.dao.swift.DAOQueryOptions',
+          javaType: 'foam.dao.nativesupport.DAOQueryOptions',
         },
       ],
       swiftReturnType: 'Sink',
-      javaReturnType: 'foam.dao.swift.Sink',
+      javaReturnType: 'foam.dao.nativesupport.Sink',
       swiftCode: function() {/*
         var decoratedSink = sink
         if options.query != nil {
@@ -584,13 +584,13 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink',
-          javaType: 'foam.dao.swift.Sink',
+          javaType: 'foam.dao.nativesupport.Sink',
         },
         {
           name: 'options',
           swiftType: 'DAOQueryOptions = DAOQueryOptions()',
-          javaType: 'foam.dao.swift.DAOQueryOptions',
-          javaDefaultValue: 'new foam.dao.swift.DAOQueryOptions()',
+          javaType: 'foam.dao.nativesupport.DAOQueryOptions',
+          javaDefaultValue: 'new foam.dao.nativesupport.DAOQueryOptions()',
         }
       ],
       swiftCode: 'self.daoListeners_.addObject(self.decorateSink_(sink, options: options))',
@@ -614,7 +614,7 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink',
-          javaType: 'foam.dao.swift.Sink',
+          javaType: 'foam.dao.nativesupport.Sink',
         },
       ],
       returnType: 'Boolean',
@@ -664,14 +664,14 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink = ArraySink()',
-          javaType: 'foam.dao.swift.Sink',
-          javaDefaultValue: 'new foam.dao.swift.ArraySink()',
+          javaType: 'foam.dao.nativesupport.Sink',
+          javaDefaultValue: 'new foam.dao.nativesupport.ArraySink()',
         },
         {
           name: 'options',
           swiftType: 'DAOQueryOptions = DAOQueryOptions()',
-          javaType: 'foam.dao.swift.DAOQueryOptions',
-          javaDefaultValue: 'new foam.dao.swift.DAOQueryOptions()',
+          javaType: 'foam.dao.nativesupport.DAOQueryOptions',
+          javaDefaultValue: 'new foam.dao.nativesupport.DAOQueryOptions()',
         },
       ],
       swiftReturnType: 'Future',

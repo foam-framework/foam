@@ -16,46 +16,42 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'Sink',
+  package: 'foam.dao.nativesupport',
+  name: 'ProxySink',
+  extends: 'foam.dao.nativesupport.Sink',
 
+  properties: [
+    {
+      name: 'delegate',
+      swiftType: 'Sink?',
+      javaType: 'foam.dao.nativesupport.Sink',
+    },
+  ],
   methods: [
     {
       name: 'put',
-      args: [
-        {
-          name: 'obj',
-          type: 'FObject',
-        },
-      ],
-      swiftCode: '// Override and implement.',
-      javaCode: '// Override and implement.',
+      swiftCode: 'delegate?.put(obj)',
+      javaCode: 'if (getDelegate() != null) getDelegate().put(obj);',
     },
     {
       name: 'remove',
-      args: [
-        {
-          name: 'obj',
-          type: 'FObject',
-        },
-      ],
-      swiftCode: '// Override and implement.',
-      javaCode: '// Override and implement.',
+      swiftCode: 'delegate?.remove(obj)',
+      javaCode: 'if (getDelegate() != null) getDelegate().remove(obj);',
     },
     {
       name: 'reset',
-      swiftCode: '// Override and implement.',
-      javaCode: '// Override and implement.',
+      swiftCode: 'delegate?.reset()',
+      javaCode: 'if (getDelegate() != null) getDelegate().reset();',
     },
     {
       name: 'eof',
-      swiftCode: '// Override and implement.',
-      javaCode: '// Override and implement.',
+      swiftCode: 'delegate?.eof()',
+      javaCode: 'if (getDelegate() != null) getDelegate().eof();',
     },
     {
       name: 'error',
-      swiftCode: '// Override and implement.',
-      javaCode: '// Override and implement.',
+      swiftCode: 'delegate?.error()',
+      javaCode: 'if (getDelegate() != null) getDelegate().error();',
     },
   ],
 });

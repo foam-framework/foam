@@ -4,8 +4,8 @@ CLASS({
   requires: [
     'AbstractDAO',
     'FilteredDAO_',
-    'foam.dao.swift.ArraySink',
-    'foam.dao.swift.SwiftArrayDAO',
+    'foam.dao.nativesupport.ArraySink',
+    'foam.dao.nativesupport.SwiftArrayDAO',
   ],
   properties: [
     {

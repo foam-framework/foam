@@ -16,24 +16,27 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'DAOSink',
-  extends: 'foam.dao.swift.Sink',
+  package: 'foam.dao.nativesupport',
+  name: 'RelaySink',
+  extends: 'foam.dao.nativesupport.Sink',
 
   properties: [
     {
-      name: 'delegate',
+      name: 'relay',
       swiftType: 'AbstractDAO?',
+      javaType: 'foam.core.AbstractDAO',
     },
   ],
   methods: [
     {
       name: 'put',
-      swiftCode: 'delegate?.put(obj)',
+      swiftCode: 'relay?.notify_("put", fObj: obj)',
+      javaCode: 'getRelay().notify_("put", obj);',
     },
     {
       name: 'remove',
-      swiftCode: 'delegate?.remove(obj)',
+      swiftCode: 'relay?.notify_("remove", fObj: obj)',
+      javaCode: 'getRelay().notify_("remove", obj);',
     },
   ],
 });

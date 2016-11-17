@@ -16,27 +16,42 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'RelaySink',
-  extends: 'foam.dao.swift.Sink',
+  package: 'foam.dao.nativesupport',
+  name: 'ArraySink',
+  extends: 'foam.dao.nativesupport.Sink',
 
   properties: [
     {
-      name: 'relay',
-      swiftType: 'AbstractDAO?',
-      javaType: 'foam.core.AbstractDAO',
+      name: 'array',
+      type: 'Array',
     },
   ],
+
   methods: [
     {
       name: 'put',
-      swiftCode: 'relay?.notify_("put", fObj: obj)',
-      javaCode: 'getRelay().notify_("put", obj);',
+      swiftCode: 'array.append(obj)',
+      javaCode: 'getArray().add(obj);',
     },
     {
       name: 'remove',
-      swiftCode: 'relay?.notify_("remove", fObj: obj)',
-      javaCode: 'getRelay().notify_("remove", obj);',
+      swiftCode: function() {/*
+        let index = array.indexOf(obj)
+        if index != nil {
+          array.removeAtIndex(index!)
+        }
+      */},
+      javaCode: function() {/*
+        int index = getArray().indexOf(obj);
+        if (index != -1) {
+          getArray().remove(index);
+        }
+      */},
+    },
+    {
+      name: 'reset',
+      swiftCode: 'array.removeAll()',
+      javaCode: 'getArray().clear();',
     },
   ],
 });
