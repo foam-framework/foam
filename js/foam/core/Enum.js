@@ -29,6 +29,12 @@ CLASS({
       }
     },
     {
+      name: 'javaClassName',
+      defaultValueFn: function() {
+        return this.name;
+      }
+    },
+    {
       name: 'package',
       defaultValueFn: function() {
         return this.id.split('.').slice(0, -1).join('.');
