@@ -20,6 +20,7 @@ package foam.core2;
 import foam.core.Property;
 import foam.lib.json.FObjectParser;
 import foam.lib.json.Outputter;
+import foam.lib.parse.PStream;
 import foam.lib.parse.Parser;
 import foam.lib.parse.ParserContextImpl;
 import foam.lib.parse.StringPS;
@@ -102,12 +103,17 @@ public abstract class FObject implements Cloneable, Comparable, java.io.Serializ
     }
     return 0;
   }
-  public void fromJson(String json) {
+  public boolean fromJson(String json) {
     Parser parser = new FObjectParser();
     StringPS stringStream = new StringPS();
     stringStream.setString(json);
-    FObject parsedO = (FObject)parser.parse(stringStream, new ParserContextImpl()).value();
-    copyFrom(parsedO);
+
+    PStream parsedStream = parser.parse(stringStream, new ParserContextImpl());
+    if (parsedStream == null) return false;
+    Object parsedObject = parsedStream.value();
+    if (!(parsedObject instanceof FObject)) return false;
+    copyFrom((FObject)parsedObject);
+    return true;
   }
   public String toJson() {
     Outputter outputter = new Outputter();

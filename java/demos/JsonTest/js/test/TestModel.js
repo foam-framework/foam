@@ -78,6 +78,10 @@ CLASS({
         o2.fromJson(o.toJson());
         assertTrue(o.equals(o2));
         assertTrue(o.toJson().equals(o2.toJson()));
+
+        assertTrue(!o2.fromJson("HEllo"));
+        assertTrue(o.equals(o2));
+        assertTrue(o.toJson().equals(o2.toJson()));
       */},
     },
     {
