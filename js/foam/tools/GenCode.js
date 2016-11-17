@@ -47,6 +47,10 @@ CLASS({
       name: 'template',
     },
     {
+      name: 'fileNameProperty',
+      defaultValue: 'name',
+    },
+    {
       name: 'fileExtension',
     },
     {
@@ -105,7 +109,7 @@ CLASS({
 
             var template = this.template.create()
             var destination =
-                this.outfolder + '/' + m.name + '.' + this.fileExtension;
+                this.outfolder + '/' + m[this.fileNameProperty] + '.' + this.fileExtension;
             console.log(
                 "Writing", m.id, this.fileExtension, "source to", destination);
             this.fs.writeFileSync(
