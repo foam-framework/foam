@@ -23,8 +23,8 @@ CLASS({
     {
       name: 'query',
       swiftType: 'ExprProtocol?',
+      javaType: 'foam.core2.ExprInterface',
       required: false,
     },
   ],
 });
-

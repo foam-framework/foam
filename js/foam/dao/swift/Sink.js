@@ -25,32 +25,37 @@ CLASS({
       args: [
         {
           name: 'obj',
-          swiftType: 'FObject',
+          type: 'FObject',
         },
       ],
       swiftCode: '// Override and implement.',
+      javaCode: '// Override and implement.',
     },
     {
       name: 'remove',
       args: [
         {
           name: 'obj',
-          swiftType: 'FObject',
+          type: 'FObject',
         },
       ],
       swiftCode: '// Override and implement.',
+      javaCode: '// Override and implement.',
     },
     {
       name: 'reset',
       swiftCode: '// Override and implement.',
+      javaCode: '// Override and implement.',
     },
     {
       name: 'eof',
       swiftCode: '// Override and implement.',
+      javaCode: '// Override and implement.',
     },
     {
       name: 'error',
       swiftCode: '// Override and implement.',
+      javaCode: '// Override and implement.',
     },
   ],
 });

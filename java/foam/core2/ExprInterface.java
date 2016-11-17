@@ -15,28 +15,8 @@
  * limitations under the License.
  */
 
-CLASS({
-  package: 'foam.dao.swift',
-  name: 'RelaySink',
-  extends: 'foam.dao.swift.Sink',
+package foam.core2;
 
-  properties: [
-    {
-      name: 'relay',
-      swiftType: 'AbstractDAO?',
-      javaType: 'foam.core.AbstractDAO',
-    },
-  ],
-  methods: [
-    {
-      name: 'put',
-      swiftCode: 'relay?.notify_("put", fObj: obj)',
-      javaCode: 'getRelay().notify_("put", obj);',
-    },
-    {
-      name: 'remove',
-      swiftCode: 'relay?.notify_("remove", fObj: obj)',
-      javaCode: 'getRelay().notify_("remove", obj);',
-    },
-  ],
-});
+public interface ExprInterface {
+  public Object f(Object o);
+}

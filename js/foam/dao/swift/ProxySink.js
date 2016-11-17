@@ -24,28 +24,34 @@ CLASS({
     {
       name: 'delegate',
       swiftType: 'Sink?',
+      javaType: 'foam.dao.swift.Sink',
     },
   ],
   methods: [
     {
       name: 'put',
       swiftCode: 'delegate?.put(obj)',
+      javaCode: 'if (getDelegate() != null) getDelegate().put(obj);',
     },
     {
       name: 'remove',
       swiftCode: 'delegate?.remove(obj)',
+      javaCode: 'if (getDelegate() != null) getDelegate().remove(obj);',
     },
     {
       name: 'reset',
       swiftCode: 'delegate?.reset()',
+      javaCode: 'if (getDelegate() != null) getDelegate().reset();',
     },
     {
       name: 'eof',
       swiftCode: 'delegate?.eof()',
+      javaCode: 'if (getDelegate() != null) getDelegate().eof();',
     },
     {
       name: 'error',
       swiftCode: 'delegate?.error()',
+      javaCode: 'if (getDelegate() != null) getDelegate().error();',
     },
   ],
 });

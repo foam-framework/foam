@@ -46,22 +46,27 @@ CLASS({
     {
       name: 'put',
       swiftCode: 'putFn.call(obj)',
+      javaCode: 'getPutFn().call(obj);',
     },
     {
       name: 'remove',
       swiftCode: 'removeFn.call(obj)',
+      javaCode: 'getRemoveFn().call(obj);',
     },
     {
       name: 'reset',
       swiftCode: 'resetFn.call()',
+      javaCode: 'getResetFn().call();',
     },
     {
       name: 'eof',
       swiftCode: 'eofFn.call()',
+      javaCode: 'getEofFn().call();',
     },
     {
       name: 'error',
       swiftCode: 'errorFn.call()',
+      swiftCode: 'getErrorFn().call();',
     },
   ],
 });

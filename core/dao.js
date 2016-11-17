@@ -83,6 +83,7 @@ CLASS({
       name: 'query',
       swiftType: 'ExprProtocol!',
       swiftDefaultValue: 'nil',
+      javaType: 'foam.core2.ExprInterface',
       required: true
     }
   ],
@@ -102,6 +103,14 @@ CLASS({
         else { options.query = query }
         return delegate.select(sink, options: options)
       */},
+      javaCode: function() {/*
+        if (options != null && options.getQuery() != null) {
+          options.setQuery(MLang.AND(getQuery(), options.getQuery()));
+        } else {
+          options.setQuery(getQuery());
+        }
+        return getDelegate().select(sink, options);
+      */},
     },
     {
       name: 'removeAll',
@@ -120,6 +129,13 @@ CLASS({
           self.query
         return self.delegate.removeAll(sink, options: options2)
       */},
+      javaCode: function() {/*
+        DAOQueryOptions options2 = (DAOQueryOptions)(options.deepClone());
+        options2.setQuery(options2 != null && options2.getQuery() != null ?
+          MLang.AND(getQuery(), options2.getQuery()) :
+          getQuery());
+        return getDelegate().removeAll(sink, options2);
+      */},
     },
     {
       name: 'listen',
@@ -136,7 +152,14 @@ CLASS({
         options2.query = options2.query != nil ?
           AND(self.query, options2.query) :
           self.query
-        return super.listen(sink, options: options2)
+        super.listen(sink, options: options2)
+      */},
+      javaCode: function() {/*
+        DAOQueryOptions options2 = (DAOQueryOptions)(options.deepClone());
+        options2.setQuery(options2 != null && options2.getQuery() != null ?
+          MLang.AND(getQuery(), options2.getQuery()) :
+          getQuery());
+        super.listen(sink, options2);
       */},
     },
     function toString() {
@@ -299,6 +322,13 @@ function atxn(afunc) {
 
 CLASS({
   name: 'AbstractDAO',
+  javaClassImports: [
+    'foam.dao.swift.ClosureSink',
+    'foam.dao.swift.DAOQueryOptions',
+    'foam.dao.swift.PredicatedSink',
+    'foam.dao.swift.Sink',
+    'java.util.concurrent.CompletableFuture',
+  ],
 
   documentation: function() {/*
     The base for most DAO implementations, $$DOC{ref:'.'} provides basic facilities for
@@ -314,6 +344,8 @@ CLASS({
       factory: function() { return []; },
       swiftType: 'NSMutableArray',
       swiftFactory: 'return NSMutableArray()',
+      javaType: 'java.util.List<foam.dao.swift.Sink>',
+      javaFactory: 'return new java.util.ArrayList<foam.dao.swift.Sink>();',
       compareProperty: function() { return 0; },
     }
   ],
@@ -333,14 +365,19 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink = ArraySink()',
+          javaType: 'foam.dao.swift.Sink',
         },
         {
           name: 'options',
           swiftType: 'DAOQueryOptions = DAOQueryOptions()',
+          javaType: 'foam.dao.swift.DAOQueryOptions',
+          javaDefaultValue: 'new foam.dao.swift.DAOQueryOptions()',
         },
       ],
       swiftReturnType: 'Future',
       swiftCode: 'return Future().set(sink)',
+      javaReturnType: 'CompletableFuture<foam.dao.swift.Sink>',
+      javaCode: 'return null;',
     },
     {
       name: 'put',
@@ -348,13 +385,17 @@ CLASS({
         {
           name: 'obj',
           swiftType: 'FObject',
+          javaType: 'FObject',
         },
         {
           name: 'sink',
           swiftType: 'Sink = ArraySink()',
+          javaType: 'foam.dao.swift.Sink',
+          javaDefaultValue: 'new foam.dao.swift.ArraySink()',
         },
       ],
       swiftCode: '// Override',
+      javaCode: '// Override',
     },
     {
       name: 'remove',
@@ -365,13 +406,17 @@ CLASS({
         {
           name: 'obj',
           swiftType: 'FObject',
+          javaType: 'FObject',
         },
         {
           name: 'sink',
           swiftType: 'Sink = ArraySink()',
+          javaType: 'foam.dao.swift.Sink',
+          javaDefaultValue: 'new foam.dao.swift.ArraySink()',
         },
       ],
       swiftCode: '// Override',
+      javaCode: '// Override',
     },
     {
       name: 'find',
@@ -381,14 +426,16 @@ CLASS({
       args: [
         {
           name: 'id',
-          swiftType: 'String',
+          type: 'String',
         },
         {
           name: 'sink',
           swiftType: 'Sink',
+          javaType: 'foam.dao.swift.Sink',
         },
       ],
       swiftCode: '// Override',
+      javaCode: '// Override',
     },
 
     function pipe(sink, options) { /* A $$DOC{ref:'.select'} followed by $$DOC{ref:'.listen'}.
@@ -446,13 +493,16 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink',
+          javaType: 'foam.dao.swift.Sink',
         },
         {
           name: 'options',
           swiftType: 'DAOQueryOptions',
+          javaType: 'foam.dao.swift.DAOQueryOptions',
         },
       ],
       swiftReturnType: 'Sink',
+      javaReturnType: 'foam.dao.swift.Sink',
       swiftCode: function() {/*
         var decoratedSink = sink
         if options.query != nil {
@@ -463,6 +513,17 @@ CLASS({
           decoratedSink.UID = sink.UID
         }
         return decoratedSink
+      */},
+      javaCode: function() {/*
+        Sink decoratedSink = sink;
+        if (options.getQuery() != null) {
+          PredicatedSink pSink = new PredicatedSink();
+          pSink.setDelegate(decoratedSink);
+          pSink.setExpr(options.getQuery());
+          decoratedSink.setUID(sink.getUID());
+          decoratedSink = pSink;
+        }
+        return decoratedSink;
       */},
     },
 
@@ -483,15 +544,23 @@ CLASS({
         {
           name: 'query',
           swiftType: 'ExprProtocol',
+          javaType: 'foam.core2.ExprInterface',
         },
       ],
       swiftReturnType: 'AbstractDAO',
+      javaReturnType: 'AbstractDAO',
       swiftCode: function() {/*
         let filteredDAO = FilteredDAO_()
         filteredDAO.delegate = self
         filteredDAO.query = query
         return filteredDAO
-      */}
+      */},
+      javaCode: function() {/*
+        FilteredDAO_ filteredDAO = new FilteredDAO_();
+        filteredDAO.setDelegate(this);
+        filteredDAO.setQuery(query);
+        return filteredDAO;
+      */},
     },
 
     function limit(count) { /* Return a DAO that contains a count limited subset of this one. */
@@ -515,13 +584,17 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink',
+          javaType: 'foam.dao.swift.Sink',
         },
         {
           name: 'options',
           swiftType: 'DAOQueryOptions = DAOQueryOptions()',
+          javaType: 'foam.dao.swift.DAOQueryOptions',
+          javaDefaultValue: 'new foam.dao.swift.DAOQueryOptions()',
         }
       ],
-      swiftCode: 'self.daoListeners_.addObject(self.decorateSink_(sink, options: options))'
+      swiftCode: 'self.daoListeners_.addObject(self.decorateSink_(sink, options: options))',
+      javaCode: 'getDaoListeners_().add(decorateSink_(sink, options));',
     },
 
     {
@@ -541,9 +614,10 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink',
+          javaType: 'foam.dao.swift.Sink',
         },
       ],
-      swiftReturnType: 'Bool',
+      returnType: 'Boolean',
       swiftCode: function() {/*
         for (i,listener) in daoListeners_.enumerate() {
           guard let listener = listener as? Sink else { continue }
@@ -554,6 +628,16 @@ CLASS({
         }
 
         return false
+      */},
+      javaCode: function() {/*
+        for (Sink listener : getDaoListeners_()) {
+          if (listener.getUID() == sink.getUID()) {
+            getDaoListeners_().remove(listener);
+            return true;
+          }
+        }
+
+        return false;
       */},
     },
 
@@ -580,13 +664,18 @@ CLASS({
         {
           name: 'sink',
           swiftType: 'Sink = ArraySink()',
+          javaType: 'foam.dao.swift.Sink',
+          javaDefaultValue: 'new foam.dao.swift.ArraySink()',
         },
         {
           name: 'options',
           swiftType: 'DAOQueryOptions = DAOQueryOptions()',
+          javaType: 'foam.dao.swift.DAOQueryOptions',
+          javaDefaultValue: 'new foam.dao.swift.DAOQueryOptions()',
         },
       ],
       swiftReturnType: 'Future',
+      javaReturnType: 'java.util.concurrent.CompletableFuture',
       swiftCode: function() {/*
         let future = Future()
         let removeSink = ClosureSink(args: [
@@ -606,6 +695,31 @@ CLASS({
           sink.eof()
           future.set(sink)
         }
+        return future;
+      */},
+      javaCode: function() {/*
+        AbstractDAO self = this;
+        CompletableFuture<Sink> future = new CompletableFuture<>();
+        ClosureSink removeSink = new ClosureSink();
+        removeSink.setPutFn(new FoamFunction() {
+          @Override public Object call(Object... args) {
+            FObject obj = (FObject)args[0];
+            ClosureSink removeSink2 = new ClosureSink();
+            removeSink2.setRemoveFn(new FoamFunction() {
+              @Override public Object call(Object... args) {
+                FObject obj = (FObject)args[0];
+                sink.remove(obj);
+                return null;
+              }
+            });
+            self.remove(obj, removeSink2);
+            return null;
+          }
+        });
+        this.select(removeSink, options).thenAccept(result -> {
+          sink.eof();
+          future.complete(sink);
+        });
         return future;
       */},
     },
@@ -645,11 +759,13 @@ CLASS({
       args: [
         {
           name: 'fName',
-          swiftType: 'String',
+          type: 'String',
         },
         {
           name: 'fObj',
           swiftType: 'FObject? = nil',
+          javaType: 'FObject',
+          javaDefaultValue: 'null',
         },
       ],
       swiftCode: function() { /*
@@ -674,6 +790,27 @@ CLASS({
             break
           default:
             fatalError("DAO notify with unexpected function \(fName)")
+        }
+      */},
+      javaCode: function() { /*
+        switch (fName) {
+          case "put":
+            for (Sink l : getDaoListeners_()) {
+              l.put(fObj);
+            }
+            break;
+          case "remove":
+            for (Sink l : getDaoListeners_()) {
+              l.remove(fObj);
+            }
+            break;
+          case "reset":
+            for (Sink l : getDaoListeners_()) {
+              l.reset();
+            }
+            break;
+          default:
+            // TODO output error.
         }
       */},
     },

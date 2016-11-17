@@ -23,8 +23,7 @@ CLASS({
   properties: [
     {
       name: 'array',
-      swiftType: '[FObject]',
-      swiftFactory: 'return []',
+      type: 'Array',
     },
   ],
 
@@ -32,6 +31,7 @@ CLASS({
     {
       name: 'put',
       swiftCode: 'array.append(obj)',
+      javaCode: 'getArray().add(obj);',
     },
     {
       name: 'remove',
@@ -41,10 +41,17 @@ CLASS({
           array.removeAtIndex(index!)
         }
       */},
+      javaCode: function() {/*
+        int index = getArray().indexOf(obj);
+        if (index != -1) {
+          getArray().remove(index);
+        }
+      */},
     },
     {
       name: 'reset',
       swiftCode: 'array.removeAll()',
+      javaCode: 'getArray().clear();',
     },
   ],
 });
