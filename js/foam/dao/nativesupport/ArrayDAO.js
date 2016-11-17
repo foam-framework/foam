@@ -17,7 +17,7 @@
 
 CLASS({
   package: 'foam.dao.nativesupport',
-  name: 'SwiftArrayDAO',
+  name: 'ArrayDAO',
   extends: 'AbstractDAO',
 
   properties: [

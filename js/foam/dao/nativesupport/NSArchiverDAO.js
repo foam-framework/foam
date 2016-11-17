@@ -40,11 +40,11 @@ CLASS({
   methods: [
     {
       name: 'getArrayDao',
-      swiftReturnType: 'SwiftArrayDAO',
+      swiftReturnType: 'ArrayDAO',
       swiftCode: function() {/*
         var data = NSKeyedUnarchiver.unarchiveObjectWithFile(path) as? [FObject]
         if data == nil { data = [] }
-        return SwiftArrayDAO(args: ["dao": data!])
+        return ArrayDAO(args: ["dao": data!])
       */},
     },
     {

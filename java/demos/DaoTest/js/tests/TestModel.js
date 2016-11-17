@@ -5,7 +5,7 @@ CLASS({
     'AbstractDAO',
     'FilteredDAO_',
     'foam.dao.nativesupport.ArraySink',
-    'foam.dao.nativesupport.SwiftArrayDAO',
+    'foam.dao.nativesupport.ArrayDAO',
   ],
   properties: [
     {
@@ -42,7 +42,7 @@ CLASS({
       ],
       isStatic: true,
       javaCode: function() {/*
-        AbstractDAO dao = new SwiftArrayDAO();
+        AbstractDAO dao = new ArrayDAO();
         ArraySink sink;
 
         ArraySink listener = new ArraySink();
