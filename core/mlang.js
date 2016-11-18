@@ -40,7 +40,8 @@ function compileArray_(args) {
 
 CLASS({
   name: 'Expr',
-  implements: ['ExprProtocol'],
+  swiftImplements: ['ExprProtocol'],
+  javaImplements: ['foam.core2.ExprInterface'],
 
   documentation: 'Parent model for all mLang expressions. Contains default implementations for many methods.',
 
@@ -51,10 +52,13 @@ CLASS({
         {
           name: 'obj',
           swiftType: 'AnyObject?',
+          javaType: 'Object',
         },
       ],
       swiftReturnType: 'AnyObject?',
+      javaReturnType: 'Object',
       swiftCode: 'fatalError("You must extend and implement this.")',
+      javaCode: 'return null;',
     },
     function toMQL() { /* Outputs MQL for this expression. */ return this.label_; },
     function toSQL() { /* Outputs SQL for this expression. */ return this.label_; },
@@ -151,6 +155,7 @@ CLASS({
       name: 'f',
       code: function() { return true; },
       swiftCode: 'return true',
+      javaCode: 'return true;',
     },
   ]
 });
@@ -173,6 +178,7 @@ CLASS({
       name: 'f',
       code: function() { return false; },
       swiftCode: 'return false',
+      javaCode: 'return false;',
     },
   ]
 });
@@ -211,7 +217,9 @@ CLASS({
       label: 'Arguments',
       // type:  'Expr[]',
       swiftType:  'NSArray',
+      javaType:  'java.util.List<ExprInterface>',
       swiftFactory: 'return []',
+      javaFactory: 'return new java.util.ArrayList<ExprInterface>();',
       help:  'Sub-expressions',
       documentation: 'An array of subexpressions which are the arguments to this n-ary expression.',
       factory: function() { return []; }
@@ -282,10 +290,12 @@ CLASS({
       name:  'arg1',
       label: 'Argument',
       swiftType: 'AnyObject?',
+      javaType: 'Object',
       help:  'Sub-expression',
       documentation: 'The first argument to the expression.',
       defaultValue: TRUE,
       swiftDefaultValue: 'TRUE',
+      javaDefaultValue: 'MLang.TRUE()',
     }
   ],
 
@@ -317,7 +327,9 @@ CLASS({
       name:  'arg2',
       label: 'Argument',
       swiftType: 'AnyObject?',
+      javaType: 'Object',
       swiftDefaultValue: 'TRUE',
+      javaDefaultValue: 'MLang.TRUE()',
       help:  'Sub-expression',
       documentation: 'Second argument to the expression.',
       defaultValue: TRUE
@@ -381,6 +393,10 @@ CLASS({
 
   extends: 'BINARY',
 
+  javaClassImports: [
+    'foam.core2.ExprInterface',
+  ],
+
   documentation: function() { /*
     <p>Binary expression that compares its arguments for equality.</p>
     <p>When evaluated in Javascript, uses <tt>==</tt>.</p>
@@ -438,6 +454,11 @@ CLASS({
         return equals(arg1, arg2);
       },
       swiftCode: 'return equals(arg1?.f(obj), b: arg2?.f(obj))',
+      javaCode: function() {/*
+        return MLang.equals(
+            ((ExprInterface)(getArg1())).f(obj),
+            ((ExprInterface)(getArg2())).f(obj));
+      */},
     }
   ]
 });
@@ -490,6 +511,7 @@ CLASS({
       name: 'f',
       code: function(obj) { return this.arg1; },
       swiftCode: 'return arg1',
+      javaCode: 'return getArg1();',
     },
   ]
 });
@@ -632,6 +654,13 @@ CLASS({
           if !b { return false }
         }
         return true
+      */},
+      javaCode: function() {/*
+        for (ExprInterface arg : getArgs()) {
+          Boolean b = (Boolean)(arg.f(obj));
+          if (!b.booleanValue()) { return false; }
+        }
+        return true;
       */},
     }
   ],

@@ -16,15 +16,14 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'SwiftArrayDAO',
+  package: 'foam.dao.nativesupport',
+  name: 'ArrayDAO',
   extends: 'AbstractDAO',
 
   properties: [
     {
       name: 'dao',
-      swiftType: '[FObject]',
-      swiftDefaultValue: '[]',
+      type: 'Array',
     },
   ],
   methods: [
@@ -37,6 +36,16 @@ CLASS({
         }
         sink.eof()
         return Future().set(sink)
+      */},
+      javaCode: function() {/*
+        Sink decoratedSink = decorateSink_(sink, options);
+        for (FObject obj : getDao()) {
+          decoratedSink.put(obj);
+        }
+        sink.eof();
+        CompletableFuture<Sink> future = new CompletableFuture<>();
+        future.complete(sink);
+        return future;
       */},
     },
     {
@@ -54,6 +63,20 @@ CLASS({
         sink.put(obj)
         notify_("put", fObj: obj)
       */},
+      javaCode: function() {/*
+        boolean found = false;
+        for (int index = 0; index < getDao().size(); index++) {
+          FObject fobj = getDao().get(index);
+          if (MLang.equals(fobj.get("id"), obj.get("id"))) {
+            getDao().set(index, obj);
+            found = true;
+            break;
+          }
+        }
+        if (!found) getDao().add(obj);
+        sink.put(obj);
+        notify_("put", obj);
+      */},
     },
     {
       name: 'remove',
@@ -63,6 +86,14 @@ CLASS({
           dao.removeAtIndex(index!)
           sink.remove(obj)
           notify_("remove", fObj: obj)
+        }
+      */},
+      javaCode: function() {/*
+        int index = getDao().indexOf(obj);
+        if (index != -1) {
+          getDao().remove(index);
+          sink.remove(obj);
+          notify_("remove", obj);
         }
       */},
     },
@@ -76,6 +107,15 @@ CLASS({
           }
         }
         sink.error()
+      */},
+      javaCode: function() {/*
+        for (FObject fobj : getDao()) {
+          if (MLang.equals(fobj.get("id"), id)) {
+            sink.put(fobj);
+            return;
+          }
+        }
+        sink.error();
       */},
     },
   ],

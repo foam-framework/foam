@@ -16,14 +16,15 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
+  package: 'foam.dao.nativesupport',
   name: 'PredicatedSink',
-  extends: 'foam.dao.swift.ProxySink',
+  extends: 'foam.dao.nativesupport.ProxySink',
 
   properties: [
     {
       name: 'expr',
       swiftType: 'ExprProtocol!',
+      javaType: 'foam.core2.ExprInterface',
     },
   ],
 
@@ -36,6 +37,12 @@ CLASS({
           delegate?.put(obj)
         }
       */},
+      javaCode: function() {/*
+        Boolean result = (Boolean) getExpr().f(obj);
+        if (result.booleanValue()) {
+          getDelegate().put(obj);
+        }
+      */},
     },
     {
       name: 'remove',
@@ -43,6 +50,12 @@ CLASS({
         let result = expr.f(obj) as! Bool
         if result {
           delegate?.remove(obj)
+        }
+      */},
+      swiftCode: function() {/*
+        Boolean result = (Boolean) getExpr().f(obj);
+        if (result.booleanValue()) {
+          getDelegate().remove(obj);
         }
       */},
     },

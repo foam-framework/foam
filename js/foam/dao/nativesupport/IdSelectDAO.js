@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
+  package: 'foam.dao.nativesupport',
   name: 'IdSelectDAO',
   extends: 'foam.dao.ProxyDAO',
 

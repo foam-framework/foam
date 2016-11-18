@@ -16,24 +16,15 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'RelaySink',
-  extends: 'foam.dao.swift.Sink',
+  package: 'foam.dao.nativesupport',
+  name: 'DAOQueryOptions',
 
   properties: [
     {
-      name: 'relay',
-      swiftType: 'AbstractDAO?',
-    },
-  ],
-  methods: [
-    {
-      name: 'put',
-      swiftCode: 'relay?.notify_("put", fObj: obj)',
-    },
-    {
-      name: 'remove',
-      swiftCode: 'relay?.notify_("remove", fObj: obj)',
+      name: 'query',
+      swiftType: 'ExprProtocol?',
+      javaType: 'foam.core2.ExprInterface',
+      required: false,
     },
   ],
 });

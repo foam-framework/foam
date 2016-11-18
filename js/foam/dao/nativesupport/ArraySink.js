@@ -16,31 +16,42 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'DelayDAO',
-  extends: 'foam.dao.ProxyDAO',
-
-  documentation: function() {/*
-    A DAO decorator that allows you to add a delay before a method is actually
-    called.
-  */},
+  package: 'foam.dao.nativesupport',
+  name: 'ArraySink',
+  extends: 'foam.dao.nativesupport.Sink',
 
   properties: [
     {
-      name: 'putDelay',
-      type: 'Int',
+      name: 'array',
+      type: 'Array',
     },
   ],
+
   methods: [
     {
       name: 'put',
+      swiftCode: 'array.append(obj)',
+      javaCode: 'getArray().add(obj);',
+    },
+    {
+      name: 'remove',
       swiftCode: function() {/*
-        let dao = delegate
-        Delay(Double(putDelay))({ _ in
-          dao.put(obj, sink: sink)
-        }, nil)
+        let index = array.indexOf(obj)
+        if index != nil {
+          array.removeAtIndex(index!)
+        }
       */},
+      javaCode: function() {/*
+        int index = getArray().indexOf(obj);
+        if (index != -1) {
+          getArray().remove(index);
+        }
+      */},
+    },
+    {
+      name: 'reset',
+      swiftCode: 'array.removeAll()',
+      javaCode: 'getArray().clear();',
     },
   ],
 });
-

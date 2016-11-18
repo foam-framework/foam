@@ -957,7 +957,7 @@ CLASS({
     {
       name: 'swiftSubType',
       defaultValueFn: function() {
-        var type = this.subType || 'AnyObject';
+        var type = this.subType || 'FObject';
         return type.split('.').pop();
       }
     },
@@ -1020,30 +1020,36 @@ CLASS({
       }
     },
     {
+      name: 'javaSubType',
+      defaultValueFn: function() {
+        return this.subType || 'FObject';
+      }
+    },
+    {
       name: 'javaType',
       displayWidth: 10,
       defaultValueFn: function(p) {
-        return 'java.util.List<' + this.subType + '>';
+        return 'java.util.List<' + this.javaSubType + '>';
       },
       help: 'The Java type of this property.'
     },
     {
       name: 'javaLazyFactory',
       defaultValueFn: function(p) {
-        return 'return new java.util.ArrayList<' + this.subType + '>();';
+        return 'return new java.util.ArrayList<' + this.javaSubType + '>();';
       },
     },
     {
       name: 'javaAdapt',
       defaultValue: function() {/*
         if (newValue instanceof Object[]) {
-          java.util.List<<%=this.subType%>> l = new java.util.ArrayList<>();
+          java.util.List<<%=this.javaSubType%>> l = new java.util.ArrayList<>();
           for (Object s : (Object[])newValue) {
-            l.add((<%=this.subType%>)s);
+            l.add((<%=this.javaSubType%>)s);
           }
           return l;
         }
-        return (java.util.List<<%=this.subType%>>)newValue;
+        return (java.util.List<<%=this.javaSubType%>>)newValue;
       */},
     },
     {

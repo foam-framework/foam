@@ -23,6 +23,10 @@ CLASS({
 
   requires: [ 'foam.dao.NullDAO' ],
 
+  javaClassImports: [
+    'foam.dao.nativesupport.RelaySink',
+  ],
+
   documentation: function() {/*
     Provides a proxy to the $$DOC{ref:'.delegate'} DAO, and allows swapping out the
     $$DOC{ref:'.delegate'} transparently
@@ -42,14 +46,22 @@ CLASS({
         };
       },
       swiftType: 'Sink',
+      javaType: 'foam.dao.nativesupport.Sink',
       swiftFactory: function() {/*
         return RelaySink(args: ["relay": self])
-      */}
+      */},
+      javaFactory: function() {/*
+        RelaySink relaySink = new RelaySink();
+        relaySink.setRelay(this);
+        return relaySink;
+      */},
     },
     {
       name: 'delegate',
       swiftType: 'AbstractDAO',
+      javaType: 'foam.core.AbstractDAO',
       swiftFactory: 'return AbstractDAO()',
+      javaFactory: 'return new AbstractDAO();',
       mode: "read-only",
       hidden: true,
       required: true,
@@ -73,12 +85,22 @@ CLASS({
           // FutureDAOs will put via the future. In that case, don't put here.
           self.notify_("reset");
         }
-      */}
+      */},
+      javaPostSet: function() {/*
+        if (getDaoListeners_().size() > 0) {
+          if (oldValue instanceof AbstractDAO) {
+            ((AbstractDAO)(oldValue)).unlisten(getRelay());
+          }
+          newValue.listen(getRelay());
+          // FutureDAOs will put via the future. In that case, don't put here.
+          notify_("reset");
+        }
+      */},
     },
     {
       type: 'Model',
       name: 'model',
-      type: 'Model',
+      javaType: 'foam.core.Model',
       required: false,
       defaultValueFn: function() { return this.delegate.model; },
       documentation: function() { /*
@@ -98,6 +120,7 @@ CLASS({
         this.delegate.put(value, sink);
       },
       swiftCode: 'delegate.put(obj, sink: sink)',
+      javaCode: 'getDelegate().put(obj, sink);',
     },
 
     {
@@ -106,6 +129,7 @@ CLASS({
         this.delegate.remove(query, sink);
       },
       swiftCode: 'delegate.remove(obj, sink: sink)',
+      javaCode: 'getDelegate().remove(obj, sink);',
     },
 
     {
@@ -114,6 +138,7 @@ CLASS({
         return this.delegate.removeAll.apply(this.delegate, arguments);
       },
       swiftCode: 'return delegate.removeAll(sink, options: options)',
+      javaCode: 'return getDelegate().removeAll(sink, options);',
     },
 
     {
@@ -124,6 +149,9 @@ CLASS({
       swiftCode: function() {/*
         delegate.find(id, sink: sink)
       */},
+      javaCode: function() {/*
+        getDelegate().find(id, sink);
+      */},
     },
 
     {
@@ -131,7 +159,8 @@ CLASS({
       code: function(sink, options) { /* Passthrough to delegate. */
         return this.delegate.select(sink, options);
       },
-      swiftCode: 'return delegate.select(sink, options: options)'
+      swiftCode: 'return delegate.select(sink, options: options)',
+      javaCode: 'return getDelegate().select(sink, options);',
     },
 
     {
@@ -149,7 +178,14 @@ CLASS({
         if self.daoListeners_.count == 0 {
           delegate.listen(relay)
         }
-        super.listen(sink, options: options);
+        super.listen(sink, options: options)
+      */},
+      javaCode: function() {/*
+        // Adding first listener, so listen to delegate
+        if (getDaoListeners_().size() == 0) {
+          getDelegate().listen(getRelay());
+        }
+        super.listen(sink, options);
       */},
     },
 
@@ -173,6 +209,16 @@ CLASS({
         }
 
         return success
+      */},
+      javaCode: function() {/*
+        boolean success = super.unlisten(sink);
+
+        // Remove last listener, so unlisten to delegate
+        if (getDaoListeners_().size() == 0) {
+          getDelegate().unlisten(getRelay());
+        }
+
+        return success;
       */},
     },
 
