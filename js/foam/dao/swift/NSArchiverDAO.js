@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  package: 'foam.dao.nativesupport',
+  package: 'foam.dao.swift',
   name: 'NSArchiverDAO',
   extends: 'AbstractDAO',
 
