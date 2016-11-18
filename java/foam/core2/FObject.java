@@ -31,10 +31,12 @@ public abstract class FObject implements Cloneable, Comparable, java.io.Serializ
 
   private int UID_ = -1;
   private static int nextUid_ = 1;
+  synchronized private static int nextUID_() {
+    return nextUid_++;
+  }
   public int getUID() {
     if (UID_ == -1) {
-      // TODO make thread safe.
-      setUID(nextUid_);
+      setUID(nextUID_());
       nextUid_++;
     }
     return UID_;
