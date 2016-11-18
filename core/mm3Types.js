@@ -956,6 +956,7 @@ CLASS({
     },
     {
       name: 'swiftSubType',
+      labels: ['compiletime', 'swift'],
       defaultValueFn: function() {
         var type = this.subType || 'FObject';
         return type.split('.').pop();
@@ -1021,6 +1022,7 @@ CLASS({
     },
     {
       name: 'javaSubType',
+      labels: ['compiletime', 'java'],
       defaultValueFn: function() {
         return this.subType || 'FObject';
       }
