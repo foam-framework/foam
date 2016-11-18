@@ -66,7 +66,7 @@ CLASS({
     {
       name: 'error',
       swiftCode: 'errorFn.call()',
-      swiftCode: 'getErrorFn().call();',
+      javaCode: 'getErrorFn().call();',
     },
   ],
 });

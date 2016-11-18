@@ -52,7 +52,7 @@ CLASS({
           delegate?.remove(obj)
         }
       */},
-      swiftCode: function() {/*
+      javaCode: function() {/*
         Boolean result = (Boolean) getExpr().f(obj);
         if (result.booleanValue()) {
           getDelegate().remove(obj);
