@@ -18,13 +18,14 @@
 CLASS({
   package: 'foam.demos.olympics',
   name: 'Server',
+
   requires: [
     'foam.dao.EasyDAO',
     'foam.demos.olympics.Medal',
   ],
-  imports: [
-    'exportDAO'
-  ],
+
+  imports: [ 'exportDAO' ],
+
   properties: [
     {
       name: 'fs',
@@ -48,6 +49,7 @@ CLASS({
       }
     }
   ],
+
   methods: [
     function execute() { this.exportDAO(this.medalDAO); }
   ]
