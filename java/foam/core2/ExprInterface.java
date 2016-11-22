@@ -15,25 +15,8 @@
  * limitations under the License.
  */
 
-CLASS({
-  package: 'foam.dao.swift',
-  name: 'DAOSink',
-  extends: 'foam.dao.swift.Sink',
+package foam.core2;
 
-  properties: [
-    {
-      name: 'delegate',
-      swiftType: 'AbstractDAO?',
-    },
-  ],
-  methods: [
-    {
-      name: 'put',
-      swiftCode: 'delegate?.put(obj)',
-    },
-    {
-      name: 'remove',
-      swiftCode: 'delegate?.remove(obj)',
-    },
-  ],
-});
+public interface ExprInterface {
+  public Object f(Object o);
+}

@@ -47,6 +47,10 @@ CLASS({
       name: 'template',
     },
     {
+      name: 'fileNameProperty',
+      defaultValue: 'name',
+    },
+    {
       name: 'fileExtension',
     },
     {
@@ -55,13 +59,15 @@ CLASS({
     },
   ],
   methods: [
-    function execute() {
+    function genCode() {
+      var fut = afuture();
       if ( ! this.outfolder) {
         console.log("ERROR: outfolder not specified");
-        process.exit(1);
+        fut.set(false);
       }
 
       var blacklist = this.blacklist && this.blacklist.split(' ') || [];
+      var modelsGenerated = [];
       var names = this.names && this.names.split(' ') || [];
       names = names.concat(this.requiredDeps);
       names.push(
@@ -71,7 +77,7 @@ CLASS({
       this.name && names.push(this.name);
       names = names.filter(function(n) { return n; });
       var i = 0;
-      awhile(function() { return i < names.length },
+      awhile(function() { return !fut.isSet() && i < names.length },
         aseq(
           aif(!!this.modelFile,
               function(ret) {
@@ -96,17 +102,20 @@ CLASS({
             if (m.getPrototype) m = m.getPrototype().model_
             if ( !m ) {
               console.log("ERROR: Could not load model");
-              process.exit(1);
+              fut.set(false);
+              ret();
+              return;
             }
 
             var template = this.template.create()
             var destination =
-                this.outfolder + '/' + m.name + '.' + this.fileExtension;
+                this.outfolder + '/' + m[this.fileNameProperty] + '.' + this.fileExtension;
             console.log(
                 "Writing", m.id, this.fileExtension, "source to", destination);
             this.fs.writeFileSync(
               destination,
               template.generate(m));
+            modelsGenerated.push(m);
 
             var requires = [];
             if (m.getAllRequires) {
@@ -129,11 +138,17 @@ CLASS({
             ret();
           }.bind(this))
         )(function(){
-          process.exit(0);
+          fut.set(modelsGenerated);
         });
+      return fut.get;
+    },
+    function execute() {
+      this.genCode()(function(success) {
+        process.exit(success ? 0 : 1);
+      });
     },
     function getExtraRequires(m) {
       return [];
-    }
+    },
   ],
 });

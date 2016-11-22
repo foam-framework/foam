@@ -16,35 +16,48 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'ArraySink',
-  extends: 'foam.dao.swift.Sink',
+  package: 'foam.dao.nativesupport',
+  name: 'PredicatedSink',
+  extends: 'foam.dao.nativesupport.ProxySink',
 
   properties: [
     {
-      name: 'array',
-      swiftType: '[FObject]',
-      swiftFactory: 'return []',
+      name: 'expr',
+      swiftType: 'ExprProtocol!',
+      javaType: 'foam.core2.ExprInterface',
     },
   ],
 
   methods: [
     {
       name: 'put',
-      swiftCode: 'array.append(obj)',
-    },
-    {
-      name: 'remove',
       swiftCode: function() {/*
-        let index = array.indexOf(obj)
-        if index != nil {
-          array.removeAtIndex(index!)
+        let result = expr.f(obj) as! Bool
+        if result {
+          delegate?.put(obj)
+        }
+      */},
+      javaCode: function() {/*
+        Boolean result = (Boolean) getExpr().f(obj);
+        if (result.booleanValue()) {
+          getDelegate().put(obj);
         }
       */},
     },
     {
-      name: 'reset',
-      swiftCode: 'array.removeAll()',
+      name: 'remove',
+      swiftCode: function() {/*
+        let result = expr.f(obj) as! Bool
+        if result {
+          delegate?.remove(obj)
+        }
+      */},
+      javaCode: function() {/*
+        Boolean result = (Boolean) getExpr().f(obj);
+        if (result.booleanValue()) {
+          getDelegate().remove(obj);
+        }
+      */},
     },
   ],
 });

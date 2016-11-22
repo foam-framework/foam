@@ -16,9 +16,9 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
+  package: 'foam.dao.nativesupport',
   name: 'MultiSink',
-  extends: 'foam.dao.swift.Sink',
+  extends: 'foam.dao.nativesupport.Sink',
 
   documentation: function() {/*
     A sink that takes an array of sinks as a property and will execute all of

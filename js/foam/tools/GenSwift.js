@@ -65,11 +65,11 @@ CLASS({
         // Required for DAO support and not required by AbstractDAO.
         requires = requires.concat([
           'FilteredDAO_',
-          'foam.dao.swift.ArraySink',
-          'foam.dao.swift.ClosureSink',
-          'foam.dao.swift.DAOQueryOptions',
-          'foam.dao.swift.PredicatedSink',
-          'foam.dao.swift.RelaySink',
+          'foam.dao.nativesupport.ArraySink',
+          'foam.dao.nativesupport.ClosureSink',
+          'foam.dao.nativesupport.DAOQueryOptions',
+          'foam.dao.nativesupport.PredicatedSink',
+          'foam.dao.nativesupport.RelaySink',
         ]);
       }
       return requires;

@@ -503,9 +503,15 @@ CLASS({
         return type.create().javaType;
       },
       help: 'The java type that represents the type of this property.',
-      labels: ['debug'],
+      labels: ['java', 'compiletime'],
       documentation: function() { /* When running FOAM in a Java environment, specifies the Java type
         or class to use. */}
+    },
+    {
+      name: 'javaDefaultValue',
+      type: 'String',
+      required: false,
+      labels: ['java', 'compiletime'],
     },
     {
       name: 'javascriptType',
@@ -520,7 +526,7 @@ CLASS({
     {
       name: 'swiftType',
       type: 'String',
-      labels: ['swift'],
+      labels: ['swift', 'compiletime'],
       defaultValueFn: function() {
         var type = X.lookup(this.type + 'Property');
         if ( !type ) return;
@@ -1076,7 +1082,48 @@ var static = this.isStatic ? 'static' : '';
 %><%= arg.javaSource() %><% if ( i < args.length-1 ) out(", ");
 %><% } %>) {
     <%= this.javaCode %>
-  }\n*/}
+  }
+
+<%
+var allPerms = function(a) {
+  if (!a || !a.length) return [];
+  var perms = [];
+  for (var i = 0; i < Math.pow(2, a.length); i++) {
+    var positions = i.toString(2).split('').map(function(n) { return parseInt(n); });
+    while (positions.length < a.length) positions.unshift(0);
+    var perm = [];
+    positions.forEach(function(b, i) {
+      if (b) { perm.push(a[i]); }
+    });
+    perms.push(perm);
+  }
+  return perms;
+}
+var argsWithDefault = override ? [] : args.filter(function(arg) {
+  return !!arg.javaDefaultValue;
+});
+var defaultParamPermuations = allPerms(argsWithDefault);
+%>
+<% for ( var i = 0 ; i < defaultParamPermuations.length ; i++ ) { %>
+  <%
+    var overloadArgs = args.filter(function(arg) {
+      return defaultParamPermuations[i].indexOf(arg) == -1;
+    });
+    if (overloadArgs.length == args.length) continue;
+  %>
+  public <%= static %> <%= returnType %> <%= this.name %>(
+  <% for ( var j = 0 ; j < overloadArgs.length ; j++ ) { %>
+      <%= overloadArgs[j].javaSource() %>
+      <%= j < overloadArgs.length - 1 ? ',' : '' %>
+  <% } %>) {
+    <%= returnType != 'void' ? 'return ' : ''%><%= this.name %>(
+  <% for ( var j = 0 ; j < args.length ; j++ ) { %>
+      <%= overloadArgs.indexOf(args[j]) == -1 ? args[j].javaDefaultValue : args[j].name %>
+      <%= j < args.length - 1 ? ',' : '' %>
+  <% } %>);
+  }
+<% } %>
+  \n*/}
     }
   ],
 

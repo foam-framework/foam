@@ -16,15 +16,20 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'DAOQueryOptions',
-
+  name: 'JsonTestSubProp',
+  package: 'test',
   properties: [
     {
-      name: 'query',
-      swiftType: 'ExprProtocol?',
-      required: false,
+      type: 'String',
+      name: 'stringProp',
+    },
+    {
+      type: 'Int',
+      name: 'intProp',
+    },
+    {
+      type: 'Long',
+      name: 'longProp',
     },
   ],
 });
-

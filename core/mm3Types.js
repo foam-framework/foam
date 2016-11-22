@@ -406,6 +406,17 @@ CLASS({
       defaultValue: 'java.util.Date',
       help: 'The Java type of this property.'
     },
+    {
+      name: 'javaAdapt',
+      defaultValue: function() {/*
+        if (newValue instanceof Number) {
+          return new java.util.Date(((Number)newValue).longValue());
+        } else if (newValue instanceof String) {
+          return new java.util.Date((String)newValue);
+        }
+        return (java.util.Date)newValue;
+      */},
+    },
     [ 'view', 'foam.ui.DateFieldView' ],
     {
       name: 'toPropertyE',
@@ -440,7 +451,7 @@ CLASS({
         return o1.compareTo(o2);
       }
     ]
-  ]
+  ],
 });
 
 
@@ -605,7 +616,9 @@ CLASS({
     {
       name: 'javaAdapt',
       defaultValue: function() {/*
-        if (newValue instanceof Integer) { return (Integer) newValue; }
+        if (newValue instanceof Number) {
+          return ((Number)newValue).intValue();
+        }
         try {
           return Integer.parseInt(newValue.toString());
         } catch (Exception e) {
@@ -707,7 +720,9 @@ CLASS({
     {
       name: 'javaAdapt',
       defaultValue: function() {/*
-        if (newValue instanceof Long) { return (Long) newValue; }
+        if (newValue instanceof Number) {
+          return ((Number)newValue).longValue();
+        }
         try {
           return Long.parseLong(newValue.toString());
         } catch (Exception e) {
@@ -715,7 +730,7 @@ CLASS({
         }
       */},
     },
-  ]
+  ],
 });
 
 
@@ -941,8 +956,9 @@ CLASS({
     },
     {
       name: 'swiftSubType',
+      labels: ['compiletime', 'swift'],
       defaultValueFn: function() {
-        var type = this.subType || 'AnyObject';
+        var type = this.subType || 'FObject';
         return type.split('.').pop();
       }
     },
@@ -1005,18 +1021,38 @@ CLASS({
       }
     },
     {
+      name: 'javaSubType',
+      labels: ['compiletime', 'java'],
+      defaultValueFn: function() {
+        return this.subType || 'FObject';
+      }
+    },
+    {
       name: 'javaType',
       displayWidth: 10,
       defaultValueFn: function(p) {
-        return 'java.util.List<' + this.subType + '>';
+        return 'java.util.List<' + this.javaSubType + '>';
       },
       help: 'The Java type of this property.'
     },
     {
       name: 'javaLazyFactory',
       defaultValueFn: function(p) {
-        return 'return new java.util.ArrayList<' + this.subType + '>();';
+        return 'return new java.util.ArrayList<' + this.javaSubType + '>();';
       },
+    },
+    {
+      name: 'javaAdapt',
+      defaultValue: function() {/*
+        if (newValue instanceof Object[]) {
+          java.util.List<<%=this.javaSubType%>> l = new java.util.ArrayList<>();
+          for (Object s : (Object[])newValue) {
+            l.add((<%=this.javaSubType%>)s);
+          }
+          return l;
+        }
+        return (java.util.List<<%=this.javaSubType%>>)newValue;
+      */},
     },
     {
       name: 'view',
@@ -1131,7 +1167,13 @@ CLASS({
         }
       */},
     },
-  ]
+    {
+      name: 'javaJsonParser',
+      javaFactory: function() {/*
+        return new foam.lib.json.FObjectArrayParser();
+      */},
+    },
+  ],
 });
 
 
@@ -1255,6 +1297,19 @@ CLASS({
     {
       name: 'javaLazyFactory',
       defaultValue: 'return new java.util.ArrayList<String>();',
+    },
+    {
+      name: 'javaAdapt',
+      defaultValue: function() {/*
+        if (newValue instanceof Object[]) {
+          java.util.List<String> l = new java.util.ArrayList<>();
+          for (Object s : (Object[])newValue) {
+            l.add((String)s);
+          }
+          return l;
+        }
+        return (java.util.List<String>)newValue;
+      */},
     },
     {
       name: 'singular',
@@ -1386,7 +1441,13 @@ CLASS({
         }
       */},
     },
-  ]
+    {
+      name: 'javaJsonParser',
+      javaFactory: function() {/*
+        return new foam.lib.json.ArrayParser();
+      */},
+    },
+  ],
 });
 
 
@@ -1840,6 +1901,15 @@ CLASS({
       */},
     },
     {
+      name: 'javaAdapt',
+      defaultValue: function() {/*
+        if (newValue instanceof Number) {
+          return <%= this.enum %>.values()[((Number)newValue).intValue()];
+        }
+        return (<%= this.enum %>)newValue;
+      */},
+    },
+    {
       name: 'defaultValue',
       adapt: function(_, v) {
         if ( typeof v == "string" && X.lookup(this.enum) ) {
@@ -1934,5 +2004,5 @@ CLASS({
         })
       */},
     },
-  ]
+  ],
 });

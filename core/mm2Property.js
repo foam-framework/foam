@@ -20,7 +20,8 @@ GLOBAL.Property = {
   instance_: {},
 
   name:  'Property',
-  implements: ['ExprProtocol'],
+  swiftImplements: ['ExprProtocol'],
+  javaImplements: ['foam.core2.ExprInterface'],
   plural:'Properties',
   help:  'Describes a properties of a modelled entity.',
 
@@ -340,6 +341,8 @@ GLOBAL.Property = {
     {
       name: 'transient',
       type: 'Boolean',
+      swiftType: 'Bool',
+      javaType: 'boolean',
       view: 'foam.ui.BooleanView',
       defaultValue: false,
       help: 'Indicates if the property is transient.',
@@ -978,7 +981,32 @@ GLOBAL.Property = {
       type: 'Boolean',
       help: 'True if this property is settable as an element attribute.',
       defaultValue: false
-    }
+    },
+    {
+      name: 'javaJsonParser',
+      labels: ['java'],
+      javaType: 'foam.lib.parse.Parser',
+      javaFactory: function() {/*
+        return new foam.lib.json.AnyParser();
+      */},
+    },
+    {
+      name: 'javaOutputJson',
+      javaType: 'FoamFunction<Void>',
+      labels: ['java'],
+      javaFactory: function() {/*
+        return new FoamFunction<Void>() {
+          @Override public Void call(Object... args) {
+            foam.lib.json.Outputter outputter =
+                (foam.lib.json.Outputter)args[0];
+            StringBuilder out = (StringBuilder)args[1];
+            Object o = args[2];
+            outputter.output(out, o);
+            return null;
+          }
+        };
+      */},
+    },
   ],
 
   methods: [

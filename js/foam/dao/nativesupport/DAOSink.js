@@ -16,52 +16,24 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'ClosureSink',
-  extends: 'foam.dao.swift.Sink',
+  package: 'foam.dao.nativesupport',
+  name: 'DAOSink',
+  extends: 'foam.dao.nativesupport.Sink',
 
   properties: [
     {
-      model_: 'FunctionProperty',
-      name: 'putFn',
-    },
-    {
-      model_: 'FunctionProperty',
-      name: 'removeFn',
-    },
-    {
-      model_: 'FunctionProperty',
-      name: 'errorFn',
-    },
-    {
-      model_: 'FunctionProperty',
-      name: 'eofFn',
-    },
-    {
-      model_: 'FunctionProperty',
-      name: 'resetFn',
+      name: 'delegate',
+      swiftType: 'AbstractDAO?',
     },
   ],
   methods: [
     {
       name: 'put',
-      swiftCode: 'putFn.call(obj)',
+      swiftCode: 'delegate?.put(obj)',
     },
     {
       name: 'remove',
-      swiftCode: 'removeFn.call(obj)',
-    },
-    {
-      name: 'reset',
-      swiftCode: 'resetFn.call()',
-    },
-    {
-      name: 'eof',
-      swiftCode: 'eofFn.call()',
-    },
-    {
-      name: 'error',
-      swiftCode: 'errorFn.call()',
+      swiftCode: 'delegate?.remove(obj)',
     },
   ],
 });

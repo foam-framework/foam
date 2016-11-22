@@ -16,7 +16,7 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
+  package: 'foam.dao.nativesupport',
   name: 'ListenableDAO',
   extends: 'foam.dao.ProxyDAO',
 

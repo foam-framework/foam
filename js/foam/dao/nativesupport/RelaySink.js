@@ -16,35 +16,27 @@
  */
 
 CLASS({
-  package: 'foam.dao.swift',
-  name: 'PredicatedSink',
-  extends: 'foam.dao.swift.ProxySink',
+  package: 'foam.dao.nativesupport',
+  name: 'RelaySink',
+  extends: 'foam.dao.nativesupport.Sink',
 
   properties: [
     {
-      name: 'expr',
-      swiftType: 'ExprProtocol!',
+      name: 'relay',
+      swiftType: 'AbstractDAO?',
+      javaType: 'foam.core.AbstractDAO',
     },
   ],
-
   methods: [
     {
       name: 'put',
-      swiftCode: function() {/*
-        let result = expr.f(obj) as! Bool
-        if result {
-          delegate?.put(obj)
-        }
-      */},
+      swiftCode: 'relay?.notify_("put", fObj: obj)',
+      javaCode: 'getRelay().notify_("put", obj);',
     },
     {
       name: 'remove',
-      swiftCode: function() {/*
-        let result = expr.f(obj) as! Bool
-        if result {
-          delegate?.remove(obj)
-        }
-      */},
+      swiftCode: 'relay?.notify_("remove", fObj: obj)',
+      javaCode: 'getRelay().notify_("remove", obj);',
     },
   ],
 });

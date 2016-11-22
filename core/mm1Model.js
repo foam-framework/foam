@@ -130,6 +130,7 @@ var Model = {
       name: 'package',
       help: 'Package that this Model belongs to.',
       defaultValue: '',
+      javaType: 'String',
       postSet: function(_, p) { return this.id = p ? p + '.' + this.name : this.name; },
       documentation: function() { /*
         <p>The package (or namespace) in which the $$DOC{ref:'.'} belongs. The
@@ -378,28 +379,35 @@ v                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // we can import the prop
     {
       name: 'swiftImplements',
       type: 'Array[String]',
-      labels: ['swift'],
+      labels: ['compiletime', 'swift'],
       defaultValueFn: function() { return this.implements; },
       help: 'Swift interfaces implemented by this Model.',
     },
     {
+      name: 'javaImplements',
+      type: 'Array[String]',
+      labels: ['compiletime', 'java'],
+      defaultValueFn: function() { return this.implements; },
+      help: 'Java interfaces implemented by this Model.',
+    },
+    {
       name: 'swiftClassImports',
       type: 'Array[String]',
-      labels: ['swift'],
+      labels: ['compiletime', 'swift'],
       defaultValueFn: function() { return []; },
       help: 'Imports to add at the top of the generated swift class.',
     },
     {
       name: 'swiftCode',
       type: 'String',
-      labels: ['swift'],
+      labels: ['compiletime', 'swift'],
       defaultValue: '',
       help: 'Swift code to drop in when generating the swift class for this model.',
     },
     {
       name: 'javaCode',
       type: 'String',
-      labels: ['java'],
+      labels: ['compiletime', 'java'],
       defaultValue: '',
       help: 'Java code to drop in when generating the java class for this model.',
     },
