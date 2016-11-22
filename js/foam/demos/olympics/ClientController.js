@@ -20,13 +20,10 @@ CLASS({
   package: 'foam.demos.olympics',
   name: 'ClientController',
   extends: 'foam.demos.olympics.Controller',
-  requires: [
-    'foam.demos.olympics.Medal',
-    'foam.dao.EasyClientDAO',
-  ],
-  imports: [
-    'document'
-  ],
+
+  requires: [ 'foam.dao.EasyClientDAO' ],
+  imports: [ 'document' ],
+
   properties: [
     {
       name: 'dao',
