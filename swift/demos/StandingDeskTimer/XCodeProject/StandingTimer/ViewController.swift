@@ -32,7 +32,7 @@ class ViewController: UIViewController {
 
     let customView = NSBundle.mainBundle().loadNibNamed("CustomTimerView",
         owner: self,
-        options: nil)[0] as! StandingDeskTimerDetailView
+        options: nil)![0] as! StandingDeskTimerDetailView
     customView.data = timer
 
     detailView.addAutoConstraints()
