@@ -121,7 +121,7 @@ CLASS({
 
       this.SUPER();
 
-      GLOBAL.ctrl = this; // for debugging
+      global.ctrl = this; // for debugging
       var Medal = this.Medal;
       var self  = this;
 

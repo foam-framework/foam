@@ -8,4 +8,4 @@ From the top level foam directory, run the server with:
 
     node --harmony tools/foam.js foam.node.Server agents=foam.demos.olympics.Server
 
-Then run the client by connecting to [http://localhost:8080/index.html?model=foam.demos.olympics.ClientController](http://localhost:8080/index.html?model=foam.demos.olympics.ClientController)
+Then run the client by connecting to [http://localhost:8000/index.html?model=foam.demos.olympics.ClientController](http://localhost:8000/index.html?model=foam.demos.olympics.ClientController)
