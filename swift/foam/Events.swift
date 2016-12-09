@@ -18,15 +18,15 @@
 class Events {
   static var listeners:
       [(from: PropertyValue, to: PropertyValue, listener: PropertyChangeListener)] = []
-  class func link(a: PropertyValue, b: PropertyValue) {
+  class func link(_ a: PropertyValue, b: PropertyValue) {
     Events.follow(a, to: b)
     Events.follow(b, to: a)
   }
-  class func unlink(a: PropertyValue, b: PropertyValue) {
+  class func unlink(_ a: PropertyValue, b: PropertyValue) {
     Events.unfollow(a, to: b)
     Events.unfollow(b, to: a)
   }
-  class func follow(from: PropertyValue, to: PropertyValue) {
+  class func follow(_ from: PropertyValue, to: PropertyValue) {
     let listener = PropertyChangeListener(callback: { (obj, prop, oldValue, newValue) -> Void in
       if !equals(to.get(), b: newValue) {
         to.set(newValue)
@@ -34,14 +34,14 @@ class Events {
     })
     listeners.append((from: from, to: to, listener: listener))
     from.addListener(listener)
-    listener.callback(obj: from.obj, prop: from.prop, oldValue: nil, newValue: from.get())
+    listener.callback(from.obj, from.prop, nil, from.get())
   }
-  class func unfollow(from: PropertyValue, to: PropertyValue) {
+  class func unfollow(_ from: PropertyValue, to: PropertyValue) {
     for i in 0 ..< listeners.count {
       let listener = listeners[i]
       if equals(listener.from, b: from) && equals(listener.to, b: to) {
         from.removeListener(listener.listener)
-        listeners.removeAtIndex(i)
+        listeners.remove(at: i)
         return
       }
     }

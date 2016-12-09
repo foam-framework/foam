@@ -27,14 +27,14 @@ CLASS({
       swiftPostSet: function() {/*
         newValue.addTarget(self,
             action: #selector(FoamUISwitch.onTapChange),
-            forControlEvents: .ValueChanged)
+            for: .valueChanged)
       */},
     },
     {
       type: 'Boolean',
       name: 'data',
       swiftPostSet: function() {/*
-        if newValue != self.view.on {
+        if newValue != self.view.isOn {
           self.view.setOn(newValue, animated: true)
         }
       */},
@@ -44,7 +44,7 @@ CLASS({
     {
       name: 'onTapChange',
       swiftCode: function() {/*
-        if view.on != data { data = view.on }
+        if view.isOn != data { data = view.isOn }
       */},
     },
   ],

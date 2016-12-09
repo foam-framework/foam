@@ -119,7 +119,7 @@ CLASS({
           if oldValue == newValue { return }
         }
         if newValue {
-          let getNow: () -> NSTimeInterval = { () in
+          let getNow: () -> TimeInterval = { () in
             return NSDate().timeIntervalSince1970
           }
           var lastTime = getNow()
@@ -138,7 +138,7 @@ CLASS({
     },
     {
       name: 'timer',
-      swiftType: 'dispatch_source_t?',
+      swiftType: 'DispatchSource?',
       swiftDefaultValue: 'nil',
       hidden: true,
     },

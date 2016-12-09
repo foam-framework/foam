@@ -1029,6 +1029,7 @@ var static = this.isStatic ? 'static' : '';
 <% } else if ( this.swiftCode ) { %>
   <%=override%> public <%= static %> func `<%= name %>`(<%
 for ( var i = 0 ; i < args.length ; i++ ) {
+  if ( !i ) { %>_ <% }
 %><%= args[i].name %>: <%= args[i].swiftType %><%
 if ( i != args.length - 1 ) { %>, <% }
 }

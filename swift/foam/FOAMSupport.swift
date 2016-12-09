@@ -18,30 +18,30 @@
 import Foundation
 
 public typealias ListenerCallback =
-    (obj: PropertyChangeSupport, prop: String, oldValue: AnyObject?, newValue: AnyObject?) -> Void
-public class PropertyChangeListener {
+    (_ obj: PropertyChangeSupport, _ prop: String, _ oldValue: AnyObject?, _ newValue: AnyObject?) -> Void
+open class PropertyChangeListener {
   var callback: ListenerCallback
-  public init(callback: ListenerCallback) {
+  public init(callback: @escaping ListenerCallback) {
     self.callback = callback
   }
-  public func fire(obj: PropertyChangeSupport, prop: String, oldValue: AnyObject?, newValue: AnyObject?) {
-    callback(obj: obj, prop: prop, oldValue: oldValue, newValue: newValue)
+  open func fire(_ obj: PropertyChangeSupport, prop: String, oldValue: AnyObject?, newValue: AnyObject?) {
+    callback(obj, prop, oldValue, newValue)
   }
 }
 
-public class PropertyChangeSupport: NSObject {
+open class PropertyChangeSupport: NSObject {
   var listeners: [String: [PropertyChangeListener]] = [:]
   var globalListeners: [PropertyChangeListener] = []
 
-  public func addListener(l: PropertyChangeListener?) {
+  open func addListener(_ l: PropertyChangeListener?) {
     if l != nil { globalListeners.append(l!) }
   }
 
-  public func removeListener(l: PropertyChangeListener?) {
+  open func removeListener(_ l: PropertyChangeListener?) {
     globalListeners = globalListeners.filter{ $0 !== l }
   }
 
-  public func addPropertyListener(prop: String, l: PropertyChangeListener) {
+  open func addPropertyListener(_ prop: String, l: PropertyChangeListener) {
     if var list = self.listeners[prop] {
       list.append(l)
       self.listeners[prop] = list
@@ -50,13 +50,13 @@ public class PropertyChangeSupport: NSObject {
     }
   }
 
-  public func removePropertyListener(prop: String, l: PropertyChangeListener) {
+  open func removePropertyListener(_ prop: String, l: PropertyChangeListener) {
     if let list = self.listeners[prop] {
       self.listeners[prop] = list.filter { $0 !== l }
     }
   }
 
-  public func firePropertyChangeEvent(prop: String, oldValue: AnyObject?, newValue: AnyObject?) {
+  open func firePropertyChangeEvent(_ prop: String, oldValue: AnyObject?, newValue: AnyObject?) {
     for listener in globalListeners {
       listener.fire(self, prop: prop, oldValue: oldValue, newValue: newValue)
     }
@@ -68,68 +68,71 @@ public class PropertyChangeSupport: NSObject {
   }
 }
 
-public class Model {
+open class Model {
   var properties: [Property]
   var name: String
   var factory: () -> FObject
-  public init(name: String, properties: [Property], factory: () -> FObject) {
+  public init(name: String, properties: [Property], factory: @escaping () -> FObject) {
     self.name = name
     self.properties = properties
     self.factory = factory
   }
-  public func createInstance() -> FObject {
+  open func createInstance() -> FObject {
     return factory()
   }
 }
 
-public class FObject: PropertyChangeSupport, NSCoding {
+open class FObject: PropertyChangeSupport, NSCoding {
   static var nextId = 1
   lazy var UID: Int = {
     var id: Int?
-    dispatch_sync(dispatch_queue_create("FObjectUIDLock", nil)) {
+    DispatchQueue(label: "FObjectUIDLock", attributes: []).sync {
       id = nextId
       nextId += 1
     }
     return id!
   }()
+  public convenience override init() {
+    self.init(args: [:])
+  }
   public init(args: [String:AnyObject?] = [:]) {
     super.init()
     for key in args.keys {
-      set(key, value: args[key]!)
+      _ = set(key, value: args[key]!)
     }
     _foamInit_()
   }
   func _foamInit_() { }
-  public func getModel() -> Model {
+  open func getModel() -> Model {
     fatalError("Called getModel on FObject directly")
   }
-  public func get(key: String) -> AnyObject? { return nil }
-  public func set(key: String, value: AnyObject?) -> FObject { return self }
-  public func getProperty(key: String) -> Property? { return nil }
-  public func getPropertyValue(key: String) -> PropertyValue? { return nil }
-  public func hasOwnProperty(key: String) -> Bool { return false }
-  public func clearProperty(key: String) -> FObject { return self }
-  public func copyFrom(data: AnyObject?, deep: Bool = false) {
+  open func get(_ key: String) -> AnyObject? { return nil }
+  open func set(_ key: String, value: AnyObject?) -> FObject { return self }
+  open func getProperty(_ key: String) -> Property? { return nil }
+  open func getPropertyValue(_ key: String) -> PropertyValue? { return nil }
+  open func hasOwnProperty(_ key: String) -> Bool { return false }
+  open func clearProperty(_ key: String) -> FObject { return self }
+  open func copyFrom(_ data: AnyObject?, deep: Bool = false) {
     if let fobj = data as? FObject {
       for fobjProp in fobj.getModel().properties {
         if !fobj.hasOwnProperty(fobjProp.name) { continue }
         let v: AnyObject? = fobj.get(fobjProp.name)
         if (v is FObject) && deep {
-          self.set(fobjProp.name, value: v!.deepClone())
+          _ = self.set(fobjProp.name, value: v!.deepClone())
         } else if (v is [FObject]) && deep {
           var clonedArray: [FObject] = []
           for fobjArrayValue in v as! [FObject] {
             clonedArray.append(fobjArrayValue.deepClone())
           }
-          self.set(fobjProp.name, value: clonedArray)
+          _ = self.set(fobjProp.name, value: clonedArray as AnyObject?)
         } else {
-          self.set(fobjProp.name, value: v)
+          _ = self.set(fobjProp.name, value: v)
         }
       }
     }
   }
   // Returns nil if no errors occurred. Otherwise, returns an array of error messages.
-  public func validateObject() -> [String]? {
+  open func validateObject() -> [String]? {
     var ret: [String]? = nil
     for p in getModel().properties {
       let err = getProperty(p.name)?.validate?.call(self) as? String
@@ -140,7 +143,7 @@ public class FObject: PropertyChangeSupport, NSCoding {
     }
     return ret
   }
-  public func compareTo(data: FObject?) -> Int {
+  open func compareTo(_ data: FObject?) -> Int {
     if self === data { return 0 }
     if data == nil { return 1 }
     if self.getModel() !== data!.getModel() {
@@ -152,36 +155,36 @@ public class FObject: PropertyChangeSupport, NSCoding {
     }
     return 0
   }
-  override public func isEqual(object: AnyObject?) -> Bool {
+  override open func isEqual(_ object: Any?) -> Bool {
     if let fdata = object as? FObject {
       return self.compareTo(fdata) == 0
     }
     return false
   }
-  public func clone() -> FObject {
+  open func clone() -> FObject {
     let obj = getModel().createInstance()
     obj.copyFrom(self)
     return obj
   }
-  public func deepClone() -> FObject {
+  open func deepClone() -> FObject {
     let obj = getModel().createInstance()
     obj.copyFrom(self, deep: true)
     return obj
   }
   // MARK: NSCoding
   // Subclasses should override these.
-  public func encodeWithCoder(aCoder: NSCoder) { }
+  open func encode(with aCoder: NSCoder) { }
   required public init(coder aDecoder: NSCoder) { }
 }
 
 public protocol Value : class {
   func get() -> AnyObject?
-  func set(value: AnyObject?)
-  func addListener(l: PropertyChangeListener?)
-  func removeListener(l: PropertyChangeListener?)
+  func set(_ value: AnyObject?)
+  func addListener(_ l: PropertyChangeListener?)
+  func removeListener(_ l: PropertyChangeListener?)
 }
 
-public class PropertyValue: Value {
+open class PropertyValue: Value {
   var obj: FObject
   var prop: String
 
@@ -190,24 +193,24 @@ public class PropertyValue: Value {
     self.prop = prop
   }
 
-  public func get() -> AnyObject? {
+  open func get() -> AnyObject? {
     return obj.get(prop)
   }
 
-  public func set(value: AnyObject?) {
-    obj.set(prop, value: value)
+  open func set(_ value: AnyObject?) {
+    _ = obj.set(prop, value: value)
   }
 
-  public func addListener(l: PropertyChangeListener?) {
+  open func addListener(_ l: PropertyChangeListener?) {
     if l != nil { obj.addPropertyListener(prop, l: l!) }
   }
 
-  public func removeListener(l: PropertyChangeListener?) {
+  open func removeListener(_ l: PropertyChangeListener?) {
     if l != nil { obj.removePropertyListener(prop, l: l!) }
   }
 }
 
-public func equals(a: AnyObject?, b: AnyObject?) -> Bool {
+public func equals(_ a: AnyObject?, b: AnyObject?) -> Bool {
   if a === b { return true }
   if a != nil { return a!.isEqual(b) }
   return false

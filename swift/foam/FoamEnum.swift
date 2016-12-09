@@ -19,6 +19,6 @@ public protocol FoamEnum: class {
   var value: AnyObject { get }
   var label: String { get }
   static var choices: [FoamEnum] { get }
-  static func enumForValue(value: AnyObject) -> FoamEnum?
-  func isEqual(value: AnyObject?) -> Bool
+  static func enumForValue(_ value: AnyObject) -> FoamEnum?
+  func isEqual(_ value: AnyObject?) -> Bool
 }

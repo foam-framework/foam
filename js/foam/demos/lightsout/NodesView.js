@@ -100,10 +100,10 @@ CLASS({
           for y in 0...data[x].count-1 {
             vert.append("x\(x)y\(y)")
           }
-          let vertStr = vert.joinWithSeparator("]-[")
-          view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-              "V:|-[\(vertStr)]-|",
-              options: .AlignAllLeft,
+          let vertStr = vert.joined(separator:"]-[")
+          view.addConstraints(NSLayoutConstraint.constraints(
+              withVisualFormat: "V:|-[\(vertStr)]-|",
+              options: .alignAllLeft,
               metrics: nil,
               views: viewMap))
         }
@@ -112,10 +112,10 @@ CLASS({
         for x in 0...data.count-1 {
           horiz.append("x\(x)y0")
         }
-        let horizStr = horiz.joinWithSeparator("]-[")
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-            "H:|-[\(horizStr)]-(>=0)-|",
-            options: .AlignAllCenterY,
+        let horizStr = horiz.joined(separator: "]-[")
+        view.addConstraints(NSLayoutConstraint.constraints(
+            withVisualFormat: "H:|-[\(horizStr)]-(>=0)-|",
+            options: .alignAllCenterY,
             metrics: nil,
             views: viewMap))
       */},

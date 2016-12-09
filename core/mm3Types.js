@@ -146,7 +146,7 @@ CLASS({
     {
       name: 'swiftAdapt',
       defaultValue: function() {/*
-        if newValue != nil { return String(newValue!) }
+        if newValue != nil { return String(describing: newValue!) }
         return ""
       */},
     },
@@ -163,12 +163,12 @@ CLASS({
     {
       name: 'swiftNSCoderEncode',
       defaultValue:
-          'aCoder.encodeObject(`<%= this.name %>`, forKey: "<%= this.name %>")',
+          'aCoder.encode(`<%= this.name %>`, forKey: "<%= this.name %>")',
     },
     {
       name: 'swiftNSCoderDecode',
-      defaultValue: 'set("<%= this.name %>", ' +
-          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
+      defaultValue: '_ = set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObject(forKey: "<%= this.name %>") as AnyObject?)',
     },
     {
       name: 'swiftDefaultValue',
@@ -291,12 +291,12 @@ CLASS({
     {
       name: 'swiftNSCoderEncode',
       defaultValue:
-          'aCoder.encodeBool(`<%= this.name %>`, forKey: "<%= this.name %>")',
+          'aCoder.encode(`<%= this.name %>`, forKey: "<%= this.name %>")',
     },
     {
       name: 'swiftNSCoderDecode',
-      defaultValue: 'set("<%= this.name %>", ' +
-          'value: aDecoder.decodeBoolForKey("<%= this.name %>"))',
+      defaultValue: '_ = set("<%= this.name %>", ' +
+          'value: aDecoder.decodeBool(forKey: "<%= this.name %>") as AnyObject?)',
     },
     {
       name: 'swiftDefaultValue',
@@ -393,13 +393,13 @@ CLASS({
     },
     {
       name: 'swiftNSCoderEncode',
-      defaultValue: 'aCoder.encodeObject(`<%= this.name %>`, ' +
+      defaultValue: 'aCoder.encode(`<%= this.name %>`, ' +
           'forKey: "<%= this.name %>")',
     },
     {
       name: 'swiftNSCoderDecode',
-      defaultValue: 'set("<%= this.name %>", ' +
-          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
+      defaultValue: '_ = set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObject(forKey: "<%= this.name %>") as AnyObject?)',
     },
     {
       name: 'javaType',
@@ -522,12 +522,12 @@ CLASS({
         FoamFunction(fn: { (args) -> AnyObject? in
           let o1 = self.f(args[0])
           let o2 = self.f(args[1])
-          if o1 === o2 { return 0 }
+          if o1 === o2 { return 0 as AnyObject? }
           if let o1 = o1 as? NSNumber {
-            if let o2 = o2 as? NSNumber { return o1.compare(o2).rawValue }
-            return 1
+            if let o2 = o2 as? NSNumber { return o1.compare(o2).rawValue as AnyObject? }
+            return 1 as AnyObject?
           }
-          return -1
+          return -1 as AnyObject?
         })
       */},
     },
@@ -595,19 +595,19 @@ CLASS({
     },
     {
       name: 'swiftNSCoderEncode',
-      defaultValue: 'aCoder.encodeInteger(`<%= this.name %>`, ' +
+      defaultValue: 'aCoder.encode(`<%= this.name %>`, ' +
           'forKey: "<%= this.name %>")',
     },
     {
       name: 'swiftNSCoderDecode',
-      defaultValue: 'set("<%= this.name %>", ' +
-          'value: aDecoder.decodeIntegerForKey("<%= this.name %>"))',
+      defaultValue: '_ = set("<%= this.name %>", ' +
+          'value: aDecoder.decodeInteger(forKey: "<%= this.name %>") as AnyObject?)',
     },
     {
       name: 'swiftAdapt',
       defaultValue: function() {/*
         if let intVal = newValue as? Int { return intVal }
-        if let strVal = newValue as? String, intVal = Int(strVal) as Int! {
+        if let strVal = newValue as? String, let intVal = Int(strVal) as Int! {
           return intVal
         }
         return 0
@@ -697,12 +697,12 @@ CLASS({
     {
       name: 'swiftNSCoderEncode',
       defaultValue:
-          'aCoder.encodeObject(`<%= this.name %>`, forKey: "<%= this.name %>")',
+          'aCoder.encode(`<%= this.name %>`, forKey: "<%= this.name %>")',
     },
     {
       name: 'swiftNSCoderDecode',
-      defaultValue: 'set("<%= this.name %>", ' +
-          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
+      defaultValue: '_ = set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObject(forKey: "<%= this.name %>") as AnyObject?)',
     },
     {
       name: 'swiftAdapt',
@@ -965,16 +965,16 @@ CLASS({
     {
       name: 'swiftNSCoderEncode',
       defaultValue:
-          'aCoder.encodeObject(`<%= this.name %>`, forKey: "<%= this.name %>")',
+          'aCoder.encode(`<%= this.name %>`, forKey: "<%= this.name %>")',
     },
     {
       name: 'swiftNSCoderDecode',
-      defaultValue: 'set("<%= this.name %>", ' +
-          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
+      defaultValue: '_ = set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObject(forKey: "<%= this.name %>") as AnyObject?)',
     },
     {
       name: 'swiftFactory',
-      defaultValue: 'return []'
+      defaultValue: 'return [] as AnyObject?'
     },
     {
       name: 'singular',
@@ -1118,22 +1118,22 @@ CLASS({
         FoamFunction(fn: { (args) -> AnyObject? in
           let o1 = self.f(args[0]) as? [AnyObject]
           let o2 = self.f(args[1]) as? [AnyObject]
-          if (o1 == nil) && (o2 == nil) { return 0 }
-          if o1 == nil { return -1 }
-          if o2 == nil { return 1 }
+          if (o1 == nil) && (o2 == nil) { return 0 as AnyObject? }
+          if o1 == nil { return -1 as AnyObject? }
+          if o2 == nil { return 1 as AnyObject? }
 
           if o1!.count != o2!.count {
-            return (o1!.count > o2!.count ? -1 : 1)
+            return (o1!.count > o2!.count ? -1 as AnyObject? : 1 as AnyObject?)
           }
 
           for i in 0 ..< o1!.count {
             let o1Current = o1![i] as! FObject
             let o2Current = o2![i] as! FObject
             let result = o1Current.compareTo(o2Current)
-            if result != 0 { return result }
+            if result != 0 { return result as AnyObject? }
           }
 
-          return 0
+          return 0 as AnyObject?
         })
       */},
       javaDefaultValue: function() {/*
@@ -1282,17 +1282,17 @@ CLASS({
     },
     {
       name: 'swiftFactory',
-      defaultValue: 'return []'
+      defaultValue: 'return [] as AnyObject'
     },
     {
       name: 'swiftNSCoderEncode',
-      defaultValue: 'aCoder.encodeObject(`<%= this.name %>`, ' +
+      defaultValue: 'aCoder.encode(`<%= this.name %>`, ' +
           'forKey: "<%= this.name %>")',
     },
     {
       name: 'swiftNSCoderDecode',
-      defaultValue: 'set("<%= this.name %>", ' +
-          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
+      defaultValue: '_ = set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObject(forKey: "<%= this.name %>") as AnyObject?)',
     },
     {
       name: 'javaLazyFactory',
@@ -1392,22 +1392,22 @@ CLASS({
         FoamFunction(fn: { (args) -> AnyObject? in
           let o1 = self.f(args[0]) as? [AnyObject]
           let o2 = self.f(args[1]) as? [AnyObject]
-          if (o1 == nil) && (o2 == nil) { return 0 }
-          if o1 == nil { return -1 }
-          if o2 == nil { return 1 }
+          if (o1 == nil) && (o2 == nil) { return 0 as AnyObject? }
+          if o1 == nil { return -1 as AnyObject? }
+          if o2 == nil { return 1 as AnyObject? }
 
           if o1!.count != o2!.count {
-            return (o1!.count > o2!.count ? -1 : 1)
+            return o1!.count > o2!.count ? -1 as AnyObject? : 1 as AnyObject?
           }
 
           for i in 0 ..< o1!.count {
             let o1Current = o1![i] as! String
             let o2Current = o2![i] as! String
             let result = o1Current.compare(o2Current).rawValue
-            if result != 0 { return result }
+            if result != 0 { return result as AnyObject? }
           }
 
-          return 0
+          return 0 as AnyObject?
         })
       */},
       javaDefaultValue: function() {/*
@@ -1883,13 +1883,13 @@ CLASS({
     },
     {
       name: 'swiftNSCoderEncode',
-      defaultValue: 'aCoder.encodeObject(`<%= this.name %>`.value, ' +
+      defaultValue: 'aCoder.encode(`<%= this.name %>`.value, ' +
           'forKey: "<%= this.name %>")',
     },
     {
       name: 'swiftNSCoderDecode',
-      defaultValue: 'set("<%= this.name %>", ' +
-          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
+      defaultValue: '_ = set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObject(forKey: "<%= this.name %>") as AnyObject?)',
     },
     {
       name: 'swiftAdapt',
@@ -1979,12 +1979,12 @@ CLASS({
     {
       name: 'swiftNSCoderEncode',
       defaultValue:
-          'aCoder.encodeObject(`<%= this.name %>`, forKey: "<%= this.name %>")',
+          'aCoder.encode(`<%= this.name %>`, forKey: "<%= this.name %>")',
     },
     {
       name: 'swiftNSCoderDecode',
-      defaultValue: 'set("<%= this.name %>", ' +
-          'value: aDecoder.decodeObjectForKey("<%= this.name %>"))',
+      defaultValue: '_ = set("<%= this.name %>", ' +
+          'value: aDecoder.decodeObject(forKey: "<%= this.name %>") as AnyObject?)',
     },
     {
       name: 'compareProperty',
@@ -1992,15 +1992,15 @@ CLASS({
         FoamFunction(fn: { (args) -> AnyObject? in
           let o1 = self.f(args[0])
           let o2 = self.f(args[1])
-          if o1 === o2 { return 0 }
+          if o1 === o2 { return 0 as AnyObject? }
           if let o1 = o1 as? FObject {
             if let o2 = o2 as? FObject {
-              return o1.compareTo(o2)
+              return o1.compareTo(o2) as AnyObject?
             } else {
-              return 1
+              return 1 as AnyObject?
             }
           }
-          return -1
+          return -1 as AnyObject?
         })
       */},
     },

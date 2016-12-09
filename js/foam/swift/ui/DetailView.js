@@ -81,7 +81,7 @@ class <%= this.name %>: UIView {
 
   @IBOutlet var <%= p.name %>Outlet: UIView? {
     didSet {
-      self.<%= p.name %>View.set("view", value: <%= p.name %>Outlet)
+      _ = self.<%= p.name %>View.set("view", value: <%= p.name %>Outlet)
     }
   }
 
@@ -96,11 +96,11 @@ class <%= this.name %>: UIView {
   lazy var <%= p.name %>Button: UIButton = {
     let v = UIButton()
     v.addTarget(self,
-        action: "<%= p.name %>Fn",
-        forControlEvents: UIControlEvents.TouchUpInside)
-    v.setTitleColor(UIColor.blackColor(), forState: .Normal)
-    v.setTitleColor(UIColor.grayColor(), forState: .Highlighted)
-    v.setTitle("<%= p.label %>", forState: UIControlState.Normal)
+        action: #selector(<%= this.name %>.<%=p.name%>Fn),
+        for: UIControlEvents.touchUpInside)
+    v.setTitleColor(UIColor.black, for: .normal)
+    v.setTitleColor(UIColor.gray, for: .highlighted)
+    v.setTitle("<%= p.label %>", for: .normal)
     return v
   }()
   func <%= p.name %>Fn() {
@@ -134,10 +134,10 @@ class <%= this.name %>: UIView {
 <% for (var i = 0, p; p = genProperties[i]; i++) { %>
     addSubview(<%= p.name %>View.view)
     <%= p.name %>View.view.translatesAutoresizingMaskIntoConstraints = false
-    <%= p.name %>View.view.setContentCompressionResistancePriority(UILayoutPriorityDefaultHigh, forAxis: .Horizontal)
+    <%= p.name %>View.view.setContentCompressionResistancePriority(UILayoutPriorityDefaultHigh, for: .horizontal)
     addSubview(<%= p.name %>Label)
     <%= p.name %>Label.translatesAutoresizingMaskIntoConstraints = false
-    <%= p.name %>Label.setContentHuggingPriority(UILayoutPriorityDefaultHigh, forAxis: .Horizontal)
+    <%= p.name %>Label.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
 <% } %>
 
 <% for (var i = 0, p; p = model.actions[i]; i++) { %>
@@ -159,8 +159,8 @@ class <%= this.name %>: UIView {
 <%
 var layoutVertically = function(view) {
 %>
-    addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "V:|-[<%= view.join(']-[') %>]",
+    addConstraints(NSLayoutConstraint.constraints(
+      withVisualFormat: "V:|-[<%= view.join(']-[') %>]",
       options: NSLayoutFormatOptions.init(rawValue: 0),
       metrics: nil,
       views: views))
@@ -174,18 +174,18 @@ layoutVertically(genProperties.map(function(p) { return p.name + 'View'; }));
 
     // Horizontal constraints of views.
 <% for (var i = 0, p; p = genProperties[i]; i++) { %>
-    addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:|-[<%= p.name %>Label]-[<%= p.name %>View]-|",
-      options: .AlignAllCenterY,
+    addConstraints(NSLayoutConstraint.constraints(
+      withVisualFormat: "H:|-[<%= p.name %>Label]-[<%= p.name %>View]-|",
+      options: .alignAllCenterY,
       metrics: nil,
       views: views))
 <% } %>
 <% if (model.actions.length) { %>
   <% var actionButtonNameMap = function(o) { return o.name + 'Button'; }; %>
     // Horizontal constraints of actions.
-    addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:|-[<%= model.actions.map(actionButtonNameMap).join(']-[') %>]",
-      options: .AlignAllCenterY,
+    addConstraints(NSLayoutConstraint.constraints(
+      withVisualFormat: "H:|-[<%= model.actions.map(actionButtonNameMap).join(']-[') %>]",
+      options: .alignAllCenterY,
       metrics: nil,
       views: views))
 <% } %>

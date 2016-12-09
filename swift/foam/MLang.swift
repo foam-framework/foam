@@ -20,36 +20,36 @@ import Foundation
 public let TRUE = TrueExpr()
 public let FALSE = FalseExpr()
 
-func compile_(a: AnyObject?) -> ExprProtocol {
+func compile_(_ a: AnyObject?) -> ExprProtocol {
   if let a = a as? ExprProtocol { return a }
-  if a === true { return TRUE }
-  if a === false { return FALSE }
+  if a === true as AnyObject? { return TRUE }
+  if a === false as AnyObject? { return FALSE }
   let c = ConstantExpr()
   c.arg1 = a
   return c
 }
 
-public func EQ(arg1: AnyObject?, arg2: AnyObject?) -> ExprProtocol {
+public func EQ(_ arg1: AnyObject?, arg2: AnyObject?) -> ExprProtocol {
   let eq = EqExpr()
   eq.arg1 = compile_(arg1)
   eq.arg2 = compile_(arg2)
   return eq
 }
 
-func compileArray_(args: [AnyObject?]) -> NSArray {
+func compileArray_(_ args: [AnyObject?]) -> NSArray {
   let compiledArray: NSMutableArray = []
   for arg in args {
-    compiledArray.addObject(compile_(arg))
+    compiledArray.add(compile_(arg))
   }
   return compiledArray
 }
 
-public func AND(args: AnyObject? ...) -> AndExpr {
+public func AND(_ args: AnyObject? ...) -> AndExpr {
   let andExpr = AndExpr()
   andExpr.args = compileArray_(args)
   return andExpr
 }
 
 public protocol ExprProtocol : class {
-  func f(obj: AnyObject?) -> AnyObject?
+  func f(_ obj: AnyObject?) -> AnyObject?
 }

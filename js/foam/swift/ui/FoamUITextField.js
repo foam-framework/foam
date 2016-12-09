@@ -48,7 +48,7 @@ CLASS({
       ],
       swiftReturnType: 'AnyObject',
       swiftCode: function() {/*
-        return text
+        return text as AnyObject
       */},
     },
     {
@@ -62,7 +62,7 @@ CLASS({
       swiftReturnType: 'String',
       swiftCode: function() {/*
         if value != nil {
-          return String(value!)
+          return String(describing: value!)
         }
         return ""
       */},
