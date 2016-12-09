@@ -15,6 +15,5 @@ node --harmony ../../../tools/foam.js \
       foam.tools.GenSwift \
       outfolder="DaoPlayground.playground/Sources" \
       names=" \
-        foam.dao.nativesupport.ArrayDAO \
         tests.TestModel \
       "
