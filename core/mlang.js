@@ -154,7 +154,7 @@ CLASS({
     {
       name: 'f',
       code: function() { return true; },
-      swiftCode: 'return true',
+      swiftCode: 'return true as AnyObject?',
       javaCode: 'return true;',
     },
   ]
@@ -177,7 +177,7 @@ CLASS({
     {
       name: 'f',
       code: function() { return false; },
-      swiftCode: 'return false',
+      swiftCode: 'return false as AnyObject?',
       javaCode: 'return false;',
     },
   ]
@@ -218,7 +218,7 @@ CLASS({
       // type:  'Expr[]',
       swiftType:  'NSArray',
       javaType:  'java.util.List<ExprInterface>',
-      swiftFactory: 'return []',
+      swiftFactory: 'return [] as AnyObject?',
       javaFactory: 'return new java.util.ArrayList<ExprInterface>();',
       help:  'Sub-expressions',
       documentation: 'An array of subexpressions which are the arguments to this n-ary expression.',
@@ -453,7 +453,7 @@ CLASS({
 
         return equals(arg1, arg2);
       },
-      swiftCode: 'return equals(arg1?.f(obj), b: arg2?.f(obj))',
+      swiftCode: 'return equals(arg1?.f(obj), b: arg2?.f(obj)) as AnyObject?',
       javaCode: function() {/*
         return MLang.equals(
             ((ExprInterface)(getArg1())).f(obj),
@@ -510,7 +510,7 @@ CLASS({
     {
       name: 'f',
       code: function(obj) { return this.arg1; },
-      swiftCode: 'return arg1',
+      swiftCode: 'return arg1 as AnyObject?',
       javaCode: 'return getArg1();',
     },
   ]
@@ -650,10 +650,10 @@ CLASS({
       },
       swiftCode: function() {/*
         for arg in args {
-          let b = arg.f(obj) as! Bool
-          if !b { return false }
+          let b = (arg as! Expr).f(obj) as! Bool
+          if !b { return false as AnyObject? }
         }
-        return true
+        return true as AnyObject?
       */},
       javaCode: function() {/*
         for (ExprInterface arg : getArgs()) {

@@ -161,7 +161,7 @@ public class <%= this.name %>: FoamEnum, Hashable, Equatable {
   }
 <% for (var i = 0, value; value = this.values[i]; i++) { %>
   public static let <%= value.name %> = <%= this.name %>(
-      value: <%= value.swiftValue %>,
+      value: <%= value.swiftValue %> as AnyObject,
       label: <%= value.swiftLabel %>,
       index: <%= value.index %>)
 <% } %>
@@ -170,13 +170,13 @@ public class <%= this.name %>: FoamEnum, Hashable, Equatable {
     <%= this.name %>.<%= value.name %>,
 <% } %>
   ]
-  public static func enumForValue(value: AnyObject) -> FoamEnum? {
+  public static func enumForValue(_ value: AnyObject) -> FoamEnum? {
     for e in <%= this.name %>.choices {
       if equals(e.value, b: value) { return e }
     }
     return nil
   }
-  public func isEqual(value: AnyObject?) -> Bool {
+  public func isEqual(_ value: AnyObject?) -> Bool {
     if let value = value as? FoamEnum {
       return equals(self.value, b: value.value)
     }

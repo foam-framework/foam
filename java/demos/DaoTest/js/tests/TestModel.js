@@ -58,6 +58,59 @@ CLASS({
         },
       ],
       isStatic: true,
+      javaCode: 'doTest();',
+    },
+    {
+      name: 'doTest',
+      isStatic: true,
+      swiftCode: function() {/*
+        let dao = ArrayDAO()
+        var sink: ArraySink! = nil
+
+        let listener = ArraySink()
+        dao.listen(listener)
+
+        let predicatedListener = ArraySink()
+        dao.`where`(EQ(TestModel.TestModel_TEST, arg2: "MyID2" as AnyObject?)).listen(predicatedListener)
+
+        let obj1 = TestModel()
+        _ = obj1.set("id", value: "MyID" as AnyObject?)
+        dao.put(obj1)
+        sink = ArraySink()
+        _ = dao.select(sink)
+        assertTrue(sink.array.count == 1)
+        assertTrue(listener.array.count == 1)
+        assertTrue(predicatedListener.array.count == 0)
+
+        let obj2 = TestModel()
+        _ = obj2.set("id", value: "MyID2" as AnyObject?)
+        dao.put(obj2)
+        sink = ArraySink()
+        _ = dao.select(sink)
+        assertTrue(sink.array.count == 2)
+        assertTrue(listener.array.count == 2)
+        assertTrue(predicatedListener.array.count == 1)
+
+        sink = ArraySink()
+        _ = dao.`where`(EQ(TestModel.TestModel_TEST, arg2: "MyID2" as AnyObject?)).select(sink)
+        assertTrue(sink.array.count == 1)
+
+        dao.remove(obj1)
+        sink = ArraySink()
+        _ = dao.select(sink)
+        assertTrue(sink.array.count == 1)
+        assertTrue(listener.array.count == 1)
+        assertTrue(predicatedListener.array.count == 1)
+
+        dao.remove(obj2)
+        sink = ArraySink()
+        _ = dao.select(sink)
+        assertTrue(sink.array.count == 0)
+        assertTrue(listener.array.count == 0)
+        assertTrue(predicatedListener.array.count == 0)
+
+        NSLog("Hooray! We're done.")
+      */},
       javaCode: function() {/*
         AbstractDAO dao = new ArrayDAO();
         ArraySink sink;
@@ -118,6 +171,7 @@ CLASS({
           name: 'errMsg',
           type: 'String',
           javaDefaultValue: '"Error"',
+          swiftType: 'String = "Error"',
         },
       ],
       isStatic: true,
@@ -126,6 +180,9 @@ CLASS({
           System.out.println(errMsg);
           Thread.currentThread().dumpStack();
         }
+      */},
+      swiftCode: function() {/*
+        assert(value, errMsg)
       */},
     },
   ],

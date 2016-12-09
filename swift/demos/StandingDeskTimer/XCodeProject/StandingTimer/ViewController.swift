@@ -28,9 +28,9 @@ class ViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    view.backgroundColor = UIColor.whiteColor()
+    view.backgroundColor = UIColor.white
 
-    let customView = NSBundle.mainBundle().loadNibNamed("CustomTimerView",
+    let customView = Bundle.main.loadNibNamed("CustomTimerView",
         owner: self,
         options: nil)![0] as! StandingDeskTimerDetailView
     customView.data = timer
@@ -47,40 +47,40 @@ class ViewController: UIViewController {
       v.translatesAutoresizingMaskIntoConstraints = false
     }
 
-    view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "H:|-[detailView]-|",
+    view.addConstraints(NSLayoutConstraint.constraints(
+        withVisualFormat: "H:|-[detailView]-|",
         options: NSLayoutFormatOptions.init(rawValue: 0),
         metrics: nil,
         views: views))
-    view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "H:|-[customView]-|",
+    view.addConstraints(NSLayoutConstraint.constraints(
+        withVisualFormat: "H:|-[customView]-|",
         options: NSLayoutFormatOptions.init(rawValue: 0),
         metrics: nil,
         views: views))
     view.addConstraint(NSLayoutConstraint(
         item: detailView,
-        attribute: .Top,
-        relatedBy: .Equal,
+        attribute: .top,
+        relatedBy: .equal,
         toItem: topLayoutGuide,
-        attribute: .Bottom,
+        attribute: .bottom,
         multiplier: 1,
         constant: 0))
-    view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "V:[detailView]-[customView]-|",
+    view.addConstraints(NSLayoutConstraint.constraints(
+        withVisualFormat: "V:[detailView]-[customView]-|",
         options: NSLayoutFormatOptions.init(rawValue: 0),
         metrics: nil,
         views: views))
     view.addConstraint(NSLayoutConstraint(
         item: detailView,
-        attribute: .Height,
-        relatedBy: .Equal,
+        attribute: .height,
+        relatedBy: .equal,
         toItem: customView,
-        attribute: .Height,
+        attribute: .height,
         multiplier: 1,
         constant: 0))
 
-    customView.setContentHuggingPriority(UILayoutPriorityDefaultHigh, forAxis: .Vertical)
+    customView.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
     detailView.setContentCompressionResistancePriority(
-        UILayoutPriorityDefaultHigh, forAxis: .Vertical)
+        UILayoutPriorityDefaultHigh, for: .vertical)
   }
 }

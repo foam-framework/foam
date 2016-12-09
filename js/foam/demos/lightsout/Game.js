@@ -70,8 +70,8 @@ CLASS({
           nodes.append([]);
           for y in 0...height-1 {
             let node = Node(args: [
-              "x": x,
-              "y": y,
+              "x": x as Optional<AnyObject>,
+              "y": y as Optional<AnyObject>,
               "game": self,
             ]);
             nodes[x].append(node)

@@ -215,7 +215,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       let factoryValue = { () -> AnyObject? in
         <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftFactory)).bind(prop)() %>
       }()
-      self.set("<%= name %>", value: factoryValue)
+      _  = self.set("<%= name %>", value: factoryValue)
       return <%= name %>_!
     <% } else if (prop.swiftDefaultValueFn) { %>
       <%= prop.swiftDefaultValueFn %>
@@ -229,20 +229,20 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   <% } %>
     }
     set(value) {
-      self.set("<%= name %>", value: value)
+      _ = self.set("<%= name %>", value: value as AnyObject?)
     }
   }
-  public <%= override %> func _<%= name %>Adapt_(oldValue: AnyObject?, newValue: AnyObject?) -> <%= type %> {
+  public <%= override %> func _<%= name %>Adapt_(_ oldValue: AnyObject?, newValue: AnyObject?) -> <%= type %> {
     let closure = { (oldValue: AnyObject?, newValue: AnyObject?) -> <%= type %> in
       <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftAdapt)).bind(prop)() %>
     }
     <% if (override) { %>
-    return super._<%= name %>Adapt_(oldValue, newValue: closure(oldValue, newValue))
+    return super._<%= name %>Adapt_(oldValue, newValue: closure(oldValue, newValue) as AnyObject?)
     <% } else { %>
     return closure(oldValue, newValue)
     <% } %>
   }
-  public <%= override %> func _<%= name %>PreSet_(oldValue: AnyObject?, newValue: <%= type %>) -> <%= type %> {
+  public <%= override %> func _<%= name %>PreSet_(_ oldValue: AnyObject?, newValue: <%= type %>) -> <%= type %> {
     let closure = { (oldValue: AnyObject?, newValue: <%= type %>) -> <%= type %> in
       <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftPreSet)).bind(prop)() %>
     }
@@ -252,7 +252,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     return closure(oldValue, newValue)
     <% } %>
   }
-  public <%= override %> func _<%= name %>PostSet_(oldValue: AnyObject?, newValue: <%= type %>) {
+  public <%= override %> func _<%= name %>PostSet_(_ oldValue: AnyObject?, newValue: <%= type %>) {
     let closure = { (oldValue: AnyObject?, newValue: <%= type %>) in
       <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftPostSet)).bind(prop)() %>
     }
@@ -263,7 +263,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
   }
 <% } %>
 
-  public override func hasOwnProperty(key: String) -> Bool {
+  public override func hasOwnProperty(_ key: String) -> Bool {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length; i++ ) {
   var prop = modelProperties[i];
@@ -280,7 +280,7 @@ for ( var i = 0 ; i < modelProperties.length; i++ ) {
     }
   }
 
-  public override func getProperty(key: String) -> Property? {
+  public override func getProperty(_ key: String) -> Property? {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length; i++ ) {
   var prop = modelProperties[i];
@@ -297,7 +297,7 @@ for ( var i = 0 ; i < modelProperties.length; i++ ) {
     }
   }
 
-  public override func getPropertyValue(key: String) -> PropertyValue? {
+  public override func getPropertyValue(_ key: String) -> PropertyValue? {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length; i++ ) {
   var prop = modelProperties[i];
@@ -314,13 +314,13 @@ for ( var i = 0 ; i < modelProperties.length; i++ ) {
     }
   }
 
-  public override func get(key: String) -> AnyObject? {
+  public override func get(_ key: String) -> AnyObject? {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length; i++ ) {
   var prop = modelProperties[i];
 %>
       case "<%= prop.name %>":
-        return self.`<%= prop.name %>`<%
+        return self.`<%= prop.name %>` as AnyObject?<%
 } %>
 <% if (idName) { %>
       case "id":
@@ -331,18 +331,18 @@ for ( var i = 0 ; i < modelProperties.length; i++ ) {
     }
   }
 
-  public override func set(key: String, value: AnyObject?) -> FObject {
+  public override func set(_ key: String, value: AnyObject?) -> FObject {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length ; i++ ) {
   var prop = modelProperties[i];
   var name = prop.name;
 %>
       case "<%= name %>":
-        let oldValue: AnyObject? = <%= name %>Inited_ ? `<%= name %>` : nil
+        let oldValue = <%= name %>Inited_ ? `<%= name %>` as AnyObject? : nil as AnyObject?
         <%= name %>_ = _<%= name %>PreSet_(oldValue, newValue: _<%= name %>Adapt_(oldValue, newValue: value))
         <%= name %>Inited_ = true
         _<%= name %>PostSet_(oldValue, newValue: <%= name %>_!)
-        self.firePropertyChangeEvent("<%= name %>", oldValue: oldValue, newValue: self.`<%= name %>`)
+        self.firePropertyChangeEvent("<%= name %>", oldValue: oldValue, newValue: self.`<%= name %>` as AnyObject?)
 <% } %>
 <% if (idName) { %>
       case "id":
@@ -353,17 +353,17 @@ for ( var i = 0 ; i < modelProperties.length ; i++ ) {
     return super.set(key, value: value)
   }
 
-  public override func clearProperty(key: String) -> FObject {
+  public override func clearProperty(_ key: String) -> FObject {
     switch key {<%
 for ( var i = 0 ; i < modelProperties.length ; i++ ) {
   var prop = modelProperties[i];
   var name = prop.name;
 %>
       case "<%= name %>":
-        let oldValue: AnyObject? = <%= name %>Inited_ ? `<%= name %>` : nil
+        let oldValue = <%= name %>Inited_ ? `<%= name %>` as AnyObject? : nil as AnyObject?
         <%= name %>_ = nil
         <%= name %>Inited_ = false
-        self.firePropertyChangeEvent("<%= name %>", oldValue: oldValue, newValue: self.`<%= name %>`)
+        self.firePropertyChangeEvent("<%= name %>", oldValue: oldValue, newValue: self.`<%= name %>` as AnyObject?)
 <% } %>
 <% if (idName) { %>
       case "id":
@@ -374,16 +374,20 @@ for ( var i = 0 ; i < modelProperties.length ; i++ ) {
     return super.clearProperty(key)
   }
 
+  public convenience init() {
+    self.init(args: [:])
+  }
+
   public override init(args: [String:AnyObject?] = [:]) {
     super.init(args: args)<%
 for ( var i = 0, prop; prop = allProperties[i]; i++ ) {
   if (prop.swiftFactory) {%>
-    self.get("<%= prop.name %>")<%
+    _ = self.get("<%= prop.name %>")<%
   }
 } %>
   }
 
-  override public func encodeWithCoder(aCoder: NSCoder) {
+  override public func encode(with aCoder: NSCoder) {
 <%
 for (var i = 0, prop; prop = modelProperties[i]; i++) {
   if (!prop.transient) {
@@ -395,7 +399,7 @@ for (var i = 0, prop; prop = modelProperties[i]; i++) {
   }
 }
 %>
-    super.encodeWithCoder(aCoder)
+    super.encode(with: aCoder)
   }
 
   required public init(coder aDecoder: NSCoder) {
@@ -404,7 +408,7 @@ for (var i = 0, prop; prop = modelProperties[i]; i++) {
 for (var i = 0, prop; prop = modelProperties[i]; i++) {
   if (!prop.transient) {
 %>
-    if aDecoder.containsValueForKey("<%= prop.name %>") {
+    if aDecoder.containsValue(forKey: "<%= prop.name %>") {
       <%= TemplateUtil.lazyCompile(TemplateUtil.expandTemplate(prop, prop.swiftNSCoderDecode)).bind(prop)() %>
     }
 <%

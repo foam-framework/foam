@@ -25,7 +25,7 @@ CLASS({
       name: 'view',
       swiftFactory: function() {/*
         let v = UITextField()
-        v.keyboardType = .NumberPad
+        v.keyboardType = .numberPad
         return v
       */},
     },
@@ -34,8 +34,8 @@ CLASS({
     {
       name: 'textToValue',
       swiftCode: function() {/*
-        if let s = Int(text) { return s }
-        return 0
+        if let s = Int(text) { return s as AnyObject }
+        return 0 as AnyObject
       */},
     },
   ],

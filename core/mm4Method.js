@@ -1029,6 +1029,7 @@ var static = this.isStatic ? 'static' : '';
 <% } else if ( this.swiftCode ) { %>
   <%=override%> public <%= static %> func `<%= name %>`(<%
 for ( var i = 0 ; i < args.length ; i++ ) {
+  if ( !i ) { %>_ <% }
 %><%= args[i].name %>: <%= args[i].swiftType %><%
 if ( i != args.length - 1 ) { %>, <% }
 }
@@ -1036,7 +1037,7 @@ if ( i != args.length - 1 ) { %>, <% }
 <%= this.swiftCode %>
   }
 <% } %>
-<% if ( this.swiftCode && !override && args.length == 0 ) { %>
+<% if ( this.swiftCode && !override && args.length == 0 && !static ) { %>
     lazy var <%= name %>Listener_: PropertyChangeListener = {
       return PropertyChangeListener(callback: { [weak self] _, _, _, _ in
         self?.`<%= name %>`()

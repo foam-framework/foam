@@ -17,40 +17,40 @@
 
 import Foundation
 
-public class Future {
+open class Future {
   var set: Bool = false
   var value: AnyObject?
   var waiters: Array<(AnyObject?) -> Void> = []
-  public func get(callback: (AnyObject?) -> Void) {
+  open func get(_ callback: @escaping (AnyObject?) -> Void) {
     if set {
       callback(value)
     } else {
       waiters.append(callback)
     }
   }
-  public func set(value: AnyObject?) -> Future {
+  open func set(_ value: AnyObject?) -> Future {
     self.value = value
     set = true
     for callback in waiters {
       callback(value)
     }
-    waiters.removeAll(keepCapacity: false)
+    waiters.removeAll(keepingCapacity: false)
     return self
   }
 }
 
 public typealias AFunc = ((AnyObject?) -> Void, AnyObject?) -> Void
 
-public func Par(funcs: [AFunc]) -> AFunc {
+public func Par(_ funcs: [AFunc]) -> AFunc {
   return { (ret: (AnyObject?) -> Void, args: AnyObject?) in
     var numCompleted = 0
     let returnValues: NSMutableArray = NSMutableArray(capacity: funcs.count)
     for i in 0...funcs.count-1 {
-      returnValues.insertObject(0, atIndex: i)
+      returnValues.insert(0, at: i)
       let f = funcs[i]
       f({ data in
         if let data = data as AnyObject! {
-          returnValues.replaceObjectAtIndex(i, withObject: data)
+          returnValues.replaceObject(at: i, with: data)
         }
         numCompleted += 1
         if numCompleted == funcs.count {
@@ -61,8 +61,8 @@ public func Par(funcs: [AFunc]) -> AFunc {
   }
 }
 
-public func Seq(funcs: [AFunc]) -> AFunc {
-  return { (ret: (AnyObject?) -> Void, args: AnyObject?) in
+public func Seq(_ funcs: [AFunc]) -> AFunc {
+  return { (ret: @escaping (AnyObject?) -> Void, args: AnyObject?) in
     var i = 0
     var next: ((AnyObject?) -> Void)!
     next = { d in
@@ -77,11 +77,11 @@ public func Seq(funcs: [AFunc]) -> AFunc {
       }, d)
     }
     next(args)
-  }
+  } as! AFunc
 }
 
-public func While(cond: () -> Bool, afunc: AFunc) -> AFunc {
-  return { (ret: (AnyObject?) -> Void, args: AnyObject?) in
+public func While(_ cond: @escaping () -> Bool, afunc: @escaping AFunc) -> AFunc {
+  return { (ret: @escaping (AnyObject?) -> Void, args: AnyObject?) in
     var next: ((AnyObject?) -> Void)!
     next = { d in
       if !cond() {
@@ -91,16 +91,15 @@ public func While(cond: () -> Bool, afunc: AFunc) -> AFunc {
       afunc(next, args)
     }
     next(args)
-  }
+  } as! AFunc
 }
 
-public func Delay(delay: NSTimeInterval,
-    queue: dispatch_queue_t = dispatch_get_main_queue(),
-    afunc: AFunc = { ret, _ in ret(nil) }) -> AFunc {
-  return { (ret: (AnyObject?) -> Void, args: AnyObject?) in
-    dispatch_after(
-        dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(delay * 1000.0) * NSEC_PER_MSEC)),
-        queue,
-        { () -> Void in afunc(ret, args) })
-  }
+public func Delay(_ delay: TimeInterval,
+    queue: DispatchQueue = DispatchQueue.main,
+    afunc: @escaping AFunc = { ret, _ in ret(nil) }) -> AFunc {
+  return { (ret: @escaping (AnyObject?) -> Void, args: AnyObject?) in
+    queue.asyncAfter(
+        deadline: DispatchTime.now() + Double(Int64(UInt64(delay * 1000.0) * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC),
+        execute: { () -> Void in afunc(ret, args) })
+  } as! AFunc
 }

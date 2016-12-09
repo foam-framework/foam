@@ -31,35 +31,35 @@ class ViewController: UIViewController {
   @IBOutlet weak var scrollView: UIScrollView!
 
   lazy var lightsOut = Game()
-    
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    NSNotificationCenter.defaultCenter().addObserver(
+    NotificationCenter.default.addObserver(
         self,
-        selector: Selector("keyboardWillShow:"),
-        name: UIKeyboardWillShowNotification,
+        selector: #selector(ViewController.keyboardWillShow(_:)),
+        name: NSNotification.Name.UIKeyboardWillShow,
         object: nil)
 
-    NSNotificationCenter.defaultCenter().addObserver(
+    NotificationCenter.default.addObserver(
         self,
-        selector: Selector("keyboardWillHide:"),
-        name:UIKeyboardWillHideNotification,
+        selector: #selector(ViewController.keyboardWillHide(_:)),
+        name:NSNotification.Name.UIKeyboardWillHide,
         object: nil)
 
-    scrollView.keyboardDismissMode = .OnDrag
+    scrollView.keyboardDismissMode = .onDrag
   }
     
-  func keyboardWillShow(notification: NSNotification) {
+  func keyboardWillShow(_ notification: Notification) {
     let userInfo = notification.userInfo!
-    let keyboardSize = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+    let keyboardSize = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
     let contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0);
     scrollView.contentInset = contentInsets;
     scrollView.scrollIndicatorInsets = contentInsets;
   }
     
-  func keyboardWillHide(notification: NSNotification) {
-    let contentInsets = UIEdgeInsetsZero;
+  func keyboardWillHide(_ notification: Notification) {
+    let contentInsets = UIEdgeInsets.zero;
     scrollView.contentInset = contentInsets;
     scrollView.scrollIndicatorInsets = contentInsets;
   }

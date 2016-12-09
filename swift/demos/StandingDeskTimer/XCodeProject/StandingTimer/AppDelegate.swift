@@ -20,11 +20,9 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
-  func application(application: UIApplication,
-      didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+  func applicationDidFinishLaunching(_ application: UIApplication) {
     window = UIWindow()
     window?.makeKeyAndVisible()
     window?.rootViewController = ViewController()
-    return true
   }
 }

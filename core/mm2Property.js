@@ -88,6 +88,7 @@ GLOBAL.Property = {
     {
       name: 'speechLabel',
       type: 'String',
+      swiftType: 'String',
       required: false,
       displayWidth: 70,
       displayHeight: 1,
@@ -808,6 +809,7 @@ GLOBAL.Property = {
       name: 'help',
       label: 'Help Text',
       type: 'String',
+      swiftType: 'String',
       required: false,
       displayWidth: 70,
       displayHeight: 6,
@@ -868,12 +870,14 @@ GLOBAL.Property = {
         FoamFunction(fn: { (args) -> AnyObject? in
           let o1 = self.f(args[0])
           let o2 = self.f(args[1])
-          if o1 === o2 { return 0 }
-          if o1 == nil && o2 == nil { return 0 }
-          if o1 == nil { return -1 }
-          if o2 == nil { return 1 }
-          if o1!.isEqual(o2) { return 0 }
-          return o1?.hashValue > o2?.hashValue ? 1 : -1
+          if o1 === o2 { return 0 as AnyObject? }
+          if o1 == nil && o2 == nil { return 0 as AnyObject? }
+          if o1 == nil { return -1 as AnyObject? }
+          if o2 == nil { return 1 as AnyObject? }
+          if o1!.isEqual(o2) { return 0 as AnyObject? }
+          return o1!.hashValue > o2!.hashValue ?
+              1 as AnyObject? :
+              -1 as AnyObject?
         })
       */},
       javaDefaultValue: function() {/*

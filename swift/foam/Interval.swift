@@ -18,22 +18,21 @@
 import Foundation
 
 class Interval {
-  static func set(closure: () -> Void,
-      interval: NSTimeInterval,
-      queue: dispatch_queue_t = dispatch_get_main_queue(),
-      leeway: Float = 0.1) -> dispatch_source_t {
-    let timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue)
+  static func set(_ closure: @escaping () -> Void,
+      interval: TimeInterval,
+      queue: DispatchQueue = DispatchQueue.main) -> DispatchSource {
+    let timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: queue)
     let dispatchTime = UInt64(UInt64(interval * 1000.0) * NSEC_PER_MSEC)
-    let dispatchLeeway = UInt64(leeway * Float(NSEC_PER_SEC))
-    dispatch_source_set_timer(timer, dispatchTime, dispatchTime, dispatchLeeway)
-    dispatch_source_set_event_handler(timer) {
+    timer.scheduleRepeating(deadline: DispatchTime(uptimeNanoseconds: dispatchTime),
+        interval: interval)
+    timer.setEventHandler {
       closure()
     }
-    dispatch_resume(timer)
-    return timer
+    timer.resume()
+    return timer as! DispatchSource
   }
 
-  static func clear(timer: dispatch_source_t) {
-      dispatch_source_cancel(timer)
+  static func clear(_ timer: DispatchSource) {
+      timer.cancel()
   }
 }

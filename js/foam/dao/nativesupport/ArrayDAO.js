@@ -52,7 +52,7 @@ CLASS({
       name: 'put',
       swiftCode: function() {/*
         var found = false
-        for (index, fobj) in dao.enumerate() {
+        for (index, fobj) in dao.enumerated() {
           if equals(fobj.get("id"), b: obj.get("id")) {
             dao[index] = obj
             found = true
@@ -81,9 +81,9 @@ CLASS({
     {
       name: 'remove',
       swiftCode: function() {/*
-        let index = dao.indexOf(obj)
+        let index = dao.index(of: obj)
         if index != nil {
-          dao.removeAtIndex(index!)
+          dao.remove(at: index!)
           sink.remove(obj)
           notify_("remove", fObj: obj)
         }
@@ -101,7 +101,7 @@ CLASS({
       name: 'find',
       swiftCode: function() {/*
         for fobj in dao {
-          if equals(fobj.get("id"), b: id) {
+          if equals(fobj.get("id"), b: id as AnyObject?) {
             sink.put(fobj)
             return
           }
