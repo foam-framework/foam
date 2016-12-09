@@ -79,7 +79,7 @@ CLASS({
       swiftPostSet: function() {/*
         if self.daoListeners_.count > 0 {
           if let oldValue = oldValue as? AbstractDAO {
-            oldValue.unlisten(self.relay);
+            _ = oldValue.unlisten(self.relay);
           }
           newValue.listen(self.relay);
           // FutureDAOs will put via the future. In that case, don't put here.
@@ -205,7 +205,7 @@ CLASS({
 
         // Remove last listener, so unlisten to delegate
         if self.daoListeners_.count == 0 {
-          self.delegate.unlisten(self.relay)
+          _ = self.delegate.unlisten(self.relay)
         }
 
         return success

@@ -81,7 +81,7 @@ CLASS({
   properties: [
     {
       name: 'query',
-      swiftType: 'ExprProtocol!',
+      swiftType: 'ExprProtocol?',
       swiftDefaultValue: 'nil',
       javaType: 'foam.core2.ExprInterface',
       required: true
@@ -593,7 +593,7 @@ CLASS({
           javaDefaultValue: 'new foam.dao.nativesupport.DAOQueryOptions()',
         }
       ],
-      swiftCode: 'self.daoListeners_.addObject(self.decorateSink_(sink, options: options))',
+      swiftCode: 'self.daoListeners_.add(self.decorateSink_(sink, options: options))',
       javaCode: 'getDaoListeners_().add(decorateSink_(sink, options));',
     },
 
@@ -619,10 +619,10 @@ CLASS({
       ],
       returnType: 'Boolean',
       swiftCode: function() {/*
-        for (i,listener) in daoListeners_.enumerate() {
+        for (i,listener) in daoListeners_.enumerated() {
           guard let listener = listener as? Sink else { continue }
           if listener.UID == sink.UID {
-            daoListeners_.removeObjectAtIndex(i)
+            daoListeners_.removeObject(at: i)
             return true
           }
         }
@@ -693,7 +693,7 @@ CLASS({
         ])
         self.select(removeSink, options: options).get { _ in
           sink.eof()
-          future.set(sink)
+          _ = future.set(sink)
         }
         return future;
       */},

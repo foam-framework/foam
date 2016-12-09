@@ -36,9 +36,9 @@ CLASS({
     {
       name: 'remove',
       swiftCode: function() {/*
-        let index = array.indexOf(obj)
+        let index = array.index(of: obj)
         if index != nil {
-          array.removeAtIndex(index!)
+          _ = array.remove(at: index!)
         }
       */},
       javaCode: function() {/*

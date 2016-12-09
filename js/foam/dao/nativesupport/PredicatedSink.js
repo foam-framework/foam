@@ -23,7 +23,7 @@ CLASS({
   properties: [
     {
       name: 'expr',
-      swiftType: 'ExprProtocol!',
+      swiftType: 'ExprProtocol',
       javaType: 'foam.core2.ExprInterface',
     },
   ],

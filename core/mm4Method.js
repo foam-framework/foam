@@ -1037,7 +1037,7 @@ if ( i != args.length - 1 ) { %>, <% }
 <%= this.swiftCode %>
   }
 <% } %>
-<% if ( this.swiftCode && !override && args.length == 0 ) { %>
+<% if ( this.swiftCode && !override && args.length == 0 && !static ) { %>
     lazy var <%= name %>Listener_: PropertyChangeListener = {
       return PropertyChangeListener(callback: { [weak self] _, _, _, _ in
         self?.`<%= name %>`()
