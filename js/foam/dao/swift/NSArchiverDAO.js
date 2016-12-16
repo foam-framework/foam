@@ -30,10 +30,10 @@ CLASS({
       model_: 'StringProperty',
       swiftPostSet: function() {/*
         let paths = NSSearchPathForDirectoriesInDomains(
-            NSSearchPathDirectory.DocumentDirectory,
-            NSSearchPathDomainMask.UserDomainMask, true)
-        let documentsDirectory: AnyObject = paths[0]
-        self.path = documentsDirectory.stringByAppendingPathComponent(newValue)
+            FileManager.SearchPathDirectory.documentDirectory,
+            FileManager.SearchPathDomainMask.userDomainMask, true)
+        let documentsDirectory = paths[0] as AnyObject
+        self.path = documentsDirectory.appendingPathComponent(newValue)
       */},
     },
   ],
@@ -42,9 +42,9 @@ CLASS({
       name: 'getArrayDao',
       swiftReturnType: 'ArrayDAO',
       swiftCode: function() {/*
-        var data = NSKeyedUnarchiver.unarchiveObjectWithFile(path) as? [FObject]
+        var data = NSKeyedUnarchiver.unarchiveObject(withFile: path) as? [FObject]
         if data == nil { data = [] }
-        return ArrayDAO(args: ["dao": data!])
+        return ArrayDAO(args: ["dao": data as AnyObject])
       */},
     },
     {

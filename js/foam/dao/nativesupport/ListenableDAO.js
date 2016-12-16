@@ -30,7 +30,7 @@ CLASS({
     {
       name: 'cache',
       swiftType: '[String:FObject]',
-      swiftFactory: 'return [:]',
+      swiftFactory: 'return [:] as AnyObject',
     },
   ],
   methods: [
@@ -59,16 +59,16 @@ CLASS({
           "eofFn": FoamFunction(fn: { (args) -> AnyObject? in
             for id in unseen {
               self.notify_("remove", fObj: self.cache[id])
-              self.cache.removeValueForKey(id)
+              self.cache.removeValue(forKey: id)
             }
             return nil
           }),
         ])
 
-        let multiSink = MultiSink(args: ["sinks": [sink, puttingSink]])
+        let multiSink = MultiSink(args: ["sinks": [sink, puttingSink] as AnyObject])
         let future = Future()
         self.delegate.select(multiSink, options: options).get { _ in
-          future.set(sink)
+          _ = future.set(sink)
         }
         return future
       */},
@@ -85,7 +85,7 @@ CLASS({
           }),
         ])
 
-        let multiSink = MultiSink(args: ["sinks": [sink, puttingSink]])
+        let multiSink = MultiSink(args: ["sinks": [sink, puttingSink] as AnyObject])
         self.delegate.put(obj, sink: multiSink)
       */},
     },
@@ -96,12 +96,12 @@ CLASS({
           "removeFn": FoamFunction(fn: { (args) -> AnyObject? in
             let obj = args[0] as! FObject
             let id = obj.get("id") as! String
-            self.cache.removeValueForKey(id)
+            self.cache.removeValue(forKey: id)
             return nil
           }),
         ])
 
-        let multiSink = MultiSink(args: ["sinks": [sink, removingSink]])
+        let multiSink = MultiSink(args: ["sinks": [sink, removingSink] as AnyObject])
         self.delegate.remove(obj, sink: multiSink)
       */},
     },

@@ -39,10 +39,10 @@ open class Future {
   }
 }
 
-public typealias AFunc = ((AnyObject?) -> Void, AnyObject?) -> Void
+public typealias AFunc = (@escaping (AnyObject?) -> Void, AnyObject?) -> Void
 
 public func Par(_ funcs: [AFunc]) -> AFunc {
-  return { (ret: (AnyObject?) -> Void, args: AnyObject?) in
+  return { (ret: @escaping (AnyObject?) -> Void, args: AnyObject?) in
     var numCompleted = 0
     let returnValues: NSMutableArray = NSMutableArray(capacity: funcs.count)
     for i in 0...funcs.count-1 {
@@ -77,7 +77,7 @@ public func Seq(_ funcs: [AFunc]) -> AFunc {
       }, d)
     }
     next(args)
-  } as! AFunc
+  }
 }
 
 public func While(_ cond: @escaping () -> Bool, afunc: @escaping AFunc) -> AFunc {
@@ -91,7 +91,7 @@ public func While(_ cond: @escaping () -> Bool, afunc: @escaping AFunc) -> AFunc
       afunc(next, args)
     }
     next(args)
-  } as! AFunc
+  }
 }
 
 public func Delay(_ delay: TimeInterval,
@@ -101,5 +101,5 @@ public func Delay(_ delay: TimeInterval,
     queue.asyncAfter(
         deadline: DispatchTime.now() + Double(Int64(UInt64(delay * 1000.0) * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC),
         execute: { () -> Void in afunc(ret, args) })
-  } as! AFunc
+  }
 }

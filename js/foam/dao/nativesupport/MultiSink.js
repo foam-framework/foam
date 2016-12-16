@@ -30,7 +30,7 @@ CLASS({
     {
       name: 'sinks',
       swiftType: '[Sink]',
-      swiftFactory: 'return []',
+      swiftFactory: 'return [] as AnyObject',
     },
   ],
 

@@ -72,7 +72,7 @@ CLASS({
       },
       swiftType: 'Property',
       swiftDefaultValueFn: function() {/*
-        return Property(args: ["name": "id"])
+        return Property(args: ["name": "id" as AnyObject])
       */},
     },
     {
@@ -150,7 +150,7 @@ CLASS({
         this.predicatedDao.listen(this.daoListener)
       },
       swiftCode: function() {/*
-        self.predicatedDao = self.dao.`where`(EQ(self.pk, arg2: self.id))
+        self.predicatedDao = self.dao.`where`(EQ(self.pk, arg2: self.id as AnyObject))
         self.predicatedDao.listen(self.daoListener)
       */},
     },

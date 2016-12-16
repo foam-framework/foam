@@ -180,7 +180,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     if (prop.swiftValidate) { %>
     p.validate = FoamFunction(fn: { (args) -> AnyObject? in
       let data = args[0] as! <%= this.swiftClassName %>
-      return data.validate_<%= name %>()
+      return data.validate_<%= name %>() as AnyObject
     })<%
     } %>
     return p
@@ -190,8 +190,8 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
     let value = `<%= name %>`
     let property = `<%= constant %>`
     // No-ops to silence unused variable warning if they're not used in the valdation code.
-    value
-    property
+    _ = value
+    _ = property
     <%= multiline(prop.swiftValidate) %>
   }
   <% } %>
