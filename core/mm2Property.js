@@ -810,6 +810,7 @@ GLOBAL.Property = {
       label: 'Help Text',
       type: 'String',
       swiftType: 'String',
+      swiftDefaultValue: '""',
       required: false,
       displayWidth: 70,
       displayHeight: 6,
@@ -875,7 +876,7 @@ GLOBAL.Property = {
           if o1 == nil { return -1 as AnyObject? }
           if o2 == nil { return 1 as AnyObject? }
           if o1!.isEqual(o2) { return 0 as AnyObject? }
-          return o1!.hashValue > o2!.hashValue ?
+          return o1!.hash ?? 0 > o2!.hash ?? 0 ?
               1 as AnyObject? :
               -1 as AnyObject?
         })
