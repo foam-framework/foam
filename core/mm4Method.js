@@ -534,6 +534,12 @@ CLASS({
       },
     },
     {
+      type:  'String',
+      name:  'swiftName',
+      labels: ['swift', 'compiletime'],
+      defaultValueFn: function() { return this.name; },
+    },
+    {
       name:  'name',
       type:  'String',
       required: true,
@@ -1012,8 +1018,8 @@ var static = this.isStatic ? 'static' : '';
       return
     }
     <%= name %>_fired_ = true
-    NSTimer.scheduledTimerWithTimeInterval(
-      <%= ( this.isFramed ) ? 0.016 : ( this.isMerged / 1000 ) %>,
+    Timer.scheduledTimer(
+      timeInterval: <%= ( this.isFramed ) ? 0.016 : ( this.isMerged / 1000 ) %>,
       target: self,
       selector: "_<%= name %>_wrapper_",
       userInfo: nil,
@@ -1029,8 +1035,8 @@ var static = this.isStatic ? 'static' : '';
 <% } else if ( this.swiftCode ) { %>
   <%=override%> public <%= static %> func `<%= name %>`(<%
 for ( var i = 0 ; i < args.length ; i++ ) {
-  if ( !i ) { %>_ <% }
-%><%= args[i].name %>: <%= args[i].swiftType %><%
+  if ( !i && !args[i].hasOwnProperty('swiftName') ) { %>_ <% }
+%><%= args[i].swiftName %>: <%= args[i].swiftType %><%
 if ( i != args.length - 1 ) { %>, <% }
 }
 %>) -> <%= swiftReturnType %> {
@@ -1040,7 +1046,7 @@ if ( i != args.length - 1 ) { %>, <% }
 <% if ( this.swiftCode && !override && args.length == 0 && !static ) { %>
     lazy var <%= name %>Listener_: PropertyChangeListener = {
       return PropertyChangeListener(callback: { [weak self] _, _, _, _ in
-        self?.`<%= name %>`()
+        <% if (swiftReturnType != 'Void') { %>_ = <% } %>self?.`<%= name %>`()
       })
     }()
 <% } %>*/}
