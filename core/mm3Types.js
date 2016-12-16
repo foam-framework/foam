@@ -389,7 +389,7 @@ CLASS({
     [ 'displayWidth', 50 ],
     {
       name: 'swiftType',
-      defaultValue: 'NSDate?',
+      defaultValue: 'Date?',
     },
     {
       name: 'swiftNSCoderEncode',
@@ -709,10 +709,10 @@ CLASS({
       defaultValue: function() {/*
         // If it's already an int, use it.
         if let numVal = newValue as? NSNumber { return numVal }
-        if let intVal = newValue as? Int64 { return NSNumber(longLong: intVal) }
+        if let intVal = newValue as? Int64 { return NSNumber(value: intVal) }
         // If it's a string, convert it.
-        if let strVal = newValue as? String, intVal = Int64(strVal) as Int64! {
-          return NSNumber(longLong: intVal)
+        if let strVal = newValue as? String, let intVal = Int64(strVal) as Int64! {
+          return NSNumber(value: intVal)
         }
         return 0
       */},
