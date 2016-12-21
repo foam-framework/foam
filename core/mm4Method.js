@@ -1021,7 +1021,7 @@ var static = this.isStatic ? 'static' : '';
     Timer.scheduledTimer(
       timeInterval: <%= ( this.isFramed ) ? 0.016 : ( this.isMerged / 1000 ) %>,
       target: self,
-      selector: "_<%= name %>_wrapper_",
+      selector: #selector(<%= model.swiftClassName %>._<%= name %>_wrapper_),
       userInfo: nil,
       repeats: false)
   }
