@@ -2,4 +2,4 @@
 
 import UIKit
 
-TestModel.doTest()
+TestModel.main()

@@ -54,14 +54,22 @@ CLASS({
       args: [
         {
           name: 'args',
+          swiftType: '[AnyObject] = []',
           javaType: 'String []',
         },
       ],
       isStatic: true,
-      javaCode: 'doTest();',
+      swiftCode: function() {/*
+        testListeners()
+        testPipe()
+      */},
+      javaCode: function() {/*
+        testListeners();
+        testPipe();
+      */},
     },
     {
-      name: 'doTest',
+      name: 'testListeners',
       isStatic: true,
       swiftCode: function() {/*
         let dao = ArrayDAO()
@@ -156,6 +164,64 @@ CLASS({
         assertTrue(sink.getArray().size() == 0);
         assertTrue(listener.getArray().size() == 0);
         assertTrue(predicatedListener.getArray().size() == 0);
+
+        System.out.println("Hooray! We're done.");
+      */},
+    },
+    {
+      name: 'testPipe',
+      isStatic: true,
+      swiftCode: function() {/*
+        let dao = ArrayDAO()
+
+        let obj1 = TestModel()
+        _ = obj1.set("id", value: "MyID" as AnyObject?)
+        dao.put(obj1)
+
+        let sink = ArraySink()
+        dao.pipe(sink)
+
+        assertTrue(sink.array.count == 1)
+
+        let obj2 = TestModel()
+        _ = obj2.set("id", value: "MyID2" as AnyObject?)
+        dao.put(obj2)
+
+        assertTrue(sink.array.count == 2)
+
+        dao.remove(obj1)
+        assertTrue(sink.array.count == 1)
+
+        dao.unlisten(sink)
+        dao.remove(obj2)
+        assertTrue(sink.array.count == 1)
+
+        NSLog("Hooray! We're done.")
+      */},
+      javaCode: function() {/*
+        ArrayDAO dao = new ArrayDAO();
+
+        TestModel obj1 = new TestModel();
+        obj1.set("id", "MyID");
+        dao.put(obj1);
+
+        ArraySink sink = new ArraySink();
+        dao.pipe(sink);
+
+        assertTrue(sink.getArray().size() == 1);
+
+        TestModel obj2 = new TestModel();
+        obj2.set("id", "MyID2");
+        dao.put(obj2);
+
+        assertTrue(sink.getArray().size() == 2);
+
+        dao.remove(obj1);
+        assertTrue(sink.getArray().size() == 1);
+
+        dao.unlisten(sink);
+        dao.remove(obj2);
+        assertTrue(sink.getArray().size() == 1);
 
         System.out.println("Hooray! We're done.");
       */},

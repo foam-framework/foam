@@ -438,31 +438,57 @@ CLASS({
       javaCode: '// Override',
     },
 
-    function pipe(sink, options) { /* A $$DOC{ref:'.select'} followed by $$DOC{ref:'.listen'}.
-           Dump our contents to sink, then send future changes there as well. */
-      sink = this.decorateSink_(sink, options, true);
+    {
+      name: 'pipe',
+      code: function(sink, options) { /* A $$DOC{ref:'.select'} followed by $$DOC{ref:'.listen'}.
+             Dump our contents to sink, then send future changes there as well. */
+        sink = this.decorateSink_(sink, options, true);
 
-      var fc   = this.createFlowControl_();
-      var self = this;
+        var fc   = this.createFlowControl_();
+        var self = this;
 
-      this.select({
-        put: function() {
-          sink.put && sink.put.apply(sink, arguments);
-        },
-        remove: function() {
-          sink.remove && sink.remove.apply(sink, arguments);
-        },
-        error: function() {
-          sink.error && sink.error.apply(sink, arguments);
-        },
-        eof: function() {
-          if ( fc.stopped ) {
-            sink.eof && sink.eof();
-          } else {
-            self.listen(sink, options);
+        this.select({
+          put: function() {
+            sink.put && sink.put.apply(sink, arguments);
+          },
+          remove: function() {
+            sink.remove && sink.remove.apply(sink, arguments);
+          },
+          error: function() {
+            sink.error && sink.error.apply(sink, arguments);
+          },
+          eof: function() {
+            if ( fc.stopped ) {
+              sink.eof && sink.eof();
+            } else {
+              self.listen(sink, options);
+            }
           }
+        }, options, fc);
+      },
+      args: [
+        {
+          name: 'sink',
+          swiftType: 'Sink',
+          javaType: 'foam.dao.nativesupport.Sink',
+        },
+        {
+          name: 'options',
+          swiftType: 'DAOQueryOptions = DAOQueryOptions()',
+          javaType: 'foam.dao.nativesupport.DAOQueryOptions',
+          javaDefaultValue: 'new foam.dao.nativesupport.DAOQueryOptions()',
+        },
+      ],
+      swiftCode: function() {/*
+        self.select(sink, options: options).get { _ in
+          self.listen(sink, options: options)
         }
-      }, options, fc);
+      */},
+      javaCode: function() {/*
+        this.select(sink, options).thenAccept(result -> {
+          this.listen(sink, options);
+        });
+      */},
     },
 
     {
