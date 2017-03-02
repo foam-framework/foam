@@ -111,12 +111,12 @@ CLASS({
     {
       name: 'errorBelowMinLength',
       value: 'The text is too short. Minimum: $min$',
-      placeholders: [ { name: 'min' } ]
+      placeholders: [ { name: 'min', example: '40' } ]
     },
     {
       name: 'errorAboveMaxLength',
       value: 'The text is too long. Maximum: $max$',
-      placeholders: [ { name: 'max' } ]
+      placeholders: [ { name: 'max', example: '40' } ]
     }
   ],
 
@@ -485,12 +485,12 @@ CLASS({
     {
       name: 'errorBelowMinimum',
       value: 'The value must be at least $min$.',
-      placeholders: [ { name: 'min' } ]
+      placeholders: [ { name: 'min', example: '40' } ]
     },
     {
       name: 'errorAboveMaximum',
       value: 'The value can be at most $max$.',
-      placeholders: [ { name: 'max' } ]
+      placeholders: [ { name: 'max', example: '40' } ]
     }
   ],
 
