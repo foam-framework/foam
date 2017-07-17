@@ -16,7 +16,6 @@
  */
 
 
-var __DATA;
 (function() {
 
   // If we're running a foam binary, i/e no ModelDAO, no need to hookup the
@@ -48,7 +47,7 @@ var __DATA;
   // Hookup ModelDAO callback as CLASS and __DATA global functions.
   var oldClass = CLASS;
 
-  MODEL = CLASS = function(json) {
+  window.MODEL = CLASS = function(json) {
     json.model_ = 'Model';
     if ( document && document.currentScript )
       json.sourcePath = document.currentScript.src;
@@ -58,7 +57,7 @@ var __DATA;
     else
       oldClass(json);
   };
-  __DATA = function(json) {
+  window.__DATA = function(json) {
     if ( document && document.currentScript ) {
       json.sourcePath = document.currentScript.src;
       document.currentScript.callback &&

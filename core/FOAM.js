@@ -307,7 +307,7 @@ var CLASS = function(m) {
   registerModelLatch(packagePath(X, m.package), m);
 }
 
-var MODEL = CLASS;
+MODEL = CLASS;
 
 function INTERFACE(imodel) {
   // Unless in DEBUG mode, just discard interfaces as they're only used for type checking.

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-var __DATA;
 (function() {
   // If we're running a foam binary, i/e no ModelDAO, no need to hookup the
   // model dao.
@@ -47,13 +46,13 @@ var __DATA;
 
   GLOBAL.__DATACALLBACK = oldClass;
 
-  MODEL = CLASS = function(json) {
+  GLOBAL.MODEL = CLASS = function(json) {
     json.model_ = 'Model';
     json.sourcePath = GLOBAL.__DATACALLBACK.sourcePath;
     GLOBAL.__DATACALLBACK(json, oldClass);
   };
 
-  __DATA = function(json) {
+  GLOBAL.__DATA = function(json) {
     GLOBAL.__DATACALLBACK(json);
   };
 })();

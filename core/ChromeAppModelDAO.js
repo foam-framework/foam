@@ -15,22 +15,20 @@
  * limitations under the License.
  */
 
-var __DATA;
-
 (function() {
   X.ModelDAO = X.foam.core.bootstrap.ChromeAppFileDAO.create();
 
   // Hookup ModelDAO callback as CLASS and __DATA global functions.
   var oldClass = CLASS;
 
-  MODEL = CLASS = function(json) {
+  window.MODEL = CLASS = function(json) {
     json.model_ = 'Model';
     if ( document && document.currentScript && document.currentScript.callback )
       document.currentScript.callback(json, oldClass);
     else
       oldClass(json);
   };
-  __DATA = function(json) {
+  window.__DATA = function(json) {
     if ( document && document.currentScript ) {
       json.sourcePath = document.currentScript.src;
       document.currentScript.callback &&

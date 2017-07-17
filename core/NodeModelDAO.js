@@ -25,14 +25,14 @@ X.ModelDAO = X.node.dao.ModelFileDAO.create();
 
   global.__DATACALLBACK = oldClass;
 
-  MODEL = CLASS = function(json) {
+  global.MODEL = CLASS = function(json) {
     json.model_ = 'Model';
     json.sourcePath = global.__DATACALLBACK.sourcePath;
     global.__DATACALLBACK(json);
   };
 })();
 
-var __DATA = function(json) {
+global.__DATA = function(json) {
   global.__DATACALLBACK(json);
 };
 

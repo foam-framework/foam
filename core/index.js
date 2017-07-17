@@ -46,11 +46,6 @@ var NO_PLAN = {
   toString: function() { return "no-plan"; }
 };
 
-function dump(o) {
-  if ( Array.isArray(o) ) return '[' + o.map(dump).join(',') + ']';
-  return o ? o.toString() : '<undefined>';
-}
-
 /** An Index which holds only a single value. **/
 var ValueIndex = {
   put: function(s, newValue) { return newValue; },
