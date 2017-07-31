@@ -110,13 +110,13 @@ CLASS({
     { name: 'errorPatternMismatch', value: 'The text does not match the pattern.' },
     {
       name: 'errorBelowMinLength',
-      value: 'The text is too short. Minimum: $min$',
-      placeholders: [ { name: 'min', example: '40' } ]
+      value: 'The text is too short. Minimum: $MIN$',
+      placeholders: [ { name: 'MIN', example: '40' } ]
     },
     {
       name: 'errorAboveMaxLength',
-      value: 'The text is too long. Maximum: $max$',
-      placeholders: [ { name: 'max', example: '40' } ]
+      value: 'The text is too long. Maximum: $MAX$',
+      placeholders: [ { name: 'MAX', example: '40' } ]
     }
   ],
 
@@ -230,7 +230,7 @@ CLASS({
           ret = function(result) {
             return result ||
               ( this[prop.name].length < min ?
-                  prop.ERROR_BELOW_MIN_LENGTH.replaceValues(null, { min: min }) :
+                  prop.ERROR_BELOW_MIN_LENGTH.replaceValues(null, { MIN: min }) :
                   ''
               );
           }.o(ret);
@@ -241,7 +241,7 @@ CLASS({
           ret = function(result) {
             return result ||
               ( this[prop.name].length > max ?
-                  prop.ERROR_ABOVE_MAX_LENGTH.replaceValues(null, { max: max }) :
+                  prop.ERROR_ABOVE_MAX_LENGTH.replaceValues(null, { MAX: max }) :
                   ''
               );
           }.o(ret);
@@ -484,13 +484,13 @@ CLASS({
   messages: [
     {
       name: 'errorBelowMinimum',
-      value: 'The value must be at least $min$.',
-      placeholders: [ { name: 'min', example: '40' } ]
+      value: 'The value must be at least $MIN$.',
+      placeholders: [ { name: 'MIN', example: '40' } ]
     },
     {
       name: 'errorAboveMaximum',
-      value: 'The value can be at most $max$.',
-      placeholders: [ { name: 'max', example: '40' } ]
+      value: 'The value can be at most $MAX$.',
+      placeholders: [ { name: 'MAX', example: '40' } ]
     }
   ],
 
@@ -541,7 +541,7 @@ CLASS({
         if ( min !== "" ) {
           ret = function(result) {
             return result ||
-              ( this[prop.name] < min ? prop.ERROR_BELOW_MINIMUM.replaceValues(null, { min: min }) : '');
+              ( this[prop.name] < min ? prop.ERROR_BELOW_MINIMUM.replaceValues(null, { MIN: min }) : '');
           }.o(ret);
           ret.dependencies = [prop.name];
         }
@@ -550,7 +550,7 @@ CLASS({
         if ( max !== "" ) {
           ret = function(result) {
             return result ||
-              ( this[prop.name] > max ? prop.ERROR_ABOVE_MAXIMUM.replaceValues(null, { max: max }) : '');
+              ( this[prop.name] > max ? prop.ERROR_ABOVE_MAXIMUM.replaceValues(null, { MAX: max }) : '');
           }.o(ret);
           ret.dependencies = [prop.name];
         }
