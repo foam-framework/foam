@@ -75,7 +75,8 @@ CLASS({
     function buildCSVCell_(value) {
       if (typeof value === 'undefined') return '';
       if (typeof value !== 'string') value = '' + value;
-      if (value.indexOf(',') >= 0 || value.indexOf('"') >= 0) {
+      if (value.indexOf(',') >= 0 || value.indexOf('"') >= 0 ||
+          value.indexOf('\n') >= 0) {
         // Quoting required. Embedded quotes get doubled.
         value = value.replace(/"/g, '""');
         return '"' + value + '"';
