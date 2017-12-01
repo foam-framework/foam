@@ -68,6 +68,7 @@ public abstract class StackActivity extends FOAMActionBarActivity implements Sta
 
   @Override
   public void onSaveInstanceState(Bundle bundle) {
+    super.onSaveInstanceState(bundle);
     bundle.putBundle("memento", getMemento());
   }
 
