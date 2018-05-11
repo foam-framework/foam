@@ -254,7 +254,7 @@ CLASS({
     },
     function createFirstIdentity() {
       if ( DEBUG ) {
-        this.identity = this.ctx.identity;
+        this.identity = this.ctx.identity || { clone: function() {return this;}, displayName: "Test", email: "no-reply@google.com"};
         this.identityManager.identity = this.ctx.identity;
         return;
       }

@@ -261,8 +261,8 @@ CLASS({
           name: 'onMenuClosed',
           code: function(evt) {
             if ( evt.propertyName && ! this.menuOpen ) {
-              this.selection = "";
-//              this.updateHTML();
+//              this.selection = "";
+              this.updateHTML();
             }
           },
         },
