@@ -1,3 +1,5 @@
+**NOTICE: Active development has moved to the [foam2 repository](https://github.com/foam-framework/foam2/).**
+
 # FOAM
 
 Build fully featured high performance apps in less time using FOAM.
