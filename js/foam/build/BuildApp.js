@@ -129,7 +129,7 @@ CLASS({
           formatFunction: function(f) {
             var s = f.code.toString();
             if ( s.startsWith('function ' + f.name + '(') ) return s;
-            return s.replace(/function ([^\(]*)\(/, 'function ' + f.name + '(')
+            return s.replace(/function ?([^\(]*)\(/, 'function ' + f.name + '(')
           },
           keys_: {},
           keyify: JSONUtil.prettyModel.keyify,
