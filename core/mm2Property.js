@@ -868,7 +868,7 @@ GLOBAL.Property = {
         return o1.$UID.compareTo(o2.$UID);
       },
       swiftDefaultValue: function() {/*
-        FoamFunction(fn: { (args) -> AnyObject? in
+        FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
           let o1 = self.f(args[0])
           let o2 = self.f(args[1])
           if o1 === o2 { return 0 as AnyObject? }

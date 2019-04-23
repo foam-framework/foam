@@ -87,8 +87,8 @@ open class FObject: PropertyChangeSupport, NSCoding {
   lazy var UID: Int = {
     var id: Int?
     DispatchQueue(label: "FObjectUIDLock", attributes: []).sync {
-      id = nextId
-      nextId += 1
+      id = FObject.nextId
+      FObject.nextId += 1
     }
     return id!
   }()
@@ -117,8 +117,8 @@ open class FObject: PropertyChangeSupport, NSCoding {
       for fobjProp in fobj.getModel().properties {
         if !fobj.hasOwnProperty(fobjProp.name) { continue }
         let v: AnyObject? = fobj.get(fobjProp.name)
-        if (v is FObject) && deep {
-          _ = self.set(fobjProp.name, value: v!.deepClone())
+        if let fv = v as? FObject, deep {
+          _ = self.set(fobjProp.name, value: fv.deepClone())
         } else if (v is [FObject]) && deep {
           var clonedArray: [FObject] = []
           for fobjArrayValue in v as! [FObject] {

@@ -519,7 +519,7 @@ CLASS({
       name: 'compareProperty',
       defaultValue: function(o1, o2) { return o1 === o2 ? 0 : o1 > o2 ? 1 : -1; },
       swiftDefaultValue: function() {/*
-        FoamFunction(fn: { (args) -> AnyObject? in
+        FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
           let o1 = self.f(args[0])
           let o2 = self.f(args[1])
           if o1 === o2 { return 0 as AnyObject? }
@@ -607,7 +607,7 @@ CLASS({
       name: 'swiftAdapt',
       defaultValue: function() {/*
         if let intVal = newValue as? Int { return intVal }
-        if let strVal = newValue as? String, let intVal = Int(strVal) as Int! {
+        if let strVal = newValue as? String, let intVal = Int(strVal) {
           return intVal
         }
         return 0
@@ -797,7 +797,7 @@ CLASS({
         var n: Float?
         switch newValue {
           case let newValue as String: n = Float(newValue)
-          case let newValue as NSNumber: n = Float(newValue)
+          case let newValue as NSNumber: n = Float(truncating: newValue)
           default: break
         }
         if n != nil { return n! }
@@ -843,7 +843,7 @@ CLASS({
     },
     {
       name: 'swiftDefaultValue',
-      defaultValue: 'FoamFunction(fn: { (_) -> AnyObject? in return nil })',
+      defaultValue: 'FoamFunction(fn: { (_: AnyObject?...) -> AnyObject? in return nil })',
     },
     {
       name: 'displayWidth',
@@ -1115,7 +1115,7 @@ CLASS({
     {
       name: 'compareProperty',
       swiftDefaultValue: function() {/*
-        FoamFunction(fn: { (args) -> AnyObject? in
+        FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
           let o1 = self.f(args[0]) as? [AnyObject]
           let o2 = self.f(args[1]) as? [AnyObject]
           if (o1 == nil) && (o2 == nil) { return 0 as AnyObject? }
@@ -1389,7 +1389,7 @@ CLASS({
     {
       name: 'compareProperty',
       swiftDefaultValue: function() {/*
-        FoamFunction(fn: { (args) -> AnyObject? in
+        FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
           let o1 = self.f(args[0]) as? [AnyObject]
           let o2 = self.f(args[1]) as? [AnyObject]
           if (o1 == nil) && (o2 == nil) { return 0 as AnyObject? }
@@ -1989,7 +1989,7 @@ CLASS({
     {
       name: 'compareProperty',
       swiftDefaultValue: function() {/*
-        FoamFunction(fn: { (args) -> AnyObject? in
+        FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
           let o1 = self.f(args[0])
           let o2 = self.f(args[1])
           if o1 === o2 { return 0 as AnyObject? }

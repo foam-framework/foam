@@ -453,7 +453,12 @@ CLASS({
 
         return equals(arg1, arg2);
       },
-      swiftCode: 'return equals(arg1?.f(obj), b: arg2?.f(obj)) as AnyObject?',
+      swiftCode: function() {/*
+        guard let expr1 = arg1 as? ExprProtocol?, let expr2 = arg2 as? ExprProtocol? else {
+          return nil
+        }
+        return equals(expr1?.f(obj), b: expr2?.f(obj)) as AnyObject?
+      */},
       javaCode: function() {/*
         return MLang.equals(
             ((ExprInterface)(getArg1())).f(obj),

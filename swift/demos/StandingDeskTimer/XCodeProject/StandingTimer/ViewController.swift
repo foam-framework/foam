@@ -49,12 +49,12 @@ class ViewController: UIViewController {
 
     view.addConstraints(NSLayoutConstraint.constraints(
         withVisualFormat: "H:|-[detailView]-|",
-        options: NSLayoutFormatOptions.init(rawValue: 0),
+        options: NSLayoutConstraint.FormatOptions.init(rawValue: 0),
         metrics: nil,
         views: views))
     view.addConstraints(NSLayoutConstraint.constraints(
         withVisualFormat: "H:|-[customView]-|",
-        options: NSLayoutFormatOptions.init(rawValue: 0),
+        options: NSLayoutConstraint.FormatOptions.init(rawValue: 0),
         metrics: nil,
         views: views))
     view.addConstraint(NSLayoutConstraint(
@@ -67,7 +67,7 @@ class ViewController: UIViewController {
         constant: 0))
     view.addConstraints(NSLayoutConstraint.constraints(
         withVisualFormat: "V:[detailView]-[customView]-|",
-        options: NSLayoutFormatOptions.init(rawValue: 0),
+        options: NSLayoutConstraint.FormatOptions.init(rawValue: 0),
         metrics: nil,
         views: views))
     view.addConstraint(NSLayoutConstraint(
@@ -79,8 +79,8 @@ class ViewController: UIViewController {
         multiplier: 1,
         constant: 0))
 
-    customView.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
+    customView.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
     detailView.setContentCompressionResistancePriority(
-        UILayoutPriorityDefaultHigh, for: .vertical)
+        UILayoutPriority.defaultHigh, for: .vertical)
   }
 }

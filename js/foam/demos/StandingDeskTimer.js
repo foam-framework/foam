@@ -89,7 +89,7 @@ CLASS({
         let newTime = newValue == StandingDeskTimerEnum.STAND ?
             self.standingTime : self.sittingTime;
         self.timeRemaining = newTime * 60
-        NSLog(newValue.label)
+        print(newValue.label)
       */},
     },
     {

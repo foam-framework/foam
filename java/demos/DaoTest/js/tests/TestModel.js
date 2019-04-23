@@ -117,7 +117,7 @@ CLASS({
         assertTrue(listener.array.count == 0)
         assertTrue(predicatedListener.array.count == 0)
 
-        NSLog("Hooray! We're done.")
+        print("Hooray! Listeners test is done.")
       */},
       javaCode: function() {/*
         AbstractDAO dao = new ArrayDAO();
@@ -192,11 +192,11 @@ CLASS({
         dao.remove(obj1)
         assertTrue(sink.array.count == 1)
 
-        dao.unlisten(sink)
+        _ = dao.unlisten(sink)
         dao.remove(obj2)
         assertTrue(sink.array.count == 1)
 
-        NSLog("Hooray! We're done.")
+        print("Hooray! Pipes test is done.")
       */},
       javaCode: function() {/*
         ArrayDAO dao = new ArrayDAO();

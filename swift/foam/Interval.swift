@@ -23,8 +23,8 @@ class Interval {
       queue: DispatchQueue = DispatchQueue.main) -> DispatchSource {
     let timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: queue)
     let dispatchTime = UInt64(UInt64(interval * 1000.0) * NSEC_PER_MSEC)
-    timer.scheduleRepeating(deadline: DispatchTime(uptimeNanoseconds: dispatchTime),
-        interval: interval)
+    timer.schedule(deadline: DispatchTime(uptimeNanoseconds: dispatchTime),
+        repeating: interval)
     timer.setEventHandler {
       closure()
     }

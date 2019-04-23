@@ -38,30 +38,30 @@ class ViewController: UIViewController {
     NotificationCenter.default.addObserver(
         self,
         selector: #selector(ViewController.keyboardWillShow(_:)),
-        name: NSNotification.Name.UIKeyboardWillShow,
+        name: UIResponder.keyboardWillShowNotification,
         object: nil)
 
     NotificationCenter.default.addObserver(
         self,
         selector: #selector(ViewController.keyboardWillHide(_:)),
-        name:NSNotification.Name.UIKeyboardWillHide,
+        name: UIResponder.keyboardWillHideNotification,
         object: nil)
 
     scrollView.keyboardDismissMode = .onDrag
   }
     
-  func keyboardWillShow(_ notification: Notification) {
+  @objc func keyboardWillShow(_ notification: Notification) {
     let userInfo = notification.userInfo!
-    let keyboardSize = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-    let contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0);
-    scrollView.contentInset = contentInsets;
-    scrollView.scrollIndicatorInsets = contentInsets;
+    let keyboardSize = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+    let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardSize.height, right: 0.0)
+    scrollView.contentInset = contentInsets
+    scrollView.scrollIndicatorInsets = contentInsets
   }
     
-  func keyboardWillHide(_ notification: Notification) {
-    let contentInsets = UIEdgeInsets.zero;
-    scrollView.contentInset = contentInsets;
-    scrollView.scrollIndicatorInsets = contentInsets;
+  @objc func keyboardWillHide(_ notification: Notification) {
+    let contentInsets = UIEdgeInsets.zero
+    scrollView.contentInset = contentInsets
+    scrollView.scrollIndicatorInsets = contentInsets
   }
 }
 

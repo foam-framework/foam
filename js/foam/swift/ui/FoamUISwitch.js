@@ -43,6 +43,7 @@ CLASS({
   methods: [
     {
       name: 'onTapChange',
+      isObjC: true,
       swiftCode: function() {/*
         if view.isOn != data { data = view.isOn }
       */},

@@ -25,12 +25,12 @@ CLASS({
       swiftDefaultValue: '""',
       swiftPostSet: function() {/*
         self.dao.find(newValue, sink: ClosureSink(args: [
-          "putFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+          "putFn": FoamFunction(fn: { [weak self] (args: AnyObject?...) -> AnyObject? in
             self?.future.set(args[0])
             self?.attach()
             return nil
           }),
-          "errorFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+          "errorFn": FoamFunction(fn: { [weak self] (args: AnyObject?...) -> AnyObject? in
             self?.attach()
             return nil
           }),
@@ -114,11 +114,11 @@ CLASS({
       swiftType: 'Sink',
       swiftFactory: function() {/*
         return ClosureSink(args: [
-          "putFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+          "putFn": FoamFunction(fn: { [weak self] (args: AnyObject?...) -> AnyObject? in
             self?.onPut()
             return nil
           }),
-          "removeFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+          "removeFn": FoamFunction(fn: { [weak self] (args: AnyObject?...) -> AnyObject? in
             self?.onRemove()
             return nil
           })
@@ -175,7 +175,7 @@ CLASS({
         if feedback { return }
         let clone = obj!.deepClone();
         dao.put(clone, sink: ClosureSink(args: [
-          "putFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+          "putFn": FoamFunction(fn: { [weak self] (args: AnyObject?...) -> AnyObject? in
             if self == nil { return nil }
             let obj2 = args[0]
             self!.feedback = true;
@@ -203,7 +203,7 @@ CLASS({
       },
       swiftCode: function() {/*
         dao.find(id, sink: ClosureSink(args: [
-          "putFn": FoamFunction(fn: { [weak self] (args) -> AnyObject? in
+          "putFn": FoamFunction(fn: { [weak self] (args: AnyObject?...) -> AnyObject? in
             if self == nil { return nil }
             let obj2 = args[0] as! FObject
             if self!.obj == nil {
