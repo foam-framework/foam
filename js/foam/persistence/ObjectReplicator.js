@@ -138,7 +138,7 @@ CLASS({
       swiftCode: function() {/*
         self.obj?.removeListener(self.objChangedListener_)
         if hasOwnProperty("predicatedDao") {
-          self.predicatedDao.unlisten(self.daoListener)
+          _ = self.predicatedDao.unlisten(self.daoListener)
         }
       */},
     },

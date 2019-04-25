@@ -97,7 +97,7 @@ open class FObject: PropertyChangeSupport, NSCoding {
   }
   public init(args: [String:AnyObject?] = [:]) {
     super.init()
-    for key in args.keys {
+    for key in args.keys.sorted() {
       _ = set(key, value: args[key]!)
     }
     _foamInit_()
@@ -107,10 +107,12 @@ open class FObject: PropertyChangeSupport, NSCoding {
     fatalError("Called getModel on FObject directly")
   }
   open func get(_ key: String) -> AnyObject? { return nil }
+  @discardableResult
   open func set(_ key: String, value: AnyObject?) -> FObject { return self }
   open func getProperty(_ key: String) -> Property? { return nil }
   open func getPropertyValue(_ key: String) -> PropertyValue? { return nil }
   open func hasOwnProperty(_ key: String) -> Bool { return false }
+  @discardableResult
   open func clearProperty(_ key: String) -> FObject { return self }
   open func copyFrom(_ data: AnyObject?, deep: Bool = false) {
     if let fobj = data as? FObject {

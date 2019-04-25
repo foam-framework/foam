@@ -711,7 +711,7 @@ CLASS({
         if let numVal = newValue as? NSNumber { return numVal }
         if let intVal = newValue as? Int64 { return NSNumber(value: intVal) }
         // If it's a string, convert it.
-        if let strVal = newValue as? String, let intVal = Int64(strVal) as Int64! {
+        if let strVal = newValue as? String, let intVal = Int64(strVal) {
           return NSNumber(value: intVal)
         }
         return 0
