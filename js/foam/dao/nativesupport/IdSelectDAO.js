@@ -52,19 +52,19 @@ CLASS({
         }
 
         idDao.select(ClosureSink(args: [
-          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+          "putFn": FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
             numSelected += 1
             let selectedObj = args[0] as! FObject
             let id = selectedObj.get("id") as! String
             self.find(id, sink: ClosureSink(args: [
-              "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+              "putFn": FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
                 let foundObj = args[0] as! FObject
                 numFound += 1
                 decoratedSink.put(foundObj)
                 maybeFinish()
                 return nil
               }),
-              "errorFn": FoamFunction(fn: { (args) -> AnyObject? in
+              "errorFn": FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
                 numFound += 1
                 decoratedSink.error()
                 maybeFinish()

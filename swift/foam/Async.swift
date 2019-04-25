@@ -49,7 +49,7 @@ public func Par(_ funcs: [AFunc]) -> AFunc {
       returnValues.insert(0, at: i)
       let f = funcs[i]
       f({ data in
-        if let data = data as AnyObject! {
+        if let data = data {
           returnValues.replaceObject(at: i, with: data)
         }
         numCompleted += 1

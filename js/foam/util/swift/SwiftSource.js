@@ -178,7 +178,7 @@ for ( var i = 0 ; i < allProperties.length ; i++ ) {
       }
     }
     if (prop.swiftValidate) { %>
-    p.validate = FoamFunction(fn: { (args) -> AnyObject? in
+    p.validate = FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
       let data = args[0] as! <%= this.swiftClassName %>
       return data.validate_<%= name %>() as AnyObject
     })<%

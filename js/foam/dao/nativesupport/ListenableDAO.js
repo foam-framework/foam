@@ -39,7 +39,7 @@ CLASS({
       swiftCode: function() {/*
         var unseen = Set(cache.keys)
         let puttingSink = ClosureSink(args: [
-          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+          "putFn": FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
             let fobj = args[0] as! FObject
             let id = fobj.get("id") as! String
             unseen.remove(id)
@@ -49,14 +49,14 @@ CLASS({
             }
             return nil
           }),
-          "errorFn": FoamFunction(fn: { (args) -> AnyObject? in
+          "errorFn": FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
             // If an error occurs, clear the set of unseen objects so we don't
             // notify_ that things have been removed because we don't know for
             // sure if anything has actually been removed.
             unseen.removeAll()
             return nil
           }),
-          "eofFn": FoamFunction(fn: { (args) -> AnyObject? in
+          "eofFn": FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
             for id in unseen {
               self.notify_("remove", fObj: self.cache[id])
               self.cache.removeValue(forKey: id)
@@ -77,7 +77,7 @@ CLASS({
       name: 'put',
       swiftCode: function() {/*
         let puttingSink = ClosureSink(args: [
-          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+          "putFn": FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
             let obj = args[0] as! FObject
             let id = obj.get("id") as! String
             self.cache[id] = obj
@@ -93,7 +93,7 @@ CLASS({
       name: 'remove',
       swiftCode: function() {/*
         let removingSink = ClosureSink(args: [
-          "removeFn": FoamFunction(fn: { (args) -> AnyObject? in
+          "removeFn": FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
             let obj = args[0] as! FObject
             let id = obj.get("id") as! String
             self.cache.removeValue(forKey: id)

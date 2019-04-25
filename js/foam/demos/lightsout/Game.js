@@ -49,6 +49,7 @@ CLASS({
   actions: [
     {
       name: 'newGame',
+      isObjC: "true",
       code: function() {
         var nodes = [];
         for (var x = 0; x < this.width; x++) {

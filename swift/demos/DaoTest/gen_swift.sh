@@ -5,7 +5,7 @@ cd $(dirname $0) || exit 1
 
 # Generate the FOAM classes.
 rm DaoPlayground.playground/Sources/*
-cp ../../foam/* DaoPlayground.playground/Sources/
+cp -R ../../foam/ DaoPlayground.playground/Sources/
 
 CLASS_PATH=../../../java/demos/DaoTest/js
 

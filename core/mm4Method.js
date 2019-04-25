@@ -972,6 +972,13 @@ CLASS({
       name: 'labels'
     },
     {
+      name: 'isObjC',
+      type: 'Boolean',
+      labels: ['swift'],
+      defaultValue: false,
+      help: 'Is @objc keyword required.',
+    },
+    {
       type: 'String',
       name: 'swiftCode',
       labels: ['swift'],
@@ -1009,6 +1016,7 @@ while (extendsModel) {
   swiftReturnType = method && method.swiftReturnType || swiftReturnType;
   extendsModel = extendsModel.extends
 }
+var objc = this.isObjC && override === '' ? '@objc ' : '';
 var static = this.isStatic ? 'static' : '';
 
 %><% if ( this.isMerged || this.isFramed ) {
@@ -1025,7 +1033,7 @@ var static = this.isStatic ? 'static' : '';
       userInfo: nil,
       repeats: false)
   }
-  <%=override%> func _<%= name %>_wrapper_() {
+  <%=objc%><%=override%> func _<%= name %>_wrapper_() {
     <%= name %>_fired_ = false
     <%= name %>_code()
   }
@@ -1033,7 +1041,7 @@ var static = this.isStatic ? 'static' : '';
 <%= this.swiftCode %>
   }
 <% } else if ( this.swiftCode ) { %>
-  <%=override%> public <%= static %> func `<%= name %>`(<%
+  <%=objc%><%=override%> public <%= static %> func `<%= name %>`(<%
 for ( var i = 0 ; i < args.length ; i++ ) {
   if ( !i && !args[i].hasOwnProperty('swiftName') ) { %>_ <% }
 %><%= args[i].swiftName %>: <%= args[i].swiftType %><%

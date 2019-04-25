@@ -705,10 +705,10 @@ CLASS({
       swiftCode: function() {/*
         let future = Future()
         let removeSink = ClosureSink(args: [
-          "putFn": FoamFunction(fn: { (args) -> AnyObject? in
+          "putFn": FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
             let obj = args[0] as! FObject
             self.remove(obj, sink: ClosureSink(args: [
-              "removeFn": FoamFunction(fn: { (args) -> AnyObject? in
+              "removeFn": FoamFunction(fn: { (args: AnyObject?...) -> AnyObject? in
                 let obj = args[0] as! FObject
                 sink.remove(obj)
                 return nil
