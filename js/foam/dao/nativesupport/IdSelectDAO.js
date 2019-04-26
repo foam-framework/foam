@@ -47,7 +47,7 @@ CLASS({
         let maybeFinish = {
           if done && numSelected == numFound {
             sink.eof()
-            future.set(sink)
+            _ = future.set(sink)
           }
         }
 

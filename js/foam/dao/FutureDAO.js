@@ -152,7 +152,7 @@ CLASS({
         future.get { delegate in
           let delegate = delegate as! AbstractDAO
           delegate.select(sink, options: options).get { data in
-            selectFuture.set(data)
+            _ = selectFuture.set(data)
           }
         }
         return selectFuture

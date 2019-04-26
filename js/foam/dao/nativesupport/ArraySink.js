@@ -36,7 +36,7 @@ CLASS({
     {
       name: 'remove',
       swiftCode: function() {/*
-        let index = array.index(of: obj)
+        let index = array.firstIndex(of: obj)
         if index != nil {
           _ = array.remove(at: index!)
         }

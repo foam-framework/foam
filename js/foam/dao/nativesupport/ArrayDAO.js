@@ -81,7 +81,7 @@ CLASS({
     {
       name: 'remove',
       swiftCode: function() {/*
-        let index = dao.index(of: obj)
+        let index = dao.firstIndex(of: obj)
         if index != nil {
           dao.remove(at: index!)
           sink.remove(obj)

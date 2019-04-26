@@ -28,6 +28,7 @@ open class Future {
       waiters.append(callback)
     }
   }
+  @discardableResult
   open func set(_ value: AnyObject?) -> Future {
     self.value = value
     set = true

@@ -149,10 +149,8 @@ public class <%= this.name %>: FoamEnum, Hashable, Equatable {
   public var index: Int
   public var value: AnyObject
   public var label: String
-  public var hashValue: Int {
-    get {
-      return self.index
-    }
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(index)
   }
   private init(value: AnyObject, label: String, index: Int) {
     self.value = value
