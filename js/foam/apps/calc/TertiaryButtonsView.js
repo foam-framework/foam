@@ -28,16 +28,24 @@ CLASS({
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1;-webkit-flex-grow: 1;">
               <div class="button-row">
-                $$deg{tabIndex: 411} $$rad{tabIndex: 412} $$fact{tabIndex: 413}
+                $$deg{tabIndex: 411,  arrowNav: ['.f1', '[sine]',    '[store in memory]',   '[switch to radians]']}
+                $$rad{tabIndex: 412,  arrowNav: ['.f1', '[arcsine]', '[switch to degrees]', '[factorial]']}
+                $$fact{tabIndex: 413, arrowNav: ['.f1', '[modulo]',  '[switch to radians]',  null]}
               </div>
               <div class="button-row">
-                $$sin{tabIndex: 421} $$asin{tabIndex: 422} $$mod{tabIndex: 423}
+                $$sin{tabIndex: 421,  arrowNav: ['[switch to degrees]', '[cosine]',      '[e to the power of n]', '[arcsine]']}
+                $$asin{tabIndex: 422, arrowNav: ['[switch to radians]', '[arccosine]',   '[sine]',                '[modulo]']}
+                $$mod{tabIndex: 423,  arrowNav: ['[factorial]',         '[permutation]', '[arcsine]',              null]}
               </div>
               <div class="button-row">
-                $$cos{tabIndex: 431} $$acos{tabIndex: 432} $$p{tabIndex: 433}
+                $$cos{tabIndex: 431,  arrowNav: ['[sine]',    '[tangent]',     '[divide]',    '[arccosine]']}
+                $$acos{tabIndex: 432, arrowNav: ['[arcsine]', '[arctangent]',  '[cosine]',    '[permutation]']}
+                $$p{tabIndex: 433,    arrowNav: ['[modulo]',  '[combination]', '[arccosine]',  null]}
               </div>
               <div class="button-row">
-                $$tan{tabIndex: 441} $$atan{tabIndex: 442} $$c{tabIndex: 443}
+                $$tan{tabIndex: 441,   arrowNav: ['[cosine]',      null, '[π]',          '[arctangent]']}
+                $$atan{tabIndex: 442,  arrowNav: ['[arccosine]',   null, '[tangent]',    '[combination]']}
+                $$c{tabIndex: 443,     arrowNav: ['[permutation]', null, '[arctangent]',  null]}
               </div>
             </div>
           </div>
