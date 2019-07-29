@@ -126,6 +126,7 @@ CLASS({
       defaultValueFn: function() { return this.action.speechLabel; }
     },
     'tabIndex',
+    'arrowNav',
     'role',
     {
       name: 'state_',
@@ -209,7 +210,7 @@ CLASS({
 
       // Pressing space when has focus causes a synthetic press
       this.$.addEventListener('keypress', function(e) {
-        if ( e.charCode == 32 && ! ( e.altKey || e.ctrlKey || e.shiftKey ) ) {
+        if ( ( e.charCode == 32 || e.charCode == '13')&& ! ( e.altKey || e.ctrlKey || e.shiftKey ) ) {
           e.preventDefault();
           e.stopPropagation();
           this.tapClick();
