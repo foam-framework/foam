@@ -160,7 +160,7 @@ CLASS({
       var tabIndex  = this.tabIndex ? ' tabindex="' + this.tabIndex + '"' : '';
       var arrowNav  = ''
 
-      const toSelector = (s) => (s && s[0] === '[') ? s.replace(/\[([^\[\]]+)\]/,'[aria-label=\'$1\']') : s
+      const toSelector = (s) => (s && s[0] === '[') ? s.replace(/\[([^\[\]]+)\]/,'[aria-label=\'$1\'][aria-role=\'button\']') : s
 
       if(this.arrowNav) {
         arrowNav += ' data-arrow-up="' + toSelector(this.arrowNav[0]) + '"';
