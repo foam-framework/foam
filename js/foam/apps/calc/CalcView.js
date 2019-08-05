@@ -385,15 +385,15 @@ CLASS({
     }
 
     .f1 {
-      margin-left: calc(-7pt - 2px);
+      margin-left: calc(-13pt - 2px);
     }
 
     .f1:focus {
-      margin-left: calc(-7pt - 4px);
+      margin-left: calc(-13pt - 4px);
     }
 
     .inner-calc-display:focus .f1 {
-      margin-left: calc(-7pt - 4px);
+      margin-left: calc(-13pt - 4px);
     }
 
   */},
