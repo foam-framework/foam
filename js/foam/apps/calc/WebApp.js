@@ -68,6 +68,6 @@ __DATA({
     '../js/foam/ui/Window'
   ],
   extraFiles: [
-    '../apps/acalc/Calc'
+
   ]
 });

@@ -2,3 +2,4 @@ server.bat
 *~
 .DS_Store
 *.swp
+**/build-web
