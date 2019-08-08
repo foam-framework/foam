@@ -59,6 +59,10 @@ CLASS({
       .f1.animated {
         transition: left .2s;
       }
+      .f1:focus {
+        border: 2px solid rgba(52, 153, 128, 0.65);
+        border-radius: 10px;
+      }
       .f2 {
         display: inline;
         float: right;

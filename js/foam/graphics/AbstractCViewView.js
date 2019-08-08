@@ -63,6 +63,7 @@ CLASS({
     'speechLabel',
     'role',
     'tabIndex',
+    'arrowNav',
     {
       type: 'Int',
       name:  'width',
@@ -157,9 +158,18 @@ CLASS({
       var className = this.className ? ' class="' + this.className + '"' : '';
       var title     = this.speechLabel ? ' aria-role="button" aria-label="' + this.speechLabel + '"' : '';
       var tabIndex  = this.tabIndex ? ' tabindex="' + this.tabIndex + '"' : '';
-      var role      = this.role ? ' role="' + this.role + '"' : '';
+      var arrowNav  = ''
 
-      return '<canvas id="' + this.id + '"' + className + title + tabIndex + role + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + '"></canvas>';
+      const toSelector = (s) => (s && s[0] === '[') ? s.replace(/\[([^\[\]]+)\]/,'[aria-label=\'$1\']') : s
+
+      if(this.arrowNav) {
+        arrowNav += ' data-arrow-up="' + toSelector(this.arrowNav[0]) + '"';
+        arrowNav += ' data-arrow-down="' + toSelector(this.arrowNav[1]) + '"';
+        arrowNav += ' data-arrow-left="' + toSelector(this.arrowNav[2]) + '"';
+        arrowNav += ' data-arrow-right="' + toSelector(this.arrowNav[3]) + '"';
+      }
+      var role      = this.role ? ' role="' + this.role + '"' : '';
+      return '<canvas id="' + this.id + '"' + className + title + tabIndex + role + arrowNav + ' width="' + this.canvasWidth() + '" height="' + this.canvasHeight() + '" style="width:' + this.styleWidth() + ';height:' + this.styleHeight() + ';min-width:' + this.styleWidth() + ';min-height:' + this.styleHeight() + '"></canvas>';
     },
 
     initHTML: function() { /* Computes the scaling ratio from the window.devicePixelRatio

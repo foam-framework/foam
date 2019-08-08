@@ -106,6 +106,8 @@ CLASS({
         this.$.addEventListener('mousedown',   this.onMouseDown);
         this.$.addEventListener('mouseup',     this.onMouseUp);
         this.$.addEventListener('mouseleave',  this.onMouseUp);
+        this.$.addEventListener('focus',       this.focus);
+        this.$.addEventListener('blur',        this.blur);
         this.$.addEventListener('touchstart',  this.onMouseDown);
         this.$.addEventListener('touchend',    this.onMouseUp);
         this.$.addEventListener('touchleave',  this.onMouseUp);
@@ -118,13 +120,10 @@ CLASS({
         return t.clientX >= rect.left && t.clientX <= rect.right &&
           t.clientY >= rect.top && t.clientY <= rect.bottom;
       }
-    }
-  ],
-
-  listeners: [
+    },
     {
-      name: 'onMouseDown',
-      code: function(evt) {
+      name: 'paintHalo',
+      code: function(evt, focus) {
         if ( this.state_ !== 'default' || ! this.isEnabled() ) return;
 
         this.state_ = 'pressing';
@@ -171,8 +170,8 @@ CLASS({
       }
     },
     {
-      name: 'onMouseUp',
-      code: function(evt) {
+      name: 'clearHalo',
+      code: function() {
         // This line shouldn't be necessary but we're getting stray
         // onMouseUp events when the cursor moves over the button.
         if ( this.state_ === 'default' ) return;
@@ -191,6 +190,39 @@ CLASS({
               this.color = this.nextColor_;
             }
           }.bind(this))();
+
+        return;
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onMouseDown',
+      code: function(evt) {;
+        this.paintHalo(evt, false);
+      }
+    },
+    {
+      name: 'focus',
+      code: function(evt) {
+        this.isFocused = true;
+        this.paintHalo(evt, true);
+      }
+    },
+    {
+      name: 'onMouseUp',
+      code: function() {
+        // ignore mouse up events if we are focused atm
+        if (this.isFocused) return;
+        this.clearHalo()
+      }
+    },
+    {
+      name: 'blur',
+      code: function() {
+        this.clearHalo()
+        this.isFocused = false;
       }
     }
   ]

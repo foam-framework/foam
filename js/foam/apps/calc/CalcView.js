@@ -86,6 +86,7 @@ CLASS({
 
       this.document.addEventListener('paste', this.onPaste);
       this.document.addEventListener('copy',  this.onCopy);
+      this.document.addEventListener('keyup',  this.onKeyUp);
 
       // This block causes the calc-display to scroll when updated.
       // To remove this feature replace the .inner-calc-display 'transition:' and
@@ -105,6 +106,12 @@ CLASS({
       this.X.window.addEventListener('resize', move);
 
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
+    },
+    addArrowData: function(e, data) {
+      e.setAttribute('data-arrow-up', data[0])
+      e.setAttribute('data-arrow-down', data[1])
+      e.setAttribute('data-arrow-left', data[2])
+      e.setAttribute('data-arrow-right', data[3])
     }
   },
 
@@ -133,7 +140,41 @@ CLASS({
         // Unless the user has done a ctrl-A to "select all", change the selection
         // to just row1.
         if ( evt.target.className !== 'history' )
-	  document.getSelection().selectAllChildren(this.row1FormattedView.$);
+	        document.getSelection().selectAllChildren(this.row1FormattedView.$);
+      }
+    },
+    {
+      name: 'onKeyUp',
+      code: function(evt) {
+        const curr = this.document.activeElement;
+        const f1 = document.querySelector('.f1')
+
+        // [up, down, left, right]
+        this.addArrowData(document.body, [null,'.f1',null,null])
+        this.addArrowData(f1, ['body','[aria-label="7"]',null,null])
+
+        // Since history is dynamic regenerate that part of it
+        const historyNodeList = document.querySelectorAll('.history');
+        const history = Array(historyNodeList.length).fill(0).map((_,i) => historyNodeList[i])
+
+        let prev = {elem: document.body, selector: 'body'};
+
+        history.map((e,i) => {
+          const selector = '.inner-calc-display>span>.history:nth-of-type('+(i+1)+')'
+          prev.elem.setAttribute('data-arrow-down', selector);
+          this.addArrowData(e, [prev.selector,'.f1',null,null]);
+          f1.setAttribute('data-arrow-up', selector);
+          prev = {elem: e, selector}
+        })
+
+        if (evt.code === 'ArrowUp' && curr.dataset.arrowUp !== 'null')
+          document.querySelector(curr.dataset.arrowUp).focus()
+        if (evt.code === 'ArrowDown' && curr.dataset.arrowDown !== 'null')
+          document.querySelector(curr.dataset.arrowDown).focus()
+        if (evt.code === 'ArrowLeft' && curr.dataset.arrowLeft !== 'null')
+          document.querySelector(curr.dataset.arrowLeft).focus()
+        if (evt.code === 'ArrowRight' && curr.dataset.arrowRight !== 'null')
+          document.querySelector(curr.dataset.arrowRight).focus()
       }
     }
   ],
@@ -248,6 +289,15 @@ CLASS({
       background-color: #777;
     }
 
+    .history {
+      padding: 2px;
+    }
+    .history:focus-within {
+      padding: 0px;
+      border: 2px solid rgba(52, 153, 128, 0.65);
+      border-radius: 10px;
+    }
+
     .button-column {
       display: flex;
       flex-direction: column;
@@ -296,10 +346,16 @@ CLASS({
     .alabel {
       font-size: 30px;
     }
-
+    .alabel:focus-within {
+      background: #999;
+    }
     .calc hr {
       border-style: outset;
       opacity: 0.5;
+    }
+    .calc hr:focus {
+      border-style: outset;
+      opacity: 1;
     }
   */},
     {
@@ -310,7 +366,7 @@ CLASS({
         <% X.registerModel(this.CalcButton, 'foam.ui.ActionButton'); %>
         <div id="%%id" class="CalcView">
         <div style="position: relative;z-index: 100;">
-          <div tabindex="1" style="position: absolute;">
+          <div style="position: absolute;">
             <span aria-label="{{{this.data.model_.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{this.data.model_.RAD.label}}}"></span>
             <span aria-label="{{{this.data.model_.DEG.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{this.data.model_.DEG.label}}}"></span>
           </div>
