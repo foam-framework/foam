@@ -94,8 +94,8 @@ CLASS({
         DOM.setClass(this.$.querySelector('.f1'), 'animated', animate);
 
         // update speech label
-        var speechLabel = this.speechLabel ? this.speechLabel : '';
-        this.$.querySelector('.f1').setAttribute('aria-label', speechLabel + " " + newValue)
+        this.$.querySelector('.f1').setAttribute('tabindex', 3);
+        this.$.querySelector('.f1').setAttribute('aria-label', newValue !== undefined ? newValue : 'Blank')
       }
     },
     {
