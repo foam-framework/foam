@@ -223,8 +223,8 @@ CLASS({
       font-size: 22px;
       font-weight: 400;
       opacity: 0;
-      padding-left: 8px;
-      padding-right: 10px;
+      margin-left: 8px;
+      margin-right: 10px;
       transition: opacity 0.8s;
     }
 
@@ -275,18 +275,18 @@ CLASS({
       justify-content: center;
       display: flex;
       align-items: center;
-      background-color: #4b4b4b;
+      background-color: #333333;
     }
 
     .rhs-ops {
       border-left-width: 1px;
       border-left-style: solid;
       border-left-color: rgb(68, 68, 68);
-      background: #777;
+      background: #4a4a4a;
     }
 
     .rhs-ops .button {
-      background-color: #777;
+      background-color: #4a4a4a;
     }
 
     .history {
@@ -320,20 +320,20 @@ CLASS({
 
     .secondaryButtons {
       padding-left: 30px;
-      background: rgb(52, 153, 128);
+      background: #00796b;
     }
 
     .secondaryButtons .button {
-      background: rgb(52, 153, 128);
+      background: #00796b;
     }
 
     .tertiaryButtons {
       padding-left: 35px;
-      background: rgb(29, 233, 182);
+      background: #1DE9B6;
     }
 
     .tertiaryButtons .button {
-      background: rgb(29, 233, 182);
+      background: #1DE9B6;
     }
 
     .keypad {
@@ -343,6 +343,24 @@ CLASS({
       z-index: 5;
     }
 
+    .calculator-display {
+      width: calc(100% - 4px);
+      height: 2.5rem;
+    }
+
+    .calculator-display:focus {
+      border-radius: 10px;
+      border: 2px solid rgba(52, 153, 128, 0.65);
+    }
+    .f1 {
+      margin-left: calc(-13pt - 2px);
+    }
+    .f1:focus {
+      margin-left: calc(-13pt - 4px);
+    }
+    .inner-calc-display:focus .f1 {
+      margin-left: calc(-13pt - 4px);
+    }
     .alabel {
       font-size: 30px;
     }
