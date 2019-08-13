@@ -21,7 +21,7 @@ CLASS({
 
   extends: 'foam.ui.SimpleView',
 
-  imports: [ 'window' ],
+  imports: [ 'window' ],<<<<<<< 2019-a11y
 
   properties: [
     {

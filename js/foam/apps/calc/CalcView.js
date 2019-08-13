@@ -108,7 +108,6 @@ CLASS({
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
       this.document.body.setAttribute('aria-label', 'Calculator');
     },
-
     addArrowData: function(e, data) {
       e.setAttribute('data-arrow-up', data[0])
       e.setAttribute('data-arrow-down', data[1])
@@ -393,7 +392,6 @@ CLASS({
       border-style: outset;
       opacity: 1;
     }
-
     .f1 {
       margin-left: calc(-13pt - 2px);
     }
@@ -405,7 +403,6 @@ CLASS({
     .inner-calc-display:focus .f1 {
       margin-left: calc(-13pt - 4px);
     }
-
   */},
     {
       name: 'toHTML',
