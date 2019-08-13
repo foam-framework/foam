@@ -84,7 +84,6 @@ CLASS({
       e.id = this.nextID();
       this.$.innerHTML = '';
       this.$.appendChild(e);
-      //setTimeout(Movement.whenIdle(function() { e.remove(); }), 15000);
     },
     toHTML: function() {
       return '<div id="' + this.id + '" style="position:absolute;left:-1000000;" aria-live="polite"></div>'
