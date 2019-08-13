@@ -106,7 +106,7 @@ CLASS({
       this.X.window.addEventListener('resize', move);
 
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
-
+      this.document.body.setAttribute('aria-label', 'Calculator');
     },
 
     addArrowData: function(e, data) {
