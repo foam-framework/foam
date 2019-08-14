@@ -246,9 +246,7 @@ CLASS({
       line-height: 36px;
       margin: 0;
       min-width: 140px;
-      padding: 0 25pt 2pt 25pt;List[i])
-
-        // remove th
+      padding: 0 25pt 2pt 25pt;
       text-align: right;
       -webkit-user-select: text;
       overflow-y: scroll;
@@ -414,15 +412,15 @@ CLASS({
         <!-- <%= this.ZoomView.create() %> -->
         <% X.registerModel(this.CalcButton, 'foam.ui.ActionButton'); %>
         <div id="%%id" class="CalcView">
-        <div style="position: relative;z-index: 100;">
+        <div style="position: relative; z-index: 1;">
           <div
-            style="position: absolute"
+            style="position: absolute; z-index: 1;"
             id="deg-label"
             aria-label="<%= (this.data.degreesMode ? this.data.model_.DEG.label : this.data.model_.RAD.label) %>"
           >
             <span
               aria-label="{{{this.data.model_.RAD.label}}}"
-              style="top: 10;left: 0;position: absolute"
+              style="top: 10;left: 0;position: absolute; z-index: 1;"
               id="<%=
                   this.setClass('active', function() {
                     return ! this.data.degreesMode;
@@ -434,7 +432,7 @@ CLASS({
             </span>
             <span
               aria-label="{{{this.data.model_.DEG.label}}}"
-              style="top: 10;position: absolute"
+              style="top: 10;position: absolute; z-index: 1;"
               id="<%=
                 this.setClass('active', function() {
                   return   this.data.degreesMode;
