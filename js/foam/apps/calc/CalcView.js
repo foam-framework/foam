@@ -107,6 +107,7 @@ CLASS({
 
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
       this.document.body.setAttribute('aria-label', 'Calculator');
+
     },
     addArrowData: function(e, data) {
       e.setAttribute('data-arrow-up', data[0])
@@ -160,7 +161,7 @@ CLASS({
         const history = Array(historyNodeList.length).fill(0).map((_,i) => historyNodeList[i])
 
         // remove the equals speech label from first history elem
-        if (history[0])
+        if (history[0] && history[0].getAttribute('aria-label'))
           history[0].setAttribute('aria-label', history[0].getAttribute('aria-label').replace(/^=/,''))
 
         let prev = {elem: document.body, selector: 'body'};
@@ -229,8 +230,8 @@ CLASS({
       font-size: 22px;
       font-weight: 400;
       opacity: 0;
-      padding-left: 8px;
-      padding-right: 10px;
+      margin-left: 8px;
+      margin-right: 10px;
       transition: opacity 0.8s;
     }
 
@@ -245,7 +246,9 @@ CLASS({
       line-height: 36px;
       margin: 0;
       min-width: 140px;
-      padding: 0 25pt 2pt 25pt;
+      padding: 0 25pt 2pt 25pt;List[i])
+
+        // remove th
       text-align: right;
       -webkit-user-select: text;
       overflow-y: scroll;
@@ -412,9 +415,34 @@ CLASS({
         <% X.registerModel(this.CalcButton, 'foam.ui.ActionButton'); %>
         <div id="%%id" class="CalcView">
         <div style="position: relative;z-index: 100;">
-          <div style="position: absolute;">
-            <span aria-label="{{{this.data.model_.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{this.data.model_.RAD.label}}}"></span>
-            <span aria-label="{{{this.data.model_.DEG.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{this.data.model_.DEG.label}}}"></span>
+          <div
+            style="position: absolute"
+            id="deg-label"
+            aria-label="<%= (this.data.degreesMode ? this.data.model_.DEG.label : this.data.model_.RAD.label) %>"
+          >
+            <span
+              aria-label="{{{this.data.model_.RAD.label}}}"
+              style="top: 10;left: 0;position: absolute"
+              id="<%=
+                  this.setClass('active', function() {
+                    return ! this.data.degreesMode;
+                  })
+                %>"
+              class="rad"
+              title="{{{this.data.model_.RAD.label}}}">
+              {{{this.data.model_.RAD.label}}}
+            </span>
+            <span
+              aria-label="{{{this.data.model_.DEG.label}}}"
+              style="top: 10;position: absolute"
+              id="<%=
+                this.setClass('active', function() {
+                  return   this.data.degreesMode;
+                }) %>"
+              class="deg"
+              title="{{{this.data.model_.DEG.label}}}">
+                {{{this.data.model_.DEG.label}}}
+            </span>
           </div>
         </div>
 

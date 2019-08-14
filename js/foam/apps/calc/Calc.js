@@ -376,13 +376,23 @@ CLASS({
       name: 'deg',
       speechLabel: 'switch to degrees',
       translationHint: 'short form for "degrees" calculator mode',
-      code: function() { this.degreesMode = true; }
+      code: function() {
+        this.degreesMode = true;
+        document
+          .getElementById('deg-label')
+          .setAttribute('aria-label', this.model_.DEG.label);
+      }
     },
     {
       name: 'rad',
       speechLabel: 'switch to radians',
       translationHint: 'short form for "radians" calculator mode',
-      code: function() { this.degreesMode = false; }
+      code: function() {
+        this.degreesMode = false;
+        document
+          .getElementById('deg-label')
+          .setAttribute('aria-label', this.model_.RAD.label);
+      }
     },
     {
       model_: "foam.apps.calc.Unary",
