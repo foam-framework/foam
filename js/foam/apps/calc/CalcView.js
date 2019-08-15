@@ -404,6 +404,16 @@ CLASS({
     .inner-calc-display:focus .f1 {
       margin-left: calc(-13pt - 4px);
     }
+
+    #deg-label {
+      position: absolute;
+      z-index: 1;
+    }
+
+    #deg-label:focus>span{
+      color: rgba(52, 153, 128, 0.65);
+      font-weight: bold;
+    }
   */},
     {
       name: 'toHTML',
@@ -414,8 +424,8 @@ CLASS({
         <div id="%%id" class="CalcView">
         <div style="position: relative; z-index: 1;">
           <div
-            style="position: absolute; z-index: 1;"
             id="deg-label"
+            tabindex="1"
             aria-label="<%= (this.data.degreesMode ? this.data.model_.DEG.label : this.data.model_.RAD.label) %>"
           >
             <span
