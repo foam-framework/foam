@@ -430,7 +430,7 @@ CLASS({
           >
             <span
               aria-label="{{{this.data.model_.RAD.label}}}"
-              style="top: 10;left: 0;position: absolute; z-index: 1;"
+              style="top: 10px;left: 0;position: absolute; z-index: 1;"
               id="<%=
                   this.setClass('active', function() {
                     return ! this.data.degreesMode;
@@ -442,7 +442,7 @@ CLASS({
             </span>
             <span
               aria-label="{{{this.data.model_.DEG.label}}}"
-              style="top: 10;position: absolute; z-index: 1;"
+              style="top: 10px;position: absolute; z-index: 1;"
               id="<%=
                 this.setClass('active', function() {
                   return   this.data.degreesMode;
