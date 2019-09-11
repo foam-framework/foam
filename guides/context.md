@@ -24,9 +24,9 @@ Methods on context -
 
 ## Session Context, Request Context
 
-When someone connects to the system, we create a new session, which has a context which is a subcontext of the system context, with the addition of a key value pair of with the key as 'session' and the value point back to the newly create session.
+When a user connects to the system, a new session is created with a context which is a subcontext of the system context, with the addition of a key value pair of with the key as 'session', and the value a pointer back to the newly created session.
 
-Then you connect to the webAgent, which then creates per request a subcontext of your session context by putting the HTTP Request, Response, printwriter in the context. Then your code runs in the request context.
+Each request to the server goes through the webAgent, which creates per request a subcontext of your session context, adding HTTPRequest, HTTPResponse, and printwriter. Business logic for the request is executed in this request context.
 
 So there is hierarchy here - 
 
@@ -43,4 +43,4 @@ Request context - 1 per request, inherits from session context - created by a We
 
 Context is helpful because it hides the source of dependancies (data). You write code against a single interface, and run it anywhere, and the data will just be in the context, no matter where the code is being called from.
 
-
+The context can be thought of as an object-oriented replacement for global variables, which avoids the tight-coupling which occurs from using globals.
