@@ -38,7 +38,7 @@ CLASS({
                 $$mod{tabIndex: 423,  arrowNav: ['[factorial]',         '[permutation]', '[arcsine]',              null]}
               </div>
               <div class="button-row">
-                $$cos{tabIndex: 431,  arrowNav: ['[sine]',    '[tangent]',     '[divide]',    '[arccosine]']}
+                $$cos{tabIndex: 431,  arrowNav: ['[sine]',    '[tangent]',     '[the enth root of y]',    '[arccosine]']}
                 $$acos{tabIndex: 432, arrowNav: ['[arcsine]', '[arctangent]',  '[cosine]',    '[permutation]']}
                 $$p{tabIndex: 433,    arrowNav: ['[modulo]',  '[combination]', '[arccosine]',  null]}
               </div>

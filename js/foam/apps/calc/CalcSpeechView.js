@@ -82,11 +82,11 @@ CLASS({
       this.lastSaid = msg;
       var e = document.createTextNode(' ' + msg + ' ');
       e.id = this.nextID();
+      this.$.innerHTML = '';
       this.$.appendChild(e);
-      setTimeout(Movement.whenIdle(function() { e.remove(); }), 15000);
     },
     toHTML: function() {
-      return '<output id="' + this.id + '" style="position:absolute;left:-1000000;" aria-live="polite"></output>'
+      return '<div id="' + this.id + '" style="position:absolute;left:-1000000;" aria-live="polite"></div>'
     },
     initHTML: function() {
       this.SUPER();

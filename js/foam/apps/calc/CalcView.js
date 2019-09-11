@@ -106,6 +106,7 @@ CLASS({
       this.X.window.addEventListener('resize', move);
 
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
+      this.document.body.setAttribute('aria-label', 'Calculator');
     },
     addArrowData: function(e, data) {
       e.setAttribute('data-arrow-up', data[0])
@@ -154,8 +155,13 @@ CLASS({
         this.addArrowData(f1, ['body','[aria-label="7"]',null,null])
 
         // Since history is dynamic regenerate that part of it
+        // also fix the aria label of the first
         const historyNodeList = document.querySelectorAll('.history');
         const history = Array(historyNodeList.length).fill(0).map((_,i) => historyNodeList[i])
+
+        // remove the equals speech label from first history elem
+        if (history[0])
+          history[0].setAttribute('aria-label', history[0].getAttribute('aria-label').replace(/^=/,''))
 
         let prev = {elem: document.body, selector: 'body'};
 
@@ -291,9 +297,13 @@ CLASS({
 
     .history {
       padding: 2px;
+      padding-right: 7pt;
+      width: calc(100% - 7pt - 2px);
     }
+
     .history:focus-within {
       padding: 0px;
+      padding-right: calc(7pt - 2px);
       border: 2px solid rgba(52, 153, 128, 0.65);
       border-radius: 10px;
     }
@@ -306,11 +316,17 @@ CLASS({
 
     .inner-calc-display {
       position: absolute;
-      right: 20pt;
+      right: 15pt;
       top: 100%;
-      width: 100%;
-      padding-left: 50px;
-      padding-bottom: 11px;
+      width: calc(100% - 17pt);
+      margin: 1pt 0pt;
+      padding: 11px 2px;
+    }
+
+    .inner-calc-display:focus {
+      border: 2px solid rgba(52, 153, 128, 0.65);
+      border-radius: 10px;
+      padding: 9px 0px;
     }
 
     .calc-display {
@@ -341,21 +357,51 @@ CLASS({
       flex-shrink: 0;
       margin-bottom: -4px;
       z-index: 5;
+      padding-top: 4px;
+    }
+
+    .keypad:focus {
+      border-top: 4px solid rgba(52, 153, 128, 0.45);
+      padding-top: 0px;
+    }
+
+    .calculator-display {
+      width: calc(100% - 4px);
+      height: 2.5rem;
+    }
+
+    .calculator-display:focus {
+      border-radius: 10px;
+      border: 2px solid rgba(52, 153, 128, 0.65);
     }
 
     .alabel {
       font-size: 30px;
     }
+
     .alabel:focus-within {
       background: #999;
     }
+
     .calc hr {
       border-style: outset;
       opacity: 0.5;
     }
+
     .calc hr:focus {
       border-style: outset;
       opacity: 1;
+    }
+    .f1 {
+      margin-left: calc(-13pt - 2px);
+    }
+
+    .f1:focus {
+      margin-left: calc(-13pt - 4px);
+    }
+
+    .inner-calc-display:focus .f1 {
+      margin-left: calc(-13pt - 4px);
     }
   */},
     {
@@ -375,12 +421,14 @@ CLASS({
         <div class="edge"></div>
         <div class="calc">
           <div class="calc-display">
-            <div class="inner-calc-display">
+            <div class="inner-calc-display" aria-label="Calculator History" tabindex="1">
               $$history{ rowView: 'foam.apps.calc.HistoryCitationView' }
-              <div>$$row1Formatted{mode: 'read-only', tabIndex: 3, escapeHTML: false}</div>
+              <div class="calculator-display" aria-label="Calculator Display" tabindex="3">
+                $$row1Formatted{mode: 'read-only', escapeHTML: false}
+              </div>
             </div>
           </div>
-          <div class="keypad">
+          <div class="keypad" aria-label="Keypad" tabindex="3">
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
             data: this.data,

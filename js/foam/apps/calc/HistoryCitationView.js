@@ -15,7 +15,7 @@ CLASS({
   extends: 'foam.ui.View',
   templates: [
     function toHTML() {/*
-      <div class="history" tabindex="2" >{{{this.data.op.label}}}&nbsp;{{this.data.a2}}</div><% if ( this.data.op.label ) { %><hr aria-label="{{foam.apps.calc.Calc.EQUALS.speechLabel}}"><% } %>
+      <div class="history" tabindex="2" <% if ( !this.data.op.label ) { %>aria-label="={{this.data.a2}}"<% } %>>{{{this.data.op.label}}}&nbsp;{{this.data.a2}}</div><% if ( this.data.op.label ) { %><hr><% } %>
     */}
   ]
 });
