@@ -160,7 +160,20 @@ CLASS({
       var tabIndex  = this.tabIndex ? ' tabindex="' + this.tabIndex + '"' : '';
       var arrowNav  = ''
 
-      const toSelector = (s) => (s && s[0] === '[') ? s.replace(/\[([^\[\]]+)\]/,'[aria-label=\'$1\'][aria-role=\'button\']') : s
+      function toSelector(s) {
+        if(s && s[0] === '[') {
+          let msg = null;
+          if(window.chrome && window.chrome.i18n) {
+            msg = window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_'+s.substr(1,s.length-2));
+          }
+
+          if (msg) s ='['+msg+']';
+
+          return s.replace(/\[([^\[\]]+)\]/,'[aria-label=\'$1\'][aria-role=\'button\']');
+        } else {
+          return s;
+        }
+      }
 
       if(this.arrowNav) {
         arrowNav += ' data-arrow-up="' + toSelector(this.arrowNav[0]) + '"';

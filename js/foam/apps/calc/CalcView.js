@@ -106,7 +106,7 @@ CLASS({
       this.X.window.addEventListener('resize', move);
 
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
-      this.document.body.setAttribute('aria-label', 'Calculator');
+      this.document.body.setAttribute('aria-label', this.data.model_.CALC_NAME.value);
 
     },
     addArrowData: function(e, data) {
@@ -161,8 +161,11 @@ CLASS({
         const history = Array(historyNodeList.length).fill(0).map((_,i) => historyNodeList[i])
 
         // remove the equals speech label from first history elem
+        // TODO: replace the equals speech symbol rather then the sign
+        const equals = window.chrome.i18n ? window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_equals') : 'equals';
+
         if (history[0] && history[0].getAttribute('aria-label'))
-          history[0].setAttribute('aria-label', history[0].getAttribute('aria-label').replace(/^=/,''))
+          history[0].setAttribute('aria-label', history[0].getAttribute('aria-label').replace(new RegExp('^'+equals),''))
 
         let prev = {elem: document.body, selector: 'body'};
 
@@ -429,26 +432,22 @@ CLASS({
             aria-label="<%= (this.data.degreesMode ? this.data.model_.DEG.label : this.data.model_.RAD.label) %>"
           >
             <span
-              aria-label="{{{this.data.model_.RAD.label}}}"
-              style="top: 10px;left: 0;position: absolute; z-index: 1;"
+              style="top: 15px;left: 0;position: absolute; z-index: 1;"
               id="<%=
                   this.setClass('active', function() {
                     return ! this.data.degreesMode;
                   })
                 %>"
-              class="rad"
-              title="{{{this.data.model_.RAD.label}}}">
+              class="rad">
               {{{this.data.model_.RAD.label}}}
             </span>
             <span
-              aria-label="{{{this.data.model_.DEG.label}}}"
-              style="top: 10px;position: absolute; z-index: 1;"
+              style="top: 15px;position: absolute; z-index: 1;"
               id="<%=
                 this.setClass('active', function() {
                   return   this.data.degreesMode;
                 }) %>"
-              class="deg"
-              title="{{{this.data.model_.DEG.label}}}">
+              class="deg">
                 {{{this.data.model_.DEG.label}}}
             </span>
           </div>
@@ -457,14 +456,14 @@ CLASS({
         <div class="edge"></div>
         <div class="calc">
           <div class="calc-display">
-            <div class="inner-calc-display" aria-label="Calculator History" tabindex="1">
+            <div class="inner-calc-display" role="list" aria-label="{{this.data.model_.CALC_HISTORY.value}}" tabindex="1">
               $$history{ rowView: 'foam.apps.calc.HistoryCitationView' }
-              <div class="calculator-display" aria-label="Calculator Display" tabindex="3">
+              <div class="calculator-display" aria-label="{{this.data.model_.CALC_DISPLAY.value}}" tabindex="3">
                 $$row1Formatted{mode: 'read-only', escapeHTML: false}
               </div>
             </div>
           </div>
-          <div class="keypad" aria-label="Keypad" tabindex="3">
+          <div class="keypad" aria-label="{{this.data.model_.CALC_KEYPAD.value}}" tabindex="3">
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
             data: this.data,

@@ -23,7 +23,7 @@ CLASS({
           <div class="button-row">
             $$7{tabIndex: 101, arrowNav: ['.f1', '[4]',   null, '[8]']}
             $$8{tabIndex: 102, arrowNav: ['.f1', '[5]',  '[7]', '[9]']}
-            $$9{tabIndex: 103, arrowNav: ['.f1', '[6]',  '[8]', '[all clear]']}
+            $$9{tabIndex: 103, arrowNav: ['.f1', '[6]',  '[8]', '[ac]' ]}
           </div>
           <div class="button-row">
             $$4{tabIndex: 104, arrowNav: ['[7]', '[1]',   null, '[5]']}
@@ -38,7 +38,7 @@ CLASS({
           <div class="button-row">
             $$point{tabIndex: 111,  arrowNav: ['[1]', null,  null,     '[0]']}
             $$0{tabIndex: 111,      arrowNav: ['[2]', null, '[point]', '[equals]']}
-            $$equals{tabIndex: 112, arrowNav: ['[3]', null, '[0]',     '[multiply]']}
+            $$equals{tabIndex: 112, arrowNav: ['[3]', null, '[0]',     '[mult]']}
           </div>
         </div>
         <%
@@ -51,10 +51,10 @@ CLASS({
         %>
         <div class="button-column rhs-ops" style="flex-grow: 1;-webkit-flex-grow: 1;padding-top: 7px; padding-bottom: 10px;">
           $$ac{tabIndex: 201,    arrowNav: ['.f1',         '[plus]',     '[9]',      '[backspace]'], font: '300 24px Roboto'}
-          $$plus{tabIndex: 202,  arrowNav: ['[all clear]', '[minus]',    '[6]',      '[e]']}
-          $$minus{tabIndex: 203, arrowNav: ['[plus]',      '[divide]',   '[3]',      '[inverse]']}
-          $$div{tabIndex: 204,   arrowNav: ['[minus]',     '[multiply]', '[3]',      '[inverse]']}
-          $$mult{tabIndex: 205,  arrowNav: ['[divide]',     null,        '[equals]', '[negate]']}
+          $$plus{tabIndex: 202,  arrowNav: ['[ac]', '[minus]',    '[6]',      '[e]']}
+          $$minus{tabIndex: 203, arrowNav: ['[plus]',      '[div]',   '[3]',      '[inv]']}
+          $$div{tabIndex: 204,   arrowNav: ['[minus]',     '[mult]', '[3]',      '[inv]']}
+          $$mult{tabIndex: 205,  arrowNav: ['[div]',     null,        '[equals]', '[sign]']}
         </div>
       </div>
     */}
