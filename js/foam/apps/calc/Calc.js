@@ -190,7 +190,7 @@ CLASS({
       name: "mult",
       label: "×",
       speechLabel: "multiply",
-      keyboardShortcuts: [ "*" ],
+      keyboardShortcuts: [ "*", "x" ],
       f: function (a1, a2) { return a1 * a2; }
     },
     {

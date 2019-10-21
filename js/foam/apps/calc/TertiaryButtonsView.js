@@ -20,32 +20,32 @@ CLASS({
           this.X.registerModel(this.CalcButton.xbind({
             width:      61,
             height:     61,
-            color:      'rgb(80, 80, 80)',
-            background: 'rgb(29, 233, 182)',
+            color:      '#444',
+            background: '#1DE9B6',
             font:       '300 18px Roboto'
           }), 'foam.ui.ActionButton');
           %>
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1;-webkit-flex-grow: 1;">
               <div class="button-row">
-                $$deg{tabIndex: 411,  arrowNav: ['.f1', '[sin]',  '[store]', '[rad]']}
-                $$rad{tabIndex: 412,  arrowNav: ['.f1', '[asin]', '[deg]',   '[fact]']}
-                $$fact{tabIndex: 413, arrowNav: ['.f1', '[mod]',  '[rad]',    null]}
+                $$deg{tabIndex: 411,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['.f1', '[sin]',  '[store]', '[rad]']}
+                $$rad{tabIndex: 412,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['.f1', '[asin]', '[deg]',   '[fact]']}
+                $$fact{tabIndex: 413, haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['.f1', '[mod]',  '[rad]',    null]}
               </div>
               <div class="button-row">
-                $$sin{tabIndex: 421,  arrowNav: ['[deg]',  '[cos]',   '[exp]',  '[asin]']}
-                $$asin{tabIndex: 422, arrowNav: ['[rad]',  '[acos]',  '[sin]',  '[mod]']}
-                $$mod{tabIndex: 423,  arrowNav: ['[fact]', '[p]',     '[asin]',  null]}
+                $$sin{tabIndex: 421,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[deg]',  '[cos]',   '[exp]',  '[asin]']}
+                $$asin{tabIndex: 422, haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[rad]',  '[acos]',  '[sin]',  '[mod]']}
+                $$mod{tabIndex: 423,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[fact]', '[p]',     '[asin]',  null]}
               </div>
               <div class="button-row">
-                $$cos{tabIndex: 431,  arrowNav: ['[sin]',    '[tan]',   '[root]',      '[acos]']}
-                $$acos{tabIndex: 432, arrowNav: ['[asin]',   '[atan]',  '[cos]',       '[p]']}
-                $$p{tabIndex: 433,    arrowNav: ['[mod]',    '[c]',     '[acos]',  null]}
+                $$cos{tabIndex: 431,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[sin]',    '[tan]',   '[root]',      '[acos]']}
+                $$acos{tabIndex: 432, haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[asin]',   '[atan]',  '[cos]',       '[p]']}
+                $$p{tabIndex: 433,    haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[mod]',    '[c]',     '[acos]',  null]}
               </div>
               <div class="button-row">
-                $$tan{tabIndex: 441,   arrowNav: ['[cos]',  null, '[pi]',     '[atan]']}
-                $$atan{tabIndex: 442,  arrowNav: ['[acos]', null, '[tan]',    '[c]']}
-                $$c{tabIndex: 443,     arrowNav: ['[p]',    null, '[atan]',   null]}
+                $$tan{tabIndex: 441,   haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[cos]',  null, '[pi]',     '[atan]']}
+                $$atan{tabIndex: 442,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[acos]', null, '[tan]',    '[c]']}
+                $$c{tabIndex: 443,     haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[p]',    null, '[atan]',   null]}
               </div>
             </div>
           </div>

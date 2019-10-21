@@ -285,18 +285,18 @@ CLASS({
       justify-content: center;
       display: flex;
       align-items: center;
-      background-color: #4b4b4b;
+      background-color: #333333;
     }
 
     .rhs-ops {
       border-left-width: 1px;
       border-left-style: solid;
       border-left-color: rgb(68, 68, 68);
-      background: #777;
+      background: #4a4a4a;
     }
 
     .rhs-ops .button {
-      background-color: #777;
+      background-color: #4a4a4a;
     }
 
     .history {
@@ -340,20 +340,20 @@ CLASS({
 
     .secondaryButtons {
       padding-left: 30px;
-      background: rgb(52, 153, 128);
+      background: #00796b;
     }
 
     .secondaryButtons .button {
-      background: rgb(52, 153, 128);
+      background: #00796b;
     }
 
     .tertiaryButtons {
       padding-left: 35px;
-      background: rgb(29, 233, 182);
+      background: #1DE9B6;
     }
 
     .tertiaryButtons .button {
-      background: rgb(29, 233, 182);
+      background: #1DE9B6;
     }
 
     .keypad {
