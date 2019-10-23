@@ -1,1 +1,307 @@
-{"NumberFormatter_Message_NaN": {"message": "ليست رقمًا", "description": "NumberFormatter description of a value that isn't a number"}, "Calc_Message_CalcName": {"message": "الآلة الحاسبة", "description": "Calculator name of application for performing simple calculations"}, "Calc_ActionLabel_div": {"message": "÷", "description": "Calculator short form for mathematical function: \"divide\" (text label)"}, "Calc_ActionSpeechLabel_div": {"message": "قسمة", "description": "Calculator short form for mathematical function: \"divide\" (speech label)"}, "Calc_ActionLabel_mult": {"message": "×", "description": "Calculator short form for mathematical function: \"multiply\" (text label)"}, "Calc_ActionSpeechLabel_mult": {"message": "ضرب", "description": "Calculator short form for mathematical function: \"multiply\" (speech label)"}, "Calc_ActionLabel_plus": {"message": "+", "description": "Calculator short form for mathematical function: \"plus\" (text label)"}, "Calc_ActionSpeechLabel_plus": {"message": "جَمْع", "description": "Calculator short form for mathematical function: \"plus\" (speech label)"}, "Calc_ActionLabel_minus": {"message": "–", "description": "Calculator short form for mathematical function: \"minus\" (text label)"}, "Calc_ActionSpeechLabel_minus": {"message": "طرح", "description": "Calculator short form for mathematical function: \"minus\" (speech label)"}, "Calc_ActionLabel_ac": {"message": "مسح الكل", "description": "Calculator all clear (calculator button label) (text label)"}, "Calc_ActionSpeechLabel_ac": {"message": "مسح الكل", "description": "Calculator all clear (calculator button label) (speech label)"}, "Calc_ActionLabel_sign": {"message": "‎+‎/-‎", "description": "Calculator switch positive/negative sign of number (text label)"}, "Calc_ActionSpeechLabel_sign": {"message": "سالب", "description": "Calculator switch positive/negative sign of number (speech label)"}, "Calc_ActionLabel_point": {"message": "نقطة", "description": "Calculator decimal point (text label)"}, "Calc_ActionSpeechLabel_point": {"message": "نقطة", "description": "Calculator decimal point (speech label)"}, "Calc_ActionLabel_equals": {"message": "=", "description": "Calculator compute operation and display result (text label)"}, "Calc_ActionSpeechLabel_equals": {"message": "تساوي", "description": "Calculator compute operation and display result (speech label)"}, "Calc_ActionLabel_backspace": {"message": "⌫", "description": "Calculator delete one input character (text label)"}, "Calc_ActionSpeechLabel_backspace": {"message": "مسافة للخلف", "description": "Calculator delete one input character (speech label)"}, "Calc_ActionLabel_pi": {"message": "π", "description": "Calculator mathematical constant, pi (text label)"}, "Calc_ActionSpeechLabel_pi": {"message": "پاي", "description": "Calculator mathematical constant, pi (speech label)"}, "Calc_ActionLabel_e": {"message": "e", "description": "Calculator mathematical constant, e (text label)"}, "Calc_ActionSpeechLabel_e": {"message": "الثابت الأُسِّي", "description": "Calculator mathematical constant, e (speech label)"}, "Calc_ActionLabel_percent": {"message": "%", "description": "Calculator convert number to percentage (text label)"}, "Calc_ActionSpeechLabel_percent": {"message": "نسبة مئوية", "description": "Calculator convert number to percentage (speech label)"}, "Calc_ActionLabel_inv": {"message": "‎1/x", "description": "Calculator short form for mathematical function: \"inv\" (text label)"}, "Calc_ActionSpeechLabel_inv": {"message": "المعكوس", "description": "Calculator short form for mathematical function: \"inv\" (speech label)"}, "Calc_ActionLabel_sqroot": {"message": "√", "description": "Calculator short form for mathematical function: \"square root\" (text label)"}, "Calc_ActionSpeechLabel_sqroot": {"message": "جذر تربيعي", "description": "Calculator short form for mathematical function: \"square root\" (speech label)"}, "Calc_ActionLabel_square": {"message": "x²", "description": "Calculator short form for mathematical function: \"x squared\" (text label)"}, "Calc_ActionSpeechLabel_square": {"message": "x تربيع", "description": "Calculator short form for mathematical function: \"x squared\" (speech label)"}, "Calc_ActionLabel_ln": {"message": "ln", "description": "Calculator short form for mathematical function: \"natural logarithm\" (text label)"}, "Calc_ActionSpeechLabel_ln": {"message": "لوغاريتم طبيعي", "description": "Calculator short form for mathematical function: \"natural logarithm\" (speech label)"}, "Calc_ActionLabel_exp": {"message": "eⁿ", "description": "Calculator short form for mathematical function: \"exp\" (text label)"}, "Calc_ActionSpeechLabel_exp": {"message": "القيمة e مرفوعة إلى الأس n", "description": "Calculator short form for mathematical function: \"exp\" (speech label)"}, "Calc_ActionLabel_log": {"message": "لوغاريتم", "description": "Calculator short form for mathematical function: \"logarithm\" (text label)"}, "Calc_ActionSpeechLabel_log": {"message": "لوغاريتم الأساس 10", "description": "Calculator short form for mathematical function: \"logarithm\" (speech label)"}, "Calc_ActionLabel_root": {"message": "‎ⁿ √Y", "description": "Calculator binary operator: root (text label)"}, "Calc_ActionSpeechLabel_root": {"message": "قيمة الجذر n للقيمة y", "description": "Calculator binary operator: root (speech label)"}, "Calc_ActionLabel_pow": {"message": "yⁿ", "description": "Calculator binary operator: pow (text label)"}, "Calc_ActionSpeechLabel_pow": {"message": "القيمة y مرفوعة إلى الأس n", "description": "Calculator binary operator: pow (speech label)"}, "Calc_ActionLabel_sin": {"message": "جيب الزاوية", "description": "Calculator short form for mathematical function: \"sine\" (text label)"}, "Calc_ActionSpeechLabel_sin": {"message": "جيب الزاوية", "description": "Calculator short form for mathematical function: \"sine\" (speech label)"}, "Calc_ActionLabel_cos": {"message": "جيب التمام", "description": "Calculator short form for mathematical function: \"cosine\" (text label)"}, "Calc_ActionSpeechLabel_cos": {"message": "جيب التمام", "description": "Calculator short form for mathematical function: \"cosine\" (speech label)"}, "Calc_ActionLabel_tan": {"message": "ظل الزاوية", "description": "Calculator short form for mathematical function: \"tangent\" (text label)"}, "Calc_ActionSpeechLabel_tan": {"message": "ظل الزاوية", "description": "Calculator short form for mathematical function: \"tangent\" (speech label)"}, "Calc_ActionLabel_deg": {"message": "درجة", "description": "Calculator short form for \"degrees\" calculator mode (text label)"}, "Calc_ActionSpeechLabel_deg": {"message": "التبديل إلى درجات", "description": "Calculator short form for \"degrees\" calculator mode (speech label)"}, "Calc_ActionLabel_rad": {"message": "راديان", "description": "Calculator short form for \"radians\" calculator mode (text label)"}, "Calc_ActionSpeechLabel_rad": {"message": "التبديل إلى راديان", "description": "Calculator short form for \"radians\" calculator mode (speech label)"}, "Calc_ActionLabel_asin": {"message": "قوس جيب الزاوية", "description": "Calculator short form for mathematical function: \"inverse-sine\" (text label)"}, "Calc_ActionSpeechLabel_asin": {"message": "قوس جيب الزاوية", "description": "Calculator short form for mathematical function: \"inverse-sine\" (speech label)"}, "Calc_ActionLabel_acos": {"message": "قوس جيب تمام الزاوية", "description": "Calculator short form for mathematical function: \"inverse-cosine\" (text label)"}, "Calc_ActionSpeechLabel_acos": {"message": "قوس جيب تمام الزاوية", "description": "Calculator short form for mathematical function: \"inverse-cosine\" (speech label)"}, "Calc_ActionLabel_atan": {"message": "قوس ظل الزاوية", "description": "Calculator short form for mathematical function: \"inverse-tangent\" (text label)"}, "Calc_ActionSpeechLabel_atan": {"message": "قوس ظل الزاوية", "description": "Calculator short form for mathematical function: \"inverse-tangent\" (speech label)"}, "Calc_ActionLabel_fact": {"message": "‎‎x!‎", "description": "Calculator short form for mathematical function: \"factorial\" (text label)"}, "Calc_ActionSpeechLabel_fact": {"message": "المضروب", "description": "Calculator short form for mathematical function: \"factorial\" (speech label)"}, "Calc_ActionLabel_mod": {"message": "باقي القسمة", "description": "Calculator short form for mathematical function: \"modulo\" (text label)"}, "Calc_ActionSpeechLabel_mod": {"message": "باقي القسمة", "description": "Calculator short form for mathematical function: \"modulo\" (speech label)"}, "Calc_ActionLabel_p": {"message": "nPr", "description": "Calculator short form for mathematical function: \"permutations (n permute r)\" (text label)"}, "Calc_ActionSpeechLabel_p": {"message": "التبديل", "description": "Calculator short form for mathematical function: \"permutations (n permute r)\" (speech label)"}, "Calc_ActionLabel_c": {"message": "nCr", "description": "Calculator short form for mathematical function: \"combinations (n combine r))\" (text label)"}, "Calc_ActionSpeechLabel_c": {"message": "الدمج", "description": "Calculator short form for mathematical function: \"combinations (n combine r))\" (speech label)"}, "Calc_ActionLabel_round": {"message": "تقريب", "description": "Calculator short form for mathematical function: \"round\" (text label)"}, "Calc_ActionSpeechLabel_round": {"message": "تقريب", "description": "Calculator short form for mathematical function: \"round\" (speech label)"}, "Calc_ActionLabel_rand": {"message": "رقم عشوائي", "description": "Calculator generate random number (text label)"}, "Calc_ActionSpeechLabel_rand": {"message": "رقم عشوائي", "description": "Calculator generate random number (speech label)"}, "Calc_ActionLabel_store": {"message": "a=‎", "description": "Calculator short form for mathematical function: \"store in memory\" (text label)"}, "Calc_ActionSpeechLabel_store": {"message": "تخزين في الذاكرة", "description": "Calculator short form for mathematical function: \"store in memory\" (speech label)"}, "Calc_ActionLabel_fetch": {"message": "a", "description": "Calculator load memorized number (text label)"}, "Calc_ActionSpeechLabel_fetch": {"message": "جلب من الذاكرة", "description": "Calculator load memorized number (speech label)"}, "Calc_Message_CalcHistory": {"message": "سجلّ عمليات الحاسبة"}, "Calc_Message_CalcDisplay": {"message": "شاشة الحاسبة"}, "Calc_Message_CalcKeypad": {"message": "لوح المفاتيح"}}
+{
+  "NumberFormatter_Message_NaN": {
+    "message": "ليست رقمًا",
+    "description": "NumberFormatter description of a value that isn't a number"
+  },
+  "Calc_Message_CalcName": {
+    "message": "الآلة الحاسبة",
+    "description": "Calculator name of application for performing simple calculations"
+  },
+  "Calc_ActionLabel_div": {
+    "message": "÷",
+    "description": "Calculator short form for mathematical function: \"divide\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_div": {
+    "message": "قسمة",
+    "description": "Calculator short form for mathematical function: \"divide\" (speech label)"
+  },
+  "Calc_ActionLabel_mult": {
+    "message": "×",
+    "description": "Calculator short form for mathematical function: \"multiply\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_mult": {
+    "message": "ضرب",
+    "description": "Calculator short form for mathematical function: \"multiply\" (speech label)"
+  },
+  "Calc_ActionLabel_plus": {
+    "message": "+",
+    "description": "Calculator short form for mathematical function: \"plus\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_plus": {
+    "message": "جَمْع",
+    "description": "Calculator short form for mathematical function: \"plus\" (speech label)"
+  },
+  "Calc_ActionLabel_minus": {
+    "message": "–",
+    "description": "Calculator short form for mathematical function: \"minus\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_minus": {
+    "message": "طرح",
+    "description": "Calculator short form for mathematical function: \"minus\" (speech label)"
+  },
+  "Calc_ActionLabel_ac": {
+    "message": "مسح الكل",
+    "description": "Calculator all clear (calculator button label) (text label)"
+  },
+  "Calc_ActionSpeechLabel_ac": {
+    "message": "مسح الكل",
+    "description": "Calculator all clear (calculator button label) (speech label)"
+  },
+  "Calc_ActionLabel_sign": {
+    "message": "‎+‎/-‎",
+    "description": "Calculator switch positive/negative sign of number (text label)"
+  },
+  "Calc_ActionSpeechLabel_sign": {
+    "message": "سالب",
+    "description": "Calculator switch positive/negative sign of number (speech label)"
+  },
+  "Calc_ActionLabel_point": {
+    "message": "نقطة",
+    "description": "Calculator decimal point (text label)"
+  },
+  "Calc_ActionSpeechLabel_point": {
+    "message": "نقطة",
+    "description": "Calculator decimal point (speech label)"
+  },
+  "Calc_ActionLabel_equals": {
+    "message": "=",
+    "description": "Calculator compute operation and display result (text label)"
+  },
+  "Calc_ActionSpeechLabel_equals": {
+    "message": "تساوي",
+    "description": "Calculator compute operation and display result (speech label)"
+  },
+  "Calc_ActionLabel_backspace": {
+    "message": "⌫",
+    "description": "Calculator delete one input character (text label)"
+  },
+  "Calc_ActionSpeechLabel_backspace": {
+    "message": "مسافة للخلف",
+    "description": "Calculator delete one input character (speech label)"
+  },
+  "Calc_ActionLabel_pi": {
+    "message": "π",
+    "description": "Calculator mathematical constant, pi (text label)"
+  },
+  "Calc_ActionSpeechLabel_pi": {
+    "message": "پاي",
+    "description": "Calculator mathematical constant, pi (speech label)"
+  },
+  "Calc_ActionLabel_e": {
+    "message": "e",
+    "description": "Calculator mathematical constant, e (text label)"
+  },
+  "Calc_ActionSpeechLabel_e": {
+    "message": "الثابت الأُسِّي",
+    "description": "Calculator mathematical constant, e (speech label)"
+  },
+  "Calc_ActionLabel_percent": {
+    "message": "%",
+    "description": "Calculator convert number to percentage (text label)"
+  },
+  "Calc_ActionSpeechLabel_percent": {
+    "message": "نسبة مئوية",
+    "description": "Calculator convert number to percentage (speech label)"
+  },
+  "Calc_ActionLabel_inv": {
+    "message": "‎1/x",
+    "description": "Calculator short form for mathematical function: \"inv\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_inv": {
+    "message": "المعكوس",
+    "description": "Calculator short form for mathematical function: \"inv\" (speech label)"
+  },
+  "Calc_ActionLabel_sqroot": {
+    "message": "√",
+    "description": "Calculator short form for mathematical function: \"square root\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_sqroot": {
+    "message": "جذر تربيعي",
+    "description": "Calculator short form for mathematical function: \"square root\" (speech label)"
+  },
+  "Calc_ActionLabel_square": {
+    "message": "x²",
+    "description": "Calculator short form for mathematical function: \"x squared\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_square": {
+    "message": "x تربيع",
+    "description": "Calculator short form for mathematical function: \"x squared\" (speech label)"
+  },
+  "Calc_ActionLabel_ln": {
+    "message": "ln",
+    "description": "Calculator short form for mathematical function: \"natural logarithm\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_ln": {
+    "message": "لوغاريتم طبيعي",
+    "description": "Calculator short form for mathematical function: \"natural logarithm\" (speech label)"
+  },
+  "Calc_ActionLabel_exp": {
+    "message": "eⁿ",
+    "description": "Calculator short form for mathematical function: \"exp\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_exp": {
+    "message": "القيمة e مرفوعة إلى الأس n",
+    "description": "Calculator short form for mathematical function: \"exp\" (speech label)"
+  },
+  "Calc_ActionLabel_log": {
+    "message": "لوغاريتم",
+    "description": "Calculator short form for mathematical function: \"logarithm\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_log": {
+    "message": "لوغاريتم الأساس 10",
+    "description": "Calculator short form for mathematical function: \"logarithm\" (speech label)"
+  },
+  "Calc_ActionLabel_root": {
+    "message": "‎ⁿ √Y",
+    "description": "Calculator binary operator: root (text label)"
+  },
+  "Calc_ActionSpeechLabel_root": {
+    "message": "قيمة الجذر n للقيمة y",
+    "description": "Calculator binary operator: root (speech label)"
+  },
+  "Calc_ActionLabel_pow": {
+    "message": "yⁿ",
+    "description": "Calculator binary operator: pow (text label)"
+  },
+  "Calc_ActionSpeechLabel_pow": {
+    "message": "القيمة y مرفوعة إلى الأس n",
+    "description": "Calculator binary operator: pow (speech label)"
+  },
+  "Calc_ActionLabel_sin": {
+    "message": "جيب الزاوية",
+    "description": "Calculator short form for mathematical function: \"sine\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_sin": {
+    "message": "جيب الزاوية",
+    "description": "Calculator short form for mathematical function: \"sine\" (speech label)"
+  },
+  "Calc_ActionLabel_cos": {
+    "message": "جيب التمام",
+    "description": "Calculator short form for mathematical function: \"cosine\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_cos": {
+    "message": "جيب التمام",
+    "description": "Calculator short form for mathematical function: \"cosine\" (speech label)"
+  },
+  "Calc_ActionLabel_tan": {
+    "message": "ظل الزاوية",
+    "description": "Calculator short form for mathematical function: \"tangent\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_tan": {
+    "message": "ظل الزاوية",
+    "description": "Calculator short form for mathematical function: \"tangent\" (speech label)"
+  },
+  "Calc_ActionLabel_deg": {
+    "message": "درجة",
+    "description": "Calculator short form for \"degrees\" calculator mode (text label)"
+  },
+  "Calc_ActionSpeechLabel_deg": {
+    "message": "التبديل إلى درجات",
+    "description": "Calculator short form for \"degrees\" calculator mode (speech label)"
+  },
+  "Calc_ActionLabel_rad": {
+    "message": "راديان",
+    "description": "Calculator short form for \"radians\" calculator mode (text label)"
+  },
+  "Calc_ActionSpeechLabel_rad": {
+    "message": "التبديل إلى راديان",
+    "description": "Calculator short form for \"radians\" calculator mode (speech label)"
+  },
+  "Calc_ActionLabel_asin": {
+    "message": "قوس جيب الزاوية",
+    "description": "Calculator short form for mathematical function: \"inverse-sine\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_asin": {
+    "message": "قوس جيب الزاوية",
+    "description": "Calculator short form for mathematical function: \"inverse-sine\" (speech label)"
+  },
+  "Calc_ActionLabel_acos": {
+    "message": "قوس جيب تمام الزاوية",
+    "description": "Calculator short form for mathematical function: \"inverse-cosine\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_acos": {
+    "message": "قوس جيب تمام الزاوية",
+    "description": "Calculator short form for mathematical function: \"inverse-cosine\" (speech label)"
+  },
+  "Calc_ActionLabel_atan": {
+    "message": "قوس ظل الزاوية",
+    "description": "Calculator short form for mathematical function: \"inverse-tangent\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_atan": {
+    "message": "قوس ظل الزاوية",
+    "description": "Calculator short form for mathematical function: \"inverse-tangent\" (speech label)"
+  },
+  "Calc_ActionLabel_fact": {
+    "message": "‎‎x!‎",
+    "description": "Calculator short form for mathematical function: \"factorial\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_fact": {
+    "message": "المضروب",
+    "description": "Calculator short form for mathematical function: \"factorial\" (speech label)"
+  },
+  "Calc_ActionLabel_mod": {
+    "message": "باقي القسمة",
+    "description": "Calculator short form for mathematical function: \"modulo\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_mod": {
+    "message": "باقي القسمة",
+    "description": "Calculator short form for mathematical function: \"modulo\" (speech label)"
+  },
+  "Calc_ActionLabel_p": {
+    "message": "nPr",
+    "description": "Calculator short form for mathematical function: \"permutations (n permute r)\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_p": {
+    "message": "التبديل",
+    "description": "Calculator short form for mathematical function: \"permutations (n permute r)\" (speech label)"
+  },
+  "Calc_ActionLabel_c": {
+    "message": "nCr",
+    "description": "Calculator short form for mathematical function: \"combinations (n combine r))\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_c": {
+    "message": "الدمج",
+    "description": "Calculator short form for mathematical function: \"combinations (n combine r))\" (speech label)"
+  },
+  "Calc_ActionLabel_round": {
+    "message": "تقريب",
+    "description": "Calculator short form for mathematical function: \"round\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_round": {
+    "message": "تقريب",
+    "description": "Calculator short form for mathematical function: \"round\" (speech label)"
+  },
+  "Calc_ActionLabel_rand": {
+    "message": "رقم عشوائي",
+    "description": "Calculator generate random number (text label)"
+  },
+  "Calc_ActionSpeechLabel_rand": {
+    "message": "رقم عشوائي",
+    "description": "Calculator generate random number (speech label)"
+  },
+  "Calc_ActionLabel_store": {
+    "message": "a=‎",
+    "description": "Calculator short form for mathematical function: \"store in memory\" (text label)"
+  },
+  "Calc_ActionSpeechLabel_store": {
+    "message": "تخزين في الذاكرة",
+    "description": "Calculator short form for mathematical function: \"store in memory\" (speech label)"
+  },
+  "Calc_ActionLabel_fetch": {
+    "message": "a",
+    "description": "Calculator load memorized number (text label)"
+  },
+  "Calc_ActionSpeechLabel_fetch": {
+    "message": "جلب من الذاكرة",
+    "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "سجلّ عمليات الحاسبة"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "شاشة الحاسبة"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "لوح المفاتيح"
+  }
+}
