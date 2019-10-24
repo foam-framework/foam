@@ -45,6 +45,10 @@ CLASS({
   },
 
   messages: [
+    /*
+     * Messages used to set aria labels to provide chromevox with more context,
+     * these are auto translated.
+     */
     {
       name: 'CalcName',
       value: 'Calculator',
@@ -393,6 +397,7 @@ CLASS({
       translationHint: 'short form for "degrees" calculator mode',
       code: function() {
         this.degreesMode = true;
+        // update aria label to match the text inside
         document
           .getElementById('deg-label')
           .setAttribute('aria-label', this.model_.DEG.label);
@@ -404,6 +409,7 @@ CLASS({
       translationHint: 'short form for "radians" calculator mode',
       code: function() {
         this.degreesMode = false;
+        // update aria label to match the text inside
         document
           .getElementById('deg-label')
           .setAttribute('aria-label', this.model_.RAD.label);

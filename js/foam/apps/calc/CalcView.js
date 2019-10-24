@@ -160,12 +160,31 @@ CLASS({
         const historyNodeList = document.querySelectorAll('.history');
         const history = Array(historyNodeList.length).fill(0).map((_,i) => historyNodeList[i])
 
-        // remove the equals speech label from first history elem
-        // TODO: replace the equals speech symbol rather then the sign
-        const equals = window.chrome.i18n ? window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_equals') : 'equals';
+        // The way the history is set up means that every element in the history
+        // has to be rendered the same way, as such every other number element
+        // has the aria label "equals <num>". This means as you are tabbing
+        // through something such as
+        //
+        //  A
+        //  + B
+        // --------
+        //  C
+        //
+        // The screen reader helpfully announces "A + B equals C" as "C" has
+        // the "equals C" aria label. Sadly we don't want this label on A, only
+        // on C and any subsequent numbers. This bit of JS removes that label
+        // from the first element in the history.
 
-        if (history[0] && history[0].getAttribute('aria-label'))
-          history[0].setAttribute('aria-label', history[0].getAttribute('aria-label').replace(new RegExp('^'+equals),''))
+        const equalsMessage = window.chrome.i18n &&
+          window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_equals')
+          || 'equals';
+
+        if (history[0] && history[0].getAttribute('aria-label')) {
+          let ariaLabel = history[0].getAttribute('aria-label');
+          ariaLabel = ariaLabel.replace(new RegExp('^'+equalsMessage),'');
+          history[0].setAttribute('aria-label', ariaLabel);
+        }
+
 
         let prev = {elem: document.body, selector: 'body'};
 
@@ -285,7 +304,7 @@ CLASS({
       justify-content: center;
       display: flex;
       align-items: center;
-      background-color: #333333;
+      background-color: #333;
     }
 
     .rhs-ops {
@@ -349,11 +368,11 @@ CLASS({
 
     .tertiaryButtons {
       padding-left: 35px;
-      background: #1DE9B6;
+      background: #1de9b6;
     }
 
     .tertiaryButtons .button {
-      background: #1DE9B6;
+      background: #1de9b6;
     }
 
     .keypad {
