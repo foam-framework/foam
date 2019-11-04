@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "отримати з пам’яті",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Історія калькулятора"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Екран калькулятора"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Клавіатура"
   }
 }

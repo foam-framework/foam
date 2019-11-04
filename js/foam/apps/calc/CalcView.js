@@ -106,7 +106,8 @@ CLASS({
       this.X.window.addEventListener('resize', move);
 
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
-      this.document.body.setAttribute('aria-label', 'Calculator');
+      this.document.body.setAttribute('aria-label', this.data.model_.CALC_NAME.value);
+
     },
     addArrowData: function(e, data) {
       e.setAttribute('data-arrow-up', data[0])
@@ -159,9 +160,31 @@ CLASS({
         const historyNodeList = document.querySelectorAll('.history');
         const history = Array(historyNodeList.length).fill(0).map((_,i) => historyNodeList[i])
 
-        // remove the equals speech label from first history elem
-        if (history[0])
-          history[0].setAttribute('aria-label', history[0].getAttribute('aria-label').replace(/^=/,''))
+        // The way the history is set up means that every element in the history
+        // has to be rendered the same way, as such every other number element
+        // has the aria label "equals <num>". This means as you are tabbing
+        // through something such as
+        //
+        //  A
+        //  + B
+        // --------
+        //  C
+        //
+        // The screen reader helpfully announces "A + B equals C" as "C" has
+        // the "equals C" aria label. Sadly we don't want this label on A, only
+        // on C and any subsequent numbers. This bit of JS removes that label
+        // from the first element in the history.
+
+        const equalsMessage = window.chrome.i18n &&
+          window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_equals')
+          || 'equals';
+
+        if (history[0] && history[0].getAttribute('aria-label')) {
+          let ariaLabel = history[0].getAttribute('aria-label');
+          ariaLabel = ariaLabel.replace(new RegExp('^'+equalsMessage),'');
+          history[0].setAttribute('aria-label', ariaLabel);
+        }
+
 
         let prev = {elem: document.body, selector: 'body'};
 
@@ -229,8 +252,8 @@ CLASS({
       font-size: 22px;
       font-weight: 400;
       opacity: 0;
-      padding-left: 8px;
-      padding-right: 10px;
+      margin-left: 8px;
+      margin-right: 10px;
       transition: opacity 0.8s;
     }
 
@@ -281,18 +304,18 @@ CLASS({
       justify-content: center;
       display: flex;
       align-items: center;
-      background-color: #4b4b4b;
+      background-color: #333;
     }
 
     .rhs-ops {
       border-left-width: 1px;
       border-left-style: solid;
       border-left-color: rgb(68, 68, 68);
-      background: #777;
+      background: #4a4a4a;
     }
 
     .rhs-ops .button {
-      background-color: #777;
+      background-color: #4a4a4a;
     }
 
     .history {
@@ -336,20 +359,20 @@ CLASS({
 
     .secondaryButtons {
       padding-left: 30px;
-      background: rgb(52, 153, 128);
+      background: #00796b;
     }
 
     .secondaryButtons .button {
-      background: rgb(52, 153, 128);
+      background: #00796b;
     }
 
     .tertiaryButtons {
       padding-left: 35px;
-      background: rgb(29, 233, 182);
+      background: #1de9b6;
     }
 
     .tertiaryButtons .button {
-      background: rgb(29, 233, 182);
+      background: #1de9b6;
     }
 
     .keypad {
@@ -403,6 +426,16 @@ CLASS({
     .inner-calc-display:focus .f1 {
       margin-left: calc(-13pt - 4px);
     }
+
+    #deg-label {
+      position: absolute;
+      z-index: 1;
+    }
+
+    #deg-label:focus>span{
+      color: rgba(52, 153, 128, 0.65);
+      font-weight: bold;
+    }
   */},
     {
       name: 'toHTML',
@@ -411,24 +444,45 @@ CLASS({
         <!-- <%= this.ZoomView.create() %> -->
         <% X.registerModel(this.CalcButton, 'foam.ui.ActionButton'); %>
         <div id="%%id" class="CalcView">
-        <div style="position: relative;z-index: 100;">
-          <div style="position: absolute;">
-            <span aria-label="{{{this.data.model_.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{this.data.model_.RAD.label}}}"></span>
-            <span aria-label="{{{this.data.model_.DEG.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{this.data.model_.DEG.label}}}"></span>
+        <div style="position: relative; z-index: 1;">
+          <div
+            id="deg-label"
+            tabindex="1"
+            aria-label="<%= (this.data.degreesMode ? this.data.model_.DEG.label : this.data.model_.RAD.label) %>"
+          >
+            <span
+              style="top: 15px;left: 0;position: absolute; z-index: 1;"
+              id="<%=
+                  this.setClass('active', function() {
+                    return ! this.data.degreesMode;
+                  })
+                %>"
+              class="rad">
+              {{{this.data.model_.RAD.label}}}
+            </span>
+            <span
+              style="top: 15px;position: absolute; z-index: 1;"
+              id="<%=
+                this.setClass('active', function() {
+                  return   this.data.degreesMode;
+                }) %>"
+              class="deg">
+                {{{this.data.model_.DEG.label}}}
+            </span>
           </div>
         </div>
 
         <div class="edge"></div>
         <div class="calc">
           <div class="calc-display">
-            <div class="inner-calc-display" aria-label="Calculator History" tabindex="1">
+            <div class="inner-calc-display" role="list" aria-label="{{this.data.model_.CALC_HISTORY.value}}" tabindex="1">
               $$history{ rowView: 'foam.apps.calc.HistoryCitationView' }
-              <div class="calculator-display" aria-label="Calculator Display" tabindex="3">
+              <div class="calculator-display" aria-label="{{this.data.model_.CALC_DISPLAY.value}}" tabindex="3">
                 $$row1Formatted{mode: 'read-only', escapeHTML: false}
               </div>
             </div>
           </div>
-          <div class="keypad" aria-label="Keypad" tabindex="3">
+          <div class="keypad" aria-label="{{this.data.model_.CALC_KEYPAD.value}}" tabindex="3">
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
             data: this.data,

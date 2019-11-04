@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "ophalen uit geheugen",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Berekeningsgeschiedenis"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Berekeningsscherm"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Toetsenblok"
   }
 }

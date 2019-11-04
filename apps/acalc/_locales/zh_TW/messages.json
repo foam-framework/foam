@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "從記憶體中擷取",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "計算機使用記錄"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "計算機顯示區"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "數字鍵盤"
   }
 }

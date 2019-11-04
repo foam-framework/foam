@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "ಮೆಮೊರಿಯಿಂದ ಪಡೆಯಿರಿ",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "ಕ್ಯಾಲ್ಕುಲೇಟರ್ ಇತಿಹಾಸ"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "ಕ್ಯಾಲ್ಕುಲೇಟರ್ ಡಿಸ್‌ಪ್ಲೇ"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "ಕೀಪ್ಯಾಡ್‌"
   }
 }

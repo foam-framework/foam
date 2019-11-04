@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "മെമ്മറിയിൽ നിന്ന് ലഭ്യമാക്കുക",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "കാൽക്കുലേറ്റർ ചരിത്രം"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "കാൽക്കുലേറ്റർ ഡിസ്‌പ്ലേ"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "കീപാഡ്"
   }
 }

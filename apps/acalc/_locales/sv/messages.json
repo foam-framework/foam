@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "hämta från minnet",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Kalkylatorhistorik"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Kalkylatorfönster"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Knappsats"
   }
 }

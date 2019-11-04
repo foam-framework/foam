@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "kunin sa memory",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "History ng Calculator"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Display ng Calculator"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Keypad"
   }
 }

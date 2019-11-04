@@ -158,9 +158,40 @@ CLASS({
       var className = this.className ? ' class="' + this.className + '"' : '';
       var title     = this.speechLabel ? ' aria-role="button" aria-label="' + this.speechLabel + '"' : '';
       var tabIndex  = this.tabIndex ? ' tabindex="' + this.tabIndex + '"' : '';
-      var arrowNav  = ''
+      var arrowNav  = '';
 
-      const toSelector = (s) => (s && s[0] === '[') ? s.replace(/\[([^\[\]]+)\]/,'[aria-label=\'$1\'][aria-role=\'button\']') : s
+      // Normally to target a button in the calculator display you would need
+      // a selector such as
+      // [aria-label=translated_btn_label][aria-role='button']
+      // This is cumbersome so as a shortcut we allow users to specify a arrow
+      // nav selector as [btn_id] and translate that to a actual selector with
+      // the logic below.
+      function toSelector(s) {
+        // If the selector starts with [ then it's a button id, otherwise
+        // it's just a standard selector so do nothing.
+        if (s && s[0] === '[') {
+          let msg = null;
+          const btnId = s.substr(1,s.length-2);
+          // Look up the button id in the messages file to extract out it's
+          // matching aria label.
+          if (window.chrome && window.chrome.i18n) {
+            msg = window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_'+btnId);
+          } else {
+            // Silently fail since there is no way to recover from this.
+            console.warning('Could not access i18n tools, arrow nav disabled');
+            return;
+          }
+          // If we are targeting a number it has no translated label.
+          if (/\[\d\]/.exec(s)) {
+            msg = btnId;
+          }
+
+          return `[aria-label='${msg}'][aria-role='button']`;
+
+        } else {
+          return s;
+        }
+      }
 
       if(this.arrowNav) {
         arrowNav += ' data-arrow-up="' + toSelector(this.arrowNav[0]) + '"';

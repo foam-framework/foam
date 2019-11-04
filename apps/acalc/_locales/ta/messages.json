@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "நினைவகத்திலிருந்து எடு",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "கால்குலேட்டர் வரலாறு"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "கால்குலேட்டர் டிஸ்பிளே"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "கீபேட்"
   }
 }

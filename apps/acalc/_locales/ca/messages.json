@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "recupera de la memòria",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Historial de la calculadora"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Pantalla de la calculadora"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Teclat"
   }
 }

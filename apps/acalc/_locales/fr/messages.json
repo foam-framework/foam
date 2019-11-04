@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "retrouver dans la mémoire",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Historique de la calculatrice"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Écran de la calculatrice"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Clavier"
   }
 }

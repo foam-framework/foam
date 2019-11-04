@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "betöltés a memóriából",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Számológép-előzmények"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Számológép-kijelző"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Billentyűzet"
   }
 }

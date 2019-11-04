@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "obter da memória",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Histórico da calculadora"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Ecrã da calculadora"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Teclado"
   }
 }

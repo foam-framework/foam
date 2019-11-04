@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "ανάκτηση από τη μνήμη",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Ιστορικό Αριθμομηχανής"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Οθόνη Αριθμομηχανής"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Πληκτρολόγιο"
   }
 }

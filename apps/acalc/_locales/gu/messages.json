@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "મેમરીમાંથી આનયન કરો",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "કેલ્ક્યુલેટરનો ઇતિહાસ"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "કેલ્ક્યુલેટરનું ડિસ્પ્લે"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "કીપેડ"
   }
 }

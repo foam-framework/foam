@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "ienest no atmiņas",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Kalkulatora vēsture"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Kalkulatora displejs"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Cipartastatūra"
   }
 }

@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "preia din memorie",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Calculator – istoric"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Calculator – afișaj"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Tastatură"
   }
 }

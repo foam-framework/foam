@@ -58,6 +58,10 @@ CLASS({
       defaultValue: 200
     },
     {
+      name: 'focusType',
+      defaultValue: null
+    },
+    {
       name: 'easeOutTime',
       defaultValue: 150
     },
@@ -199,14 +203,18 @@ CLASS({
   listeners: [
     {
       name: 'onMouseDown',
-      code: function(evt) {;
+      code: function(evt) {
+        this.focusType = 'mouse';
         this.paintHalo(evt, false);
+        this.$.focus();
       }
     },
     {
       name: 'focus',
       code: function(evt) {
-        this.isFocused = true;
+        if (this.focusType === 'mouse') return;
+
+        this.focusType = 'keyboard';
         this.paintHalo(evt, true);
       }
     },
@@ -214,15 +222,16 @@ CLASS({
       name: 'onMouseUp',
       code: function() {
         // ignore mouse up events if we are focused atm
-        if (this.isFocused) return;
-        this.clearHalo()
+        if (this.focusType === 'keyboard') return;
+        this.clearHalo();
+        this.focusType = null;
       }
     },
     {
       name: 'blur',
       code: function() {
         this.clearHalo()
-        this.isFocused = false;
+        this.focusType = null;
       }
     }
   ]

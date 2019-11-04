@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "ከማህደረ ትውስታ አምጣ",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "የሒሳብ ማስያ ታሪክ"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "የሒሳብ ማስያ ማሳያ"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "የቁጥር ሰሌዳ"
   }
 }

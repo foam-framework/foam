@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "hent fra minnet",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Kalkulatorlogg"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Kalkulatorskjerm"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Tastatur"
   }
 }
