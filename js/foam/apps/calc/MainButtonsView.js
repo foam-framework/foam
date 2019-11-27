@@ -28,7 +28,7 @@ CLASS({
           <div class="button-row">
             $$4{tabIndex: 104, haloColor: 'rgba(255, 255, 255, 0.3)', arrowNav: ['[7]', '[1]',   null, '[5]']}
             $$5{tabIndex: 105, haloColor: 'rgba(255, 255, 255, 0.3)', arrowNav: ['[8]', '[2]',  '[4]', '[6]']}
-            $$6{tabIndex: 106, haloColor: 'rgba(255, 255, 255, 0.3)', arrowNav: ['[9]', '[3]',  '[5]', '[plus]']}
+            $$6{tabIndex: 106, haloColor: 'rgba(255, 255, 255, 0.3)', arrowNav: ['[9]', '[3]',  '[5]', '[div]']}
          </div>
           <div class="button-row">
             $$1{tabIndex: 107, haloColor: 'rgba(255, 255, 255, 0.3)', arrowNav: ['[4]', '[point]',  null,  '[2]']}
@@ -38,7 +38,7 @@ CLASS({
           <div class="button-row">
             $$point{tabIndex: 111, haloColor: 'rgba(255, 255, 255, 0.3)',  arrowNav: ['[1]', null,  null,     '[0]']}
             $$0{tabIndex: 111, haloColor: 'rgba(255, 255, 255, 0.3)',      arrowNav: ['[2]', null, '[point]', '[equals]']}
-            $$equals{tabIndex: 112, haloColor: 'rgba(255, 255, 255, 0.3)', arrowNav: ['[3]', null, '[0]',     '[mult]']}
+            $$equals{tabIndex: 112, haloColor: 'rgba(255, 255, 255, 0.3)', arrowNav: ['[3]', null, '[0]',     '[plus]']}
           </div>
         </div>
         <%
@@ -50,11 +50,11 @@ CLASS({
         }), 'foam.ui.ActionButton');
         %>
         <div class="button-column rhs-ops" style="flex-grow: 1;-webkit-flex-grow: 1;padding-top: 7px; padding-bottom: 10px;">
-          $$ac{tabIndex: 201,    haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['.f1',         '[plus]',     '[9]',      '[backspace]'], font: '300 24px Roboto'}
-          $$plus{tabIndex: 202,  haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[ac]', '[minus]',    '[6]',      '[e]']}
-          $$minus{tabIndex: 203, haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[plus]',      '[div]',   '[3]',      '[inv]']}
-          $$div{tabIndex: 204,   haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[minus]',     '[mult]', '[3]',      '[inv]']}
-          $$mult{tabIndex: 205,  haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[div]',     null,        '[equals]', '[sign]']}
+          $$ac{tabIndex: 201,    haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['.f1',         '[div]',    '[9]',      '[backspace]'], font: '300 24px Roboto'}
+          $$div{tabIndex: 202,   haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[ac]',        '[mult]',   '[6]',      '[e]']}
+          $$mult{tabIndex: 203,  haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[div]',       '[minus]',  '[3]',      '[inv]']}
+          $$minus{tabIndex: 204, haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[mult]',      '[plus]',   '[3]',      '[inv]']}
+          $$plus{tabIndex: 205,  haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[minus]',      null,      '[equals]', '[sign]']}
         </div>
       </div>
     */}
