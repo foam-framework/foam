@@ -86,6 +86,10 @@ CLASS({
       defaultValue: true
     },
     {
+      name: 'animateGrowth',
+      defaultValue: true
+    },
+    {
       type: 'Function',
       name: 'isEnabled',
       defaultValue: function() { return true; }
@@ -151,11 +155,21 @@ CLASS({
           this.x = evt.offsetX;
           this.y = evt.offsetY;
         }
-        this.r = 2;
+        if ( this.animateGrowth ) {
+          this.r = 2;
+        } else if ( this.recentering ) {
+          this.x = this.parent.width/2;
+          this.y = this.parent.height/2;
+          this.r = Math.min(28, Math.min(this.$.clientWidth, this.parent.height)/2);
+        } else {
+          this.r = Math.max(28, Math.max(this.$.clientWidth, this.parent.height));
+        }
         this.alpha = this.startAlpha;
-        var recentering = this.recentering;
+        const recentering = this.recentering;
         this.X.animate(this.easeInTime, function() {
-          if ( recentering ) {
+          if ( !this.animateGrowth ) {
+            // Do nothing.
+          } else if ( recentering ) {
             this.x = this.parent.width/2;
             this.y = this.parent.height/2;
             this.r = Math.min(28, Math.min(this.$.clientWidth, this.parent.height)/2);
@@ -215,7 +229,27 @@ CLASS({
         if (this.focusType === 'mouse') return;
 
         this.focusType = 'keyboard';
+        // Save all of the halo properties.
+        const save = {
+          animateGrowth: this.animateGrowth,
+          startAlpha: this.startAlpha,
+          easeInTime: this.easeInTime,
+          easeOutTime: this.easeOutTime
+        }
+
+        // Update properties to produce a more pleasent focus effect for
+        // keyboard focus UI.
+        this.animateGrowth = false;
+        this.startAlpha = 0.2;
+        this.easeInTime = 100;
+        this.easeOutTime = 100;
         this.paintHalo(evt, true);
+
+        // Restore.
+        this.animateGrowth = save.animateGrowth;
+        this.startAlpha = save.startAlpha;
+        this.easeInTime = save.easeInTime;
+        this.easeOutTime = save.easeOutTime;
       }
     },
     {
