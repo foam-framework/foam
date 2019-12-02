@@ -157,7 +157,7 @@ CLASS({
     toHTML: function() { /* Creates the canvas element. */
       var className = this.className ? ' class="' + this.className + '"' : '';
       var title     = this.speechLabel ? ' aria-role="button" aria-label="' + this.speechLabel + '"' : '';
-      var tabIndex  = this.tabIndex ? ' tabindex="' + this.tabIndex + '"' : '';
+      const tabIndex  = this.tabIndex ? ' tabindex="' + this.tabIndex + '"' : '';
       var arrowNav  = '';
 
       // Normally to target a button in the calculator display you would need
