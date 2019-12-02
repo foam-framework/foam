@@ -159,7 +159,7 @@ CLASS({
       var title     = this.speechLabel ? ' aria-role="button" aria-label="' + this.speechLabel + '"' : '';
       // TabIndex can be '0' which evaluates to false so we directly check
       // if it's undefined.
-      var tabIndex  = this.tabIndex !== undefined ? ' tabindex="' + this.tabIndex + '"' : '';
+      const tabIndex  = this.tabIndex !== undefined ? ' tabindex="' + this.tabIndex + '"' : '';
       var arrowNav  = '';
 
       // Normally to target a button in the calculator display you would need

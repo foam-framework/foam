@@ -167,16 +167,15 @@ CLASS({
         this.alpha = this.startAlpha;
         const recentering = this.recentering;
         this.X.animate(this.easeInTime, function() {
-          if ( !this.animateGrowth ) {
-            // Do nothing.
-          } else if ( recentering ) {
+          this.alpha = this.pressedAlpha;
+          if ( !this.animateGrowth ) return;
+          if ( recentering ) {
             this.x = this.parent.width/2;
             this.y = this.parent.height/2;
             this.r = Math.min(28, Math.min(this.$.clientWidth, this.parent.height)/2);
           } else {
             this.r = Math.max(28, Math.max(this.$.clientWidth, this.parent.height));
           }
-          this.alpha = this.pressedAlpha;
         }.bind(this), undefined, function() {
           if ( this.state_ === 'cancelled' ) {
             this.state_ = 'pressed';
@@ -234,8 +233,8 @@ CLASS({
           animateGrowth: this.animateGrowth,
           startAlpha: this.startAlpha,
           easeInTime: this.easeInTime,
-          easeOutTime: this.easeOutTime
-        }
+          easeOutTime: this.easeOutTime,
+        };
 
         // Update properties to produce a more pleasent focus effect for
         // keyboard focus UI.
