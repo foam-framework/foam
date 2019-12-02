@@ -29,28 +29,92 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;-webkit-flex-grow: 1;">
               <div class="button-row">
-                $$backspace{tabIndex: 311, haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['.f1', '[e]',    '[ac]',         '[round]'], label: '⌫'}
-                $$round{tabIndex: 312,     haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['.f1', '[ln]',   '[backspace]',  '[fetch]']}
-                $$fetch{tabIndex: 313,     haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['.f1', '[log]',  '[round]',      '[store]']}
-                $$store{tabIndex: 314,     haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['.f1', '[exp]',  '[fetch]',      '[deg]']}
+                $$backspace{
+                  tabIndex: '300',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['.f1', '[e]',    '[ac]',         '[round]'], label: '⌫'
+                }
+                $$round{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['.f1', '[ln]',   '[backspace]',  '[fetch]']
+                }
+                $$fetch{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['.f1', '[log]',  '[round]',      '[store]']
+                }
+                $$store{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['.f1', '[exp]',  '[fetch]',      '[deg]']
+                }
               </div>
               <div class="button-row">
-                $$e{tabIndex: 321,   haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[backspace]', '[inv]',     '[div]',   '[ln]']}
-                $$ln{tabIndex: 322,  haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[round]',     '[pow]',     '[e]',      '[log]']}
-                $$log{tabIndex: 323, haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[fetch]',     '[sqroot]',  '[ln]',     '[exp]']}
-                $$exp{tabIndex: 324, haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[store]',     '[root]',    '[log]',    '[sin]']}
+                $$e{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[backspace]', '[inv]',     '[div]',   '[ln]']
+                }
+                $$ln{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[round]',     '[pow]',     '[e]',      '[log]']
+                }
+                $$log{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[fetch]',     '[sqroot]',  '[ln]',     '[exp]']
+                }
+                $$exp{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[store]',     '[root]',    '[log]',    '[sin]']
+                }
               </div>
               <div class="button-row">
-                $$inv{tabIndex: 331,    haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[e]',    '[sign]',     '[minus]',     '[pow]']}
-                $$pow{tabIndex: 332,    haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[ln]',   '[percent]',  '[inv]',     '[sqroot]']}
-                $$sqroot{tabIndex: 333, haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[log]',  '[square]',   '[pow]',     '[root]']}
-                $$root{tabIndex: 334,   haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[exp]',  '[pi]',       '[sqroot]',  '[cos]']}
+                $$inv{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[e]',    '[sign]',     '[minus]',     '[pow]']
+                }
+                $$pow{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[ln]',   '[percent]',  '[inv]',     '[sqroot]']
+                }
+                $$sqroot{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[log]',  '[square]',   '[pow]',     '[root]']
+                }
+                $$root{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[exp]',  '[pi]',       '[sqroot]',  '[cos]']
+                }
               </div>
               <div class="button-row">
-                $$sign{tabIndex: 341,    haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[inv]',   null, '[plus]',    '[percent]']}
-                $$percent{tabIndex: 342, haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[pow]',   null, '[sign]',    '[square]']}
-                $$square{tabIndex: 343,  haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[sqroot]', null, '[percent]', '[pi]']}
-                $$pi{tabIndex: 344,      haloColor: 'rgba(255, 255, 255, 0.4)', arrowNav: ['[root]',  null, '[square]',  '[tan]']}
+                $$sign{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[inv]',   null, '[plus]',    '[percent]']
+                }
+                $$percent{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[pow]',   null, '[sign]',    '[square]']
+                }
+                $$square{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[sqroot]', null, '[percent]', '[pi]']
+                }
+                $$pi{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[root]',  null, '[square]',  '[tan]']
+                }
               </div>
             </div>
           </div>

@@ -28,24 +28,72 @@ CLASS({
           <div id="%%id" class="buttons button-row tertiaryButtons">
             <div class="button-column" style="flex-grow: 1;-webkit-flex-grow: 1;">
               <div class="button-row">
-                $$deg{tabIndex: 411,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['.f1', '[sin]',  '[store]', '[rad]']}
-                $$rad{tabIndex: 412,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['.f1', '[asin]', '[deg]',   '[fact]']}
-                $$fact{tabIndex: 413, haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['.f1', '[mod]',  '[rad]',    null]}
+                $$deg{
+                  tabIndex: 400,
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['.f1', '[sin]',  '[store]', '[rad]']
+                }
+                $$rad{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['.f1', '[asin]', '[deg]',   '[fact]']
+                }
+                $$fact{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['.f1', '[mod]',  '[rad]',    null]
+                }
               </div>
               <div class="button-row">
-                $$sin{tabIndex: 421,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[deg]',  '[cos]',   '[exp]',  '[asin]']}
-                $$asin{tabIndex: 422, haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[rad]',  '[acos]',  '[sin]',  '[mod]']}
-                $$mod{tabIndex: 423,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[fact]', '[p]',     '[asin]',  null]}
+                $$sin{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['[deg]',  '[cos]',   '[exp]',  '[asin]']
+                }
+                $$asin{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['[rad]',  '[acos]',  '[sin]',  '[mod]']
+                }
+                $$mod{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['[fact]', '[p]',     '[asin]',  null]
+                }
               </div>
               <div class="button-row">
-                $$cos{tabIndex: 431,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[sin]',    '[tan]',   '[root]',      '[acos]']}
-                $$acos{tabIndex: 432, haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[asin]',   '[atan]',  '[cos]',       '[p]']}
-                $$p{tabIndex: 433,    haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[mod]',    '[c]',     '[acos]',  null]}
+                $$cos{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['[sin]',    '[tan]',   '[root]',      '[acos]']
+                }
+                $$acos{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['[asin]',   '[atan]',  '[cos]',       '[p]']
+                }
+                $$p{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['[mod]',    '[c]',     '[acos]',  null]
+                }
               </div>
               <div class="button-row">
-                $$tan{tabIndex: 441,   haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[cos]',  null, '[pi]',     '[atan]']}
-                $$atan{tabIndex: 442,  haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[acos]', null, '[tan]',    '[c]']}
-                $$c{tabIndex: 443,     haloColor: 'rgba(0, 0, 0, 0.2)', arrowNav: ['[p]',    null, '[atan]',   null]}
+                $$tan{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['[cos]',  null, '[pi]',     '[atan]']
+                }
+                $$atan{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['[acos]', null, '[tan]',    '[c]']
+                }
+                $$c{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(0, 0, 0, 0.2)',
+                  arrowNav: ['[p]',    null, '[atan]',   null]
+                }
               </div>
             </div>
           </div>
