@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "načíst z paměti",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Historie kalkulačky"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Displej kalkulačky"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Klávesnice"
   }
 }

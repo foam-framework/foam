@@ -58,6 +58,10 @@ CLASS({
       defaultValue: 200
     },
     {
+      name: 'focusType',
+      defaultValue: null
+    },
+    {
       name: 'easeOutTime',
       defaultValue: 150
     },
@@ -79,6 +83,10 @@ CLASS({
     },
     {
       name: 'recentering',
+      defaultValue: true
+    },
+    {
+      name: 'animateGrowth',
       defaultValue: true
     },
     {
@@ -147,10 +155,20 @@ CLASS({
           this.x = evt.offsetX;
           this.y = evt.offsetY;
         }
-        this.r = 2;
+        if ( this.animateGrowth ) {
+          this.r = 2;
+        } else if ( this.recentering ) {
+          this.x = this.parent.width/2;
+          this.y = this.parent.height/2;
+          this.r = Math.min(28, Math.min(this.$.clientWidth, this.parent.height)/2);
+        } else {
+          this.r = Math.max(28, Math.max(this.$.clientWidth, this.parent.height));
+        }
         this.alpha = this.startAlpha;
-        var recentering = this.recentering;
+        const recentering = this.recentering;
         this.X.animate(this.easeInTime, function() {
+          this.alpha = this.pressedAlpha;
+          if ( !this.animateGrowth ) return;
           if ( recentering ) {
             this.x = this.parent.width/2;
             this.y = this.parent.height/2;
@@ -158,7 +176,6 @@ CLASS({
           } else {
             this.r = Math.max(28, Math.max(this.$.clientWidth, this.parent.height));
           }
-          this.alpha = this.pressedAlpha;
         }.bind(this), undefined, function() {
           if ( this.state_ === 'cancelled' ) {
             this.state_ = 'pressed';
@@ -199,30 +216,55 @@ CLASS({
   listeners: [
     {
       name: 'onMouseDown',
-      code: function(evt) {;
+      code: function(evt) {
+        this.focusType = 'mouse';
         this.paintHalo(evt, false);
+        this.$.focus();
       }
     },
     {
       name: 'focus',
       code: function(evt) {
-        this.isFocused = true;
+        if (this.focusType === 'mouse') return;
+
+        this.focusType = 'keyboard';
+        // Save all of the halo properties.
+        const save = {
+          animateGrowth: this.animateGrowth,
+          startAlpha: this.startAlpha,
+          easeInTime: this.easeInTime,
+          easeOutTime: this.easeOutTime,
+        };
+
+        // Update properties to produce a more pleasent focus effect for
+        // keyboard focus UI.
+        this.animateGrowth = false;
+        this.startAlpha = 0.2;
+        this.easeInTime = 100;
+        this.easeOutTime = 100;
         this.paintHalo(evt, true);
+
+        // Restore.
+        this.animateGrowth = save.animateGrowth;
+        this.startAlpha = save.startAlpha;
+        this.easeInTime = save.easeInTime;
+        this.easeOutTime = save.easeOutTime;
       }
     },
     {
       name: 'onMouseUp',
       code: function() {
         // ignore mouse up events if we are focused atm
-        if (this.isFocused) return;
-        this.clearHalo()
+        if (this.focusType === 'keyboard') return;
+        this.clearHalo();
+        this.focusType = null;
       }
     },
     {
       name: 'blur',
       code: function() {
         this.clearHalo()
-        this.isFocused = false;
+        this.focusType = null;
       }
     }
   ]

@@ -113,6 +113,9 @@ CLASS({
       name: 'tabIndex'
     },
     {
+      name: 'speechLabel'
+    },
+    {
       name: 'extraClassName',
       defaultValue: '',
       documentation: function() {/*

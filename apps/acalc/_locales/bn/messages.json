@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "মেমরি থেকে আনুন",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "ক্যালকুলেটরে হিসেবের ইতিহাস"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "ক্যালকুলেটরের ডিসপ্লে"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "কীপ্যাড"
   }
 }

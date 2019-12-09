@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "tìm nạp từ bộ nhớ",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Lịch sử tính toán"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Màn hình máy tính tay"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Bàn phím"
   }
 }

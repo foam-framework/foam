@@ -45,10 +45,29 @@ CLASS({
   },
 
   messages: [
+    /*
+     * Messages used to set aria labels to provide chromevox with more context,
+     * these are auto translated.
+     */
     {
       name: 'CalcName',
       value: 'Calculator',
       translationHint: 'name of application for performing simple calculations'
+    },
+    {
+      name: 'CalcHistory',
+      value: 'Calculator History',
+      translationHint: 'name of the section of the calculator which contains a history of recent computations'
+    },
+    {
+      name: 'CalcDisplay',
+      value: 'Calculator Display',
+      translationHint: 'name of the section of the calculator which shows the current number being built'
+    },
+    {
+      name: 'CalcKeypad',
+      value: 'Keypad',
+      translationHint: 'name of the section of the calculator which contains the action buttons'
     }
   ],
 
@@ -175,7 +194,7 @@ CLASS({
       name: "mult",
       label: "×",
       speechLabel: "multiply",
-      keyboardShortcuts: [ "*" ],
+      keyboardShortcuts: [ "*", "x" ],
       f: function (a1, a2) { return a1 * a2; }
     },
     {
@@ -376,13 +395,25 @@ CLASS({
       name: 'deg',
       speechLabel: 'switch to degrees',
       translationHint: 'short form for "degrees" calculator mode',
-      code: function() { this.degreesMode = true; }
+      code: function() {
+        this.degreesMode = true;
+        // update aria label to match the text inside
+        document
+          .getElementById('deg-label')
+          .setAttribute('aria-label', this.model_.DEG.label);
+      }
     },
     {
       name: 'rad',
       speechLabel: 'switch to radians',
       translationHint: 'short form for "radians" calculator mode',
-      code: function() { this.degreesMode = false; }
+      code: function() {
+        this.degreesMode = false;
+        // update aria label to match the text inside
+        document
+          .getElementById('deg-label')
+          .setAttribute('aria-label', this.model_.RAD.label);
+      }
     },
     {
       model_: "foam.apps.calc.Unary",

@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "メモリから取得",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "計算履歴"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "電卓のディスプレイ"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "キーパッド"
   }
 }

@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "hafızadan getir",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Hesap Makinesi Geçmişi"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Hesap Makinesi Ekranı"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Tuş Takımı"
   }
 }

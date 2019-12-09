@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "שלוף מהזיכרון",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "היסטוריית המחשבון"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "תצוגת המחשבון"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "לוח המקשים"
   }
 }

@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "جلب من الذاكرة",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "سجلّ عمليات الحاسبة"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "شاشة الحاسبة"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "لوح المفاتيح"
   }
 }

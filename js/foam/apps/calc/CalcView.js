@@ -106,6 +106,8 @@ CLASS({
       this.X.window.addEventListener('resize', move);
 
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
+      this.document.body.setAttribute('aria-label', this.data.model_.CALC_NAME.value);
+
     },
     addArrowData: function(e, data) {
       e.setAttribute('data-arrow-up', data[0])
@@ -154,8 +156,35 @@ CLASS({
         this.addArrowData(f1, ['body','[aria-label="7"]',null,null])
 
         // Since history is dynamic regenerate that part of it
+        // also fix the aria label of the first
         const historyNodeList = document.querySelectorAll('.history');
         const history = Array(historyNodeList.length).fill(0).map((_,i) => historyNodeList[i])
+
+        // The way the history is set up means that every element in the history
+        // has to be rendered the same way, as such every other number element
+        // has the aria label "equals <num>". This means as you are tabbing
+        // through something such as
+        //
+        //  A
+        //  + B
+        // --------
+        //  C
+        //
+        // The screen reader helpfully announces "A + B equals C" as "C" has
+        // the "equals C" aria label. Sadly we don't want this label on A, only
+        // on C and any subsequent numbers. This bit of JS removes that label
+        // from the first element in the history.
+
+        const equalsMessage = window.chrome.i18n &&
+          window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_equals')
+          || 'equals';
+
+        if (history[0] && history[0].getAttribute('aria-label')) {
+          let ariaLabel = history[0].getAttribute('aria-label');
+          ariaLabel = ariaLabel.replace(new RegExp('^'+equalsMessage),'');
+          history[0].setAttribute('aria-label', ariaLabel);
+        }
+
 
         let prev = {elem: document.body, selector: 'body'};
 
@@ -223,8 +252,8 @@ CLASS({
       font-size: 22px;
       font-weight: 400;
       opacity: 0;
-      padding-left: 8px;
-      padding-right: 10px;
+      margin-left: 8px;
+      margin-right: 10px;
       transition: opacity 0.8s;
     }
 
@@ -275,25 +304,29 @@ CLASS({
       justify-content: center;
       display: flex;
       align-items: center;
-      background-color: #4b4b4b;
+      background-color: #333;
     }
 
     .rhs-ops {
       border-left-width: 1px;
       border-left-style: solid;
       border-left-color: rgb(68, 68, 68);
-      background: #777;
+      background: #4a4a4a;
     }
 
     .rhs-ops .button {
-      background-color: #777;
+      background-color: #4a4a4a;
     }
 
     .history {
       padding: 2px;
+      padding-right: 7pt;
+      width: calc(100% - 7pt - 2px);
     }
+
     .history:focus-within {
       padding: 0px;
+      padding-right: calc(7pt - 2px);
       border: 2px solid rgba(52, 153, 128, 0.65);
       border-radius: 10px;
     }
@@ -306,11 +339,17 @@ CLASS({
 
     .inner-calc-display {
       position: absolute;
-      right: 20pt;
+      right: 15pt;
       top: 100%;
-      width: 100%;
-      padding-left: 50px;
-      padding-bottom: 11px;
+      width: calc(100% - 17pt);
+      margin: 1pt 0pt;
+      padding: 11px 2px;
+    }
+
+    .inner-calc-display:focus {
+      border: 2px solid rgba(52, 153, 128, 0.65);
+      border-radius: 10px;
+      padding: 9px 0px;
     }
 
     .calc-display {
@@ -320,20 +359,20 @@ CLASS({
 
     .secondaryButtons {
       padding-left: 30px;
-      background: rgb(52, 153, 128);
+      background: #00796b;
     }
 
     .secondaryButtons .button {
-      background: rgb(52, 153, 128);
+      background: #00796b;
     }
 
     .tertiaryButtons {
       padding-left: 35px;
-      background: rgb(29, 233, 182);
+      background: #1de9b6;
     }
 
     .tertiaryButtons .button {
-      background: rgb(29, 233, 182);
+      background: #1de9b6;
     }
 
     .keypad {
@@ -341,21 +380,61 @@ CLASS({
       flex-shrink: 0;
       margin-bottom: -4px;
       z-index: 5;
+      padding-top: 4px;
+    }
+
+    .keypad:focus {
+      border-top: 4px solid rgba(52, 153, 128, 0.45);
+      padding-top: 0px;
+    }
+
+    .calculator-display {
+      width: calc(100% - 4px);
+      height: 2.5rem;
+    }
+
+    .calculator-display:focus {
+      border-radius: 10px;
+      border: 2px solid rgba(52, 153, 128, 0.65);
     }
 
     .alabel {
       font-size: 30px;
     }
+
     .alabel:focus-within {
       background: #999;
     }
+
     .calc hr {
       border-style: outset;
       opacity: 0.5;
     }
+
     .calc hr:focus {
       border-style: outset;
       opacity: 1;
+    }
+    .f1 {
+      margin-left: calc(-13pt - 2px);
+    }
+
+    .f1:focus {
+      margin-left: calc(-13pt - 4px);
+    }
+
+    .inner-calc-display:focus .f1 {
+      margin-left: calc(-13pt - 4px);
+    }
+
+    #deg-label {
+      position: absolute;
+      z-index: 1;
+    }
+
+    #deg-label:focus>span{
+      color: rgba(52, 153, 128, 0.65);
+      font-weight: bold;
     }
   */},
     {
@@ -365,22 +444,45 @@ CLASS({
         <!-- <%= this.ZoomView.create() %> -->
         <% X.registerModel(this.CalcButton, 'foam.ui.ActionButton'); %>
         <div id="%%id" class="CalcView">
-        <div style="position: relative;z-index: 100;">
-          <div style="position: absolute;">
-            <span aria-label="{{{this.data.model_.RAD.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return ! this.data.degreesMode; }) %>" class="rad" title="{{{this.data.model_.RAD.label}}}"></span>
-            <span aria-label="{{{this.data.model_.DEG.label}}}" style="top: 10;left: 0;position: absolute;" id="<%= this.setClass('active', function() { return   this.data.degreesMode; }) %>" class="deg" title="{{{this.data.model_.DEG.label}}}"></span>
+        <div style="position: relative; z-index: 1;">
+          <div
+            id="deg-label"
+            tabindex="1"
+            aria-label="<%= (this.data.degreesMode ? this.data.model_.DEG.label : this.data.model_.RAD.label) %>"
+          >
+            <span
+              style="top: 15px;left: 0;position: absolute; z-index: 1;"
+              id="<%=
+                  this.setClass('active', function() {
+                    return ! this.data.degreesMode;
+                  })
+                %>"
+              class="rad">
+              {{{this.data.model_.RAD.label}}}
+            </span>
+            <span
+              style="top: 15px;position: absolute; z-index: 1;"
+              id="<%=
+                this.setClass('active', function() {
+                  return   this.data.degreesMode;
+                }) %>"
+              class="deg">
+                {{{this.data.model_.DEG.label}}}
+            </span>
           </div>
         </div>
 
         <div class="edge"></div>
         <div class="calc">
           <div class="calc-display">
-            <div class="inner-calc-display">
+            <div class="inner-calc-display" role="list" aria-label="{{this.data.model_.CALC_HISTORY.value}}" tabindex="1">
               $$history{ rowView: 'foam.apps.calc.HistoryCitationView' }
-              <div>$$row1Formatted{mode: 'read-only', tabIndex: 3, escapeHTML: false}</div>
+              <div class="calculator-display" aria-label="{{this.data.model_.CALC_DISPLAY.value}}" tabindex="3">
+                $$row1Formatted{mode: 'read-only', escapeHTML: false}
+              </div>
             </div>
           </div>
-          <div class="keypad">
+          <div class="keypad" aria-label="{{this.data.model_.CALC_KEYPAD.value}}" tabindex="3">
           <div class="edge2"></div>
           <%= this.SlidePanel.create({
             data: this.data,

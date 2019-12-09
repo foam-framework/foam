@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "ambil daripada memori",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Sejarah Kalkulator"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Paparan Kalkulator"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Pad kekunci"
   }
 }

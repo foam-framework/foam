@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "واکشی از حافظه",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "سابقه ماشین حساب"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "نمایشگر ماشین حساب"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "صفحه‌کلید"
   }
 }

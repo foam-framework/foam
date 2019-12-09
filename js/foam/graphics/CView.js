@@ -224,6 +224,7 @@ CLASS({
           once on first $$DOC{ref:'.paint'} when transitioning from 'initial'
           to 'active' '$$DOC{ref:'.state'}. */ },
 
+
     write: function(opt_X) { /* Inserts this $$DOC{ref:'foam.graphics.CView'} into the DOM
                                    with an $$DOC{ref:'foam.graphics.AbstractCViewView'} wrapper. */
       var X = opt_X || this.X;

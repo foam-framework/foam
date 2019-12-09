@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "hae muistista",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Laskimen historia"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Laskimen näyttö"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Näppäimistö"
   }
 }

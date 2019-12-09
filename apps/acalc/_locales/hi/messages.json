@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "मेमोरी से फ़ेच करें",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Calculator के पिछले कुछ कैल्‍क्‍यूलेशन"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Calculator का मौजूदा कैल्‍क्‍यूलेशन"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "कीपैड"
   }
 }

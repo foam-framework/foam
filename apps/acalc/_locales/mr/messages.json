@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "मेमरीमधून आणा",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "कॅलक्युलेटर इतिहास"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "कॅलक्युलेटर डिस्प्ले"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "कीपॅड"
   }
 }

@@ -40,6 +40,7 @@ CLASS({
     function init() {
       this.SUPER();
       this.f.label = '<span aria-label="' + this.speechLabel + '">' + this.label + '</span>';
+      this.f.speechLabel = this.speechLabel;
       this.f.unary = true;
     }
   ]

@@ -210,7 +210,7 @@ CLASS({
 
       // Pressing space when has focus causes a synthetic press
       this.$.addEventListener('keypress', function(e) {
-        if ( ( e.charCode == 32 || e.charCode == '13')&& ! ( e.altKey || e.ctrlKey || e.shiftKey ) ) {
+        if ( ( e.charCode == 32) && ! ( e.altKey || e.ctrlKey || e.shiftKey ) ) {
           e.preventDefault();
           e.stopPropagation();
           this.tapClick();
@@ -222,6 +222,7 @@ CLASS({
       this.$.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
+
         // If no X & Y then it was simulated by ChromeVox
         if ( ( ! e.x && ! e.y ) || ! this.gestureManager ) this.tapClick();
       }.bind(this));

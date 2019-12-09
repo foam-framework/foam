@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "leta kutoka kwenye hifadhi",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Historia ya Kikokotoo"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Skrini ya Kikokotoo"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Kibodi"
   }
 }

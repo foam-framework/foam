@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "Aus dem Speicher einfügen",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Rechnerverlauf"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Rechneranzeige"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Tastatur"
   }
 }

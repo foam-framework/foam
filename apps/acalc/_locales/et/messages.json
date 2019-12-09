@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "too mälust",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Kalkulaatori ajalugu"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Kalkulaatori ekraan"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Klahvistik"
   }
 }

@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "మెమరీ నుండి లోడ్ చేయి",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "కాలిక్యులేటర్ చరిత్ర"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "కాలిక్యులేటర్ డిస్‌ప్లే"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "కీప్యాడ్"
   }
 }

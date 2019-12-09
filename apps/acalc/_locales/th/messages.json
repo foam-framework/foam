@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "ดึงจากหน่วยความจำ",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "ประวัติเครื่องคิดเลข"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "หน้าจอเครื่องคิดเลข"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "แป้นตัวเลข"
   }
 }

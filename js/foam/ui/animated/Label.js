@@ -42,7 +42,8 @@ CLASS({
   methods: {
     toInnerHTML: function() {
       var tabIndex  = this.tabIndex ? ' tabindex="' + this.tabIndex + '"' : '';
-      return '<div' + tabIndex + ' class="f1"></div><div class="f2"></div>';
+      var speechLabel  = this.speechLabel ? ' aria-label="' + this.speechLabel + '"' : '';
+      return '<div' + tabIndex + speechLabel +' class="f1"></div><div class="f2"></div>';
     },
     initHTML: function() {
       this.data$.addListener(this.onDataChange);
@@ -62,6 +63,8 @@ CLASS({
       .f1:focus {
         border: 2px solid rgba(52, 153, 128, 0.65);
         border-radius: 10px;
+        margin-top: -2px;
+        margin-right: 2px;
       }
       .f2 {
         display: inline;
@@ -89,6 +92,10 @@ CLASS({
         // Don't animate to the empty string, or prefix changes
         var animate = this.data.length && ( oldValue.startsWith(newValue) || newValue.startsWith(oldValue) );
         DOM.setClass(this.$.querySelector('.f1'), 'animated', animate);
+
+        // update speech label
+        this.$.querySelector('.f1').setAttribute('tabindex', 3);
+        this.$.querySelector('.f1').setAttribute('aria-label', newValue !== undefined ? newValue : 'Blank')
       }
     },
     {

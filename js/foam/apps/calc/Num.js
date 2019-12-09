@@ -31,7 +31,8 @@ CLASS({
         this.editable = true;
       } else {
         if ( this.a2 == '0' && ! n ) return;
-        if ( this.a2.length >= 18 ) return;
+        // 17 characters is the longest number we can handle without overflow.
+        if ( this.a2.length >= 17 ) return;
         this.a2 = this.a2 == '0' ? n : this.a2.toString() + n;
       }
     }]

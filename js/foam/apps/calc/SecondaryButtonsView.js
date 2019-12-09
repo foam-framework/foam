@@ -20,7 +20,7 @@ CLASS({
     function toHTML() {/*
           <%
           this.X.registerModel(this.CalcButton.xbind({
-            background: 'rgb(52, 153, 128)',
+            background: '#00796b',
             width:  61,
             height: 61,
             font:   '300 20px Roboto'
@@ -29,28 +29,92 @@ CLASS({
           <div id="%%id" class="buttons button-row secondaryButtons">
             <div class="button-column" style="flex-grow: 1;-webkit-flex-grow: 1;">
               <div class="button-row">
-                $$backspace{tabIndex: 311, arrowNav: ['.f1', '[e]',                   '[all clear]',         '[round]'], label: '⌫'}
-                $$round{tabIndex: 312,     arrowNav: ['.f1', '[natural logarithm]',   '[backspace]',         '[fetch from memory]']}
-                $$fetch{tabIndex: 313,     arrowNav: ['.f1', '[log base 10]',         '[round]',             '[store in memory]']}
-                $$store{tabIndex: 314,     arrowNav: ['.f1', '[e to the power of n]', '[fetch from memory]', '[switch to degrees]']}
+                $$backspace{
+                  tabIndex: '300',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['.f1', '[e]',    '[ac]',         '[round]'], label: '⌫'
+                }
+                $$round{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['.f1', '[ln]',   '[backspace]',  '[fetch]']
+                }
+                $$fetch{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['.f1', '[log]',  '[round]',      '[store]']
+                }
+                $$store{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['.f1', '[exp]',  '[fetch]',      '[deg]']
+                }
               </div>
               <div class="button-row">
-                $$e{tabIndex: 321,   arrowNav: ['[backspace]',         '[inverse]',             '[plus]',              '[natural logarithm]']}
-                $$ln{tabIndex: 322,  arrowNav: ['[round]',             '[y to the power of n]', '[e]',                 '[log base 10]']}
-                $$log{tabIndex: 323, arrowNav: ['[fetch from memory]', '[square root]',         '[natural logarithm]', '[e to the power of n]']}
-                $$exp{tabIndex: 324, arrowNav: ['[store to memory]',   '[the enth root of y]',  '[log base 10]',       '[sine]']}
+                $$e{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[backspace]', '[inv]',     '[div]',   '[ln]']
+                }
+                $$ln{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[round]',     '[pow]',     '[e]',      '[log]']
+                }
+                $$log{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[fetch]',     '[sqroot]',  '[ln]',     '[exp]']
+                }
+                $$exp{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[store]',     '[root]',    '[log]',    '[sin]']
+                }
               </div>
               <div class="button-row">
-                $$inv{tabIndex: 331,    arrowNav: ['[e]',                   '[negate]',      '[divide]',               '[y to the power of n]']}
-                $$pow{tabIndex: 332,    arrowNav: ['[natural logarithm]',   '[percent]',     '[inverse]',              '[square root]']}
-                $$sqroot{tabIndex: 333, arrowNav: ['[log base 10]',         '[x squared]',   '[y to the power of n]',  '[the enth root of y]']}
-                $$root{tabIndex: 334,   arrowNav: ['[e to the power of n]', '[π]',           '[square root]',          '[cosine]']}
+                $$inv{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[e]',    '[sign]',     '[minus]',     '[pow]']
+                }
+                $$pow{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[ln]',   '[percent]',  '[inv]',     '[sqroot]']
+                }
+                $$sqroot{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[log]',  '[square]',   '[pow]',     '[root]']
+                }
+                $$root{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[exp]',  '[pi]',       '[sqroot]',  '[cos]']
+                }
               </div>
               <div class="button-row">
-                $$sign{tabIndex: 341,    arrowNav: ['[inverse]',             null, '[multiply]',  '[percent]']}
-                $$percent{tabIndex: 342, arrowNav: ['[y to the power of n]', null, '[negate]',    '[x squared]']}
-                $$square{tabIndex: 343,  arrowNav: ['[square root]',         null, '[percent]',   '[π]']}
-                $$pi{tabIndex: 344,      arrowNav: ['[the enth root of y]',  null, '[x squared]', '[tangent]']}
+                $$sign{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[inv]',   null, '[plus]',    '[percent]']
+                }
+                $$percent{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[pow]',   null, '[sign]',    '[square]']
+                }
+                $$square{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[sqroot]', null, '[percent]', '[pi]']
+                }
+                $$pi{
+                  tabIndex: '-1',
+                  haloColor: 'rgba(255, 255, 255, 0.4)',
+                  arrowNav: ['[root]',  null, '[square]',  '[tan]']
+                }
               </div>
             </div>
           </div>

@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "메모리에서 가져오기",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "계산기 기록"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "계산기 화면"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "키패드"
   }
 }

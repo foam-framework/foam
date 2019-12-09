@@ -294,5 +294,14 @@
   "Calc_ActionSpeechLabel_fetch": {
     "message": "priklic iz pomnilnika",
     "description": "Calculator load memorized number (speech label)"
+  },
+  "Calc_Message_CalcHistory": {
+    "message": "Zgodovina Računala"
+  },
+  "Calc_Message_CalcDisplay": {
+    "message": "Prikaz Računala"
+  },
+  "Calc_Message_CalcKeypad": {
+    "message": "Tipkovnica"
   }
 }
