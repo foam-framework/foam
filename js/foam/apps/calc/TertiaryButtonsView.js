@@ -101,13 +101,17 @@ CLASS({
             var l = function(_, __, ___, degrees) {
               this.degView.font = degrees ? '600 18px Roboto' : '300 18px Roboto';
               this.radView.font = degrees ? '300 18px Roboto' : '600 18px Roboto';
+
+              this.degView.view.ariaPressed = degrees;
+              this.radView.view.ariaPressed = !degrees;
+
               if ( this.degView.view ) {
                 this.degView.view.paint();
                 this.radView.view.paint();
               }
             }.bind(this);
             this.data.degreesMode$.addListener(l);
-            l();
+            l(null, null, null, false);
           %>
     */}
   ]
