@@ -81,6 +81,7 @@ CLASS({
     [ 'a1', 0 ],
     [ 'a2', '' ],
     [ 'editable', true ],
+    [ 'statusRipples', true ],
     { name: 'op', factory: function() { return this.DEFAULT_OP } },
     {
       type: 'Array',
@@ -229,14 +230,16 @@ CLASS({
         this.op       = this.DEFAULT_OP;
         this.history = [].sink;
         // TODO(kgr): Move to CalcView
-        if ( this.X.$$('calc-display')[0] ) {
+        if ( this.X.$$('calc-display')[0] && this.statusRipples ) {
           var now = Date.now();
           if ( this.lastFlare_ && now-this.lastFlare_ < 1000 ) return;
           this.lastFlare_ = now;
-          this.Flare.create({
-            element: this.X.$$('calc-display')[0],
-            color: '#2196F3' /* blue */
-          }).fire();
+          if (this.statusRipples) {
+            this.Flare.create({
+              element: this.X.$$('calc-display')[0],
+              color: '#2196F3' /* blue */
+            }).fire();
+          }
           this.X.window.getSelection().removeAllRanges();
         }
       }
@@ -505,6 +508,13 @@ CLASS({
       speechLabel: 'fetch from memory',
       translationHint: 'load memorized number',
       code: function() { this.a2 = this.memory; }
+    },
+    {
+      name: 'toggleStatusRipples',
+      keyboardShortcuts: ['f'],
+      code: function() {
+        this.statusRipples = !this.statusRipples;
+      }
     }
   ]
 });
