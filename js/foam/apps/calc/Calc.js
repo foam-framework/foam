@@ -151,7 +151,12 @@ CLASS({
         element: this.X.$$('calc-display')[0],
         color: '#f44336' /* red */
       }).fire, 100);
-      this.history.put(this.History.create(this));
+      this.history.put(this.History.create({
+        op: this.op,
+        a2: this.a2,
+        index: this.history.length,
+        numberFormatter: this.numberFormatter
+      }));
       this.a1   = 0;
       this.a2   = '';
       this.op   = this.DEFAULT_OP;
@@ -162,7 +167,12 @@ CLASS({
       if ( a2 != this.a2 ||
            ( opt_op || this.DEFAULT_OP ) != this.op )
         this.row1 = '';
-      this.history.put(this.History.create(this));
+      this.history.put(this.History.create({
+        op: this.op,
+        a2: this.a2,
+        index: this.history.length,
+        numberFormatter: this.numberFormatter
+      }));
       while ( this.history.length > this.MAX_HISTORY ) this.history.shift();
       this.a1 = this.a2;
       this.op = opt_op || this.DEFAULT_OP;
