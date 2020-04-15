@@ -107,7 +107,6 @@ CLASS({
 
       this.$.querySelector('.keypad').addEventListener('mousedown', function(e) { e.preventDefault(); return false; });
       this.document.body.setAttribute('aria-label', this.data.model_.CALC_NAME.value);
-
     },
     addArrowData: function(e, data) {
       e.setAttribute('data-arrow-up', data[0])
@@ -159,32 +158,6 @@ CLASS({
         // also fix the aria label of the first
         const historyNodeList = document.querySelectorAll('.history');
         const history = Array(historyNodeList.length).fill(0).map((_,i) => historyNodeList[i])
-
-        // The way the history is set up means that every element in the history
-        // has to be rendered the same way, as such every other number element
-        // has the aria label "equals <num>". This means as you are tabbing
-        // through something such as
-        //
-        //  A
-        //  + B
-        // --------
-        //  C
-        //
-        // The screen reader helpfully announces "A + B equals C" as "C" has
-        // the "equals C" aria label. Sadly we don't want this label on A, only
-        // on C and any subsequent numbers. This bit of JS removes that label
-        // from the first element in the history.
-
-        const equalsMessage = window.chrome.i18n &&
-          window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_equals')
-          || 'equals';
-
-        if (history[0] && history[0].getAttribute('aria-label')) {
-          let ariaLabel = history[0].getAttribute('aria-label');
-          ariaLabel = ariaLabel.replace(new RegExp('^'+equalsMessage),'');
-          history[0].setAttribute('aria-label', ariaLabel);
-        }
-
 
         let prev = {elem: document.body, selector: 'body'};
 
@@ -431,11 +404,6 @@ CLASS({
       position: absolute;
       z-index: 1;
     }
-
-    #deg-label:focus>span{
-      color: rgba(52, 153, 128, 0.65);
-      font-weight: bold;
-    }
   */},
     {
       name: 'toHTML',
@@ -444,11 +412,9 @@ CLASS({
         <!-- <%= this.ZoomView.create() %> -->
         <% X.registerModel(this.CalcButton, 'foam.ui.ActionButton'); %>
         <div id="%%id" class="CalcView">
-        <div style="position: relative; z-index: 1;">
+        <div style="position: relative; z-index: 1;" tabindex="-1" aria-hidden="true">
           <div
             id="deg-label"
-            tabindex="1"
-            aria-label="<%= (this.data.degreesMode ? this.data.model_.DEG.label : this.data.model_.RAD.label) %>"
           >
             <span
               style="top: 15px;left: 0;position: absolute; z-index: 1;"

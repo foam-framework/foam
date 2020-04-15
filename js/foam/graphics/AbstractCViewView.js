@@ -185,7 +185,7 @@ CLASS({
             msg = window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_'+btnId);
           } else {
             // Silently fail since there is no way to recover from this.
-            console.warning('Could not access i18n tools, arrow nav disabled');
+            console.warn('Could not access i18n tools, arrow nav disabled');
             return;
           }
           // If we are targeting a number it has no translated label.
