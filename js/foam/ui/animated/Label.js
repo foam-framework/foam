@@ -95,14 +95,23 @@ CLASS({
 
         // update speech label
         this.$.querySelector('.f1').setAttribute('tabindex', 3);
-        this.$.querySelector('.f1').setAttribute('aria-label', newValue !== undefined ? newValue : 'Blank')
+        // The value will sometimes have markup, remove it.
+        if (newValue !== undefined) {
+          newValue = newValue.replace(/\<[^\<\>]+\>/g, '');
+          newValue = newValue.replace(/\&nbsp\;/g, '');
+        }
+        
+        this.$.querySelector('.f1').setAttribute(
+            'aria-label',
+            newValue !== undefined ? newValue :
+                                     'Blank');
       }
     },
     {
       name: 'onResize',
       isFramed: true,
       code: function() {
-        if ( ! this.$ ) return;
+        if (!this.$) return;
         DOM.setClass(this.$.querySelector('.f1'), 'animated', false);
         this.onDataChange();
       }
