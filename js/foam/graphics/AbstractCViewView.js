@@ -65,6 +65,10 @@ CLASS({
     'tabIndex',
     'arrowNav',
     {
+      name: 'ariaPressed',
+      defaultValue: false
+    },
+    {
       type: 'Int',
       name:  'width',
       defaultValue: 100,
@@ -121,6 +125,7 @@ CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        this.$.setAttribute('aria-pressed', this.ariaPressed);
         this.canvas.save();
 
         this.canvas.clearRect(0, 0, this.canvasWidth(), this.canvasHeight());

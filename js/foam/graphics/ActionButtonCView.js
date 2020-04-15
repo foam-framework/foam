@@ -129,6 +129,10 @@ CLASS({
     'arrowNav',
     'role',
     {
+      name: 'ariaPressed',
+      defaultValue: false
+    },
+    {
       name: 'state_',
       defaultValue: 'default' // pressed, released
     }
