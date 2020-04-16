@@ -130,7 +130,7 @@ CLASS({
     'role',
     {
       name: 'ariaPressed',
-      defaultValue: false
+      defaultValue: undefined
     },
     {
       name: 'state_',

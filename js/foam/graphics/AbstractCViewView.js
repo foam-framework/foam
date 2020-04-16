@@ -66,7 +66,7 @@ CLASS({
     'arrowNav',
     {
       name: 'ariaPressed',
-      defaultValue: false
+      defaultValue: undefined
     },
     {
       type: 'Int',
@@ -125,7 +125,8 @@ CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
-        this.$.setAttribute('aria-pressed', this.ariaPressed);
+        if (this.ariaPressed !== undefined && this.ariaPressed !== '')
+          this.$.setAttribute('aria-pressed', this.ariaPressed);
         this.canvas.save();
 
         this.canvas.clearRect(0, 0, this.canvasWidth(), this.canvasHeight());
