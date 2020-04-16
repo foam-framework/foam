@@ -24,7 +24,7 @@ CLASS({
       name: 'a2',
       preSet: function(_, n) { return this.formatNumber(n); }
     },
-    'index'
+    'sayEquals'
   ],
   methods: {
     formatNumber: function(n) {

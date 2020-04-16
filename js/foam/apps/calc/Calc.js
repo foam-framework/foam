@@ -154,7 +154,7 @@ CLASS({
       this.history.put(this.History.create({
         op: this.op,
         a2: this.a2,
-        index: this.history.length,
+        sayEquals: this.shouldSayEqual(),
         numberFormatter: this.numberFormatter
       }));
       this.a1   = 0;
@@ -163,6 +163,25 @@ CLASS({
       this.row1 = '';
       this.editable = true;
     },
+    /**
+     * Returns if the next item in history should be announced with a
+     * preceding 'equals'.
+     */
+    function shouldSayEqual() {
+      // First ever entry should never have equals.
+      if (this.history.length === 0) {
+        return false;
+      }
+      // Any line with a operator (+,- etc.) should never.
+      if (this.op.label) {
+        return false;
+      }
+      // If the previous line announced equal this one should not.
+      if (this.history[this.history.length -1].sayEquals) {
+        return false;
+      }
+      return true;
+    },
     function push(a2, opt_op) {
       if ( a2 != this.a2 ||
            ( opt_op || this.DEFAULT_OP ) != this.op )
@@ -170,7 +189,7 @@ CLASS({
       this.history.put(this.History.create({
         op: this.op,
         a2: this.a2,
-        index: this.history.length,
+        sayEquals: this.shouldSayEqual(),
         numberFormatter: this.numberFormatter
       }));
       while ( this.history.length > this.MAX_HISTORY ) this.history.shift();

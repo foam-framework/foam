@@ -15,7 +15,7 @@ CLASS({
   extends: 'foam.ui.View',
   templates: [
     function toHTML() {/*
-      <div class="history" role="listitem" tabindex="2" aria-label="{{(this.data.index > 0 && !this.data.op.label) ? (window.chrome.i18n ? window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_equals') + ' ' : 'equals ') : ''}}{{this.data.op.speechLabel}} {{this.data.a2}}">
+      <div class="history" role="listitem" tabindex="2" aria-label="{{(this.data.sayEquals) ? (window.chrome.i18n ? window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_equals') + ' ' : 'equals ') : ''}}{{this.data.op.speechLabel}} {{this.data.a2}}">
         <span aria-hidden="true">{{{this.data.op.label}}}&nbsp;{{this.data.a2}}<span>
       </div>
       <% if ( this.data.op.label ) { %><hr aria-hidden="true"><% } %>
