@@ -65,6 +65,10 @@ CLASS({
     'tabIndex',
     'arrowNav',
     {
+      name: 'ariaPressed',
+      defaultValue: undefined
+    },
+    {
       type: 'Int',
       name:  'width',
       defaultValue: 100,
@@ -121,6 +125,8 @@ CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.$ ) throw EventService.UNSUBSCRIBE_EXCEPTION;
+        if (this.ariaPressed !== undefined && this.ariaPressed !== '')
+          this.$.setAttribute('aria-pressed', this.ariaPressed);
         this.canvas.save();
 
         this.canvas.clearRect(0, 0, this.canvasWidth(), this.canvasHeight());
@@ -180,7 +186,7 @@ CLASS({
             msg = window.chrome.i18n.getMessage('Calc_ActionSpeechLabel_'+btnId);
           } else {
             // Silently fail since there is no way to recover from this.
-            console.warning('Could not access i18n tools, arrow nav disabled');
+            console.warn('Could not access i18n tools, arrow nav disabled');
             return;
           }
           // If we are targeting a number it has no translated label.

@@ -85,7 +85,7 @@ CLASS({
         var f2$ = this.$.querySelector('.f2');
 
         var data = this.data || '&nbsp;';
-        f1$.innerHTML = data;
+        f1$.innerHTML = `<span aria-hidden="true">${data}</span>`;
         f2$.innerHTML = data;
 
         f1$.style.left = f2$.offsetLeft + 'px';
@@ -95,14 +95,23 @@ CLASS({
 
         // update speech label
         this.$.querySelector('.f1').setAttribute('tabindex', 3);
-        this.$.querySelector('.f1').setAttribute('aria-label', newValue !== undefined ? newValue : 'Blank')
+        // The value will sometimes have markup, remove it.
+        if (newValue !== undefined) {
+          newValue = newValue.replace(/\<[^\<\>]+\>/g, '');
+          newValue = newValue.replace(/\&nbsp\;/g, '');
+        }
+        
+        this.$.querySelector('.f1').setAttribute(
+            'aria-label',
+            newValue !== undefined ? newValue :
+                                     'Blank');
       }
     },
     {
       name: 'onResize',
       isFramed: true,
       code: function() {
-        if ( ! this.$ ) return;
+        if (!this.$) return;
         DOM.setClass(this.$.querySelector('.f1'), 'animated', false);
         this.onDataChange();
       }

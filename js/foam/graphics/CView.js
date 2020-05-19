@@ -202,6 +202,7 @@ CLASS({
         if ( this.tabIndex )    params.tabIndex    = this.tabIndex;
         if ( this.arrowNav )    params.arrowNav    = this.arrowNav;
         if ( this.role )        params.role        = this.role;
+        if ( this.ariaPressed ) params.ariaPressed = this.ariaPressed;
         if ( this.data$ )       params.data$       = this.data$;
         this.view = this.CViewView.create(params);
       }

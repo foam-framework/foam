@@ -81,6 +81,7 @@ CLASS({
     [ 'a1', 0 ],
     [ 'a2', '' ],
     [ 'editable', true ],
+    [ 'statusRipples', true ],
     { name: 'op', factory: function() { return this.DEFAULT_OP } },
     {
       type: 'Array',
@@ -150,18 +151,47 @@ CLASS({
         element: this.X.$$('calc-display')[0],
         color: '#f44336' /* red */
       }).fire, 100);
-      this.history.put(this.History.create(this));
+      this.history.put(this.History.create({
+        op: this.op,
+        a2: this.a2,
+        sayEquals: this.shouldSayEqual(),
+        numberFormatter: this.numberFormatter
+      }));
       this.a1   = 0;
       this.a2   = '';
       this.op   = this.DEFAULT_OP;
       this.row1 = '';
       this.editable = true;
     },
+    /**
+     * Returns if the next item in history should be announced with a
+     * preceding 'equals'.
+     */
+    function shouldSayEqual() {
+      // First ever entry should never have equals.
+      if (this.history.length === 0) {
+        return false;
+      }
+      // Any line with a operator (+,- etc.) should never.
+      if (this.op.label) {
+        return false;
+      }
+      // If the previous line announced equal this one should not.
+      if (this.history[this.history.length -1].sayEquals) {
+        return false;
+      }
+      return true;
+    },
     function push(a2, opt_op) {
       if ( a2 != this.a2 ||
            ( opt_op || this.DEFAULT_OP ) != this.op )
         this.row1 = '';
-      this.history.put(this.History.create(this));
+      this.history.put(this.History.create({
+        op: this.op,
+        a2: this.a2,
+        sayEquals: this.shouldSayEqual(),
+        numberFormatter: this.numberFormatter
+      }));
       while ( this.history.length > this.MAX_HISTORY ) this.history.shift();
       this.a1 = this.a2;
       this.op = opt_op || this.DEFAULT_OP;
@@ -229,14 +259,16 @@ CLASS({
         this.op       = this.DEFAULT_OP;
         this.history = [].sink;
         // TODO(kgr): Move to CalcView
-        if ( this.X.$$('calc-display')[0] ) {
+        if ( this.X.$$('calc-display')[0] && this.statusRipples ) {
           var now = Date.now();
           if ( this.lastFlare_ && now-this.lastFlare_ < 1000 ) return;
           this.lastFlare_ = now;
-          this.Flare.create({
-            element: this.X.$$('calc-display')[0],
-            color: '#2196F3' /* blue */
-          }).fire();
+          if (this.statusRipples) {
+            this.Flare.create({
+              element: this.X.$$('calc-display')[0],
+              color: '#2196F3' /* blue */
+            }).fire();
+          }
           this.X.window.getSelection().removeAllRanges();
         }
       }
@@ -505,6 +537,13 @@ CLASS({
       speechLabel: 'fetch from memory',
       translationHint: 'load memorized number',
       code: function() { this.a2 = this.memory; }
+    },
+    {
+      name: 'toggleStatusRipples',
+      keyboardShortcuts: ['f'],
+      code: function() {
+        this.statusRipples = !this.statusRipples;
+      }
     }
   ]
 });

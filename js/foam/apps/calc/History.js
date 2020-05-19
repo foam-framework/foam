@@ -23,7 +23,8 @@ CLASS({
     {
       name: 'a2',
       preSet: function(_, n) { return this.formatNumber(n); }
-    }
+    },
+    'sayEquals'
   ],
   methods: {
     formatNumber: function(n) {
