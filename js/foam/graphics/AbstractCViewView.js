@@ -178,7 +178,7 @@ CLASS({
         // If the selector starts with [ then it's a button id, otherwise
         // it's just a standard selector so do nothing.
         if (s && s[0] === '[') {
-          let msg = null;
+          var msg = null;
           const btnId = s.substr(1,s.length-2);
           // Look up the button id in the messages file to extract out it's
           // matching aria label.
@@ -194,7 +194,7 @@ CLASS({
             msg = btnId;
           }
 
-          return `[aria-label='${msg}'][aria-role='button']`;
+          return '[aria-label=\'' + msg + '\'][aria-role=\'button\']';
 
         } else {
           return s;

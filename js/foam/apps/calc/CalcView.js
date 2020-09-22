@@ -157,17 +157,19 @@ CLASS({
         // Since history is dynamic regenerate that part of it
         // also fix the aria label of the first
         const historyNodeList = document.querySelectorAll('.history');
-        const history = Array(historyNodeList.length).fill(0).map((_,i) => historyNodeList[i])
+        const history = Array(historyNodeList.length).fill(0).map(function(_,i) {
+          return historyNodeList[i];
+	});
 
-        let prev = {elem: document.body, selector: 'body'};
+        var prev = {elem: document.body, selector: 'body'};
 
-        history.map((e,i) => {
+        history.map(function(e,i) {
           const selector = '.inner-calc-display>span>.history:nth-of-type('+(i+1)+')'
           prev.elem.setAttribute('data-arrow-down', selector);
           this.addArrowData(e, [prev.selector,'.f1',null,null]);
           f1.setAttribute('data-arrow-up', selector);
-          prev = {elem: e, selector}
-        })
+          prev = {elem: e, selector: selector}
+        }.bind(this));
 
         if (evt.code === 'ArrowUp' && curr.dataset.arrowUp !== 'null')
           document.querySelector(curr.dataset.arrowUp).focus()
