@@ -85,7 +85,7 @@ CLASS({
         var f2$ = this.$.querySelector('.f2');
 
         var data = this.data || '&nbsp;';
-        f1$.innerHTML = `<span aria-hidden="true">${data}</span>`;
+        f1$.innerHTML = '<span aria-hidden="true">' + data + '</span>';
         f2$.innerHTML = data;
 
         f1$.style.left = f2$.offsetLeft + 'px';
