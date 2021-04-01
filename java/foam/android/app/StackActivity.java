@@ -2,12 +2,12 @@ package foam.android.app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import androidx.annotation.IdRes;
 
 import java.util.ArrayList;
 

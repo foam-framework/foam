@@ -1,8 +1,8 @@
 package foam.android.app;
 
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.widget.FrameLayout;
+import androidx.annotation.IdRes;
 
 import java.io.Serializable;
 
