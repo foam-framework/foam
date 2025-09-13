@@ -18,18 +18,8 @@
 CLASS({
   package: 'foam.node.handlers',
   name: 'FileHandler',
-  extends: 'foam.node.handlers.Handler',
+  extends: 'foam.node.handlers.FileStreamer',
   properties: [
-    {
-      model_: 'foam.node.NodeRequireProperty',
-      name: 'path',
-      hidden: true,
-    },
-    {
-      model_: 'foam.node.NodeRequireProperty',
-      name: 'fs',
-      hidden: true,
-    },
     {
       model_: 'foam.node.NodeRequireProperty',
       name: 'url',
@@ -42,19 +32,11 @@ CLASS({
       name: 'file'
     }
   ],
-  methods: {
-    handle: function(req, res) {
+
+  methods: [
+    function handle(req, res) {
       if ( this.url.parse(req.url).pathname !== this.pathname ) return false;
-
-      this.fs.readFile(this.file, function(err, data) {
-	if ( err ) {
-	  this.send(res, 404, 'File not found.');
-	} else {
-	  this.send(res, 200, data.toString());
-        }
-      }.bind(this));
-
-      return true;
+      return this.sendFile(this.file, req, res);
     }
-  }
+  ]
 });
